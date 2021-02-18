@@ -1,0 +1,6 @@
+name: EvenMoreFish
+author: Eejayy
+version: 0.1
+main: com.eejayy.fish.EvenMoreFish
+api-version: 1.16
+depend: [Vault]
