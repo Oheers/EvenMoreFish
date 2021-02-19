@@ -1,25 +1,38 @@
 package com.eejayy.fish.fishing.items;
 
+import com.eejayy.fish.EvenMoreFish;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.*;
+import java.util.logging.Level;
 
 import static com.eejayy.fish.fishing.items.Rarities.*;
 
 public class Names {
 
-    public static List<String> commons = Arrays.asList("Gary", "Tim", "John");
-    public static List<String> uncommons = Arrays.asList("Sarah", "Becky", "Anna");
-    public static List<String> epics = Arrays.asList("Alan", "Philip", "Ronald");
-    public static List<String> legs = Arrays.asList("Demi", "Sabrina", "Julia");
+    public static List<String> commons;
 
-    public static String get(Rarities r) {
-        int ran = (int) (Math.random()*3);
-        switch (r) {
-            case COMMON: return commons.get(ran);
-            case UNCOMMON: return uncommons.get(ran);
-            case EPIC: return epics.get(ran);
-            case LEGENDARY: return legs.get(ran);
-            default: return "aaa";
+    // Gets all the fish names.
+    Set<String> section = EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish").getKeys(false);
+
+    public void setNames() {
+
+        // Checks if the section set is empty, the plugin couldn't find any fish, and sends a severe to console
+        // if not, it loads them to (currently) the common list
+        // @TODO create a hashmap that will be <Rarities, List<String>> to hold all the names of each
+
+        if (section.size() == 0) {
+            Bukkit.getLogger().log(Level.SEVERE, "0 fish found in fish.yml error, check your spacing.");
+        } else {
+            commons = new ArrayList<>();
+            commons.addAll(section);
         }
+    }
+
+    public String get(Rarities r) {
+        int ran = (int) (Math.random() * section.size());
+        return commons.get(ran);
     }
 
 }

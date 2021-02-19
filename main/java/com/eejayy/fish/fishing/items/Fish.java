@@ -21,8 +21,10 @@ public class Fish {
     // @TODO add biome-rarity support
 
     public Fish(Rarities rarity, Player fisher) {
+        Names names = new Names();
+
         this.rarity = rarity;
-        this.name = Names.get(rarity);
+        this.name = names.get(rarity);
         this.type = Material.COD;
         this.fisherman = fisher;
         this.length = 5.0f;
@@ -37,7 +39,7 @@ public class Fish {
                 ChatColor.WHITE + "Fished by " + fisherman.getName(),
                 ChatColor.WHITE + "Weighs " + Float.toString(length) + "kg",
                 " ",
-                ChatColor.translateAlternateColorCodes('&', rarity.getCode()) + rarity.toString()
+                ChatColor.translateAlternateColorCodes('&', rarity.getCode() + "&l") + rarity.toString()
 
         );
 
