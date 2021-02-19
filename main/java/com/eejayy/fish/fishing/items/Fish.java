@@ -13,21 +13,23 @@ import java.util.List;
 public class Fish {
 
     String name;
-    Rarities rarity;
+    Rarity rarity;
     Material type;
     Player fisherman;
     Float length;
 
     // @TODO add biome-rarity support
 
-    public Fish(Rarities rarity, Player fisher) {
+    public Fish(Rarity rarity, Player fisher, Float minSize, Float maxSize) {
         Names names = new Names();
 
         this.rarity = rarity;
         this.name = names.get(rarity);
         this.type = Material.COD;
         this.fisherman = fisher;
-        this.length = 5.0f;
+
+        int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
+        this.length = (float) len/10;
     }
 
     // Using translate method over the enum values for the sake of a future config file.
@@ -39,11 +41,11 @@ public class Fish {
                 ChatColor.WHITE + "Fished by " + fisherman.getName(),
                 ChatColor.WHITE + "Weighs " + Float.toString(length) + "kg",
                 " ",
-                ChatColor.translateAlternateColorCodes('&', rarity.getCode() + "&l") + rarity.toString()
+                ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase()
 
         );
 
-        fishMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rarity.getCode()) + name);
+        fishMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rarity.getColour() + name));
         fishMeta.setLore(lore);
         fish.setItemMeta(fishMeta);
 

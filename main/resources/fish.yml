@@ -1,7 +1,23 @@
 fish:
-  Sarah:
-    name: 'Sarah'
-  Tim:
-    name: 'Tim'
-  Anna:
-    name: 'Anna'
+  Common:
+    Sarah:
+      name: 'Sarah'
+    Tim:
+      name: 'Tim'
+    Anna:
+      name: 'Anna'
+    Ed:
+      name: 'Ed'
+  Uncommon:
+    Bhindu:
+      name: 'Sarah'
+    Lynne:
+      name: 'Tim'
+    Jeremy:
+      name: 'Anna'
+  Epic:
+    Holly Willoughby:
+      name: 'Sarah'
+  Legendary:
+    Perseverance Rover:
+      name: 'Sarah'
