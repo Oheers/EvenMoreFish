@@ -1,5 +1,6 @@
 package com.eejayy.fish.fishing.items;
 
+import com.eejayy.fish.EvenMoreFish;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -20,7 +21,7 @@ public class Fish {
 
     // @TODO add biome-rarity support
 
-    public Fish(Rarity rarity, Player fisher, Float minSize, Float maxSize) {
+    public Fish(Rarity rarity, Player fisher) {
         Names names = new Names();
 
         this.rarity = rarity;
@@ -28,8 +29,7 @@ public class Fish {
         this.type = Material.COD;
         this.fisherman = fisher;
 
-        int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
-        this.length = (float) len/10;
+        setSize();
     }
 
     // Using translate method over the enum values for the sake of a future config file.
@@ -38,8 +38,8 @@ public class Fish {
         ItemStack fish = new ItemStack(type);
         ItemMeta fishMeta = fish.getItemMeta();
         List<String> lore = Arrays.asList(
-                ChatColor.WHITE + "Fished by " + fisherman.getName(),
-                ChatColor.WHITE + "Weighs " + Float.toString(length) + "kg",
+                ChatColor.WHITE + "Caught by " + fisherman.getName(),
+                ChatColor.WHITE + "Measures " + Float.toString(length) + "cm",
                 " ",
                 ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase()
 
@@ -50,5 +50,23 @@ public class Fish {
         fish.setItemMeta(fishMeta);
 
         return fish;
+    }
+
+    private void setSize() {
+        double minSize = EvenMoreFish.fishFile.getConfig().getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.minSize");
+        double maxSize = EvenMoreFish.fishFile.getConfig().getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.maxSize");
+
+        if (minSize == 0.0 && maxSize == 0.0) {
+            minSize = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + this.rarity.getValue() + ".size.minSize");
+            maxSize = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + this.rarity.getValue() + ".size.maxSize");
+        }
+
+        if ((minSize == 0.0 && maxSize == 0.0) || minSize > maxSize) {
+            minSize = 0.0;
+            maxSize = 10.0;
+        }
+
+        int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
+        this.length = (float) len/10;
     }
 }

@@ -7,10 +7,12 @@ import com.eejayy.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,18 +32,30 @@ public class FishEvent implements Listener {
                 event.setCancelled(true);
                 event.getHook().remove();
 
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(event.getPlayer().getName() + " has fished a gigantic fish. Let's hear a round of applause for them.");
+                Player player = event.getPlayer();
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendMessage(player.getName() + " has fished a gigantic fish. Let's hear a round of applause for them.");
                 }
 
-                Fish fish = new Fish(random(), event.getPlayer(), 5.0f, 27.0f);
+                Fish fish = new Fish(random(), player);
 
                 /* Drops the item rather than giving it straight to the player as a slap-dash way of checking the inventory
                  isn't full */
-                Location location = event.getPlayer().getLocation();
+                Location location = event.getHook().getLocation();
+                Location playerLoc = player.getLocation();
+
+                // Drops it at the location of the hook, then spins it to face the player (hopefully)
                 World world = location.getWorld();
 
-                world.dropItem(location, fish.getItem());
+                Item fishItem = player.getWorld().dropItem(location, fish.getItem());
+
+                // Calculates differences between the player and rod, then divides by 10 to get a slightly smoother throw
+                double xDif = (playerLoc.getX()-location.getX())/15;
+                double yDif = ((playerLoc.getY()+5.5)-(location.getY()))/15;
+                double zDif = (playerLoc.getZ()-location.getZ())/15;
+
+                fishItem.setVelocity(new Vector(xDif, yDif, zDif));
+                fishItem.setPickupDelay(0);
             }
 
         }

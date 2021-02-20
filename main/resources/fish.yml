@@ -1,7 +1,8 @@
 fish:
   Common:
     Sarah:
-      name: 'Sarah'
+      minSize: 10
+      maxSize: 29
     Tim:
       name: 'Tim'
     Anna:
