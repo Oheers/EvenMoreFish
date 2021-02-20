@@ -10,12 +10,16 @@ fish:
     Ed:
       name: 'Ed'
   Uncommon:
-    Bhindu:
-      name: 'Sarah'
-    Lynne:
-      name: 'Tim'
-    Jeremy:
-      name: 'Anna'
+    Jellyfish:
+      item:
+        # You can get base-64 heads from https://minecraft-heads.com/custom-heads, copy and paste all of the base-64 value for the head you want.
+        head-64: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNkZTQ4YTg0NjY4YTM2MTkxODdkYTE5NmU3NzdmOTMxZjc1NTQ4NDllOGYyNDM4OTdhYzgzYzhhZDYxIn19fQ==
+    Squid:
+      item:
+        material: INK_SAC
+    Pufferfish:
+      item:
+        head-uuid: "e1c3d312-dd94-4365-8521-89315f25707c"
   Epic:
     Holly Willoughby:
       name: 'Sarah'
