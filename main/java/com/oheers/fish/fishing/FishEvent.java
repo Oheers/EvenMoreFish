@@ -1,10 +1,12 @@
-package com.eejayy.fish.fishing;
+package com.oheers.fish.fishing;
 
-import com.eejayy.fish.EvenMoreFish;
-import com.eejayy.fish.config.MainConfig;
-import com.eejayy.fish.fishing.items.Fish;
-import com.eejayy.fish.fishing.items.Rarity;
+import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Item;
@@ -33,11 +35,20 @@ public class FishEvent implements Listener {
                 event.getHook().remove();
 
                 Player player = event.getPlayer();
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.sendMessage(player.getName() + " has fished a gigantic fish. Let's hear a round of applause for them.");
-                }
 
                 Fish fish = new Fish(random(), player);
+
+                // puts all the fish information into a format that Messages.renderMessage() can print out nicely
+
+                String length = Float.toString(fish.getLength());
+                String name = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getName());
+                String rarity = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
+
+                String rendered = Messages.renderMessage(Messages.fishCaught, player.getName(), fish.getRarity().getColour(), length, name, rarity);
+
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendMessage(rendered);
+                }
 
                 /* Drops the item rather than giving it straight to the player as a slap-dash way of checking the inventory
                  isn't full */

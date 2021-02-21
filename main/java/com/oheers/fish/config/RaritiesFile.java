@@ -1,6 +1,6 @@
-package com.eejayy.fish.config;
+package com.oheers.fish.config;
 
-import com.eejayy.fish.EvenMoreFish;
+import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -21,7 +21,6 @@ public class RaritiesFile {
         saveDefault();
     }
 
-    // Makes sure all th
     public void reload() {
 
         if (this.raritiesFile == null) this.raritiesFile = new File(this.plugin.getDataFolder(), "rarities.yml");

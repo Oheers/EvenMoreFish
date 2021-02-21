@@ -1,6 +1,6 @@
-package com.eejayy.fish.fishing.items;
+package com.oheers.fish.fishing.items;
 
-import com.eejayy.fish.EvenMoreFish;
+import com.oheers.fish.EvenMoreFish;
 import dev.dbassett.skullcreator.SkullCreator;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
@@ -76,6 +76,22 @@ public class Fish {
         this.length = (float) len/10;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public Player getFisherman() {
+        return fisherman;
+    }
+
+    public Float getLength() {
+        return length;
+    }
+
     private ItemStack getType() {
 
         String uValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-uuid");
@@ -102,5 +118,7 @@ public class Fish {
         else {
             return new ItemStack(Material.COD);
         }
+
+
     }
 }

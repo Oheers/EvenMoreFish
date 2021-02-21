@@ -1,6 +1,6 @@
-package com.eejayy.fish.fishing.items;
+package com.oheers.fish.fishing.items;
 
-import com.eejayy.fish.EvenMoreFish;
+import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Bukkit;
 
 import java.util.*;

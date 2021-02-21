@@ -1,6 +1,6 @@
-package com.eejayy.fish.config;
+package com.oheers.fish.config;
 
-import com.eejayy.fish.EvenMoreFish;
+import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

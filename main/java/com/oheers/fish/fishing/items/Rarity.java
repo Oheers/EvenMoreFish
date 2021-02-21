@@ -1,4 +1,4 @@
-package com.eejayy.fish.fishing.items;
+package com.oheers.fish.fishing.items;
 
 public class Rarity {
 

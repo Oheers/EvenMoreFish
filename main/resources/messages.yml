@@ -1,0 +1,3 @@
+fish-caught: "&l{player} &rhas fished a {length} {rarity} {fish}!"
+
+no-permission: "&cYou don't have permission to run that command."

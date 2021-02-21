@@ -1,4 +1,4 @@
-package com.eejayy.fish.config;
+package com.oheers.fish.config;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

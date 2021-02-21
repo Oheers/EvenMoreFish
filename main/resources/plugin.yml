@@ -1,6 +1,11 @@
 name: EvenMoreFish
-author: Eejayy
+author: Oheers
 version: 0.1
-main: com.eejayy.fish.EvenMoreFish
+main: com.oheers.fish.EvenMoreFish
 api-version: 1.16
 depend: [Vault]
+
+commands:
+  evenmorefish:
+    usage: /<command> [name]
+    aliases: [emf]
