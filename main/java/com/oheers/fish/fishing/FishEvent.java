@@ -2,6 +2,7 @@ package com.oheers.fish.fishing;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -44,10 +45,16 @@ public class FishEvent implements Listener {
                 String name = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getName());
                 String rarity = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
 
-                String rendered = Messages.renderMessage(Messages.fishCaught, player.getName(), fish.getRarity().getColour(), length, name, rarity);
+                Message msg = new Message()
+                        .setMSG(Messages.fishCaught)
+                        .setPlayer(player.getName())
+                        .setColour(fish.getRarity().getColour())
+                        .setLength(length)
+                        .setFishCaught(name)
+                        .setRarity(rarity);
 
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.sendMessage(rendered);
+                    p.sendMessage(msg.toString());
                 }
 
                 /* Drops the item rather than giving it straight to the player as a slap-dash way of checking the inventory

@@ -68,6 +68,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void commands() {
         getCommand("evenmorefish").setExecutor(new CommandCentre());
+        CommandCentre.loadTabCompletes();
     }
 
     private boolean setupPermissions() {
