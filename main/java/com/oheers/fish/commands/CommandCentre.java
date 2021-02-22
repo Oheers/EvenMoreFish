@@ -20,8 +20,6 @@ import java.util.Locale;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
-    private static final String RELOADED = "&a[EvenMoreFish] &rsuccessfully reloaded.";
-
     private static final List<String> empty = Arrays.asList();
 
     @Override
@@ -51,7 +49,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         switch (args[1].toLowerCase()) {
                             case "reload":
                                 Reload.run();
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', RELOADED));
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.RELOADED));
                         }
                     }
                 } else {

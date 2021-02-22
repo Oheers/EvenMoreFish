@@ -70,6 +70,8 @@ public class FishEvent implements Listener {
                 // Calculates differences between the player and rod, then divides by 10 to get a slightly smoother throw
                 double xDif = (playerLoc.getX()-location.getX())/15;
                 double yDif = ((playerLoc.getY()+5.5)-(location.getY()))/15;
+                // If enabled, applies gravity calculations
+                if (MainConfig.lengthAffectsY) yDif = yDif / (1+ fish.getLength()/MainConfig.gravity);
                 double zDif = (playerLoc.getZ()-location.getZ())/15;
 
                 fishItem.setVelocity(new Vector(xDif, yDif, zDif));

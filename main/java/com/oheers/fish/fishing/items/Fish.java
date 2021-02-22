@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +43,7 @@ public class Fish {
         ItemMeta fishMeta = fish.getItemMeta();
         List<String> lore = Arrays.asList(
                 ChatColor.WHITE + "Caught by " + fisherman.getName(),
-                ChatColor.WHITE + "Measures " + Float.toString(length) + "cm",
+                ChatColor.WHITE + "Measures " + format(Float.toString(length)) + "cm",
                 " ",
                 ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase()
 
@@ -120,5 +121,10 @@ public class Fish {
         }
 
 
+    }
+
+    private String format(String length) {
+        DecimalFormat df = new DecimalFormat("###,###.#");
+        return df.format(Double.parseDouble(length));
     }
 }

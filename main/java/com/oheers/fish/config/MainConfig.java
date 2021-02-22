@@ -8,6 +8,9 @@ public class MainConfig {
     public static Plugin plugin = Bukkit.getPluginManager().getPlugin("EvenMoreFish");
 
 
-    public static Boolean enabled = plugin.getConfig().getBoolean("enabled");
+    public static boolean enabled = plugin.getConfig().getBoolean("enabled");
+    public static boolean lengthAffectsY = plugin.getConfig().getBoolean("weight-pull");
+
+    public static int gravity = plugin.getConfig().getInt("weight-gravity");
 
 }
