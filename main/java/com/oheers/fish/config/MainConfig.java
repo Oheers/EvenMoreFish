@@ -13,4 +13,6 @@ public class MainConfig {
 
     public static int gravity = plugin.getConfig().getInt("weight-gravity");
 
+    public static boolean database = plugin.getConfig().getBoolean("database");
+
 }

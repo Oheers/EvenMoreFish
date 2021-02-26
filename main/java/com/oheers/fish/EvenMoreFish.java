@@ -2,8 +2,10 @@ package com.oheers.fish;
 
 import com.oheers.fish.commands.CommandCentre;
 import com.oheers.fish.config.FishFile;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.messages.MessageFile;
+import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.FishEvent;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
@@ -13,6 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.xml.stream.events.DTD;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +30,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Permission permission = null;
 
-    public static Map<Rarity, Set<String>> fish = new HashMap<Rarity, Set<String>>();
+    public static Map<Rarity, Set<String>> fish = new HashMap<>();
 
     public void onEnable() {
 
@@ -50,6 +54,19 @@ public class EvenMoreFish extends JavaPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
+        if (MainConfig.database) {
+
+            // Attempts to connect to the database if enabled
+            try {
+                if (!Database.dbExists()) {
+                    Database.createDatabase();
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        }
+
         Bukkit.getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
 
     }
@@ -62,7 +79,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void listeners() {
 
-        getServer().getPluginManager().registerEvents((Listener) new FishEvent(), this);
+        getServer().getPluginManager().registerEvents(new FishEvent(), this);
 
     }
 

@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.util.Vector;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,19 +65,20 @@ public class FishEvent implements Listener {
                 Location playerLoc = player.getLocation();
 
                 // Drops it at the location of the hook, then spins it to face the player (hopefully)
-                World world = location.getWorld();
-
                 Item fishItem = player.getWorld().dropItem(location, fish.getItem());
 
                 // Calculates differences between the player and rod, then divides by 10 to get a slightly smoother throw
                 double xDif = (playerLoc.getX()-location.getX())/15;
                 double yDif = ((playerLoc.getY()+5.5)-(location.getY()))/15;
+
                 // If enabled, applies gravity calculations
                 if (MainConfig.lengthAffectsY) yDif = yDif / (1+ fish.getLength()/MainConfig.gravity);
                 double zDif = (playerLoc.getZ()-location.getZ())/15;
 
                 fishItem.setVelocity(new Vector(xDif, yDif, zDif));
                 fishItem.setPickupDelay(0);
+
+                if (MainConfig.database) databaseStuff(player, fish.getName(), fish.getLength());
             }
 
         }
@@ -99,5 +102,23 @@ public class FishEvent implements Listener {
         }
 
         return rarities.get(idx);
+    }
+
+    private void databaseStuff(Player player, String name, Float length) {
+        try {
+
+            if (Database.hasFish(name)) {
+                Database.fishIncrease(name);
+
+                if (Database.getTopLength(name) < length) {
+                    Database.newTopSpot(player, name, length);
+                }
+            } else {
+                Database.add(name, player, length);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

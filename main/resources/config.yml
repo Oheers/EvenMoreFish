@@ -1,9 +1,26 @@
 # Is the plugin enabled?
 enabled: true
 
+# Should a database store data about fish such as how many have been caught and the first to catch it.
+# Setting to false will disable it.
+database: true
+
 # Should a heavier fish have more gravity acting on it when it's pulled from the water?
 # It's assumed that a longer fish will be heavier.
 weight-pull: true
 
 # How strong should the gravity be? The lower the number, the stronger gravity acts on the fish.
 weight-gravity: 750
+
+competitions:
+
+  # When should competitions run?
+  # It will use server's local timezone using a 24hour time format
+  times:
+    - "00:00" # midnight
+    - "06:00"
+    - "12:00" # midday
+    - "18:00"
+
+  # How long should the competition go on for? (In minutes)
+  duration: 10
