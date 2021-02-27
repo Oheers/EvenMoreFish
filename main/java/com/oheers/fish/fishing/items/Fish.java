@@ -1,19 +1,26 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.MainConfig;
 import dev.dbassett.skullcreator.SkullCreator;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class Fish {
 
@@ -34,6 +41,8 @@ public class Fish {
         this.fisherman = fisher;
 
         setSize();
+        checkMessage();
+        checkEffects();
     }
 
     // Using translate method over the enum values for the sake of a future config file.
@@ -99,7 +108,6 @@ public class Fish {
         // The fish has item: uuid selected
         // note - only works for players who have joined the server previously, not sure if this'll make it to release.
         if (uValue != null) {
-            System.out.println(uValue);
             return SkullCreator.itemWithUuid(new ItemStack(Material.valueOf("PLAYER_HEAD")), UUID.fromString(uValue));
         }
 
@@ -126,5 +134,41 @@ public class Fish {
     private String format(String length) {
         DecimalFormat df = new DecimalFormat("###,###.#");
         return df.format(Double.parseDouble(length));
+    }
+
+    // checks if the config contains a message to be displayed when the fish is fished
+    private void checkMessage() {
+
+        String msg = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
+
+        if (msg != null) this.fisherman.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+
+    }
+
+    private void checkEffects() {
+
+        String effectConfig = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".effect");
+
+        // if the config doesn't have an effect stated to be given
+        if (effectConfig == null) return;
+
+        String[] separated = effectConfig.split(":");
+        // if it's formatted wrong, it'll just give the player this as a stock effect
+        if (separated.length != 3) this.fisherman.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
+
+        PotionEffectType effect = PotionEffectType.getByName(separated[0].toUpperCase());
+        int amplitude = Integer.parseInt(separated[1]);
+        // *20 to bring it to seconds rather than ticks
+        int time = Integer.parseInt(separated[2])*20;
+
+        try {
+            this.fisherman.addPotionEffect(new PotionEffect(effect, time, amplitude));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            Bukkit.getServer().getLogger().log(Level.SEVERE, "ATTENTION! There was an error adding the effect from the " + this.name + " fish.");
+            Bukkit.getServer().getLogger().log(Level.SEVERE, "ATTENTION! Check your config files and ensure spelling of the effect name is correct.");
+            Bukkit.getServer().getLogger().log(Level.SEVERE, "ATTENTION! If the problem persists, ask for help on the support discord server.");
+        }
+
     }
 }

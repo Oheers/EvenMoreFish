@@ -17,6 +17,11 @@ fish:
     Squid:
       item:
         material: INK_SAC
+      # Sends a message to the player when they catch a fish
+      message: "&3You've been inked!"
+      # Gives an effect to the player, EFFECT_NAME:AMPLIFIER:DURATION(seconds)
+      # this shows you all the effect names, https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+      effect: "BLINDNAAESS:1:5"
     Pufferfish:
       item:
         head-uuid: "e1c3d312-dd94-4365-8521-89315f25707c"
