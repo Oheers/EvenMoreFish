@@ -1,19 +1,47 @@
 fish:
   Common:
-    Sarah:
-      minSize: 10
-      maxSize: 29
-    Tim:
-      name: 'Tim'
-    Anna:
-      name: 'Anna'
-    Ed:
-      name: 'Ed'
-  Uncommon:
-    Jellyfish:
+    # Using "" after the fish name will create you a default cod fish.
+    Herring: ""
+    Cod: ""
+    Sea Bass: ""
+    Shrimp: ""
+    Anchovies: ""
+    Tuna: ""
+    Carp: ""
+    Sardine: ""
+    Salmon:
+      item:
+        # Items must be spelt the same as found in game by using advanced tooltips (f3 + h)
+        material: SALMON
+    Stick:
+      item:
+        material: STICK
+    Fishing Rod:
+      item:
+        material: FISHING_ROD
+    Coalfish:
+      item:
+        material: COAL
+    Sandfish:
       item:
         # You can get base-64 heads from https://minecraft-heads.com/custom-heads, copy and paste all of the base-64 value for the head you want.
-        head-64: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNkZTQ4YTg0NjY4YTM2MTkxODdkYTE5NmU3NzdmOTMxZjc1NTQ4NDllOGYyNDM4OTdhYzgzYzhhZDYxIn19fQ==
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTcwMDg3ZGRlMTMwODQ2YzBlOTc1ZmU2ODQzNWQ4OTQwZjA5MzM5ZmFiYzYwMjZhOTY5OWZkYjYxMmI0ZjEyMSJ9fX0="
+    Sea Snail:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTVmM2MwZjUzNjEyMzc0NjU5NjA2MzVjZWIzYWRjY2I2OGM0NWZkZTU2NjNiYzcyNTQ4Y2IzZGUyOTA0M2M4In19fQ=="
+
+  #  Oheers:
+  #    item:
+  #      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjczZjU2OTk5YWJjNmMzMjVhYzlmMWNjMThkZTgyMDNiMmYxZjY4NDQ5ZTAwOTQ1ZGQ1YzhjYmM3NDQ2MTRiIn19fQ=="
+
+  Uncommon:
+    Silver Carp: ""
+    Stonefish: ""
+    Starfish: ""
+    Eel: ""
+    Electric Eel:
+      message: "&b*Zap!*
+      effect: "HARM:1:1"
     Squid:
       item:
         material: INK_SAC
@@ -21,13 +49,76 @@ fish:
       message: "&3You've been inked!"
       # Gives an effect to the player, EFFECT_NAME:AMPLIFIER:DURATION(seconds)
       # this shows you all the effect names, https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
-      effect: "BLINDNAAESS:1:5"
+      effect: "BLINDNESS:1:5"
     Pufferfish:
       item:
-        head-uuid: "e1c3d312-dd94-4365-8521-89315f25707c"
+        material: PUFFERFISH
+      message: "&aOuch. That doesn't feel so good..."
+      effect: "POISON:1:7"
+    Dory:
+      item:
+        material: SALMON
+    Nemo:
+      item:
+        material: TROPICAL_FISH
+    Coral:
+      item:
+        material: FIRE_CORAL
+    Jellyfish:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNkZTQ4YTg0NjY4YTM2MTkxODdkYTE5NmU3NzdmOTMxZjc1NTQ4NDllOGYyNDM4OTdhYzgzYzhhZDYxIn19fQ=="
+    Frog:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzE3ODE4OWVmOGZhN2E1YjcyNGZiOTFkZjlhNDQ3ODRmZDg1NjQ4ZWQzZTNhY2Y2ZDBkZWQ3YjhjYWEzMGYwNyJ9fX0="
   Epic:
-    Holly Willoughby:
-      name: 'Sarah'
+    Parrotfish: ""
+    Swordfish: ""
+    Clownfish:
+      item:
+        material: TROPICAL_FISH
+    Shark Fin:
+      item:
+        material: PRISMARINE_SHARD
+    Dolphin:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGU5Njg4Yjk1MGQ4ODBiNTViN2FhMmNmY2Q3NmU1YTBmYTk0YWFjNmQxNmY3OGU4MzNmNzQ0M2VhMjlmZWQzIn19fQ=="
+    Elephant Fish:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGI2Mjk2OWMwMDU4MTVkMDQwOTEzNjM4MGZlYmM1YWM0NjhhYWJhOWJkYTRkYjgwOTU0ZmE1NDI2ZWUwYTMyMyJ9fX0="
+    Hermit Crab:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTg1ZTY4MzRhNGJmMjZhNjUyNmY3Y2FjNGY2ZWFhOWY3ZmE3N2RiOGMxNDM1M2E4MTU4MmI1ZjY5OSJ9fX0="
+      size:
+      # Fish can have unique sizes that will override the size set by their rarity
+        minSize: 5
+        maxSize: 10
+    Glowsquid:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmVjZDBiNWViNmIzODRkYjA3NmQ4NDQ2MDY1MjAyOTU5ZGRkZmYwMTYxZTBkNzIzYjNkZjBjYzU4NmQxNmJiZCJ9fX0="
+    Turtle:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMGE0MDUwZTdhYWNjNDUzOTIwMjY1OGZkYzMzOWRkMTgyZDdlMzIyZjlmYmNjNGQ1Zjk5YjU3MThhIn19fQ=="
   Legendary:
-    Perseverance Rover:
-      name: 'Sarah'
+    Breaded Fish:
+      item:
+        material: BREAD
+    Goldfish:
+      item:
+        material: GOLD_NUGGET
+    Moustache Pufferfish:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDI5MTA1ZTU2YTM2ZDM1NDA4ZjI5MzIxOTI4NzRlMGJiNTMyZTEyY2U2MTA4MDM1ODhjMzdlZDI4N2UwZGE4YyJ9fX0="
+    MrCrayfish:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdjM2QxNTg5Y2U2NzMzMzFmNjkwYjY5MmRiMmEzNTVjMzNmYjYzZTc1NGIxNzY3YmVkZWU2NmI4ZjM3In19fQ=="
+    Blue Whale:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2FmNzIyMTc5ODU0NmY4ZjllNzZhNmEzZWUzYjE3NjczNGU5ZDVmMTdkYmNiMDg1OTgxOTQxNzU4Njk4NjQzNiJ9fX0="
+      size:
+        minSize: 2900
+        maxSize: 3800
+    Golden Axolotl:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Y4MGNjMTQ5MmU0NDY2OGNjY2RiNDAxNzhjM2E2Njg5ZThkZmMwZDIzNGU5ODU1M2ZiN2RlYmMyNmZjYWVhYyJ9fX0="
+
+# XXXVII

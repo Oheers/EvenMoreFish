@@ -1,12 +1,12 @@
 rarities:
   Common:
-    weight: 75
+    weight: 77
     colour: '&7'
   Uncommon:
     weight: 15
     colour: '&b'
   Epic:
-    weight: 8
+    weight: 6
     colour: '&d'
   Legendary:
     weight: 2
