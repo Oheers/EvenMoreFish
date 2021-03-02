@@ -57,7 +57,7 @@ public class Names {
         return colour;
     }
 
-    private double rarityWeight(String rarity)
+    private double rarityWeight(String rarity) {
         return EvenMoreFish.raritiesFile.getConfig().getInt("rarities." + rarity + ".weight");
     }
 
