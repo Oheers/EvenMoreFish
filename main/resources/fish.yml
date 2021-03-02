@@ -128,3 +128,6 @@ fish:
     Flower Fish:
       biomes:
         - FLOWER_FOREST
+      # Add a lore of (pretty much) infinite length. No colour code values will default to the vanilla purple italic.
+      lore:
+        - "&7&oCovered in pollen"

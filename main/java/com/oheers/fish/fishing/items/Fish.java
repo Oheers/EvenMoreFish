@@ -13,10 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Fish {
@@ -45,16 +42,9 @@ public class Fish {
 
         ItemStack fish = this.type;
         ItemMeta fishMeta = fish.getItemMeta();
-        List<String> lore = Arrays.asList(
-                ChatColor.WHITE + "Caught by " + fisherman.getName(),
-                ChatColor.WHITE + "Measures " + format(Float.toString(length)) + "cm",
-                " ",
-                ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase()
-
-        );
 
         fishMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rarity.getColour() + name));
-        fishMeta.setLore(lore);
+        fishMeta.setLore(generateLore());
         fish.setItemMeta(fishMeta);
 
         return fish;
@@ -183,5 +173,31 @@ public class Fish {
         checkEffects();
 
         return this;
+    }
+
+    private List<String> generateLore() {
+
+        // standard lore
+        List<String> lore = new ArrayList<>();
+
+        lore.add(ChatColor.WHITE + "Caught by " + fisherman.getName());
+        lore.add(ChatColor.WHITE + "Measures " + format(Float.toString(length)) + "cm");
+        lore.add(" ");
+
+        // custom lore in fish.yml
+        List<String> potentialLore = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore");
+
+        // checks that the custom lore exists, then adds it on to the lore
+        if (potentialLore.size() > 0) {
+            // does colour coding, hence why .addAll() isn't used
+            for (String line : potentialLore) {
+                lore.add(ChatColor.translateAlternateColorCodes('&', line));
+            }
+        }
+
+        // a little footer showing the rarity
+        lore.add(ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
+
+        return lore;
     }
 }
