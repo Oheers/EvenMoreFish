@@ -1,19 +1,16 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.MainConfig;
 import dev.dbassett.skullcreator.SkullCreator;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -30,24 +27,22 @@ public class Fish {
     Player fisherman;
     Float length;
 
-    // @TODO add biome-rarity support
+    List<Biome> biomes;
 
-    public Fish(Rarity rarity, Player fisher) {
-        Names names = new Names();
+    double minSize, maxSize;
 
+    public Fish(Rarity rarity, String name) {
         this.rarity = rarity;
-        this.name = names.get(rarity);
+        this.name = name;
         this.type = getType();
-        this.fisherman = fisher;
 
         setSize();
-        checkMessage();
-        checkEffects();
     }
 
-    // Using translate method over the enum values for the sake of a future config file.
+    public ItemStack give(Player fisherman) {
 
-    public ItemStack getItem() {
+        this.fisherman = fisherman;
+
         ItemStack fish = this.type;
         ItemMeta fishMeta = fish.getItemMeta();
         List<String> lore = Arrays.asList(
@@ -66,21 +61,23 @@ public class Fish {
     }
 
     private void setSize() {
-        double minSize = EvenMoreFish.fishFile.getConfig().getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.minSize");
-        double maxSize = EvenMoreFish.fishFile.getConfig().getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.maxSize");
+        this.minSize = EvenMoreFish.fishFile.getConfig().getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.minSize");
+        this.maxSize = EvenMoreFish.fishFile.getConfig().getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.maxSize");
 
         // are min & max size changed? If not, there's no fish-specific value. Check the rarity's value
         if (minSize == 0.0 && maxSize == 0.0) {
-            minSize = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + this.rarity.getValue() + ".size.minSize");
-            maxSize = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + this.rarity.getValue() + ".size.maxSize");
+            this.minSize = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + this.rarity.getValue() + ".size.minSize");
+            this.maxSize = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + this.rarity.getValue() + ".size.maxSize");
         }
 
         // If there's no rarity-specific value (or max is smaller than min), to avoid being in a pickle we just set min default to 0 and max default to 10
         if ((minSize == 0.0 && maxSize == 0.0) || minSize > maxSize) {
-            minSize = 0.0;
-            maxSize = 10.0;
+            this.minSize = 0.0;
+            this.maxSize = 10.0;
         }
+    }
 
+    private void generateSize() {
         // Random logic that returns a float to 1dp
         int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
         this.length = (float) len/10;
@@ -127,8 +124,6 @@ public class Fish {
         else {
             return new ItemStack(Material.COD);
         }
-
-
     }
 
     private String format(String length) {
@@ -170,5 +165,23 @@ public class Fish {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "ATTENTION! If the problem persists, ask for help on the support discord server.");
         }
 
+    }
+
+    public void setBiomes(List<Biome> biomes) {
+        this.biomes = biomes;
+    }
+
+    public List<Biome> getBiomes() {
+        return biomes;
+    }
+
+    // prepares it to be given to the player
+    public Fish init() {
+
+        generateSize();
+        checkMessage();
+        checkEffects();
+
+        return this;
     }
 }

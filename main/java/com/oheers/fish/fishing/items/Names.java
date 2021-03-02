@@ -1,24 +1,17 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
-import org.bukkit.Bukkit;
+import org.bukkit.block.Biome;
 
-import java.util.*;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Names {
 
     // Gets all the fish names.
     Set<String> rarities, fishSet, fishList;
-
-    String error = "0 fish found in fish.yml error, check your spacing.";
-
-    public String get(Rarity r) {
-        List<String> fishNames = new ArrayList<>(EvenMoreFish.fish.get(r));
-        int ran = (int) (Math.random() * fishNames.size());
-        return fishNames.get(ran);
-    }
 
     /*
      *  Goes through the fish branch of fish.yml, then for each rarity it realises on its journey,
@@ -28,17 +21,32 @@ public class Names {
     public void loadRarities() {
         fishList = new HashSet<>();
 
+        // gets all the rarities - just their names, nothing else
         rarities = EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish").getKeys(false);
 
         for (String rarity : rarities) {
 
+            // gets all the fish in said rarity, again - just their names
             fishSet = EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish." + rarity).getKeys(false);
             fishList.addAll(fishSet);
 
+            // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity));
+            List<Fish> fishQueue = new ArrayList<>();
 
-            EvenMoreFish.fish.put(r, fishSet);
+            for (String fish : fishSet) {
 
+                // for each fish name, a fish object is made that contains the information gathered from that name
+                Fish canvas = new Fish(r, fish);
+                canvas.setBiomes(getBiomes(fish, r.getValue()));
+                fishQueue.add(canvas);
+
+            }
+
+            // puts the collection of fish and their rarities into the main class
+            EvenMoreFish.fishCollection.put(r, fishQueue);
+
+            // memory saving or something
             fishList.clear();
         }
     }
@@ -49,10 +57,19 @@ public class Names {
         return colour;
     }
 
-    private double rarityWeight(String rarity) {
-        double weight = EvenMoreFish.raritiesFile.getConfig().getInt("rarities." + rarity + ".weight");
+    private double rarityWeight(String rarity)
+        return EvenMoreFish.raritiesFile.getConfig().getInt("rarities." + rarity + ".weight");
+    }
 
-        return weight;
+    private List<Biome> getBiomes(String name, String rarity) {
+        // returns the biomes found in the "biomes:" section of the fish.yml
+        List<Biome> biomes = new ArrayList<>();
+
+        for (String biome : EvenMoreFish.fishFile.getConfig().getStringList("fish." + rarity + "." + name + ".biomes")) {
+            biomes.add(Biome.valueOf(biome));
+        }
+
+        return biomes;
     }
 
 }

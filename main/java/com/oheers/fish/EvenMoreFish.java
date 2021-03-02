@@ -7,17 +7,17 @@ import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.FishEvent;
+import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.xml.stream.events.DTD;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -30,10 +30,11 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Permission permission = null;
 
-    public static Map<Rarity, Set<String>> fish = new HashMap<>();
+    public static Map<Integer, Set<String>> fish = new HashMap<>();
+
+    public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
 
     public void onEnable() {
-
 
         listeners();
         commands();

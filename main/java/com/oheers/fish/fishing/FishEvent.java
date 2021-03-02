@@ -10,7 +10,7 @@ import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +21,7 @@ import org.bukkit.util.Vector;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class FishEvent implements Listener {
 
@@ -39,8 +40,7 @@ public class FishEvent implements Listener {
 
                 Player player = event.getPlayer();
 
-                Fish fish = new Fish(random(), player);
-
+                Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome()).init();
                 // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
                 String length = Float.toString(fish.getLength());
@@ -65,7 +65,7 @@ public class FishEvent implements Listener {
                 Location playerLoc = player.getLocation();
 
                 // Drops it at the location of the hook, then spins it to face the player (hopefully)
-                Item fishItem = player.getWorld().dropItem(location, fish.getItem());
+                Item fishItem = player.getWorld().dropItem(location, fish.give(player));
 
                 // Calculates differences between the player and rod, then divides by 10 to get a slightly smoother throw
                 double xDif = (playerLoc.getX()-location.getX())/15;
@@ -86,7 +86,7 @@ public class FishEvent implements Listener {
 
     private Rarity random() {
         // Loads all the rarities
-        List<Rarity> rarities = new ArrayList<>(EvenMoreFish.fish.keySet());
+        List<Rarity> rarities = new ArrayList<>(EvenMoreFish.fishCollection.keySet());
 
         double totalWeight = 0;
 
@@ -104,16 +104,48 @@ public class FishEvent implements Listener {
         return rarities.get(idx);
     }
 
+    private Fish getFish(Rarity r, Biome b) {
+        // the fish that are of (Rarity r)
+        List<Fish> rarityFish = EvenMoreFish.fishCollection.get(r);
+        // will store all the fish that match the player's biome or don't discriminate biomes
+        List<Fish> available = new ArrayList<>();
+
+        for (Fish f : rarityFish) {
+
+            if (f.getBiomes().contains(b) || f.getBiomes().size()==0) {
+                available.add(f);
+            }
+        }
+
+        // if the config doesn't define any fish that can be fished in this biome.
+        if (available.size() == 0) {
+            Bukkit.getLogger().log(Level.WARNING, "There are no fish of the rarity " + r.getValue() + " that can be fished in the " + b.name() + " biome.");
+            return defaultFish();
+        }
+
+        int ran = (int) (Math.random() * available.size());
+        return available.get(ran);
+    }
+
+    // if there's no fish available in the current biome, this gets sent out
+    private Fish defaultFish() {
+        Rarity r = new Rarity("No biome found", "&4", 1.0d);
+        return new Fish(r, "");
+    }
+
     private void databaseStuff(Player player, String name, Float length) {
         try {
 
+            // increases the fish fished count if the fish is already in the db
             if (Database.hasFish(name)) {
                 Database.fishIncrease(name);
 
+                // sets the new leader in top fish, if the player has fished a record fish
                 if (Database.getTopLength(name) < length) {
                     Database.newTopSpot(player, name, length);
                 }
             } else {
+                // the database doesn't contain the fish yet
                 Database.add(name, player, length);
             }
 

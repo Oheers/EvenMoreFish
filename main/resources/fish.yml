@@ -26,6 +26,11 @@ fish:
       item:
         # You can get base-64 heads from https://minecraft-heads.com/custom-heads, copy and paste all of the base-64 value for the head you want.
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTcwMDg3ZGRlMTMwODQ2YzBlOTc1ZmU2ODQzNWQ4OTQwZjA5MzM5ZmFiYzYwMjZhOTY5OWZkYjYxMmI0ZjEyMSJ9fX0="
+      # define the biome(s) the fish can only be found in, without this marker the fish will be found anywhere
+      biomes:
+        - DESERT
+        - DESERT_HILLS
+        - DESERT_LAKES
     Sea Snail:
       item:
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTVmM2MwZjUzNjEyMzc0NjU5NjA2MzVjZWIzYWRjY2I2OGM0NWZkZTU2NjNiYzcyNTQ4Y2IzZGUyOTA0M2M4In19fQ=="
@@ -40,7 +45,7 @@ fish:
     Starfish: ""
     Eel: ""
     Electric Eel:
-      message: "&b*Zap!*
+      message: "&b*Zap!*"
       effect: "HARM:1:1"
     Squid:
       item:
@@ -120,5 +125,6 @@ fish:
     Golden Axolotl:
       item:
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Y4MGNjMTQ5MmU0NDY2OGNjY2RiNDAxNzhjM2E2Njg5ZThkZmMwZDIzNGU5ODU1M2ZiN2RlYmMyNmZjYWVhYyJ9fX0="
-
-# XXXVII
+    Flower Fish:
+      biomes:
+        - FLOWER_FOREST
