@@ -1,6 +1,8 @@
 package com.oheers.fish;
 
 import com.oheers.fish.commands.CommandCentre;
+import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.RaritiesFile;
@@ -33,6 +35,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<Integer, Set<String>> fish = new HashMap<>();
 
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
+
+    public static Competition active;
 
     public void onEnable() {
 
@@ -81,6 +85,7 @@ public class EvenMoreFish extends JavaPlugin {
     private void listeners() {
 
         getServer().getPluginManager().registerEvents(new FishEvent(), this);
+        getServer().getPluginManager().registerEvents(new JoinChecker(), this);
 
     }
 

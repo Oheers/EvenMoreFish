@@ -1,7 +1,9 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.messages.Messages;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -17,17 +19,22 @@ public class Bar {
 
     public Bar(int totalTime) {
         this.totalTime = totalTime;
+        // adding an offset so it doesn't instantly start counting down
+        this.timeLeft = totalTime+1;
 
         createBar();
         renderBars();
         begin();
     }
 
-    public void timerUpdate() {
+    public boolean timerUpdate() {
         if (checkEnd()) {
             timeLeft--;
             setTitle();
             setProgress();
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -50,18 +57,19 @@ public class Bar {
     }
 
     private void setTitle() {
-        String returning = "";
+        String returning = ChatColor.translateAlternateColorCodes('&', Messages.bar_prefix) + ChatColor.RESET;
+        int hours = timeLeft/3600;
 
         if (timeLeft >= 3600) {
-            returning += (timeLeft/3600) + " hours ";
+            returning += hours + Messages.bar_hour + " ";
         }
 
-        if (timeLeft%3600 != 0) {
-            returning += (timeLeft%3600) + " minutes and ";
+        if (timeLeft >= 60) {
+            returning += ((timeLeft%3600)/60) + Messages.bar_minute + " ";
         }
 
-        // I always want the remaining seconds to show, e.g. 1 minutes and 0 seconds
-        returning += (timeLeft%60) + " seconds";
+        // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
+        returning += (timeLeft%60) + Messages.bar_second + " left";
 
         bar.setTitle(returning);
     }
@@ -88,11 +96,19 @@ public class Bar {
 
     // Checks if there's 0 seconds left on the timer
     private boolean checkEnd() {
-        if (timeLeft == 0) {
+        if (timeLeft == 1) {
             hide();
             return false;
         } else {
             return true;
         }
+    }
+
+    public void addPlayer(Player player) {
+        bar.addPlayer(player);
+    }
+
+    public void removePlayer(Player player) {
+        bar.removePlayer(player);
     }
 }

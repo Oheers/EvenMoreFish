@@ -11,4 +11,9 @@ public class Messages {
 
     public static String noPermission = EvenMoreFish.messageFile.getConfig().getString("no-permission");
 
+    public static String bar_prefix = EvenMoreFish.messageFile.getConfig().getString("bossbar.prefix");
+    public static String bar_hour = EvenMoreFish.messageFile.getConfig().getString("bossbar.hour");
+    public static String bar_minute = EvenMoreFish.messageFile.getConfig().getString("bossbar.minute");
+    public static String bar_second = EvenMoreFish.messageFile.getConfig().getString("bossbar.second");
+
 }

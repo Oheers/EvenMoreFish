@@ -1,3 +1,12 @@
 fish-caught: "&l{player} &rhas fished a {length} {rarity} {fish}!"
 
 no-permission: "&cYou don't have permission to run that command."
+
+# Segments shown in the bossbar when competitions run
+bossbar:
+  # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
+  prefix: "&b&lFishing Contest: "
+  # The abbreviations used for different units of time
+  hour: "h"
+  minute: "m"
+  second: "s"

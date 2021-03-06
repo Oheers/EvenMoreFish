@@ -1,4 +1,5 @@
 package com.oheers.fish.competition;
+import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -19,11 +20,14 @@ public class Competition {
 
     public Competition(int duration) {
         this.duration = duration;
-        init();
     }
 
-    private void init() {
+    public void start() {
         bar = new Bar(this.duration);
+        EvenMoreFish.active = this;
     }
 
+    public Bar getBar() {
+        return bar;
+    }
 }
