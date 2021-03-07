@@ -1,6 +1,5 @@
 package com.oheers.fish;
 
-import com.oheers.fish.commands.CommandCentre;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.FishFile;
