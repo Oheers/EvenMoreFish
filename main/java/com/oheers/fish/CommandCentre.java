@@ -4,15 +4,15 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
@@ -24,7 +24,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         // Aliases are set in the plugin.yml
         if (cmd.getName().equalsIgnoreCase("evenmorefish")) {
             if (args.length == 0) {
-                // send plugin info
+                sender.sendMessage(Help.std_help);
             } else {
                 control((Player) sender, args);
             }
@@ -35,17 +35,17 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
     private void control(Player sender, String[] args) {
 
-        if (args.length >= 1) {
-            switch (args[0].toLowerCase()) {
-
-                case "admin":
-                    if (EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        Controls.adminControl(args, sender);
-                    } break;
-
-                default:
-                    sender.sendMessage("help");
-            }
+        // we've already checked that that args exist
+        switch (args[0].toLowerCase()) {
+            case "admin":
+                if (EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    Controls.adminControl(args, sender);
+                } else {
+                    sender.sendMessage(new Message().setMSG(Messages.noPermission).toString());
+                }
+                break;
+            default:
+                sender.sendMessage(Help.std_help);
         }
     }
 
@@ -122,7 +122,7 @@ class Controls {
 
         // will only proceed after this if at least args[1] exists
         if (args.length == 1) {
-            sender.sendMessage("admin command list");
+            sender.sendMessage(Help.admin_help);
             return;
         }
 
@@ -141,13 +141,13 @@ class Controls {
                 break;
 
             default:
-                sender.sendMessage("admin command list");
+                sender.sendMessage(Help.admin_help);
         }
     }
 
     protected static void competitionControl(String[] args, Player player) {
-        if (args.length == 3) {
-            player.sendMessage("competition commands");
+        if (args.length == 2) {
+            player.sendMessage(Help.comp_help);
         } else {
             {
                 if (args[2].equalsIgnoreCase("start")) {
@@ -160,7 +160,7 @@ class Controls {
     protected static void startComp(String argsDuration, Player player) {
 
         if (EvenMoreFish.active != null) {
-            player.sendMessage("competition in progress");
+            player.sendMessage(Messages.competitionRunning);
             return;
         }
 
@@ -170,7 +170,54 @@ class Controls {
             Competition comp = new Competition(duration);
             comp.start();
         } catch (NumberFormatException nfe) {
-            player.sendMessage("Not a number");
+            player.sendMessage(Messages.notInt);
         }
     }
+}
+
+class Help {
+
+    public static Map<String, String> cmdDictionary = new HashMap<>();
+    public static Map<String, String> adminDictionary = new HashMap<>();
+    public static Map<String, String> compDictionary = new HashMap<>();
+
+    public static String std_help, admin_help, comp_help;
+
+    // puts values into the command dictionaries for later use in /emf help and what not
+    public static void loadValues() {
+
+        cmdDictionary.put("help", "Shows you this page");
+        cmdDictionary.put("admin", "Admin command help page");
+
+        adminDictionary.put("emf admin competition <start/end> <time(seconds)>", "Starts or stops a competition");
+        adminDictionary.put("emf admin reload", "Reloads the plugin's config files");
+
+        compDictionary.put("emf admin competition start <time<seconds>", "Starts a competition of a specified duration");
+        compDictionary.put("emf admin competition end <time<seconds>", "Ends the current competition (if there is one)");
+
+        std_help = formString(cmdDictionary);
+        admin_help = formString(adminDictionary);
+        comp_help = formString(compDictionary);
+
+        // gc
+        cmdDictionary = null;
+        adminDictionary = null;
+        compDictionary = null;
+
+    }
+
+    public static String formString(Map<String, String> dictionary) {
+
+        StringBuilder out = new StringBuilder();
+
+        out.append(ChatColor.translateAlternateColorCodes('&', Messages.prefix_std + "----- &a&lEvenMoreFish &r-----\n"));
+
+        for (String s : dictionary.keySet()) {
+            out.append(new Message().setCMD(s).setDesc(cmdDictionary.get(s)).setMSG(Messages.emf_help).toString()).append("\n");
+        }
+
+        return out.toString();
+
+    }
+
 }

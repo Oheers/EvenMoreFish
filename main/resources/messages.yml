@@ -10,3 +10,13 @@ bossbar:
   hour: "h"
   minute: "m"
   second: "s"
+
+# The colour of the [EvenMoreFish] prefix in commands
+prefix-regular: "&a"
+# The colour of the [EvenMoreFish] prefix in admin commands
+prefix-admin: "&c"
+# The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command
+prefix-error: "&c"
+
+# The format of commands in /emf help
+help: "/{command} - {description}"

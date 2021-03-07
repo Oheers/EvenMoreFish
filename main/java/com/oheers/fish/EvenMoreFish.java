@@ -58,6 +58,8 @@ public class EvenMoreFish extends JavaPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
+        Help.loadValues();
+
         if (MainConfig.database) {
 
             // Attempts to connect to the database if enabled
