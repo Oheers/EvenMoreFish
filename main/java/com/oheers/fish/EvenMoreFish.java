@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.FishFile;
@@ -59,6 +60,8 @@ public class EvenMoreFish extends JavaPlugin {
         saveDefaultConfig();
 
         Help.loadValues();
+
+        AutoRunner.init();
 
         if (MainConfig.database) {
 

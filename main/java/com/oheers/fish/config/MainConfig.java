@@ -3,6 +3,8 @@ package com.oheers.fish.config;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import java.util.List;
+
 public class MainConfig {
 
     public static Plugin plugin = Bukkit.getPluginManager().getPlugin("EvenMoreFish");
@@ -14,5 +16,8 @@ public class MainConfig {
     public static int gravity = plugin.getConfig().getInt("weight-gravity");
 
     public static boolean database = plugin.getConfig().getBoolean("database");
+
+    public static List<String> competitionTimes = plugin.getConfig().getStringList("competitions.times");
+    public static int competitionDuration = plugin.getConfig().getInt("competitions.duration");
 
 }
