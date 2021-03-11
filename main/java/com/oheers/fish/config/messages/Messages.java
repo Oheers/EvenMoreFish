@@ -23,4 +23,6 @@ public class Messages {
 
     public static final String emf_help = prefix_std + EvenMoreFish.messageFile.getConfig().getString("help");
 
+    public static final String competitionStart = prefix_std + EvenMoreFish.messageFile.getConfig().getString("contest-start");
+
 }

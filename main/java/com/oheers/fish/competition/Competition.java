@@ -1,9 +1,8 @@
 package com.oheers.fish.competition;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.messages.Messages;
 import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -23,11 +22,18 @@ public class Competition {
     }
 
     public void start() {
+        announce();
         bar = new Bar(this.duration);
         EvenMoreFish.active = this;
     }
 
     public Bar getBar() {
         return bar;
+    }
+
+    private void announce() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionStart));
+        }
     }
 }
