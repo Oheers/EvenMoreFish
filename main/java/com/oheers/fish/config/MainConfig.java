@@ -11,6 +11,8 @@ public class MainConfig {
 
 
     public static boolean enabled = plugin.getConfig().getBoolean("enabled");
+    public static boolean competitionUnique = plugin.getConfig().getBoolean("fish-only-in-competition");
+
     public static boolean lengthAffectsY = plugin.getConfig().getBoolean("weight-pull");
 
     public static int gravity = plugin.getConfig().getInt("weight-gravity");

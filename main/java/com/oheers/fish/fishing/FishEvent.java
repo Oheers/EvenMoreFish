@@ -34,53 +34,55 @@ public class FishEvent implements Listener {
 
             if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
 
-                // Cancels the event then creates a fake catching 'animation'
-                event.setCancelled(true);
-                event.getHook().remove();
+                if (competitionOnlyCheck()) {
 
-                Player player = event.getPlayer();
+                    // Cancels the event then creates a fake catching 'animation'
+                    event.setCancelled(true);
+                    event.getHook().remove();
 
-                Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome()).init();
-                // puts all the fish information into a format that Messages.renderMessage() can print out nicely
+                    Player player = event.getPlayer();
 
-                String length = Float.toString(fish.getLength());
-                String name = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getName());
-                String rarity = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
+                    Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome()).init();
+                    // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
-                Message msg = new Message()
-                        .setMSG(Messages.fishCaught)
-                        .setPlayer(player.getName())
-                        .setColour(fish.getRarity().getColour())
-                        .setLength(length)
-                        .setFishCaught(name)
-                        .setRarity(rarity);
+                    String length = Float.toString(fish.getLength());
+                    String name = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getName());
+                    String rarity = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
 
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.sendMessage(msg.toString());
-                }
+                    Message msg = new Message()
+                            .setMSG(Messages.fishCaught)
+                            .setPlayer(player.getName())
+                            .setColour(fish.getRarity().getColour())
+                            .setLength(length)
+                            .setFishCaught(name)
+                            .setRarity(rarity);
+
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        p.sendMessage(msg.toString());
+                    }
 
                 /* Drops the item rather than giving it straight to the player as a slap-dash way of checking the inventory
                  isn't full */
-                Location location = event.getHook().getLocation();
-                Location playerLoc = player.getLocation();
+                    Location location = event.getHook().getLocation();
+                    Location playerLoc = player.getLocation();
 
-                // Drops it at the location of the hook, then spins it to face the player (hopefully)
-                Item fishItem = player.getWorld().dropItem(location, fish.give(player));
+                    // Drops it at the location of the hook, then spins it to face the player (hopefully)
+                    Item fishItem = player.getWorld().dropItem(location, fish.give(player));
 
-                // Calculates differences between the player and rod, then divides by 10 to get a slightly smoother throw
-                double xDif = (playerLoc.getX()-location.getX())/15;
-                double yDif = ((playerLoc.getY()+5.5)-(location.getY()))/15;
+                    // Calculates differences between the player and rod, then divides by 10 to get a slightly smoother throw
+                    double xDif = (playerLoc.getX()-location.getX())/15;
+                    double yDif = ((playerLoc.getY()+5.5)-(location.getY()))/15;
 
-                // If enabled, applies gravity calculations
-                if (MainConfig.lengthAffectsY) yDif = yDif / (1+ fish.getLength()/MainConfig.gravity);
-                double zDif = (playerLoc.getZ()-location.getZ())/15;
+                    // If enabled, applies gravity calculations
+                    if (MainConfig.lengthAffectsY) yDif = yDif / (1+ fish.getLength()/MainConfig.gravity);
+                    double zDif = (playerLoc.getZ()-location.getZ())/15;
 
-                fishItem.setVelocity(new Vector(xDif, yDif, zDif));
-                fishItem.setPickupDelay(0);
+                    fishItem.setVelocity(new Vector(xDif, yDif, zDif));
+                    fishItem.setPickupDelay(0);
 
-                if (MainConfig.database) databaseStuff(player, fish.getName(), fish.getLength());
+                    if (MainConfig.database) databaseStuff(player, fish.getName(), fish.getLength());
+                }
             }
-
         }
     }
 
@@ -151,6 +153,15 @@ public class FishEvent implements Listener {
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
+    private boolean competitionOnlyCheck() {
+        if (MainConfig.competitionUnique) {
+            return EvenMoreFish.active != null;
+        } else {
+            return true;
         }
     }
 }

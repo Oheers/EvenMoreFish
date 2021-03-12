@@ -1,6 +1,9 @@
 # Is the plugin enabled?
 enabled: true
 
+# Should EMF fish only be given during a competition?
+fish-only-in-competition: false
+
 # Should a database store data about fish such as how many have been caught and the first to catch it.
 # Setting to false will disable it.
 database: true
