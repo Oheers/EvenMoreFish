@@ -15,6 +15,7 @@ public class Messages {
     public static final String noPermission = prefix_err + EvenMoreFish.messageFile.getConfig().getString("no-permission");
     public static final String notInt = prefix_err + "Please provide an integer value.";
     public static final String competitionRunning = prefix_err + "There's a competition running.";
+    public static final String competitionNotRunning = prefix_err + "There's no competition running.";
 
     public static final String bar_prefix = EvenMoreFish.messageFile.getConfig().getString("bossbar.prefix");
     public static final String bar_hour = EvenMoreFish.messageFile.getConfig().getString("bossbar.hour");

@@ -153,6 +153,14 @@ class Controls {
                 if (args[2].equalsIgnoreCase("start")) {
                     startComp(args[3], player);
                 }
+
+                else if (args[2].equalsIgnoreCase("end")) {
+                    if (EvenMoreFish.active != null) {
+                        EvenMoreFish.active.end();
+                    } else {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionNotRunning));
+                    }
+                }
             }
         }
     }
@@ -160,17 +168,22 @@ class Controls {
     protected static void startComp(String argsDuration, Player player) {
 
         if (EvenMoreFish.active != null) {
-            player.sendMessage(Messages.competitionRunning);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionRunning));
             return;
         }
 
         try {
             // converts argsDuration to an integer (throwing exceptions) and starts a competition with that
             int duration = Integer.parseInt(argsDuration);
-            Competition comp = new Competition(duration);
-            comp.start();
+            // I've just discovered /emf admin competition start -1 causes some funky stuff - so this prevents that.
+            if (duration > 0) {
+                Competition comp = new Competition(duration);
+                comp.start();
+            } else {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.notInt));
+            }
         } catch (NumberFormatException nfe) {
-            player.sendMessage(Messages.notInt);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.notInt));
         }
     }
 }

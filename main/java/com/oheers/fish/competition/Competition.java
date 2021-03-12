@@ -27,6 +27,11 @@ public class Competition {
         EvenMoreFish.active = this;
     }
 
+    public void end() {
+        bar.removeAllPlayers();
+        EvenMoreFish.active = null;
+    }
+
     public Bar getBar() {
         return bar;
     }

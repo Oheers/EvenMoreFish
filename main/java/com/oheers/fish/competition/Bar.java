@@ -111,4 +111,8 @@ public class Bar {
     public void removePlayer(Player player) {
         bar.removePlayer(player);
     }
+
+    public void removeAllPlayers() {
+        bar.removeAll();
+    }
 }
