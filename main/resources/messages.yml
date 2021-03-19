@@ -2,8 +2,9 @@ fish-caught: "&l{player} &rhas fished a {length} {rarity} {fish}!"
 
 no-permission: "&cYou don't have permission to run that command."
 
-# The message to be sent when a competition starts
-contest-start: "The fishing contest has started."
+# The message to be sent when a competition starts and ends
+contest-start: "&rThe fishing contest has started."
+contest-end: "&rThe fishing contest has ended."
 # Segments shown in the bossbar when competitions run
 bossbar:
   # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
@@ -22,3 +23,12 @@ prefix-error: "&c"
 
 # The format of commands in /emf help
 help: "/{command} - {description}"
+
+# The format of the leaderboard after a competition is over
+leaderboard: "&r&l{position} &r| {player} - {length} {rarity} {fish}"
+# The number of positions shown in the leaderboard - can't be less than 1.
+leaderboard-count: 5
+# Sent to players when nobody got a record during a competition
+no-winners: "&rThere were no fishing records."
+# When an individual player didn't get a record
+no-record: "&rYou didn't catch any fish."

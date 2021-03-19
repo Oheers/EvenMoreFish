@@ -9,7 +9,7 @@ public class Message {
     // msg is the string got from the messages.yml file
     // all the others are values that don't need to be set.
 
-    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription;
+    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position;
 
     public Message() {}
 
@@ -52,6 +52,11 @@ public class Message {
         return this;
     }
 
+    public Message setPosition(String position) {
+        this.position = position;
+        return this;
+    }
+
     public String toString() {
 
         if (player != null) {
@@ -78,6 +83,10 @@ public class Message {
 
         if (cmdDescription != null) {
             msg = msg.replace("{description}", cmdDescription);
+        }
+
+        if (position != null) {
+            msg = msg.replace("{position}", position);
         }
 
         return ChatColor.translateAlternateColorCodes('&', msg);

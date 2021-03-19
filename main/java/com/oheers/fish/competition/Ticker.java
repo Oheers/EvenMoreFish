@@ -16,6 +16,7 @@ public class Ticker extends BukkitRunnable {
     public void run() {
         if (!bar.timerUpdate()) {
             this.cancel();
+            EvenMoreFish.active.end();
             EvenMoreFish.active = null;
         }
     }

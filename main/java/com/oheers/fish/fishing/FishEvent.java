@@ -63,6 +63,9 @@ public class FishEvent implements Listener {
 
                 /* Drops the item rather than giving it straight to the player as a slap-dash way of checking the inventory
                  isn't full */
+
+                    competitionCheck(fish, event.getPlayer());
+
                     Location location = event.getHook().getLocation();
                     Location playerLoc = player.getLocation();
 
@@ -162,6 +165,12 @@ public class FishEvent implements Listener {
             return EvenMoreFish.active != null;
         } else {
             return true;
+        }
+    }
+
+    private void competitionCheck(Fish fish, Player fisherman) {
+        if (EvenMoreFish.active != null) {
+            EvenMoreFish.active.runLeaderboardScan(fisherman, fish);
         }
     }
 }

@@ -23,7 +23,13 @@ public class Messages {
     public static final String bar_second = EvenMoreFish.messageFile.getConfig().getString("bossbar.second");
 
     public static final String emf_help = prefix_std + EvenMoreFish.messageFile.getConfig().getString("help");
+    public static final String leaderboard = prefix_std + EvenMoreFish.messageFile.getConfig().getString("leaderboard");
+
+    public static final int leaderboard_count = EvenMoreFish.messageFile.getConfig().getInt("leaderboard-count");
 
     public static final String competitionStart = prefix_std + EvenMoreFish.messageFile.getConfig().getString("contest-start");
+    public static final String competitionEnd = prefix_std + EvenMoreFish.messageFile.getConfig().getString("contest-end");
+    public static final String noWinners = prefix_std + EvenMoreFish.messageFile.getConfig().getString("no-winners");
+    public static final String noFish = prefix_std + EvenMoreFish.messageFile.getConfig().getString("no-record");
 
 }
