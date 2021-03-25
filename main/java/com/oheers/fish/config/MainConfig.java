@@ -3,6 +3,7 @@ package com.oheers.fish.config;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainConfig {

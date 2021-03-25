@@ -15,7 +15,6 @@ public class AutoRunner {
             public void run(){
                 // creates a key similar to the time key given in config.yml
                 timeKey = String.format("%02d", LocalTime.now().getHour()) + ":" + String.format("%02d", LocalTime.now().getMinute());
-                System.out.println("timekey: " + timeKey);
                 // if that time key fits into the metaphoric lock that is the arrayList "competitionTimes"
                 if (MainConfig.competitionTimes.contains(timeKey)) {
                     // if there isn't a competition going on

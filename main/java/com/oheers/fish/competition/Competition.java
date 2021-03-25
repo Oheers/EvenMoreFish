@@ -1,5 +1,6 @@
 package com.oheers.fish.competition;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.fishing.items.Fish;
@@ -46,20 +47,17 @@ public class Competition {
     }
 
     public void runLeaderboardScan(Player fisher, Fish fish) {
+        // stuff
         for (Player holder : leaderboard.keySet()) {
             if (holder == fisher) {
-                System.out.println("1");
                 if (fish.getLength() > leaderboard.get(holder).getLength()) {
-                    System.out.println("2");
                     leaderboard.remove(holder);
                     leaderboard.put(holder, fish);
                     leaderboard = sortByValue(leaderboard);
                     return;
                 }
-                System.out.println("3");
                 return;
             }
-            System.out.println("4");
         }
         leaderboard.put(fisher, fish);
         leaderboard = sortByValue(leaderboard);
@@ -73,7 +71,7 @@ public class Competition {
 
         // Sort list with Collections.sort(), provide a custom Comparator
         // Try switch the o1 o2 position for a different order
-        list.sort((o1, o2) -> (o2.getValue().getLength()).compareTo(o1.getValue().getLength()));
+        list.sort((o2, o1) -> (o1.getValue().getLength()).compareTo(o2.getValue().getLength()));
 
         // Loop the sorted list and put it into a new insertion order Map LinkedHashMap
         HashMap<Player, Fish> sortedMap = new LinkedHashMap<>();
@@ -89,6 +87,10 @@ public class Competition {
         int position = 1;
 
         for (Player player : leaderboard.keySet()) {
+
+            giveRewards(position, player);
+
+            // creates a limit for the number of players to be shown
             if (position > Messages.leaderboard_count) {
                 break;
             }
@@ -107,18 +109,29 @@ public class Competition {
             message.append("\n");
             position++;
         }
-        System.out.println("message: |" + message.toString() + "|");
         if (message.toString().equals("")) {
+            // nobody fished a fish
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionEnd));
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.noWinners));
-                if (!leaderboard.containsKey(player)) player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.noFish));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.noFish));
             }
         } else {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionEnd));
                 player.sendMessage(message.toString());
+                // checks if the specific player didn't fish a fish
                 if (!leaderboard.containsKey(player)) player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.noFish));
+            }
+        }
+    }
+
+    private void giveRewards(Integer position, Player player) {
+        // is there a reward set for the position player came?#
+        if (EvenMoreFish.rewards.containsKey(position)) {
+            // acts on each reward set for the player's position
+            for (Reward r : EvenMoreFish.rewards.get(position)) {
+                r.run(player);
             }
         }
     }
