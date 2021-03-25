@@ -44,6 +44,13 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     sender.sendMessage(new Message().setMSG(Messages.noPermission).toString());
                 }
                 break;
+            case "top":
+                if (EvenMoreFish.active == null) {
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionNotRunning));
+                } else {
+                    sender.sendMessage(EvenMoreFish.active.getLeaderboard(false));
+                }
+                break;
             default:
                 sender.sendMessage(Help.std_help);
         }
@@ -63,7 +70,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         );
 
         emfTabs = Arrays.asList(
-                "test",
+                "top",
                 "command1",
                 "command2"
         );

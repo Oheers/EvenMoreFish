@@ -13,7 +13,7 @@ import java.util.*;
 public class Competition {
 
     // fisher, fish length
-    HashMap<Player, Fish> leaderboard = new HashMap<>();
+    static HashMap<Player, Fish> leaderboard;
 
     Bar bar;
 
@@ -21,6 +21,7 @@ public class Competition {
     int duration;
 
     public Competition(int duration) {
+        leaderboard = new HashMap<>();
         this.duration = duration;
     }
 
@@ -83,12 +84,16 @@ public class Competition {
     }
 
     private void announceWinners() {
+        getLeaderboard(true);
+    }
+
+    public static String getLeaderboard(boolean endingCompetition) {
         StringBuilder message = new StringBuilder();
         int position = 1;
 
         for (Player player : leaderboard.keySet()) {
 
-            giveRewards(position, player);
+            if (endingCompetition) giveRewards(position, player);
 
             // creates a limit for the number of players to be shown
             if (position > Messages.leaderboard_count) {
@@ -109,24 +114,33 @@ public class Competition {
             message.append("\n");
             position++;
         }
+
         if (message.toString().equals("")) {
+            // returns that there's no scores yet, if the leaderboard is empty and it's not the end of the competition
+            if (!endingCompetition) return ChatColor.translateAlternateColorCodes('&', Messages.noWinners);
             // nobody fished a fish
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionEnd));
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.noWinners));
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.noFish));
             }
+
+            return null;
         } else {
+            if (!endingCompetition) return message.toString();
+
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionEnd));
                 player.sendMessage(message.toString());
                 // checks if the specific player didn't fish a fish
                 if (!leaderboard.containsKey(player)) player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.noFish));
             }
+
+            return null;
         }
     }
 
-    private void giveRewards(Integer position, Player player) {
+    private static void giveRewards(Integer position, Player player) {
         // is there a reward set for the position player came?#
         if (EvenMoreFish.rewards.containsKey(position)) {
             // acts on each reward set for the player's position
