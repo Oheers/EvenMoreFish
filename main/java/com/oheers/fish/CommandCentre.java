@@ -91,19 +91,25 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                             TEMP_townTabCompletes.add("admin");
                         }
                         return TEMP_townTabCompletes;
+                    } else {
+                        return l(args, emfTabs);
                     }
                 case 2:
                     // checks player has admin perms and has actually used "/emf admin" prior to the 2nd arg
                     if (args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
                         return l(args, adminTabs);
+                    } else {
+                        return empty;
                     }
                 case 3:
                     if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
                         return l(args, compTabs);
+                    } else {
+                        return empty;
                     }
-                default:
-                    return empty;
             }
+
+            return empty;
         } else {
             // it's a console sending the command
             return empty;
