@@ -8,12 +8,6 @@ fish-only-in-competition: false
 # Setting to false will disable it.
 database: true
 
-# Should a heavier fish have more gravity acting on it when it's pulled from the water?
-# It's assumed that a longer fish will be heavier.
-weight-pull: true
-
-# How strong should the gravity be? The lower the number, the stronger gravity acts on the fish.
-weight-gravity: 750
 
 competitions:
 

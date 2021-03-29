@@ -10,12 +10,17 @@ import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
@@ -35,10 +40,6 @@ public class FishEvent implements Listener {
             if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
 
                 if (competitionOnlyCheck()) {
-
-                    // Cancels the event then creates a fake catching 'animation'
-                    event.setCancelled(true);
-                    event.getHook().remove();
 
                     Player player = event.getPlayer();
 
@@ -66,22 +67,9 @@ public class FishEvent implements Listener {
 
                     competitionCheck(fish, event.getPlayer());
 
-                    Location location = event.getHook().getLocation();
-                    Location playerLoc = player.getLocation();
-
-                    // Drops it at the location of the hook, then spins it to face the player (hopefully)
-                    Item fishItem = player.getWorld().dropItem(location, fish.give(player));
-
-                    // Calculates differences between the player and rod, then divides by 10 to get a slightly smoother throw
-                    double xDif = (playerLoc.getX()-location.getX())/15;
-                    double yDif = ((playerLoc.getY()+5.5)-(location.getY()))/15;
-
-                    // If enabled, applies gravity calculations
-                    if (MainConfig.lengthAffectsY) yDif = yDif / (1+ fish.getLength()/MainConfig.gravity);
-                    double zDif = (playerLoc.getZ()-location.getZ())/15;
-
-                    fishItem.setVelocity(new Vector(xDif, yDif, zDif));
-                    fishItem.setPickupDelay(0);
+                    // a much less smoothbrain way of dropping the fish
+                    Item nonCustom = (Item) event.getCaught();
+                    nonCustom.setItemStack(fish.give(event.getPlayer()));
 
                     if (MainConfig.database) databaseStuff(player, fish.getName(), fish.getLength());
                 }
