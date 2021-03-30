@@ -212,8 +212,9 @@ class Help {
     // puts values into the command dictionaries for later use in /emf help and what not
     public static void loadValues() {
 
-        cmdDictionary.put("help", "Shows you this page");
-        cmdDictionary.put("admin", "Admin command help page");
+        cmdDictionary.put("emf help", "Shows you this page");
+        cmdDictionary.put("emf top", "Shows the leaderboard for a competition.");
+        cmdDictionary.put("emf admin", "Admin command help page");
 
         adminDictionary.put("emf admin competition <start/end> <time(seconds)>", "Starts or stops a competition");
         adminDictionary.put("emf admin reload", "Reloads the plugin's config files");
@@ -239,7 +240,7 @@ class Help {
         out.append(ChatColor.translateAlternateColorCodes('&', Messages.prefix_std + "----- &a&lEvenMoreFish &r-----\n"));
 
         for (String s : dictionary.keySet()) {
-            out.append(new Message().setCMD(s).setDesc(cmdDictionary.get(s)).setMSG(Messages.emf_help).toString()).append("\n");
+            out.append(new Message().setCMD(s).setDesc(dictionary.get(s)).setMSG(Messages.emf_help).toString()).append("\n");
         }
 
         return out.toString();
