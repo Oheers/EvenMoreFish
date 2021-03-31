@@ -48,6 +48,9 @@ public class Fish {
         fishMeta.setLore(generateLore());
         fish.setItemMeta(fishMeta);
 
+        WorthNBT.setNBT(fish, this.value);
+        WorthNBT.getValue(fish);
+
         return fish;
     }
 
