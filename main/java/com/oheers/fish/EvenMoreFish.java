@@ -14,6 +14,8 @@ import com.oheers.fish.fishing.FishEvent;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.selling.GUICache;
+import com.oheers.fish.selling.SellGUI;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -43,6 +45,8 @@ public class EvenMoreFish extends JavaPlugin {
     // ^ <Position in competition, list of rewards to be given>
 
     public static Competition active;
+
+    public static GUICache gui;
 
     public void onEnable() {
 
@@ -76,6 +80,8 @@ public class EvenMoreFish extends JavaPlugin {
         Help.loadValues();
 
         AutoRunner.init();
+
+        gui = new GUICache();
 
         if (MainConfig.database) {
 
@@ -129,5 +135,4 @@ public class EvenMoreFish extends JavaPlugin {
         econ = rsp.getProvider();
         return econ != null;
     }
-
 }
