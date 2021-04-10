@@ -15,6 +15,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.GUICache;
+import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -110,6 +111,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new FishEvent(), this);
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
+        getServer().getPluginManager().registerEvents(new InteractHandler(), this);
 
     }
 
