@@ -1,5 +1,6 @@
 package com.oheers.fish.selling;
 
+import com.oheers.fish.EvenMoreFish;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -7,18 +8,8 @@ import java.util.ArrayList;
 
 public class GUICache {
 
-    public static ArrayList<SellGUI> guis;
-
-    public GUICache() {
-        guis = new ArrayList<>();
-    }
-
-    public static ArrayList<SellGUI> getGuis() {
-        return guis;
-    }
-
     public static boolean isOpenSellGUI(Player player) {
-        for (SellGUI gui : guis) {
+        for (SellGUI gui : EvenMoreFish.guis) {
             if (gui.getPlayer().equals(player)) {
                 return true;
             }
@@ -28,7 +19,7 @@ public class GUICache {
     }
 
     public static SellGUI getSellGUI(Player player) {
-        for (SellGUI gui : guis) {
+        for (SellGUI gui : EvenMoreFish.guis) {
             if (gui.getPlayer().equals(player)) {
                 return gui;
             }
@@ -38,11 +29,18 @@ public class GUICache {
     }
 
     public static void attemptPop(Player player) {
-        guis.removeIf(gui -> gui.getPlayer().equals(player));
+        System.out.println("!: " + EvenMoreFish.guis.toString());
+        for (SellGUI gui : EvenMoreFish.guis) {
+            if (gui.getPlayer().equals(player)) {
+                EvenMoreFish.guis.remove(gui);
+                gui.close();
+                return;
+            }
+        }
     }
 
     public static boolean isSellGUI(Inventory inv) {
-        for (SellGUI gui : guis) {
+        for (SellGUI gui : EvenMoreFish.guis) {
             if (gui.getMenu().equals(inv)) {
                 return true;
             }

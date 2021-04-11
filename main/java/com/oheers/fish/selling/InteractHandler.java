@@ -17,10 +17,11 @@ public class InteractHandler implements Listener {
     public void interact(InventoryClickEvent event) {
         if (GUICache.isOpenSellGUI((Player) event.getWhoClicked())) {
             SellGUI gui = GUICache.getSellGUI((Player) event.getWhoClicked());
+            gui.setMenu(event.getView().getTopInventory());
             ItemStack clickedItem = event.getClickedInventory().getItem(event.getSlot());
             if (clickedItem != null) {
                 if (clickedItem.isSimilar(gui.getSellIcon())) {
-                    gui.createConfirmIcon(event.getView().getTopInventory());
+                    gui.createConfirmIcon();
                     gui.setConfirmIcon();
 
                     gui.setModified(false);
@@ -28,7 +29,7 @@ public class InteractHandler implements Listener {
                 } else if (clickedItem.isSimilar(gui.getConfirmIcon())) {
                     event.setCancelled(true);
                     if (gui.getModified()) {
-                        gui.createConfirmIcon(event.getView().getTopInventory());
+                        gui.createConfirmIcon();
                         gui.setConfirmIcon();
 
                         gui.setModified(false);
@@ -39,17 +40,18 @@ public class InteractHandler implements Listener {
                 } else if (clickedItem.isSimilar(gui.getFiller())) {
                     event.setCancelled(true);
                 } else {
-                    gui.setSellItem(event.getView().getTopInventory());
+                    gui.setSellItem();
                     gui.setModified(true);
                 }
             } else {
-                gui.setSellItem(event.getInventory());
+                gui.setSellItem();
             }
         }
     }
 
     @EventHandler
     public void close(InventoryCloseEvent event) {
+        System.out.println("prepop: " + EvenMoreFish.guis.toString());
         GUICache.attemptPop((Player) event.getPlayer());
     }
 }

@@ -24,10 +24,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class EvenMoreFish extends JavaPlugin {
@@ -47,7 +44,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Competition active;
 
-    public static GUICache gui;
+    public static ArrayList<SellGUI> guis;
 
     public void onEnable() {
 
@@ -82,7 +79,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         AutoRunner.init();
 
-        gui = new GUICache();
+        guis = new ArrayList<>();
 
         if (MainConfig.database) {
 
@@ -103,6 +100,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public void onDisable() {
 
+        terminateSellGUIS();
         Bukkit.getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
 
     }
@@ -136,5 +134,16 @@ public class EvenMoreFish extends JavaPlugin {
         }
         econ = rsp.getProvider();
         return econ != null;
+    }
+
+    private void terminateSellGUIS() {
+        for (SellGUI gui : guis) {
+            GUICache.attemptPop(gui.getPlayer());
+        }
+    }
+
+    public static void addGUI(SellGUI g) {
+        System.out.println("adding: " + g.toString());
+        guis.add(g);
     }
 }

@@ -28,7 +28,7 @@ public class SellGUI {
         this.modified = false;
         makeMenu();
         addFiller();
-        setSellItem(null);
+        setSellItem();
         this.player.openInventory(menu);
     }
 
@@ -46,7 +46,7 @@ public class SellGUI {
         fillMeta.setDisplayName(ChatColor.RESET + "");
         fill.setItemMeta(fillMeta);
 
-        this.filler = fill;
+        this.filler = WorthNBT.attributeDefault(fill);
 
         menu.setItem(27, fill);
         menu.setItem(28, fill);
@@ -59,17 +59,18 @@ public class SellGUI {
         menu.setItem(35, fill);
     }
 
-    public void setSellItem(Inventory inventory) {
+    public void setSellItem() {
         System.out.println("SETTING SELL ITEM!");
-        this.sellIcon = new ItemStack(Material.GOLD_INGOT);
-        ItemMeta sellMeta = sellIcon.getItemMeta();
+        ItemStack sIcon = new ItemStack(Material.GOLD_INGOT);
+        ItemMeta sellMeta = sIcon.getItemMeta();
         sellMeta.setDisplayName("" + ChatColor.GOLD + ChatColor.BOLD + "SELL");
         sellMeta.setLore(Arrays.asList(
-                ChatColor.YELLOW + "value: " + ChatColor.UNDERLINE + getTotalWorth(inventory),
+                ChatColor.YELLOW + "value: " + ChatColor.UNDERLINE + getTotalWorth(),
                 ChatColor.GRAY + "LEFT CLICK to sell the fish.",
                 ChatColor.GRAY + "RIGHT CLICK to cancel."
         ));
-        this.sellIcon.setItemMeta(sellMeta);
+        sIcon.setItemMeta(sellMeta);
+        this.sellIcon = WorthNBT.attributeDefault(sIcon);
         menu.setItem(31, this.sellIcon);
     }
 
@@ -81,17 +82,17 @@ public class SellGUI {
         return this.confirmIcon;
     }
 
-    public void createConfirmIcon(Inventory inv) {
+    public void createConfirmIcon() {
         ItemStack confirm = new ItemStack(Material.GOLD_BLOCK);
         ItemMeta cMeta = confirm.getItemMeta();
         cMeta.setDisplayName("" + ChatColor.GOLD + ChatColor.BOLD + "CONFIRM");
         cMeta.setLore(Arrays.asList(
-                ChatColor.YELLOW + "value: " + ChatColor.UNDERLINE + getTotalWorth(inv),
+                ChatColor.YELLOW + "value: " + ChatColor.UNDERLINE + getTotalWorth(),
                 ChatColor.GRAY + "LEFT CLICK to sell the fish.",
                 ChatColor.GRAY + "RIGHT CLICK to cancel."
         ));
         confirm.setItemMeta(cMeta);
-        this.confirmIcon = confirm;
+        this.confirmIcon = WorthNBT.attributeDefault(confirm);
     }
 
     public void setConfirmIcon() {
@@ -103,12 +104,12 @@ public class SellGUI {
         return menu;
     }
 
-    public String getTotalWorth(Inventory inventory) {
-        if (inventory == null) return Double.toString(0.0d);
+    public String getTotalWorth() {
+        if (this.menu == null) return Double.toString(0.0d);
 
         double val = 0.0d;
 
-        for (ItemStack is : inventory.getContents()) {
+        for (ItemStack is : this.menu.getContents()) {
             if (WorthNBT.getValue(is) != -1.0) {
                 val += WorthNBT.getValue(is);
             }
@@ -119,7 +120,7 @@ public class SellGUI {
 
     public void close() {
         player.closeInventory();
-        GUICache.attemptPop(this.player);
+        rescueAllItems();
     }
 
     public ItemStack getFiller() {
@@ -136,5 +137,15 @@ public class SellGUI {
 
     public boolean getModified() {
         return this.modified;
+    }
+
+    public void rescueAllItems() {
+        for (ItemStack i : this.menu) {
+            if (i != null) {
+                if (!WorthNBT.isDefault(i)) {
+                    this.player.getLocation().getWorld().dropItem(this.player.getLocation(), i);
+                }
+            }
+        }
     }
 }

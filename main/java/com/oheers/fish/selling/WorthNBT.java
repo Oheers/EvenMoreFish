@@ -46,4 +46,23 @@ public class WorthNBT {
             return 0.0;
         }
     }
+
+    public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
+        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "default-gui-item");
+        ItemMeta itemMeta = defaultGUIItem.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(key, PersistentDataType.BYTE, Byte.MAX_VALUE);
+        // sets the nbt and returns it
+        defaultGUIItem.setItemMeta(itemMeta);
+        return defaultGUIItem;
+    }
+
+    public static boolean isDefault(ItemStack is) {
+        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "default-gui-item");
+        if (is.hasItemMeta()) {
+            PersistentDataContainer container = is.getItemMeta().getPersistentDataContainer();
+            return container.has(key, PersistentDataType.BYTE);
+        }
+
+        return false;
+    }
 }
