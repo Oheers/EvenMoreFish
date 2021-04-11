@@ -27,6 +27,20 @@ public class GUICache {
         return false;
     }
 
+    public static SellGUI getSellGUI(Player player) {
+        for (SellGUI gui : guis) {
+            if (gui.getPlayer().equals(player)) {
+                return gui;
+            }
+        }
+
+        return null;
+    }
+
+    public static void attemptPop(Player player) {
+        guis.removeIf(gui -> gui.getPlayer().equals(player));
+    }
+
     public static boolean isSellGUI(Inventory inv) {
         for (SellGUI gui : guis) {
             if (gui.getMenu().equals(inv)) {
