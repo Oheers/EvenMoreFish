@@ -2,12 +2,16 @@ rarities:
   Common:
     weight: 77
     colour: '&7'
+    worth-multiplier: 1
   Uncommon:
     weight: 15
     colour: '&b'
+    worth-multiplier: 3
   Epic:
     weight: 6
     colour: '&d'
+    worth-multiplier: 5
   Legendary:
     weight: 2
     colour: '&6'
+    worth-multiplier: 8

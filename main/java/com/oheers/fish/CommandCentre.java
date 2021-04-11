@@ -3,6 +3,8 @@ package com.oheers.fish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.selling.GUICache;
+import com.oheers.fish.selling.SellGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -10,7 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -48,8 +50,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (EvenMoreFish.active == null) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionNotRunning));
                 } else {
-                    sender.sendMessage(EvenMoreFish.active.getLeaderboard(false));
+                    sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
                 }
+                break;
+            case "shop":
+                SellGUI gui = new SellGUI(sender);
+                EvenMoreFish.guis.add(gui);
                 break;
             default:
                 sender.sendMessage(Help.std_help);
@@ -77,7 +83,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (sender instanceof Player) {
 
             switch (args.length) {

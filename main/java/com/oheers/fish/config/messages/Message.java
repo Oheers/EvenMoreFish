@@ -2,14 +2,17 @@ package com.oheers.fish.config.messages;
 
 import org.bukkit.ChatColor;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class Message {
 
     // msg is the string got from the messages.yml file
     // all the others are values that don't need to be set.
 
-    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position;
+    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice;
 
     public Message() {}
 
@@ -57,6 +60,16 @@ public class Message {
         return this;
     }
 
+    public Message setAmount(String amount) {
+        this.amount = amount;
+        return this;
+    }
+
+    public Message setSellPrice(String sellPrice) {
+        this.sellprice = sellPrice;
+        return this;
+    }
+
     public String toString() {
 
         if (player != null) {
@@ -87,6 +100,14 @@ public class Message {
 
         if (position != null) {
             msg = msg.replace("{position}", position);
+        }
+
+        if (amount != null) {
+            msg = msg.replace("{amount}", amount);
+        }
+
+        if (sellprice != null) {
+            msg = msg.replace("{sell-price}", NumberFormat.getInstance(Locale.US).format(new BigDecimal(sellprice)));
         }
 
         return ChatColor.translateAlternateColorCodes('&', msg);

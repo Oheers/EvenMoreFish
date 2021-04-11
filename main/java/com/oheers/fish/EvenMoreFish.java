@@ -14,6 +14,9 @@ import com.oheers.fish.fishing.FishEvent;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.selling.GUICache;
+import com.oheers.fish.selling.InteractHandler;
+import com.oheers.fish.selling.SellGUI;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -21,10 +24,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class EvenMoreFish extends JavaPlugin {
@@ -43,6 +43,8 @@ public class EvenMoreFish extends JavaPlugin {
     // ^ <Position in competition, list of rewards to be given>
 
     public static Competition active;
+
+    public static ArrayList<SellGUI> guis;
 
     public void onEnable() {
 
@@ -77,6 +79,8 @@ public class EvenMoreFish extends JavaPlugin {
 
         AutoRunner.init();
 
+        guis = new ArrayList<>();
+
         if (MainConfig.database) {
 
             // Attempts to connect to the database if enabled
@@ -96,6 +100,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public void onDisable() {
 
+        terminateSellGUIS();
         Bukkit.getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
 
     }
@@ -104,6 +109,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new FishEvent(), this);
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
+        getServer().getPluginManager().registerEvents(new InteractHandler(), this);
 
     }
 
@@ -130,4 +136,10 @@ public class EvenMoreFish extends JavaPlugin {
         return econ != null;
     }
 
+    // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
+    private void terminateSellGUIS() {
+        for (SellGUI gui : guis) {
+            GUICache.attemptPop(gui.getPlayer());
+        }
+    }
 }

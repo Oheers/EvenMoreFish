@@ -1,6 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.selling.WorthNBT;
 import dev.dbassett.skullcreator.SkullCreator;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -23,6 +24,7 @@ public class Fish {
     ItemStack type;
     Player fisherman;
     Float length;
+    Double value;
 
     List<Biome> biomes;
 
@@ -38,14 +40,15 @@ public class Fish {
 
     public ItemStack give(Player fisherman) {
 
-        this.fisherman = fisherman;
-
         ItemStack fish = this.type;
         ItemMeta fishMeta = fish.getItemMeta();
 
         fishMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rarity.getColour() + name));
         fishMeta.setLore(generateLore());
         fish.setItemMeta(fishMeta);
+
+        WorthNBT.setNBT(fish, this.value);
+        WorthNBT.getValue(fish);
 
         return fish;
     }
@@ -67,10 +70,28 @@ public class Fish {
         }
     }
 
+    private double getValue(Float length) {
+        double value;
+        value = EvenMoreFish.fishFile.getConfig().getInt("fish." + this.rarity.getValue() + "." + this.name + ".worth-multiplier");
+
+        // Is there a value set for the specific fish?
+        if (value == 0.0) {
+            value = EvenMoreFish.raritiesFile.getConfig().getInt("rarities." + this.rarity.getValue() + ".worth-multiplier");
+        }
+
+        // Whatever it finds the value to be, gets multiplied by the fish length and set
+        value *= length;
+        // Sorts out funky decimals during the above multiplication.
+        value = Math.round(value*10.0)/10.0;
+
+        return value;
+    }
+
     private void generateSize() {
         // Random logic that returns a float to 1dp
         int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
         this.length = (float) len/10;
+        this.value = getValue(length);
     }
 
     public String getName() {
@@ -81,8 +102,8 @@ public class Fish {
         return rarity;
     }
 
-    public Player getFisherman() {
-        return fisherman;
+    public void setFisherman(Player fisherman) {
+        this.fisherman = fisherman;
     }
 
     public Float getLength() {
@@ -124,6 +145,9 @@ public class Fish {
     // checks if the config contains a message to be displayed when the fish is fished
     private void checkMessage() {
 
+        System.out.println("name:" + this.name);
+        System.out.println("rarity:" + this.rarity.getValue());
+        System.out.println("fisherman:" + this.fisherman);
         String msg = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
 
         if (msg != null) this.fisherman.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));

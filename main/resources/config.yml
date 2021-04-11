@@ -5,9 +5,8 @@ enabled: true
 fish-only-in-competition: false
 
 # Should a database store data about fish such as how many have been caught and the first to catch it.
-# Setting to false will disable it.
+# Setting to false will disable it. In a future update this will have a deeper meaning and purpose.
 database: true
-
 
 competitions:
 

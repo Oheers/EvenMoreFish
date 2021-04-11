@@ -43,7 +43,9 @@ public class FishEvent implements Listener {
 
                     Player player = event.getPlayer();
 
-                    Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome()).init();
+                    Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome());
+                    fish.setFisherman(player);
+                    fish.init();
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
                     String length = Float.toString(fish.getLength());
