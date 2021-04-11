@@ -4,8 +4,10 @@ import com.oheers.fish.config.messages.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -41,11 +43,13 @@ public class SellGUI {
     }
 
     public void addFiller() {
+        // the gray glass panes at the bottom
         ItemStack fill = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta fillMeta = fill.getItemMeta();
         fillMeta.setDisplayName(ChatColor.RESET + "");
         fill.setItemMeta(fillMeta);
 
+        // sets it as a default menu item that won't be dropped in a .close() request
         this.filler = WorthNBT.attributeDefault(fill);
 
         menu.setItem(27, fill);
@@ -60,7 +64,6 @@ public class SellGUI {
     }
 
     public void setSellItem() {
-        System.out.println("SETTING SELL ITEM!");
         ItemStack sIcon = new ItemStack(Material.GOLD_INGOT);
         ItemMeta sellMeta = sIcon.getItemMeta();
         sellMeta.setDisplayName("" + ChatColor.GOLD + ChatColor.BOLD + "SELL");
@@ -69,7 +72,10 @@ public class SellGUI {
                 ChatColor.GRAY + "LEFT CLICK to sell the fish.",
                 ChatColor.GRAY + "RIGHT CLICK to cancel."
         ));
+
         sIcon.setItemMeta(sellMeta);
+        glowify(sIcon);
+
         this.sellIcon = WorthNBT.attributeDefault(sIcon);
         menu.setItem(31, this.sellIcon);
     }
@@ -91,7 +97,10 @@ public class SellGUI {
                 ChatColor.GRAY + "LEFT CLICK to sell the fish.",
                 ChatColor.GRAY + "RIGHT CLICK to cancel."
         ));
+
         confirm.setItemMeta(cMeta);
+        glowify(confirm);
+
         this.confirmIcon = WorthNBT.attributeDefault(confirm);
     }
 
@@ -100,16 +109,13 @@ public class SellGUI {
         this.menu.setItem(31, this.confirmIcon);
     }
 
-    public Inventory getMenu() {
-        return menu;
-    }
-
     public String getTotalWorth() {
         if (this.menu == null) return Double.toString(0.0d);
 
         double val = 0.0d;
 
         for (ItemStack is : this.menu.getContents()) {
+            // -1.0 is given when there's no worth NBT value
             if (WorthNBT.getValue(is) != -1.0) {
                 val += WorthNBT.getValue(is);
             }
@@ -139,6 +145,7 @@ public class SellGUI {
         return this.modified;
     }
 
+    // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
     public void rescueAllItems() {
         for (ItemStack i : this.menu) {
             if (i != null) {
@@ -147,5 +154,16 @@ public class SellGUI {
                 }
             }
         }
+    }
+
+    private void glowify(ItemStack i) {
+
+        // plops on the unbreaking 1 enchantment to make it glow
+        i.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        ItemMeta meta = i.getItemMeta();
+
+        // hides the unbreaking 1 enchantment from showing in the lore
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        i.setItemMeta(meta);
     }
 }

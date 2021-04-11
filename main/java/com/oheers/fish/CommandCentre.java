@@ -55,9 +55,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 break;
             case "shop":
                 SellGUI gui = new SellGUI(sender);
-                System.out.println("pre: " + EvenMoreFish.guis.toString());
-                EvenMoreFish.addGUI(gui);
-                System.out.println("post: " + EvenMoreFish.guis.toString());
+                EvenMoreFish.guis.add(gui);
                 break;
             default:
                 sender.sendMessage(Help.std_help);

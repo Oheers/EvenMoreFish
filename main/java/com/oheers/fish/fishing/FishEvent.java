@@ -43,11 +43,14 @@ public class FishEvent implements Listener {
 
                     Player player = event.getPlayer();
 
-                    Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome()).init();
+                    Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome());
+                    fish.setFisherman(player);
+                    fish.init();
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
                     String length = Float.toString(fish.getLength());
                     String name = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getName());
+                    System.out.println(name);
                     String rarity = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
 
                     Message msg = new Message()

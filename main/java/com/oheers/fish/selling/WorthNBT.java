@@ -35,9 +35,7 @@ public class WorthNBT {
                 // isn't an EMF fish.
                 if (container.has(key , PersistentDataType.DOUBLE)) {
                     foundValue = container.get(key, PersistentDataType.DOUBLE);
-                    System.out.println("found nbt");
                 }
-                System.out.println("found: " + foundValue);
                 return foundValue;
             } else {
                 return 0.0;

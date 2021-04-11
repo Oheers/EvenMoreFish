@@ -40,8 +40,6 @@ public class Fish {
 
     public ItemStack give(Player fisherman) {
 
-        this.fisherman = fisherman;
-
         ItemStack fish = this.type;
         ItemMeta fishMeta = fish.getItemMeta();
 
@@ -104,8 +102,8 @@ public class Fish {
         return rarity;
     }
 
-    public Player getFisherman() {
-        return fisherman;
+    public void setFisherman(Player fisherman) {
+        this.fisherman = fisherman;
     }
 
     public Float getLength() {
@@ -147,6 +145,9 @@ public class Fish {
     // checks if the config contains a message to be displayed when the fish is fished
     private void checkMessage() {
 
+        System.out.println("name:" + this.name);
+        System.out.println("rarity:" + this.rarity.getValue());
+        System.out.println("fisherman:" + this.fisherman);
         String msg = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
 
         if (msg != null) this.fisherman.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));

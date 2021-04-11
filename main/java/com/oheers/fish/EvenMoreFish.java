@@ -136,14 +136,10 @@ public class EvenMoreFish extends JavaPlugin {
         return econ != null;
     }
 
+    // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
     private void terminateSellGUIS() {
         for (SellGUI gui : guis) {
             GUICache.attemptPop(gui.getPlayer());
         }
-    }
-
-    public static void addGUI(SellGUI g) {
-        System.out.println("adding: " + g.toString());
-        guis.add(g);
     }
 }
