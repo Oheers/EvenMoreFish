@@ -30,7 +30,7 @@ public class GUICache {
         for (SellGUI gui : EvenMoreFish.guis) {
             if (gui.getPlayer().equals(player)) {
                 EvenMoreFish.guis.remove(gui);
-                gui.close();
+                gui.close(false);
                 return;
             }
         }

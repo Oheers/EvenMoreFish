@@ -50,7 +50,6 @@ public class FishEvent implements Listener {
 
                     String length = Float.toString(fish.getLength());
                     String name = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getName());
-                    System.out.println(name);
                     String rarity = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
 
                     Message msg = new Message()

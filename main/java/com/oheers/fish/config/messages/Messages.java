@@ -33,5 +33,6 @@ public class Messages {
     public static final String noFish = prefix_std + EvenMoreFish.messageFile.getConfig().getString("no-record");
 
     public static final String worthGUIName = EvenMoreFish.messageFile.getConfig().getString("worth-gui-name");
+    public static final String sellMessage = prefix_std + EvenMoreFish.messageFile.getConfig().getString("fish-sale");
 
 }

@@ -1,6 +1,8 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.config.messages.Messages;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +29,11 @@ public class InteractHandler implements Listener {
                 // to the menu
                 if (clickedItem.isSimilar(gui.getSellIcon())) {
                     // cancels on right click
-                    if (event.getAction().equals(InventoryAction.PICKUP_HALF)) gui.close();
+                    if (event.getAction().equals(InventoryAction.PICKUP_HALF)) {
+                        event.setCancelled(true);
+                        gui.close(false);
+                        return;
+                    }
 
                     // makes the player confirm their choice
                     gui.createConfirmIcon();
@@ -38,7 +44,11 @@ public class InteractHandler implements Listener {
 
                 } else if (clickedItem.isSimilar(gui.getConfirmIcon())) {
                     // cancels on right click
-                    if (event.getAction().equals(InventoryAction.PICKUP_HALF)) gui.close();
+                    if (event.getAction().equals(InventoryAction.PICKUP_HALF)) {
+                        event.setCancelled(true);
+                        gui.close(false);
+                        return;
+                    }
 
                     // the player is at the join stage
                     event.setCancelled(true);
@@ -50,8 +60,15 @@ public class InteractHandler implements Listener {
 
                         gui.setModified(false);
                     } else {
-                        gui.close();
-                        // do all the selling stuff
+                        gui.close(true);
+                        EvenMoreFish.econ.depositPlayer(((Player) event.getWhoClicked()).getPlayer(), gui.value);
+
+                        // sending the sell message to the player
+                        Message msg = new Message()
+                                .setMSG(Messages.sellMessage)
+                                .setSellPrice(Double.toString(gui.getSellPrice()))
+                                .setAmount(Integer.toString(gui.fishCount));
+                        gui.getPlayer().sendMessage(msg.toString());
                     }
                 } else if (clickedItem.isSimilar(gui.getFiller())) {
                     event.setCancelled(true);

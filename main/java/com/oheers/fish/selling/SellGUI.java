@@ -1,5 +1,6 @@
 package com.oheers.fish.selling;
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +23,10 @@ public class SellGUI {
     private Inventory menu;
 
     public boolean modified;
+
+    public double value;
+
+    public int fishCount;
 
     private ItemStack sellIcon, filler, confirmIcon;
 
@@ -68,7 +73,7 @@ public class SellGUI {
         ItemMeta sellMeta = sIcon.getItemMeta();
         sellMeta.setDisplayName("" + ChatColor.GOLD + ChatColor.BOLD + "SELL");
         sellMeta.setLore(Arrays.asList(
-                ChatColor.YELLOW + "value: " + ChatColor.UNDERLINE + getTotalWorth(),
+                "" + ChatColor.YELLOW + ChatColor.BOLD + "Value: " + ChatColor.YELLOW + getTotalWorth(),
                 ChatColor.GRAY + "LEFT CLICK to sell the fish.",
                 ChatColor.GRAY + "RIGHT CLICK to cancel."
         ));
@@ -93,7 +98,7 @@ public class SellGUI {
         ItemMeta cMeta = confirm.getItemMeta();
         cMeta.setDisplayName("" + ChatColor.GOLD + ChatColor.BOLD + "CONFIRM");
         cMeta.setLore(Arrays.asList(
-                ChatColor.YELLOW + "value: " + ChatColor.UNDERLINE + getTotalWorth(),
+                "" + ChatColor.YELLOW + ChatColor.BOLD + "Value: " + ChatColor.YELLOW + getTotalWorth(),
                 ChatColor.GRAY + "LEFT CLICK to sell the fish.",
                 ChatColor.GRAY + "RIGHT CLICK to cancel."
         ));
@@ -113,20 +118,29 @@ public class SellGUI {
         if (this.menu == null) return Double.toString(0.0d);
 
         double val = 0.0d;
+        int count = 0;
 
         for (ItemStack is : this.menu.getContents()) {
             // -1.0 is given when there's no worth NBT value
             if (WorthNBT.getValue(is) != -1.0) {
-                val += WorthNBT.getValue(is);
+                val += (WorthNBT.getValue(is) * is.getAmount());
+                count += is.getAmount();
             }
         }
+
+        this.value = val;
+        this.fishCount = count;
 
         return "$" + NumberFormat.getInstance(Locale.US).format(val);
     }
 
-    public void close() {
+    // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
+    public void close(boolean selling) {
+        EvenMoreFish.guis.remove(this);
         player.closeInventory();
-        rescueAllItems();
+
+        if (selling) rescueNonFish();
+        else rescueAllItems();
     }
 
     public ItemStack getFiller() {
@@ -145,11 +159,27 @@ public class SellGUI {
         return this.modified;
     }
 
+    public double getSellPrice() {
+        return this.value;
+    }
+
     // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
-    public void rescueAllItems() {
+    private void rescueAllItems() {
         for (ItemStack i : this.menu) {
             if (i != null) {
                 if (!WorthNBT.isDefault(i)) {
+                    this.player.getLocation().getWorld().dropItem(this.player.getLocation(), i);
+                }
+            }
+        }
+    }
+
+    private void rescueNonFish() {
+        for (ItemStack i : this.menu) {
+            if (i != null) {
+                if (!(WorthNBT.isDefault(i)) && !(WorthNBT.isFish(i))) {
+                    System.out.println(!(WorthNBT.isDefault(i)));
+                    System.out.println(!(WorthNBT.isFish(i)));
                     this.player.getLocation().getWorld().dropItem(this.player.getLocation(), i);
                 }
             }

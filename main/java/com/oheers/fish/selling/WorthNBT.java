@@ -38,11 +38,26 @@ public class WorthNBT {
                 }
                 return foundValue;
             } else {
-                return 0.0;
+                return -1.0;
             }
         } else {
-            return 0.0;
+            return -1.0;
         }
+    }
+
+    // checks for the "emf-fish-value" nbt tag, to determine if this itemstack is a fish or not.
+    public static boolean isFish(ItemStack i) {
+        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-value");
+
+        if (i != null) {
+            if (i.hasItemMeta()) {
+                if (i.getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.DOUBLE)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
