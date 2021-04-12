@@ -10,11 +10,15 @@ import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Fish {
@@ -33,7 +37,7 @@ public class Fish {
     public Fish(Rarity rarity, String name) {
         this.rarity = rarity;
         this.name = name;
-        this.type = getType();
+        this.type = setType();
 
         setSize();
     }
@@ -49,6 +53,7 @@ public class Fish {
 
         WorthNBT.setNBT(fish, this.value);
         WorthNBT.getValue(fish);
+
 
         return fish;
     }
@@ -110,7 +115,7 @@ public class Fish {
         return length;
     }
 
-    private ItemStack getType() {
+    private ItemStack setType() {
 
         String uValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-uuid");
         // The fish has item: uuid selected
@@ -135,6 +140,10 @@ public class Fish {
         else {
             return new ItemStack(Material.COD);
         }
+    }
+
+    public ItemStack getType() {
+        return type;
     }
 
     private String format(String length) {
@@ -223,5 +232,18 @@ public class Fish {
         lore.add(ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
 
         return lore;
+    }
+
+    public void randomBreak() {
+        Damageable nonDamaged = (Damageable) type.getItemMeta();
+
+        // checking if the user has already set this item to have durability in fish.yml (possible future update)
+        //if (nonDamaged.hasDamage()) return;
+
+        int min = nonDamaged.getDamage();
+        int max = this.type.getType().getMaxDurability();
+
+        nonDamaged.setDamage((int) (Math.random() * (max - min + 1) + min));
+        type.setItemMeta((ItemMeta) nonDamaged);
     }
 }

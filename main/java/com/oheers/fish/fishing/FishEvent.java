@@ -7,6 +7,7 @@ import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.sun.tools.javac.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,12 +26,29 @@ import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
 public class FishEvent implements Listener {
 
-
+    private final List<String> breakabletools = Arrays.asList(
+            "FISHING_ROD",
+            "SHOVEL",
+            "TRIDENT",
+            "AXE",
+            "BOW",
+            "HOE",
+            "SHEARS",
+            "HELMET",
+            "CHESTPLATE",
+            "LEGGINGS",
+            "BOOTS",
+            "SHIELD",
+            "CROSSBOW",
+            "ELYTRA",
+            "FLINT_AND_STEEL"
+    );
 
     @EventHandler
     public void onFish(PlayerFishEvent event) {
@@ -51,6 +69,9 @@ public class FishEvent implements Listener {
                     String length = Float.toString(fish.getLength());
                     String name = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getName());
                     String rarity = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
+
+                    // checks if the fish can have durability, and if it's set in the config it receives random durability
+                    if (checkBreakable(fish.getType().getType())) fish.randomBreak();
 
                     Message msg = new Message()
                             .setMSG(Messages.fishCaught)
@@ -162,5 +183,19 @@ public class FishEvent implements Listener {
         if (EvenMoreFish.active != null) {
             EvenMoreFish.active.runLeaderboardScan(fisherman, fish);
         }
+    }
+
+    private boolean checkBreakable(Material material) {
+        if (MainConfig.randomDurability) {
+            for (String s : breakabletools) {
+                if (material.toString().contains(s)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return false;
     }
 }
