@@ -14,8 +14,7 @@ import java.util.logging.Level;
 
 public class FishFile {
 
-    private EvenMoreFish plugin;
-    private File fishFile;
+    private final EvenMoreFish plugin;
     private FileConfiguration fishConfig;
 
     public FishFile(EvenMoreFish plugin) {
@@ -26,17 +25,17 @@ public class FishFile {
     // Makes sure all th
     public void reload() {
 
-        this.fishFile = new File(this.plugin.getDataFolder(), "fish.yml");
+        File fishFile = new File(this.plugin.getDataFolder(), "fish.yml");
 
-        if (this.fishFile.exists()) {
-            this.fishFile.getParentFile().mkdirs();
+        if (!fishFile.exists()) {
+            fishFile.getParentFile().mkdirs();
             this.plugin.saveResource("fish.yml", false);
         }
 
         this.fishConfig = new YamlConfiguration();
 
         try {
-            this.fishConfig.load(this.fishFile);
+            this.fishConfig.load(fishFile);
         } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
             e.printStackTrace();
         }

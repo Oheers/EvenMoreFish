@@ -12,8 +12,7 @@ import java.util.logging.Level;
 
 public class RaritiesFile {
 
-    private EvenMoreFish plugin;
-    private File raritiesFile;
+    private final EvenMoreFish plugin;
     private FileConfiguration raritiesConfig;
 
     public RaritiesFile(EvenMoreFish plugin) {
@@ -23,17 +22,17 @@ public class RaritiesFile {
 
     public void reload() {
 
-        this.raritiesFile = new File(this.plugin.getDataFolder(), "rarities.yml");
+        File raritiesFile = new File(this.plugin.getDataFolder(), "rarities.yml");
 
-        if (this.raritiesFile.exists()) {
-            this.raritiesFile.getParentFile().mkdirs();
+        if (!raritiesFile.exists()) {
+            raritiesFile.getParentFile().mkdirs();
             this.plugin.saveResource("rarities.yml", false);
         }
 
         this.raritiesConfig = new YamlConfiguration();
 
         try {
-            this.raritiesConfig.load(this.raritiesFile);
+            this.raritiesConfig.load(raritiesFile);
         } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
             e.printStackTrace();
         }

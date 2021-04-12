@@ -9,6 +9,7 @@ import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.messages.MessageFile;
+import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.FishEvent;
 import com.oheers.fish.fishing.items.Fish;
@@ -17,6 +18,7 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.GUICache;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
+import com.sun.tools.javac.Main;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -33,6 +35,9 @@ public class EvenMoreFish extends JavaPlugin {
     public static RaritiesFile raritiesFile;
     public static MessageFile messageFile;
 
+    public static Messages msgs;
+    public static MainConfig mainConfig;
+
     public static Permission permission = null;
     public static Economy econ = null;
 
@@ -47,6 +52,13 @@ public class EvenMoreFish extends JavaPlugin {
     public static ArrayList<SellGUI> guis;
 
     public void onEnable() {
+
+        fishFile = new FishFile(this);
+        raritiesFile = new RaritiesFile(this);
+        messageFile = new MessageFile(this);
+
+        msgs = new Messages();
+        mainConfig = new MainConfig();
 
         listeners();
         commands();
@@ -63,10 +75,6 @@ public class EvenMoreFish extends JavaPlugin {
             return;
         }
 
-        fishFile = new FishFile(this);
-        raritiesFile = new RaritiesFile(this);
-        messageFile = new MessageFile(this);
-
         Names names = new Names();
         names.loadRarities();
 
@@ -81,7 +89,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         guis = new ArrayList<>();
 
-        if (MainConfig.database) {
+        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
 
             // Attempts to connect to the database if enabled
             try {
@@ -147,6 +155,10 @@ public class EvenMoreFish extends JavaPlugin {
 
         terminateSellGUIS();
 
+        fish = new HashMap<>();;
+        fishCollection = new HashMap<>();;
+        rewards = new HashMap<>();;
+
         reloadConfig();
         saveDefaultConfig();
 
@@ -154,8 +166,10 @@ public class EvenMoreFish extends JavaPlugin {
         names.loadRarities();
 
         LoadRewards.load();
-
         AutoRunner.init();
+
+        msgs = new Messages();
+        mainConfig = new MainConfig();
 
         guis = new ArrayList<>();
     }

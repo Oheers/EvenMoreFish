@@ -40,7 +40,7 @@ public class SellGUI {
     }
 
     private void makeMenu() {
-        menu = Bukkit.createInventory(null, 36, ChatColor.translateAlternateColorCodes('&', Messages.WORTH_GUI_NAME));
+        menu = Bukkit.createInventory(null, 36, ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getWorthGUIName()));
     }
 
     public Player getPlayer() {

@@ -53,7 +53,7 @@ public class FishEvent implements Listener {
     @EventHandler
     public void onFish(PlayerFishEvent event) {
 
-        if (MainConfig.enabled) {
+        if (EvenMoreFish.mainConfig.getEnabled()) {
 
             if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
 
@@ -74,7 +74,7 @@ public class FishEvent implements Listener {
                     if (checkBreakable(fish.getType().getType())) fish.randomBreak();
 
                     Message msg = new Message()
-                            .setMSG(Messages.FISH_CAUGHT)
+                            .setMSG(EvenMoreFish.msgs.getFishCaught())
                             .setPlayer(player.getName())
                             .setColour(fish.getRarity().getColour())
                             .setLength(length)
@@ -94,7 +94,7 @@ public class FishEvent implements Listener {
                     Item nonCustom = (Item) event.getCaught();
                     nonCustom.setItemStack(fish.give(event.getPlayer()));
 
-                    if (MainConfig.database) databaseStuff(player, fish.getName(), fish.getLength());
+                    if (EvenMoreFish.mainConfig.isDatabaseOnline()) databaseStuff(player, fish.getName(), fish.getLength());
                 }
             }
         }
@@ -172,7 +172,7 @@ public class FishEvent implements Listener {
 
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
     private boolean competitionOnlyCheck() {
-        if (MainConfig.competitionUnique) {
+        if (EvenMoreFish.mainConfig.isCompetitionUnique()) {
             return EvenMoreFish.active != null;
         } else {
             return true;
@@ -186,7 +186,7 @@ public class FishEvent implements Listener {
     }
 
     private boolean checkBreakable(Material material) {
-        if (MainConfig.randomDurability) {
+        if (EvenMoreFish.mainConfig.doingRandomDurability()) {
             for (String s : breakabletools) {
                 if (material.toString().contains(s)) {
                     return true;

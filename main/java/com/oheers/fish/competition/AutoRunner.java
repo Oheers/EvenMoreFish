@@ -16,10 +16,10 @@ public class AutoRunner {
                 // creates a key similar to the time key given in config.yml
                 timeKey = String.format("%02d", LocalTime.now().getHour()) + ":" + String.format("%02d", LocalTime.now().getMinute());
                 // if that time key fits into the metaphoric lock that is the arrayList "competitionTimes"
-                if (MainConfig.competitionTimes.contains(timeKey)) {
+                if (EvenMoreFish.mainConfig.getCompetitionTimes().contains(timeKey)) {
                     // if there isn't a competition going on
                     if (EvenMoreFish.active == null) {
-                        Competition comp = new Competition(MainConfig.competitionDuration*60);
+                        Competition comp = new Competition(EvenMoreFish.mainConfig.getCompetitionDuration()*60);
                         comp.start();
                     }
                 }

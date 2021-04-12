@@ -10,8 +10,8 @@ import java.util.List;
 public class LoadRewards {
 
     public static void load() {
-        for (String position : MainConfig.plugin.getConfig().getConfigurationSection("competitions.winnings").getKeys(false)) {
-            List<String> rewards = MainConfig.plugin.getConfig().getStringList("competitions.winnings." + position);
+        for (String position : EvenMoreFish.mainConfig.getTotalRewards()) {
+            List<String> rewards = EvenMoreFish.mainConfig.getPositionRewards(position);
             List<Reward> rewardList = new ArrayList<>();
 
             for (String reward : rewards) {

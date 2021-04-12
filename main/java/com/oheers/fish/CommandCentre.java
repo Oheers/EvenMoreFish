@@ -50,12 +50,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
                 } else {
-                    sender.sendMessage(new Message().setMSG(Messages.NO_PERMISSION).toString());
+                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
                 }
                 break;
             case "top":
                 if (EvenMoreFish.active == null) {
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMPETITION_NOT_RUNNING));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
                 } else {
                     sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
                 }
@@ -164,10 +164,11 @@ class Controls{
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
                 EvenMoreFish.messageFile.reload();
+
                 plugin.reload();
 
                 Bukkit.getPluginManager().getPlugin("EvenMoreFish").reloadConfig();
-                sender.sendMessage(new Message().setMSG(Messages.RELOADED).toString());
+                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getReloaded()).toString());
                 break;
 
             default:
@@ -183,7 +184,7 @@ class Controls{
                 if (args[2].equalsIgnoreCase("start")) {
                     // if the admin has only done /emf admin competition start
                     if (args.length < 4) {
-                        startComp(Integer.toString(MainConfig.competitionDuration), player);
+                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration()), player);
                     } else {
                         startComp(args[3], player);
                     }
@@ -193,7 +194,7 @@ class Controls{
                     if (EvenMoreFish.active != null) {
                         EvenMoreFish.active.end();
                     } else {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMPETITION_NOT_RUNNING));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
                     }
                 }
             }
@@ -203,7 +204,7 @@ class Controls{
     protected static void startComp(String argsDuration, Player player) {
 
         if (EvenMoreFish.active != null) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMPETITION_RUNNING));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionRunning()));
             return;
         }
 
@@ -215,10 +216,10 @@ class Controls{
                 Competition comp = new Competition(duration);
                 comp.start();
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.NOT_INT));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.notInteger()));
             }
         } catch (NumberFormatException nfe) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.NOT_INT));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.notInteger()));
         }
     }
 }
@@ -259,10 +260,10 @@ class Help {
 
         StringBuilder out = new StringBuilder();
 
-        out.append(ChatColor.translateAlternateColorCodes('&', Messages.PREFIX_STD + "----- &a&lEvenMoreFish &r-----\n"));
+        out.append(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getSTDPrefix() + "----- &a&lEvenMoreFish &r-----\n"));
 
         for (String s : dictionary.keySet()) {
-            out.append(new Message().setCMD(s).setDesc(dictionary.get(s)).setMSG(Messages.EMF_HELP).toString()).append("\n");
+            out.append(new Message().setCMD(s).setDesc(dictionary.get(s)).setMSG(EvenMoreFish.msgs.getEMFHelp()).toString()).append("\n");
         }
 
         return out.toString();
