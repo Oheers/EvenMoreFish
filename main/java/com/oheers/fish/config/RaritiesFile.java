@@ -18,43 +18,31 @@ public class RaritiesFile {
 
     public RaritiesFile(EvenMoreFish plugin) {
         this.plugin = plugin;
-        saveDefault();
+        reload();
     }
 
     public void reload() {
 
-        if (this.raritiesFile == null) this.raritiesFile = new File(this.plugin.getDataFolder(), "rarities.yml");
+        this.raritiesFile = new File(this.plugin.getDataFolder(), "rarities.yml");
 
-        this.raritiesConfig = YamlConfiguration.loadConfiguration(this.raritiesFile);
-
-        // Getting values from the fish.yml file
-        InputStream stream = this.plugin.getResource("rarities.yml");
-        if (stream != null) {
-            // Loads the input stream
-            YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(stream));
-            this.raritiesConfig.setDefaults(defaultConfig);
+        if (this.raritiesFile.exists()) {
+            this.raritiesFile.getParentFile().mkdirs();
+            this.plugin.saveResource("rarities.yml", false);
         }
-    }
-    
-    public void saveConfig() {
-        if (this.raritiesConfig == null || this.raritiesFile == null) return;
+
+        this.raritiesConfig = new YamlConfiguration();
 
         try {
-            this.getConfig().save(this.raritiesFile);
-        } catch (IOException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "EvenMoreFish could not save the rarity configuration in " + this.raritiesFile, e);
+            this.raritiesConfig.load(this.raritiesFile);
+        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
+            e.printStackTrace();
         }
+
+        EvenMoreFish.raritiesFile = this;
     }
 
     public FileConfiguration getConfig() {
         if (this.raritiesConfig == null) reload();
         return this.raritiesConfig;
-    }
-
-    // Initialises config file
-    public void saveDefault() {
-        if (this.raritiesFile == null) this.raritiesFile = new File(this.plugin.getDataFolder(), "rarities.yml");
-
-        if (!this.raritiesFile.exists()) this.plugin.saveResource("rarities.yml", false);
     }
 }

@@ -114,7 +114,7 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void commands() {
-        getCommand("evenmorefish").setExecutor(new CommandCentre());
+        getCommand("evenmorefish").setExecutor(new CommandCentre(this));
         CommandCentre.loadTabCompletes();
     }
 
@@ -141,5 +141,22 @@ public class EvenMoreFish extends JavaPlugin {
         for (SellGUI gui : guis) {
             GUICache.attemptPop(gui.getPlayer());
         }
+    }
+
+    public void reload() {
+
+        terminateSellGUIS();
+
+        reloadConfig();
+        saveDefaultConfig();
+
+        Names names = new Names();
+        names.loadRarities();
+
+        LoadRewards.load();
+
+        AutoRunner.init();
+
+        guis = new ArrayList<>();
     }
 }

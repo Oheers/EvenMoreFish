@@ -18,45 +18,32 @@ public class MessageFile {
 
     public MessageFile(EvenMoreFish plugin) {
         this.plugin = plugin;
-        saveDefault();
+        reload();
     }
 
-    // Makes sure all th
     public void reload() {
 
-        if (this.messageFile == null) this.messageFile = new File(this.plugin.getDataFolder(), "messages.yml");
+        this.messageFile = new File(this.plugin.getDataFolder(), "messages.yml");
 
-        this.messageConfig = YamlConfiguration.loadConfiguration(this.messageFile);
-
-        // Getting values from the fish.yml file
-        InputStream stream = this.plugin.getResource("messages.yml");
-        if (stream != null) {
-            // Loads the input stream
-            YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(stream));
-            this.messageConfig.setDefaults(defaultConfig);
+        if (this.messageFile.exists()) {
+            this.messageFile.getParentFile().mkdirs();
+            this.plugin.saveResource("messages.yml", false);
         }
-    }
 
-    public void saveConfig() {
-        if (this.messageConfig == null || this.messageFile == null) return;
+        this.messageConfig = new YamlConfiguration();
 
         try {
-            this.getConfig().save(this.messageFile);
-        } catch (IOException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "EvenMoreFish could not save the messages configuration in " + this.messageFile, e);
+            this.messageConfig.load(this.messageFile);
+        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
+            e.printStackTrace();
         }
+
+        EvenMoreFish.messageFile = this;
     }
 
     public FileConfiguration getConfig() {
         if (this.messageConfig == null) reload();
         return this.messageConfig;
-    }
-
-    // Initialises config file
-    public void saveDefault() {
-        if (this.messageFile == null) this.messageFile = new File(this.plugin.getDataFolder(), "messages.yml");
-
-        if (!this.messageFile.exists()) this.plugin.saveResource("messages.yml", false);
     }
 
 }

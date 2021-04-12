@@ -20,44 +20,32 @@ public class FishFile {
 
     public FishFile(EvenMoreFish plugin) {
         this.plugin = plugin;
-        saveDefault();
+        reload();
     }
 
     // Makes sure all th
     public void reload() {
 
-        if (this.fishFile == null) this.fishFile = new File(this.plugin.getDataFolder(), "fish.yml");
+        this.fishFile = new File(this.plugin.getDataFolder(), "fish.yml");
 
-        this.fishConfig = YamlConfiguration.loadConfiguration(this.fishFile);
-
-        // Getting values from the fish.yml file
-        InputStream stream = this.plugin.getResource("fish.yml");
-        if (stream != null) {
-            // Loads the input stream
-            YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(stream));
-            this.fishConfig.setDefaults(defaultConfig);
+        if (this.fishFile.exists()) {
+            this.fishFile.getParentFile().mkdirs();
+            this.plugin.saveResource("fish.yml", false);
         }
-    }
-    
-    public void saveConfig() {
-        if (this.fishConfig == null || this.fishFile == null) return;
+
+        this.fishConfig = new YamlConfiguration();
 
         try {
-            this.getConfig().save(this.fishFile);
-        } catch (IOException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "EvenMoreFish could not save the fish configuration in " + this.fishFile, e);
+            this.fishConfig.load(this.fishFile);
+        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
+            e.printStackTrace();
         }
+
+        EvenMoreFish.fishFile = this;
     }
 
     public FileConfiguration getConfig() {
         if (this.fishConfig == null) reload();
         return this.fishConfig;
-    }
-
-    // Initialises config file
-    public void saveDefault() {
-        if (this.fishFile == null) this.fishFile = new File(this.plugin.getDataFolder(), "fish.yml");
-
-        if (!this.fishFile.exists()) this.plugin.saveResource("fish.yml", false);
     }
 }

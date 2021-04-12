@@ -1,6 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.selling.GUICache;
@@ -19,6 +20,12 @@ import java.util.*;
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
     private static final List<String> empty = new ArrayList<>();
+
+    public EvenMoreFish plugin;
+
+    public CommandCentre(EvenMoreFish plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -41,14 +48,14 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
-                    Controls.adminControl(args, sender);
+                    Controls.adminControl(this.plugin, args, sender);
                 } else {
-                    sender.sendMessage(new Message().setMSG(Messages.noPermission).toString());
+                    sender.sendMessage(new Message().setMSG(Messages.NO_PERMISSION).toString());
                 }
                 break;
             case "top":
                 if (EvenMoreFish.active == null) {
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionNotRunning));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMPETITION_NOT_RUNNING));
                 } else {
                     sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
                 }
@@ -135,9 +142,9 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
     }
 }
 
-class Controls {
+class Controls{
 
-    protected static void adminControl(String[] args, Player sender) {
+    protected static void adminControl(EvenMoreFish plugin, String[] args, Player sender) {
 
         // will only proceed after this if at least args[1] exists
         if (args.length == 1) {
@@ -153,8 +160,12 @@ class Controls {
                 break;
 
             case "reload":
+
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
+                EvenMoreFish.messageFile.reload();
+                plugin.reload();
+
                 Bukkit.getPluginManager().getPlugin("EvenMoreFish").reloadConfig();
                 sender.sendMessage(new Message().setMSG(Messages.RELOADED).toString());
                 break;
@@ -170,14 +181,19 @@ class Controls {
         } else {
             {
                 if (args[2].equalsIgnoreCase("start")) {
-                    startComp(args[3], player);
+                    // if the admin has only done /emf admin competition start
+                    if (args.length < 4) {
+                        startComp(Integer.toString(MainConfig.competitionDuration), player);
+                    } else {
+                        startComp(args[3], player);
+                    }
                 }
 
                 else if (args[2].equalsIgnoreCase("end")) {
                     if (EvenMoreFish.active != null) {
                         EvenMoreFish.active.end();
                     } else {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionNotRunning));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMPETITION_NOT_RUNNING));
                     }
                 }
             }
@@ -187,7 +203,7 @@ class Controls {
     protected static void startComp(String argsDuration, Player player) {
 
         if (EvenMoreFish.active != null) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.competitionRunning));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMPETITION_RUNNING));
             return;
         }
 
@@ -199,10 +215,10 @@ class Controls {
                 Competition comp = new Competition(duration);
                 comp.start();
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.notInt));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.NOT_INT));
             }
         } catch (NumberFormatException nfe) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.notInt));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.NOT_INT));
         }
     }
 }
@@ -243,10 +259,10 @@ class Help {
 
         StringBuilder out = new StringBuilder();
 
-        out.append(ChatColor.translateAlternateColorCodes('&', Messages.prefix_std + "----- &a&lEvenMoreFish &r-----\n"));
+        out.append(ChatColor.translateAlternateColorCodes('&', Messages.PREFIX_STD + "----- &a&lEvenMoreFish &r-----\n"));
 
         for (String s : dictionary.keySet()) {
-            out.append(new Message().setCMD(s).setDesc(dictionary.get(s)).setMSG(Messages.emf_help).toString()).append("\n");
+            out.append(new Message().setCMD(s).setDesc(dictionary.get(s)).setMSG(Messages.EMF_HELP).toString()).append("\n");
         }
 
         return out.toString();

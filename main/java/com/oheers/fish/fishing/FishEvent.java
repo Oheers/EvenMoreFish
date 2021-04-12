@@ -74,7 +74,7 @@ public class FishEvent implements Listener {
                     if (checkBreakable(fish.getType().getType())) fish.randomBreak();
 
                     Message msg = new Message()
-                            .setMSG(Messages.fishCaught)
+                            .setMSG(Messages.FISH_CAUGHT)
                             .setPlayer(player.getName())
                             .setColour(fish.getRarity().getColour())
                             .setLength(length)

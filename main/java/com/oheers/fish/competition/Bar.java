@@ -57,19 +57,19 @@ public class Bar {
     }
 
     private void setTitle() {
-        String returning = ChatColor.translateAlternateColorCodes('&', Messages.bar_prefix) + ChatColor.RESET;
+        String returning = ChatColor.translateAlternateColorCodes('&', Messages.BAR_PREFIX) + ChatColor.RESET;
         int hours = timeLeft/3600;
 
         if (timeLeft >= 3600) {
-            returning += hours + Messages.bar_hour + " ";
+            returning += hours + Messages.BAR_HOUR + " ";
         }
 
         if (timeLeft >= 60) {
-            returning += ((timeLeft%3600)/60) + Messages.bar_minute + " ";
+            returning += ((timeLeft%3600)/60) + Messages.BAR_MINUTE + " ";
         }
 
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft%60) + Messages.bar_second + " left";
+        returning += (timeLeft%60) + Messages.BAR_SECOND + " left";
 
         bar.setTitle(returning);
     }
