@@ -83,9 +83,8 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         );
 
         emfTabs = Arrays.asList(
-                "top",
-                "command1",
-                "command2"
+                "shop",
+                "top"
         );
     }
 
@@ -235,9 +234,10 @@ class Help {
     // puts values into the command dictionaries for later use in /emf help and what not
     public static void loadValues() {
 
-        cmdDictionary.put("emf help", "Shows you this page");
-        cmdDictionary.put("emf top", "Shows the leaderboard for a competition.");
-        cmdDictionary.put("emf admin", "Admin command help page");
+        cmdDictionary.put("emf admin", "Admin command help page.");
+        cmdDictionary.put("emf help", "Shows you this page.");
+        cmdDictionary.put("emf shop", "Opens a shop to sell your fish.");
+        cmdDictionary.put("emf top", "Shows an ongoing competition's leaderboard");
 
         adminDictionary.put("emf admin competition <start/end> <time(seconds)>", "Starts or stops a competition");
         adminDictionary.put("emf admin reload", "Reloads the plugin's config files");

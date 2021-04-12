@@ -41,5 +41,4 @@ public class MainConfig {
     public boolean getEnabled() {
         return config.getBoolean("enabled");
     }
-
 }

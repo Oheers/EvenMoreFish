@@ -1,6 +1,9 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.fishing.items.Rarity;
+import com.sun.tools.javac.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -11,11 +14,18 @@ import org.bukkit.plugin.Plugin;
 
 public class WorthNBT {
 
-    public static ItemStack setNBT(ItemStack fish, Double value) {
+    public static ItemStack setNBT(ItemStack fish, Float length, String rarity, String name) {
         // creates key and plops in the value of "value"
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-value");
+        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
+
         ItemMeta itemMeta = fish.getItemMeta();
-        itemMeta.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, value);
+
+        itemMeta.getPersistentDataContainer().set(nbtlength, PersistentDataType.FLOAT, length);
+        itemMeta.getPersistentDataContainer().set(nbtrarity, PersistentDataType.STRING, rarity);
+        itemMeta.getPersistentDataContainer().set(nbtname, PersistentDataType.STRING, name);
+
         // sets the nbt and returns it
         fish.setItemMeta(itemMeta);
         return fish;
@@ -23,7 +33,10 @@ public class WorthNBT {
 
     public static double getValue(ItemStack item) {
         // creating the key to check for
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-value");
+        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
+
         if (item != null) {
             if (item.hasItemMeta()) {
                 ItemMeta itemMeta = item.getItemMeta();
@@ -31,11 +44,18 @@ public class WorthNBT {
 
                 double foundValue = -1.0;
 
-                // setting foundValue if the key exists, if not it gets left at -1, in which case it
+                // setting foundValue if the keys exist, if not it gets left at -1, in which case it
                 // isn't an EMF fish.
-                if (container.has(key , PersistentDataType.DOUBLE)) {
-                    foundValue = container.get(key, PersistentDataType.DOUBLE);
+                if (container.has(nbtlength , PersistentDataType.FLOAT) &&
+                    container.has(nbtrarity , PersistentDataType.STRING) &&
+                    container.has(nbtname , PersistentDataType.STRING))
+                {
+                    foundValue = getMultipliedValue(
+                            container.get(nbtlength, PersistentDataType.FLOAT),
+                            container.get(nbtrarity, PersistentDataType.STRING),
+                            container.get(nbtname, PersistentDataType.STRING));
                 }
+
                 return foundValue;
             } else {
                 return -1.0;
@@ -45,15 +65,14 @@ public class WorthNBT {
         }
     }
 
-    // checks for the "emf-fish-value" nbt tag, to determine if this itemstack is a fish or not.
+    // checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
+    // we only need to check for the length since they're all added in a batch if it's an EMF fish
     public static boolean isFish(ItemStack i) {
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-value");
+        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
 
         if (i != null) {
             if (i.hasItemMeta()) {
-                if (i.getItemMeta().getPersistentDataContainer().has(key, PersistentDataType.DOUBLE)) {
-                    return true;
-                }
+                return i.getItemMeta().getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
             }
         }
 
@@ -77,5 +96,26 @@ public class WorthNBT {
         }
 
         return false;
+    }
+
+    private static double getMultipliedValue(Float length, String rarity, String name) {
+        double value;
+        value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
+
+        // Is there a value set for the specific fish?
+        if (value == 0.0) {
+            value = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+        }
+
+        // Whatever it finds the value to be, gets multiplied by the fish length and set
+        value *= length;
+        // Sorts out funky decimals during the above multiplication.
+        value = Math.round(value*10.0)/10.0;
+        System.out.println("length: " + length);
+        System.out.println("rarity: " + rarity);
+        System.out.println("name: " + name);
+        System.out.println("value: " + value);
+
+        return value;
     }
 }

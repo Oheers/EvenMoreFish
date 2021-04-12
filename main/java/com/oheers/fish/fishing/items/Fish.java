@@ -28,7 +28,6 @@ public class Fish {
     ItemStack type;
     Player fisherman;
     Float length;
-    Double value;
 
     List<Biome> biomes;
 
@@ -51,9 +50,8 @@ public class Fish {
         fishMeta.setLore(generateLore());
         fish.setItemMeta(fishMeta);
 
-        WorthNBT.setNBT(fish, this.value);
+        WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
         WorthNBT.getValue(fish);
-
 
         return fish;
     }
@@ -75,28 +73,10 @@ public class Fish {
         }
     }
 
-    private double getValue(Float length) {
-        double value;
-        value = EvenMoreFish.fishFile.getConfig().getInt("fish." + this.rarity.getValue() + "." + this.name + ".worth-multiplier");
-
-        // Is there a value set for the specific fish?
-        if (value == 0.0) {
-            value = EvenMoreFish.raritiesFile.getConfig().getInt("rarities." + this.rarity.getValue() + ".worth-multiplier");
-        }
-
-        // Whatever it finds the value to be, gets multiplied by the fish length and set
-        value *= length;
-        // Sorts out funky decimals during the above multiplication.
-        value = Math.round(value*10.0)/10.0;
-
-        return value;
-    }
-
     private void generateSize() {
         // Random logic that returns a float to 1dp
         int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
         this.length = (float) len/10;
-        this.value = getValue(length);
     }
 
     public String getName() {
