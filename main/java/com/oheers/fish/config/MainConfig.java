@@ -16,6 +16,8 @@ public class MainConfig {
 
     public static boolean database = plugin.getConfig().getBoolean("database");
 
+    public static boolean randomDurability = plugin.getConfig().getBoolean("random-durability");
+
     public static List<String> competitionTimes = plugin.getConfig().getStringList("competitions.times");
     public static int competitionDuration = plugin.getConfig().getInt("competitions.duration");
 
