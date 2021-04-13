@@ -22,9 +22,9 @@ public class InteractHandler implements Listener {
             // Updates the stored menu in "gui"
             gui.setMenu(event.getView().getTopInventory());
 
-            if (event.getClickedInventory() != null) {
+            if (event.getInventory() != null) {
 
-                ItemStack clickedItem = event.getClickedInventory().getItem(event.getSlot());
+                ItemStack clickedItem = event.getInventory().getItem(event.getSlot());
                 if (clickedItem != null) {
 
                     // determines what the player has clicked, or if they've just added an item

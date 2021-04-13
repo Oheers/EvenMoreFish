@@ -2,16 +2,28 @@ rarities:
   Common:
     weight: 77
     colour: '&7'
-    worth-multiplier: 1
+    worth-multiplier: 100
+    size:
+      minSize: 1
+      maxSize: 30
   Uncommon:
     weight: 15
     colour: '&b'
-    worth-multiplier: 3
+    worth-multiplier: 2
+    size:
+      minSize: 20
+      maxSize: 150
   Epic:
     weight: 6
     colour: '&d'
-    worth-multiplier: 5
+    worth-multiplier: 0.15
+    size:
+      minSize: 125
+      maxSize: 800
   Legendary:
     weight: 2
     colour: '&6'
-    worth-multiplier: 8
+    worth-multiplier: 0.2
+    size:
+      minSize: 800
+      maxSize: 4000

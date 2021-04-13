@@ -2,7 +2,7 @@ name: EvenMoreFish
 author: Oheers
 version: 0.1
 main: com.oheers.fish.EvenMoreFish
-api-version: 1.16
+api-version: 1.13
 depend: [Vault]
 
 commands:

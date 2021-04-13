@@ -45,3 +45,8 @@ competitions:
       - "EFFECT:SPEED,2,5"
       - "MESSAGE:&eCongratulations!"
       - "MONEY:1000"
+
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE.
+config-version: 1
