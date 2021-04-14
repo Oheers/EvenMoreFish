@@ -85,12 +85,16 @@ public class FishEvent implements Listener, Runnable {
                             .setFishCaught(name)
                             .setRarity(rarity);
 
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        p.sendMessage(msg.toString());
+                    // Gets whether it's a serverwide announce or not
+                    if (fish.getRarity().getAnnounce()) {
+                        // sends it to all online players
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            p.sendMessage(msg.toString());
+                        }
+                    } else {
+                        // sends it to just the fisher
+                        player.sendMessage(msg.toString());
                     }
-
-                /* Drops the item rather than giving it straight to the player as a slap-dash way of checking the inventory
-                 isn't full */
 
                     competitionCheck(fish, event.getPlayer());
 
@@ -155,7 +159,7 @@ public class FishEvent implements Listener, Runnable {
 
     // if there's no fish available in the current biome, this gets sent out
     private Fish defaultFish() {
-        Rarity r = new Rarity("No biome found", "&4", 1.0d);
+        Rarity r = new Rarity("No biome found", "&4", 1.0d, false);
         return new Fish(r, "");
     }
 

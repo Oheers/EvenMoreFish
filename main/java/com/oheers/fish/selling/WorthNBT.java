@@ -111,10 +111,6 @@ public class WorthNBT {
         value *= length;
         // Sorts out funky decimals during the above multiplication.
         value = Math.round(value*10.0)/10.0;
-        System.out.println("length: " + length);
-        System.out.println("rarity: " + rarity);
-        System.out.println("name: " + name);
-        System.out.println("value: " + value);
 
         return value;
     }
