@@ -1,16 +1,12 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.fishing.items.Rarity;
-import com.sun.tools.javac.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 
 public class WorthNBT {
 

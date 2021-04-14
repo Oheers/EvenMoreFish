@@ -18,6 +18,10 @@ public class MainConfig {
         return config.getStringList("competitions.times");
     }
 
+    public String getBossbarColour() {
+        return config.getString("competitions.bossbar-colour");
+    }
+
     public boolean doingRandomDurability() {
         return config.getBoolean("random-durability");
     }

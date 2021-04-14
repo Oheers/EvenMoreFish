@@ -1,7 +1,6 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.messages.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -178,8 +177,6 @@ public class SellGUI {
         for (ItemStack i : this.menu) {
             if (i != null) {
                 if (!(WorthNBT.isDefault(i)) && !(WorthNBT.isFish(i))) {
-                    System.out.println(!(WorthNBT.isDefault(i)));
-                    System.out.println(!(WorthNBT.isFish(i)));
                     this.player.getLocation().getWorld().dropItem(this.player.getLocation(), i);
                 }
             }
