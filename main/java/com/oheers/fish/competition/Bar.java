@@ -18,6 +18,8 @@ public class Bar {
     int timeLeft;
     int totalTime;
 
+    Ticker ticker;
+
     public Bar(int totalTime) {
         this.totalTime = totalTime;
         // adding an offset so it doesn't instantly start counting down
@@ -40,8 +42,13 @@ public class Bar {
     }
 
     private void begin() {
-        Ticker ticker = new Ticker(this);
+        this.ticker = new Ticker(this);
         ticker.runTaskTimer(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 0, 20);
+    }
+
+    public void end() {
+        removeAllPlayers();
+        this.ticker.cancel();
     }
 
     private void setProgress() {

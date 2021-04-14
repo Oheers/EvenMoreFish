@@ -34,20 +34,19 @@ competitions:
     1:
       # Commands are run by the console, it's advised to change these before releasing your server.
       - "COMMAND:give {player} diamond 5"
-      - "MESSAGE:&aCongratulations!"
+      - "MESSAGE:&aCongratulations for coming 1st!"
       # Can't contain decimals.
       - "MONEY:5000"
       # formatted as "effect_name,amplifier,duration"
-      - "EFFECT:SPEED,1,5"
-      - "ITEM:DIAMOND,1"
+      - "EFFECT:SPEED,2,5"
+      - "ITEM:DIAMOND,2"
     2:
       - "ITEM:DIAMOND,1"
-      - "MESSAGE:&bCongratulations!"
+      - "MESSAGE:&bCongratulations for coming 2nd!"
       - "MONEY:2500"
     3:
-      # EFFECT NAME, EFFECT STRENGTH, LENGTH(SECONDS)
-      - "EFFECT:SPEED,2,5"
-      - "MESSAGE:&eCongratulations!"
+      - "EFFECT:SPEED,1,5"
+      - "MESSAGE:&eCongratulations for coming 3rd!"
       - "MONEY:1000"
 
 

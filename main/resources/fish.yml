@@ -9,6 +9,7 @@ fish:
     Tuna: ""
     Carp: ""
     Sardine: ""
+    Sea Snail: ""
     Salmon:
       item:
         # Items must be spelt the same as found in game by using advanced tooltips (f3 + h)
@@ -28,7 +29,6 @@ fish:
         - DESERT
         - DESERT_HILLS
         - DESERT_LAKES
-    Sea Snail: ""
 
   #  Oheers:
   #    item:
@@ -42,7 +42,7 @@ fish:
     Swordfish: ""
     Electric Eel:
       message: "&b*Zap!*"
-     #effect: "HARM:1:1"             - disabled since it's straight up killing the player right now. Not a good look.
+     #effect: "HARM:1:1"             - disabled since it's straight up killing the player right now. Not a good idea.
     Squid:
       item:
         material: INK_SAC

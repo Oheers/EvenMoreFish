@@ -32,7 +32,7 @@ public class Competition {
     }
 
     public void end() {
-        bar.removeAllPlayers();
+        bar.end();
         EvenMoreFish.active = null;
         announceWinners();
     }

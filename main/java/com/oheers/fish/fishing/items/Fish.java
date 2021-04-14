@@ -133,10 +133,6 @@ public class Fish {
 
     // checks if the config contains a message to be displayed when the fish is fished
     private void checkMessage() {
-
-        System.out.println("name:" + this.name);
-        System.out.println("rarity:" + this.rarity.getValue());
-        System.out.println("fisherman:" + this.fisherman);
         String msg = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
 
         if (msg != null) this.fisherman.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
