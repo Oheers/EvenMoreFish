@@ -86,6 +86,6 @@ public class InteractHandler implements Listener {
 
     @EventHandler
     public void close(InventoryCloseEvent event) {
-        GUICache.attemptPop((Player) event.getPlayer());
+        GUICache.attemptPop((Player) event.getPlayer(), false);
     }
 }
