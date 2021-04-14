@@ -18,7 +18,6 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.GUICache;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
-import com.sun.tools.javac.Main;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -147,17 +146,19 @@ public class EvenMoreFish extends JavaPlugin {
     // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
     private void terminateSellGUIS() {
         for (SellGUI gui : guis) {
-            GUICache.attemptPop(gui.getPlayer());
+            System.out.println(gui);
+            GUICache.attemptPop(gui.getPlayer(), true);
         }
+        guis.clear();
     }
 
     public void reload() {
 
         terminateSellGUIS();
 
-        fish = new HashMap<>();;
-        fishCollection = new HashMap<>();;
-        rewards = new HashMap<>();;
+        fish = new HashMap<>();
+        fishCollection = new HashMap<>();
+        rewards = new HashMap<>();
 
         reloadConfig();
         saveDefaultConfig();

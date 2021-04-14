@@ -1,17 +1,41 @@
 rarities:
   Common:
-    weight: 77
+    # How likely is the fish to be fished? Larger number = more likely, numbers don't have to add to 100.
+    weight: 87
+    # What colour should the fish's name be?
     colour: '&7'
-    worth-multiplier: 1
+    # What should the length be multiplied by to get the fish's value in /emf shop
+    worth-multiplier: 0.1
+    # Should a catch of this fish be broadcasted to everyone (true) or just the fisher (false)?
+    broadcast: false
+    size:
+      # Absolute minimum size the fish can be, must be an Integer
+      minSize: 1
+      # Absolute maximum size the fish can be, must be an Integer
+      maxSize: 30
   Uncommon:
-    weight: 15
+    weight: 9
     colour: '&b'
-    worth-multiplier: 3
+    worth-multiplier: 0.2
+    broadcast: false
+    size:
+      minSize: 20
+      maxSize: 150
   Epic:
-    weight: 6
+    weight: 3
     colour: '&d'
-    worth-multiplier: 5
+    worth-multiplier: 0.15
+    broadcast: true
+    size:
+      minSize: 125
+      maxSize: 800
   Legendary:
-    weight: 2
+    weight: 1
     colour: '&6'
-    worth-multiplier: 8
+    worth-multiplier: 0.2
+    broadcast: true
+    size:
+      minSize: 800
+      maxSize: 4000
+
+# You can add/rename as many rarities as you want, one use case might be for special events.

@@ -30,7 +30,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-public class FishEvent implements Listener {
+public class FishEvent implements Listener, Runnable {
+
+    Player player;
+    String name;
+    Float length;
 
     private final List<String> breakabletools = Arrays.asList(
             "FISHING_ROD",
@@ -81,12 +85,16 @@ public class FishEvent implements Listener {
                             .setFishCaught(name)
                             .setRarity(rarity);
 
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        p.sendMessage(msg.toString());
+                    // Gets whether it's a serverwide announce or not
+                    if (fish.getRarity().getAnnounce()) {
+                        // sends it to all online players
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            p.sendMessage(msg.toString());
+                        }
+                    } else {
+                        // sends it to just the fisher
+                        player.sendMessage(msg.toString());
                     }
-
-                /* Drops the item rather than giving it straight to the player as a slap-dash way of checking the inventory
-                 isn't full */
 
                     competitionCheck(fish, event.getPlayer());
 
@@ -94,7 +102,13 @@ public class FishEvent implements Listener {
                     Item nonCustom = (Item) event.getCaught();
                     nonCustom.setItemStack(fish.give(event.getPlayer()));
 
-                    if (EvenMoreFish.mainConfig.isDatabaseOnline()) databaseStuff(player, fish.getName(), fish.getLength());
+                    if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+                        this.player = player;
+                        this.name = fish.getName();
+                        this.length = fish.getLength();
+                        Thread t1 = new Thread(this);
+                        t1.start();
+                    }
                 }
             }
         }
@@ -145,29 +159,8 @@ public class FishEvent implements Listener {
 
     // if there's no fish available in the current biome, this gets sent out
     private Fish defaultFish() {
-        Rarity r = new Rarity("No biome found", "&4", 1.0d);
+        Rarity r = new Rarity("No biome found", "&4", 1.0d, false);
         return new Fish(r, "");
-    }
-
-    private void databaseStuff(Player player, String name, Float length) {
-        try {
-
-            // increases the fish fished count if the fish is already in the db
-            if (Database.hasFish(name)) {
-                Database.fishIncrease(name);
-
-                // sets the new leader in top fish, if the player has fished a record fish
-                if (Database.getTopLength(name) < length) {
-                    Database.newTopSpot(player, name, length);
-                }
-            } else {
-                // the database doesn't contain the fish yet
-                Database.add(name, player, length);
-            }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
     }
 
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
@@ -197,5 +190,27 @@ public class FishEvent implements Listener {
         }
 
         return false;
+    }
+
+    @Override
+    public void run() {
+        try {
+
+            // increases the fish fished count if the fish is already in the db
+            if (Database.hasFish(name)) {
+                Database.fishIncrease(name);
+
+                // sets the new leader in top fish, if the player has fished a record fish
+                if (Database.getTopLength(name) < length) {
+                    Database.newTopSpot(player, name, length);
+                }
+            } else {
+                // the database doesn't contain the fish yet
+                Database.add(name, player, length);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

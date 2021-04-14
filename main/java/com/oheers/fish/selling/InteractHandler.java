@@ -2,7 +2,6 @@ package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.config.messages.Messages;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +21,7 @@ public class InteractHandler implements Listener {
             // Updates the stored menu in "gui"
             gui.setMenu(event.getView().getTopInventory());
 
-            if (event.getClickedInventory() != null) {
+            if (event.getView().getTopInventory() != null) {
 
                 ItemStack clickedItem = event.getClickedInventory().getItem(event.getSlot());
                 if (clickedItem != null) {
@@ -87,6 +86,6 @@ public class InteractHandler implements Listener {
 
     @EventHandler
     public void close(InventoryCloseEvent event) {
-        GUICache.attemptPop((Player) event.getPlayer());
+        GUICache.attemptPop((Player) event.getPlayer(), false);
     }
 }

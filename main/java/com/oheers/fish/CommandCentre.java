@@ -195,6 +195,8 @@ class Controls{
                     } else {
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
                     }
+                } else {
+                    player.sendMessage(Help.comp_help);
                 }
             }
         }

@@ -26,10 +26,12 @@ public class GUICache {
     }
 
     // attempts to remove the player's gui from the register and perform gui.close();
-    public static void attemptPop(Player player) {
+    public static void attemptPop(Player player, boolean shutdown) {
         for (SellGUI gui : EvenMoreFish.guis) {
             if (gui.getPlayer().equals(player)) {
-                EvenMoreFish.guis.remove(gui);
+                // Prevents a ConcurrentModificationException deleting all values after iteration is complete (in the main class)
+                if (!shutdown) EvenMoreFish.guis.remove(gui);
+
                 gui.close(false);
                 return;
             }

@@ -1,16 +1,12 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.fishing.items.Rarity;
-import com.sun.tools.javac.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 
 public class WorthNBT {
 
@@ -111,10 +107,6 @@ public class WorthNBT {
         value *= length;
         // Sorts out funky decimals during the above multiplication.
         value = Math.round(value*10.0)/10.0;
-        System.out.println("length: " + length);
-        System.out.println("rarity: " + rarity);
-        System.out.println("name: " + name);
-        System.out.println("value: " + value);
 
         return value;
     }

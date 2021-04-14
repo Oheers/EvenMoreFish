@@ -36,4 +36,8 @@ no-record: "&rYou didn't catch any fish."
 # The GUI title for /emf shop
 worth-gui-name: "&1&lSell Fish"
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&eYou've sold &6{amount} &efish for &6${sell-price}&e."
+fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE.
+config-version: 1

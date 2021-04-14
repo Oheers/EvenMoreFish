@@ -26,6 +26,10 @@ competitions:
   # How long should the competition go on for? (In minutes)
   duration: 10
 
+  # What colour should the bossbar cooldown be? (values can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/boss/BarColor.html)
+  # Set the text and text colour above the bossbar in messages.yml
+  bossbar-colour: GREEN
+
   winnings:
     1:
       # Commands are run by the console, it's advised to change these before releasing your server.
@@ -45,3 +49,8 @@ competitions:
       - "EFFECT:SPEED,2,5"
       - "MESSAGE:&eCongratulations!"
       - "MONEY:1000"
+
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE.
+config-version: 1
