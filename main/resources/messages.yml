@@ -42,4 +42,4 @@ fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE.
-config-version: 1
+config-version: 1.0.2

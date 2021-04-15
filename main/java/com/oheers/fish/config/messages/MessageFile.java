@@ -1,6 +1,7 @@
 package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -22,7 +23,7 @@ public class MessageFile {
 
     public void reload() {
 
-        File messageFile = new File(this.plugin.getDataFolder(), "messages.yml");
+        File messageFile = getFile();
 
         if (!messageFile.exists()) {
             messageFile.getParentFile().mkdirs();
@@ -43,6 +44,20 @@ public class MessageFile {
     public FileConfiguration getConfig() {
         if (this.messageConfig == null) reload();
         return this.messageConfig;
+    }
+
+    public File getFile() {
+        return new File(this.plugin.getDataFolder(), "messages.yml");
+    }
+
+    public void save() {
+        this.messageConfig = new YamlConfiguration();
+        try {
+            this.messageConfig.save(getFile());
+        } catch (IOException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not save EvenMoreFish/messages.yml");
+            e.printStackTrace();
+        }
     }
 
 }
