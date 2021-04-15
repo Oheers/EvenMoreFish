@@ -3,12 +3,14 @@ package com.oheers.fish.config.messages;
 import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.List;
+
 public class Messages {
 
     FileConfiguration config = EvenMoreFish.messageFile.getConfig();
 
-    public String configVersion() {
-        return config.getString("config-version");
+    public int configVersion() {
+        return config.getInt("config-version");
     }
 
     public String getSellMessage() {
@@ -62,6 +64,10 @@ public class Messages {
         return config.getString("bossbar.prefix");
     }
 
+    private String getPrefix() {
+        return config.getString("prefix");
+    }
+
     private String getStandardPrefixColour() {
         return config.getString("prefix-regular");
     }
@@ -75,15 +81,15 @@ public class Messages {
     }
 
     public String getSTDPrefix() {
-        return getStandardPrefixColour() + "[EvenMoreFish] &r";
+        return getStandardPrefixColour() + getPrefix() + "&r";
     }
 
     public String getAdminPrefix() {
-        return getAdminPrefixColour() + "[EvenMoreFish] &r";
+        return getAdminPrefixColour() + getPrefix() + "&r";
     }
 
     public String getErrorPrefix() {
-        return getErrorPrefixColour() + "[EvenMoreFish] &r";
+        return getErrorPrefixColour() + getPrefix() + "&r";
     }
 
     public String getReloaded() {
@@ -112,5 +118,17 @@ public class Messages {
 
     public String getNotEnoughPlayers() {
         return getErrorPrefix() + config.getString("not-enough-players");
+    }
+
+    public String getSellName() {
+        return config.getString("sell-gui-name");
+    }
+
+    public String getConfirmName() {
+        return config.getString("confirm-gui-name");
+    }
+
+    public List<String> sellLore() {
+        return config.getStringList("sell-gui-lore");
     }
 }

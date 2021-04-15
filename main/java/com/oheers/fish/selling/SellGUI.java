@@ -1,6 +1,7 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,7 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class SellGUI {
@@ -70,12 +73,13 @@ public class SellGUI {
     public void setSellItem() {
         ItemStack sIcon = new ItemStack(Material.GOLD_INGOT);
         ItemMeta sellMeta = sIcon.getItemMeta();
-        sellMeta.setDisplayName("" + ChatColor.GOLD + ChatColor.BOLD + "SELL");
-        sellMeta.setLore(Arrays.asList(
-                "" + ChatColor.YELLOW + ChatColor.BOLD + "Value: " + ChatColor.YELLOW + getTotalWorth(),
-                ChatColor.GRAY + "LEFT CLICK to sell the fish.",
-                ChatColor.GRAY + "RIGHT CLICK to cancel."
-        ));
+        sellMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getSellName()));
+        // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
+        List<String> lore = new ArrayList<>();
+        for (String line : EvenMoreFish.msgs.sellLore()) {
+            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth()).toString());
+        }
+        sellMeta.setLore(lore);
 
         sIcon.setItemMeta(sellMeta);
         glowify(sIcon);
@@ -95,12 +99,13 @@ public class SellGUI {
     public void createConfirmIcon() {
         ItemStack confirm = new ItemStack(Material.GOLD_BLOCK);
         ItemMeta cMeta = confirm.getItemMeta();
-        cMeta.setDisplayName("" + ChatColor.GOLD + ChatColor.BOLD + "CONFIRM");
-        cMeta.setLore(Arrays.asList(
-                "" + ChatColor.YELLOW + ChatColor.BOLD + "Value: " + ChatColor.YELLOW + getTotalWorth(),
-                ChatColor.GRAY + "LEFT CLICK to sell the fish.",
-                ChatColor.GRAY + "RIGHT CLICK to cancel."
-        ));
+        cMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getConfirmName()));
+        // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
+        List<String> lore = new ArrayList<>();
+        for (String line : EvenMoreFish.msgs.sellLore()) {
+            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth()).toString());
+        }
+        cMeta.setLore(lore);
 
         confirm.setItemMeta(cMeta);
         glowify(confirm);
@@ -130,7 +135,7 @@ public class SellGUI {
         this.value = val;
         this.fishCount = count;
 
-        return "$" + NumberFormat.getInstance(Locale.US).format(val);
+        return NumberFormat.getInstance(Locale.US).format(val);
     }
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close

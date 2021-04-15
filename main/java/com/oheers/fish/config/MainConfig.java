@@ -10,8 +10,8 @@ public class MainConfig {
 
     private FileConfiguration config = Bukkit.getPluginManager().getPlugin("EvenMoreFish").getConfig();
 
-    public String configVersion() {
-        return config.getString("config-version");
+    public int configVersion() {
+        return config.getInt("config-version");
     }
 
     public int getCompetitionDuration() {

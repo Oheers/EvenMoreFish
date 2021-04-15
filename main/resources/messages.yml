@@ -14,6 +14,8 @@ bossbar:
   minute: "m"
   second: "s"
 
+# The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
+prefix: "[EvenMoreFish] "
 # The colour of the [EvenMoreFish] prefix in commands
 prefix-regular: "&a"
 # The colour of the [EvenMoreFish] prefix in admin commands
@@ -37,9 +39,18 @@ not-enough-players: "&rThere's not enough players online to start the scheduled 
 
 # The GUI title for /emf shop
 worth-gui-name: "&1&lSell Fish"
+# The name found on the selling item in /emf shop
+sell-gui-name: "&6&lSELL"
+# The name found on the confirming item in /emf shop
+confirm-gui-name: "&6&lCONFIRM"
+# The lore found on the selling/confirmation item in /emf shop
+sell-gui-lore:
+  - "&e&lValue: &e${sell-price}"
+  - "&7LEFT CLICK to sell the fish."
+  - "&7RIGHT CLICK to cancel."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE.
-config-version: 1.0.2
+config-version: 2

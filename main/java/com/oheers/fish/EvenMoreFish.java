@@ -57,6 +57,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static ArrayList<SellGUI> guis;
 
     public static boolean isUpdateAvailable;
+    private final int MSG_CONFIG_VERSION = 2;
+    private final int MAIN_CONFIG_VERSION = 2;
 
     public void onEnable() {
 
@@ -198,13 +200,13 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void checkConfigVers() {
-        if (!msgs.configVersion().equals(getDescription().getVersion())) {
+        if (msgs.configVersion() != MSG_CONFIG_VERSION) {
             getLogger().log(Level.SEVERE, "Your messages.yml config is not up to date. This will cause certain values to default to be potentially null." +
                     "If you wish to update, go to the \"Technical Stuff\" part of https://www.spigotmc.org/resources/evenmorefish.91310/ and copy the messages.yml" +
                     " from there, or locate changes and add them manually to preserve current changes");
         }
 
-        if (!mainConfig.configVersion().equals(getDescription().getVersion())) {
+        if (mainConfig.configVersion() != MAIN_CONFIG_VERSION) {
             getLogger().log(Level.SEVERE, "Your config.yml config is not up to date. This will cause certain values to default to be potentially null." +
                     "If you wish to update, go to the \"Technical Stuff\" part of https://www.spigotmc.org/resources/evenmorefish.91310/ and copy the messages.yml" +
                     " from there, or locate changes and add them manually to preserve current changes");

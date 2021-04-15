@@ -29,7 +29,7 @@ public class GUICache {
     public static void attemptPop(Player player, boolean shutdown) {
         for (SellGUI gui : EvenMoreFish.guis) {
             if (gui.getPlayer().equals(player)) {
-                // Prevents a ConcurrentModificationException deleting all values after iteration is complete (in the main class)
+                /* Prevents a ConcurrentModificationException deleting all values after iteration is complete (in the main class) */
                 if (!shutdown) EvenMoreFish.guis.remove(gui);
 
                 gui.close(false);
