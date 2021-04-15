@@ -1,8 +1,6 @@
 package com.oheers.fish.competition.reward;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.MainConfig;
-import com.sun.tools.javac.Main;
 
 import java.util.ArrayList;
 import java.util.List;

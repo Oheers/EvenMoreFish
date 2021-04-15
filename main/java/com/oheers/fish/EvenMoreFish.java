@@ -50,6 +50,8 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static ArrayList<SellGUI> guis;
 
+    public static boolean isUpdateAvailable;
+
     public void onEnable() {
 
         fishFile = new FishFile(this);
@@ -61,6 +63,8 @@ public class EvenMoreFish extends JavaPlugin {
 
         listeners();
         commands();
+
+        checkUpdate();
 
         // could not setup permissions.
         if (!setupPermissions()) {
@@ -117,6 +121,7 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FishEvent(), this);
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
         getServer().getPluginManager().registerEvents(new InteractHandler(), this);
+        getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
 
     }
 
@@ -173,5 +178,12 @@ public class EvenMoreFish extends JavaPlugin {
         mainConfig = new MainConfig();
 
         guis = new ArrayList<>();
+    }
+
+    // Checks for updates, surprisingly
+    private void checkUpdate() {
+        new UpdateChecker(this, 91310).getVersion(version -> {
+            isUpdateAvailable = !this.getDescription().getVersion().equalsIgnoreCase(version);
+        });
     }
 }
