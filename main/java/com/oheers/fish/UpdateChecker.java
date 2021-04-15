@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.util.Consumer;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,16 +26,16 @@ public class UpdateChecker {
         this.resourceID = resourceID;
     }
 
-    public void getVersion(Consumer<String> consumer) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + resourceID).openStream(); Scanner scanner = new Scanner(inputStream)) {
-                if (scanner.hasNext()) {
-                    consumer.accept(scanner.next());
-                }
-            } catch (IOException e) {
-                this.plugin.getLogger().log(Level.WARNING, "EvenMoreFish failed to check for updates." + e.getMessage());
-            }
-        });
+    public String getVersion() {
+        String version;
+        try {
+            version = ((JSONObject) new JSONParser().parse(new Scanner(new URL("https://api.spigotmc.org/simple/0.1/index.php?action=getResource&id=" + resourceID).openStream()).nextLine())).get("current_version").toString();
+        } catch (Exception ignored) {
+            version = plugin.getDescription().getVersion();
+            Bukkit.getLogger().log(Level.WARNING, "EvenMoreFish failed to check for updates against the spigot website, to check manually go to https://www.spigotmc.org/resources/evenmorefish.91310/updates");
+        }
+
+        return version;
     }
 }
 

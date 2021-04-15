@@ -182,8 +182,8 @@ public class EvenMoreFish extends JavaPlugin {
 
     // Checks for updates, surprisingly
     private void checkUpdate() {
-        new UpdateChecker(this, 91310).getVersion(version -> {
-            isUpdateAvailable = !this.getDescription().getVersion().equalsIgnoreCase(version);
-        });
+        if (!this.getDescription().getVersion().equals(new UpdateChecker(this, 91310).getVersion())) {
+            isUpdateAvailable = true;
+        }
     }
 }
