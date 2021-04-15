@@ -64,8 +64,6 @@ public class EvenMoreFish extends JavaPlugin {
         listeners();
         commands();
 
-        checkUpdate();
-
         // could not setup permissions.
         if (!setupPermissions()) {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
@@ -77,6 +75,14 @@ public class EvenMoreFish extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        // async check for updates on the spigot page
+        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                checkUpdate();
+            }
+        });
 
         Names names = new Names();
         names.loadRarities();
@@ -105,14 +111,14 @@ public class EvenMoreFish extends JavaPlugin {
 
         }
 
-        Bukkit.getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
+        getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
 
     }
 
     public void onDisable() {
 
         terminateSellGUIS();
-        Bukkit.getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
+        getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
 
     }
 
@@ -182,7 +188,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     // Checks for updates, surprisingly
     private void checkUpdate() {
-        if (!this.getDescription().getVersion().equals(new UpdateChecker(this, 91310).getVersion())) {
+        if (!getDescription().getVersion().equals(new UpdateChecker(this, 91310).getVersion())) {
             isUpdateAvailable = true;
         }
     }
