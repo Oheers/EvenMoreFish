@@ -25,10 +25,23 @@ public class Competition {
         this.duration = duration;
     }
 
-    public void start() {
+    public void start(boolean adminStart) {
+        // checks skip if it's started by an admin
+        if (!adminStart) {
+            // if there isn't enough players on, the competition doesn't start
+            if (Bukkit.getServer().getOnlinePlayers().size() < EvenMoreFish.mainConfig.getMinimumPlayers()) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getNotEnoughPlayers()));
+                }
+
+                return;
+            }
+        }
+
         announce();
         bar = new Bar(this.duration);
         EvenMoreFish.active = this;
+
     }
 
     public void end() {

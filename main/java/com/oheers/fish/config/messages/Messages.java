@@ -105,4 +105,8 @@ public class Messages {
     public String competitionNotRunning() {
         return getErrorPrefix() + "There's no competition running right now.";
     }
+
+    public String getNotEnoughPlayers() {
+        return getErrorPrefix() + config.getString("not-enough-players");
+    }
 }

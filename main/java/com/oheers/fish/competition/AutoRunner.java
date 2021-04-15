@@ -20,7 +20,7 @@ public class AutoRunner {
                     // if there isn't a competition going on
                     if (EvenMoreFish.active == null) {
                         Competition comp = new Competition(EvenMoreFish.mainConfig.getCompetitionDuration()*60);
-                        comp.start();
+                        comp.start(false);
                     }
                 }
             }

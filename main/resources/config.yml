@@ -48,8 +48,12 @@ competitions:
       - "EFFECT:SPEED,1,5"
       - "MESSAGE:&eCongratulations for coming 3rd!"
       - "MONEY:1000"
+  # Add as many more places as you need
+
+  # This is the minimum needed amount of players for an automatic competition to start.
+  minimum-players: 5
 
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE.
-config-version: 1
+config-version: 2

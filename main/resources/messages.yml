@@ -32,6 +32,8 @@ leaderboard-count: 5
 no-winners: "&rThere were no fishing records."
 # When an individual player didn't get a record
 no-record: "&rYou didn't catch any fish."
+# Sent to all online players when not enough players are on to start a competition
+not-enough-players: "&rThere's not enough players online to start the scheduled fishing competition."
 
 # The GUI title for /emf shop
 worth-gui-name: "&1&lSell Fish"

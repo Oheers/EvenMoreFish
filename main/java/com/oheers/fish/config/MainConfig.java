@@ -45,4 +45,11 @@ public class MainConfig {
     public boolean getEnabled() {
         return config.getBoolean("enabled");
     }
+
+    public int getMinimumPlayers() {
+        Integer test = config.getInt("competitions.minimum-players");
+        if (test != null) {
+            return test;
+        } else return 5;
+    }
 }
