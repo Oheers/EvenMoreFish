@@ -18,12 +18,18 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.GUICache;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
+import com.tchristofferson.configupdater.ConfigUpdater;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
@@ -77,11 +83,9 @@ public class EvenMoreFish extends JavaPlugin {
         }
 
         // async check for updates on the spigot page
-        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-            @Override
-            public void run() {
-                checkUpdate();
-            }
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            checkUpdate();
+            checkConfigVers();
         });
 
         Names names = new Names();
@@ -190,6 +194,20 @@ public class EvenMoreFish extends JavaPlugin {
     private void checkUpdate() {
         if (!getDescription().getVersion().equals(new UpdateChecker(this, 91310).getVersion())) {
             isUpdateAvailable = true;
+        }
+    }
+
+    private void checkConfigVers() {
+        if (!msgs.configVersion().equals(getDescription().getVersion())) {
+            getLogger().log(Level.SEVERE, "Your messages.yml config is not up to date. This will cause certain values to default to be potentially null." +
+                    "If you wish to update, go to the \"Technical Stuff\" part of https://www.spigotmc.org/resources/evenmorefish.91310/ and copy the messages.yml" +
+                    " from there, or locate changes and add them manually to preserve current changes");
+        }
+
+        if (!mainConfig.configVersion().equals(getDescription().getVersion())) {
+            getLogger().log(Level.SEVERE, "Your config.yml config is not up to date. This will cause certain values to default to be potentially null." +
+                    "If you wish to update, go to the \"Technical Stuff\" part of https://www.spigotmc.org/resources/evenmorefish.91310/ and copy the messages.yml" +
+                    " from there, or locate changes and add them manually to preserve current changes");
         }
     }
 }

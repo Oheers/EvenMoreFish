@@ -7,6 +7,10 @@ public class Messages {
 
     FileConfiguration config = EvenMoreFish.messageFile.getConfig();
 
+    public String configVersion() {
+        return config.getString("config-version");
+    }
+
     public String getSellMessage() {
         return getSTDPrefix() + config.getString("fish-sale");
     }

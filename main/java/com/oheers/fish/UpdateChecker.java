@@ -2,6 +2,7 @@ package com.oheers.fish;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -9,9 +10,12 @@ import org.bukkit.util.Consumer;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
 
@@ -50,4 +54,9 @@ class UpdateNotify implements Listener {
             }
         }
     }
+}
+
+class FileUpdate {
+
+
 }
