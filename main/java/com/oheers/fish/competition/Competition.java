@@ -65,7 +65,7 @@ public class Competition {
             if (holder == fisher) {
                 if (fish.getLength() > leaderboard.get(holder).getLength()) {
                     leaderboard.remove(holder);
-                    leaderboard.put(holder, fish);
+                    leaderboard.put(fisher, fish);
                     leaderboard = sortByValue(leaderboard);
                     return;
                 }

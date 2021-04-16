@@ -13,10 +13,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class SellGUI {
 
@@ -135,7 +133,7 @@ public class SellGUI {
         this.value = val;
         this.fishCount = count;
 
-        return NumberFormat.getInstance(Locale.US).format(val);
+        return Double.toString(val);
     }
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
