@@ -2,7 +2,6 @@ package com.oheers.fish.competition;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

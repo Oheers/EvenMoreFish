@@ -56,4 +56,8 @@ public class MainConfig {
             return test;
         } else return 5;
     }
+
+    public boolean broadcastOnlyRods() {
+        return config.getBoolean("competitions.broadcast-only-rods");
+    }
 }

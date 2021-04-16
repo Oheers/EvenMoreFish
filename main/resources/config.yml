@@ -53,7 +53,10 @@ competitions:
   # This is the minimum needed amount of players for an automatic competition to start.
   minimum-players: 5
 
+  # Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
+  broadcast-only-rods: true
+
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE.
-config-version: 2
+config-version: 3

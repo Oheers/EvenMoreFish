@@ -78,10 +78,16 @@ public class FishEvent implements Listener, Runnable {
 
                     // Gets whether it's a serverwide announce or not
                     if (fish.getRarity().getAnnounce()) {
-                        // sends it to all online players
-                        for (Player p : Bukkit.getOnlinePlayers()) {
-                            p.sendMessage(msg.toString());
-                        }
+                        // should we only broadcast this information to rod holders?
+                        if (EvenMoreFish.mainConfig.broadcastOnlyRods()) {
+                            // sends it to all players holding ords
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
+                                    p.sendMessage(msg.toString());
+                                }
+                            }
+                        // sends it to everyone
+                        } else for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
                     } else {
                         // sends it to just the fisher
                         player.sendMessage(msg.toString());
