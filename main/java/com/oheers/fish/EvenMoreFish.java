@@ -205,7 +205,7 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void checkConfigVers() {
-        int MSG_CONFIG_VERSION = 2;
+        int MSG_CONFIG_VERSION = 3;
         if (msgs.configVersion() != MSG_CONFIG_VERSION) {
             getLogger().log(Level.SEVERE, "Your messages.yml config is not up to date. This will cause certain values to default to be potentially null." +
                     "If you wish to update, go to the \"Technical Stuff\" part of https://www.spigotmc.org/resources/evenmorefish.91310/ and copy the messages.yml" +
