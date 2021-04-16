@@ -11,6 +11,7 @@ import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
+import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.fishing.FishEvent;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
@@ -22,6 +23,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -47,6 +49,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<Integer, List<Reward>> rewards = new HashMap<>();
     // ^ <Position in competition, list of rewards to be given>
 
+    public static boolean checkingEatEvent;
+
     public static Competition active;
 
     public static ArrayList<SellGUI> guis;
@@ -64,18 +68,15 @@ public class EvenMoreFish extends JavaPlugin {
         msgs = new Messages();
         mainConfig = new MainConfig();
 
-        listeners();
-        commands();
-
         // could not setup permissions.
         if (!setupPermissions()) {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
-            getServer().getPluginManager().disablePlugin(this);
+            //getServer().getPluginManager().disablePlugin(this);
         }
 
         if (!setupEconomy()) {
             Bukkit.getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault economy. Disabling to prevent serious problems.");
-            getServer().getPluginManager().disablePlugin(this);
+            //getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
@@ -89,6 +90,9 @@ public class EvenMoreFish extends JavaPlugin {
         names.loadRarities();
 
         LoadRewards.load();
+
+        listeners();
+        commands();
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -132,6 +136,10 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractHandler(), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
 
+        if (checkingEatEvent) {
+            getServer().getPluginManager().registerEvents(new FishEatEvent(this), this);
+        }
+
     }
 
     private void commands() {
@@ -146,9 +154,6 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
@@ -179,6 +184,9 @@ public class EvenMoreFish extends JavaPlugin {
 
         Names names = new Names();
         names.loadRarities();
+
+        HandlerList.unregisterAll();
+        listeners();
 
         LoadRewards.load();
         AutoRunner.init();

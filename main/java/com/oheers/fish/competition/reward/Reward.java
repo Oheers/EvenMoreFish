@@ -4,14 +4,11 @@ import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -66,7 +63,7 @@ public class Reward {
                 EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));
                 break;
             default:
-                Bukkit.getLogger().log(Level.SEVERE, "Error in reading config.yml file.");
+                Bukkit.getLogger().log(Level.SEVERE, "Error in loading a reward.");
         }
     }
 }

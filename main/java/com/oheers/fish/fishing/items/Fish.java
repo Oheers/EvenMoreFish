@@ -1,6 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.selling.WorthNBT;
 import dev.dbassett.skullcreator.SkullCreator;
 import net.md_5.bungee.api.ChatColor;
@@ -29,6 +30,8 @@ public class Fish {
     Player fisherman;
     Float length;
 
+    List<Reward> eatRewards;
+
     List<Biome> biomes;
 
     double minSize, maxSize;
@@ -39,6 +42,7 @@ public class Fish {
         this.type = setType();
 
         setSize();
+        checkEatEvent();
     }
 
     public ItemStack give(Player fisherman) {
@@ -91,9 +95,20 @@ public class Fish {
         this.fisherman = fisherman;
     }
 
+    public void setLength(Float length) {
+        this.length = length;
+    }
+
     public Float getLength() {
         return length;
     }
+
+    public List<Reward> getEatRewards() {
+
+        return eatRewards;
+    }
+
+    public boolean hasEatRewards() { return eatRewards != null;}
 
     private ItemStack setType() {
 
@@ -175,13 +190,11 @@ public class Fish {
     }
 
     // prepares it to be given to the player
-    public Fish init() {
+    public void init() {
 
         generateSize();
         checkMessage();
         checkEffects();
-
-        return this;
     }
 
     private List<String> generateLore() {
@@ -221,5 +234,20 @@ public class Fish {
 
         nonDamaged.setDamage((int) (Math.random() * (max - min + 1) + min));
         type.setItemMeta((ItemMeta) nonDamaged);
+    }
+
+    public void checkEatEvent() {
+        List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".eat-event");
+        // Checks if the player has actually set rewards for an eat event
+        if (!configRewards.isEmpty()) {
+            // Informs the main class to load up an PlayerItemConsumeEvent listener
+            EvenMoreFish.checkingEatEvent = true;
+            eatRewards = new ArrayList<>();
+
+            // Translates all the rewards into Reward objects and adds them to the fish.
+            for (String reward : configRewards) {
+                this.eatRewards.add(new Reward(reward));
+            }
+        }
     }
 }

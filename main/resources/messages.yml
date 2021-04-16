@@ -8,7 +8,7 @@ contest-end: "&rThe fishing contest has ended."
 # Segments shown in the bossbar when competitions run
 bossbar:
   # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
-  prefix: "&b&lFishing Contest: "
+  prefix: "&a&lFishing Contest: "
   # The abbreviations used for different units of time
   hour: "h"
   minute: "m"

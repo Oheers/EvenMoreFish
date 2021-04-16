@@ -113,6 +113,15 @@ fish:
     Goldfish:
       item:
         material: GOLD_NUGGET
+    Massive Goldfish:
+      item:
+        material: TROPICAL_FISH
+        # The results from the custom event follow the same format as the rewards given in config.yml's competition reward section.
+      eat-event:
+        - "ITEM:GOLD_INGOT,1"
+        - "MESSAGE:&eYou've received a gold ingot!"
+      lore:
+        - "&eEat me for a surprise gift."
     Moustache Pufferfish:
       item:
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDI5MTA1ZTU2YTM2ZDM1NDA4ZjI5MzIxOTI4NzRlMGJiNTMyZTEyY2U2MTA4MDM1ODhjMzdlZDI4N2UwZGE4YyJ9fX0="

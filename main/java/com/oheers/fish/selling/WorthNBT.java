@@ -61,20 +61,6 @@ public class WorthNBT {
         }
     }
 
-    // checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
-    // we only need to check for the length since they're all added in a batch if it's an EMF fish
-    public static boolean isFish(ItemStack i) {
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
-
-        if (i != null) {
-            if (i.hasItemMeta()) {
-                return i.getItemMeta().getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
-            }
-        }
-
-        return false;
-    }
-
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
         NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "default-gui-item");
         ItemMeta itemMeta = defaultGUIItem.getItemMeta();
