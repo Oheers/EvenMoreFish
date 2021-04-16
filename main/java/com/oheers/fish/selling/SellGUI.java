@@ -26,15 +26,18 @@ public class SellGUI {
 
     public double value;
 
+    private boolean error;
+
     public int fishCount;
 
-    private ItemStack sellIcon, filler, confirmIcon;
+    private ItemStack sellIcon, filler, errorFiller, confirmIcon, noValueIcon;
 
     public SellGUI(Player p) {
         this.player = p;
         this.modified = false;
         makeMenu();
-        addFiller();
+        setFiller();
+        addFiller(filler);
         setSellItem();
         this.player.openInventory(menu);
     }
@@ -47,16 +50,23 @@ public class SellGUI {
         return player;
     }
 
-    public void addFiller() {
+    public void setFiller() {
         // the gray glass panes at the bottom
         ItemStack fill = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack error = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta fillMeta = fill.getItemMeta();
+        ItemMeta errMeta = error.getItemMeta();
         fillMeta.setDisplayName(ChatColor.RESET + "");
+        errMeta.setDisplayName(ChatColor.RESET + "");
         fill.setItemMeta(fillMeta);
+        error.setItemMeta(errMeta);
 
         // sets it as a default menu item that won't be dropped in a .close() request
         this.filler = WorthNBT.attributeDefault(fill);
+        this.errorFiller = WorthNBT.attributeDefault(error);
+    }
 
+    public void addFiller(ItemStack fill) {
         menu.setItem(27, fill);
         menu.setItem(28, fill);
         menu.setItem(29, fill);
@@ -66,6 +76,19 @@ public class SellGUI {
         menu.setItem(33, fill);
         menu.setItem(34, fill);
         menu.setItem(35, fill);
+    }
+
+    public void errorFiller() {
+        // the gray glass panes at the bottom
+        ItemStack fill = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta fillMeta = fill.getItemMeta();
+        fillMeta.setDisplayName(ChatColor.RESET + "");
+        fill.setItemMeta(fillMeta);
+
+        // sets it as a default menu item that won't be dropped in a .close() request
+        this.errorFiller = WorthNBT.attributeDefault(fill);
+
+        addFiller(this.filler);
     }
 
     public void setSellItem() {
@@ -94,26 +117,54 @@ public class SellGUI {
         return this.confirmIcon;
     }
 
-    public void createConfirmIcon() {
-        ItemStack confirm = new ItemStack(Material.GOLD_BLOCK);
-        ItemMeta cMeta = confirm.getItemMeta();
-        cMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getConfirmName()));
-        // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
-        List<String> lore = new ArrayList<>();
-        for (String line : EvenMoreFish.msgs.sellLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth()).toString());
-        }
-        cMeta.setLore(lore);
-
-        confirm.setItemMeta(cMeta);
-        glowify(confirm);
-
-        this.confirmIcon = WorthNBT.attributeDefault(confirm);
+    public ItemStack getErrorIcon() {
+        return this.noValueIcon;
     }
 
-    public void setConfirmIcon() {
-        this.menu.setItem(31, null);
-        this.menu.setItem(31, this.confirmIcon);
+    public void createIcon() {
+        String totalWorth = getTotalWorth();
+        if (totalWorth.equals("0.0")) {
+            ItemStack error = new ItemStack(Material.REDSTONE_BLOCK);
+            ItemMeta errorMeta = error.getItemMeta();
+            errorMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getNoValueName()));
+            List<String> lore = new ArrayList<>();
+            for (String line : EvenMoreFish.msgs.noValueLore()) {
+                lore.add(ChatColor.translateAlternateColorCodes('&', line));
+            }
+            errorMeta.setLore(lore);
+            error.setItemMeta(errorMeta);
+            glowify(error);
+            this.noValueIcon = WorthNBT.attributeDefault(error);
+            this.error = true;
+        } else {
+            ItemStack confirm = new ItemStack(Material.GOLD_BLOCK);
+            ItemMeta cMeta = confirm.getItemMeta();
+            cMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getConfirmName()));
+            // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
+            List<String> lore = new ArrayList<>();
+            for (String line : EvenMoreFish.msgs.sellLore()) {
+                lore.add(new Message().setMSG(line).setSellPrice(totalWorth).toString());
+            }
+            cMeta.setLore(lore);
+
+            confirm.setItemMeta(cMeta);
+            glowify(confirm);
+            this.confirmIcon = WorthNBT.attributeDefault(confirm);
+            this.error = false;
+        }
+    }
+
+    public void setIcon() {
+        if (this.error) {
+            this.menu.setItem(31, null);
+            this.menu.setItem(31, this.noValueIcon);
+            this.addFiller(errorFiller);
+        } else {
+            this.menu.setItem(31, null);
+            this.menu.setItem(31, this.confirmIcon);
+            this.addFiller(filler);
+        }
+
     }
 
     public String getTotalWorth() {

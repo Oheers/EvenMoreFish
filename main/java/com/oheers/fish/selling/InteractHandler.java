@@ -37,8 +37,25 @@ public class InteractHandler implements Listener {
                         }
 
                         // makes the player confirm their choice
-                        gui.createConfirmIcon();
-                        gui.setConfirmIcon();
+                        gui.createIcon();
+                        gui.setIcon();
+                        gui.setFiller();
+
+                        gui.setModified(false);
+                        event.setCancelled(true);
+
+                    } else if (clickedItem.isSimilar(gui.getErrorIcon())) {
+                        // cancels on right click
+                        if (event.getAction().equals(InventoryAction.PICKUP_HALF)) {
+                            event.setCancelled(true);
+                            gui.close(false);
+                            return;
+                        }
+
+                        // makes the player confirm their choice
+                        gui.createIcon();
+                        gui.setIcon();
+                        gui.setFiller();
 
                         gui.setModified(false);
                         event.setCancelled(true);
@@ -56,8 +73,8 @@ public class InteractHandler implements Listener {
                         if (gui.getModified()) {
 
                             // the menu has been modified since we last gave the confirmation button, so it sends it again
-                            gui.createConfirmIcon();
-                            gui.setConfirmIcon();
+                            gui.createIcon();
+                            gui.setIcon();
 
                             gui.setModified(false);
                         } else {

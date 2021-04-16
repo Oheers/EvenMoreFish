@@ -128,7 +128,24 @@ public class Messages {
         return config.getString("confirm-gui-name");
     }
 
+    public String getNoValueName() {
+        String s = config.getString("error-gui-name");
+        if (s != null) return s;
+        else return "&c&lCan't Sell";
+    }
+
     public List<String> sellLore() {
         return config.getStringList("sell-gui-lore");
+    }
+
+    public List<String> noValueLore() {
+        List<String> l = config.getStringList("error-gui-lore");
+        if (!l.isEmpty()) return l;
+        else {
+            l.add("&c&lValue: &c$0");
+            l.add("&cAdd your caught fish to this.");
+            l.add("&cGUI to sell them.");
+            return l;
+        }
     }
 }

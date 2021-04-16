@@ -43,14 +43,21 @@ worth-gui-name: "&1&lSell Fish"
 sell-gui-name: "&6&lSELL"
 # The name found on the confirming item in /emf shop
 confirm-gui-name: "&6&lCONFIRM"
+# The name found on the error item in /emf shop when the gui contains no items of value.
+error-gui-name: "&c&lCan't Sell"
 # The lore found on the selling/confirmation item in /emf shop
 sell-gui-lore:
   - "&e&lValue: &e${sell-price}"
   - "&7LEFT CLICK to sell the fish."
   - "&7RIGHT CLICK to cancel."
+# The lore below the error item in /emf shop when the gui contains no items of value.
+error-gui-lore:
+  - "&c&lValue: &c$0"
+  - "&cAdd your caught fish to this."
+  - "&cGUI to sell them."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE.
-config-version: 2
+config-version: 3
