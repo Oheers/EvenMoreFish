@@ -55,7 +55,7 @@ public class Fish {
         fish.setItemMeta(fishMeta);
 
         WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
-        WorthNBT.getValue(fish);
+        addModelData(fish);
 
         return fish;
     }
@@ -248,6 +248,16 @@ public class Fish {
             for (String reward : configRewards) {
                 this.eatRewards.add(new Reward(reward));
             }
+        }
+    }
+
+    private void addModelData(ItemStack fish) {
+        int value = EvenMoreFish.fishFile.getConfig().getInt("fish." + this.rarity.getValue() + "." + this.name + ".item.custom-model-data");
+        if (value != 0) {
+            ItemMeta meta = fish.getItemMeta();
+            meta.setCustomModelData(value);
+            meta.setDisplayName(Integer.toString(value));
+            fish.setItemMeta(meta);
         }
     }
 }

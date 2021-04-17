@@ -138,6 +138,10 @@ fish:
       item:
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Y4MGNjMTQ5MmU0NDY2OGNjY2RiNDAxNzhjM2E2Njg5ZThkZmMwZDIzNGU5ODU1M2ZiN2RlYmMyNmZjYWVhYyJ9fX0="
     Flower Fish:
+      item:
+        # Add custom model data for making texture packs, you can add a material/head-64 value too to change it from the default cod fish.
+        # https://www.planetminecraft.com/forums/communities/texturing/new-1-14-custom-item-models-tuto-578834/
+        custom-model-data: 1234567
       biomes:
         - FLOWER_FOREST
       lore:
