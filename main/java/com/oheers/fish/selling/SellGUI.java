@@ -6,6 +6,7 @@ import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -146,10 +147,12 @@ public class SellGUI {
             this.menu.setItem(31, null);
             this.menu.setItem(31, this.noValueIcon);
             this.addFiller(errorFiller);
+            this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1.0f, 0.0f);
         } else {
             this.menu.setItem(31, null);
             this.menu.setItem(31, this.confirmIcon);
             this.addFiller(filler);
+            this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.75f);
         }
 
     }

@@ -2,6 +2,7 @@ package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -89,6 +90,7 @@ public class InteractHandler implements Listener {
                                         .setSellPrice(Double.toString(gui.getSellPrice()))
                                         .setAmount(Integer.toString(gui.fishCount));
                                 gui.getPlayer().sendMessage(msg.toString());
+                                ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
                             }
                         } else if (clickedItem.isSimilar(gui.getFiller()) || clickedItem.isSimilar(gui.getErrorFiller())) {
                             event.setCancelled(true);
