@@ -256,7 +256,6 @@ public class Fish {
         if (value != 0) {
             ItemMeta meta = fish.getItemMeta();
             meta.setCustomModelData(value);
-            meta.setDisplayName(Integer.toString(value));
             fish.setItemMeta(meta);
         }
     }
