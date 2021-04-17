@@ -58,6 +58,14 @@ public class MainConfig {
     }
 
     public boolean broadcastOnlyRods() {
-        return config.getBoolean("competitions.broadcast-only-rods");
+        return config.getBoolean("broadcast-only-rods");
+    }
+
+    public boolean regionWhitelist() {
+        return config.getStringList("allowed-regions").size() != 0;
+    }
+
+    public List<String> getAllowedRegions() {
+        return config.getStringList("allowed-regions");
     }
 }

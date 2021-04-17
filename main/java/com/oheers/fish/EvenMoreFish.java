@@ -19,6 +19,7 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.GUICache;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
@@ -56,6 +57,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static ArrayList<SellGUI> guis;
 
     public static boolean isUpdateAvailable;
+
+    public static WorldGuardPlugin wgPlugin;
 
     public static final int METRIC_ID = 11054;
 
@@ -102,6 +105,8 @@ public class EvenMoreFish extends JavaPlugin {
         AutoRunner.init();
 
         guis = new ArrayList<>();
+
+        wgPlugin = getWorldGuard();
 
         Metrics metrics = new Metrics(this, METRIC_ID);
 
@@ -218,5 +223,12 @@ public class EvenMoreFish extends JavaPlugin {
                     "If you wish to update, go to the \"Technical Stuff\" part of https://www.spigotmc.org/resources/evenmorefish.91310/ and copy the messages.yml" +
                     " from there, or locate changes and add them manually to preserve current changes");
         }
+    }
+
+    /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
+       can't find the plugin. */
+    public WorldGuardPlugin getWorldGuard() {
+
+        return (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
     }
 }

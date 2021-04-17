@@ -4,6 +4,7 @@ version: 1.1.0
 main: com.oheers.fish.EvenMoreFish
 api-version: 1.16
 depend: [Vault]
+softdepend: [WorldGuard]
 
 commands:
   evenmorefish:
