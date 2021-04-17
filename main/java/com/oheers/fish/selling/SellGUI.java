@@ -200,6 +200,10 @@ public class SellGUI {
         return this.filler;
     }
 
+    public ItemStack getErrorFiller() {
+        return this.errorFiller;
+    }
+
     public void setMenu(Inventory inv) {
         this.menu = inv;
     }
