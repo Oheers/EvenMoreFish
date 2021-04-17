@@ -78,19 +78,6 @@ public class SellGUI {
         menu.setItem(35, fill);
     }
 
-    public void errorFiller() {
-        // the gray glass panes at the bottom
-        ItemStack fill = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta fillMeta = fill.getItemMeta();
-        fillMeta.setDisplayName(ChatColor.RESET + "");
-        fill.setItemMeta(fillMeta);
-
-        // sets it as a default menu item that won't be dropped in a .close() request
-        this.errorFiller = WorthNBT.attributeDefault(fill);
-
-        addFiller(this.filler);
-    }
-
     public void setSellItem() {
         ItemStack sIcon = new ItemStack(Material.GOLD_INGOT);
         ItemMeta sellMeta = sIcon.getItemMeta();

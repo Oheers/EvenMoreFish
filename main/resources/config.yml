@@ -53,8 +53,13 @@ competitions:
   # This is the minimum needed amount of players for an automatic competition to start.
   minimum-players: 5
 
-  # Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
-  broadcast-only-rods: true
+# Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
+broadcast-only-rods: true
+
+# Uncomment the below section to enable this feature. It sets the plugin to only give custom fish when users are
+# in a list of set defined regions (this requires the worldguard plugin).
+#allowed-regions:
+#  - "fishing"
 
 
 # ATTENTION ATTENTION ATTENTION
