@@ -1,10 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.config.messages.Messages;
-import com.oheers.fish.selling.GUICache;
 import com.oheers.fish.selling.SellGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -182,7 +179,7 @@ class Controls{
                 if (args[2].equalsIgnoreCase("start")) {
                     // if the admin has only done /emf admin competition start
                     if (args.length < 4) {
-                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration()), player);
+                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration()*60), player);
                     } else {
                         startComp(args[3], player);
                     }
