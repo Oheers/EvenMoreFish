@@ -85,7 +85,7 @@ public class InteractHandler implements Listener {
                                 EvenMoreFish.econ.depositPlayer(((Player) event.getWhoClicked()).getPlayer(), gui.value);
 
                                 // sending the sell message to the player
-                                Message msg = new Message()
+                                Message msg = new Message((Player) event.getWhoClicked())
                                         .setMSG(EvenMoreFish.msgs.getSellMessage())
                                         .setSellPrice(Double.toString(gui.getSellPrice()))
                                         .setAmount(Integer.toString(gui.fishCount));

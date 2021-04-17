@@ -1,5 +1,8 @@
-fish-caught: "&l{player} &rhas fished a {length} {rarity} {fish}!"
+# If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
+# Sent to players when they fish an EvenMoreFish fish
+fish-caught: "&l{player} &rhas fished a {length} {rarity} {fish}!"
+# Sent to a player when they don't have permission to execute a command.
 no-permission: "&cYou don't have permission to run that command."
 
 # The message to be sent when a competition starts and ends
@@ -23,10 +26,10 @@ prefix-admin: "&c"
 # The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command
 prefix-error: "&c"
 
-# The format of commands in /emf help
+# The format of commands in /emf help (this message doesn't support papi placeholders)
 help: "/{command} - {description}"
 
-# The format of the leaderboard after a competition is over
+# The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
 leaderboard: "&r&l{position} &r| {player} - {length} {rarity} {fish}"
 # The number of positions shown in the leaderboard - can't be less than 1.
 leaderboard-count: 5

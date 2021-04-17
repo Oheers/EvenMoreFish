@@ -79,7 +79,7 @@ public class FishEvent implements Listener, Runnable {
                     // checks if the fish can have durability, and if it's set in the config it receives random durability
                     if (checkBreakable(fish.getType().getType())) fish.randomBreak();
 
-                    Message msg = new Message()
+                    Message msg = new Message(player)
                             .setMSG(EvenMoreFish.msgs.getFishCaught())
                             .setPlayer(player.getName())
                             .setColour(fish.getRarity().getColour())

@@ -86,7 +86,7 @@ public class SellGUI {
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
         List<String> lore = new ArrayList<>();
         for (String line : EvenMoreFish.msgs.sellLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth()).toString());
+            lore.add(new Message(this.player).setMSG(line).setSellPrice(getTotalWorth()).toString());
         }
         sellMeta.setLore(lore);
 
@@ -131,7 +131,7 @@ public class SellGUI {
             // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
             List<String> lore = new ArrayList<>();
             for (String line : EvenMoreFish.msgs.sellLore()) {
-                lore.add(new Message().setMSG(line).setSellPrice(totalWorth).toString());
+                lore.add(new Message(this.player).setMSG(line).setSellPrice(totalWorth).toString());
             }
             cMeta.setLore(lore);
 

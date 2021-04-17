@@ -59,6 +59,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean isUpdateAvailable;
 
     public static WorldGuardPlugin wgPlugin;
+    public static boolean papi;
 
     public static final int METRIC_ID = 11054;
 
@@ -107,6 +108,7 @@ public class EvenMoreFish extends JavaPlugin {
         guis = new ArrayList<>();
 
         wgPlugin = getWorldGuard();
+        checkPapi();
 
         Metrics metrics = new Metrics(this, METRIC_ID);
 
@@ -227,8 +229,12 @@ public class EvenMoreFish extends JavaPlugin {
 
     /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
        can't find the plugin. */
-    public WorldGuardPlugin getWorldGuard() {
+    private WorldGuardPlugin getWorldGuard() {
 
         return (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
+    }
+
+    private void checkPapi() {
+        papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 }
