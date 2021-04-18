@@ -50,15 +50,23 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 break;
             case "top":
-                if (EvenMoreFish.active == null) {
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
+                if (EvenMoreFish.permission.has(sender, "emf.top")) {
+                    if (EvenMoreFish.active == null) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
+                    } else {
+                        sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
+                    }
                 } else {
-                    sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
+                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
                 }
                 break;
             case "shop":
-                SellGUI gui = new SellGUI(sender);
-                EvenMoreFish.guis.add(gui);
+                if (EvenMoreFish.permission.has(sender, "emf.shop")) {
+                    SellGUI gui = new SellGUI(sender);
+                    EvenMoreFish.guis.add(gui);
+                } else {
+                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                }
                 break;
             default:
                 sender.sendMessage(Help.std_help);
