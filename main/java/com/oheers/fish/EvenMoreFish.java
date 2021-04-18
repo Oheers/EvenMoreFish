@@ -60,6 +60,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static WorldGuardPlugin wgPlugin;
     public static boolean papi;
+    public static boolean vault;
 
     public static final int METRIC_ID = 11054;
 
@@ -75,13 +76,11 @@ public class EvenMoreFish extends JavaPlugin {
         // could not setup permissions.
         if (!setupPermissions()) {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
-            //getServer().getPluginManager().disablePlugin(this);
+            getServer().getPluginManager().disablePlugin(this);
         }
 
         if (!setupEconomy()) {
-            Bukkit.getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault economy. Disabling to prevent serious problems.");
-            //getServer().getPluginManager().disablePlugin(this);
-            return;
+            Bukkit.getLogger().log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
         }
 
         // async check for updates on the spigot page
@@ -161,18 +160,20 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        econ = rsp.getProvider();
-        return econ != null;
+        if (mainConfig.isEconomyEnabled()) {
+            RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+            if (rsp == null) {
+                return false;
+            }
+            econ = rsp.getProvider();
+            return econ != null;
+        } else return false;
+
     }
 
     // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
     private void terminateSellGUIS() {
         for (SellGUI gui : guis) {
-            System.out.println(gui);
             GUICache.attemptPop(gui.getPlayer(), true);
         }
         guis.clear();

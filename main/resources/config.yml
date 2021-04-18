@@ -12,6 +12,9 @@ database: true
 # instead of always full durability?
 random-durability: true
 
+# Should the plugin hook into vault economy? Having this disabled will only disable /emf shop.
+enable-economy: true
+
 
 competitions:
 

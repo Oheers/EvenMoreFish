@@ -68,4 +68,8 @@ public class MainConfig {
     public List<String> getAllowedRegions() {
         return config.getStringList("allowed-regions");
     }
+
+    public boolean isEconomyEnabled() {
+        return config.getBoolean("enable-economy");
+    }
 }

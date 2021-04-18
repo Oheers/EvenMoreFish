@@ -61,12 +61,17 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 break;
             case "shop":
-                if (EvenMoreFish.permission.has(sender, "emf.shop")) {
-                    SellGUI gui = new SellGUI(sender);
-                    EvenMoreFish.guis.add(gui);
+                if (EvenMoreFish.vault) {
+                    if (EvenMoreFish.permission.has(sender, "emf.shop")) {
+                        SellGUI gui = new SellGUI(sender);
+                        EvenMoreFish.guis.add(gui);
+                    } else {
+                        sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                    }
                 } else {
-                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.economyDisabled()).toString());
                 }
+
                 break;
             default:
                 sender.sendMessage(Help.std_help);
