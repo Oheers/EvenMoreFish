@@ -4,9 +4,13 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.List;
 
 public class FishUtils {
 
@@ -49,5 +53,26 @@ public class FishUtils {
         fish.setLength(lengthFloat);
 
         return fish;
+    }
+
+    public static void giveItems(List<ItemStack> items, Player player) {
+        int slots = 0;
+
+        for (ItemStack is : player.getInventory().getStorageContents()) {
+            if (is == null) {
+                slots++;
+            }
+        }
+
+        for (ItemStack item : items) {
+            if (slots > 0) {
+                player.getInventory().addItem(item);
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.5f);
+            } else {
+                player.getLocation().getWorld().dropItem(player.getLocation(), item);
+            }
+        }
+
+        System.out.println("slots: " + slots);
     }
 }

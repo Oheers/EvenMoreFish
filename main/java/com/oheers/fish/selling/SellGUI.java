@@ -212,23 +212,27 @@ public class SellGUI {
 
     // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
     private void rescueAllItems() {
+        List<ItemStack> throwing = new ArrayList<>();
         for (ItemStack i : this.menu) {
             if (i != null) {
                 if (!WorthNBT.isDefault(i)) {
-                    this.player.getLocation().getWorld().dropItem(this.player.getLocation(), i);
+                    throwing.add(i);
                 }
             }
         }
+        FishUtils.giveItems(throwing, this.player);
     }
 
     private void rescueNonFish() {
+        List<ItemStack> throwing = new ArrayList<>();
         for (ItemStack i : this.menu) {
             if (i != null) {
                 if (!(WorthNBT.isDefault(i)) && !(FishUtils.isFish(i))) {
-                    this.player.getLocation().getWorld().dropItem(this.player.getLocation(), i);
+                    throwing.add(i);
                 }
             }
         }
+        FishUtils.giveItems(throwing, this.player);
     }
 
     private void glowify(ItemStack i) {

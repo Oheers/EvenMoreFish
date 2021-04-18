@@ -1,6 +1,7 @@
 package com.oheers.fish.fishing;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
@@ -21,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,6 +56,14 @@ public class FishEvent implements Listener, Runnable {
 
     @EventHandler
     public void onFish(PlayerFishEvent event) {
+
+        FishUtils.giveItems(Arrays.asList(
+                new ItemStack(Material.ACACIA_BOAT),
+                new ItemStack(Material.CACTUS, 6),
+                new ItemStack(Material.EGG),
+                new ItemStack(Material.YELLOW_BANNER),
+                new ItemStack(Material.OAK_BOAT)
+        ), event.getPlayer());
 
         if (EvenMoreFish.mainConfig.getEnabled()) {
 
