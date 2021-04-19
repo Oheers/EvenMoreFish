@@ -69,4 +69,4 @@ broadcast-only-rods: true
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 3
+config-version: 4

@@ -229,7 +229,7 @@ public class EvenMoreFish extends JavaPlugin {
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
         }
 
-        int MAIN_CONFIG_VERSION = 3;
+        int MAIN_CONFIG_VERSION = 4;
         if (mainConfig.configVersion() > MAIN_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your config.yml config is not up to date. Certain new configurable features may have been added, and without" +
             " an updated config, you won't be able to modify them. To update, either delete your config.yml file and restart the server to create a new" +
