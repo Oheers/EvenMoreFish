@@ -1,12 +1,13 @@
 package com.oheers.fish.config.messages;
 
+import com.oheers.fish.EvenMoreFish;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class Message {
@@ -15,8 +16,11 @@ public class Message {
     // all the others are values that don't need to be set.
 
     String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice;
+    Player p;
 
-    public Message() {}
+    public Message(Player p) {
+        this.p = p;
+    }
 
     public Message setMSG(String msg) {
         this.msg = msg;
@@ -110,6 +114,13 @@ public class Message {
 
         if (sellprice != null) {
             msg = msg.replace("{sell-price}", NumberFormat.getInstance(Locale.US).format(new BigDecimal(sellprice)));
+        }
+
+        if (EvenMoreFish.papi) {
+            if (p != null) {
+                msg = PlaceholderAPI.setPlaceholders(p, msg);
+            }
+
         }
 
         return ChatColor.translateAlternateColorCodes('&', msg);

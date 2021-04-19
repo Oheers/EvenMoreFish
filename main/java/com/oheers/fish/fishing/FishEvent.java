@@ -1,19 +1,13 @@
 package com.oheers.fish.fishing;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
@@ -61,7 +55,7 @@ public class FishEvent implements Listener, Runnable {
 
                 if (competitionOnlyCheck()) {
 
-                    if (!regionCheck(event.getHook().getLocation())) {
+                    if (!FishUtils.checkRegion(event.getHook().getLocation())) {
                         return;
                     }
 
@@ -79,7 +73,7 @@ public class FishEvent implements Listener, Runnable {
                     // checks if the fish can have durability, and if it's set in the config it receives random durability
                     if (checkBreakable(fish.getType().getType())) fish.randomBreak();
 
-                    Message msg = new Message()
+                    Message msg = new Message(player)
                             .setMSG(EvenMoreFish.msgs.getFishCaught())
                             .setPlayer(player.getName())
                             .setColour(fish.getRarity().getColour())
@@ -200,28 +194,6 @@ public class FishEvent implements Listener, Runnable {
         }
 
         return false;
-    }
-
-    private boolean regionCheck(Location l) {
-        if (EvenMoreFish.mainConfig.regionWhitelist()) {
-            // Gets the user defined whitelisted regions
-            List<String> whitelistedRegions = EvenMoreFish.mainConfig.getAllowedRegions();
-            try {
-                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                RegionQuery query = container.createQuery();
-                ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
-                for (ProtectedRegion pr : set) {
-                    if (whitelistedRegions.contains(pr.getId())) return true;
-                }
-                return false;
-            } catch (NoClassDefFoundError error) {
-                Bukkit.getLogger().log(Level.WARNING, "Please install WorldGuard to enable region-specific fishing.");
-                return true;
-            }
-
-        } else {
-            return true;
-        }
     }
 
     @Override

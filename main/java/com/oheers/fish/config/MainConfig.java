@@ -51,8 +51,8 @@ public class MainConfig {
     }
 
     public int getMinimumPlayers() {
-        Integer test = config.getInt("competitions.minimum-players");
-        if (test != null) {
+        int test = config.getInt("competitions.minimum-players");
+        if (test != 0) {
             return test;
         } else return 5;
     }
@@ -62,10 +62,18 @@ public class MainConfig {
     }
 
     public boolean regionWhitelist() {
+        for (String s : config.getStringList("allowed-regions")) {
+            System.out.println("ww: " + s);
+        }
+        System.out.println("size: " + config.getStringList("allowed-regions").size());
         return config.getStringList("allowed-regions").size() != 0;
     }
 
     public List<String> getAllowedRegions() {
         return config.getStringList("allowed-regions");
+    }
+
+    public boolean isEconomyEnabled() {
+        return config.getBoolean("enable-economy");
     }
 }

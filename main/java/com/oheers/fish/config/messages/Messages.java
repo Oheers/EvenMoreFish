@@ -148,4 +148,8 @@ public class Messages {
             return l;
         }
     }
+
+    public String economyDisabled() {
+        return getErrorPrefix() + "EvenMoreFish's economy features are disabled.";
+    }
 }

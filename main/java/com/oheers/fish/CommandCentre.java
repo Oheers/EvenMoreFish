@@ -46,19 +46,32 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
                 } else {
-                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
                 }
                 break;
             case "top":
-                if (EvenMoreFish.active == null) {
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
+                if (EvenMoreFish.permission.has(sender, "emf.top")) {
+                    if (EvenMoreFish.active == null) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
+                    } else {
+                        sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
+                    }
                 } else {
-                    sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
+                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
                 }
                 break;
             case "shop":
-                SellGUI gui = new SellGUI(sender);
-                EvenMoreFish.guis.add(gui);
+                if (EvenMoreFish.vault) {
+                    if (EvenMoreFish.permission.has(sender, "emf.shop")) {
+                        SellGUI gui = new SellGUI(sender);
+                        EvenMoreFish.guis.add(gui);
+                    } else {
+                        sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                    }
+                } else {
+                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.economyDisabled()).toString());
+                }
+
                 break;
             default:
                 sender.sendMessage(Help.std_help);
@@ -163,7 +176,7 @@ class Controls{
                 plugin.reload();
 
                 Bukkit.getPluginManager().getPlugin("EvenMoreFish").reloadConfig();
-                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getReloaded()).toString());
+                sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getReloaded()).toString());
                 break;
 
             default:
@@ -261,7 +274,8 @@ class Help {
         out.append(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getSTDPrefix() + "----- &a&lEvenMoreFish &r-----\n"));
 
         for (String s : dictionary.keySet()) {
-            out.append(new Message().setCMD(s).setDesc(dictionary.get(s)).setMSG(EvenMoreFish.msgs.getEMFHelp()).toString()).append("\n");
+            // we pass a null into here since there's no need to use placeholders in a help message.
+            out.append(new Message(null).setCMD(s).setDesc(dictionary.get(s)).setMSG(EvenMoreFish.msgs.getEMFHelp()).toString()).append("\n");
         }
 
         return out.toString();

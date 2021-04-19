@@ -25,6 +25,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -59,6 +60,9 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean isUpdateAvailable;
 
     public static WorldGuardPlugin wgPlugin;
+    public static String guardPL;
+    public static boolean papi;
+    public static boolean vault;
 
     public static final int METRIC_ID = 11054;
 
@@ -74,13 +78,11 @@ public class EvenMoreFish extends JavaPlugin {
         // could not setup permissions.
         if (!setupPermissions()) {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
-            //getServer().getPluginManager().disablePlugin(this);
+            getServer().getPluginManager().disablePlugin(this);
         }
 
         if (!setupEconomy()) {
-            Bukkit.getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault economy. Disabling to prevent serious problems.");
-            //getServer().getPluginManager().disablePlugin(this);
-            return;
+            Bukkit.getLogger().log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
         }
 
         // async check for updates on the spigot page
@@ -88,6 +90,13 @@ public class EvenMoreFish extends JavaPlugin {
             checkUpdate();
             checkConfigVers();
         });
+
+        // checks against both support region plugins and sets an active plugin (worldguard is priority)
+        if (checkWG()) {
+            guardPL = "worldguard";
+        } else if (checkRP()) {
+            guardPL = "redprotect";
+        }
 
         Names names = new Names();
         names.loadRarities();
@@ -107,6 +116,7 @@ public class EvenMoreFish extends JavaPlugin {
         guis = new ArrayList<>();
 
         wgPlugin = getWorldGuard();
+        checkPapi();
 
         Metrics metrics = new Metrics(this, METRIC_ID);
 
@@ -159,18 +169,20 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private boolean setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        econ = rsp.getProvider();
-        return econ != null;
+        if (mainConfig.isEconomyEnabled()) {
+            RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+            if (rsp == null) {
+                return false;
+            }
+            econ = rsp.getProvider();
+            return econ != null;
+        } else return false;
+
     }
 
     // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
     private void terminateSellGUIS() {
         for (SellGUI gui : guis) {
-            System.out.println(gui);
             GUICache.attemptPop(gui.getPlayer(), true);
         }
         guis.clear();
@@ -211,14 +223,14 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void checkConfigVers() {
         int MSG_CONFIG_VERSION = 3;
-        if (msgs.configVersion() != MSG_CONFIG_VERSION) {
+        if (msgs.configVersion() > MSG_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your messages.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
         }
 
-        int MAIN_CONFIG_VERSION = 3;
-        if (mainConfig.configVersion() != MAIN_CONFIG_VERSION) {
+        int MAIN_CONFIG_VERSION = 4;
+        if (mainConfig.configVersion() > MAIN_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your config.yml config is not up to date. Certain new configurable features may have been added, and without" +
             " an updated config, you won't be able to modify them. To update, either delete your config.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
@@ -227,8 +239,21 @@ public class EvenMoreFish extends JavaPlugin {
 
     /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
        can't find the plugin. */
-    public WorldGuardPlugin getWorldGuard() {
-
+    private WorldGuardPlugin getWorldGuard() {
         return (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
+    }
+
+    private void checkPapi() {
+        papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
+    }
+
+    private boolean checkRP(){
+        Plugin pRP = Bukkit.getPluginManager().getPlugin("RedProtect");
+        return pRP != null;
+    }
+
+    private boolean checkWG(){
+        Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
+        return pWG != null;
     }
 }
