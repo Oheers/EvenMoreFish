@@ -25,6 +25,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -59,6 +60,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean isUpdateAvailable;
 
     public static WorldGuardPlugin wgPlugin;
+    public static String guardPL;
     public static boolean papi;
     public static boolean vault;
 
@@ -88,6 +90,13 @@ public class EvenMoreFish extends JavaPlugin {
             checkUpdate();
             checkConfigVers();
         });
+
+        // checks against both support region plugins and sets an active plugin (worldguard is priority)
+        if (checkWG()) {
+            guardPL = "worldguard";
+        } else if (checkRP()) {
+            guardPL = "redprotect";
+        }
 
         Names names = new Names();
         names.loadRarities();
@@ -231,11 +240,20 @@ public class EvenMoreFish extends JavaPlugin {
     /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
        can't find the plugin. */
     private WorldGuardPlugin getWorldGuard() {
-
         return (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
     }
 
     private void checkPapi() {
         papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
+    }
+
+    private boolean checkRP(){
+        Plugin pRP = Bukkit.getPluginManager().getPlugin("RedProtect");
+        return pRP != null;
+    }
+
+    private boolean checkWG(){
+        Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
+        return pWG != null;
     }
 }

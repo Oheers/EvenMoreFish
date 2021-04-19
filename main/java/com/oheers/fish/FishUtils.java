@@ -1,8 +1,17 @@
 package com.oheers.fish;
 
+import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
+import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -11,6 +20,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
+import java.util.logging.Level;
 
 public class FishUtils {
 
@@ -75,4 +85,49 @@ public class FishUtils {
 
         System.out.println("slots: " + slots);
     }
+
+    public static boolean checkRegion(Location l) {
+        // if there's any region plugin installed
+        if (EvenMoreFish.guardPL != null) {
+            // if the user has defined a region whitelist
+            if (EvenMoreFish.mainConfig.regionWhitelist()) {
+
+                // Gets a list of user defined regions
+                List<String> whitelistedRegions = EvenMoreFish.mainConfig.getAllowedRegions();
+
+                if (EvenMoreFish.guardPL.equals("worldguard")) {
+
+                    // Creates a query for whether the player is stood in a protectedregion defined by the user
+                    RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+                    RegionQuery query = container.createQuery();
+                    ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
+
+                    // runs the query
+                    for (ProtectedRegion pr : set) {
+                        System.out.println("4");
+                        if (whitelistedRegions.contains(pr.getId())) return true;
+                    }
+                    return false;
+                } else if (EvenMoreFish.guardPL.equals("redprotect")) {
+                    Region r = RedProtect.get().getAPI().getRegion(l);
+                    // if the hook is in any redprotect region
+                    if (r != null) {
+                        // if the hook is in a whitelisted region
+                        if (whitelistedRegions.contains(r.getName())) {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                } else {
+                    // the user has defined a region whitelist but doesn't have a region plugin.
+                    Bukkit.getLogger().log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
+                    return true;
+                }
+            }
+            return true;
+        }
+        return true;
+    }
+
 }

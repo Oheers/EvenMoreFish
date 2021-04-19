@@ -6,15 +6,8 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
@@ -22,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -57,21 +49,13 @@ public class FishEvent implements Listener, Runnable {
     @EventHandler
     public void onFish(PlayerFishEvent event) {
 
-        FishUtils.giveItems(Arrays.asList(
-                new ItemStack(Material.ACACIA_BOAT),
-                new ItemStack(Material.CACTUS, 6),
-                new ItemStack(Material.EGG),
-                new ItemStack(Material.YELLOW_BANNER),
-                new ItemStack(Material.OAK_BOAT)
-        ), event.getPlayer());
-
         if (EvenMoreFish.mainConfig.getEnabled()) {
 
             if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
 
                 if (competitionOnlyCheck()) {
 
-                    if (!regionCheck(event.getHook().getLocation())) {
+                    if (!FishUtils.checkRegion(event.getHook().getLocation())) {
                         return;
                     }
 
@@ -210,28 +194,6 @@ public class FishEvent implements Listener, Runnable {
         }
 
         return false;
-    }
-
-    private boolean regionCheck(Location l) {
-        if (EvenMoreFish.mainConfig.regionWhitelist()) {
-            // Gets the user defined whitelisted regions
-            List<String> whitelistedRegions = EvenMoreFish.mainConfig.getAllowedRegions();
-            try {
-                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                RegionQuery query = container.createQuery();
-                ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
-                for (ProtectedRegion pr : set) {
-                    if (whitelistedRegions.contains(pr.getId())) return true;
-                }
-                return false;
-            } catch (NoClassDefFoundError error) {
-                Bukkit.getLogger().log(Level.WARNING, "Please install WorldGuard to enable region-specific fishing.");
-                return true;
-            }
-
-        } else {
-            return true;
-        }
     }
 
     @Override
