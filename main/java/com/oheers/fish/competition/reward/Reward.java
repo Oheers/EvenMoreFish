@@ -22,11 +22,14 @@ public class Reward {
     public Reward(String value) {
         String[] split = value.split(":");
 
-        if (split.length != 2) {
+        if (split.length < 2) {
             Bukkit.getLogger().log(Level.WARNING, value + " is not formatted correctly. It won't be given as a reward");
             this.type = RewardType.EMPTY;
         } else {
-            action = split[1];
+            StringBuilder action = new StringBuilder();
+            for (int i=1; i<split.length; i++) action.append(split[i]);
+            this.action = action.toString();
+
             switch (split[0].toUpperCase()) {
                 case "COMMAND": this.type = RewardType.COMMAND;
                     break;
