@@ -62,7 +62,6 @@ public class EvenMoreFish extends JavaPlugin {
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
-    public static boolean vault;
 
     public static final int METRIC_ID = 11054;
 
@@ -75,14 +74,16 @@ public class EvenMoreFish extends JavaPlugin {
         msgs = new Messages();
         mainConfig = new MainConfig();
 
-        // could not setup permissions.
+        if (mainConfig.isEconomyEnabled()) {
+            // could not setup economy.
+            if (!setupEconomy()) {
+                Bukkit.getLogger().log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
+            }
+        }
+
         if (!setupPermissions()) {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
             getServer().getPluginManager().disablePlugin(this);
-        }
-
-        if (!setupEconomy()) {
-            Bukkit.getLogger().log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
         }
 
         // async check for updates on the spigot page

@@ -61,7 +61,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 break;
             case "shop":
-                if (EvenMoreFish.vault) {
+                if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
                     if (EvenMoreFish.permission.has(sender, "emf.shop")) {
                         SellGUI gui = new SellGUI(sender);
                         EvenMoreFish.guis.add(gui);
