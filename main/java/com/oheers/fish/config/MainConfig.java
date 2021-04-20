@@ -62,10 +62,6 @@ public class MainConfig {
     }
 
     public boolean regionWhitelist() {
-        for (String s : config.getStringList("allowed-regions")) {
-            System.out.println("ww: " + s);
-        }
-        System.out.println("size: " + config.getStringList("allowed-regions").size());
         return config.getStringList("allowed-regions").size() != 0;
     }
 

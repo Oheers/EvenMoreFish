@@ -82,8 +82,6 @@ public class FishUtils {
                 player.getLocation().getWorld().dropItem(player.getLocation(), item);
             }
         }
-
-        System.out.println("slots: " + slots);
     }
 
     public static boolean checkRegion(Location l) {
@@ -104,7 +102,6 @@ public class FishUtils {
 
                     // runs the query
                     for (ProtectedRegion pr : set) {
-                        System.out.println("4");
                         if (whitelistedRegions.contains(pr.getId())) return true;
                     }
                     return false;
@@ -113,10 +110,7 @@ public class FishUtils {
                     // if the hook is in any redprotect region
                     if (r != null) {
                         // if the hook is in a whitelisted region
-                        if (whitelistedRegions.contains(r.getName())) {
-                            return true;
-                        }
-                        return false;
+                        return whitelistedRegions.contains(r.getName());
                     }
                     return false;
                 } else {
