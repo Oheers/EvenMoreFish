@@ -12,6 +12,7 @@ import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.events.FishEatEvent;
+import com.oheers.fish.events.FishInteractEvent;
 import com.oheers.fish.fishing.FishEvent;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
@@ -52,6 +53,7 @@ public class EvenMoreFish extends JavaPlugin {
     // ^ <Position in competition, list of rewards to be given>
 
     public static boolean checkingEatEvent;
+    public static boolean checkingIntEvent;
 
     public static Competition active;
 
@@ -154,6 +156,10 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (checkingEatEvent) {
             getServer().getPluginManager().registerEvents(new FishEatEvent(this), this);
+        }
+
+        if (checkingIntEvent) {
+            getServer().getPluginManager().registerEvents(new FishInteractEvent(this), this);
         }
 
     }

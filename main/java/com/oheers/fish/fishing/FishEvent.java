@@ -104,7 +104,7 @@ public class FishEvent implements Listener, Runnable {
 
                     // a much less smoothbrain way of dropping the fish
                     Item nonCustom = (Item) event.getCaught();
-                    nonCustom.setItemStack(fish.give(event.getPlayer()));
+                    nonCustom.setItemStack(fish.give());
 
                     if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
                         this.player = player;
