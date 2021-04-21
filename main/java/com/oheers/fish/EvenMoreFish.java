@@ -193,6 +193,8 @@ public class EvenMoreFish extends JavaPlugin {
 
         terminateSellGUIS();
 
+        setupEconomy();
+
         fish = new HashMap<>();
         fishCollection = new HashMap<>();
         rewards = new HashMap<>();
