@@ -13,6 +13,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 
@@ -46,7 +47,7 @@ public class FishEvent implements Listener, Runnable {
             "FLINT_AND_STEEL"
     );
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST)
     public void onFish(PlayerFishEvent event) {
 
         if (EvenMoreFish.mainConfig.getEnabled()) {
