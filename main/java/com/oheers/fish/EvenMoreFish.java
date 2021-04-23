@@ -154,6 +154,10 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractHandler(), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
 
+        optionalListeners();
+    }
+
+    private void optionalListeners() {
         if (checkingEatEvent) {
             getServer().getPluginManager().registerEvents(new FishEatEvent(this), this);
         }
@@ -161,7 +165,6 @@ public class EvenMoreFish extends JavaPlugin {
         if (checkingIntEvent) {
             getServer().getPluginManager().registerEvents(new FishInteractEvent(this), this);
         }
-
     }
 
     private void commands() {
@@ -211,8 +214,9 @@ public class EvenMoreFish extends JavaPlugin {
         Names names = new Names();
         names.loadRarities();
 
-        HandlerList.unregisterAll();
-        listeners();
+        HandlerList.unregisterAll(new FishEatEvent(this));
+        HandlerList.unregisterAll(new FishInteractEvent(this));
+        optionalListeners();
 
         LoadRewards.load();
         AutoRunner.init();
