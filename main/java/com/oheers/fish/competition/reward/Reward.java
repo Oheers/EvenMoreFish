@@ -30,20 +30,12 @@ public class Reward {
             for (int i=1; i<split.length; i++) action.append(split[i]);
             this.action = action.toString();
 
-            switch (split[0].toUpperCase()) {
-                case "COMMAND": this.type = RewardType.COMMAND;
-                    break;
-                case "EFFECT": this.type = RewardType.EFFECT;
-                    break;
-                case "ITEM": this.type = RewardType.ITEM;
-                    break;
-                case "MESSAGE": this.type = RewardType.MESSAGE;
-                    break;
-                case "MONEY": this.type = RewardType.MONEY;
-                    break;
-                default:
-                    this.type = RewardType.EMPTY;
+            try {
+                this.type = RewardType.valueOf(split[0].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                this.type = RewardType.EMPTY;
             }
+
         }
     }
 
@@ -56,6 +48,21 @@ public class Reward {
                 String[] parsedEffect = action.split(",");
                 // Adds a potion effect in accordance to the config.yml "EFFECT:" value
                 player.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2])*20, Integer.parseInt(parsedEffect[1])));
+                break;
+            case HEALTH:
+                // checking the player doesn't have a special effect thingy on
+                if (!(player.getHealth() > 20)) {
+                    double newhealth = player.getHealth() + Integer.parseInt(action);
+                    // checking the new health won't go above 20
+                    if (newhealth > 20) {
+                        player.setHealth(20);
+                    } else {
+                        player.setHealth(newhealth);
+                    }
+                }
+                break;
+            case HUNGER:
+                player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(action));
                 break;
             case ITEM:
                 String[] parsedItem = action.split(",");

@@ -266,9 +266,7 @@ public class Fish {
     public void checkIntEvent() {
         List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".interact-event");
         // Checks if the player has actually set rewards for an eat event
-        System.out.println("query: " + EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".interact-event"));
         if (!configRewards.isEmpty()) {
-            System.out.println("3");
             // Informs the main class to load up an PlayerItemConsumeEvent listener
             EvenMoreFish.checkingIntEvent = true;
             this.eventType = "int";
