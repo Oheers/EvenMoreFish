@@ -7,11 +7,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collections;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public class Reward {
@@ -39,10 +41,17 @@ public class Reward {
         }
     }
 
+    Plugin plugin = Bukkit.getPluginManager().getPlugin("EvenMoreFish");
+
     public void run(Player player) {
         switch (type) {
             case COMMAND:
-                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), action.replace("{player}", player.getName()));
+                try {
+                    Bukkit.getScheduler().callSyncMethod( plugin, () ->
+                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), action.replace("{player}", player.getName()))).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
                 break;
             case EFFECT:
                 String[] parsedEffect = action.split(",");
