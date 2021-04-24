@@ -2,6 +2,7 @@ package com.oheers.fish.competition.reward;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,7 +14,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collections;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public class Reward {
@@ -28,12 +28,12 @@ public class Reward {
             Bukkit.getLogger().log(Level.WARNING, value + " is not formatted correctly. It won't be given as a reward");
             this.type = RewardType.EMPTY;
         } else {
-            StringBuilder action = new StringBuilder();
-            for (int i=1; i<split.length; i++) action.append(split[i]);
-            this.action = action.toString();
-
             try {
+                // getting the value, imagine split being "COMMAND", "evenmorefish", "emf shop"
                 this.type = RewardType.valueOf(split[0].toUpperCase());
+                // joins the action by the removed ":" joiner
+                this.action = StringUtils.join(split, ":", 1, split.length);
+            // the value isn't one that can be used
             } catch (IllegalArgumentException e) {
                 this.type = RewardType.EMPTY;
             }
@@ -46,12 +46,10 @@ public class Reward {
     public void run(Player player) {
         switch (type) {
             case COMMAND:
-                try {
-                    Bukkit.getScheduler().callSyncMethod( plugin, () ->
-                            Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), action.replace("{player}", player.getName()))).get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+                action = action.replace("{player}", player.getName());
+                // running the command
+                Bukkit.getScheduler().callSyncMethod( plugin, () ->
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), action));
                 break;
             case EFFECT:
                 String[] parsedEffect = action.split(",");
