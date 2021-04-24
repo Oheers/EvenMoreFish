@@ -76,6 +76,8 @@ public class EvenMoreFish extends JavaPlugin {
         msgs = new Messages();
         mainConfig = new MainConfig();
 
+        guis = new ArrayList<>();
+
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
             if (!setupEconomy()) {
@@ -115,8 +117,6 @@ public class EvenMoreFish extends JavaPlugin {
         Help.loadValues();
 
         AutoRunner.init();
-
-        guis = new ArrayList<>();
 
         wgPlugin = getWorldGuard();
         checkPapi();
