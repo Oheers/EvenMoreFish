@@ -2,6 +2,7 @@ package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,6 +13,12 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class InteractHandler implements Listener {
+
+    EvenMoreFish emf;
+
+    public InteractHandler(EvenMoreFish emf) {
+        this.emf = emf;
+    }
 
     @EventHandler
     public void interact(InventoryClickEvent event) {
@@ -70,6 +77,7 @@ public class InteractHandler implements Listener {
                         }
 
                         // the player is at the join stage
+                        if (event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) event.setCancelled(true);
                         event.setCancelled(true);
                         if (gui.getModified()) {
 
@@ -79,8 +87,9 @@ public class InteractHandler implements Listener {
 
                             gui.setModified(false);
                         } else {
-                            gui.close(true);
                             EvenMoreFish.econ.depositPlayer(((Player) event.getWhoClicked()).getPlayer(), gui.value);
+                            // running a tick later to prevent ghost blocks in the player's inventory
+                            Bukkit.getScheduler().runTaskLater(this.emf, () -> gui.close(true), 1);
 
                             // sending the sell message to the player
                             Message msg = new Message((Player) event.getWhoClicked())

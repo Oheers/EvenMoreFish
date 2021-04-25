@@ -151,7 +151,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new FishEvent(), this);
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
-        getServer().getPluginManager().registerEvents(new InteractHandler(), this);
+        getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
 
         optionalListeners();
