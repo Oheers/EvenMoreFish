@@ -42,13 +42,6 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         // we've already checked that that args exist
         switch (args[0].toLowerCase()) {
-            case "admin":
-                if (EvenMoreFish.permission.has(sender, "emf.admin")) {
-                    Controls.adminControl(this.plugin, args, sender);
-                } else {
-                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
-                }
-                break;
             case "top":
                 if (EvenMoreFish.permission.has(sender, "emf.top")) {
                     if (EvenMoreFish.active == null) {
@@ -73,6 +66,13 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
 
                 break;
+            case "admin":
+                if (EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    Controls.adminControl(this.plugin, args, sender);
+                } else {
+                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                }
+                break;
             default:
                 sender.sendMessage(Help.std_help);
         }
@@ -82,8 +82,9 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
     public static void loadTabCompletes() {
         adminTabs = Arrays.asList(
+                "competition",
                 "reload",
-                "competition"
+                "version"
         );
 
         compTabs = Arrays.asList(
@@ -92,6 +93,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         );
 
         emfTabs = Arrays.asList(
+                "help",
                 "shop",
                 "top"
         );
@@ -174,11 +176,18 @@ class Controls{
                 EvenMoreFish.messageFile.reload();
 
                 plugin.reload();
+                plugin.reloadConfig();
 
-                Bukkit.getPluginManager().getPlugin("EvenMoreFish").reloadConfig();
                 sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getReloaded()).toString());
                 break;
-
+            case "version":
+                Message msg = new Message(sender).setMSG(
+                        EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
+                                EvenMoreFish.msgs.getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
+                                EvenMoreFish.msgs.getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion()
+                );
+                sender.sendMessage(msg.toString());
+                break;
             default:
                 sender.sendMessage(Help.admin_help);
         }
@@ -248,10 +257,11 @@ class Help {
         cmdDictionary.put("emf admin", "Admin command help page.");
         cmdDictionary.put("emf help", "Shows you this page.");
         cmdDictionary.put("emf shop", "Opens a shop to sell your fish.");
-        cmdDictionary.put("emf top", "Shows an ongoing competition's leaderboard");
+        cmdDictionary.put("emf top", "Shows an ongoing competition's leaderboard.");
 
         adminDictionary.put("emf admin competition <start/end> <time(seconds)>", "Starts or stops a competition");
         adminDictionary.put("emf admin reload", "Reloads the plugin's config files");
+        adminDictionary.put("emf admin version", "Displays plugin information.");
 
         compDictionary.put("emf admin competition start <time<seconds>", "Starts a competition of a specified duration");
         compDictionary.put("emf admin competition end <time<seconds>", "Ends the current competition (if there is one)");
