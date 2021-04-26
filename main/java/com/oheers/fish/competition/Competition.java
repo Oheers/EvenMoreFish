@@ -154,6 +154,9 @@ public class Competition {
     }
 
     private static void giveRewards(Integer position, Player player) {
+        for (Player holder : leaderboard.keySet()) {
+            System.out.println(holder.getName() + " : " + leaderboard.get(holder).getLength());
+        }
         // is there a reward set for the position player came?#
         if (EvenMoreFish.rewards.containsKey(position)) {
             // acts on each reward set for the player's position

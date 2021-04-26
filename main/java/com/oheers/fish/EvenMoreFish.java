@@ -219,7 +219,6 @@ public class EvenMoreFish extends JavaPlugin {
         optionalListeners();
 
         LoadRewards.load();
-        AutoRunner.init();
 
         msgs = new Messages();
         mainConfig = new MainConfig();

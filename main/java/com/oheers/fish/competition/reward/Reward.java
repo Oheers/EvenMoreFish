@@ -46,10 +46,9 @@ public class Reward {
     public void run(Player player) {
         switch (type) {
             case COMMAND:
-                action = action.replace("{player}", player.getName());
                 // running the command
                 Bukkit.getScheduler().callSyncMethod( plugin, () ->
-                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), action));
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), this.action.replace("{player}", player.getName())));
                 break;
             case EFFECT:
                 String[] parsedEffect = action.split(",");
