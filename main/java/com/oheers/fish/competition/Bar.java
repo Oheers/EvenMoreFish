@@ -1,8 +1,6 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.config.messages.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -77,7 +75,7 @@ public class Bar {
         }
 
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft%60) + EvenMoreFish.msgs.getBarSecond() + " left";
+        returning += (timeLeft%60) + EvenMoreFish.msgs.getBarSecond() + EvenMoreFish.msgs.getRemainingWord();
 
         bar.setTitle(returning);
     }

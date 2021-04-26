@@ -2,6 +2,7 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
 import dev.dbassett.skullcreator.SkullCreator;
 import net.md_5.bungee.api.ChatColor;
@@ -213,8 +214,8 @@ public class Fish {
         // standard lore
         List<String> lore = new ArrayList<>();
 
-        lore.add(ChatColor.WHITE + "Caught by " + fisherman.getName());
-        lore.add(ChatColor.WHITE + "Measures " + format(Float.toString(length)) + "cm");
+        lore.add(new Message(null).setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer(fisherman.getName()).toString());
+        lore.add(new Message(null).setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setColour("").toString());
         lore.add(" ");
 
         // custom lore in fish.yml

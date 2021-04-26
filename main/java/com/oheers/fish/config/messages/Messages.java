@@ -152,4 +152,22 @@ public class Messages {
     public String economyDisabled() {
         return getErrorPrefix() + "EvenMoreFish's economy features are disabled.";
     }
+
+    public String fishCaughtBy() {
+        String returning = config.getString("fish-caught-by");
+        if (returning != null) return returning;
+        else return "&fCaught by {player}";
+    }
+
+    public String fishLength() {
+        String returning = config.getString("fish-length");
+        if (returning != null) return returning;
+        else return "&fMeasures {length}";
+    }
+
+    public String getRemainingWord() {
+        String returning = config.getString("bossbar.remaining");
+        if (returning != null) return returning;
+        else return " left";
+    }
 }
