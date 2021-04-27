@@ -24,24 +24,27 @@ public class FishInteractEvent implements Listener {
             @Override
             public void run() {
                 if (event.getItem() != null) {
-                    // Checks if the eaten item is a fish
-                    if (FishUtils.isFish(event.getItem())) {
-                        // Creates a replica of the fish we can use
-                        Fish fish = FishUtils.getFish(event.getItem());
-                        if (fish.hasIntRewards()) {
+                    // Allows players to place fishing heads if they're sneaking
+                    if (!event.getPlayer().isSneaking()) {
+                        // Checks if the eaten item is a fish
+                        if (FishUtils.isFish(event.getItem())) {
+                            // Creates a replica of the fish we can use
+                            Fish fish = FishUtils.getFish(event.getItem());
+                            if (fish.hasIntRewards()) {
 
-                            event.setCancelled(true);
-                            // Runs through each eat-event
-                            for (Reward r : fish.getActionRewards()) {
-                                r.run(event.getPlayer());
-                            }
+                                event.setCancelled(true);
+                                // Runs through each eat-event
+                                for (Reward r : fish.getActionRewards()) {
+                                    r.run(event.getPlayer());
+                                }
 
-                            // ux seems a bit weird when we allow offhand iteraction.
-                            ItemStack mainh = event.getPlayer().getInventory().getItemInMainHand();
-                            if (FishUtils.isFish(mainh)) {
-                                // adds a -1 amount version of the itemstack to the player's inventory
-                                mainh.setAmount(mainh.getAmount()-1);
-                                event.getPlayer().getInventory().setItemInMainHand(mainh);
+                                // ux seems a bit weird when we allow offhand iteraction.
+                                ItemStack mainh = event.getPlayer().getInventory().getItemInMainHand();
+                                if (FishUtils.isFish(mainh)) {
+                                    // adds a -1 amount version of the itemstack to the player's inventory
+                                    mainh.setAmount(mainh.getAmount() - 1);
+                                    event.getPlayer().getInventory().setItemInMainHand(mainh);
+                                }
                             }
                         }
                     }
