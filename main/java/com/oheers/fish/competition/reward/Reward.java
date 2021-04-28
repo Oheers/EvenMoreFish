@@ -2,6 +2,7 @@ package com.oheers.fish.competition.reward;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.EMFRewardEvent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,7 +27,7 @@ public class Reward {
 
         if (split.length < 2) {
             Bukkit.getLogger().log(Level.WARNING, value + " is not formatted correctly. It won't be given as a reward");
-            this.type = RewardType.EMPTY;
+            this.type = RewardType.BAD_FORMAT;
         } else {
             try {
                 // getting the value, imagine split being "COMMAND", "evenmorefish", "emf shop"
@@ -35,7 +36,7 @@ public class Reward {
                 this.action = StringUtils.join(split, ":", 1, split.length);
             // the value isn't one that can be used
             } catch (IllegalArgumentException e) {
-                this.type = RewardType.EMPTY;
+                this.type = RewardType.OTHER;
             }
 
         }
@@ -80,6 +81,9 @@ public class Reward {
             case MONEY:
                 EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));
                 break;
+            case OTHER:
+                EMFRewardEvent event = new EMFRewardEvent(this, player);
+                Bukkit.getPluginManager().callEvent(event);
             default:
                 Bukkit.getLogger().log(Level.SEVERE, "Error in loading a reward.");
         }

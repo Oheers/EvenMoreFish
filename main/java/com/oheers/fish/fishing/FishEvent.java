@@ -2,6 +2,7 @@ package com.oheers.fish.fishing;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
@@ -73,6 +74,9 @@ public class FishEvent implements Listener, Runnable {
 
                     // checks if the fish can have durability, and if it's set in the config it receives random durability
                     if (checkBreakable(fish.getType().getType())) fish.randomBreak();
+
+                    EMFFishEvent cEvent = new EMFFishEvent(fish, event.getPlayer());
+                    Bukkit.getPluginManager().callEvent(cEvent);
 
                     Message msg = new Message(player)
                             .setMSG(EvenMoreFish.msgs.getFishCaught())
