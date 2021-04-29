@@ -34,12 +34,18 @@ public class Reward {
                 this.type = RewardType.valueOf(split[0].toUpperCase());
                 // joins the action by the removed ":" joiner
                 this.action = StringUtils.join(split, ":", 1, split.length);
-            // the value isn't one that can be used
+
             } catch (IllegalArgumentException e) {
                 this.type = RewardType.OTHER;
+                // Sends the full reward out to the api if it's a custom reward
+                this.action = value;
             }
 
         }
+    }
+
+    public String getAction() {
+        return action;
     }
 
     Plugin plugin = Bukkit.getPluginManager().getPlugin("EvenMoreFish");
@@ -82,8 +88,10 @@ public class Reward {
                 EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));
                 break;
             case OTHER:
+                System.out.println("calling event");
                 EMFRewardEvent event = new EMFRewardEvent(this, player);
                 Bukkit.getPluginManager().callEvent(event);
+                break;
             default:
                 Bukkit.getLogger().log(Level.SEVERE, "Error in loading a reward.");
         }
