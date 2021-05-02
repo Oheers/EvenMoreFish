@@ -72,4 +72,12 @@ public class MainConfig {
     public boolean isEconomyEnabled() {
         return config.getBoolean("enable-economy");
     }
+
+    public boolean isDaySpecific() {
+        return config.getStringList("competitions.days").size() != 0;
+    }
+
+    public List<Integer> getActiveDays() {
+        return config.getIntegerList("competitions.days");
+    }
 }

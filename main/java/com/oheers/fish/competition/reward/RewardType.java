@@ -2,8 +2,8 @@ package com.oheers.fish.competition.reward;
 
 public enum RewardType {
 
-    COMMAND, EFFECT, EMPTY, ITEM, MESSAGE, HUNGER, HEALTH,
-    MONEY
+    COMMAND, EFFECT, ITEM, MESSAGE, MONEY, HUNGER, HEALTH,
+    OTHER, BAD_FORMAT
 
 
 }
