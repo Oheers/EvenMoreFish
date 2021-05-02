@@ -31,7 +31,7 @@ prefix-error: "&c"
 # The text shown in a fish's lore before who caught the fish
 fish-caught-by: "&fCaught by {player}"
 # The text shown in a fish's lore before the length of the fish
-fish-length: "&fMeasures {length}"
+fish-length: "&fMeasures {length}cm"
 
 # The format of commands in /emf help (this message doesn't support papi placeholders)
 help: "/{command} - {description}"

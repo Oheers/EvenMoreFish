@@ -84,7 +84,7 @@ public class Message {
 
         if (length != null) {
             DecimalFormat df = new DecimalFormat("###,###.#");
-            String formatted = df.format(Double.parseDouble(length)) + "cm";
+            String formatted = df.format(Double.parseDouble(length));
             msg = msg.replace("{length}", colour + formatted);
         }
 
