@@ -88,7 +88,6 @@ public class Reward {
                 EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));
                 break;
             case OTHER:
-                System.out.println("calling event");
                 EMFRewardEvent event = new EMFRewardEvent(this, player);
                 Bukkit.getPluginManager().callEvent(event);
                 break;
