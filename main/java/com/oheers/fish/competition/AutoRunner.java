@@ -36,7 +36,7 @@ public class AutoRunner {
                 }
             }
             // delay is set to start at bang on :00 of every minute, period is set to run once a minute
-        }.runTaskTimer(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class), 1, 20*10);// (60-LocalTime.now().getSecond())*20
+        }.runTaskTimer(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class), (60-LocalTime.now().getSecond())*20, 20*60);// (60-LocalTime.now().getSecond())*20
     }
 
     // "rescues" the init() method after a new day begins
