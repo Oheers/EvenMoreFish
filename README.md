@@ -29,5 +29,9 @@ This plugin is *highly* customisable, pretty much everything can be modified to 
 
 Contributions of any size will be massively appreciated, and help support the plugin. 
 
+### Translating
+
+To contribute to translations, please create a pull request with a new messages.yml file e.g. `messages_sv.yml` or `messages.fr.yml`
+
 Cheers, Oheers 
 
