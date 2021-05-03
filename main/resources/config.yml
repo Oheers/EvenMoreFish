@@ -15,6 +15,14 @@ random-durability: true
 # Should the plugin hook into vault economy? Having this disabled will only disable /emf shop.
 enable-economy: true
 
+# GUI customization
+gui:
+  filler: GRAY_STAINED_GLASS_PANE
+  filler-error: RED_STAINED_GLASS_PANE
+  sell-item: GOLD_INGOT
+  sell-item-confirm: GOLD_BLOCK
+  sell-item-error: REDSTONE_BLOCK
+
 
 competitions:
 

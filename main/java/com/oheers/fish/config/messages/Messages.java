@@ -162,7 +162,7 @@ public class Messages {
     public String fishLength() {
         String returning = config.getString("fish-length");
         if (returning != null) return returning;
-        else return "&fMeasures {length}";
+        else return "&fMeasures {length}cm";
     }
 
     public String getRemainingWord() {

@@ -53,8 +53,8 @@ public class SellGUI {
 
     public void setFiller() {
         // the gray glass panes at the bottom
-        ItemStack fill = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemStack error = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemStack fill = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFiller()));
+        ItemStack error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFillerError()));
         ItemMeta fillMeta = fill.getItemMeta();
         ItemMeta errMeta = error.getItemMeta();
         fillMeta.setDisplayName(ChatColor.RESET + "");
@@ -80,7 +80,7 @@ public class SellGUI {
     }
 
     public void setSellItem() {
-        ItemStack sIcon = new ItemStack(Material.GOLD_INGOT);
+        ItemStack sIcon = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItem()));
         ItemMeta sellMeta = sIcon.getItemMeta();
         sellMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getSellName()));
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
@@ -112,7 +112,7 @@ public class SellGUI {
     public void createIcon() {
         String totalWorth = getTotalWorth();
         if (totalWorth.equals("0.0")) {
-            ItemStack error = new ItemStack(Material.REDSTONE_BLOCK);
+            ItemStack error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemError()));
             ItemMeta errorMeta = error.getItemMeta();
             errorMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getNoValueName()));
             List<String> lore = new ArrayList<>();
@@ -125,7 +125,7 @@ public class SellGUI {
             this.noValueIcon = WorthNBT.attributeDefault(error);
             this.error = true;
         } else {
-            ItemStack confirm = new ItemStack(Material.GOLD_BLOCK);
+            ItemStack confirm = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemConfirm()));
             ItemMeta cMeta = confirm.getItemMeta();
             cMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getConfirmName()));
             // Generates the lore, looping through each line in messages.yml lore thingy, and generating it

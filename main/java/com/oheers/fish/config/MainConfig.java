@@ -80,4 +80,24 @@ public class MainConfig {
     public List<Integer> getActiveDays() {
         return config.getIntegerList("competitions.days");
     }
+
+    public String getFiller() {
+        return config.getString("gui.filler");
+    }
+
+    public String getFillerError() {
+        return config.getString("gui.filler-error");
+    }
+
+    public String getSellItem() {
+        return config.getString("gui.sell-item");
+    }
+
+    public String getSellItemConfirm() {
+        return config.getString("gui.sell-item-confirm");
+    }
+
+    public String getSellItemError() {
+        return config.getString("gui.sell-item-error");
+    }
 }
