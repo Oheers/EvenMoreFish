@@ -170,4 +170,10 @@ public class Messages {
         if (returning != null) return returning;
         else return " left";
     }
+
+    public String getRarityPrefix() {
+        String returning = config.getString("fish-rarity-prefix");
+        if (returning != null) return returning;
+        else return "";
+    }
 }

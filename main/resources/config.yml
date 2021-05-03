@@ -15,12 +15,17 @@ random-durability: true
 # Should the plugin hook into vault economy? Having this disabled will only disable /emf shop.
 enable-economy: true
 
-# GUI customization
+# For customizing the /emf shop GUI
 gui:
+  # Fills the empty slots of a normal /emf shop
   filler: GRAY_STAINED_GLASS_PANE
+  # Fills the empty slots of /emf shop when there's an error (i.e. the player trying to sell nothing)
   filler-error: RED_STAINED_GLASS_PANE
+  # The item for the player to click to sell their fish
   sell-item: GOLD_INGOT
+  # The item for the player to click to confirm selling their fish
   sell-item-confirm: GOLD_BLOCK
+  # The item shown to the player when an error occurs (i.e. trying to sell nothing of value)
   sell-item-error: REDSTONE_BLOCK
 
 
@@ -36,11 +41,13 @@ competitions:
 
   # The days for the competitions to run, use integers to represent the day
   days:
-    - 1 # Monday
-    - 3 # Wednesday
-    - 5 # Friday
-    - 6 # Saturday
-    - 7 # Sunday
+    - 2 # Monday
+    - 3 # Tuesday
+    - 4 # Wednesday
+    - 5 # Thursday
+    - 6 # Friday
+    - 7 # Saturday
+    - 1 # Sunday
 
   # How long should the competition go on for? (In minutes)
   duration: 10

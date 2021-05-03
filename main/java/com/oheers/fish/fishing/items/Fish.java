@@ -11,12 +11,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -153,11 +152,6 @@ public class Fish {
         return type;
     }
 
-    private String format(String length) {
-        DecimalFormat df = new DecimalFormat("###,###.#");
-        return df.format(Double.parseDouble(length));
-    }
-
     // checks if the config contains a message to be displayed when the fish is fished
     private void checkMessage() {
         String msg = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
@@ -230,7 +224,7 @@ public class Fish {
         }
 
         // a little footer showing the rarity
-        lore.add(ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
+        lore.add(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getRarityPrefix()) + ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
 
         return lore;
     }
