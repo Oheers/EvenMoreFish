@@ -31,9 +31,12 @@ public class SellGUI {
 
     public int fishCount;
 
+    public int guiSize;
+
     private ItemStack sellIcon, filler, errorFiller, confirmIcon, noValueIcon;
 
     public SellGUI(Player p) {
+        this.guiSize = (EvenMoreFish.mainConfig.getGUISize()+1)*9;
         this.player = p;
         this.modified = false;
         makeMenu();
@@ -44,7 +47,9 @@ public class SellGUI {
     }
 
     private void makeMenu() {
-        menu = Bukkit.createInventory(null, 36, ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getWorthGUIName()));
+        System.out.println(guiSize);
+        System.out.println(EvenMoreFish.msgs.getWorthGUIName());
+        this.menu = Bukkit.createInventory(null, guiSize, ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getWorthGUIName()));
     }
 
     public Player getPlayer() {
@@ -68,15 +73,15 @@ public class SellGUI {
     }
 
     public void addFiller(ItemStack fill) {
-        menu.setItem(27, fill);
-        menu.setItem(28, fill);
-        menu.setItem(29, fill);
-        menu.setItem(30, fill);
+        menu.setItem(guiSize-9, fill);
+        menu.setItem(guiSize-8, fill);
+        menu.setItem(guiSize-7, fill);
+        menu.setItem(guiSize-6, fill);
         // Sell icon
-        menu.setItem(32, fill);
-        menu.setItem(33, fill);
-        menu.setItem(34, fill);
-        menu.setItem(35, fill);
+        menu.setItem(guiSize-4, fill);
+        menu.setItem(guiSize-3, fill);
+        menu.setItem(guiSize-2, fill);
+        menu.setItem(guiSize-1, fill);
     }
 
     public void setSellItem() {
@@ -94,7 +99,7 @@ public class SellGUI {
         glowify(sIcon);
 
         this.sellIcon = WorthNBT.attributeDefault(sIcon);
-        menu.setItem(31, this.sellIcon);
+        menu.setItem(guiSize-5, this.sellIcon);
     }
 
     public ItemStack getSellIcon() {
@@ -144,13 +149,13 @@ public class SellGUI {
 
     public void setIcon() {
         if (this.error) {
-            this.menu.setItem(31, null);
-            this.menu.setItem(31, this.noValueIcon);
+            this.menu.setItem(guiSize-5, null);
+            this.menu.setItem(guiSize-5, this.noValueIcon);
             this.addFiller(errorFiller);
             this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1.0f, 0.0f);
         } else {
-            this.menu.setItem(31, null);
-            this.menu.setItem(31, this.confirmIcon);
+            this.menu.setItem(guiSize-5, null);
+            this.menu.setItem(guiSize-5, this.confirmIcon);
             this.addFiller(filler);
             this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.75f);
         }

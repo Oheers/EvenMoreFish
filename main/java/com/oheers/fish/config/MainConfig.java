@@ -100,4 +100,10 @@ public class MainConfig {
     public String getSellItemError() {
         return config.getString("gui.sell-item-error");
     }
+
+    public Integer getGUISize() {
+        int returning = config.getInt("gui.size");
+        if (returning <= 0 || returning > 5) return 3;
+        else return returning;
+    }
 }

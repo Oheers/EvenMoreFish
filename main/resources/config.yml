@@ -27,6 +27,8 @@ gui:
   sell-item-confirm: GOLD_BLOCK
   # The item shown to the player when an error occurs (i.e. trying to sell nothing of value)
   sell-item-error: REDSTONE_BLOCK
+  # How many rows the selling area of the GUI should be (max 5, min 1)
+  size: 3
 
 
 competitions:
