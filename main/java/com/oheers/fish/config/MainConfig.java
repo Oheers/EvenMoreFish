@@ -82,23 +82,33 @@ public class MainConfig {
     }
 
     public String getFiller() {
-        return config.getString("gui.filler");
+        String returning = config.getString("gui.filler");
+        if (returning != null) return returning;
+        else return "GRAY_STAINED_GLASS_PANE";
     }
 
     public String getFillerError() {
-        return config.getString("gui.filler-error");
+        String returning = config.getString("gui.filler-error");
+        if (returning != null) return returning;
+        else return "RED_STAINED_GLASS_PANE";
     }
 
     public String getSellItem() {
-        return config.getString("gui.sell-item");
+        String returning = config.getString("gui.sell-item");
+        if (returning != null) return returning;
+        else return "GOLD_INGOT";
     }
 
     public String getSellItemConfirm() {
-        return config.getString("gui.sell-item-confirm");
+        String returning = config.getString("gui.sell-item-confirm");
+        if (returning != null) return returning;
+        else return "GOLD_BLOCK";
     }
 
     public String getSellItemError() {
-        return config.getString("gui.sell-item-error");
+        String returning = config.getString("gui.sell-item-error");
+        if (returning != null) return returning;
+        else return "REDSTONE_BLOCK";
     }
 
     public Integer getGUISize() {

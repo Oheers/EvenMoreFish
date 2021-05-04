@@ -48,8 +48,6 @@ public class SellGUI {
     }
 
     private void makeMenu() {
-        System.out.println(guiSize);
-        System.out.println(EvenMoreFish.msgs.getWorthGUIName());
         this.menu = Bukkit.createInventory(null, guiSize, ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getWorthGUIName()));
     }
 
