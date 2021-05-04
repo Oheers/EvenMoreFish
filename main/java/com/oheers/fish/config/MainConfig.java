@@ -106,4 +106,8 @@ public class MainConfig {
         if (returning <= 0 || returning > 5) return 3;
         else return returning;
     }
+
+    public boolean sellOverDrop() {
+        return config.getBoolean("gui.sell-over-drop");
+    }
 }

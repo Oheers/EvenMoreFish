@@ -1,9 +1,6 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.config.messages.Message;
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -87,17 +84,8 @@ public class InteractHandler implements Listener {
 
                             gui.setModified(false);
                         } else {
-                            EvenMoreFish.econ.depositPlayer(((Player) event.getWhoClicked()).getPlayer(), gui.value);
-                            // running a tick later to prevent ghost blocks in the player's inventory
-                            Bukkit.getScheduler().runTaskLater(this.emf, () -> gui.close(true), 1);
-
-                            // sending the sell message to the player
-                            Message msg = new Message((Player) event.getWhoClicked())
-                                    .setMSG(EvenMoreFish.msgs.getSellMessage())
-                                    .setSellPrice(Double.toString(gui.getSellPrice()))
-                                    .setAmount(Integer.toString(gui.fishCount));
-                            gui.getPlayer().sendMessage(msg.toString());
-                            ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
+                            gui.sell();
+                            gui.close(true);
                         }
                     } else if (clickedItem.isSimilar(gui.getFiller()) || clickedItem.isSimilar(gui.getErrorFiller())) {
                         event.setCancelled(true);

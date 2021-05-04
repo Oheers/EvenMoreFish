@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SellGUI {
 
@@ -187,7 +188,7 @@ public class SellGUI {
         EvenMoreFish.guis.remove(this);
         player.closeInventory();
 
-        if (selling) rescueNonFish();
+        if (selling) rescueNonFish(this.menu, this.player);
         else rescueAllItems();
     }
 
@@ -211,10 +212,6 @@ public class SellGUI {
         return this.modified;
     }
 
-    public double getSellPrice() {
-        return this.value;
-    }
-
     // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
     private void rescueAllItems() {
         List<ItemStack> throwing = new ArrayList<>();
@@ -228,16 +225,16 @@ public class SellGUI {
         FishUtils.giveItems(throwing, this.player);
     }
 
-    private void rescueNonFish() {
+    public static void rescueNonFish(Inventory inv, Player pl) {
         List<ItemStack> throwing = new ArrayList<>();
-        for (ItemStack i : this.menu) {
+        for (ItemStack i : inv) {
             if (i != null) {
                 if (!(WorthNBT.isDefault(i)) && !(FishUtils.isFish(i))) {
                     throwing.add(i);
                 }
             }
         }
-        FishUtils.giveItems(throwing, this.player);
+        FishUtils.giveItems(throwing, pl);
     }
 
     private void glowify(ItemStack i) {
@@ -249,5 +246,20 @@ public class SellGUI {
         // hides the unbreaking 1 enchantment from showing in the lore
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         i.setItemMeta(meta);
+    }
+
+    public void sell() {
+        getTotalWorth();
+        EvenMoreFish.econ.depositPlayer(this.player, value);
+        // running a tick later to prevent ghost blocks in the player's inventory
+        Bukkit.getScheduler().runTaskLater(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), () -> close(true), 1);
+
+        // sending the sell message to the player
+        Message msg = new Message(this.player)
+                .setMSG(EvenMoreFish.msgs.getSellMessage())
+                .setSellPrice(Double.toString(value))
+                .setAmount(Integer.toString(fishCount));
+        this.player.sendMessage(msg.toString());
+        this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
     }
 }

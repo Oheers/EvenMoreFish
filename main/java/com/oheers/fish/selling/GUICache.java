@@ -32,7 +32,12 @@ public class GUICache {
                 /* Prevents a ConcurrentModificationException deleting all values after iteration is complete (in the main class) */
                 if (!shutdown) EvenMoreFish.guis.remove(gui);
 
-                gui.close(false);
+                if (EvenMoreFish.mainConfig.sellOverDrop()) {
+                    gui.sell();
+                } else {
+                    gui.close(false);
+                }
+
                 return;
             }
         }

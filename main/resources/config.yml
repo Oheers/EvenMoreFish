@@ -29,6 +29,9 @@ gui:
   sell-item-error: REDSTONE_BLOCK
   # How many rows the selling area of the GUI should be (max 5, min 1)
   size: 3
+  # Should the items be dropped(false) or sold(true) when a player exits an inventory?
+  sell-over-drop: false
+
 
 
 competitions:
