@@ -32,8 +32,7 @@ prefix-error: "&c"
 fish-caught-by: "&fCaught by {player}"
 # The text shown in a fish's lore before the length of the fish
 fish-length: "&fMeasures {length}cm"
-# The text to come before the rarity of the fish i.e. "Rarity: UNCOMMON"
-#fish-rarity-prefix: "&fRarity: "
+6
 
 # The format of commands in /emf help (this message doesn't support papi placeholders)
 help: "/{command} - {description}"
@@ -72,4 +71,4 @@ fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 4
+config-version: 5

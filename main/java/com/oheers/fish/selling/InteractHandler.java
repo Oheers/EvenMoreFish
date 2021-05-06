@@ -37,7 +37,8 @@ public class InteractHandler implements Listener {
                         // cancels on right click
                         if (event.getAction().equals(InventoryAction.PICKUP_HALF)) {
                             event.setCancelled(true);
-                            gui.close(false);
+                            gui.close();
+                            gui.doRescue(false);
                             return;
                         }
 
@@ -53,7 +54,8 @@ public class InteractHandler implements Listener {
                         // cancels on right click
                         if (event.getAction().equals(InventoryAction.PICKUP_HALF)) {
                             event.setCancelled(true);
-                            gui.close(false);
+                            gui.close();
+                            gui.doRescue(false);
                             return;
                         }
 
@@ -69,7 +71,8 @@ public class InteractHandler implements Listener {
                         // cancels on right click
                         if (event.getAction().equals(InventoryAction.PICKUP_HALF)) {
                             event.setCancelled(true);
-                            gui.close(false);
+                            gui.close();
+                            gui.doRescue(false);
                             return;
                         }
 
@@ -85,7 +88,8 @@ public class InteractHandler implements Listener {
                             gui.setModified(false);
                         } else {
                             gui.sell();
-                            gui.close(true);
+                            gui.close();
+                            gui.doRescue(true);
                         }
                     } else if (clickedItem.isSimilar(gui.getFiller()) || clickedItem.isSimilar(gui.getErrorFiller())) {
                         event.setCancelled(true);

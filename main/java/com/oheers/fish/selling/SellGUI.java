@@ -182,10 +182,12 @@ public class SellGUI {
     }
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
-    public void close(boolean selling) {
+    public void close() {
         EvenMoreFish.guis.remove(this);
         player.closeInventory();
+    }
 
+    public void doRescue(boolean selling) {
         if (selling) rescueNonFish(this.menu, this.player);
         else rescueAllItems();
     }
@@ -246,11 +248,11 @@ public class SellGUI {
         i.setItemMeta(meta);
     }
 
-    public void sell() {
+    public boolean sell() {
         getTotalWorth();
         EvenMoreFish.econ.depositPlayer(this.player, value);
         // running a tick later to prevent ghost blocks in the player's inventory
-        Bukkit.getScheduler().runTaskLater(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), () -> close(true), 1);
+        Bukkit.getScheduler().runTaskLater(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), this::close, 1);
 
         // sending the sell message to the player
         Message msg = new Message(this.player)
@@ -259,5 +261,6 @@ public class SellGUI {
                 .setAmount(Integer.toString(fishCount));
         this.player.sendMessage(msg.toString());
         this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
+        return this.value != 0.0;
     }
 }

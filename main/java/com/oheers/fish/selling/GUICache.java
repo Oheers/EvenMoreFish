@@ -33,9 +33,10 @@ public class GUICache {
                 if (!shutdown) EvenMoreFish.guis.remove(gui);
 
                 if (EvenMoreFish.mainConfig.sellOverDrop()) {
-                    gui.sell();
+                    gui.doRescue(gui.sell());
                 } else {
-                    gui.close(false);
+                    gui.close();
+                    gui.doRescue(false);
                 }
 
                 return;
