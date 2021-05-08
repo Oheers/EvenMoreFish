@@ -6,7 +6,6 @@ import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
 import dev.dbassett.skullcreator.SkullCreator;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -225,7 +224,7 @@ public class Fish implements Cloneable {
         }
 
         // a little footer showing the rarity
-        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
+        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + FishUtils.translateHexColorCodes( rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
 
         return lore;
     }
