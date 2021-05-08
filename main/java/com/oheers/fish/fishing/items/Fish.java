@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class Fish {
+public class Fish implements Cloneable {
 
     String name;
     Rarity rarity;
@@ -281,5 +281,10 @@ public class Fish {
             meta.setCustomModelData(value);
             fish.setItemMeta(meta);
         }
+    }
+
+    @Override
+    public Fish clone() throws CloneNotSupportedException {
+        return (Fish) super.clone();
     }
 }

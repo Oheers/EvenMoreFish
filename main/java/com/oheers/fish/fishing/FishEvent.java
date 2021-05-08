@@ -103,9 +103,12 @@ public class FishEvent implements Listener, Runnable {
                         player.sendMessage(msg.toString());
                     }
 
-
-
-                    competitionCheck(fish, event.getPlayer());
+                    try {
+                        competitionCheck(fish.clone(), event.getPlayer());
+                    } catch (CloneNotSupportedException e) {
+                        Bukkit.getLogger().log(Level.SEVERE, "Failed to create a clone of: " + fish);
+                        e.printStackTrace();
+                    }
 
                     // a much less smoothbrain way of dropping the fish
                     Item nonCustom = (Item) event.getCaught();

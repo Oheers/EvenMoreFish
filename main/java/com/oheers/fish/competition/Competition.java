@@ -13,8 +13,8 @@ import java.util.*;
 public class Competition {
 
     // fisher, fish length
-    static HashMap<OfflinePlayer, Fish> leaderboardRegister;
-    static SortedMap<Fish, OfflinePlayer> leaderboardContents;
+    public static HashMap<OfflinePlayer, Fish> leaderboardRegister;
+    public static SortedMap<Fish, OfflinePlayer> leaderboardContents;
 
     Bar bar;
 
