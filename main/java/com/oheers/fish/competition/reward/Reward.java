@@ -5,7 +5,6 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFRewardEvent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -82,7 +81,7 @@ public class Reward {
                 FishUtils.giveItems(Collections.singletonList(new ItemStack(Material.getMaterial(parsedItem[0]), Integer.parseInt(parsedItem[1]))), player);
                 break;
             case MESSAGE:
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', action));
+                player.sendMessage(FishUtils.translateHexColorCodes(action));
                 break;
             case MONEY:
                 EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));

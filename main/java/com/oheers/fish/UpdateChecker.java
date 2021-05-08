@@ -1,7 +1,6 @@
 package com.oheers.fish;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -43,7 +42,7 @@ class UpdateNotify implements Listener {
     public void playerJoin(PlayerJoinEvent event) {
         if (EvenMoreFish.isUpdateAvailable) {
             if (EvenMoreFish.permission.playerHas(event.getPlayer(), "emf.admin")) {
-                event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getAdminPrefix() + "There is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates"));
+                event.getPlayer().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getAdminPrefix() + "There is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates"));
             }
         }
     }

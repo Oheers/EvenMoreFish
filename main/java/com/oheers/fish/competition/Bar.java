@@ -1,6 +1,7 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -63,7 +64,7 @@ public class Bar {
     }
 
     private void setTitle() {
-        String returning = ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getBarPrefix()) + ChatColor.RESET;
+        String returning = FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getBarPrefix()) + ChatColor.RESET;
         int hours = timeLeft/3600;
 
         if (timeLeft >= 3600) {

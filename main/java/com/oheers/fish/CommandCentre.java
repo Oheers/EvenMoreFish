@@ -4,7 +4,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.SellGUI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,7 +44,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
             case "top":
                 if (EvenMoreFish.permission.has(sender, "emf.top")) {
                     if (EvenMoreFish.active == null) {
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
+                        sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     } else {
                         sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
                     }
@@ -212,7 +211,7 @@ class Controls{
                     if (EvenMoreFish.active != null) {
                         EvenMoreFish.active.end();
                     } else {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionNotRunning()));
+                        player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     }
                 } else {
                     player.sendMessage(Help.comp_help);
@@ -224,7 +223,7 @@ class Controls{
     protected static void startComp(String argsDuration, Player player) {
 
         if (EvenMoreFish.active != null) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.competitionRunning()));
+            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionRunning()));
             return;
         }
 
@@ -236,10 +235,10 @@ class Controls{
                 Competition comp = new Competition(duration);
                 comp.start(true);
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.notInteger()));
+                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.notInteger()));
             }
         } catch (NumberFormatException nfe) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.notInteger()));
+            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.notInteger()));
         }
     }
 }
@@ -282,7 +281,7 @@ class Help {
 
         StringBuilder out = new StringBuilder();
 
-        out.append(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getSTDPrefix() + "----- &a&lEvenMoreFish &r-----\n"));
+        out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + "----- &a&lEvenMoreFish &r-----\n"));
 
         for (String s : dictionary.keySet()) {
             // we pass a null into here since there's no need to use placeholders in a help message.

@@ -1,14 +1,18 @@
 package com.oheers.fish.competition;
+
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class Competition {
 
@@ -34,7 +38,7 @@ public class Competition {
             // if there isn't enough players on, the competition doesn't start
             if (Bukkit.getServer().getOnlinePlayers().size() < EvenMoreFish.mainConfig.getMinimumPlayers()) {
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getNotEnoughPlayers()));
+                    player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNotEnoughPlayers()));
                 }
 
                 return;
@@ -59,7 +63,7 @@ public class Competition {
 
     private void announce() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getCompetitionStart()));
+            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionStart()));
         }
     }
 
@@ -126,12 +130,12 @@ public class Competition {
 
         if (message.toString().equals("")) {
             // returns that there's no scores yet, if the leaderboard is empty and it's not the end of the competition
-            if (!endingCompetition) return ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.noWinners());
+            if (!endingCompetition) return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners());
             // nobody fished a fish
             for (Player player : Bukkit.getOnlinePlayers()) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getCompetitionEnd()));
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.noWinners()));
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.noFish()));
+                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
+                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners()));
+                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish()));
             }
 
             return null;
@@ -139,10 +143,10 @@ public class Competition {
             if (!endingCompetition) return message.toString();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getCompetitionEnd()));
+                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
                 player.sendMessage(message.toString());
                 // checks if the specific player didn't fish a fish
-                if (!leaderboardRegister.containsKey(player)) player.sendMessage(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.noFish()));
+                if (!leaderboardRegister.containsKey(player)) player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish()));
             }
 
             return null;

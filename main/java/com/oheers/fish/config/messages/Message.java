@@ -1,8 +1,8 @@
 package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
@@ -123,7 +123,7 @@ public class Message {
 
         }
 
-        return ChatColor.translateAlternateColorCodes('&', msg);
+        return FishUtils.translateHexColorCodes(msg);
 
     }
 }

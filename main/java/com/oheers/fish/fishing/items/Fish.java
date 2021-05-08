@@ -1,6 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
@@ -52,7 +53,7 @@ public class Fish implements Cloneable {
         ItemStack fish = this.type;
         ItemMeta fishMeta = fish.getItemMeta();
 
-        fishMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', rarity.getColour() + name));
+        fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
         fishMeta.setLore(generateLore());
         fish.setItemMeta(fishMeta);
 
@@ -156,7 +157,7 @@ public class Fish implements Cloneable {
     private void checkMessage() {
         String msg = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
 
-        if (msg != null) this.fisherman.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+        if (msg != null) this.fisherman.sendMessage(FishUtils.translateHexColorCodes(msg));
 
     }
 
@@ -219,12 +220,12 @@ public class Fish implements Cloneable {
         if (potentialLore.size() > 0) {
             // does colour coding, hence why .addAll() isn't used
             for (String line : potentialLore) {
-                lore.add(ChatColor.translateAlternateColorCodes('&', line));
+                lore.add(FishUtils.translateHexColorCodes(line));
             }
         }
 
         // a little footer showing the rarity
-        lore.add(ChatColor.translateAlternateColorCodes('&', EvenMoreFish.msgs.getRarityPrefix()) + ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
+        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + ChatColor.translateAlternateColorCodes('&', rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
 
         return lore;
     }

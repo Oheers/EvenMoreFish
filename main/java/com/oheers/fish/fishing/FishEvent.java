@@ -8,7 +8,6 @@ import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
@@ -69,8 +68,8 @@ public class FishEvent implements Listener, Runnable {
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
                     String length = Float.toString(fish.getLength());
-                    String name = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getName());
-                    String rarity = ChatColor.translateAlternateColorCodes('&', fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
+                    String name = FishUtils.translateHexColorCodes(fish.getRarity().getColour() + "&l" + fish.getName());
+                    String rarity = FishUtils.translateHexColorCodes(fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
 
                     // checks if the fish can have durability, and if it's set in the config it receives random durability
                     if (checkBreakable(fish.getType().getType())) fish.randomBreak();
