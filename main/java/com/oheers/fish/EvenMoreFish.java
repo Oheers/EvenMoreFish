@@ -8,6 +8,7 @@ import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.RaritiesFile;
+import com.oheers.fish.config.messages.LocaleGen;
 import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
@@ -75,6 +76,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         msgs = new Messages();
         mainConfig = new MainConfig();
+        LocaleGen.createLocaleFiles(this);
 
         guis = new ArrayList<>();
 

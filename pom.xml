@@ -153,5 +153,11 @@
             <classifier>javadoc</classifier>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.7</version>
+        </dependency>
     </dependencies>
 </project>
