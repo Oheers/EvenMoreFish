@@ -263,11 +263,11 @@ public class EvenMoreFish extends JavaPlugin {
 
     private boolean checkRP(){
         Plugin pRP = Bukkit.getPluginManager().getPlugin("RedProtect");
-        return pRP != null;
+        return (pRP != null && mainConfig.regionWhitelist());
     }
 
     private boolean checkWG(){
         Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
-        return pWG != null;
+        return (pWG != null && mainConfig.regionWhitelist());
     }
 }
