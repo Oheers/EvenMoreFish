@@ -68,7 +68,7 @@ competitions:
       - "MESSAGE:&aCongratulations for coming 1st!"
       # Can't contain decimals.
       - "MONEY:5000"
-      # formatted as "effect_name,amplifier,duration"
+      # formatted as "effect_name,amplifier,duration", view a list of effects: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
       - "EFFECT:SPEED,2,5"
       - "ITEM:DIAMOND,2"
     2:
