@@ -2,6 +2,8 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.EMFCompetitionEndEvent;
+import com.oheers.fish.api.EMFCompetitionStartEvent;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
@@ -49,12 +51,18 @@ public class Competition {
         bar = new Bar(this.duration);
         EvenMoreFish.active = this;
 
+        EMFCompetitionStartEvent cEvent = new EMFCompetitionStartEvent(this);
+        Bukkit.getPluginManager().callEvent(cEvent);
+
     }
 
     public void end() {
         bar.end();
         EvenMoreFish.active = null;
         announceWinners();
+
+        EMFCompetitionEndEvent cEvent = new EMFCompetitionEndEvent(this);
+        Bukkit.getPluginManager().callEvent(cEvent);
     }
 
     public Bar getBar() {
