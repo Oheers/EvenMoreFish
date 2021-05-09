@@ -1,7 +1,7 @@
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
 # Sent to players when they fish an EvenMoreFish fish
-fish-caught: "&l{player} &ra pêché un {length} {rarity} {fish}!"
+fish-caught: "&l{player} &ra pêché un {length}cm {rarity} {fish}!"
 # Sent to a player when they don't have permission to execute a command.
 no-permission: "&cVous n'êtes pas autorisé à exécuter cette commande."
 
@@ -31,13 +31,13 @@ prefix-error: "&c"
 # The text shown in a fish's lore before who caught the fish
 fish-caught-by: "&fAttrapé par {player}"
 # The text shown in a fish's lore before the length of the fish
-fish-length: "&fTaille {length}"
+fish-length: "&fTaille {length}cm"
 
 # The format of commands in /emf help (this message doesn't support papi placeholders)
 help: "/{command} - {description}"
 
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
-leaderboard: "&r&l{position} &r| {player} - {length} {rarity} {fish}"
+leaderboard: "&r&l{position} &r| {player} - {length}cm {rarity} {fish}"
 # The number of positions shown in the leaderboard - can't be less than 1.
 leaderboard-count: 5
 # Sent to players when nobody got a record during a competition
