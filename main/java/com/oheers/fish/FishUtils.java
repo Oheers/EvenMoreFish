@@ -52,11 +52,11 @@ public class FishUtils {
         Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
 
         // Generating an empty rarity
-        Rarity rarity = new Rarity(null, null, 0, false);
+        Rarity rarity = new Rarity(null, null, 0, false, null);
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
             if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce());
+                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.overridenLore);
             }
         }
 

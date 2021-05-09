@@ -224,7 +224,7 @@ public class Fish implements Cloneable {
         }
 
         // a little footer showing the rarity
-        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + FishUtils.translateHexColorCodes( rarity.getColour() + "&l") + rarity.getValue().toUpperCase());
+        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + FishUtils.translateHexColorCodes(this.rarity.getLorePrep()));
 
         return lore;
     }

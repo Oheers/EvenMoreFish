@@ -170,7 +170,7 @@ public class FishEvent implements Listener, Runnable {
 
     // if there's no fish available in the current biome, this gets sent out
     private Fish defaultFish() {
-        Rarity r = new Rarity("No biome found", "&4", 1.0d, false);
+        Rarity r = new Rarity("No biome found", "&4", 1.0d, false, null);
         return new Fish(r, "");
     }
 
