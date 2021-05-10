@@ -1,6 +1,7 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -38,27 +39,24 @@ public class WorthNBT {
                 ItemMeta itemMeta = item.getItemMeta();
                 PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-                double foundValue = -1.0;
-
-                // setting foundValue if the keys exist, if not it gets left at -1, in which case it
-                // isn't an EMF fish.
-                if (container.has(nbtlength , PersistentDataType.FLOAT) &&
-                    container.has(nbtrarity , PersistentDataType.STRING) &&
-                    container.has(nbtname , PersistentDataType.STRING))
-                {
-                    foundValue = getMultipliedValue(
-                            container.get(nbtlength, PersistentDataType.FLOAT),
-                            container.get(nbtrarity, PersistentDataType.STRING),
-                            container.get(nbtname, PersistentDataType.STRING));
-                }
-
-                return foundValue;
+                if (FishUtils.isFish(item)) {
+                    // it's a fish so it'll definitely have these NBT values
+                    Float length = container.get(nbtlength, PersistentDataType.FLOAT);
+                    String rarity = container.get(nbtrarity, PersistentDataType.STRING);
+                    String name = container.get(nbtname, PersistentDataType.STRING);
+                    // gets a possible set-worth in the fish.yml
+                    int setVal = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+                    if (setVal != 0) return setVal;
+                    // there's no set-worth so we're calculating the worth ourselves
+                    return getMultipliedValue(
+                            length,
+                            rarity,
+                            name);
+                } else return -1.0;
             } else {
                 return -1.0;
             }
-        } else {
-            return -1.0;
-        }
+        } else return -1.0;
     }
 
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {

@@ -1,7 +1,9 @@
 fish:
   Common:
     # Using "" after the fish name will create you a default cod fish.
-    Herring: ""
+    Herring:
+      # Use this to override the price that's calculated by (multiplier * length)
+      set-worth: 1
     Cod: ""
     Sea Bass: ""
     Shrimp: ""
