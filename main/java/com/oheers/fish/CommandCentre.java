@@ -1,6 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.reward.gui.RewardGUI;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.SellGUI;
 import org.bukkit.Bukkit;
@@ -65,6 +66,14 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
 
                 break;
+            case "rewards":
+                if (EvenMoreFish.permission.has(sender, "emf.rewards")) {
+                    RewardGUI rGUI = new RewardGUI(sender);
+                    rGUI.display();
+                } else {
+                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                }
+                break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
@@ -93,6 +102,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         emfTabs = Arrays.asList(
                 "help",
+                "rewards",
                 "shop",
                 "top"
         );
@@ -256,6 +266,7 @@ class Help {
 
         cmdDictionary.put("emf admin", "Admin command help page.");
         cmdDictionary.put("emf help", "Shows you this page.");
+        cmdDictionary.put("emf rewards", "Displays rewards from fishing competitions.");
         cmdDictionary.put("emf shop", "Opens a shop to sell your fish.");
         cmdDictionary.put("emf top", "Shows an ongoing competition's leaderboard.");
 
@@ -281,7 +292,7 @@ class Help {
 
         StringBuilder out = new StringBuilder();
 
-        out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + "----- &a&lEvenMoreFish &r-----\n"));
+        out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + "&m &m &m &m &m &a &lEvenMoreFish &r&m &m &m &m &m \n"));
 
         for (String s : dictionary.keySet()) {
             // we pass a null into here since there's no need to use placeholders in a help message.
