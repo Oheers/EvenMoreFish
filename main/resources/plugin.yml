@@ -5,6 +5,7 @@ main: com.oheers.fish.EvenMoreFish
 api-version: 1.16
 depend: [Vault]
 softdepend: [WorldGuard, PlaceholderAPI, RedProtect]
+loadbefore: [AntiAC]
 
 commands:
   evenmorefish:
