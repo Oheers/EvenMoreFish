@@ -84,8 +84,10 @@ public class Competition {
     public void runLeaderboardScan(Player fisher, Fish fish) {
         // stuff
         for (UUID holder : leaderboardRegister.keySet()) {
-            if (holder == fisher.getUniqueId()) {
+            if (holder.equals(fisher.getUniqueId())) {
+                System.out.println(holder + ": returned existant");
                 if (fish.getLength() > leaderboardRegister.get(holder).getLength()) {
+                    System.out.println("adding to leaderboard");
                     leaderboardContents.remove(leaderboardRegister.get(holder));
                     leaderboardRegister.put(fisher.getUniqueId(), fish);
                     leaderboardContents.put(fish, fisher.getUniqueId());
@@ -94,6 +96,9 @@ public class Competition {
                 }
                 return;
             }
+        }
+        for (Fish u : leaderboardContents.keySet()) {
+            System.out.println(u.getName() + "(" + u.getLength() + ") | " + leaderboardContents.get(u));
         }
         leaderboardRegister.put(fisher.getUniqueId(), fish);
         leaderboardContents.put(fish, fisher.getUniqueId());
