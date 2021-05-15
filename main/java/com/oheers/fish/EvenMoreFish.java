@@ -108,7 +108,7 @@ public class EvenMoreFish extends JavaPlugin {
         Names names = new Names();
         names.loadRarities();
 
-        LoadRewards.load();
+        rewards = LoadRewards.load();
 
         listeners();
         commands();
@@ -208,10 +208,14 @@ public class EvenMoreFish extends JavaPlugin {
 
         fish = new HashMap<>();
         fishCollection = new HashMap<>();
-        rewards = new HashMap<>();
 
         reloadConfig();
         saveDefaultConfig();
+
+        msgs = new Messages();
+        mainConfig = new MainConfig();
+
+        guis = new ArrayList<>();
 
         Names names = new Names();
         names.loadRarities();
@@ -220,12 +224,7 @@ public class EvenMoreFish extends JavaPlugin {
         HandlerList.unregisterAll(new FishInteractEvent(this));
         optionalListeners();
 
-        LoadRewards.load();
-
-        msgs = new Messages();
-        mainConfig = new MainConfig();
-
-        guis = new ArrayList<>();
+        rewards = LoadRewards.load();
     }
 
     // Checks for updates, surprisingly
