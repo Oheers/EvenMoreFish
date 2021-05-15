@@ -2,6 +2,8 @@ package com.oheers.fish;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -13,10 +15,13 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -141,6 +146,23 @@ public class FishUtils {
             );
         }
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+    }
+
+    public static ItemStack get(String base64EncodedString) {
+        final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        assert meta != null;
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        profile.getProperties().put("textures", new Property("textures", base64EncodedString));
+        try {
+            Field profileField = meta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(meta, profile);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        skull.setItemMeta(meta);
+        return skull;
     }
 
 }

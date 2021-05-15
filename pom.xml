@@ -6,7 +6,7 @@
 
     <groupId>com.oheers.evenmorefish</groupId>
     <artifactId>even-more-fish</artifactId>
-    <version>1.2.0.2</version>
+    <version>1.2.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -75,6 +75,11 @@
             <id>redprotect-repo</id>
             <url>https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/</url>
         </repository>
+
+        <repository>
+            <id>minecraft-repo</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -87,12 +92,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- SkullCreator -->
         <dependency>
-            <groupId>dev.dbassett</groupId>
-            <artifactId>skullcreator</artifactId>
-            <version>3.0.0</version>
-            <scope>compile</scope>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.21</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Vault -->

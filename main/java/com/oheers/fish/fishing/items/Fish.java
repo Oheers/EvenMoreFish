@@ -5,7 +5,6 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
-import dev.dbassett.skullcreator.SkullCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -13,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -127,13 +127,17 @@ public class Fish implements Cloneable {
         // The fish has item: uuid selected
         // note - only works for players who have joined the server previously, not sure if this'll make it to release.
         if (uValue != null) {
-            return SkullCreator.itemWithUuid(new ItemStack(Material.valueOf("PLAYER_HEAD")), UUID.fromString(uValue));
+            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) skull.getItemMeta();
+            meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uValue)));
+            skull.setItemMeta(meta);
+            return skull;
         }
 
         // The fish has item: 64 selected
         String bValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-64");
         if (bValue != null) {
-            return SkullCreator.itemFromBase64(bValue);
+            FishUtils.get(bValue);
         }
 
         // The fish has item: material selected
