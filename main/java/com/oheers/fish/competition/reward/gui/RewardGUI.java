@@ -1,6 +1,7 @@
 package com.oheers.fish.competition.reward.gui;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,6 +14,10 @@ public class RewardGUI {
     Inventory inv;
     Player viewer;
     int page;
+
+    private final Material blank = Material.GRAY_STAINED_GLASS_PANE;
+    private final Material pageSwitch = Material.SPECTRAL_ARROW;
+    private final Material nothing = Material.BLACK_STAINED_GLASS_PANE;
 
     public RewardGUI(Player viewer) {
         this.inv = Bukkit.createInventory(null, 18, "RewardGUI");
@@ -44,8 +49,29 @@ public class RewardGUI {
                 }
             }
         } else {
-            for (int i=0; i<9; i++) {
+            for (int i=0; i<=8; i++) {
                 genItem("x: " + i, i);
+            }
+        }
+
+        // if there's a page after it shows the forwardswitch
+        if (quant/9.0 > page) {
+            inv.setItem(16, new ItemStack(pageSwitch));
+        } else {
+            inv.setItem(16, new ItemStack(blank));
+        }
+
+        // if it's not the first page, it shows the backswitch
+        if (page != 1) {
+            inv.setItem(10, new ItemStack(pageSwitch));
+        } else {
+            inv.setItem(10, new ItemStack(blank));
+        }
+
+        // replaces each empty item with the filler
+        for (int i=0; i<18; i++) {
+            if (inv.getItem(i) == null) {
+                inv.setItem(i, WorthNBT.attributeDefault(new ItemStack(nothing)));
             }
         }
     }
