@@ -25,7 +25,6 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
         // Aliases are set in the plugin.yml
         if (cmd.getName().equalsIgnoreCase("evenmorefish")) {
             if (args.length == 0) {
@@ -292,7 +291,7 @@ class Help {
 
         StringBuilder out = new StringBuilder();
 
-        out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + "&m &m &m &m &m &a &lEvenMoreFish &r&m &m &m &m &m \n"));
+        out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + "&m &m &m &m &m &m &m &m &m &m &a &lEvenMoreFish &r&m &m &m &m &m &m &m &m &m &m \n"));
 
         for (String s : dictionary.keySet()) {
             // we pass a null into here since there's no need to use placeholders in a help message.
