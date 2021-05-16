@@ -42,7 +42,10 @@ public class RewardGUI {
                     }
                     genItem("13", 13);
                 }
-
+            }
+        } else {
+            for (int i=0; i<9; i++) {
+                genItem("x: " + i, i);
             }
         }
     }
