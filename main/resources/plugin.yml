@@ -4,7 +4,7 @@ version: 1.2.0.2
 main: com.oheers.fish.EvenMoreFish
 api-version: 1.16
 depend: [Vault]
-softdepend: [WorldGuard, PlaceholderAPI, RedProtect]
+softdepend: [WorldGuard, PlaceholderAPI, RedProtect, mcMMO]
 loadbefore: [AntiAC]
 
 commands:

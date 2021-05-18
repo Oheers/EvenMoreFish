@@ -47,8 +47,8 @@
         </repository>
 
         <repository>
-            <id>minecraft-repo</id>
-            <url>https://libraries.minecraft.net/</url>
+            <id>skullcreator-repo</id>
+            <url>https://dl.bintray.com/deanveloper/SkullCreator</url>
         </repository>
 
         <repository>
@@ -75,6 +75,16 @@
             <id>redprotect-repo</id>
             <url>https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/</url>
         </repository>
+
+        <repository>
+            <id>minecraft-repo</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
+
+        <repository>
+            <id>neetgames</id>
+            <url>https://nexus.neetgames.com/repository/maven-releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -84,6 +94,13 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.16.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.21</version>
             <scope>provided</scope>
         </dependency>
 
@@ -153,9 +170,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>1.5.21</version>
+            <groupId>com.gmail.nossr50.mcMMO</groupId>
+            <artifactId>mcMMO</artifactId>
+            <version>2.1.196</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

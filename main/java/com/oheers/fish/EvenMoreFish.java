@@ -14,6 +14,7 @@ import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
+import com.oheers.fish.events.McMMOTreasureEvent;
 import com.oheers.fish.fishing.FishEvent;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
@@ -167,6 +168,10 @@ public class EvenMoreFish extends JavaPlugin {
         if (checkingIntEvent) {
             getServer().getPluginManager().registerEvents(new FishInteractEvent(this), this);
         }
+
+        if (!mainConfig.disableMcMMOTreasure()) {
+            getServer().getPluginManager().registerEvents(new McMMOTreasureEvent(), this);
+        }
     }
 
     private void commands() {
@@ -218,6 +223,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         HandlerList.unregisterAll(new FishEatEvent(this));
         HandlerList.unregisterAll(new FishInteractEvent(this));
+        HandlerList.unregisterAll(new McMMOTreasureEvent());
         optionalListeners();
 
         LoadRewards.load();

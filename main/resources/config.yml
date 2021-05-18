@@ -94,6 +94,9 @@ broadcast-only-rods: true
 #allowed-regions:
 #  - "fishing"
 
+# If using McMMO, sometimes loot will be fished
+disable-mcmmo-loot: false
+
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
