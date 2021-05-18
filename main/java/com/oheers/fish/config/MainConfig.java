@@ -120,4 +120,8 @@ public class MainConfig {
     public boolean sellOverDrop() {
         return config.getBoolean("gui.sell-over-drop");
     }
+
+    public boolean disableMcMMOTreasure() {
+        return config.getBoolean("disable-mcmmo-loot");
+    }
 }
