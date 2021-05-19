@@ -77,13 +77,14 @@ public class FishEvent implements Listener, Runnable {
                     EMFFishEvent cEvent = new EMFFishEvent(fish, event.getPlayer());
                     Bukkit.getPluginManager().callEvent(cEvent);
 
-                    Message msg = new Message(player)
+                    Message msg = new Message()
                             .setMSG(EvenMoreFish.msgs.getFishCaught())
                             .setPlayer(player.getName())
                             .setColour(fish.getRarity().getColour())
                             .setLength(length)
                             .setFishCaught(name)
-                            .setRarity(rarity);
+                            .setRarity(rarity)
+                            .setReceiver(player);
 
                     // Gets whether it's a serverwide announce or not
                     if (fish.getRarity().getAnnounce()) {

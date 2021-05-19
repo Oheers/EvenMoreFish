@@ -1,9 +1,11 @@
 package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
+import java.util.logging.Level;
 
 public class Messages {
 
@@ -175,5 +177,9 @@ public class Messages {
         String returning = config.getString("fish-rarity-prefix");
         if (returning != null) return returning;
         else return "";
+    }
+
+    public void disabledInConsole() {
+        Bukkit.getLogger().log(Level.SEVERE, "That command is disabled on the console, use it in-game instead.");
     }
 }

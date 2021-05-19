@@ -16,10 +16,10 @@ public class Message {
     // all the others are values that don't need to be set.
 
     String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice;
-    Player p;
+    Player receiver;
 
-    public Message(Player p) {
-        this.p = p;
+    public Message() {
+
     }
 
     public Message setMSG(String msg) {
@@ -76,6 +76,11 @@ public class Message {
         return this;
     }
 
+    public Message setReceiver(Player receiver) {
+        this.receiver = receiver;
+        return this;
+    }
+
     public String toString() {
 
         if (player != null) {
@@ -117,8 +122,8 @@ public class Message {
         }
 
         if (EvenMoreFish.papi) {
-            if (p != null) {
-                msg = PlaceholderAPI.setPlaceholders(p, msg);
+            if (receiver != null) {
+                msg = PlaceholderAPI.setPlaceholders(receiver, msg);
             }
 
         }
