@@ -9,7 +9,6 @@ public class McMMOTreasureEvent implements Listener {
 
     @EventHandler
     public void mcmmoTreasure(McMMOPlayerFishingTreasureEvent event) {
-        System.out.println("treasure event");
         if (EvenMoreFish.mainConfig.disableMcMMOTreasure()) {
             if (EvenMoreFish.mainConfig.isCompetitionUnique()) {
                 if (EvenMoreFish.active != null) {
