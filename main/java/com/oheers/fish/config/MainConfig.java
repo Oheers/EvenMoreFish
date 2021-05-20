@@ -1,12 +1,24 @@
 package com.oheers.fish.config;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
 import java.util.Set;
 
 public class MainConfig {
+
+    // returns default values found in config.yml version >= 6
+    private Material defaultRewardMaterial(Integer position) {
+        switch (position) {
+            case 1: return Material.DIAMOND;
+            case 2: return Material.GOLD_INGOT;
+            case 3: return Material.IRON_INGOT;
+            case 4: return Material.BRICK;
+            default: return Material.STICK;
+        }
+    }
 
     private FileConfiguration config = Bukkit.getPluginManager().getPlugin("EvenMoreFish").getConfig();
 
@@ -119,5 +131,11 @@ public class MainConfig {
 
     public boolean sellOverDrop() {
         return config.getBoolean("gui.sell-over-drop");
+    }
+
+    public Material getRewardGUIItem(Integer position) {
+        String returning = config.getString("reward-gui.positions." + position + ".material");
+        if (returning != null) return Material.valueOf(returning);
+        else return defaultRewardMaterial(position);
     }
 }
