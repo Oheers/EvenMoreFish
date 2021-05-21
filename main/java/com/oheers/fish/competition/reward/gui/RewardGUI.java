@@ -22,7 +22,7 @@ public class RewardGUI {
     public RewardGUI(Player viewer) {
         this.inv = Bukkit.createInventory(null, 18, "RewardGUI");
         this.viewer = viewer;
-        this.page = 2;
+        this.page = 1;
         init(this.page);
     }
 
@@ -89,7 +89,7 @@ public class RewardGUI {
     private void genItem(Integer position, int slot) {
         ItemStack it = new ItemStack(EvenMoreFish.mainConfig.getRewardGUIItem(position));
         ItemMeta meta = it.getItemMeta();
-        meta.setDisplayName(Integer.toString(position));
+        meta.setDisplayName(EvenMoreFish.mainConfig.getRewardGUITitle(position));
         it.setItemMeta(meta);
         inv.setItem(slot, it);
     }

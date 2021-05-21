@@ -1,5 +1,6 @@
 package com.oheers.fish.config;
 
+import com.oheers.fish.FishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,6 +18,17 @@ public class MainConfig {
             case 3: return Material.IRON_INGOT;
             case 4: return Material.BRICK;
             default: return Material.STICK;
+        }
+    }
+
+    private String defaultRewardTitle(Integer position) {
+        switch (position) {
+            case 1: return FishUtils.translateHexColorCodes("&b&lFirst Place (#1)");
+            case 2: return FishUtils.translateHexColorCodes("&e&lSecond Place (#2)");
+            case 3: return FishUtils.translateHexColorCodes("&#dddddd&lThird Place (#3)");
+            case 4: return FishUtils.translateHexColorCodes("&#e68d5c&lFourth Place (#4)");
+            case 5: return FishUtils.translateHexColorCodes("&#e68d5c&lFifth Place (#5)");
+            default: return FishUtils.translateHexColorCodes("&#e68d5c&l(#" + position + ")");
         }
     }
 
@@ -137,5 +149,11 @@ public class MainConfig {
         String returning = config.getString("reward-gui.positions." + position + ".material");
         if (returning != null) return Material.valueOf(returning);
         else return defaultRewardMaterial(position);
+    }
+
+    public String getRewardGUITitle(Integer position) {
+        String returning = config.getString("reward-gui.positions." + position + ".title");
+        if (returning != null) return FishUtils.translateHexColorCodes(returning);
+        else return defaultRewardTitle(position);
     }
 }
