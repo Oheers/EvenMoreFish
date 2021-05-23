@@ -1,7 +1,7 @@
 package com.oheers.fish.competition.reward.gui;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.selling.WorthNBT;
+import com.oheers.fish.FishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,10 +23,13 @@ public class RewardGUI {
         this.inv = Bukkit.createInventory(null, 18, "RewardGUI");
         this.viewer = viewer;
         this.page = 1;
-        init(this.page);
+        EvenMoreFish.rGuis.add(this);
+        init();
     }
 
-    private void init(int page) {
+    public void init() {
+        // Setting empty slots to a nice fancy filler
+        cleanBar();
         // The amount of reward markers to be shown
         int quant = EvenMoreFish.rewards.size();
 
@@ -65,23 +68,16 @@ public class RewardGUI {
 
         // if there's a page after it shows the forwardswitch
         if (quant/9.0 > page) {
-            inv.setItem(16, new ItemStack(pageSwitch));
+            inv.setItem(16, FishUtils.setScrollItem(true));
         } else {
             inv.setItem(16, new ItemStack(blank));
         }
 
         // if it's not the first page, it shows the backswitch
         if (page != 1) {
-            inv.setItem(10, new ItemStack(pageSwitch));
+            inv.setItem(10, FishUtils.setScrollItem(false));
         } else {
             inv.setItem(10, new ItemStack(blank));
-        }
-
-        // replaces each empty item with the filler
-        for (int i=0; i<18; i++) {
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, WorthNBT.attributeDefault(new ItemStack(nothing)));
-            }
         }
     }
 
@@ -94,8 +90,22 @@ public class RewardGUI {
         inv.setItem(slot, it);
     }
 
+    private void cleanBar() {
+        for (int i=0; i<18; i++) {
+            this.inv.setItem(i, new ItemStack(nothing));
+        }
+    }
+
     // Opens the inventory to the player. The GUI must have been constructed beforehand
     public void display() {
         this.viewer.openInventory(this.inv);
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }
