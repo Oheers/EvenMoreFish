@@ -123,7 +123,7 @@ public class Competition {
             }
 
             // It's unlikely there'll be need for placeholders in a leaderboard output. Nulled.
-            message.append(new Message(null)
+            message.append(new Message()
                     .setMSG(EvenMoreFish.msgs.getLeaderboard())
                     .setPlayer(p.getName())
                     .setColour(f.getRarity().getColour())

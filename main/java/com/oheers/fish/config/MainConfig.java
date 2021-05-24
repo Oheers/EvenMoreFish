@@ -156,4 +156,24 @@ public class MainConfig {
         if (returning != null) return FishUtils.translateHexColorCodes(returning);
         else return defaultRewardTitle(position);
     }
+
+    public String rewardEffect() {
+        return config.getString("reward-gui.reward-effect");
+    }
+
+    public String rewardItem() {
+        return config.getString("reward-gui.reward-item");
+    }
+
+    public String rewardMoney() {
+        return config.getString("reward-gui.reward-money");
+    }
+
+    public String rewardHealth() {
+        return config.getString("reward-gui.reward-health");
+    }
+
+    public String rewardHunger() {
+        return config.getString("reward-gui.reward-hunger");
+    }
 }

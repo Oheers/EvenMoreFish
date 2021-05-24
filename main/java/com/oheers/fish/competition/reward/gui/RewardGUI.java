@@ -2,12 +2,16 @@ package com.oheers.fish.competition.reward.gui;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.competition.reward.Reward;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RewardGUI {
 
@@ -86,6 +90,14 @@ public class RewardGUI {
         ItemStack it = new ItemStack(EvenMoreFish.mainConfig.getRewardGUIItem(position));
         ItemMeta meta = it.getItemMeta();
         meta.setDisplayName(EvenMoreFish.mainConfig.getRewardGUITitle(position));
+        List<String> rewards = new ArrayList<>();
+
+        for (Reward r : EvenMoreFish.rewards.get(position)) {
+            String reward = r.format();
+            if (reward != null) rewards.add(reward);
+        }
+
+        meta.setLore(rewards);
         it.setItemMeta(meta);
         inv.setItem(slot, it);
     }

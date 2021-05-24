@@ -113,6 +113,13 @@ reward-gui:
     5:
       material: "STICK"
       title: "&#e68d5c&lFifth Place (#5)"
+  # The "cleaned" descriptions for the reward values
+  reward-effect: "&f- &#00e6a1&l{effect} &#00e6a1{amplifier} &ffor &#00e6a1{time}"
+  reward-item: "&f- &a{amount}x &l{item}"
+  reward-money: "&f- &#d1e231&l${amount}"
+  reward-hunger: "&f- &#e97c07&l+{amount} &fHunger"
+  reward-health: "&f- &c&l+{amount} &fHealth"
+
   # The filler item
   filler: "BLACK_STAINED_GLASS_PANE"
   # Shown when the user can go forward/backwards by pages

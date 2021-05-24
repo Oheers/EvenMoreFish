@@ -49,7 +49,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
                     }
                 } else {
-                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver(sender).toString());
                 }
                 break;
             case "shop":
@@ -58,10 +58,10 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         SellGUI gui = new SellGUI(sender);
                         EvenMoreFish.guis.add(gui);
                     } else {
-                        sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver(sender).toString());
                     }
                 } else {
-                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.economyDisabled()).toString());
+                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.economyDisabled()).setReceiver(sender).toString());
                 }
 
                 break;
@@ -70,14 +70,14 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     RewardGUI rGUI = new RewardGUI(sender);
                     rGUI.display();
                 } else {
-                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver(sender).toString());
                 }
                 break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
                 } else {
-                    sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getNoPermission()).toString());
+                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver(sender).toString());
                 }
                 break;
             default:
@@ -186,10 +186,10 @@ class Controls{
                 plugin.reload();
                 plugin.reloadConfig();
 
-                sender.sendMessage(new Message(sender).setMSG(EvenMoreFish.msgs.getReloaded()).toString());
+                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getReloaded()).setReceiver(sender).toString());
                 break;
             case "version":
-                Message msg = new Message(sender).setMSG(
+                Message msg = new Message().setReceiver(sender).setMSG(
                         EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
@@ -295,7 +295,7 @@ class Help {
 
         for (String s : dictionary.keySet()) {
             // we pass a null into here since there's no need to use placeholders in a help message.
-            out.append(new Message(null).setCMD(s).setDesc(dictionary.get(s)).setMSG(EvenMoreFish.msgs.getEMFHelp()).toString()).append("\n");
+            out.append(new Message().setCMD(s).setDesc(dictionary.get(s)).setMSG(EvenMoreFish.msgs.getEMFHelp()).toString()).append("\n");
         }
 
         return out.toString();

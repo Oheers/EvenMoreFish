@@ -212,8 +212,8 @@ public class Fish implements Cloneable {
         // standard lore
         List<String> lore = new ArrayList<>();
 
-        lore.add(new Message(null).setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer(fisherman.getName()).toString());
-        lore.add(new Message(null).setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setColour("").toString());
+        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer(fisherman.getName()).toString());
+        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setColour("").toString());
         lore.add(" ");
 
         // custom lore in fish.yml
