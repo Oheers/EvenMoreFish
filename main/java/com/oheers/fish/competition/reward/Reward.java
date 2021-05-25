@@ -98,7 +98,10 @@ public class Reward {
 
     public String format() {
         switch (type) {
-            case COMMAND: return null;
+            case COMMAND:
+                return new Message()
+                        .setMSG(EvenMoreFish.mainConfig.rewardCommand(action))
+                        .toString();
             case EFFECT:
                 String[] parsedEffect = action.split(",");
                 // Adds a potion effect in accordance to the config.yml "EFFECT:" value

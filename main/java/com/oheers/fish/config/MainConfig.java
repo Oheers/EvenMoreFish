@@ -176,4 +176,8 @@ public class MainConfig {
     public String rewardHunger() {
         return config.getString("reward-gui.reward-hunger");
     }
+
+    public String rewardCommand(String command) {
+        return config.getString("reward-gui.command-override." + command);
+    }
 }

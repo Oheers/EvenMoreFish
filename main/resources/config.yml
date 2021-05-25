@@ -119,6 +119,10 @@ reward-gui:
   reward-money: "&f- &#d1e231&l${amount}"
   reward-hunger: "&f- &#e97c07&l+{amount} &fHunger"
   reward-health: "&f- &c&l+{amount} &fHealth"
+  # Since commands don't look particularly friendly to players, this allows you to set what appears in place of the command
+  command-override:
+    "give {player} diamond 5": "&f- &a5x &lDIAMOND"
+    "give {player} diamond 64": "&f- &a64x &lDIAMOND"
 
   # The filler item
   filler: "BLACK_STAINED_GLASS_PANE"
