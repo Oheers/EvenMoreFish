@@ -5,6 +5,9 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.reward.LoadRewards;
 import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.competition.reward.gui.GUIClick;
+import com.oheers.fish.competition.reward.gui.GUIClose;
+import com.oheers.fish.competition.reward.gui.RewardGUI;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.RaritiesFile;
@@ -60,6 +63,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Competition active;
 
     public static ArrayList<SellGUI> guis;
+    public static ArrayList<RewardGUI> rGuis;
 
     public static boolean isUpdateAvailable;
 
@@ -80,6 +84,7 @@ public class EvenMoreFish extends JavaPlugin {
         LocaleGen.createLocaleFiles(this);
 
         guis = new ArrayList<>();
+        rGuis = new ArrayList<>();
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
@@ -156,6 +161,8 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
+        getServer().getPluginManager().registerEvents(new GUIClick(), this);
+        getServer().getPluginManager().registerEvents(new GUIClose(), this);
 
         optionalListeners();
     }
@@ -251,7 +258,7 @@ public class EvenMoreFish extends JavaPlugin {
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
         }
 
-        int MAIN_CONFIG_VERSION = 5;
+        int MAIN_CONFIG_VERSION = 6;
         if (mainConfig.configVersion() > MAIN_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your config.yml config is not up to date. Certain new configurable features may have been added, and without" +
             " an updated config, you won't be able to modify them. To update, either delete your config.yml file and restart the server to create a new" +

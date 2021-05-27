@@ -64,21 +64,7 @@ public class Bar {
     }
 
     private void setTitle() {
-        String returning = FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getBarPrefix()) + ChatColor.RESET;
-        int hours = timeLeft/3600;
-
-        if (timeLeft >= 3600) {
-            returning += hours + EvenMoreFish.msgs.getBarHour() + " ";
-        }
-
-        if (timeLeft >= 60) {
-            returning += ((timeLeft%3600)/60) + EvenMoreFish.msgs.getBarMinute() + " ";
-        }
-
-        // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft%60) + EvenMoreFish.msgs.getBarSecond() + EvenMoreFish.msgs.getRemainingWord();
-
-        bar.setTitle(returning);
+        bar.setTitle(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getBarPrefix()) + ChatColor.RESET + FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord());
     }
 
     private void show() {

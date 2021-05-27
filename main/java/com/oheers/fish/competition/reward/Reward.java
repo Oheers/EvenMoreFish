@@ -3,6 +3,7 @@ package com.oheers.fish.competition.reward;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFRewardEvent;
+import com.oheers.fish.config.messages.Message;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -92,6 +93,49 @@ public class Reward {
                 break;
             default:
                 Bukkit.getLogger().log(Level.SEVERE, "Error in loading a reward.");
+        }
+    }
+
+    public String format() {
+        switch (type) {
+            case COMMAND:
+                return new Message()
+                        .setMSG(EvenMoreFish.mainConfig.rewardCommand(action))
+                        .toString();
+            case EFFECT:
+                String[] parsedEffect = action.split(",");
+                // Adds a potion effect in accordance to the config.yml "EFFECT:" value
+                return new Message()
+                        .setMSG(EvenMoreFish.mainConfig.rewardEffect())
+                        .setEffect(parsedEffect[0])
+                        .setAmplifier(parsedEffect[1])
+                        .setTime(FishUtils.timeFormat(Integer.parseInt(parsedEffect[2])))
+                        .toString();
+            case ITEM:
+                String[] parsedItem = action.split(",");
+                return new Message()
+                        .setMSG(EvenMoreFish.mainConfig.rewardItem())
+                        .setItem(parsedItem[0])
+                        .setAmount(parsedItem[1])
+                        .toString();
+            case MONEY:
+                return new Message()
+                        .setMSG(EvenMoreFish.mainConfig.rewardMoney())
+                        .setAmount(action)
+                        .toString();
+            case HEALTH:
+                return new Message()
+                        .setMSG(EvenMoreFish.mainConfig.rewardHealth())
+                        .setAmount(action)
+                        .toString();
+            case HUNGER:
+                return new Message()
+                        .setMSG(EvenMoreFish.mainConfig.rewardHunger())
+                        .setAmount(action)
+                        .toString();
+            default:
+                return null;
+
         }
     }
 }

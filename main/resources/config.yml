@@ -94,10 +94,42 @@ broadcast-only-rods: true
 #allowed-regions:
 #  - "fishing"
 
-# If using McMMO, sometimes loot will be fished
-disable-mcmmo-loot: false
+# Configuration regarding the "/emf rewards" gui.
+reward-gui:
+  # The materials to be shown for each position in the gui, apart from the top 3 if defaults to a brick
+  positions:
+    1:
+      material: "DIAMOND"
+      title: "&b&lFirst Place (#1)"
+    2:
+      material: "GOLD_INGOT"
+      title: "&e&lSecond Place (#2)"
+    3:
+      material: "IRON_INGOT"
+      title: "&#dddddd&lThird Place (#3)"
+    4:
+      material: "BRICK"
+      title: "&#e68d5c&lFourth Place (#4)"
+    5:
+      material: "STICK"
+      title: "&#e68d5c&lFifth Place (#5)"
+  # The "cleaned" descriptions for the reward values
+  reward-effect: "&f- &#00e6a1&l{effect} &#00e6a1{amplifier} &ffor &#00e6a1{time}"
+  reward-item: "&f- &a{amount}x &l{item}"
+  reward-money: "&f- &#d1e231&l${amount}"
+  reward-hunger: "&f- &#e97c07&l+{amount} &fHunger"
+  reward-health: "&f- &c&l+{amount} &fHealth"
+  # Since commands don't look particularly friendly to players, this allows you to set what appears in place of the command
+  command-override:
+    "give {player} diamond 5": "&f- &a5x &lDIAMOND"
+    "give {player} diamond 64": "&f- &a64x &lDIAMOND"
 
-
+  # The filler item
+  filler: "BLACK_STAINED_GLASS_PANE"
+  # Shown when the user can go forward/backwards by pages
+  scroll-item: "SPECTRAL_ARROW"
+  # Shown when the user can't go forward/backwards by pages
+  no-scroll: "GRAY_STAINED_GLASS_PANE"
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 5
+config-version: 6

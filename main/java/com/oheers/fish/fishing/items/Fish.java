@@ -137,7 +137,7 @@ public class Fish implements Cloneable {
         // The fish has item: 64 selected
         String bValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-64");
         if (bValue != null) {
-            return FishUtils.get(bValue);
+            FishUtils.get(bValue);
         }
 
         // The fish has item: material selected
