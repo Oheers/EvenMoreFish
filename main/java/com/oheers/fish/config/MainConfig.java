@@ -145,6 +145,10 @@ public class MainConfig {
         return config.getBoolean("gui.sell-over-drop");
     }
 
+    public boolean disableMcMMOTreasure() {
+        return config.getBoolean("disable-mcmmo-loot");
+    }
+
     public Material getRewardGUIItem(Integer position) {
         String returning = config.getString("reward-gui.positions." + position + ".material");
         if (returning != null) return Material.valueOf(returning);

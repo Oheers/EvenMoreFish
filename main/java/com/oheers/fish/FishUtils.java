@@ -19,9 +19,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -87,7 +89,11 @@ public class FishUtils {
                 player.getInventory().addItem(item);
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.5f);
             } else {
-                player.getLocation().getWorld().dropItem(player.getLocation(), item);
+                new BukkitRunnable() {
+                    public void run() {
+                        player.getLocation().getWorld().dropItem(player.getLocation(), item);
+                    }
+                }.runTask(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")));
             }
         }
     }

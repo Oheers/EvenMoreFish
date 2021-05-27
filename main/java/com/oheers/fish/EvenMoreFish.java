@@ -17,6 +17,7 @@ import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
+import com.oheers.fish.events.McMMOTreasureEvent;
 import com.oheers.fish.fishing.FishEvent;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
@@ -113,7 +114,7 @@ public class EvenMoreFish extends JavaPlugin {
         Names names = new Names();
         names.loadRarities();
 
-        rewards = LoadRewards.load();
+        LoadRewards.load();
 
         listeners();
         commands();
@@ -174,6 +175,12 @@ public class EvenMoreFish extends JavaPlugin {
         if (checkingIntEvent) {
             getServer().getPluginManager().registerEvents(new FishInteractEvent(this), this);
         }
+
+        if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
+            if (!mainConfig.disableMcMMOTreasure()) {
+                getServer().getPluginManager().registerEvents(new McMMOTreasureEvent(), this);
+            }
+        }
     }
 
     private void commands() {
@@ -215,23 +222,25 @@ public class EvenMoreFish extends JavaPlugin {
 
         fish = new HashMap<>();
         fishCollection = new HashMap<>();
+        rewards = new HashMap<>();
 
         reloadConfig();
         saveDefaultConfig();
-
-        msgs = new Messages();
-        mainConfig = new MainConfig();
-
-        guis = new ArrayList<>();
 
         Names names = new Names();
         names.loadRarities();
 
         HandlerList.unregisterAll(new FishEatEvent(this));
         HandlerList.unregisterAll(new FishInteractEvent(this));
+        HandlerList.unregisterAll(new McMMOTreasureEvent());
         optionalListeners();
 
-        rewards = LoadRewards.load();
+        LoadRewards.load();
+
+        msgs = new Messages();
+        mainConfig = new MainConfig();
+
+        guis = new ArrayList<>();
     }
 
     // Checks for updates, surprisingly
@@ -249,7 +258,7 @@ public class EvenMoreFish extends JavaPlugin {
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
         }
 
-        int MAIN_CONFIG_VERSION = 5;
+        int MAIN_CONFIG_VERSION = 6;
         if (mainConfig.configVersion() > MAIN_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your config.yml config is not up to date. Certain new configurable features may have been added, and without" +
             " an updated config, you won't be able to modify them. To update, either delete your config.yml file and restart the server to create a new" +

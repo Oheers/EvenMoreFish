@@ -25,19 +25,20 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
         // Aliases are set in the plugin.yml
         if (cmd.getName().equalsIgnoreCase("evenmorefish")) {
             if (args.length == 0) {
                 sender.sendMessage(Help.std_help);
             } else {
-                control((Player) sender, args);
+                control(sender, args);
             }
         }
 
         return true;
     }
 
-    private void control(Player sender, String[] args) {
+    private void control(CommandSender sender, String[] args) {
 
         // we've already checked that that args exist
         switch (args[0].toLowerCase()) {
@@ -49,35 +50,44 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
                     }
                 } else {
-                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver(sender).toString());
+                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
                 }
                 break;
             case "shop":
-                if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
-                    if (EvenMoreFish.permission.has(sender, "emf.shop")) {
-                        SellGUI gui = new SellGUI(sender);
-                        EvenMoreFish.guis.add(gui);
+                if (sender instanceof Player) {
+                    if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
+                        if (EvenMoreFish.permission.has(sender, "emf.shop")) {
+                            SellGUI gui = new SellGUI((Player) sender);
+                            EvenMoreFish.guis.add(gui);
+                        } else {
+                            sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
+                        }
                     } else {
-                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver(sender).toString());
+                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.economyDisabled()).setReceiver((Player) sender).toString());
                     }
                 } else {
-                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.economyDisabled()).setReceiver(sender).toString());
+                    EvenMoreFish.msgs.disabledInConsole();
                 }
-
                 break;
             case "rewards":
-                if (EvenMoreFish.permission.has(sender, "emf.rewards")) {
-                    RewardGUI rGUI = new RewardGUI(sender);
-                    rGUI.display();
+                if (sender instanceof Player) {
+                    if (EvenMoreFish.permission.has(sender, "emf.rewards")) {
+                        RewardGUI rGUI = new RewardGUI((Player) sender);
+                        rGUI.display();
+                    } else {
+                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.economyDisabled()).setReceiver((Player) sender).toString());
+                    }
                 } else {
-                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver(sender).toString());
+                    EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
                 } else {
-                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver(sender).toString());
+                    Message msg = new Message().setMSG(EvenMoreFish.msgs.getNoPermission());
+                    if (sender instanceof Player) msg.setReceiver((Player) sender);
+                    sender.sendMessage(msg.toString());
                 }
                 break;
             default:
@@ -162,7 +172,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
 class Controls{
 
-    protected static void adminControl(EvenMoreFish plugin, String[] args, Player sender) {
+    protected static void adminControl(EvenMoreFish plugin, String[] args, CommandSender sender) {
 
         // will only proceed after this if at least args[1] exists
         if (args.length == 1) {
@@ -186,15 +196,18 @@ class Controls{
                 plugin.reload();
                 plugin.reloadConfig();
 
-                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getReloaded()).setReceiver(sender).toString());
+                Message message = new Message().setMSG(EvenMoreFish.msgs.getReloaded());
+                if (sender instanceof Player) message.setReceiver((Player) sender);
+                sender.sendMessage(message.toString());
                 break;
             case "version":
-                Message msg = new Message().setReceiver(sender).setMSG(
+                Message msg = new Message().setMSG(
                         EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode()
                 );
+                if (sender instanceof Player) msg.setReceiver((Player) sender);
                 sender.sendMessage(msg.toString());
                 break;
             default:
@@ -202,7 +215,7 @@ class Controls{
         }
     }
 
-    protected static void competitionControl(String[] args, Player player) {
+    protected static void competitionControl(String[] args, CommandSender player) {
         if (args.length == 2) {
             player.sendMessage(Help.comp_help);
         } else {
@@ -229,7 +242,7 @@ class Controls{
         }
     }
 
-    protected static void startComp(String argsDuration, Player player) {
+    protected static void startComp(String argsDuration, CommandSender player) {
 
         if (EvenMoreFish.active != null) {
             player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionRunning()));
@@ -291,7 +304,7 @@ class Help {
 
         StringBuilder out = new StringBuilder();
 
-        out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + "&m &m &m &m &m &m &m &m &m &m &a &lEvenMoreFish &r&m &m &m &m &m &m &m &m &m &m \n"));
+        out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + "----- &a&lEvenMoreFish &r-----\n"));
 
         for (String s : dictionary.keySet()) {
             // we pass a null into here since there's no need to use placeholders in a help message.
