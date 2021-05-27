@@ -114,7 +114,7 @@ public class EvenMoreFish extends JavaPlugin {
         Names names = new Names();
         names.loadRarities();
 
-        LoadRewards.load();
+        rewards = LoadRewards.load();
 
         listeners();
         commands();
@@ -235,7 +235,7 @@ public class EvenMoreFish extends JavaPlugin {
         HandlerList.unregisterAll(new McMMOTreasureEvent());
         optionalListeners();
 
-        LoadRewards.load();
+        rewards = LoadRewards.load();
 
         msgs = new Messages();
         mainConfig = new MainConfig();

@@ -36,6 +36,7 @@ public class RewardGUI {
         cleanBar();
         // The amount of reward markers to be shown
         int quant = EvenMoreFish.rewards.size();
+        System.out.println("size: " + EvenMoreFish.rewards.size());
 
         // detects if all the slots in that page are filled or not
         if (page*9 > quant) {
