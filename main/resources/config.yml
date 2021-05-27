@@ -128,8 +128,13 @@ reward-gui:
   filler: "BLACK_STAINED_GLASS_PANE"
   # Shown when the user can go forward/backwards by pages
   scroll-item: "SPECTRAL_ARROW"
+  # Name given to an arrow allowing the user to go forward/backwards a page
+  scroll-forward-name: "&rForward »"
+  scroll-previous-name: "&rPrevious «"
   # Shown when the user can't go forward/backwards by pages
   no-scroll: "GRAY_STAINED_GLASS_PANE"
+  # The name of the /emf rewards GUI
+  title: "&2&lRewards"
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
 config-version: 6

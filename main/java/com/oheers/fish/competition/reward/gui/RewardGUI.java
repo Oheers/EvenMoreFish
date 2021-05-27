@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RewardGUI {
 
@@ -19,12 +21,8 @@ public class RewardGUI {
     Player viewer;
     int page;
 
-    private final Material blank = Material.GRAY_STAINED_GLASS_PANE;
-    private final Material pageSwitch = Material.SPECTRAL_ARROW;
-    private final Material nothing = Material.BLACK_STAINED_GLASS_PANE;
-
     public RewardGUI(Player viewer) {
-        this.inv = Bukkit.createInventory(null, 18, "RewardGUI");
+        this.inv = Bukkit.createInventory(null, 18, FishUtils.translateHexColorCodes(EvenMoreFish.mainConfig.rewardGUIInventoryName()));
         this.viewer = viewer;
         this.page = 1;
         EvenMoreFish.rGuis.add(this);
@@ -36,7 +34,6 @@ public class RewardGUI {
         cleanBar();
         // The amount of reward markers to be shown
         int quant = EvenMoreFish.rewards.size();
-        System.out.println("size: " + EvenMoreFish.rewards.size());
 
         // detects if all the slots in that page are filled or not
         if (page*9 > quant) {
@@ -71,18 +68,23 @@ public class RewardGUI {
             }
         }
 
+        ItemStack noMovement = new ItemStack(Objects.requireNonNull(Material.getMaterial(EvenMoreFish.mainConfig.noScrollItem())));
+        ItemMeta meta = noMovement.getItemMeta();
+        meta.setDisplayName(ChatColor.WHITE + "");
+        noMovement.setItemMeta(meta);
+
         // if there's a page after it shows the forwardswitch
         if (quant/9.0 > page) {
             inv.setItem(16, FishUtils.setScrollItem(true));
         } else {
-            inv.setItem(16, new ItemStack(blank));
+            inv.setItem(16, noMovement);
         }
 
         // if it's not the first page, it shows the backswitch
         if (page != 1) {
             inv.setItem(10, FishUtils.setScrollItem(false));
         } else {
-            inv.setItem(10, new ItemStack(blank));
+            inv.setItem(10, noMovement);
         }
     }
 
@@ -105,7 +107,11 @@ public class RewardGUI {
 
     private void cleanBar() {
         for (int i=0; i<18; i++) {
-            this.inv.setItem(i, new ItemStack(nothing));
+            ItemStack filler = new ItemStack(Objects.requireNonNull(Material.getMaterial(EvenMoreFish.mainConfig.rewardGuiFiller())));
+            ItemMeta meta = filler.getItemMeta();
+            meta.setDisplayName(ChatColor.WHITE + "");
+            filler.setItemMeta(meta);
+            this.inv.setItem(i, filler);
         }
     }
 

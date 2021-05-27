@@ -181,8 +181,10 @@ public class FishUtils {
 
         if (forward) {
             itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, 1);
+            itemMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.mainConfig.getForwardName()));
         } else {
             itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, 0);
+            itemMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.mainConfig.getPreviousName()));
         }
 
         rawItem.setItemMeta(itemMeta);

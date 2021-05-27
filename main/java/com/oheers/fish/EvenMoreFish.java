@@ -235,10 +235,10 @@ public class EvenMoreFish extends JavaPlugin {
         HandlerList.unregisterAll(new McMMOTreasureEvent());
         optionalListeners();
 
-        rewards = LoadRewards.load();
-
         msgs = new Messages();
         mainConfig = new MainConfig();
+
+        rewards = LoadRewards.load();
 
         guis = new ArrayList<>();
     }

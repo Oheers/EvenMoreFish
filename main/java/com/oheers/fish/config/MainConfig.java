@@ -184,4 +184,34 @@ public class MainConfig {
     public String rewardCommand(String command) {
         return config.getString("reward-gui.command-override." + command);
     }
+
+    public String noScrollItem() {
+        String returning = config.getString("reward-gui.no-scroll");
+        if (returning != null) return returning;
+        else return "GRAY_STAINED_GLASS_PANE";
+    }
+
+    public String rewardGuiFiller() {
+        String returning = config.getString("reward-gui.filler");
+        if (returning != null) return returning;
+        else return "BLACK_STAINED_GLASS_PANE";
+    }
+
+    public String rewardGUIInventoryName() {
+        String returning = config.getString("reward-gui.title");
+        if (returning != null) return returning;
+        else return "&2&lRewards";
+    }
+
+    public String getForwardName() {
+        String returning = config.getString("reward-gui.scroll-forward-name");
+        if (returning != null) return returning;
+        else return "&rForward »";
+    }
+
+    public String getPreviousName() {
+        String returning = config.getString("reward-gui.scroll-previous-name");
+        if (returning != null) return returning;
+        else return "&rPrevious «";
+    }
 }
