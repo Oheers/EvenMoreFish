@@ -1,170 +1,185 @@
 package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
+import java.util.List;
+import java.util.logging.Level;
 
-public class Message {
+public class Messages {
 
-    // msg is the string got from the messages.yml file
-    // all the others are values that don't need to be set.
+    FileConfiguration config = EvenMoreFish.messageFile.getConfig();
 
-    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice, effect, amplifier, time, item;
-    Player receiver;
-
-    public Message() {
-
+    public int configVersion() {
+        return config.getInt("config-version");
     }
 
-    public Message setMSG(String msg) {
-        this.msg = msg;
-        return this;
+    public String getSellMessage() {
+        return getSTDPrefix() + config.getString("fish-sale");
     }
 
-    public Message setPlayer(String player) {
-        this.player = player;
-        return this;
+    public String getWorthGUIName() {
+        return config.getString("worth-gui-name");
     }
 
-    public Message setColour(String colour) {
-        this.colour = colour;
-        return this;
+    public String noFish() {
+        return getSTDPrefix() + config.getString("no-record");
     }
 
-    public Message setLength(String length) {
-        this.length = length;
-        return this;
+    public String noWinners() {
+        return getSTDPrefix() + config.getString("no-winners");
     }
 
-    public Message setFishCaught(String fishCaught) {
-        this.fishCaught = fishCaught;
-        return this;
+    public String getCompetitionEnd() {
+        return getSTDPrefix() + config.getString("contest-end");
     }
 
-    public Message setRarity(String rarity) {
-        this.rarity = rarity;
-        return this;
+    public String getCompetitionStart() {
+        return getSTDPrefix() + config.getString("contest-start");
     }
 
-    public Message setCMD(String cmd) {
-        this.cmd = cmd;
-        return this;
-    }
-    public Message setDesc(String description) {
-        this.cmdDescription = description;
-        return this;
+    public int getLeaderboardCount() {
+        return config.getInt("leaderboard-count");
     }
 
-    public Message setPosition(String position) {
-        this.position = position;
-        return this;
+    public String getLeaderboard() {
+        return getSTDPrefix() + config.getString("leaderboard");
     }
 
-    public Message setAmount(String amount) {
-        this.amount = amount;
-        return this;
+    public String getEMFHelp() {
+        return getSTDPrefix() + config.getString("help");
+    }
+    public String getBarSecond() {
+        return config.getString("bossbar.second");
     }
 
-    public Message setSellPrice(String sellPrice) {
-        this.sellprice = sellPrice;
-        return this;
+    public String getBarMinute() {
+        return config.getString("bossbar.minute");
     }
 
-    public Message setReceiver(Player receiver) {
-        this.receiver = receiver;
-        return this;
+    public String getBarHour() {
+        return config.getString("bossbar.hour");
     }
 
-    public Message setEffect(String effect) {
-        this.effect = effect;
-        return this;
+    public String getBarPrefix() {
+        return config.getString("bossbar.prefix");
     }
 
-    public Message setAmplifier(String amplifier) {
-        this.amplifier = amplifier;
-        return this;
+    private String getPrefix() {
+        return config.getString("prefix");
     }
 
-    public Message setTime(String time) {
-        this.time = time;
-        return this;
+    private String getStandardPrefixColour() {
+        return config.getString("prefix-regular");
     }
 
-    public Message setItem(String item) {
-        this.item = item;
-        return this;
+    private String getAdminPrefixColour() {
+        return config.getString("prefix-admin");
     }
 
-    public String toString() {
+    private String getErrorPrefixColour() {
+        return config.getString("prefix-error");
+    }
 
-        if (player != null) {
-            msg = msg.replace("{player}", player);
+    public String getSTDPrefix() {
+        return getStandardPrefixColour() + getPrefix() + "&r";
+    }
+
+    public String getAdminPrefix() {
+        return getAdminPrefixColour() + getPrefix() + "&r";
+    }
+
+    public String getErrorPrefix() {
+        return getErrorPrefixColour() + getPrefix() + "&r";
+    }
+
+    public String getReloaded() {
+        return getAdminPrefix() + "successfully reloaded the plugin.";
+    }
+
+    public String getFishCaught() {
+        return config.getString("fish-caught");
+    }
+
+    public String getNoPermission() {
+        return getErrorPrefix() + config.getString("no-permission");
+    }
+
+    public String notInteger() {
+        return getErrorPrefix() + "Please provide an integer video.";
+    }
+
+    public String competitionRunning() {
+        return getErrorPrefix() + "There's already a competition running.";
+    }
+
+    public String competitionNotRunning() {
+        return getErrorPrefix() + "There's no competition running right now.";
+    }
+
+    public String getNotEnoughPlayers() {
+        return getErrorPrefix() + config.getString("not-enough-players");
+    }
+
+    public String getSellName() {
+        return config.getString("sell-gui-name");
+    }
+
+    public String getConfirmName() {
+        return config.getString("confirm-gui-name");
+    }
+
+    public String getNoValueName() {
+        String s = config.getString("error-gui-name");
+        if (s != null) return s;
+        else return "&c&lCan't Sell";
+    }
+
+    public List<String> sellLore() {
+        return config.getStringList("sell-gui-lore");
+    }
+
+    public List<String> noValueLore() {
+        List<String> l = config.getStringList("error-gui-lore");
+        if (!l.isEmpty()) return l;
+        else {
+            l.add("&c&lValue: &c$0");
+            l.add("&cAdd your caught fish to this.");
+            l.add("&cGUI to sell them.");
+            return l;
         }
+    }
 
-        if (length != null) {
-            DecimalFormat df = new DecimalFormat("###,###.#");
-            String formatted = df.format(Double.parseDouble(length));
-            msg = msg.replace("{length}", colour + formatted);
-        }
+    public String economyDisabled() {
+        return getErrorPrefix() + "EvenMoreFish's economy features are disabled.";
+    }
 
-        if (fishCaught != null) {
-            msg = msg.replace("{fish}", colour + "&l" + fishCaught);
-        }
+    public String fishCaughtBy() {
+        String returning = config.getString("fish-caught-by");
+        if (returning != null) return returning;
+        else return "&fCaught by {player}";
+    }
 
-        if (rarity != null) {
-            msg = msg.replace("{rarity}", colour + "&l" + rarity);
-        }
+    public String fishLength() {
+        String returning = config.getString("fish-length");
+        if (returning != null) return returning;
+        else return "&fMeasures {length}cm";
+    }
 
-        if (cmd != null) {
-            msg = msg.replace("{command}", cmd);
-        }
+    public String getRemainingWord() {
+        String returning = config.getString("bossbar.remaining");
+        if (returning != null) return returning;
+        else return " left";
+    }
 
-        if (cmdDescription != null) {
-            msg = msg.replace("{description}", cmdDescription);
-        }
+    public String getRarityPrefix() {
+        String returning = config.getString("fish-rarity-prefix");
+        if (returning != null) return returning;
+        else return "";
+    }
 
-        if (position != null) {
-            msg = msg.replace("{position}", position);
-        }
-
-        if (amount != null) {
-            msg = msg.replace("{amount}", amount);
-        }
-
-        if (sellprice != null) {
-            msg = msg.replace("{sell-price}", NumberFormat.getInstance(Locale.US).format(new BigDecimal(sellprice)));
-        }
-
-        if (effect != null) {
-            msg = msg.replace("{effect}", effect);
-        }
-
-        if (amplifier != null) {
-            msg = msg.replace("{amplifier}", amplifier);
-        }
-
-        if (time != null) {
-            msg = msg.replace("{time}", time);
-        }
-
-        if (item != null) {
-            msg = msg.replace("{item}", item);
-        }
-
-        if (EvenMoreFish.papi) {
-            if (receiver != null) {
-                msg = PlaceholderAPI.setPlaceholders(receiver, msg);
-            }
-
-        }
-
-        return FishUtils.translateHexColorCodes(msg);
-
+    public void disabledInConsole() {
+        Bukkit.getLogger().log(Level.SEVERE, "That command is disabled on the console, use it in-game instead.");
     }
 }
