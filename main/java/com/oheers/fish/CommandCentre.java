@@ -71,12 +71,17 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 break;
             case "rewards":
                 if (sender instanceof Player) {
-                    if (EvenMoreFish.permission.has(sender, "emf.rewards")) {
-                        RewardGUI rGUI = new RewardGUI((Player) sender);
-                        rGUI.display();
+                    if (EvenMoreFish.mainConfig.isRewardGUIEnabled()) {
+                        if (EvenMoreFish.permission.has(sender, "emf.rewards")) {
+                            RewardGUI rGUI = new RewardGUI((Player) sender);
+                            rGUI.display();
+                        } else {
+                            sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
+                        }
                     } else {
-                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.economyDisabled()).setReceiver((Player) sender).toString());
+                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
                     }
+
                 } else {
                     EvenMoreFish.msgs.disabledInConsole();
                 }

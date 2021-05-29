@@ -214,4 +214,8 @@ public class MainConfig {
         if (returning != null) return returning;
         else return "&rPrevious «";
     }
+
+    public boolean isRewardGUIEnabled() {
+        return config.getBoolean("reward-gui.enabled");
+    }
 }

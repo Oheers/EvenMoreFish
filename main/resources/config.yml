@@ -96,6 +96,8 @@ broadcast-only-rods: true
 
 # Configuration regarding the "/emf rewards" gui.
 reward-gui:
+  # Should this be enabled?
+  enabled: true
   # The materials to be shown for each position in the gui, apart from the top 3 if defaults to a brick
   positions:
     1:
