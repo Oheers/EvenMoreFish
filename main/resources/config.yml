@@ -95,6 +95,7 @@ broadcast-only-rods: true
 #  - "fishing"
 
 # Configuration regarding the "/emf rewards" gui.
+# Configuration regarding the "/emf rewards" gui.
 reward-gui:
   # Should this be enabled?
   enabled: true
@@ -102,29 +103,29 @@ reward-gui:
   positions:
     1:
       material: "DIAMOND"
-      title: "&b&lFirst Place (#1)"
+      title: "&bFirst Place (#1)"
     2:
       material: "GOLD_INGOT"
-      title: "&e&lSecond Place (#2)"
+      title: "&6Second Place (#2)"
     3:
       material: "IRON_INGOT"
-      title: "&#dddddd&lThird Place (#3)"
+      title: "&#ddddddThird Place (#3)"
     4:
       material: "BRICK"
-      title: "&#e68d5c&lFourth Place (#4)"
+      title: "&fFourth Place (#4)"
     5:
       material: "STICK"
-      title: "&#e68d5c&lFifth Place (#5)"
+      title: "&fFifth Place (#5)"
   # The "cleaned" descriptions for the reward values
-  reward-effect: "&f- &#00e6a1&l{effect} &#00e6a1{amplifier} &ffor &#00e6a1{time}"
-  reward-item: "&f- &a{amount}x &l{item}"
-  reward-money: "&f- &#d1e231&l${amount}"
-  reward-hunger: "&f- &#e97c07&l+{amount} &fHunger"
-  reward-health: "&f- &c&l+{amount} &fHealth"
+  reward-effect: "&f» &e&l{effect} &e{amplifier} &ffor &e{time}"
+  reward-item: "&f» &e{amount}x &l{item}"
+  reward-money: "&f» &e$&l{amount}"
+  reward-hunger: "&f» &e&l+{amount} &fHunger"
+  reward-health: "&f» &e&l+{amount} &fHealth"
   # Since commands don't look particularly friendly to players, this allows you to set what appears in place of the command
   command-override:
-    "give {player} diamond 5": "&f- &a5x &lDIAMOND"
-    "give {player} diamond 64": "&f- &a64x &lDIAMOND"
+    "give {player} diamond 5": "&f- &e5x &lDIAMOND"
+    "give {player} diamond 64": "&f- &e64x &lDIAMOND"
 
   # The filler item
   filler: "BLACK_STAINED_GLASS_PANE"
@@ -137,6 +138,8 @@ reward-gui:
   no-scroll: "GRAY_STAINED_GLASS_PANE"
   # The name of the /emf rewards GUI
   title: "&2&lRewards"
+
+disable-mcmmo-loot: true
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
 config-version: 6
