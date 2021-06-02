@@ -18,7 +18,8 @@ import com.oheers.fish.database.Database;
 import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
 import com.oheers.fish.events.McMMOTreasureEvent;
-import com.oheers.fish.fishing.FishEvent;
+import com.oheers.fish.fishing.SafeFishEvent;
+import com.oheers.fish.fishing.UnsafeFishEvent;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
@@ -74,6 +75,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static final int METRIC_ID = 11054;
 
     public void onEnable() {
+
+        snapshotBreaker();
 
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
@@ -157,7 +160,6 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void listeners() {
 
-        getServer().getPluginManager().registerEvents(new FishEvent(), this);
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
@@ -180,6 +182,12 @@ public class EvenMoreFish extends JavaPlugin {
             if (!mainConfig.disableMcMMOTreasure()) {
                 getServer().getPluginManager().registerEvents(new McMMOTreasureEvent(), this);
             }
+        }
+
+        if (mainConfig.riskyFishCheck()) {
+            getServer().getPluginManager().registerEvents(new UnsafeFishEvent(), this);
+        } else {
+            getServer().getPluginManager().registerEvents(new SafeFishEvent(), this);
         }
     }
 
@@ -284,5 +292,14 @@ public class EvenMoreFish extends JavaPlugin {
     private boolean checkWG(){
         Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
         return (pWG != null && mainConfig.regionWhitelist());
+    }
+
+    // This causes the plugin to become unloadable when a new update is released, this is only ever included in snapshot versions
+    // and official won't use this security measure.
+    private void snapshotBreaker() {
+        if (!new UpdateChecker(this, 91310).getVersion().equals("1.3.0")) {
+            Bukkit.getLogger().log(Level.SEVERE, "This snapshot version has been superseded by a newer version and will no longer function. Please update to the latest version available on the Spigot page.");
+            getServer().getPluginManager().disablePlugin(this);
+        }
     }
 }

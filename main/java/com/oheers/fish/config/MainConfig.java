@@ -218,4 +218,8 @@ public class MainConfig {
     public boolean isRewardGUIEnabled() {
         return config.getBoolean("reward-gui.enabled");
     }
+
+    public boolean riskyFishCheck() {
+        return config.getBoolean("risky-fish-event");
+    }
 }
