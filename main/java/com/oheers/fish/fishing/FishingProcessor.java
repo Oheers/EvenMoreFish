@@ -12,24 +12,19 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-public class FishEvent implements Listener, Runnable {
+public class FishingProcessor {
 
-    Player player;
-    String name;
-    Float length;
-
-    private final List<String> breakabletools = Arrays.asList(
+    private static final List<String> breakabletools = Arrays.asList(
             "FISHING_ROD",
             "SHOVEL",
             "TRIDENT",
@@ -47,9 +42,7 @@ public class FishEvent implements Listener, Runnable {
             "FLINT_AND_STEEL"
     );
 
-    @EventHandler (priority = EventPriority.HIGHEST)
-    public void onFish(PlayerFishEvent event) {
-
+    public static void process(PlayerFishEvent event, boolean safe) {
         if (EvenMoreFish.mainConfig.getEnabled()) {
 
             if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
@@ -96,7 +89,7 @@ public class FishEvent implements Listener, Runnable {
                                     p.sendMessage(msg.toString());
                                 }
                             }
-                        // sends it to everyone
+                            // sends it to everyone
                         } else for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
                     } else {
                         // sends it to just the fisher
@@ -110,23 +103,46 @@ public class FishEvent implements Listener, Runnable {
                         e.printStackTrace();
                     }
 
-                    // a much less smoothbrain way of dropping the fish
-                    Item nonCustom = (Item) event.getCaught();
-                    nonCustom.setItemStack(fish.give());
+                    // prevents the server from crashing if it's an unsafe event call
+                    if (safe) {
+                        Item nonCustom = (Item) event.getCaught();
+                        nonCustom.setItemStack(fish.give());
+                    } else {
+                        FishUtils.giveItems(Collections.singletonList(fish.give()), event.getPlayer());
+                    }
+
 
                     if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-                        this.player = player;
-                        this.name = fish.getName();
-                        this.length = fish.getLength();
-                        Thread t1 = new Thread(this);
-                        t1.start();
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                try {
+
+                                    // increases the fish fished count if the fish is already in the db
+                                    if (Database.hasFish(fish.getName())) {
+                                        Database.fishIncrease(fish.getName());
+
+                                        // sets the new leader in top fish, if the player has fished a record fish
+                                        if (Database.getTopLength(fish.getName()) < fish.getLength()) {
+                                            Database.newTopSpot(player, fish.getName(), fish.getLength());
+                                        }
+                                    } else {
+                                        // the database doesn't contain the fish yet
+                                        Database.add(fish.getName(), player, fish.getLength());
+                                    }
+
+                                } catch (SQLException throwables) {
+                                    throwables.printStackTrace();
+                                }
+                            }
+                        }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
                     }
                 }
             }
         }
     }
 
-    private Rarity random() {
+    private static Rarity random() {
         // Loads all the rarities
         List<Rarity> rarities = new ArrayList<>(EvenMoreFish.fishCollection.keySet());
 
@@ -146,7 +162,7 @@ public class FishEvent implements Listener, Runnable {
         return rarities.get(idx);
     }
 
-    private Fish getFish(Rarity r, Biome b) {
+    private static Fish getFish(Rarity r, Biome b) {
         // the fish that are of (Rarity r)
         List<Fish> rarityFish = EvenMoreFish.fishCollection.get(r);
         // will store all the fish that match the player's biome or don't discriminate biomes
@@ -170,13 +186,13 @@ public class FishEvent implements Listener, Runnable {
     }
 
     // if there's no fish available in the current biome, this gets sent out
-    private Fish defaultFish() {
+    private static Fish defaultFish() {
         Rarity r = new Rarity("No biome found", "&4", 1.0d, false, null);
         return new Fish(r, "");
     }
 
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
-    private boolean competitionOnlyCheck() {
+    private static boolean competitionOnlyCheck() {
         if (EvenMoreFish.mainConfig.isCompetitionUnique()) {
             return EvenMoreFish.active != null;
         } else {
@@ -184,13 +200,13 @@ public class FishEvent implements Listener, Runnable {
         }
     }
 
-    private void competitionCheck(Fish fish, Player fisherman) {
+    private static void competitionCheck(Fish fish, Player fisherman) {
         if (EvenMoreFish.active != null) {
             EvenMoreFish.active.runLeaderboardScan(fisherman, fish);
         }
     }
 
-    private boolean checkBreakable(Material material) {
+    private static boolean checkBreakable(Material material) {
         if (EvenMoreFish.mainConfig.doingRandomDurability()) {
             for (String s : breakabletools) {
                 if (material.toString().contains(s)) {
@@ -202,27 +218,5 @@ public class FishEvent implements Listener, Runnable {
         }
 
         return false;
-    }
-
-    @Override
-    public void run() {
-        try {
-
-            // increases the fish fished count if the fish is already in the db
-            if (Database.hasFish(name)) {
-                Database.fishIncrease(name);
-
-                // sets the new leader in top fish, if the player has fished a record fish
-                if (Database.getTopLength(name) < length) {
-                    Database.newTopSpot(player, name, length);
-                }
-            } else {
-                // the database doesn't contain the fish yet
-                Database.add(name, player, length);
-            }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
     }
 }
