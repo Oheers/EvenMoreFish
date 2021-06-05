@@ -139,7 +139,7 @@ public class Competition {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners()));
-                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish()));
+                if (EvenMoreFish.msgs.noFish() != null) player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish()));
             }
 
             return null;
@@ -150,7 +150,10 @@ public class Competition {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
                 player.sendMessage(message.toString());
                 // checks if the specific player didn't fish a fish
-                if (!leaderboardRegister.containsKey(player.getUniqueId())) player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish()));
+                if (EvenMoreFish.msgs.noFish() != null) {
+                    if (!leaderboardRegister.containsKey(player.getUniqueId()))
+                        player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish()));
+                }
             }
 
             return null;
