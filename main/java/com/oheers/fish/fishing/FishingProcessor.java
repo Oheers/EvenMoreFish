@@ -12,17 +12,18 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-public class FishingProcessor {
+public class FishingProcessor implements Listener {
 
     private static final List<String> breakabletools = Arrays.asList(
             "FISHING_ROD",
@@ -42,7 +43,8 @@ public class FishingProcessor {
             "FLINT_AND_STEEL"
     );
 
-    public static void process(PlayerFishEvent event, boolean safe) {
+    @EventHandler
+    public static void process(PlayerFishEvent event) {
         if (EvenMoreFish.mainConfig.getEnabled()) {
 
             if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
@@ -103,13 +105,10 @@ public class FishingProcessor {
                         e.printStackTrace();
                     }
 
-                    // prevents the server from crashing if it's an unsafe event call
-                    if (safe) {
-                        Item nonCustom = (Item) event.getCaught();
-                        nonCustom.setItemStack(fish.give());
-                    } else {
-                        FishUtils.giveItems(Collections.singletonList(fish.give()), event.getPlayer());
-                    }
+                    // replaces the fishing item with a custom evenmorefish fish.
+                    Item nonCustom = (Item) event.getCaught();
+                    nonCustom.setItemStack(fish.give());
+                    System.out.println(nonCustom.getItemStack());
 
 
                     if (EvenMoreFish.mainConfig.isDatabaseOnline()) {

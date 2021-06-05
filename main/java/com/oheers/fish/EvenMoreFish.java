@@ -18,8 +18,7 @@ import com.oheers.fish.database.Database;
 import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
 import com.oheers.fish.events.McMMOTreasureEvent;
-import com.oheers.fish.fishing.SafeFishEvent;
-import com.oheers.fish.fishing.UnsafeFishEvent;
+import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
@@ -161,6 +160,7 @@ public class EvenMoreFish extends JavaPlugin {
     private void listeners() {
 
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
+        getServer().getPluginManager().registerEvents(new FishingProcessor(), this);
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
         getServer().getPluginManager().registerEvents(new GUIClick(), this);
@@ -182,12 +182,6 @@ public class EvenMoreFish extends JavaPlugin {
             if (!mainConfig.disableMcMMOTreasure()) {
                 getServer().getPluginManager().registerEvents(new McMMOTreasureEvent(), this);
             }
-        }
-
-        if (mainConfig.riskyFishCheck()) {
-            getServer().getPluginManager().registerEvents(new UnsafeFishEvent(), this);
-        } else {
-            getServer().getPluginManager().registerEvents(new SafeFishEvent(), this);
         }
     }
 

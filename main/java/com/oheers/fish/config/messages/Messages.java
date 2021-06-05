@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class Messages {
@@ -24,7 +25,9 @@ public class Messages {
     }
 
     public String noFish() {
-        return getSTDPrefix() + config.getString("no-record");
+        if (Objects.equals(config.getString("no-record"), "none")) {
+            return null;
+        } else return getSTDPrefix() + config.getString("no-record");
     }
 
     public String noWinners() {
