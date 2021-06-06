@@ -253,7 +253,7 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void checkConfigVers() {
-        int MSG_CONFIG_VERSION = 5;
+        int MSG_CONFIG_VERSION = 6;
         if (msgs.configVersion() > MSG_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your messages.yml file and restart the server to create a new" +
