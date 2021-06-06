@@ -78,6 +78,10 @@ no-competition-running: "No competition running right now."
 emf-competition-player-null: false
 # Should %emf_competition_place_size_*% contain the above (false) or return null (true).
 emf-competition-size-null: true
+# Should %emf_competition_place_fish_*% contain the above (false) or return null (true).
+emf-competition-fish-null: true
+# How should the %emf_competition_place_fish_*% be formatted?
+emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
 config-version: 6

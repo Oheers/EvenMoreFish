@@ -106,8 +106,6 @@ public class EvenMoreFish extends JavaPlugin {
             checkConfigVers();
         });
 
-        new PlaceholderReceiver(this).register();
-
         // checks against both support region plugins and sets an active plugin (worldguard is priority)
         if (checkWG()) {
             guardPL = "worldguard";
@@ -277,7 +275,11 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void checkPapi() {
-        papi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            papi = true;
+            new PlaceholderReceiver(this).register();
+        }
+
     }
 
     private boolean checkRP(){

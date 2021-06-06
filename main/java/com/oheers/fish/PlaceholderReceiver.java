@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
@@ -96,9 +97,9 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
      * @return possibly-null String of the requested identifier.
      */
     @Override
-    public String onPlaceholderRequest(Player player, String identifier){
+    public String onPlaceholderRequest(Player player, String identifier) {
 
-        if(player == null){
+        if (player == null) {
             return "";
         }
 
@@ -133,7 +134,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             if (EvenMoreFish.active != null) {
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
-                int place = Integer.parseInt(brokendown[brokendown.length-1]);
+                int place = Integer.parseInt(brokendown[brokendown.length - 1]);
                 if (EvenMoreFish.active.getLeaderboard().size() >= place) {
                     // getting "place" place in the competition
                     int count = 1;
@@ -153,16 +154,36 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                     return "";
                 } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
             }
-        }
-
-        // %someplugin_placeholder1%
-        if(identifier.equals("placeholder1")){
-            return plugin.getConfig().getString("placeholder1", "value doesnt exist");
-        }
-
-        // %someplugin_placeholder2%
-        if(identifier.equals("placeholder2")){
-            return plugin.getConfig().getString("placeholder2", "value doesnt exist");
+        } else if (identifier.startsWith("competition_place_fish_")) {
+            if (EvenMoreFish.active != null) {
+                // checking the leaderboard actually contains the value of place
+                String[] brokendown = identifier.split("_");
+                int place = Integer.parseInt(brokendown[brokendown.length - 1]);
+                if (EvenMoreFish.active.getLeaderboard().size() >= place) {
+                    // getting "place" place in the competition
+                    int count = 1;
+                    for (Fish fish : EvenMoreFish.active.getLeaderboard().keySet()) {
+                        if (count == place) {
+                            return new Message()
+                                    .setMSG(EvenMoreFish.msgs.getFishFormat())
+                                    .setRarity(fish.getRarity().getValue())
+                                    .setFishCaught(fish.getName())
+                                    .setLength(Float.toString(fish.getLength()))
+                                    .setColour(fish.getRarity().getColour())
+                                    .toString();
+                        }
+                        count++;
+                    }
+                } else {
+                    if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {
+                        return "";
+                    } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPlayerInposPlaceholder());
+                }
+            } else {
+                if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {
+                    return "";
+                } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
+            }
         }
 
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)

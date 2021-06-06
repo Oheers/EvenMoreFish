@@ -205,4 +205,14 @@ public class Messages {
     public boolean shouldNullSizeCompPlaceholder() {
         return config.getBoolean("emf-competition-size-null");
     }
+
+    public boolean shouldNullFishCompPlaceholder() {
+        return config.getBoolean("emf-competition-fish-null");
+    }
+
+    public String getFishFormat() {
+        String returning = config.getString("emf-competition-fish-format");
+        if (returning != null) return returning;
+        else return "{length}cm &l{rarity} {fish}";
+    }
 }
