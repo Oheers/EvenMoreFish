@@ -21,11 +21,11 @@ public class LocaleGen {
     public static void createLocaleFiles(EvenMoreFish plugin) {
 
         for (String locale : availableLocales) {
-            File file = new File(plugin.getDataFolder(), "/locales/" + locale + ".yml");
+            File file = new File(plugin.getDataFolder(), "locales" + File.pathSeparator + locale + ".yml");
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 try {
-                    FileUtils.copyToFile(Objects.requireNonNull(plugin.getResource(locale + ".yml")), file);
+                    FileUtils.copyToFile(Objects.requireNonNull(plugin.getResource("locales" + File.pathSeparator + locale + ".yml")), file);
                 } catch (Exception e) {
                     Bukkit.getLogger().log(Level.SEVERE, "Could not create " + locale + " locale. It will not appear in the locales folder.");
                     e.printStackTrace();
