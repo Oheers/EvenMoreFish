@@ -153,6 +153,15 @@ public class EvenMoreFish extends JavaPlugin {
     public void onDisable() {
 
         terminateSellGUIS();
+
+        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+            try {
+                Database.closeConnections();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+
         getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
 
     }
