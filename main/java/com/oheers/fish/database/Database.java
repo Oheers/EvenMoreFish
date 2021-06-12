@@ -62,8 +62,13 @@ public class Database {
                 PreparedStatement prep = connection.prepareStatement(sql);
                 ResultSet rs = prep.executeQuery()
         ) {
+            while (rs.next()) {
+                if (rs.getString(1).equals(name)) {
+                    return true;
+                }
+            }
             // will return false if there's no fish with the given parameter
-            return rs.next() && rs.getString(1).equals(name);
+            return false;
         }
     }
 
