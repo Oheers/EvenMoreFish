@@ -108,8 +108,6 @@ public class FishingProcessor implements Listener {
                     // replaces the fishing item with a custom evenmorefish fish.
                     Item nonCustom = (Item) event.getCaught();
                     nonCustom.setItemStack(fish.give());
-                    System.out.println(nonCustom.getItemStack());
-
 
                     if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
                         new BukkitRunnable() {

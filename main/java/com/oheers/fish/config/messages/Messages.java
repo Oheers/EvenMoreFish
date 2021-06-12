@@ -185,4 +185,34 @@ public class Messages {
     public void disabledInConsole() {
         Bukkit.getLogger().log(Level.SEVERE, "That command is disabled on the console, use it in-game instead.");
     }
+
+    public String getNoCompPlaceholder() {
+        String returning = config.getString("no-competition-running");
+        if (returning != null) return returning;
+        else return "No competition running right now.";
+    }
+
+    public String getNoPlayerInposPlaceholder() {
+        String returning = config.getString("no-player-in-place");
+        if (returning != null) return returning;
+        else return "Start fishing to take this place";
+    }
+
+    public boolean shouldNullPlayerCompPlaceholder() {
+        return config.getBoolean("emf-competition-player-null");
+    }
+
+    public boolean shouldNullSizeCompPlaceholder() {
+        return config.getBoolean("emf-competition-size-null");
+    }
+
+    public boolean shouldNullFishCompPlaceholder() {
+        return config.getBoolean("emf-competition-fish-null");
+    }
+
+    public String getFishFormat() {
+        String returning = config.getString("emf-competition-fish-format");
+        if (returning != null) return returning;
+        else return "{length}cm &l{rarity} {fish}";
+    }
 }
