@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -14,7 +13,8 @@ public class LocaleGen {
 
     private static final String[] availableLocales = {
             "messages_fr",
-            "messages_nl"
+            "messages_nl",
+            "messages_ru"
     };
 
     // creates locale files in a /locales/ folder from a list of available locales
