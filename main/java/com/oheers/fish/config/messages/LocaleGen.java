@@ -12,6 +12,7 @@ import java.util.logging.Level;
 public class LocaleGen {
 
     private static final String[] availableLocales = {
+            "messages_es",
             "messages_fr",
             "messages_nl",
             "messages_ru"
