@@ -1,0 +1,89 @@
+# GERMAN TRANSLATION (provided by Tizo)
+
+# If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
+
+# Sent to players when they fish an EvenMoreFish fish
+fish-caught: "&l{player} &rhat einen {length}cm {rarity} {fish} geangelt!"
+# Sent to a player when they don't have permission to execute a command.
+no-permission: "&cYou don't have permission to run that command."
+
+# The message to be sent when a competition starts and ends
+contest-start: "&rDer Angelwettbewerb hat begonnen."
+contest-end: "&rDer Angelwettbewerb ist beendet."
+# Segments shown in the bossbar when competitions run
+bossbar:
+  # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
+  prefix: "&a&lAngelwettbewerb: "
+  # The abbreviations used for different units of time
+  hour: "h"
+  minute: "m"
+  second: "s"
+  # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
+  remaining: " left"
+
+# The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
+prefix: "[Fisch] "
+# The colour of the [EvenMoreFish] prefix in commands
+prefix-regular: "&a"
+# The colour of the [EvenMoreFish] prefix in admin commands
+prefix-admin: "&c"
+# The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command
+prefix-error: "&c"
+
+# The text shown in a fish's lore before who caught the fish
+fish-caught-by: "&fGefangen von {player}"
+# The text shown in a fish's lore before the length of the fish
+fish-length: "&fMisst {length}cm"
+# The text to come before the rarity of the fish i.e. "Rarity: UNCOMMON"
+#fish-rarity-prefix: "&fRarity: "
+
+# The format of commands in /emf help (this message doesn't support papi placeholders)
+help: "/{command} - {description}"
+
+# The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
+leaderboard: "&r&l{position} &r| {player} - {length}cm {rarity} {fish}"
+# The number of positions shown in the leaderboard - can't be less than 1.
+leaderboard-count: 5
+# Sent to players when nobody got a record during a competition
+no-winners: "&rEs gab keine Fangaufzeichnungen."
+# When an individual player didn't get a record
+no-record: "&rDu hast keinen Fisch gefangen."
+# Sent to all online players when not enough players are on to start a competition
+not-enough-players: "&rEs sind nicht genug Spieler online, um den Angelwettbewerb zu starten."
+
+# The GUI title for /emf shop
+worth-gui-name: "&1&lFisch verkaufen"
+# The name found on the selling item in /emf shop
+sell-gui-name: "&6&lVERKAUFEN"
+# The name found on the confirming item in /emf shop
+confirm-gui-name: "&6&lBESTÄTIGEN"
+# The name found on the error item in /emf shop when the gui contains no items of value.
+error-gui-name: "&c&lVerkaufen nicht möglich"
+# The lore found on the selling/confirmation item in /emf shop
+sell-gui-lore:
+  - "&e&lWert: &e${sell-price}"
+  - "&7LINKS KLICKEN, um den Fisch zu verkaufen."
+  - "&7RECHTS KLICK zum Abbrechen."
+# The lore below the error item in /emf shop when the gui contains no items of value.
+error-gui-lore:
+  - "&c&lWert: &c$0"
+  - "&cFüge deine gefangenen Fische hinzu."
+  - "&cGUI, um sie zu verkaufen."
+# The message sent to players when they've sold their fish in the /emf shop
+fish-sale: "&fDu hast &a{amount} &ffische für &a${sell-price} &fverkauft."
+
+# Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
+no-player-in-place: "Beginnen mit dem Angeln, um diesen Platz einzunehmen"
+# Shown when the emf competition placeholders are used when there's no competition running
+no-competition-running: "Derzeit läuft kein Wettbewerb."
+# Should %emf_competition_place_player_*% contain the above (false) or return null (true).
+emf-competition-player-null: false
+# Should %emf_competition_place_size_*% contain the above (false) or return null (true).
+emf-competition-size-null: true
+# Should %emf_competition_place_fish_*% contain the above (false) or return null (true).
+emf-competition-fish-null: true
+# How should the %emf_competition_place_fish_*% be formatted?
+emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
+config-version: 6
