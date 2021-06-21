@@ -3,7 +3,11 @@ package com.oheers.fish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.gui.RewardGUI;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -105,6 +109,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
     public static void loadTabCompletes() {
         adminTabs = Arrays.asList(
                 "competition",
+                "fish",
                 "reload",
                 "version"
         );
@@ -192,6 +197,19 @@ class Controls{
                 competitionControl(args, sender);
                 break;
 
+            case "fish":
+                TextComponent textComponent = Component.text("");
+                for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
+                    String loadedColour = rarity.getColour();
+                    textComponent.append(Component.text(FishUtils.translateHexColorCodes(rarity.getColour() + "&l" + rarity.getValue() + ": ")));
+                    for (Fish fish : EvenMoreFish.fishCollection.get(rarity)) {
+                        textComponent.append(Component.text(FishUtils.translateHexColorCodes(loadedColour + "[" + fish.getName() + "] ")));
+                    }
+                    textComponent.append(Component.text("\n"));
+                }
+                sender.sendMessage(textComponent.toString());
+                break;
+
             case "reload":
 
                 EvenMoreFish.fishFile.reload();
@@ -205,6 +223,7 @@ class Controls{
                 if (sender instanceof Player) message.setReceiver((Player) sender);
                 sender.sendMessage(message.toString());
                 break;
+
             case "version":
                 Message msg = new Message().setMSG(
                         EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
