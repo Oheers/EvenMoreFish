@@ -6,8 +6,8 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -198,16 +198,21 @@ class Controls{
                 break;
 
             case "fish":
-                TextComponent textComponent = Component.text("");
+                BaseComponent baseComponent = new TextComponent("");
+
                 for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
                     String loadedColour = rarity.getColour();
-                    textComponent.append(Component.text(FishUtils.translateHexColorCodes(rarity.getColour() + "&l" + rarity.getValue() + ": ")));
+                    baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "&l" + rarity.getValue() + ": ")));
+
                     for (Fish fish : EvenMoreFish.fishCollection.get(rarity)) {
-                        textComponent.append(Component.text(FishUtils.translateHexColorCodes(loadedColour + "[" + fish.getName() + "] ")));
+                        TextComponent tC = new TextComponent(FishUtils.translateHexColorCodes(loadedColour + "[" + fish.getName() + "] "));
+                        baseComponent.addExtra(tC);
                     }
-                    textComponent.append(Component.text("\n"));
+
+                    baseComponent.addExtra("\n");
                 }
-                sender.sendMessage(textComponent.toString());
+
+                sender.sendMessage(baseComponent.toPlainText());
                 break;
 
             case "reload":
