@@ -21,11 +21,11 @@ bossbar:
 
 # The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
 prefix: "[EvenMoreFish] "
-# The colour of the [EvenMoreFish] prefix in commands
+# The colour of the [EvenMoreFish] prefix in commands (for when your prefix doesn't have colours)
 prefix-regular: "&a"
-# The colour of the [EvenMoreFish] prefix in admin commands
+# The colour of the [EvenMoreFish] prefix in admin commands (for when your prefix doesn't have colours)
 prefix-admin: "&c"
-# The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command
+# The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command (for when your prefix doesn't have colours)
 prefix-error: "&c"
 
 # The text shown in a fish's lore before who caught the fish
