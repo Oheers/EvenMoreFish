@@ -7,13 +7,16 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -205,14 +208,15 @@ class Controls{
                     baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "&l" + rarity.getValue() + ": ")));
 
                     for (Fish fish : EvenMoreFish.fishCollection.get(rarity)) {
-                        TextComponent tC = new TextComponent(FishUtils.translateHexColorCodes(loadedColour + "[" + fish.getName() + "] "));
+                        BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(loadedColour + "[" + fish.getName() + "] "));
+                        tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText(FishUtils.itemToJSON(new ItemStack(Material.ALLIUM))))); // The only element of the hover events basecomponents is the item json
                         baseComponent.addExtra(tC);
                     }
 
                     baseComponent.addExtra("\n");
                 }
 
-                sender.sendMessage(baseComponent.toPlainText());
+                sender.spigot().sendMessage(baseComponent);
                 break;
 
             case "reload":
