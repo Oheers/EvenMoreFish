@@ -6,6 +6,7 @@ import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
@@ -290,5 +291,36 @@ public class Fish implements Cloneable {
     @Override
     public Fish clone() throws CloneNotSupportedException {
         return (Fish) super.clone();
+    }
+
+    public ItemStack preview() {
+        ItemStack previewFish = type;
+        ItemMeta previewMeta = previewFish.getItemMeta();
+
+        // standard lore
+        List<String> lore = new ArrayList<>();
+
+        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer("Player").toString());
+        lore.add(new Message().setMSG(ChatColor.WHITE + Double.toString(minSize) + " to " + maxSize).toString());
+        lore.add(" ");
+
+        // custom lore in fish.yml
+        List<String> potentialLore = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore");
+
+        // checks that the custom lore exists, then adds it on to the lore
+        if (potentialLore.size() > 0) {
+            // does colour coding, hence why .addAll() isn't used
+            for (String line : potentialLore) {
+                lore.add(FishUtils.translateHexColorCodes(line));
+            }
+        }
+
+        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + FishUtils.translateHexColorCodes(this.rarity.getLorePrep()));
+
+        previewMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
+        previewMeta.setLore(lore);
+
+        previewFish.setItemMeta(previewMeta);
+        return previewFish;
     }
 }
