@@ -216,7 +216,7 @@ class Controls{
                             for (Fish fish : EvenMoreFish.fishCollection.get(r)) {
                                 BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
                                 tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText(FishUtils.itemToJSON(fish.preview())))); // The only element of the hover events basecomponents is the item json
-                                tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "emf admin reload"));
+                                tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + fish.getRarity().getValue() + " " + fish.getName()));
                                 baseComponent.addExtra(tC);
                             }
 
@@ -224,6 +224,37 @@ class Controls{
                             return;
                         }
                     }
+                    sender.sendMessage("Rarity does not exist.");
+                } else if (args.length >= 4) {
+                    StringBuilder using = new StringBuilder();
+
+                    if (args.length > 4) {
+                        for (int section = 3; section < args.length; section++) {
+                            if (section == args.length-1) using.append(args[section]);
+                            else using.append(args[section]).append(" ");
+                        }
+                    } else {
+                        using = new StringBuilder(args[3]);
+                    }
+
+                    System.out.println("using: " + using);
+
+                    if (sender instanceof Player) {
+                        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                            if (args[2].equalsIgnoreCase(r.getValue())) {
+                                for (Fish f : EvenMoreFish.fishCollection.get(r)) {
+                                    if (f.getName().equalsIgnoreCase(using.toString())) {
+                                        f.setFisherman((Player) sender);
+                                        f.init();
+                                        FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        EvenMoreFish.msgs.disabledInConsole();
+                    }
+
                 } else {
                     sender.sendMessage("Please give fish rarity");
                 }
