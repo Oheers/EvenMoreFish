@@ -157,6 +157,13 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 case 3:
                     if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
                         return l(args, compTabs);
+                    } else if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                        List<String> returning = new ArrayList<>();
+                        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                            returning.add(r.getValue());
+                        }
+
+                        return returning;
                     } else {
                         return empty;
                     }
@@ -202,7 +209,7 @@ class Controls{
             case "fish":
                 if (args.length == 3) {
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        if (args[2].equals(r.getValue())) {
+                        if (args[2].equalsIgnoreCase(r.getValue())) {
                             BaseComponent baseComponent = new TextComponent("");
                             baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": ")));
 
@@ -216,7 +223,6 @@ class Controls{
                             sender.spigot().sendMessage(baseComponent);
                             return;
                         }
-                        sender.sendMessage("Rarity does not exist.");
                     }
                 } else {
                     sender.sendMessage("Please give fish rarity");
