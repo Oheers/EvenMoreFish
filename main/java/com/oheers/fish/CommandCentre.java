@@ -163,10 +163,24 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                             returning.add(r.getValue());
                         }
 
-                        return returning;
+                        return l(args, returning);
                     } else {
                         return empty;
                     }
+                case 4:
+                    if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                            if (r.getValue().equalsIgnoreCase(args[2])) {
+                                List<String> fish = new ArrayList<>();
+                                for (Fish f : EvenMoreFish.fishCollection.get(r)) {
+                                    fish.add(f.getName());
+                                }
+                                return l(args, fish);
+                            }
+                        }
+                        return empty;
+                    }
+                    return empty;
             }
 
             return empty;
@@ -180,7 +194,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
     private List<String> l(String[] progress, List<String> total) {
         List<String> prep = new ArrayList<>();
         for (String s : total) {
-            if (s.startsWith(progress[progress.length - 1].toLowerCase())) {
+            if (s.toLowerCase().startsWith(progress[progress.length - 1].toLowerCase())) {
                 prep.add(s);
             }
         }
