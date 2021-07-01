@@ -12,7 +12,9 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -215,5 +217,12 @@ public class FishUtils {
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
         returning += (timeLeft%60) + EvenMoreFish.msgs.getBarSecond();
         return returning;
+    }
+
+    public static String itemToJSON(ItemStack itemStack) {
+        NBTTagCompound tag = new NBTTagCompound();
+        CraftItemStack.asNMSCopy(itemStack).save(tag);
+
+        return tag.toString();
     }
 }
