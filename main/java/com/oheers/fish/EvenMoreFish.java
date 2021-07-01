@@ -83,7 +83,9 @@ public class EvenMoreFish extends JavaPlugin {
 
         msgs = new Messages();
         mainConfig = new MainConfig();
-        LocaleGen.createLocaleFiles(this);
+
+        LocaleGen lG = new LocaleGen();
+        lG.createLocaleFiles(this);
 
         guis = new ArrayList<>();
         rGuis = new ArrayList<>();
