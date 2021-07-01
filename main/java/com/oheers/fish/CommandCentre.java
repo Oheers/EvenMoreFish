@@ -238,7 +238,14 @@ class Controls{
                             return;
                         }
                     }
-                    sender.sendMessage("Rarity does not exist.");
+                    BaseComponent baseComponent = new TextComponent("");
+                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
+                        tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish."))); // The only element of the hover events basecomponents is the item json
+                        tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + r.getValue()));
+                        baseComponent.addExtra(tC);
+                    }
+                    sender.spigot().sendMessage(baseComponent);
                 } else if (args.length >= 4) {
                     StringBuilder using = new StringBuilder();
 
@@ -270,7 +277,14 @@ class Controls{
                     }
 
                 } else {
-                    sender.sendMessage("Please give fish rarity");
+                    BaseComponent baseComponent = new TextComponent("");
+                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
+                        tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish."))); // The only element of the hover events basecomponents is the item json
+                        tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + r.getValue()));
+                        baseComponent.addExtra(tC);
+                    }
+                    sender.spigot().sendMessage(baseComponent);
                 }
 
                 break;
