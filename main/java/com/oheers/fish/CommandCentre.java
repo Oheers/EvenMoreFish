@@ -258,8 +258,6 @@ class Controls{
                         using = new StringBuilder(args[3]);
                     }
 
-                    System.out.println("using: " + using);
-
                     if (sender instanceof Player) {
                         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                             if (args[2].equalsIgnoreCase(r.getValue())) {

@@ -101,6 +101,20 @@ public class SellGUI {
         menu.setItem(guiSize-5, this.sellIcon);
     }
 
+    public void updateSellItem() {
+        ItemMeta sellMeta = this.sellIcon.getItemMeta();
+        sellMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSellName()));
+        // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
+        List<String> lore = new ArrayList<>();
+        for (String line : EvenMoreFish.msgs.sellLore()) {
+            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth()).setReceiver(this.player).toString());
+        }
+        sellMeta.setLore(lore);
+
+        this.sellIcon.setItemMeta(sellMeta);
+        menu.setItem(guiSize-5, this.sellIcon);
+    }
+
     public ItemStack getSellIcon() {
         return this.sellIcon;
     }

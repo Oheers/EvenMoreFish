@@ -1,6 +1,7 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,6 +9,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class InteractHandler implements Listener {
 
@@ -94,11 +96,21 @@ public class InteractHandler implements Listener {
                     } else if (clickedItem.isSimilar(gui.getFiller()) || clickedItem.isSimilar(gui.getErrorFiller())) {
                         event.setCancelled(true);
                     } else {
-                        gui.setSellItem();
-                        gui.setModified(true);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                gui.updateSellItem();
+                                gui.setModified(true);
+                            }
+                        }.runTaskLaterAsynchronously(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 1);
                     }
                 } else {
-                    gui.setSellItem();
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            gui.setSellItem();
+                        }
+                    }.runTaskLaterAsynchronously(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 1);
                 }
             }
         }
