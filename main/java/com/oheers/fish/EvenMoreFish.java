@@ -75,7 +75,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public void onEnable() {
 
-        snapshotBreaker();
+        //snapshotBreaker();
 
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
