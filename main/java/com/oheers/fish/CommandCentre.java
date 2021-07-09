@@ -1,7 +1,5 @@
 package com.oheers.fish;
 
-import com.oheers.fish.competition.Competition;
-import com.oheers.fish.competition.reward.gui.RewardGUI;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -75,23 +73,6 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
-            case "rewards":
-                if (sender instanceof Player) {
-                    if (EvenMoreFish.mainConfig.isRewardGUIEnabled()) {
-                        if (EvenMoreFish.permission.has(sender, "emf.rewards")) {
-                            RewardGUI rGUI = new RewardGUI((Player) sender);
-                            rGUI.display();
-                        } else {
-                            sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
-                        }
-                    } else {
-                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
-                    }
-
-                } else {
-                    EvenMoreFish.msgs.disabledInConsole();
-                }
-                break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
@@ -123,7 +104,6 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         emfTabs = Arrays.asList(
                 "help",
-                "rewards",
                 "shop",
                 "top"
         );
