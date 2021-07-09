@@ -87,7 +87,7 @@ public class FishingProcessor implements Listener {
                         if (EvenMoreFish.mainConfig.broadcastOnlyRods()) {
                             // sends it to all players holding ords
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
+                                if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
                                     p.sendMessage(msg.toString());
                                 }
                             }
