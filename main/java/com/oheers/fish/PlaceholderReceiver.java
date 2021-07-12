@@ -1,9 +1,6 @@
 package com.oheers.fish;
 
-import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.fishing.items.Fish;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class PlaceholderReceiver extends PlaceholderExpansion {
@@ -105,11 +102,12 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
 
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
-            if (EvenMoreFish.active != null) {
+            if (EvenMoreFish.active != null) {/*
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);
-                if (EvenMoreFish.active.getLeaderboard().size() >= place) {
+                Competition competition = EvenMoreFish.active;
+                if (competition..size() >= place) {
                     // getting "place" place in the competition
                     int count = 1;
                     for (Fish fish : EvenMoreFish.active.getLeaderboard().keySet()) {
@@ -124,14 +122,14 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                     } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPlayerInposPlaceholder());
 
 
-                }
+                }*/
             } else {
                 if (EvenMoreFish.msgs.shouldNullPlayerCompPlaceholder()) {
                     return "";
                 } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
             }
         } else if (identifier.startsWith("competition_place_size_")) {
-            if (EvenMoreFish.active != null) {
+            if (EvenMoreFish.active != null) {/*
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);
@@ -152,10 +150,10 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             } else {
                 if (EvenMoreFish.msgs.shouldNullSizeCompPlaceholder()) {
                     return "";
-                } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
+                } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());*/
             }
         } else if (identifier.startsWith("competition_place_fish_")) {
-            if (EvenMoreFish.active != null) {
+            if (EvenMoreFish.active != null) {/*
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);
@@ -178,7 +176,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                     if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {
                         return "";
                     } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPlayerInposPlaceholder());
-                }
+                }*/
             } else {
                 if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {
                     return "";

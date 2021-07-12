@@ -1,5 +1,7 @@
 package com.oheers.fish;
 
+import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -51,7 +53,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     if (EvenMoreFish.active == null) {
                         sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     } else {
-                        sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
+                        sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard()));
                     }
                 } else {
                     sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
@@ -312,7 +314,8 @@ class Controls{
 
                 else if (args[2].equalsIgnoreCase("end")) {
                     if (EvenMoreFish.active != null) {
-                        EvenMoreFish.active.end();
+                        Competition competition = EvenMoreFish.active;
+                        competition.end();
                     } else {
                         player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     }
@@ -335,8 +338,8 @@ class Controls{
             int duration = Integer.parseInt(argsDuration);
             // I've just discovered /emf admin competition start -1 causes some funky stuff - so this prevents that.
             if (duration > 0) {
-                Competition comp = new Competition(duration);
-                comp.start(true);
+                Competition comp = new Competition(duration, CompetitionType.LARGEST_FISH);
+                comp.begin();
             } else {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.notInteger()));
             }

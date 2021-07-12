@@ -12,7 +12,7 @@ public class JoinChecker implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (EvenMoreFish.active != null) {
-            EvenMoreFish.active.getBar().addPlayer(event.getPlayer());
+            //EvenMoreFish.active.getBar().addPlayer(event.getPlayer());
         }
     }
 
@@ -20,7 +20,7 @@ public class JoinChecker implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         if (EvenMoreFish.active != null) {
-            EvenMoreFish.active.getBar().removePlayer(event.getPlayer());
+            //EvenMoreFish.active.getBar().removePlayer(event.getPlayer());
         }
     }
 }

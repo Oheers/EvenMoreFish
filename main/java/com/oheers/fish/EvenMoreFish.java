@@ -5,9 +5,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.reward.LoadRewards;
 import com.oheers.fish.competition.reward.Reward;
-import com.oheers.fish.competition.reward.gui.GUIClick;
-import com.oheers.fish.competition.reward.gui.GUIClose;
-import com.oheers.fish.competition.reward.gui.RewardGUI;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.RaritiesFile;
@@ -63,7 +60,6 @@ public class EvenMoreFish extends JavaPlugin {
     public static Competition active;
 
     public static ArrayList<SellGUI> guis;
-    public static ArrayList<RewardGUI> rGuis;
 
     public static boolean isUpdateAvailable;
 
@@ -88,7 +84,6 @@ public class EvenMoreFish extends JavaPlugin {
         lG.createLocaleFiles(this);
 
         guis = new ArrayList<>();
-        rGuis = new ArrayList<>();
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
@@ -174,8 +169,6 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FishingProcessor(), this);
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
-        getServer().getPluginManager().registerEvents(new GUIClick(), this);
-        getServer().getPluginManager().registerEvents(new GUIClose(), this);
 
         optionalListeners();
     }

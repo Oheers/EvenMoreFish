@@ -30,8 +30,8 @@ public class AutoRunner {
                 if (EvenMoreFish.mainConfig.getCompetitionTimes().contains(timeKey)) {
                     // if there isn't a competition going on
                     if (EvenMoreFish.active == null) {
-                        Competition comp = new Competition(EvenMoreFish.mainConfig.getCompetitionDuration()*60);
-                        comp.start(false);
+                        //Competition comp = new Competition(EvenMoreFish.mainConfig.getCompetitionDuration()*60);
+                        //comp.start(false);
                     }
                 }
             }
