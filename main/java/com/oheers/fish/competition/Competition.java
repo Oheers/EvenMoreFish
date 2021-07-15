@@ -11,8 +11,9 @@ public class Competition {
 
     Integer maxDuration, timeLeft;
     CompetitionType competitionType;
+    Bar statusBar;
 
-    boolean active;
+    static boolean active;
 
     // In a SPECIFIC_FISH competition, there won't be a leaderboard
     boolean leaderboardApplicable;
@@ -29,12 +30,14 @@ public class Competition {
     }
 
     public void begin() {
-        this.active = true;
+        active = true;
+        this.statusBar = new Bar(this.maxDuration);
         initTimer();
     }
 
     public void end() {
-        this.active = false;
+        active = false;
+        this.statusBar.removeAllPlayers();
     }
 
     public static String getLeaderboard() {
@@ -53,8 +56,20 @@ public class Competition {
                     System.out.println("5m left lads come on chop chop.");
                 } else if (timeLeft == 0) {
                     end();
+                    return;
                 }
+
+                statusBar.setProgress();
+                statusBar.setTitle();
             }
         }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), 0, 20);
+    }
+
+    public Bar getStatusBar() {
+        return this.statusBar;
+    }
+
+    public static boolean isActive() {
+        return active;
     }
 }

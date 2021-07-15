@@ -17,8 +17,6 @@ public class Bar {
     int timeLeft;
     int totalTime;
 
-    Ticker ticker;
-
     public Bar(int totalTime) {
         this.totalTime = totalTime;
         // adding an offset so it doesn't instantly start counting down
@@ -26,7 +24,6 @@ public class Bar {
 
         createBar();
         renderBars();
-        begin();
     }
 
     public boolean timerUpdate() {
@@ -40,17 +37,7 @@ public class Bar {
         }
     }
 
-    private void begin() {
-        this.ticker = new Ticker(this);
-        ticker.runTaskTimer(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 0, 20);
-    }
-
-    public void end() {
-        removeAllPlayers();
-        this.ticker.cancel();
-    }
-
-    private void setProgress() {
+    public void setProgress() {
         double progress = (double) (timeLeft) / (double) (totalTime);
 
         if (progress < 0) {
@@ -63,7 +50,7 @@ public class Bar {
 
     }
 
-    private void setTitle() {
+    public void setTitle() {
         bar.setTitle(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getBarPrefix()) + ChatColor.RESET + FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord());
     }
 
