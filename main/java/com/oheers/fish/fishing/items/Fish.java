@@ -144,7 +144,10 @@ public class Fish implements Cloneable {
         // The fish has item: material selected
         String mValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.material");
         if (mValue != null) {
-            return new ItemStack(Objects.requireNonNull(Material.getMaterial(mValue)));
+            if (Material.getMaterial(mValue) == null) {
+                System.out.println(this.name + " has failed to load material: " + mValue);
+            }
+            return new ItemStack(Objects.requireNonNull(Material.getMaterial(mValue.toUpperCase())));
         }
 
         // The fish has no item type specified
