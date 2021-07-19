@@ -326,4 +326,8 @@ public class Fish implements Cloneable {
         previewFish.setItemMeta(previewMeta);
         return previewFish;
     }
+
+    public Player getFisherman() {
+        return fisherman;
+    }
 }
