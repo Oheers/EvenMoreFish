@@ -75,7 +75,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public void onEnable() {
 
-        //snapshotBreaker();
+        snapshotBreaker();
 
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
@@ -306,7 +306,7 @@ public class EvenMoreFish extends JavaPlugin {
     // This causes the plugin to become unloadable when a new update is released, this is only ever included in snapshot versions
     // and official won't use this security measure.
     private void snapshotBreaker() {
-        if (!new UpdateChecker(this, 91310).getVersion().equals("1.3.1")) {
+        if (!new UpdateChecker(this, 91310).getVersion().equals("1.3.2")) {
             Bukkit.getLogger().log(Level.SEVERE, "This snapshot version has been superseded by a newer version and will no longer function. Please update to the latest version available on the Spigot page.");
             getServer().getPluginManager().disablePlugin(this);
         }
