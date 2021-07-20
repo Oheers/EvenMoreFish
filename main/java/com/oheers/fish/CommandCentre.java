@@ -339,6 +339,7 @@ class Controls{
             // I've just discovered /emf admin competition start -1 causes some funky stuff - so this prevents that.
             if (duration > 0) {
                 Competition comp = new Competition(duration, CompetitionType.LARGEST_FISH);
+                EvenMoreFish.active = comp;
                 comp.begin();
             } else {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.notInteger()));
