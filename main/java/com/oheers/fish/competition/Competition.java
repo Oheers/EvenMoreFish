@@ -3,6 +3,7 @@ package com.oheers.fish.competition;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Objects;
 import java.util.SortedMap;
@@ -12,6 +13,8 @@ public class Competition {
     Integer maxDuration, timeLeft;
     CompetitionType competitionType;
     Bar statusBar;
+
+    BukkitTask timingSystem;
 
     static boolean active;
 
@@ -31,13 +34,14 @@ public class Competition {
 
     public void begin() {
         active = true;
-        this.statusBar = new Bar(this.maxDuration);
+        this.statusBar = new Bar();
         initTimer();
     }
 
     public void end() {
         active = false;
         this.statusBar.removeAllPlayers();
+        this.timingSystem.cancel();
     }
 
     public static String getLeaderboard() {
@@ -46,10 +50,10 @@ public class Competition {
 
     // Starts an async task to decrease the time left by 1s each second
     private void initTimer() {
-        new BukkitRunnable() {
-
+        this.timingSystem = new BukkitRunnable() {
             @Override
             public void run() {
+                System.out.println("running");
                 timeLeft--;
 
                 if (timeLeft == 300) {
@@ -58,9 +62,9 @@ public class Competition {
                     end();
                     return;
                 }
+                statusBar.timerUpdate(timeLeft, maxDuration);
+                System.out.println(timeLeft);
 
-                statusBar.setProgress();
-                statusBar.setTitle();
             }
         }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), 0, 20);
     }

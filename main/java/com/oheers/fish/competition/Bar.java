@@ -14,30 +14,17 @@ public class Bar {
     String title;
     BossBar bar;
 
-    int timeLeft;
-    int totalTime;
-
-    public Bar(int totalTime) {
-        this.totalTime = totalTime;
-        // adding an offset so it doesn't instantly start counting down
-        this.timeLeft = totalTime+1;
-
+    public Bar() {
         createBar();
         renderBars();
     }
 
-    public boolean timerUpdate() {
-        if (checkEnd()) {
-            timeLeft--;
-            setTitle();
-            setProgress();
-            return true;
-        } else {
-            return false;
-        }
+    public void timerUpdate(int timeLeft, int totalTime) {
+        setTitle(timeLeft);
+        setProgress(timeLeft, totalTime);
     }
 
-    public void setProgress() {
+    public void setProgress(int timeLeft, int totalTime) {
         double progress = (double) (timeLeft) / (double) (totalTime);
 
         if (progress < 0) {
@@ -50,7 +37,7 @@ public class Bar {
 
     }
 
-    public void setTitle() {
+    public void setTitle(int timeLeft) {
         bar.setTitle(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getBarPrefix()) + ChatColor.RESET + FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord());
     }
 
@@ -75,16 +62,6 @@ public class Bar {
             bar.addPlayer(player);
         }
         show();
-    }
-
-    // Checks if there's 0 seconds left on the timer
-    private boolean checkEnd() {
-        if (timeLeft == 1) {
-            hide();
-            return false;
-        } else {
-            return true;
-        }
     }
 
     public void addPlayer(Player player) {
