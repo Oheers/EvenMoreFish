@@ -329,8 +329,10 @@ class Controls{
     protected static void startComp(String argsDuration, CommandSender player) {
 
         if (EvenMoreFish.active != null) {
-            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionRunning()));
-            return;
+            if (Competition.isActive()) {
+                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionRunning()));
+                return;
+            }
         }
 
         try {
