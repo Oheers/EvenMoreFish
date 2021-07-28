@@ -190,7 +190,7 @@ public class EvenMoreFish extends JavaPlugin {
         }
 
         if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
-            if (!mainConfig.disableMcMMOTreasure()) {
+            if (mainConfig.disableMcMMOTreasure()) {
                 getServer().getPluginManager().registerEvents(new McMMOTreasureEvent(), this);
             }
         }
