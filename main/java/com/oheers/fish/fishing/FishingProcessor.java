@@ -199,7 +199,7 @@ public class FishingProcessor implements Listener {
 
     private static void competitionCheck(Fish fish, Player fisherman) {
         if (EvenMoreFish.active != null) {
-            //EvenMoreFish.active.runLeaderboardScan(fisherman, fish);
+            EvenMoreFish.active.applyToLeaderboard(fish, fisherman);
         }
     }
 

@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -25,7 +24,7 @@ public class Competition {
 
     // In a SPECIFIC_FISH competition, there won't be a leaderboard
     boolean leaderboardApplicable;
-    public static ArrayList<CompetitionEntry> leaderboard;
+    public static LeaderboardTree leaderboard;
     public static HashMap<Player, Integer> leaderboardRegister;
 
     public Competition(final Integer duration, final CompetitionType type) {
@@ -35,7 +34,7 @@ public class Competition {
 
         if (type != CompetitionType.SPECIFIC_FISH) {
             leaderboardApplicable = true;
-            leaderboard = new ArrayList<>();
+            leaderboard = new LeaderboardTree();
             leaderboardRegister = new HashMap<>();
         }
     }
@@ -73,6 +72,16 @@ public class Competition {
         }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), 0, 20);
     }
 
+    private void fishCheck(Fish fish, Player fisher) {
+        // @TODO
+    }
+
+    public void applyToLeaderboard(Fish fish, Player fisher) {
+        if (active && leaderboardApplicable) {
+            leaderboard.addNode(fish, fisher);
+        }
+    }
+
     public static String getLeaderboard() {
         if (active) {
             if (leaderboard.size() != 0) {
@@ -96,6 +105,10 @@ public class Competition {
         } else {
             return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning());
         }
+    }
+
+    public LeaderboardTree getLeaderboardTree() {
+        return leaderboard;
     }
 
     public Bar getStatusBar() {
