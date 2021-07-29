@@ -1,12 +1,17 @@
 package com.oheers.fish.competition;
 
+import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
-import java.util.SortedMap;
 
 public class Competition {
 
@@ -20,7 +25,8 @@ public class Competition {
 
     // In a SPECIFIC_FISH competition, there won't be a leaderboard
     boolean leaderboardApplicable;
-    public static SortedMap<CompetitionEntry, Player> leaderboard;
+    public static ArrayList<CompetitionEntry> leaderboard;
+    public static HashMap<Player, Integer> leaderboardRegister;
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
@@ -29,6 +35,8 @@ public class Competition {
 
         if (type != CompetitionType.SPECIFIC_FISH) {
             leaderboardApplicable = true;
+            leaderboard = new ArrayList<>();
+            leaderboardRegister = new HashMap<>();
         }
     }
 
@@ -42,10 +50,6 @@ public class Competition {
         active = false;
         this.statusBar.removeAllPlayers();
         this.timingSystem.cancel();
-    }
-
-    public static String getLeaderboard() {
-        return "leaderboard";
     }
 
     // Starts an async task to decrease the time left by 1s each second
@@ -67,6 +71,31 @@ public class Competition {
 
             }
         }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), 0, 20);
+    }
+
+    public static String getLeaderboard() {
+        if (active) {
+            if (leaderboard.size() != 0) {
+                StringBuilder builder = new StringBuilder();
+                for (int i=0; i<leaderboard.size(); i++) {
+                    Fish fish = leaderboard.get(i).getFish();
+                    builder.append(new Message()
+                            .setPositionColour(EvenMoreFish.msgs.getPosColour(i+1))
+                            .setPosition(Integer.toString(i+1))
+                            .setRarity(fish.getRarity().getValue())
+                            .setFishCaught(fish.getName())
+                            .setPlayer(leaderboard.get(i).getFisher().getName())
+                            .setLength(Float.toString(fish.getLength()))
+                            .setMSG(EvenMoreFish.msgs.getLeaderboard())
+                            .toString());
+                }
+                return builder.toString();
+            } else {
+                return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish());
+            }
+        } else {
+            return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning());
+        }
     }
 
     public Bar getStatusBar() {

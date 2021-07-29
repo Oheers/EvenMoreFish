@@ -15,7 +15,7 @@ public class Message {
     // msg is the string got from the messages.yml file
     // all the others are values that don't need to be set.
 
-    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice, effect, amplifier, time, item;
+    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice, effect, amplifier, time, item, posColour;
     Player receiver;
 
     public Message() {
@@ -101,6 +101,11 @@ public class Message {
         return this;
     }
 
+    public Message setPositionColour(String colour) {
+        this.posColour = colour;
+        return this;
+    }
+
     public String toString() {
 
         if (player != null) {
@@ -155,6 +160,10 @@ public class Message {
 
         if (item != null) {
             msg = msg.replace("{item}", item);
+        }
+
+        if (posColour != null) {
+            msg = msg.replace("{pos_colour}", posColour);
         }
 
         if (EvenMoreFish.papi) {

@@ -1,14 +1,29 @@
 package com.oheers.fish.competition;
 
+import com.oheers.fish.fishing.items.Fish;
+import org.bukkit.entity.Player;
+
 public class CompetitionEntry {
 
-    Integer fishLength;
+    Float fishLength;
+    Fish fish;
+    Player fisher;
 
-    public CompetitionEntry(Integer fishLength) {
+    public CompetitionEntry(Float fishLength, Fish fish, Player fisher) {
         this.fishLength = fishLength;
+        this.fish = fish;
+        this.fisher = fisher;
     }
 
-    public Integer getFishLength() {
-        return fishLength;
+    public Float getFishLength() {
+        return this.fishLength;
+    }
+
+    public Fish getFish() {
+        return this.fish;
+    }
+
+    public Player getFisher() {
+        return this.fisher;
     }
 }

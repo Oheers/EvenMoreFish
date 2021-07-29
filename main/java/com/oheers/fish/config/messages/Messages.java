@@ -215,4 +215,8 @@ public class Messages {
         if (returning != null) return returning;
         else return "{length}cm &l{rarity} {fish}";
     }
+
+    public String getPosColour(Integer position) {
+        return "&d";
+    }
 }
