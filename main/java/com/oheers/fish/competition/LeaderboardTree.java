@@ -10,7 +10,7 @@ import java.util.List;
 public class LeaderboardTree {
 
     Node root;
-    HashMap<Player, Float> playerRegister = new HashMap<>();
+    HashMap<Player, Node> playerRegister = new HashMap<>();
     List<Node> topEntrants = new ArrayList<>();
 
     private boolean shouldAdd(Player fisher, Float length) {
@@ -19,27 +19,30 @@ public class LeaderboardTree {
             return true;
         } else {
             System.out.println("contained");
-            if (playerRegister.get(fisher) < length) {
+            if (playerRegister.get(fisher).getLength() < length) {
                 System.out.println("<<<");
-                deleteOldScore(fisher, length);
+                deleteOldScore(playerRegister.get(fisher));
                 return true;
             } else return false;
         }
     }
 
-    private void addToRegister(Player fisher, Float length) {
+    private void addToRegister(Player fisher, Node node) {
         System.out.println("adding to register");
-        playerRegister.put(fisher, length);
+        playerRegister.put(fisher, node);
     }
 
     public void addNode(Fish fish, Player fisher) {
+        if (root != null) System.out.println("current root: " + root.getFish().getName() + ", " + root.getFish().getLength() + "cm");
         System.out.println("+++++++++++++++++++++++ adding " + fish.getName());
         if (shouldAdd(fisher, fish.getLength())) {
             System.out.println("should add");
-            addToRegister(fisher, fish.getLength());
             Node newNode = new Node(fish.getLength(), fish, fisher);
 
-            if (root == null) root = newNode;
+            if (root == null) {
+                root = newNode;
+                addToRegister(fisher, root);
+            }
             else {
                 System.out.println("root not null");
                 Node focusNode = root;
@@ -52,6 +55,9 @@ public class LeaderboardTree {
                         focusNode = focusNode.leftChild;
                         if (focusNode == null) {
                             parentNode.leftChild = newNode;
+                            newNode.parent = parentNode;
+                            newNode.isLeft = true;
+                            addToRegister(fisher, newNode);
                             return;
                         }
                     } else {
@@ -59,6 +65,9 @@ public class LeaderboardTree {
 
                         if (focusNode == null) {
                             parentNode.rightChild = newNode;
+                            newNode.parent = parentNode;
+                            newNode.isLeft = false;
+                            addToRegister(fisher, newNode);
                             return;
                         }
                     }
@@ -67,78 +76,84 @@ public class LeaderboardTree {
         }
     }
 
-    private void deleteOldScore(Player fisher, Float length) {
+    private void deleteOldScore(Node worthlessNode) {
         System.out.println("deleting old score");
 
-        Node focusNode = root;
-        Node parentNode = root;
+        Node parentNode = worthlessNode.getParent();
 
-        boolean isLeftChild = true;
-
-        while (focusNode.getFisher() != fisher) {
-
-            parentNode = focusNode;
-
-            if (length < focusNode.getLength()) {
-                isLeftChild = true;
-                focusNode = focusNode.leftChild;
-            } else {
-                isLeftChild = false;
-                focusNode = focusNode.rightChild;
-            }
-
-            if (focusNode == null) {
-                return;
-            }
-
-            if (focusNode.leftChild == null) return;
-        }
-
-        if (focusNode.leftChild == null && focusNode.rightChild == null) {
-            if (focusNode == root) {
+        if (worthlessNode.leftChild == null && worthlessNode.rightChild == null) {
+            System.out.println("both empty");
+            if (worthlessNode == root) {
+                System.out.println("focusnode==root 1");
                 root = null;
-            } else if (isLeftChild) {
+            } else if (worthlessNode.isLeftChild()) {
+                System.out.println("left null 1");
                 parentNode.leftChild = null;
             } else {
+                System.out.println("right null 1");
                 parentNode.rightChild = null;
             }
         }
 
-        else if (focusNode.rightChild == null) {
-            if (focusNode == root) {
-                root = focusNode.leftChild;
-            } else if (isLeftChild) {
-                parentNode.leftChild = focusNode.leftChild;
+        else if (worthlessNode.rightChild == null) {
+            System.out.println("right null");
+            if (worthlessNode == root) {
+                System.out.println("focusnode==root 2");
+                root = worthlessNode.leftChild;
+            } else if (worthlessNode.isLeftChild()) {
+                System.out.println("parent's left is child's left");
+                parentNode.leftChild = worthlessNode.leftChild;
+                worthlessNode.leftChild.parent = parentNode;
+                worthlessNode.leftChild.isLeft = true;
             } else {
-                parentNode.rightChild = focusNode.leftChild;
+                System.out.println("parent's right is child's left");
+                parentNode.rightChild = worthlessNode.leftChild;
+                worthlessNode.leftChild.parent = parentNode;
+                worthlessNode.leftChild.isLeft = false;
             }
         }
 
-        else if (focusNode.leftChild == null) {
-            if (focusNode == root) {
-                root = focusNode.rightChild;
-            } else if (isLeftChild) {
-                parentNode.leftChild = focusNode.rightChild;
+        else if (worthlessNode.leftChild == null) {
+            System.out.println("left null");
+            if (worthlessNode == root) {
+                System.out.println("fnr");
+                root = worthlessNode.rightChild;
+            } else if (worthlessNode.isLeftChild()) {
+                System.out.println("iwer 1");
+                parentNode.leftChild = worthlessNode.rightChild;
+                worthlessNode.rightChild.parent = parentNode;
+                worthlessNode.rightChild.isLeft = true;
             } else {
-                parentNode.rightChild = focusNode.rightChild;
+                System.out.println("iwer 2");
+                parentNode.rightChild = worthlessNode.rightChild;
+                worthlessNode.rightChild.parent = parentNode;
+                worthlessNode.rightChild.isLeft = false;
             }
         }
 
         else {
-            Node replacement = getReplacementNode(focusNode);
+            System.out.println("or else");
+            Node replacement = getReplacementNode(worthlessNode);
 
-            if (focusNode == root) {
+            if (worthlessNode == root) {
+                System.out.println("f=r");
                 root = replacement;
-            } else if (isLeftChild) {
+            } else if (worthlessNode.isLeftChild()) {
+                System.out.println("l=r");
                 parentNode.leftChild = replacement;
+                replacement.parent = parentNode;
+                replacement.isLeft = true;
             } else {
+                System.out.println("r=r");
                 parentNode.rightChild = replacement;
+                replacement.parent = parentNode;
+                replacement.isLeft = false;
             }
 
-            replacement.leftChild = focusNode.leftChild;
+            replacement.leftChild = worthlessNode.leftChild;
+            worthlessNode.leftChild.parent = replacement;
+            worthlessNode.isLeft = true;
         }
-
-
     }
 
     private Node getReplacementNode(Node replacingNode) {
@@ -194,11 +209,13 @@ public class LeaderboardTree {
 class Node {
 
     float length;
+    boolean isLeft;
     Fish fish;
     Player fisher;
 
     Node leftChild;
     Node rightChild;
+    Node parent;
 
     Node(float fishLength, Fish fish, Player fisher) {
         this.length = fishLength;
@@ -216,5 +233,13 @@ class Node {
 
     public Player getFisher() {
         return fisher;
+    }
+
+    public boolean isLeftChild() {
+        return this.isLeft;
+    }
+
+    public Node getParent() {
+        return this.parent;
     }
 }
