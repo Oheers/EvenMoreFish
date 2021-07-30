@@ -5,9 +5,7 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.reward.LoadRewards;
 import com.oheers.fish.competition.reward.Reward;
-import com.oheers.fish.config.FishFile;
-import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.config.RaritiesFile;
+import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.LocaleGen;
 import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
@@ -41,9 +39,11 @@ public class EvenMoreFish extends JavaPlugin {
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
     public static MessageFile messageFile;
+    public static CompetitionFile competitionFile;
 
     public static Messages msgs;
     public static MainConfig mainConfig;
+    public static CompetitionConfig competitionConfig;
 
     public static Permission permission = null;
     public static Economy econ = null;
@@ -79,6 +79,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         msgs = new Messages();
         mainConfig = new MainConfig();
+        competitionConfig = new CompetitionConfig();
 
         LocaleGen lG = new LocaleGen();
         lG.createLocaleFiles(this);
@@ -243,6 +244,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         msgs = new Messages();
         mainConfig = new MainConfig();
+        competitionConfig = new CompetitionConfig();
 
         rewards = LoadRewards.load();
 
@@ -258,16 +260,23 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void checkConfigVers() {
         int MSG_CONFIG_VERSION = 6;
-        if (msgs.configVersion() > MSG_CONFIG_VERSION) {
+        if (msgs.configVersion() < MSG_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your messages.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
         }
 
         int MAIN_CONFIG_VERSION = 6;
-        if (mainConfig.configVersion() > MAIN_CONFIG_VERSION) {
+        if (mainConfig.configVersion() < MAIN_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your config.yml config is not up to date. Certain new configurable features may have been added, and without" +
             " an updated config, you won't be able to modify them. To update, either delete your config.yml file and restart the server to create a new" +
+                    " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
+        }
+
+        int COMP_CONFIG_VERSION = 1;
+        if (competitionConfig.configVersion() < COMP_CONFIG_VERSION) {
+            getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
+                    " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
         }
     }
