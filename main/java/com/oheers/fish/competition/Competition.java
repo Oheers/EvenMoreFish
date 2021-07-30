@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class Competition {
@@ -25,7 +24,6 @@ public class Competition {
     // In a SPECIFIC_FISH competition, there won't be a leaderboard
     boolean leaderboardApplicable;
     public static LeaderboardTree leaderboard;
-    public static HashMap<Player, Integer> leaderboardRegister;
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
@@ -35,7 +33,6 @@ public class Competition {
         if (type != CompetitionType.SPECIFIC_FISH) {
             leaderboardApplicable = true;
             leaderboard = new LeaderboardTree();
-            leaderboardRegister = new HashMap<>();
         }
     }
 
@@ -56,7 +53,6 @@ public class Competition {
         this.timingSystem = new BukkitRunnable() {
             @Override
             public void run() {
-                System.out.println("running");
                 timeLeft--;
 
                 if (timeLeft == 300) {
@@ -66,14 +62,9 @@ public class Competition {
                     return;
                 }
                 statusBar.timerUpdate(timeLeft, maxDuration);
-                System.out.println(timeLeft);
 
             }
         }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), 0, 20);
-    }
-
-    private void fishCheck(Fish fish, Player fisher) {
-        // @TODO
     }
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
@@ -86,15 +77,23 @@ public class Competition {
         if (active) {
             if (leaderboard.size() != 0) {
                 StringBuilder builder = new StringBuilder();
-                for (int i=0; i<leaderboard.size(); i++) {
-                    Fish fish = leaderboard.get(i).getFish();
+                int pos = 0;
+                leaderboard.resetLeaderboard();
+                for (Node node : leaderboard.getTopEntrants(leaderboard.root, EvenMoreFish.msgs.getLeaderboardCount())) {
+                    System.out.println("node 1: " + node.getLength());
+                    System.out.println("node 2: " + node.getFisher());
+                    System.out.println("node 3: " + node.getFish().getName());
+                    System.out.println("thing 1: " + leaderboard.topEntrants.size());
+                    System.out.println("thing 2: " + leaderboard.playerRegister.size());
+                    pos++;
+                    Fish fish = node.getFish();
                     builder.append(new Message()
-                            .setPositionColour(EvenMoreFish.msgs.getPosColour(i+1))
-                            .setPosition(Integer.toString(i+1))
+                            .setPositionColour(EvenMoreFish.msgs.getPosColour(pos))
+                            .setPosition(Integer.toString(pos))
                             .setRarity(fish.getRarity().getValue())
                             .setFishCaught(fish.getName())
-                            .setPlayer(leaderboard.get(i).getFisher().getName())
-                            .setLength(Float.toString(fish.getLength()))
+                            .setPlayer(node.getFisher().getName())
+                            .setLength(Float.toString(node.getLength()))
                             .setMSG(EvenMoreFish.msgs.getLeaderboard())
                             .toString());
                 }

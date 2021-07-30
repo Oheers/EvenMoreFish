@@ -39,7 +39,7 @@ fish-length: "&fMeasures {length}cm"
 help: "/{command} - {description}"
 
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
-leaderboard: "&r&l{position} &r| {player} - {length}cm {rarity} {fish}"
+leaderboard: "&r#{position} | {pos_colour}{player} &r({rarity} {fish}&r, {length}cm)"
 # The number of positions shown in the leaderboard - can't be less than 1.
 leaderboard-count: 5
 # Sent to players when nobody got a record during a competition
