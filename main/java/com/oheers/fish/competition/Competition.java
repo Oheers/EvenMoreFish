@@ -91,11 +91,15 @@ public class Competition {
                             .setPositionColour(EvenMoreFish.msgs.getPosColour(pos))
                             .setPosition(Integer.toString(pos))
                             .setRarity(fish.getRarity().getValue())
+                            .setColour(fish.getRarity().getColour())
                             .setFishCaught(fish.getName())
                             .setPlayer(node.getFisher().getName())
                             .setLength(Float.toString(node.getLength()))
                             .setMSG(EvenMoreFish.msgs.getLeaderboard())
                             .toString());
+                    if (pos != EvenMoreFish.msgs.getLeaderboardCount()) {
+                        builder.append("\n");
+                    }
                 }
                 return builder.toString();
             } else {
