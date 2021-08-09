@@ -7,8 +7,8 @@ import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class FishInteractEvent implements Listener {
 
@@ -20,38 +20,22 @@ public class FishInteractEvent implements Listener {
 
     @EventHandler
     public void interactEvent(PlayerInteractEvent event) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (event.getItem() != null) {
-                    // Allows players to place fishing heads if they're sneaking
-                    if (!event.getPlayer().isSneaking()) {
-                        // Checks if the eaten item is a fish
-                        if (FishUtils.isFish(event.getItem())) {
-                            // Creates a replica of the fish we can use
-                            Fish fish = FishUtils.getFish(event.getItem());
-                            if (fish.hasIntRewards()) {
-
-                                event.setCancelled(true);
-                                // Runs through each eat-event
-                                for (Reward r : fish.getActionRewards()) {
-                                    r.run(event.getPlayer());
-                                }
-
-                                // ux seems a bit weird when we allow offhand iteraction.
-                                ItemStack mainh = event.getPlayer().getInventory().getItemInMainHand();
-                                if (FishUtils.isFish(mainh)) {
-                                    // adds a -1 amount version of the itemstack to the player's inventory
-                                    mainh.setAmount(mainh.getAmount() - 1);
-                                    event.getPlayer().getInventory().setItemInMainHand(mainh);
-                                }
-                            }
-                        }
-                    }
-                }
-
+        // If there is no item, or the player is sneaking (to place the head), the item isn't actually a fish, or the event fired for the off hand don't do anything
+        if (event.getItem() == null || event.getPlayer().isSneaking() || !FishUtils.isFish(event.getItem()) || event.getHand() == EquipmentSlot.OFF_HAND) {
+            return;
+        }
+        // Creates a replica of the fish we can use
+        Fish fish = FishUtils.getFish(event.getItem());
+        if (fish.hasIntRewards()) {
+            // Cancel the interact event
+            event.setCancelled(true);
+            // Take one item from the player's event hand itemstack so we know that it's gone
+            ItemStack itemInHand = event.getItem();
+            event.getPlayer().getInventory().getItemInMainHand().setAmount(itemInHand.getAmount() - 1);
+            // Runs through each eat-event
+            for (Reward r : fish.getActionRewards()) {
+                r.run(event.getPlayer());
             }
-            // Running it async since it doesn't need to be on the main thread
-        }.runTaskAsynchronously(this.plugin);
+        }
     }
 }
