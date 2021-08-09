@@ -6,7 +6,7 @@
 
     <groupId>com.oheers.evenmorefish</groupId>
     <artifactId>even-more-fish</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -14,6 +14,18 @@
     </properties>
 
     <build>
+        <finalName>${project.name}-${project.version}</finalName>
+        <directory>target</directory>
+        <sourceDirectory>main/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -23,7 +35,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>com.oheers.fish</shadedPattern>
+                            <shadedPattern>com.oheers.fish.metrics</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -48,7 +60,7 @@
 
         <repository>
             <id>skullcreator-repo</id>
-            <url>https://dl.bintray.com/deanveloper/SkullCreator</url>
+            <url>https://github.com/deanveloper/SkullCreator/raw/mvn-repo/</url>
         </repository>
 
         <repository>
@@ -93,7 +105,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
