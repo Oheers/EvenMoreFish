@@ -182,16 +182,16 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void optionalListeners() {
         if (checkingEatEvent) {
-            getServer().getPluginManager().registerEvents(new FishEatEvent(this), this);
+            getServer().getPluginManager().registerEvents(FishEatEvent.getInstance(), this);
         }
 
         if (checkingIntEvent) {
-            getServer().getPluginManager().registerEvents(new FishInteractEvent(this), this);
+            getServer().getPluginManager().registerEvents(FishEatEvent.getInstance(), this);
         }
 
         if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
             if (mainConfig.disableMcMMOTreasure()) {
-                getServer().getPluginManager().registerEvents(new McMMOTreasureEvent(), this);
+                getServer().getPluginManager().registerEvents(McMMOTreasureEvent.getInstance(), this);
             }
         }
     }
@@ -243,9 +243,9 @@ public class EvenMoreFish extends JavaPlugin {
         Names names = new Names();
         names.loadRarities();
 
-        HandlerList.unregisterAll(new FishEatEvent(this));
-        HandlerList.unregisterAll(new FishInteractEvent(this));
-        HandlerList.unregisterAll(new McMMOTreasureEvent());
+        HandlerList.unregisterAll(FishEatEvent.getInstance());
+        HandlerList.unregisterAll(FishInteractEvent.getInstance());
+        HandlerList.unregisterAll(McMMOTreasureEvent.getInstance());
         optionalListeners();
 
         msgs = new Messages();

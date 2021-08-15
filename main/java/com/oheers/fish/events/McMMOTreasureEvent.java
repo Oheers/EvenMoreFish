@@ -8,6 +8,16 @@ import org.bukkit.event.Listener;
 
 public class McMMOTreasureEvent implements Listener {
 
+    private static final McMMOTreasureEvent mcmmoEvent = new McMMOTreasureEvent();
+
+    private McMMOTreasureEvent() {
+
+    }
+
+    public static McMMOTreasureEvent getInstance() {
+        return mcmmoEvent;
+    }
+
     @EventHandler
     public void mcmmoTreasure(McMMOReplaceVanillaTreasureEvent event) {
         if (EvenMoreFish.mainConfig.disableMcMMOTreasure()) {

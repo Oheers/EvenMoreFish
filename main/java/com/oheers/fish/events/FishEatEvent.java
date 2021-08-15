@@ -11,10 +11,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class FishEatEvent implements Listener {
 
-    private final EvenMoreFish plugin;
+    private static final FishEatEvent eatEvent = new FishEatEvent();
 
-    public FishEatEvent(final EvenMoreFish plugin) {
-        this.plugin = plugin;
+    private FishEatEvent() {
+
+    }
+
+    public static FishEatEvent getInstance() {
+        return eatEvent;
     }
 
     @EventHandler
@@ -35,6 +39,6 @@ public class FishEatEvent implements Listener {
                 }
             }
         // Running it async since it doesn't need to be on the main thread
-        }.runTaskAsynchronously(this.plugin);
+        }.runTaskAsynchronously(EvenMoreFish.getPlugin(EvenMoreFish.class));
     }
 }

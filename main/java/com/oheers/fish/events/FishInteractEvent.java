@@ -1,6 +1,5 @@
 package com.oheers.fish.events;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.fishing.items.Fish;
@@ -12,10 +11,14 @@ import org.bukkit.inventory.ItemStack;
 
 public class FishInteractEvent implements Listener {
 
-    private final EvenMoreFish plugin;
+    private static final FishInteractEvent interactEvent = new FishInteractEvent();
 
-    public FishInteractEvent(final EvenMoreFish plugin) {
-        this.plugin = plugin;
+    private FishInteractEvent() {
+
+    }
+
+    public static FishInteractEvent getInstance() {
+        return interactEvent;
     }
 
     @EventHandler
