@@ -16,16 +16,6 @@
     <build>
         <finalName>${project.name}-${project.version}</finalName>
         <directory>target</directory>
-        <sourceDirectory>main/java</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*</include>
-                </includes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -104,7 +94,7 @@
         <!--This adds the Spigot API artifact to the build -->
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
+            <artifactId>spigot-api</artifactId>
             <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
