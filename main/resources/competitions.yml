@@ -25,6 +25,7 @@ competitions:
 
   weekendCompetition:
     type: SPECIFIC_FISH
+    # If no players catch the specific fish in the below time, the competition will end.
     duration: 60
     # Which rarities can be selected by the plugin to be the chosen fish, keep in mind that the number of fish in that rarity and the weight of the
     # rarity will affect how easy it is to get the specific fish and may require a longer competition duration
@@ -87,7 +88,7 @@ leaderboard:
 
 rewards:
   1:
-    # Commands are run by the console, it's advised to change these before releasing your server.
+    # Commands are run by the console, it's advised to change these rewards before releasing your server.
     - "COMMAND:give {player} diamond 5"
     - "MESSAGE:&aCongratulations for coming 1st!"
     # Can't contain decimals.
