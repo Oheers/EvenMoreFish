@@ -15,6 +15,12 @@ competitions:
     # How many hours should be waited after midnight to start the first competition?
     # Offset of 2.5 and hour-gap of 6 would mean a competition at 02:30, 08:30, 14:30 and 20:30.
     hour-offset: 0
+    # If you'd rather follow the old system, this is how the above times would look:
+    # times:
+    #   - "00:00"
+    #   - "06:00"
+    #   ...
+
     # Sets days that this competition type won't run on, this is useful if you want one day to be dominated by another competition type
     blacklisted-days:
       - "Sunday"
@@ -35,7 +41,7 @@ competitions:
       - "Legendary"
     # ALlows for specific times to be set, if your competition isn't running, make sure it isn't set to start during another competition.
     # The timezone for these is whichever timezone your server is set to.
-    times:
+    days:
       Saturday:
         - "03:00"
         - "15:00"
@@ -51,14 +57,14 @@ competitions:
   sundayCompetition1:
     type: LARGEST_FISH
     duration: 30
-    times:
+    days:
       Sunday:
         - "13:00"
 
   sundayCompetition2:
     type: MOST_FISH
     duration: 45
-    times:
+    days:
       Sunday:
         - "20:00"
     bossbar-colour: BLUE
