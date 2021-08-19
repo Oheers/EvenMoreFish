@@ -8,7 +8,7 @@ competitions:
     type: LARGEST_FISH
     # How long (minutes) the competition should last for
     duration: 10
-    # Does it occur every day? (This is highly customisable, check the wiki for more information!)
+    # Does it occur every day? (See below examples for how to choose specific days & times to run the competitions on)
     daily: true
     # How many hours should there be between each competition? (defaults to 4)
     hour-gap: 6
