@@ -39,4 +39,20 @@ public class CompetitionConfig {
     public CompetitionType getCompetitionType(String competitionName) {
         return CompetitionType.valueOf(config.getString("competitions." + competitionName + ".type"));
     }
+
+    public boolean doingRepeatedTiming(String competitionName) {
+        return config.getStringList("competitions." + competitionName + ".times").size() != 0;
+    }
+
+    public List<String> getRepeatedTiming(String competitionName) {
+        return config.getStringList("competitions." + competitionName + ".times");
+    }
+
+    public boolean hasBlacklistedDays(String competitionName) {
+        return config.getStringList("competitions." + competitionName + ".blacklisted-days").size() != 0;
+    }
+
+    public List<String> getBlacklistedDays(String competitionName) {
+        return config.getStringList("competitions." + competitionName + ".blacklisted-days");
+    }
 }
