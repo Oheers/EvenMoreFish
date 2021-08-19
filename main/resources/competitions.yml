@@ -10,17 +10,12 @@ competitions:
     duration: 10
     # Does it occur every day? (See below examples for how to choose specific days & times to run the competitions on)
     daily: true
-    # How many hours should there be between each competition? (defaults to 4)
-    hour-gap: 6
-    # How many hours should be waited after midnight to start the first competition?
-    # Offset of 2.5 and hour-gap of 6 would mean a competition at 02:30, 08:30, 14:30 and 20:30.
-    hour-offset: 0
-    # If you'd rather follow the old system, this is how the above times would look:
-    # times:
-    #   - "00:00"
-    #   - "06:00"
-    #   ...
-
+    # If you preferred the older system you can still use that system, and select days to be blacklisted.
+    times:
+      - "00:00"
+      - "06:00"
+      - "12:00"
+      - "18:00"
     # Sets days that this competition type won't run on, this is useful if you want one day to be dominated by another competition type
     blacklisted-days:
       - "Sunday"
