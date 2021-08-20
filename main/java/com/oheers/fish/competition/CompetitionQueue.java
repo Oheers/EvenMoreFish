@@ -19,7 +19,7 @@ public class CompetitionQueue {
             for (String comp : EvenMoreFish.competitionConfig.getCompetitions()) {
 
                 Competition competition = new Competition(
-                        EvenMoreFish.competitionConfig.getCompetitionDuration(comp),
+                        EvenMoreFish.competitionConfig.getCompetitionDuration(comp)*60,
                         EvenMoreFish.competitionConfig.getCompetitionType(comp)
                 );
 
