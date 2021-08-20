@@ -19,7 +19,6 @@ public class AutoRunner {
                 // Obtaining how many minutes have passed since midnight last Sunday
                 String day = LocalDate.now().getDayOfWeek().toString();
                 int weekMinute = EvenMoreFish.competitionQueue.generateTimeCode(day, timeKey);
-                System.out.println("matching with: " + weekMinute);
 
                 // Beginning the competition set for schedule
                 if (EvenMoreFish.competitionQueue.competitions.containsKey(weekMinute)) {

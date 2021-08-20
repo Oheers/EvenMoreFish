@@ -80,11 +80,6 @@ public class Competition {
                 int pos = 0;
                 leaderboard.resetLeaderboard();
                 for (Node node : leaderboard.getTopEntrants(leaderboard.root, EvenMoreFish.msgs.getLeaderboardCount())) {
-                    System.out.println("node 1: " + node.getLength());
-                    System.out.println("node 2: " + node.getFisher());
-                    System.out.println("node 3: " + node.getFish().getName());
-                    System.out.println("thing 1: " + leaderboard.topEntrants.size());
-                    System.out.println("thing 2: " + leaderboard.playerRegister.size());
                     pos++;
                     Fish fish = node.getFish();
                     builder.append(new Message()
