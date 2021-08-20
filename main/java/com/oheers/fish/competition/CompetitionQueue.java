@@ -3,6 +3,7 @@ package com.oheers.fish.competition;
 import com.oheers.fish.EvenMoreFish;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ public class CompetitionQueue {
     List<String> days = Arrays.asList("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY");
 
     public void load() {
+        competitions = new HashMap<>();
         // Competitions exist in the competitions.yml
         if (EvenMoreFish.competitionConfig.getCompetitions() != null) {
             for (String comp : EvenMoreFish.competitionConfig.getCompetitions()) {
@@ -45,7 +47,7 @@ public class CompetitionQueue {
 
     // Converts "Wednesday, 14:30" for example, into the minute of the week, Wednesday 14:30 becomes (24*60*2) + (14*60) + 30
     // day = the day, tfh = 24h format, like 14:30 or 08:15
-    private Integer generateTimeCode(String day, String tfh) {
+    public Integer generateTimeCode(String day, String tfh) {
         // Gets how many minutes have passed before midnight of the "day" variable
         int beginning = days.indexOf(day.toUpperCase()) * 24 * 60;
 

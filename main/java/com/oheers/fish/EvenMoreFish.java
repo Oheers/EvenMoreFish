@@ -2,6 +2,7 @@ package com.oheers.fish;
 
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.reward.LoadRewards;
 import com.oheers.fish.competition.reward.Reward;
@@ -58,6 +59,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean checkingIntEvent;
 
     public static Competition active;
+    public static CompetitionQueue competitionQueue;
 
     public static ArrayList<SellGUI> guis;
 
@@ -76,10 +78,14 @@ public class EvenMoreFish extends JavaPlugin {
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
         messageFile = new MessageFile(this);
+        competitionFile = new CompetitionFile(this);
 
         msgs = new Messages();
         mainConfig = new MainConfig();
         competitionConfig = new CompetitionConfig();
+
+        competitionQueue = new CompetitionQueue();
+        competitionQueue.load();
 
         LocaleGen lG = new LocaleGen();
         lG.createLocaleFiles(this);
@@ -245,6 +251,8 @@ public class EvenMoreFish extends JavaPlugin {
         msgs = new Messages();
         mainConfig = new MainConfig();
         competitionConfig = new CompetitionConfig();
+
+        competitionQueue.load();
 
         rewards = LoadRewards.load();
 
