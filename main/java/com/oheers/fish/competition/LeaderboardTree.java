@@ -42,7 +42,8 @@ public class LeaderboardTree {
         } else {
             if (playerRegister.containsKey(fisher)) {
                 deleteOldScore(playerRegister.get(fisher));
-                newNode = new Node(playerRegister.get(fisher).value + 1, null, fisher);
+                newNode = playerRegister.get(fisher);
+                newNode.value += 1;
             } else {
                 newNode = new Node(1, null, fisher);
             }

@@ -89,7 +89,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         }
     }
 
-    private static List<String> emfTabs, adminTabs, compTabs;
+    private static List<String> emfTabs, adminTabs, compTabs, compTypes;
 
     public static void loadTabCompletes() {
         adminTabs = Arrays.asList(
@@ -108,6 +108,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "help",
                 "shop",
                 "top"
+        );
+
+        compTypes = Arrays.asList(
+                "largest_fish",
+                "most_fish",
+                "specific_fish"
         );
     }
 
@@ -163,6 +169,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         return empty;
                     }
                     return empty;
+                case 5:
+                    if (EvenMoreFish.permission.has(sender, "emf.admin") && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
+                        return l(args, compTypes);
+                    } else {
+                        return empty;
+                }
             }
 
             return empty;

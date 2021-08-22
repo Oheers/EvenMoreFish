@@ -92,10 +92,10 @@ public class Competition {
                         message.setRarity(fish.getRarity().getValue())
                                 .setColour(fish.getRarity().getColour())
                                 .setFishCaught(fish.getName())
-                                .setLength(Float.toString(node.getLength()))
+                                .setLength(Float.toString(node.value))
                                 .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
                     } else {
-                        message.setAmount(Float.toString(node.value))
+                        message.setAmount(Integer.toString((int) node.value))
                                 .setMSG(EvenMoreFish.msgs.getMostFishLeaderboard());
                     }
                     builder.append(message);
