@@ -306,9 +306,13 @@ class Controls{
                 if (args[2].equalsIgnoreCase("start")) {
                     // if the admin has only done /emf admin competition start
                     if (args.length < 4) {
-                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration()*60), player);
+                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration()*60), player, CompetitionType.LARGEST_FISH);
                     } else {
-                        startComp(args[3], player);
+                        if (args.length < 5) {
+                            startComp(args[3], player, CompetitionType.LARGEST_FISH);
+                        } else {
+                            startComp(args[3], player, CompetitionType.valueOf(args[4].toUpperCase()));
+                        }
                     }
                 }
 
@@ -326,7 +330,7 @@ class Controls{
         }
     }
 
-    protected static void startComp(String argsDuration, CommandSender player) {
+    protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {
 
         if (EvenMoreFish.active != null) {
             if (Competition.isActive()) {
@@ -340,7 +344,7 @@ class Controls{
             int duration = Integer.parseInt(argsDuration);
             // I've just discovered /emf admin competition start -1 causes some funky stuff - so this prevents that.
             if (duration > 0) {
-                Competition comp = new Competition(duration, CompetitionType.LARGEST_FISH);
+                Competition comp = new Competition(duration, type);
                 EvenMoreFish.active = comp;
                 comp.begin();
             } else {
