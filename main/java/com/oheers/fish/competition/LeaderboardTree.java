@@ -40,9 +40,12 @@ public class LeaderboardTree {
         if (competitionType == CompetitionType.LARGEST_FISH) {
             newNode = new Node(fish.getLength(), fish, fisher);
         } else {
-            if (playerRegister.containsKey(fisher)) { newNode = new Node(playerRegister.get(fisher).value + 1, null, fisher); }
-            else { newNode = new Node(1, null, fisher); }
-            deleteOldScore(playerRegister.get(fisher));
+            if (playerRegister.containsKey(fisher)) {
+                deleteOldScore(playerRegister.get(fisher));
+                newNode = new Node(playerRegister.get(fisher).value + 1, null, fisher);
+            } else {
+                newNode = new Node(1, null, fisher);
+            }
         }
 
         if (root == null) {
