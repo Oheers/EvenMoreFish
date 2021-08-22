@@ -53,7 +53,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     if (EvenMoreFish.active == null) {
                         sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     } else {
-                        sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard()));
+                        sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(EvenMoreFish.active.getCompetitionType())));
                     }
                 } else {
                     sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
@@ -211,7 +211,7 @@ class Controls{
 
                             for (Fish fish : EvenMoreFish.fishCollection.get(r)) {
                                 BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
-                                //tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText(FishUtils.itemToJSON(fish.preview())))); // The only element of the hover events basecomponents is the item json
+                                tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
                                 tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + fish.getRarity().getValue() + " " + fish.getName()));
                                 baseComponent.addExtra(tC);
                             }

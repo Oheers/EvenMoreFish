@@ -46,8 +46,23 @@ public class Messages {
         return config.getInt("leaderboard-count");
     }
 
-    public String getLeaderboard() {
-        return getSTDPrefix() + config.getString("leaderboard");
+    public String getLargestFishLeaderboard() {
+        if (config.getString("leaderboard-largest-fish") != null) {
+            return getSTDPrefix() + config.getString("leaderboard-largest-fish");
+        } else {
+            if (config.getString("leaderboard") != null) {
+                return getSTDPrefix() + config.getString("leaderboard");
+            }
+        }
+        return "&r#{position} | {pos_colour}{player} &r({rarity} {fish}&r, {length}cm)";
+    }
+
+    public String getMostFishLeaderboard() {
+        if (config.getString("leaderboard-most-fish") != null) {
+            return getSTDPrefix() + config.getString("leaderboard-most-fish");
+        } else {
+            return "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)";
+        }
     }
 
     public String getEMFHelp() {

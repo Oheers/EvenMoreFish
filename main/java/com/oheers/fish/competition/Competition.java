@@ -33,6 +33,7 @@ public class Competition {
         if (type != CompetitionType.SPECIFIC_FISH) {
             leaderboardApplicable = true;
             leaderboard = new LeaderboardTree();
+            leaderboard.competitionType = competitionType;
         }
     }
 
@@ -43,6 +44,7 @@ public class Competition {
     }
 
     public void end() {
+        // print leaderboard
         active = false;
         this.statusBar.removeAllPlayers();
         this.timingSystem.cancel();
@@ -73,7 +75,7 @@ public class Competition {
         }
     }
 
-    public static String getLeaderboard() {
+    public static String getLeaderboard(CompetitionType competitionType) {
         if (active) {
             if (leaderboard.size() != 0) {
                 StringBuilder builder = new StringBuilder();
@@ -82,16 +84,21 @@ public class Competition {
                 for (Node node : leaderboard.getTopEntrants(leaderboard.root, EvenMoreFish.msgs.getLeaderboardCount())) {
                     pos++;
                     Fish fish = node.getFish();
-                    builder.append(new Message()
+                    Message message = new Message()
                             .setPositionColour(EvenMoreFish.msgs.getPosColour(pos))
                             .setPosition(Integer.toString(pos))
-                            .setRarity(fish.getRarity().getValue())
-                            .setColour(fish.getRarity().getColour())
-                            .setFishCaught(fish.getName())
-                            .setPlayer(node.getFisher().getName())
-                            .setLength(Float.toString(node.getLength()))
-                            .setMSG(EvenMoreFish.msgs.getLeaderboard())
-                            .toString());
+                            .setPlayer(node.getFisher().getName());
+                    if (competitionType == CompetitionType.LARGEST_FISH) {
+                        message.setRarity(fish.getRarity().getValue())
+                                .setColour(fish.getRarity().getColour())
+                                .setFishCaught(fish.getName())
+                                .setLength(Float.toString(node.getLength()))
+                                .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
+                    } else {
+                        message.setAmount(Float.toString(node.value))
+                                .setMSG(EvenMoreFish.msgs.getMostFishLeaderboard());
+                    }
+                    builder.append(message);
                     if (pos != EvenMoreFish.msgs.getLeaderboardCount()) {
                         builder.append("\n");
                     }
@@ -115,5 +122,9 @@ public class Competition {
 
     public static boolean isActive() {
         return active;
+    }
+
+    public CompetitionType getCompetitionType() {
+        return competitionType;
     }
 }

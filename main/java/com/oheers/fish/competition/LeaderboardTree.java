@@ -12,6 +12,7 @@ public class LeaderboardTree {
     Node root;
     HashMap<Player, Node> playerRegister = new HashMap<>();
     List<Node> topEntrants = new ArrayList<>();
+    CompetitionType competitionType;
 
     private boolean shouldAdd(Player fisher, Float length) {
         if (!playerRegister.containsKey(fisher)) {
@@ -29,39 +30,50 @@ public class LeaderboardTree {
     }
 
     public void addNode(Fish fish, Player fisher) {
-        if (shouldAdd(fisher, fish.getLength())) {
-            Node newNode = new Node(fish.getLength(), fish, fisher);
-
-            if (root == null) {
-                root = newNode;
-                addToRegister(fisher, root);
+        if (competitionType == CompetitionType.LARGEST_FISH) {
+            if (!shouldAdd(fisher, fish.getLength())) {
+                return;
             }
-            else {
-                Node focusNode = root;
-                Node parentNode;
+        }
 
-                while(true) {
-                    parentNode = focusNode;
-                    if (newNode.length < focusNode.length) {
+        Node newNode;
+        if (competitionType == CompetitionType.LARGEST_FISH) {
+            newNode = new Node(fish.getLength(), fish, fisher);
+        } else {
+            if (playerRegister.containsKey(fisher)) { newNode = new Node(playerRegister.get(fisher).value + 1, null, fisher); }
+            else { newNode = new Node(1, null, fisher); }
+            deleteOldScore(playerRegister.get(fisher));
+        }
 
-                        focusNode = focusNode.leftChild;
-                        if (focusNode == null) {
-                            parentNode.leftChild = newNode;
-                            newNode.parent = parentNode;
-                            newNode.isLeft = true;
-                            addToRegister(fisher, newNode);
-                            return;
-                        }
-                    } else {
-                        focusNode = focusNode.rightChild;
+        if (root == null) {
+            root = newNode;
+            addToRegister(fisher, root);
+        }
+        else {
+            Node focusNode = root;
+            Node parentNode;
 
-                        if (focusNode == null) {
-                            parentNode.rightChild = newNode;
-                            newNode.parent = parentNode;
-                            newNode.isLeft = false;
-                            addToRegister(fisher, newNode);
-                            return;
-                        }
+            while(true) {
+                parentNode = focusNode;
+                if (newNode.value < focusNode.value) {
+
+                    focusNode = focusNode.leftChild;
+                    if (focusNode == null) {
+                        parentNode.leftChild = newNode;
+                        newNode.parent = parentNode;
+                        newNode.isLeft = true;
+                        addToRegister(fisher, newNode);
+                        return;
+                    }
+                } else {
+                    focusNode = focusNode.rightChild;
+
+                    if (focusNode == null) {
+                        parentNode.rightChild = newNode;
+                        newNode.parent = parentNode;
+                        newNode.isLeft = false;
+                        addToRegister(fisher, newNode);
+                        return;
                     }
                 }
             }
@@ -182,7 +194,7 @@ public class LeaderboardTree {
 
 class Node {
 
-    float length;
+    float value;
     boolean isLeft;
     Fish fish;
     Player fisher;
@@ -191,14 +203,14 @@ class Node {
     Node rightChild;
     Node parent;
 
-    Node(float fishLength, Fish fish, Player fisher) {
-        this.length = fishLength;
+    Node(float value, Fish fish, Player fisher) {
+        this.value = value;
         this.fish = fish;
         this.fisher = fisher;
     }
 
     public float getLength() {
-        return length;
+        return value;
     }
 
     public Fish getFish() {
