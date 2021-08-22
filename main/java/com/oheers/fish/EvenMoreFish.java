@@ -186,7 +186,7 @@ public class EvenMoreFish extends JavaPlugin {
         }
 
         if (checkingIntEvent) {
-            getServer().getPluginManager().registerEvents(FishEatEvent.getInstance(), this);
+            getServer().getPluginManager().registerEvents(FishInteractEvent.getInstance(), this);
         }
 
         if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {

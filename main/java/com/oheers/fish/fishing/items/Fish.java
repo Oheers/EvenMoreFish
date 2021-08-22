@@ -268,7 +268,7 @@ public class Fish implements Cloneable {
 
     public void checkIntEvent() {
         List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".interact-event");
-        // Checks if the player has actually set rewards for an eat event
+        // Checks if the player has actually set rewards for an interact event
         if (!configRewards.isEmpty()) {
             // Informs the main class to load up an PlayerItemConsumeEvent listener
             EvenMoreFish.checkingIntEvent = true;
