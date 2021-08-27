@@ -26,6 +26,7 @@ public class Competition {
     BukkitTask timingSystem;
 
     String competitionName;
+    String startMessage;
 
     static boolean active;
 
@@ -81,6 +82,11 @@ public class Competition {
     public void applyToLeaderboard(Fish fish, Player fisher) {
         if (active && leaderboardApplicable) {
             leaderboard.addNode(fish, fisher);
+        } else if (competitionType == CompetitionType.SPECIFIC_FISH) {
+            if (fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity()) {
+                end();
+                // fisher.wins();
+            }
         }
     }
 
@@ -103,6 +109,8 @@ public class Competition {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(msg);
         }
+
+        this.startMessage = msg;
     }
 
     public static String getLeaderboard(CompetitionType competitionType) {
@@ -148,6 +156,10 @@ public class Competition {
 
     public Bar getStatusBar() {
         return this.statusBar;
+    }
+
+    public String getStartMessage() {
+        return startMessage;
     }
 
     public void setCompetitionName(String competitionName) {
