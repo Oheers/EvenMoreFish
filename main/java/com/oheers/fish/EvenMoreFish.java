@@ -84,6 +84,9 @@ public class EvenMoreFish extends JavaPlugin {
         mainConfig = new MainConfig();
         competitionConfig = new CompetitionConfig();
 
+        Names names = new Names();
+        names.loadRarities();
+
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
 
@@ -116,9 +119,6 @@ public class EvenMoreFish extends JavaPlugin {
         } else if (checkRP()) {
             guardPL = "redprotect";
         }
-
-        Names names = new Names();
-        names.loadRarities();
 
         rewards = LoadRewards.load();
 

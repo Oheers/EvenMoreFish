@@ -4,12 +4,16 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class Competition {
 
@@ -17,7 +21,11 @@ public class Competition {
     CompetitionType competitionType;
     Bar statusBar;
 
+    Fish selectedFish;
+
     BukkitTask timingSystem;
+
+    String competitionName;
 
     static boolean active;
 
@@ -41,6 +49,7 @@ public class Competition {
         active = true;
         this.statusBar = new Bar();
         initTimer();
+        announceBegin();
     }
 
     public void end() {
@@ -72,6 +81,27 @@ public class Competition {
     public void applyToLeaderboard(Fish fish, Player fisher) {
         if (active && leaderboardApplicable) {
             leaderboard.addNode(fish, fisher);
+        }
+    }
+
+    public void announceBegin() {
+        String msg;
+        if (this.competitionType != CompetitionType.SPECIFIC_FISH) {
+            msg = new Message()
+                    .setMSG(EvenMoreFish.msgs.getCompetitionStart())
+                    .setType(this.competitionType)
+                    .toString();
+        } else {
+            msg = new Message()
+                    .setMSG(EvenMoreFish.msgs.getCompetitionStart())
+                    .setType(this.competitionType)
+                    .setRarity(selectedFish.getRarity().getValue())
+                    .setColour(selectedFish.getRarity().getColour())
+                    .setFishCaught(selectedFish.getName())
+                    .toString();
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(msg);
         }
     }
 
@@ -120,11 +150,28 @@ public class Competition {
         return this.statusBar;
     }
 
+    public void setCompetitionName(String competitionName) {
+        this.competitionName = competitionName;
+    }
+
     public static boolean isActive() {
         return active;
     }
 
     public CompetitionType getCompetitionType() {
         return competitionType;
+    }
+
+    public void chooseFish(String competitionName, boolean adminStart) {
+        List<String> allowedRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
+        List<Fish> fish = new ArrayList<>();
+        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+            if (allowedRarities.contains(r.getValue())) {
+                fish.addAll(EvenMoreFish.fishCollection.get(r));
+            }
+        }
+
+        Random r = new Random();
+        this.selectedFish = fish.get(r.nextInt(fish.size()));
     }
 }

@@ -76,6 +76,12 @@ general:
   # Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
   broadcast-only-rods: true
 
+  # This is the allowed-rarities value used for /emf admin competition start <time> specific_fish
+  allowed-rarities:
+    - "Uncommon"
+    - "Epic"
+    - "Legendary"
+
 leaderboard:
 
   # This is the colours used in the variable {pos_colour} for each position, if you aren't using this variable, it isn't needed.

@@ -18,10 +18,10 @@ public class CompetitionQueue {
         if (EvenMoreFish.competitionConfig.getCompetitions() != null) {
             for (String comp : EvenMoreFish.competitionConfig.getCompetitions()) {
 
-                Competition competition = new Competition(
-                        EvenMoreFish.competitionConfig.getCompetitionDuration(comp)*60,
-                        EvenMoreFish.competitionConfig.getCompetitionType(comp)
-                );
+                CompetitionType type = EvenMoreFish.competitionConfig.getCompetitionType(comp);
+                Competition competition = new Competition(EvenMoreFish.competitionConfig.getCompetitionDuration(comp)*60, type);
+
+                if (type == CompetitionType.SPECIFIC_FISH) competition.chooseFish(comp, false);
 
                 if (EvenMoreFish.competitionConfig.specificDayTimes(comp)) {
                     for (String day : EvenMoreFish.competitionConfig.activeDays(comp)) {

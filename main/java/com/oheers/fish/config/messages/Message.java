@@ -2,6 +2,7 @@ package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.competition.CompetitionType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,7 @@ public class Message {
     // msg is the string got from the messages.yml file
     // all the others are values that don't need to be set.
 
-    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice, effect, amplifier, time, item, posColour;
+    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice, effect, amplifier, time, item, posColour, type;
     Player receiver;
 
     public Message() {
@@ -106,7 +107,20 @@ public class Message {
         return this;
     }
 
+    public Message setType(CompetitionType type) {
+        switch (type) {
+            case MOST_FISH: this.type = EvenMoreFish.msgs.getTypeVariable("most"); break;
+            case SPECIFIC_FISH: this.type = EvenMoreFish.msgs.getTypeVariable("specific"); break;
+            default: this.type = EvenMoreFish.msgs.getTypeVariable("largest"); break;
+        }
+        return this;
+    }
+
     public String toString() {
+
+        if (type != null) {
+            msg = msg.replace("{type}", type);
+        }
 
         if (player != null) {
             msg = msg.replace("{player}", player);

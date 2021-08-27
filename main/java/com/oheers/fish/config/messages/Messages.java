@@ -234,4 +234,8 @@ public class Messages {
     public String getPosColour(Integer position) {
         return "&d";
     }
+
+    public String getTypeVariable(String sub) {
+        return config.getString("competition-types." + sub);
+    }
 }

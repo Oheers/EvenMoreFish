@@ -6,8 +6,18 @@ fish-caught: "&l{player} &rhas fished a {length}cm {rarity} {fish}!"
 no-permission: "&cYou don't have permission to run that command."
 
 # The message to be sent when a competition starts and ends
-contest-start: "&rThe fishing contest has started."
+contest-start: "&rA fishing contest for the {type} &rhas started."
 contest-end: "&rThe fishing contest has ended."
+
+# What should replace the {type} variable for each competition type?
+competition-types:
+  # MOST_FISH
+  most: "most fish"
+  # LARGEST_FISH
+  largest: "largest fish"
+  # SPECIFIC_FISH
+  specific: "{rarity} {fish}"
+
 # Segments shown in the bossbar when competitions run
 bossbar:
   # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
@@ -85,4 +95,4 @@ emf-competition-fish-null: true
 emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 6
+config-version: 7

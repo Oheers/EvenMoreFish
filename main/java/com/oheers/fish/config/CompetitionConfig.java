@@ -55,4 +55,14 @@ public class CompetitionConfig {
     public List<String> getBlacklistedDays(String competitionName) {
         return config.getStringList("competitions." + competitionName + ".blacklisted-days");
     }
+
+    public List<String> allowedRarities(String competitionName, boolean adminStart) {
+        if (adminStart) {
+            return config.getStringList("general.allowed-rarities");
+        } else {
+            System.out.println("comp: " + competitionName);
+            return config.getStringList("competitions." + competitionName + ".allowed-rarities");
+        }
+
+    }
 }
