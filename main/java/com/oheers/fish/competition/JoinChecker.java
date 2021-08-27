@@ -1,6 +1,7 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -13,6 +14,13 @@ public class JoinChecker implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         if (Competition.isActive()) {
             EvenMoreFish.active.getStatusBar().addPlayer(event.getPlayer());
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(EvenMoreFish.getPlugin(EvenMoreFish.class),
+            new Runnable() {
+                @Override
+                public void run() {
+                    event.getPlayer().sendMessage(EvenMoreFish.active.getStartMessage());
+                }
+            }, 20*3);
         }
     }
 
