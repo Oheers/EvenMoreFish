@@ -6,17 +6,17 @@ fish-caught: "&l{player} &rhas fished a {length}cm {rarity} {fish}!"
 no-permission: "&cYou don't have permission to run that command."
 
 # The message to be sent when a competition starts and ends
-contest-start: "&rA fishing contest for the {type} &rhas started."
+contest-start: "&rA fishing contest for {type} has started."
 contest-end: "&rThe fishing contest has ended."
 
 # What should replace the {type} variable for each competition type?
 competition-types:
   # MOST_FISH
-  most: "most fish"
+  most: "the most fish"
   # LARGEST_FISH
-  largest: "largest fish"
+  largest: "the largest fish"
   # SPECIFIC_FISH
-  specific: "{rarity} {fish}"
+  specific: "{amount} {rarity} {fish}&r"
 
 # Segments shown in the bossbar when competitions run
 bossbar:

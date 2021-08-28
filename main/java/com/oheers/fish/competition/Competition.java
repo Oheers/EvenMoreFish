@@ -22,6 +22,7 @@ public class Competition {
     Bar statusBar;
 
     Fish selectedFish;
+    int numberNeeded;
 
     BukkitTask timingSystem;
 
@@ -80,12 +81,28 @@ public class Competition {
     }
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
-        if (active && leaderboardApplicable) {
+        // we don't need to bother doing increments if it's just taking the largest fish anyway
+        if (competitionType == CompetitionType.LARGEST_FISH) {
             leaderboard.addNode(fish, fisher);
         } else if (competitionType == CompetitionType.SPECIFIC_FISH) {
+            // is the fish the specific fish?
             if (fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity()) {
-                end();
-                // fisher.wins();
+                // does the config specify players need to catch >1 of the specific fish?
+                if (this.numberNeeded > 1) {
+                    // updates the register if the value already exists, adds to the register if not
+                    if (leaderboard.playerRegister.containsKey(fisher)) {
+                        // has the player reached numberNeeded?
+                        if (leaderboard.playerRegister.get(fisher).getValue() == this.numberNeeded-1) {
+                            end();
+                            // fisher.wins();
+                            return;
+                        }
+                    }
+                    leaderboard.addNode(fish, fisher);
+                } else {
+                    end();
+                    // fisher.wins();
+                }
             }
         }
     }
@@ -100,6 +117,7 @@ public class Competition {
         } else {
             msg = new Message()
                     .setMSG(EvenMoreFish.msgs.getCompetitionStart())
+                    .setAmount(Integer.toString(this.numberNeeded))
                     .setType(this.competitionType)
                     .setRarity(selectedFish.getRarity().getValue())
                     .setColour(selectedFish.getRarity().getColour())
@@ -162,16 +180,16 @@ public class Competition {
         return startMessage;
     }
 
-    public void setCompetitionName(String competitionName) {
-        this.competitionName = competitionName;
-    }
-
     public static boolean isActive() {
         return active;
     }
 
     public CompetitionType getCompetitionType() {
         return competitionType;
+    }
+
+    public void setNumberNeeded(int numberNeeded) {
+        this.numberNeeded = numberNeeded;
     }
 
     public void chooseFish(String competitionName, boolean adminStart) {
@@ -182,6 +200,10 @@ public class Competition {
                 fish.addAll(EvenMoreFish.fishCollection.get(r));
             }
         }
+
+        int y = EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart);
+        System.out.println("y =====: " + y);
+        setNumberNeeded(y);
 
         Random r = new Random();
         this.selectedFish = fish.get(r.nextInt(fish.size()));

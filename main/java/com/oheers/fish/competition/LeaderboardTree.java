@@ -18,7 +18,7 @@ public class LeaderboardTree {
         if (!playerRegister.containsKey(fisher)) {
             return true;
         } else {
-            if (playerRegister.get(fisher).getLength() < length) {
+            if (playerRegister.get(fisher).getValue() < length) {
                 deleteOldScore(playerRegister.get(fisher));
                 return true;
             } else return false;
@@ -213,7 +213,7 @@ class Node {
         this.fisher = fisher;
     }
 
-    public float getLength() {
+    public float getValue() {
         return value;
     }
 

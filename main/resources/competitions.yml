@@ -82,6 +82,9 @@ general:
     - "Epic"
     - "Legendary"
 
+  # This is the number-needed value used for /emf admin competition start <time> specific_fish
+  number-needed: 1
+
 leaderboard:
 
   # This is the colours used in the variable {pos_colour} for each position, if you aren't using this variable, it isn't needed.

@@ -63,6 +63,15 @@ public class CompetitionConfig {
             System.out.println("comp: " + competitionName);
             return config.getStringList("competitions." + competitionName + ".allowed-rarities");
         }
+    }
 
+    public int getNumberFishNeeded(String competitionName, boolean adminStart) {
+        int returning;
+
+        if (adminStart) returning = config.getInt("general.number-needed");
+        else returning = config.getInt("competitions." + competitionName + ".number-needed");
+
+        if (returning != 0) return returning;
+        else return 1;
     }
 }
