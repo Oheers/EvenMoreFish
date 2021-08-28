@@ -237,10 +237,6 @@ public class Messages {
         else return "{length}cm &l{rarity} {fish}";
     }
 
-    public String getPosColour(Integer position) {
-        return "&d";
-    }
-
     public String getTypeVariable(String sub) {
         return config.getString("competition-types." + sub);
     }

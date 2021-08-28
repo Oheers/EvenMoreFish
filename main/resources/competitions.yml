@@ -91,10 +91,10 @@ leaderboard:
   # Start from #1 then go down as many as you like
   position-colours:
     - "&6"
-    - "&e"
-    - "&7"
-    - "&7"
-    - "&8"
+      - "&e"
+      - "&7"
+      - "&7"
+      - "&#888888"
 
 rewards:
   1:

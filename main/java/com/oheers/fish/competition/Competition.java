@@ -131,14 +131,17 @@ public class Competition {
     public static String getLeaderboard(CompetitionType competitionType) {
         if (active) {
             if (leaderboard.size() != 0) {
+
+                List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
                 StringBuilder builder = new StringBuilder();
-                int pos = 0;
                 leaderboard.resetLeaderboard();
+                int pos = 0;
+
                 for (Node node : leaderboard.getTopEntrants(leaderboard.root, EvenMoreFish.msgs.getLeaderboardCount())) {
                     pos++;
                     Fish fish = node.getFish();
                     Message message = new Message()
-                            .setPositionColour(EvenMoreFish.msgs.getPosColour(pos))
+                            .setPositionColour(competitionColours.get(pos-1))
                             .setPosition(Integer.toString(pos))
                             .setPlayer(node.getFisher().getName());
                     if (competitionType == CompetitionType.LARGEST_FISH) {

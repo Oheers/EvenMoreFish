@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.CompetitionType;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -73,5 +74,14 @@ public class CompetitionConfig {
 
         if (returning != 0) return returning;
         else return 1;
+    }
+
+    public List<String> getPositionColours() {
+        List<String> returning = config.getStringList("leaderboard.position-colours");
+
+        if (returning.size() != 0) return returning;
+        else {
+            return Arrays.asList("&6", "&e", "&7", "&7", "&8");
+        }
     }
 }
