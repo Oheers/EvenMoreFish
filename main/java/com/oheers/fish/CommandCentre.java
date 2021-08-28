@@ -286,6 +286,7 @@ class Controls{
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
                 EvenMoreFish.messageFile.reload();
+                EvenMoreFish.competitionFile.reload();
 
                 plugin.reload();
                 plugin.reloadConfig();
