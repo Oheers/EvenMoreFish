@@ -3,6 +3,7 @@ package com.oheers.fish.fishing;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
+import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
@@ -191,14 +192,14 @@ public class FishingProcessor implements Listener {
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
     private static boolean competitionOnlyCheck() {
         if (EvenMoreFish.mainConfig.isCompetitionUnique()) {
-            return EvenMoreFish.active != null;
+            return Competition.isActive();
         } else {
             return true;
         }
     }
 
     private static void competitionCheck(Fish fish, Player fisherman) {
-        if (EvenMoreFish.active != null) {
+        if (Competition.isActive()) {
             EvenMoreFish.active.applyToLeaderboard(fish, fisherman);
         }
     }
