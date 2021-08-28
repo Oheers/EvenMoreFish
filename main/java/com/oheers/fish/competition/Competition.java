@@ -26,8 +26,7 @@ public class Competition {
 
     BukkitTask timingSystem;
 
-    String competitionName;
-    String startMessage;
+    Message startMessage;
 
     static boolean active;
 
@@ -108,12 +107,11 @@ public class Competition {
     }
 
     public void announceBegin() {
-        String msg;
+        Message msg;
         if (this.competitionType != CompetitionType.SPECIFIC_FISH) {
             msg = new Message()
                     .setMSG(EvenMoreFish.msgs.getCompetitionStart())
-                    .setType(this.competitionType)
-                    .toString();
+                    .setType(this.competitionType);
         } else {
             msg = new Message()
                     .setMSG(EvenMoreFish.msgs.getCompetitionStart())
@@ -121,11 +119,10 @@ public class Competition {
                     .setType(this.competitionType)
                     .setRarity(selectedFish.getRarity().getValue())
                     .setColour(selectedFish.getRarity().getColour())
-                    .setFishCaught(selectedFish.getName())
-                    .toString();
+                    .setFishCaught(selectedFish.getName());
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(msg);
+            player.sendMessage(msg.toString());
         }
 
         this.startMessage = msg;
@@ -176,7 +173,7 @@ public class Competition {
         return this.statusBar;
     }
 
-    public String getStartMessage() {
+    public Message getStartMessage() {
         return startMessage;
     }
 

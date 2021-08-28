@@ -42,6 +42,12 @@ public class Messages {
         return getSTDPrefix() + config.getString("contest-start");
     }
 
+    public String getCompetitionJoin() {
+        String returning = config.getString("contest-join");
+        if (returning != null) return returning;
+        else return "&rA fishing contest for {type} is going on.";
+    }
+
     public int getLeaderboardCount() {
         return config.getInt("leaderboard-count");
     }

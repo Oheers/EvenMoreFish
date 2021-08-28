@@ -15,12 +15,7 @@ public class JoinChecker implements Listener {
         if (Competition.isActive()) {
             EvenMoreFish.active.getStatusBar().addPlayer(event.getPlayer());
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(EvenMoreFish.getPlugin(EvenMoreFish.class),
-            new Runnable() {
-                @Override
-                public void run() {
-                    event.getPlayer().sendMessage(EvenMoreFish.active.getStartMessage());
-                }
-            }, 20*3);
+                    () -> event.getPlayer().sendMessage(EvenMoreFish.active.getStartMessage().setMSG(EvenMoreFish.msgs.getCompetitionJoin()).toString()), 20*3);
         }
     }
 
