@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.competition.Competition;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
@@ -102,7 +103,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
 
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
-            if (EvenMoreFish.active != null) {/*
+            if (Competition.isActive()) {/*
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);
@@ -129,7 +130,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
             }
         } else if (identifier.startsWith("competition_place_size_")) {
-            if (EvenMoreFish.active != null) {/*
+            if (Competition.isActive()) {/*
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);
@@ -153,7 +154,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());*/
             }
         } else if (identifier.startsWith("competition_place_fish_")) {
-            if (EvenMoreFish.active != null) {/*
+            if (Competition.isActive()) {/*
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);

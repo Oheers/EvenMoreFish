@@ -81,9 +81,9 @@ public class Competition {
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
         // we don't need to bother doing increments if it's just taking the largest fish anyway
-        if (competitionType == CompetitionType.LARGEST_FISH) {
+        if (competitionType != CompetitionType.SPECIFIC_FISH) {
             leaderboard.addNode(fish, fisher);
-        } else if (competitionType == CompetitionType.SPECIFIC_FISH) {
+        } else {
             // is the fish the specific fish?
             if (fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity()) {
                 // does the config specify players need to catch >1 of the specific fish?

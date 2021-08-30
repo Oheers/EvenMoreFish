@@ -330,7 +330,7 @@ class Controls{
                 }
 
                 else if (args[2].equalsIgnoreCase("end")) {
-                    if (EvenMoreFish.active != null) {
+                    if (Competition.isActive()) {
                         Competition competition = EvenMoreFish.active;
                         competition.end();
                     } else {
@@ -344,12 +344,9 @@ class Controls{
     }
 
     protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {
-
-        if (EvenMoreFish.active != null) {
-            if (Competition.isActive()) {
-                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionRunning()));
-                return;
-            }
+        if (Competition.isActive()) {
+            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionRunning()));
+            return;
         }
 
         try {

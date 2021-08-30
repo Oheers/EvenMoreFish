@@ -12,6 +12,7 @@ public class LeaderboardTree {
     Node root;
     HashMap<Player, Node> playerRegister = new HashMap<>();
     List<Node> topEntrants = new ArrayList<>();
+    List<Float> currentValues = new ArrayList<>();
     CompetitionType competitionType;
 
     private boolean shouldAdd(Player fisher, Float length) {
@@ -48,6 +49,9 @@ public class LeaderboardTree {
                 newNode = new Node(1, null, fisher);
             }
         }
+
+        if (checkDuplicate(newNode)) return;
+        else currentValues.add(newNode.getValue());
 
         if (root == null) {
             root = newNode;
@@ -86,26 +90,37 @@ public class LeaderboardTree {
 
     private void deleteOldScore(Node worthlessNode) {
 
+        if (worthlessNode.hasDuplicates()) {
+            worthlessNode.useDuplicateValue();
+            System.out.println(worthlessNode.duplicates.get(0) + " will be replacing " + worthlessNode);
+            return;
+        }
+
         Node parentNode = worthlessNode.getParent();
 
         if (worthlessNode.leftChild == null && worthlessNode.rightChild == null) {
             if (worthlessNode == root) {
-                root = null;
+                // all these checks are to allow duplicate values in this BST, predominantly in the MOST_FISH competition type
+                currentValues.remove(worthlessNode.value); worthlessNode.handleDeletion(); root = null; // removing root.value since there's no duplicates of this value
             } else if (worthlessNode.isLeftChild()) {
-                parentNode.leftChild = null;
+                currentValues.remove(worthlessNode.value); parentNode.leftChild = null;
             } else {
-                parentNode.rightChild = null;
+                currentValues.remove(worthlessNode.value); parentNode.rightChild = null;
             }
         }
 
         else if (worthlessNode.rightChild == null) {
             if (worthlessNode == root) {
-                root = worthlessNode.leftChild;
+                currentValues.remove(worthlessNode.value); worthlessNode.handleDeletion(); root = worthlessNode.leftChild;
             } else if (worthlessNode.isLeftChild()) {
+                currentValues.remove(worthlessNode.value);
+                worthlessNode.handleDeletion();
                 parentNode.leftChild = worthlessNode.leftChild;
                 worthlessNode.leftChild.parent = parentNode;
                 worthlessNode.leftChild.isLeft = true;
             } else {
+                currentValues.remove(worthlessNode.value);
+                worthlessNode.handleDeletion();
                 parentNode.rightChild = worthlessNode.leftChild;
                 worthlessNode.leftChild.parent = parentNode;
                 worthlessNode.leftChild.isLeft = false;
@@ -114,12 +129,16 @@ public class LeaderboardTree {
 
         else if (worthlessNode.leftChild == null) {
             if (worthlessNode == root) {
-                root = worthlessNode.rightChild;
+                currentValues.remove(worthlessNode.value); worthlessNode.handleDeletion(); root = worthlessNode.rightChild;
             } else if (worthlessNode.isLeftChild()) {
+                currentValues.remove(worthlessNode.value);
+                worthlessNode.handleDeletion();
                 parentNode.leftChild = worthlessNode.rightChild;
                 worthlessNode.rightChild.parent = parentNode;
                 worthlessNode.rightChild.isLeft = true;
             } else {
+                currentValues.remove(worthlessNode.value);
+                worthlessNode.handleDeletion();
                 parentNode.rightChild = worthlessNode.rightChild;
                 worthlessNode.rightChild.parent = parentNode;
                 worthlessNode.rightChild.isLeft = false;
@@ -130,17 +149,23 @@ public class LeaderboardTree {
             Node replacement = getReplacementNode(worthlessNode);
 
             if (worthlessNode == root) {
-                root = replacement;
+                currentValues.remove(worthlessNode.value); worthlessNode.handleDeletion(); root = replacement;
             } else if (worthlessNode.isLeftChild()) {
+                currentValues.remove(worthlessNode.value);
+                worthlessNode.handleDeletion();
                 parentNode.leftChild = replacement;
                 replacement.parent = parentNode;
                 replacement.isLeft = true;
             } else {
+                currentValues.remove(worthlessNode.value);
+                worthlessNode.handleDeletion();
                 parentNode.rightChild = replacement;
                 replacement.parent = parentNode;
                 replacement.isLeft = false;
             }
 
+            currentValues.remove(worthlessNode.value);
+            worthlessNode.handleDeletion();
             replacement.leftChild = worthlessNode.leftChild;
             worthlessNode.leftChild.parent = replacement;
             worthlessNode.isLeft = true;
@@ -173,6 +198,13 @@ public class LeaderboardTree {
 
                 getTopEntrants(focusNode.rightChild, goTo);
                 topEntrants.add(focusNode);
+                System.out.println(focusNode + " is entering the leaderboard normally");
+                if (focusNode.hasDuplicates()) {
+                    for (Node n : focusNode.getDuplicates()) {
+                        System.out.println(n + " is entering the leaderboard via duplicated");
+                        if (topEntrants.size() <= goTo) topEntrants.add(n);
+                    }
+                }
                 getTopEntrants(focusNode.leftChild, goTo);
 
             }
@@ -194,6 +226,18 @@ public class LeaderboardTree {
         getTopEntrants(root, index);
         return topEntrants.get(index);
     }
+
+    public boolean checkDuplicate(Node node) {
+        // If the value exists *somewhere* in the BST, bother scanning through the player register
+        if (currentValues.contains(node.getValue())) {
+            System.out.println(node.value + " has tested positive for existing in the currentValues");
+            // finding the node that has a duplicate value and adding that to the node's recognised duplicates
+            for (Node n : playerRegister.values()) {
+                if (n.scanDuplicate(node)) return true;
+            }
+        }
+        return false;
+    }
 }
 
 class Node {
@@ -206,6 +250,9 @@ class Node {
     Node leftChild;
     Node rightChild;
     Node parent;
+    Node duplicateNode;
+
+    List<Node> duplicates = new ArrayList<>();
 
     Node(float value, Fish fish, Player fisher) {
         this.value = value;
@@ -231,5 +278,54 @@ class Node {
 
     public Node getParent() {
         return this.parent;
+    }
+
+    public List<Node> getDuplicates() {
+        return this.duplicates;
+    }
+
+    public boolean scanDuplicate(Node node) {
+        if (node.getValue() == this.value) {
+            duplicates.add(node);
+            node.duplicateNode = this;
+            System.out.println("adding: " + node + " to the duplicates section of: " + this);
+            return true;
+        } else return false;
+    }
+
+    public boolean hasDuplicates() {
+        if (duplicates.size() != 0) {
+            System.out.println(this + " has " + duplicates.size() + " duplicates");
+            return true;
+        }
+        else {
+            System.out.println(this + " has no duplicates");
+            return duplicates.size() != 0;
+        }
+    }
+
+    // shifts a value from the duplicate list to represent this node
+    public void useDuplicateValue() {
+        Node selected = duplicates.get(0);
+        fish = selected.getFish();
+        fisher = selected.getFisher();
+        duplicates.remove(selected);
+        System.out.println(selected + " is taking over from " + this);
+    }
+
+    @Override
+    public String toString() {
+        String s = "Node[Fisher: " + fisher.getName();
+        if (fish != null) s += ", Fish: " + fish.getRarity().getValue() + " " + fish.getName();
+        s += ", " + "Value: " + value + "]";
+        return s;
+    }
+
+    // When deleting a node, in some cases the node won't be set to null
+    public void handleDeletion() {
+        if (duplicateNode != null) {
+            System.out.println("removing " + this + " from the duplication list of " + duplicateNode);
+            duplicateNode.duplicates.remove(this);
+        }
     }
 }
