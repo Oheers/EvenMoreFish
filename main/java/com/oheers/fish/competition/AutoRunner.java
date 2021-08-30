@@ -22,8 +22,10 @@ public class AutoRunner {
 
                 // Beginning the competition set for schedule
                 if (EvenMoreFish.competitionQueue.competitions.containsKey(weekMinute)) {
-                    EvenMoreFish.active = EvenMoreFish.competitionQueue.competitions.get(weekMinute);
-                    EvenMoreFish.active.begin();
+                    if (Competition.isActive()) {
+                        EvenMoreFish.active = EvenMoreFish.competitionQueue.competitions.get(weekMinute);
+                        EvenMoreFish.active.begin();
+                    }
                 }
             }
 
