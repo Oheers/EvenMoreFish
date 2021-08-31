@@ -134,16 +134,26 @@ public class Competition {
 
                 List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
                 StringBuilder builder = new StringBuilder();
-                leaderboard.resetLeaderboard();
                 int pos = 0;
 
                 for (Node node : leaderboard.getTopEntrants(leaderboard.root, EvenMoreFish.msgs.getLeaderboardCount())) {
                     pos++;
-                    Fish fish = node.getFish();
                     Message message = new Message()
-                            .setPositionColour(competitionColours.get(pos-1))
                             .setPosition(Integer.toString(pos))
-                            .setPlayer(node.getFisher().getName());
+                            .setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+
+                    if (pos > competitionColours.size()) {
+                        Random r = new Random();
+                        int s = r.nextInt(3);
+                        switch (s) {
+                            case 0: message.setPositionColour("&c\u00bb &r"); break;
+                            case 1: message.setPositionColour("&c_ &r"); break;
+                            case 2: message.setPositionColour("&c&ko &r"); break;
+                        }
+
+                    }
+                    else message.setPositionColour(competitionColours.get(pos-1));
+
                     if (competitionType == CompetitionType.LARGEST_FISH) {
                         message.setRarity(fish.getRarity().getValue())
                                 .setColour(fish.getRarity().getColour())
@@ -166,10 +176,6 @@ public class Competition {
         } else {
             return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning());
         }
-    }
-
-    public LeaderboardTree getLeaderboardTree() {
-        return leaderboard;
     }
 
     public Bar getStatusBar() {
