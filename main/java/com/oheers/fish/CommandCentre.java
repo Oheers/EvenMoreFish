@@ -257,7 +257,7 @@ class Controls{
                             if (args[2].equalsIgnoreCase(r.getValue())) {
                                 for (Fish f : EvenMoreFish.fishCollection.get(r)) {
                                     if (f.getName().equalsIgnoreCase(using.toString())) {
-                                        f.setFisherman((Player) sender);
+                                        f.setFisherman(((Player) sender).getUniqueId());
                                         f.init();
                                         FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
                                     }

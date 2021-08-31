@@ -59,7 +59,7 @@ public class FishingProcessor implements Listener {
                     Player player = event.getPlayer();
 
                     Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome());
-                    fish.setFisherman(player);
+                    fish.setFisherman(player.getUniqueId());
                     fish.init();
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
