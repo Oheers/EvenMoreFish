@@ -15,12 +15,14 @@ public class GUIClick implements Listener {
         for (RewardGUI rGui : EvenMoreFish.rGuis) {
             if (rGui.viewer == event.getWhoClicked()) {
                 event.setCancelled(true);
-                ItemStack clicked = event.getClickedInventory().getItem(event.getSlot());
-                if (clicked != null) {
-                    if (clicked.getType() == Material.SPECTRAL_ARROW) {
-                        if (FishUtils.getScrollDirection(clicked)) rGui.setPage(rGui.getPage()+1);
-                        else rGui.setPage(rGui.getPage()-1);
-                        rGui.init();
+                if (event.getClickedInventory() != null) {
+                    ItemStack clicked = event.getClickedInventory().getItem(event.getSlot());
+                    if (clicked != null) {
+                        if (clicked.getType() == Material.SPECTRAL_ARROW) {
+                            if (FishUtils.getScrollDirection(clicked)) rGui.setPage(rGui.getPage() + 1);
+                            else rGui.setPage(rGui.getPage() - 1);
+                            rGui.init();
+                        }
                     }
                 }
             }
