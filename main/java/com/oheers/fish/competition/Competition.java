@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.logging.Level;
 
 public class Competition {
 
@@ -32,23 +33,18 @@ public class Competition {
 
     // In a SPECIFIC_FISH competition, there won't be a leaderboard
     boolean leaderboardApplicable;
-    public static LeaderboardTree leaderboard;
+    public static Leaderboard leaderboard;
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
         this.timeLeft = duration;
         this.competitionType = type;
-
-        if (type != CompetitionType.SPECIFIC_FISH) {
-            leaderboardApplicable = true;
-            leaderboard = new LeaderboardTree();
-            leaderboard.competitionType = competitionType;
-        }
     }
 
     public void begin() {
         active = true;
         this.statusBar = new Bar();
+        if (leaderboardApplicable) initLeaderboard();
         initTimer();
         announceBegin();
     }
@@ -58,6 +54,7 @@ public class Competition {
         active = false;
         this.statusBar.removeAllPlayers();
         this.timingSystem.cancel();
+        leaderboard.clear();
     }
 
     // Starts an async task to decrease the time left by 1s each second
@@ -80,28 +77,41 @@ public class Competition {
     }
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
-        // we don't need to bother doing increments if it's just taking the largest fish anyway
-        if (competitionType != CompetitionType.SPECIFIC_FISH) {
-            leaderboard.addNode(fish, fisher);
-        } else {
+
+        if (competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.MOST_FISH) {
             // is the fish the specific fish?
-            if (fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity()) {
-                // does the config specify players need to catch >1 of the specific fish?
-                if (this.numberNeeded > 1) {
-                    // updates the register if the value already exists, adds to the register if not
-                    if (leaderboard.playerRegister.containsKey(fisher)) {
-                        // has the player reached numberNeeded?
-                        if (leaderboard.playerRegister.get(fisher).getValue() == this.numberNeeded-1) {
-                            end();
-                            // fisher.wins();
-                            return;
-                        }
-                    }
-                    leaderboard.addNode(fish, fisher);
-                } else {
-                    end();
-                    // fisher.wins();
+            if (!(fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity())) {
+                if (competitionType == CompetitionType.SPECIFIC_FISH) {
+                    return;
                 }
+            }
+
+            if (leaderboardApplicable) {
+                CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
+
+                if (entry != null) {
+
+                    try {
+                        // re-adding the entry so it's sorted
+                        leaderboard.removeEntry(entry);
+                        entry.incrementValue();
+                        leaderboard.addEntry(entry);
+                    } catch (Exception exception) {
+                        Bukkit.getLogger().log(Level.SEVERE, "Could not delete: " + entry);
+                    }
+
+                    if (entry.getValue() == numberNeeded && competitionType == CompetitionType.SPECIFIC_FISH) {
+                        end();
+                        // fisher wins
+                    }
+
+                } else {
+                    CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
+                    leaderboard.addEntry(newEntry);
+                }
+            } else {
+                end();
+                // fisher wins
             }
         }
     }
@@ -130,13 +140,13 @@ public class Competition {
 
     public static String getLeaderboard(CompetitionType competitionType) {
         if (active) {
-            if (leaderboard.size() != 0) {
+            if (leaderboard.getSize() != 0) {
 
                 List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
                 StringBuilder builder = new StringBuilder();
                 int pos = 0;
 
-                for (Node node : leaderboard.getTopEntrants(leaderboard.root, EvenMoreFish.msgs.getLeaderboardCount())) {
+                for (CompetitionEntry entry : leaderboard.getEntries()) {
                     pos++;
                     Message message = new Message()
                             .setPosition(Integer.toString(pos))
@@ -155,13 +165,14 @@ public class Competition {
                     else message.setPositionColour(competitionColours.get(pos-1));
 
                     if (competitionType == CompetitionType.LARGEST_FISH) {
+                        Fish fish = entry.getFish();
                         message.setRarity(fish.getRarity().getValue())
                                 .setColour(fish.getRarity().getColour())
                                 .setFishCaught(fish.getName())
-                                .setLength(Float.toString(node.value))
+                                .setLength(Float.toString(entry.getValue()))
                                 .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
                     } else {
-                        message.setAmount(Integer.toString((int) node.value))
+                        message.setAmount(Integer.toString((int) entry.getValue()))
                                 .setMSG(EvenMoreFish.msgs.getMostFishLeaderboard());
                     }
                     builder.append(message);
@@ -198,6 +209,11 @@ public class Competition {
         this.numberNeeded = numberNeeded;
     }
 
+    private void initLeaderboard() {
+        leaderboardApplicable = true;
+        leaderboard = new Leaderboard(competitionType);
+    }
+
     public void chooseFish(String competitionName, boolean adminStart) {
         List<String> allowedRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
         List<Fish> fish = new ArrayList<>();
@@ -208,7 +224,7 @@ public class Competition {
         }
 
         int y = EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart);
-        System.out.println("y =====: " + y);
+        if (y > 1) initLeaderboard();
         setNumberNeeded(y);
 
         Random r = new Random();
