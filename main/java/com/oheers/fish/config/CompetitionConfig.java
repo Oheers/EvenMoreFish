@@ -61,7 +61,6 @@ public class CompetitionConfig {
         if (adminStart) {
             return config.getStringList("general.allowed-rarities");
         } else {
-            System.out.println("comp: " + competitionName);
             return config.getStringList("competitions." + competitionName + ".allowed-rarities");
         }
     }
