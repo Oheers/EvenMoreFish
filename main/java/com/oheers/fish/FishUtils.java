@@ -18,7 +18,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -173,34 +172,6 @@ public class FishUtils {
         }
         skull.setItemMeta(meta);
         return skull;
-    }
-
-    public static ItemStack setScrollItem(boolean forward) {
-        ItemStack rawItem = new ItemStack(Material.SPECTRAL_ARROW);
-        // creates key and plops in the value of "value"
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-scroll");
-
-        ItemMeta itemMeta = rawItem.getItemMeta();
-
-        if (forward) {
-            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, 1);
-            itemMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.mainConfig.getForwardName()));
-        } else {
-            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, 0);
-            itemMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.mainConfig.getPreviousName()));
-        }
-
-        rawItem.setItemMeta(itemMeta);
-        return rawItem;
-    }
-
-    public static boolean getScrollDirection(ItemStack arrow) {
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-scroll");
-
-        if (arrow.hasItemMeta()) {
-            int direction = arrow.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER);
-            return direction == 1;
-        } else return false;
     }
 
     public static String timeFormat(int timeLeft) {
