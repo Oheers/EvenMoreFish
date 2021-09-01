@@ -23,6 +23,8 @@ public class CompetitionQueue {
 
                 if (type == CompetitionType.SPECIFIC_FISH) competition.chooseFish(comp, false);
 
+                competition.initAlerts(comp);
+
                 if (EvenMoreFish.competitionConfig.specificDayTimes(comp)) {
                     for (String day : EvenMoreFish.competitionConfig.activeDays(comp)) {
                         for (String time : EvenMoreFish.competitionConfig.getDayTimes(comp, day)) {

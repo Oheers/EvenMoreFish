@@ -83,4 +83,8 @@ public class CompetitionConfig {
             return Arrays.asList("&6", "&e", "&7", "&7", "&8");
         }
     }
+
+    public List<String> getAlertTimes(String competitionName) {
+        return config.getStringList("competitions." + competitionName + ".alerts");
+    }
 }

@@ -254,4 +254,8 @@ public class Messages {
         boolean b = config.getStringList("action-bar-types").size() == 0 || config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
         return a && b;
     }
+
+    public String getTimeAlertMessage() {
+        return getSTDPrefix() + config.getString("time-alert");
+    }
 }

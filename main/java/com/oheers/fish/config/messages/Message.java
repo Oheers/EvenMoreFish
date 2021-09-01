@@ -16,7 +16,8 @@ public class Message {
     // msg is the string got from the messages.yml file
     // all the others are values that don't need to be set.
 
-    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice, effect, amplifier, time, item, posColour, type;
+    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount,
+            sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw;
     Player receiver;
 
     public Message() {
@@ -97,6 +98,16 @@ public class Message {
         return this;
     }
 
+    public Message setTimeRaw(String timeRaw) {
+        this.timeRaw = timeRaw;
+        return this;
+    }
+
+    public Message setTimeFormatted(String timeFormatted) {
+        this.timeFormatted = timeFormatted;
+        return this;
+    }
+
     public Message setItem(String item) {
         this.item = item;
         return this;
@@ -170,6 +181,14 @@ public class Message {
 
         if (time != null) {
             msg = msg.replace("{time}", time);
+        }
+
+        if (timeRaw != null) {
+            msg = msg.replace("{time_raw}", timeRaw);
+        }
+
+        if (timeFormatted != null) {
+            msg = msg.replace("{time_formatted}", timeFormatted);
         }
 
         if (item != null) {

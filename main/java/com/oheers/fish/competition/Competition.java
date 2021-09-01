@@ -25,6 +25,8 @@ public class Competition {
     Fish selectedFish;
     int numberNeeded;
 
+    List<Integer> alertTimes;
+
     BukkitTask timingSystem;
 
     Message startMessage;
@@ -39,6 +41,8 @@ public class Competition {
         this.maxDuration = duration;
         this.timeLeft = duration;
         this.competitionType = type;
+        this.alertTimes = new ArrayList<>();
+
     }
 
     public void begin() {
@@ -64,8 +68,23 @@ public class Competition {
             public void run() {
                 timeLeft--;
 
-                if (timeLeft == 300) {
-                    System.out.println("5m left lads come on chop chop.");
+                if (alertTimes.contains(timeLeft)) {
+                    Message m = new Message()
+                            .setMSG(EvenMoreFish.msgs.getTimeAlertMessage())
+                            .setTimeFormatted(FishUtils.timeFormat(timeLeft))
+                            .setTimeRaw(FishUtils.timeRaw(timeLeft))
+                            .setType(competitionType);
+                    if (competitionType == CompetitionType.SPECIFIC_FISH) {
+                        m.setAmount(Integer.toString(numberNeeded))
+                                .setRarity(selectedFish.getRarity().getValue())
+                                .setColour(selectedFish.getRarity().getColour())
+                                .setFishCaught(selectedFish.getName());
+                    }
+
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(m.toString());
+                    }
+
                 } else if (timeLeft == 0) {
                     end();
                     return;
@@ -273,5 +292,24 @@ public class Competition {
 
         Random r = new Random();
         this.selectedFish = fish.get(r.nextInt(fish.size()));
+    }
+
+    public void initAlerts(String competitionName) {
+        for (String s : EvenMoreFish.competitionConfig.getAlertTimes(competitionName)) {
+
+            System.out.println("looping through " + competitionName);
+
+            String[] split = s.split(":");
+            if (split.length == 2) {
+                try {
+                    System.out.println("adding " + Integer.parseInt(split[0])*60 + Integer.parseInt(split[1]) + " to " + competitionName);
+                    alertTimes.add(Integer.parseInt(split[0])*60 + Integer.parseInt(split[1]));
+                } catch (NumberFormatException nfe) {
+                    Bukkit.getLogger().log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
+                }
+            } else {
+                System.out.println("split length is not 2 :(");
+            }
+        }
     }
 }

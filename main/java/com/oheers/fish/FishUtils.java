@@ -191,6 +191,23 @@ public class FishUtils {
         return returning;
     }
 
+    public static String timeRaw(int timeLeft) {
+        String returning = "";
+        int hours = timeLeft/3600;
+
+        if (timeLeft >= 3600) {
+            returning += hours + ":";
+        }
+
+        if (timeLeft >= 60) {
+            returning += ((timeLeft%3600)/60) + ":";
+        }
+
+        // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
+        returning += (timeLeft%60);
+        return returning;
+    }
+
     public static void broadcastFishMessage(Message msg, boolean actionBar) {
         if (EvenMoreFish.mainConfig.broadcastOnlyRods()) {
             // sends it to all players holding ords

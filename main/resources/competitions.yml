@@ -43,6 +43,11 @@ competitions:
       Sunday:
         - "03:00"
         - "15:00"
+    # When should the plugin broadcast the time remaining? (time-alert in messages.yml) in the format MM:SS
+    alerts:
+      - "30:00"
+      - "15:00"
+      - "5:00"
     # How many of the specific fish need to be caught to win the competition? (defaults to 1)
     # Anything greater than 1 will allow /emf top to work with this competition type.
     number-needed: 1
