@@ -90,12 +90,14 @@ interface LeaderboardHandler {
 
 	void removeEntry(CompetitionEntry entry) throws Exception;
 
+	CompetitionEntry getTopEntry();
+
 }
 
 public class Leaderboard implements LeaderboardHandler {
 
 	CompetitionType type;
-	Set<CompetitionEntry> entries;
+	TreeSet<CompetitionEntry> entries;
 
 	Leaderboard(CompetitionType type) {
 		this.type = type;
@@ -157,5 +159,10 @@ public class Leaderboard implements LeaderboardHandler {
 	@Override
 	public void removeEntry(CompetitionEntry entry) {
 		entries.removeIf(e -> e == entry);
+	}
+
+	@Override
+	public CompetitionEntry getTopEntry() {
+		return entries.first();
 	}
 }

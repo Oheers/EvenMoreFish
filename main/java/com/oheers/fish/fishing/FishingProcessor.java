@@ -85,15 +85,7 @@ public class FishingProcessor implements Listener {
                     // Gets whether it's a serverwide announce or not
                     if (fish.getRarity().getAnnounce()) {
                         // should we only broadcast this information to rod holders?
-                        if (EvenMoreFish.mainConfig.broadcastOnlyRods()) {
-                            // sends it to all players holding ords
-                            for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                                    p.sendMessage(msg.toString());
-                                }
-                            }
-                            // sends it to everyone
-                        } else for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
+                        FishUtils.broadcastFishMessage(msg, false);
                     } else {
                         // sends it to just the fisher
                         player.sendMessage(msg.toString());

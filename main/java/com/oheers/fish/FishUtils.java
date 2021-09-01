@@ -4,6 +4,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -12,6 +13,8 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -215,5 +218,25 @@ public class FishUtils {
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
         returning += (timeLeft%60) + EvenMoreFish.msgs.getBarSecond();
         return returning;
+    }
+
+    public static void broadcastFishMessage(Message msg, boolean actionBar) {
+        if (EvenMoreFish.mainConfig.broadcastOnlyRods()) {
+            // sends it to all players holding ords
+            if (actionBar) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
+                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg.toString()));
+                    }
+                }
+            } else {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
+                        p.sendMessage(msg.toString());
+                    }
+                }
+            }
+            // sends it to everyone
+        } else for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
     }
 }

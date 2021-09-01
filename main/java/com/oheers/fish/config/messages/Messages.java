@@ -240,4 +240,18 @@ public class Messages {
     public String getTypeVariable(String sub) {
         return config.getString("competition-types." + sub);
     }
+
+    public String getFirstPlaceNotification() {
+        return getSTDPrefix() + config.getString("new-first");
+    }
+
+    public boolean doFirstPlaceNotification() {
+        return config.getString("new-first") != null;
+    }
+
+    public boolean doFirstPlaceActionbar() {
+        boolean a = config.getBoolean("action-bar-message");
+        boolean b = config.getStringList("action-bar-types").size() == 0 || config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
+        return a && b;
+    }
 }

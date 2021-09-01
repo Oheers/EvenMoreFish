@@ -90,6 +90,14 @@ public class Competition {
                 CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
 
                 if (entry != null) {
+                    if (entry.getValue()+1 >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
+                        if (EvenMoreFish.msgs.doFirstPlaceNotification()) {
+                            Message message = new Message()
+                                    .setMSG(EvenMoreFish.msgs.getFirstPlaceNotification())
+                                    .setPlayer(fisher.getName());
+                            FishUtils.broadcastFishMessage(message, EvenMoreFish.msgs.doFirstPlaceActionbar());
+                        }
+                    }
 
                     try {
                         // re-adding the entry so it's sorted
@@ -119,12 +127,34 @@ public class Competition {
             if (entry != null) {
 
                 if (entry.getFish().getLength() < fish.getLength()) {
+
+                    if (fish.getLength() > leaderboard.getTopEntry().getFish().getLength() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
+                        if (EvenMoreFish.msgs.doFirstPlaceNotification()) {
+                            Message message = new Message()
+                                    .setMSG(EvenMoreFish.msgs.getFirstPlaceNotification())
+                                    .setPlayer(fisher.getName());
+                            FishUtils.broadcastFishMessage(message, EvenMoreFish.msgs.doFirstPlaceActionbar());
+                        }
+                    }
+
                     leaderboard.removeEntry(entry);
                     leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competitionType));
                 }
 
             } else {
                 CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
+
+                if (leaderboard.getSize() != 0) {
+                    if (fish.getLength() > leaderboard.getTopEntry().getFish().getLength() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
+                        if (EvenMoreFish.msgs.doFirstPlaceNotification()) {
+                            Message message = new Message()
+                                    .setMSG(EvenMoreFish.msgs.getFirstPlaceNotification())
+                                    .setPlayer(fisher.getName());
+                            FishUtils.broadcastFishMessage(message, EvenMoreFish.msgs.doFirstPlaceActionbar());
+                        }
+                    }
+                }
+
                 leaderboard.addEntry(newEntry);
             }
         }

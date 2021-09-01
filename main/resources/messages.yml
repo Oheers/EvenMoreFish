@@ -11,6 +11,14 @@ contest-end: "&rThe fishing contest has ended."
 # The message to be sent when a player joins whilst a competition is going on
 contest-join: "&rA fishing contest for {type} is occurring."
 
+# Shown to players when a new player takes #1 spot, remove this value or set it to "" to disable this message
+new-first: "&r{player} is now #1"
+# Should this message appear in chat (false) or above the exp bar (true)
+action-bar-message: true
+# What competition types should the action bar be used for? (recommended: MOST_FISH)
+action-bar-types:
+  - MOST_FISH
+
 # What should replace the {type} variable for each competition type?
 competition-types:
   # MOST_FISH
