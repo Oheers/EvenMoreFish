@@ -113,6 +113,20 @@ public class Competition {
                 end();
                 // fisher wins
             }
+        } else {
+            CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
+
+            if (entry != null) {
+
+                if (entry.getFish().getLength() < fish.getLength()) {
+                    leaderboard.removeEntry(entry);
+                    leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competitionType));
+                }
+
+            } else {
+                CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
+                leaderboard.addEntry(newEntry);
+            }
         }
     }
 
