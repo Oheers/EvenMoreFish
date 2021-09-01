@@ -9,7 +9,7 @@ no-permission: "&cYou don't have permission to run that command."
 contest-start: "&rA fishing contest for {type} has started."
 contest-end: "&rThe fishing contest has ended."
 # The message to be sent when a player joins whilst a competition is going on
-contest-join: "&rA fishing contest for {type} is going on."
+contest-join: "&rA fishing contest for {type} is occurring."
 
 # What should replace the {type} variable for each competition type?
 competition-types:
