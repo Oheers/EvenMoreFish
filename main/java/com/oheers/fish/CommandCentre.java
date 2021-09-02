@@ -335,9 +335,10 @@ class Controls{
 
                 else if (args[2].equalsIgnoreCase("end")) {
                     if (Competition.isActive()) {
-                        Competition competition = EvenMoreFish.active;
-                        competition.end();
+                        System.out.println("test 1");
+                        EvenMoreFish.active.end();
                     } else {
+                        System.out.println("test 2");
                         player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     }
                 } else {

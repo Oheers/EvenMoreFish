@@ -56,7 +56,6 @@ public class Competition {
 
     public void end() {
         // print leaderboard
-        active = false;
         this.statusBar.removeAllPlayers();
         this.timingSystem.cancel();
         statusBar.hide();
@@ -65,6 +64,7 @@ public class Competition {
             handleRewards();
             leaderboard.clear();
         }
+        active = false;
     }
 
     // Starts an async task to decrease the time left by 1s each second
