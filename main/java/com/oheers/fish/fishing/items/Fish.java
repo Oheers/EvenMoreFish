@@ -143,7 +143,10 @@ public class Fish implements Cloneable {
         // The fish has item: material selected
         String mValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.material");
         if (mValue != null) {
-            return new ItemStack(Objects.requireNonNull(Material.getMaterial(mValue)));
+            if (Material.getMaterial(mValue) == null) {
+                System.out.println(this.name + " has failed to load material: " + mValue);
+            }
+            return new ItemStack(Objects.requireNonNull(Material.getMaterial(mValue.toUpperCase())));
         }
 
         // The fish has no item type specified
@@ -268,7 +271,7 @@ public class Fish implements Cloneable {
 
     public void checkIntEvent() {
         List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".interact-event");
-        // Checks if the player has actually set rewards for an eat event
+        // Checks if the player has actually set rewards for an interact event
         if (!configRewards.isEmpty()) {
             // Informs the main class to load up an PlayerItemConsumeEvent listener
             EvenMoreFish.checkingIntEvent = true;
@@ -325,5 +328,9 @@ public class Fish implements Cloneable {
 
         previewFish.setItemMeta(previewMeta);
         return previewFish;
+    }
+
+    public Player getFisherman() {
+        return fisherman;
     }
 }
