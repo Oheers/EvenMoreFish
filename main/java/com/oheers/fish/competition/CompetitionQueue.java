@@ -22,8 +22,10 @@ public class CompetitionQueue {
                 Competition competition = new Competition(EvenMoreFish.competitionConfig.getCompetitionDuration(comp)*60, type);
 
                 if (type == CompetitionType.SPECIFIC_FISH) competition.chooseFish(comp, false);
+                else competition.leaderboardApplicable = true;
 
                 competition.initAlerts(comp);
+                competition.initRewards(comp, false);
 
                 if (EvenMoreFish.competitionConfig.specificDayTimes(comp)) {
                     for (String day : EvenMoreFish.competitionConfig.activeDays(comp)) {

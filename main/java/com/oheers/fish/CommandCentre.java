@@ -355,7 +355,11 @@ class Controls{
             // I've just discovered /emf admin competition start -1 causes some funky stuff - so this prevents that.
             if (duration > 0) {
                 Competition comp = new Competition(duration, type);
-                comp.chooseFish(null, true);
+
+                if (type == CompetitionType.SPECIFIC_FISH) comp.chooseFish(null, true);
+                else comp.leaderboardApplicable = true;
+
+                comp.initRewards(null, true);
                 EvenMoreFish.active = comp;
                 comp.begin();
             } else {

@@ -43,11 +43,14 @@ competitions:
       Sunday:
         - "03:00"
         - "15:00"
-    # When should the plugin broadcast the time remaining? (time-alert in messages.yml) in the format MM:SS
-    alerts:
-      - "30:00"
-      - "15:00"
-      - "5:00"
+    # You might want to set custom rewards for each competition, especially if you've got number-needed set to greater than 1
+    rewards:
+      1:
+        - "MONEY:5000"
+        - "MESSAGE:&eCongratulations!"
+      2:
+        - "MONEY:2000"
+
     # How many of the specific fish need to be caught to win the competition? (defaults to 1)
     # Anything greater than 1 will allow /emf top to work with this competition type.
     number-needed: 1
@@ -67,6 +70,11 @@ competitions:
     days:
       Sunday:
         - "20:00"
+    # When should the plugin broadcast the time remaining? (time-alert in messages.yml) in the format MM:SS
+    alerts:
+      - "30:00"
+      - "15:00"
+      - "5:00"
     bossbar-colour: BLUE
     bossbar-prefix: "&b&lFishing Contest: "
 
@@ -96,10 +104,10 @@ leaderboard:
   # Start from #1 then go down as many as you like
   position-colours:
     - "&6"
-      - "&e"
-      - "&7"
-      - "&7"
-      - "&#888888"
+    - "&e"
+    - "&7"
+    - "&7"
+    - "&#888888"
 
 rewards:
   1:

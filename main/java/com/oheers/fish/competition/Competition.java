@@ -2,6 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -10,10 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Competition {
@@ -26,6 +24,7 @@ public class Competition {
     int numberNeeded;
 
     List<Integer> alertTimes;
+    Map<Integer, List<Reward>> rewards;
 
     BukkitTask timingSystem;
 
@@ -34,7 +33,7 @@ public class Competition {
     static boolean active;
 
     // In a SPECIFIC_FISH competition, there won't be a leaderboard
-    boolean leaderboardApplicable;
+    public boolean leaderboardApplicable;
     public static Leaderboard leaderboard;
 
     public Competition(final Integer duration, final CompetitionType type) {
@@ -42,6 +41,7 @@ public class Competition {
         this.timeLeft = duration;
         this.competitionType = type;
         this.alertTimes = new ArrayList<>();
+        this.rewards = new HashMap<>();
 
     }
 
@@ -58,7 +58,10 @@ public class Competition {
         active = false;
         this.statusBar.removeAllPlayers();
         this.timingSystem.cancel();
-        leaderboard.clear();
+        if (leaderboardApplicable) {
+            handleRewards();
+            leaderboard.clear();
+        }
     }
 
     // Starts an async task to decrease the time left by 1s each second
@@ -129,7 +132,6 @@ public class Competition {
 
                     if (entry.getValue() == numberNeeded && competitionType == CompetitionType.SPECIFIC_FISH) {
                         end();
-                        // fisher wins
                     }
 
                 } else {
@@ -137,8 +139,8 @@ public class Competition {
                     leaderboard.addEntry(newEntry);
                 }
             } else {
+                singleReward(fisher);
                 end();
-                // fisher wins
             }
         } else {
             CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
@@ -272,7 +274,7 @@ public class Competition {
         this.numberNeeded = numberNeeded;
     }
 
-    private void initLeaderboard() {
+    public void initLeaderboard() {
         leaderboardApplicable = true;
         leaderboard = new Leaderboard(competitionType);
     }
@@ -287,7 +289,7 @@ public class Competition {
         }
 
         int y = EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart);
-        if (y > 1) initLeaderboard();
+        if (y > 1) this.leaderboardApplicable = true;
         setNumberNeeded(y);
 
         Random r = new Random();
@@ -308,7 +310,61 @@ public class Competition {
                     Bukkit.getLogger().log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
                 }
             } else {
-                System.out.println("split length is not 2 :(");
+                Bukkit.getLogger().log(Level.SEVERE, s + " is not formatted correctly. Use MM:SS");
+            }
+        }
+    }
+
+    public void initRewards(String competitionName, boolean adminStart) {
+        Set<String> chosen;
+        String path;
+
+        System.out.println("competitionName: " + competitionName);
+
+        // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the compeitions
+        if (adminStart) {
+            chosen = EvenMoreFish.competitionConfig.getRewardPositions();
+            path = "rewards.";
+        } else {
+            if (EvenMoreFish.competitionConfig.getRewardPositions(competitionName).size() == 0) {
+                System.out.println("choosing from generic.");
+                chosen = EvenMoreFish.competitionConfig.getRewardPositions();
+                path = "rewards.";
+            } else {
+                System.out.println("choosing from specific: " + competitionName);
+                chosen = EvenMoreFish.competitionConfig.getRewardPositions(competitionName);
+                path = "competitions." + competitionName + ".rewards.";
+            }
+        }
+
+        if (chosen != null) {
+            for (String i : chosen) {
+                List<Reward> addingRewards = new ArrayList<>();
+                for (String j : EvenMoreFish.competitionConfig.getStringList(path + i)) {
+                    Reward reward = new Reward(j);
+                    addingRewards.add(reward);
+                }
+                this.rewards.put(Integer.parseInt(i), addingRewards);
+            }
+        }
+    }
+
+    private void handleRewards() {
+        for (int i=1; i<rewards.size(); i++) {
+            CompetitionEntry entry = leaderboard.getTopEntry();
+            if (Bukkit.getPlayer(entry.getPlayer()) != null) {
+                for (Reward reward : rewards.get(i)) {
+                    reward.run(Bukkit.getPlayer(entry.getPlayer()));
+                }
+            }
+            leaderboard.removeEntry(entry);
+        }
+    }
+
+    public void singleReward(Player player) {
+        if (rewards.size() > 0) {
+            for (Reward reward : rewards.get(1)) {
+                reward.run(player);
             }
         }
     }

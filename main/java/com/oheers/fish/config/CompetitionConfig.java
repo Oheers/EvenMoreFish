@@ -2,12 +2,10 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.CompetitionType;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class CompetitionConfig {
 
@@ -15,6 +13,10 @@ public class CompetitionConfig {
 
     public int configVersion() {
         return config.getInt("config-version");
+    }
+
+    public List<String> getStringList(String path) {
+        return config.getStringList(path);
     }
 
     public Set<String> getCompetitions() {
@@ -86,5 +88,17 @@ public class CompetitionConfig {
 
     public List<String> getAlertTimes(String competitionName) {
         return config.getStringList("competitions." + competitionName + ".alerts");
+    }
+
+    public Set<String> getRewardPositions(String competitionName) {
+        ConfigurationSection returning = config.getConfigurationSection("competitions." + competitionName + ".rewards");
+        if (returning != null) return returning.getKeys(false);
+        else return new HashSet<>();
+    }
+
+    public Set<String> getRewardPositions() {
+        ConfigurationSection returning = config.getConfigurationSection("rewards");
+        if (returning != null) return returning.getKeys(false);
+        else return new HashSet<>();
     }
 }
