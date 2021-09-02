@@ -63,6 +63,8 @@ leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity} {fis
 leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
 # The number of positions shown in the leaderboard - can't be less than 1.
 leaderboard-count: 5
+# If the player doesn't appear on /emf top, should their position be displayed at the bottom?
+always-show-pos: true
 # Sent to players when nobody got a record during a competition
 no-winners: "&rThere were no fishing records."
 # When an individual player didn't get a record

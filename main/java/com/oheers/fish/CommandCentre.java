@@ -53,7 +53,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     if (EvenMoreFish.active == null) {
                         sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     } else {
-                        sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(EvenMoreFish.active.getCompetitionType())));
+                        EvenMoreFish.active.sendLeaderboard((Player) sender);
                     }
                 } else {
                     sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());

@@ -249,6 +249,10 @@ public class Messages {
         return config.getString("new-first") != null;
     }
 
+    public boolean shouldAlwaysShowPos() {
+        return config.getBoolean("always-show-pos");
+    }
+
     public boolean doFirstPlaceActionbar() {
         boolean a = config.getBoolean("action-bar-message");
         boolean b = config.getStringList("action-bar-types").size() == 0 || config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());

@@ -104,8 +104,8 @@ public class Competition {
 
         if (competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.MOST_FISH) {
             // is the fish the specific fish?
-            if (!(fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity())) {
-                if (competitionType == CompetitionType.SPECIFIC_FISH) {
+            if (competitionType == CompetitionType.SPECIFIC_FISH) {
+                if (!(fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity())) {
                     return;
                 }
             }
@@ -205,9 +205,12 @@ public class Competition {
         this.startMessage = msg;
     }
 
-    public static String getLeaderboard(CompetitionType competitionType) {
+    public void sendLeaderboard(Player player) {
+        boolean reachingCount = true;
         if (active) {
             if (leaderboard.getSize() != 0) {
+
+                List<UUID> leaderboardMembers = new ArrayList<>();
 
                 List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
                 StringBuilder builder = new StringBuilder();
@@ -215,44 +218,81 @@ public class Competition {
 
                 for (CompetitionEntry entry : leaderboard.getEntries()) {
                     pos++;
-                    Message message = new Message()
-                            .setPosition(Integer.toString(pos))
-                            .setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+                    if (reachingCount) {
+                        leaderboardMembers.add(entry.getPlayer());
+                        Message message = new Message()
+                                .setPosition(Integer.toString(pos))
+                                .setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
 
-                    if (pos > competitionColours.size()) {
-                        Random r = new Random();
-                        int s = r.nextInt(3);
-                        switch (s) {
-                            case 0: message.setPositionColour("&c\u00bb &r"); break;
-                            case 1: message.setPositionColour("&c_ &r"); break;
-                            case 2: message.setPositionColour("&c&ko &r"); break;
+                        if (pos > competitionColours.size()) {
+                            Random r = new Random();
+                            int s = r.nextInt(3);
+                            switch (s) {
+                                case 0:
+                                    message.setPositionColour("&c\u00bb &r");
+                                    break;
+                                case 1:
+                                    message.setPositionColour("&c_ &r");
+                                    break;
+                                case 2:
+                                    message.setPositionColour("&c&ko &r");
+                                    break;
+                            }
+
+                        } else message.setPositionColour(competitionColours.get(pos - 1));
+
+                        if (competitionType == CompetitionType.LARGEST_FISH) {
+                            Fish fish = entry.getFish();
+                            message.setRarity(fish.getRarity().getValue())
+                                    .setColour(fish.getRarity().getColour())
+                                    .setFishCaught(fish.getName())
+                                    .setLength(Float.toString(entry.getValue()))
+                                    .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
+                        } else {
+                            message.setAmount(Integer.toString((int) entry.getValue()))
+                                    .setMSG(EvenMoreFish.msgs.getMostFishLeaderboard());
                         }
+                        builder.append(message);
 
-                    }
-                    else message.setPositionColour(competitionColours.get(pos-1));
-
-                    if (competitionType == CompetitionType.LARGEST_FISH) {
-                        Fish fish = entry.getFish();
-                        message.setRarity(fish.getRarity().getValue())
-                                .setColour(fish.getRarity().getColour())
-                                .setFishCaught(fish.getName())
-                                .setLength(Float.toString(entry.getValue()))
-                                .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
+                        if (pos == EvenMoreFish.msgs.getLeaderboardCount()) {
+                            if (EvenMoreFish.msgs.shouldAlwaysShowPos()) {
+                                if (leaderboardMembers.contains(player.getUniqueId())) break;
+                                else reachingCount = false;
+                            } else {
+                                break;
+                            }
+                        } else {
+                            builder.append("\n");
+                        }
                     } else {
-                        message.setAmount(Integer.toString((int) entry.getValue()))
-                                .setMSG(EvenMoreFish.msgs.getMostFishLeaderboard());
-                    }
-                    builder.append(message);
-                    if (pos != EvenMoreFish.msgs.getLeaderboardCount()) {
-                        builder.append("\n");
+                        if (entry.getPlayer() == player.getUniqueId()) {
+                            Message message = new Message()
+                                    .setPosition(Integer.toString(pos))
+                                    .setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName())
+                                    .setPositionColour("&f");
+
+                            if (competitionType == CompetitionType.LARGEST_FISH) {
+                                Fish fish = entry.getFish();
+                                message.setRarity(fish.getRarity().getValue())
+                                        .setColour(fish.getRarity().getColour())
+                                        .setFishCaught(fish.getName())
+                                        .setLength(Float.toString(entry.getValue()))
+                                        .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
+                            } else {
+                                message.setAmount(Integer.toString((int) entry.getValue()))
+                                        .setMSG(EvenMoreFish.msgs.getMostFishLeaderboard());
+                            }
+
+                            builder.append("\n").append(message);
+                        }
                     }
                 }
-                return builder.toString();
+                player.sendMessage(builder.toString());
             } else {
-                return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish());
+                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish()));
             }
         } else {
-            return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning());
+            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
         }
     }
 
@@ -345,14 +385,20 @@ public class Competition {
     }
 
     private void handleRewards() {
-        for (int i=1; i<rewards.size(); i++) {
-            CompetitionEntry entry = leaderboard.getTopEntry();
-            if (Bukkit.getPlayer(entry.getPlayer()) != null) {
-                for (Reward reward : rewards.get(i)) {
-                    reward.run(Bukkit.getPlayer(entry.getPlayer()));
+        if (leaderboard.getSize() != 0) {
+            for (int i = 1; i < rewards.size(); i++) {
+                CompetitionEntry entry = leaderboard.getTopEntry();
+                if (Bukkit.getPlayer(entry.getPlayer()) != null) {
+                    for (Reward reward : rewards.get(i)) {
+                        reward.run(Bukkit.getPlayer(entry.getPlayer()));
+                    }
                 }
+                leaderboard.removeEntry(entry);
             }
-            leaderboard.removeEntry(entry);
+        } else {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners()));
+            }
         }
     }
 
