@@ -72,8 +72,6 @@ public class Competition {
         this.timingSystem = new BukkitRunnable() {
             @Override
             public void run() {
-                timeLeft--;
-
                 if (alertTimes.contains(timeLeft)) {
                     Message m = new Message()
                             .setMSG(EvenMoreFish.msgs.getTimeAlertMessage())
@@ -96,6 +94,7 @@ public class Competition {
                     return;
                 }
                 statusBar.timerUpdate(timeLeft, maxDuration);
+                timeLeft--;
 
             }
         }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), 0, 20);
