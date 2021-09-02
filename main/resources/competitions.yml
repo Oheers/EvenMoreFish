@@ -95,6 +95,11 @@ general:
     - "Epic"
     - "Legendary"
 
+  # The colour of the bossbar shown at the top of the screen, (defaults to GREEN)
+  bossbar-colour: GREEN
+  # The title of the bossbar (defaults to the one set in messages.yml) - like messages.yml, this won't include the "_s left"
+  bossbar-prefix: "&a&lFishing Contest: "
+
   # This is the number-needed value used for /emf admin competition start <time> specific_fish
   number-needed: 1
 

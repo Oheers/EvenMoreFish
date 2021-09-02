@@ -360,6 +360,7 @@ class Controls{
                 else comp.leaderboardApplicable = true;
 
                 comp.initRewards(null, true);
+                comp.initBar(null);
                 EvenMoreFish.active = comp;
                 comp.begin();
             } else {

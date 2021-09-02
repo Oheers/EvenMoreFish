@@ -14,9 +14,10 @@ public class Bar {
     String title;
     BossBar bar;
 
+    String prefix;
+
     public Bar() {
         createBar();
-        renderBars();
     }
 
     public void timerUpdate(int timeLeft, int totalTime) {
@@ -37,31 +38,35 @@ public class Bar {
 
     }
 
-    public void setTitle(int timeLeft) {
-        bar.setTitle(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getBarPrefix()) + ChatColor.RESET + FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord());
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
-    private void show() {
+    public void setColour(BarColor colour) {
+        this.bar.setColor(colour);
+    }
+
+    public void setTitle(int timeLeft) {
+        bar.setTitle(prefix + ChatColor.RESET + FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord());
+    }
+
+    public void show() {
         bar.setVisible(true);
     }
 
-    private void hide() {
+    public void hide() {
         bar.setVisible(false);
     }
 
     public void createBar() {
-        BarColor bC = BarColor.valueOf(EvenMoreFish.mainConfig.getBossbarColour());
-        if (bC == null) bC = BarColor.GREEN;
-
-        bar = Bukkit.getServer().createBossBar(title, bC, BarStyle.SEGMENTED_10);
+        bar = Bukkit.getServer().createBossBar(title, BarColor.WHITE, BarStyle.SEGMENTED_10);
     }
 
     // Shows the bar to all players online
-    private void renderBars() {
+    public void renderBars() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             bar.addPlayer(player);
         }
-        show();
     }
 
     public void addPlayer(Player player) {

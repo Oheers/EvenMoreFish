@@ -26,6 +26,7 @@ public class CompetitionQueue {
 
                 competition.initAlerts(comp);
                 competition.initRewards(comp, false);
+                competition.initBar(comp);
 
                 if (EvenMoreFish.competitionConfig.specificDayTimes(comp)) {
                     for (String day : EvenMoreFish.competitionConfig.activeDays(comp)) {

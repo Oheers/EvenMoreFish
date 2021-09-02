@@ -7,6 +7,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -47,8 +48,8 @@ public class Competition {
 
     public void begin() {
         active = true;
-        this.statusBar = new Bar();
         if (leaderboardApplicable) initLeaderboard();
+        statusBar.renderBars();
         initTimer();
         announceBegin();
     }
@@ -58,6 +59,7 @@ public class Competition {
         active = false;
         this.statusBar.removeAllPlayers();
         this.timingSystem.cancel();
+        statusBar.hide();
         if (leaderboardApplicable) {
             handleRewards();
             leaderboard.clear();
@@ -299,12 +301,9 @@ public class Competition {
     public void initAlerts(String competitionName) {
         for (String s : EvenMoreFish.competitionConfig.getAlertTimes(competitionName)) {
 
-            System.out.println("looping through " + competitionName);
-
             String[] split = s.split(":");
             if (split.length == 2) {
                 try {
-                    System.out.println("adding " + Integer.parseInt(split[0])*60 + Integer.parseInt(split[1]) + " to " + competitionName);
                     alertTimes.add(Integer.parseInt(split[0])*60 + Integer.parseInt(split[1]));
                 } catch (NumberFormatException nfe) {
                     Bukkit.getLogger().log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
@@ -319,19 +318,15 @@ public class Competition {
         Set<String> chosen;
         String path;
 
-        System.out.println("competitionName: " + competitionName);
-
         // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the compeitions
         if (adminStart) {
             chosen = EvenMoreFish.competitionConfig.getRewardPositions();
             path = "rewards.";
         } else {
             if (EvenMoreFish.competitionConfig.getRewardPositions(competitionName).size() == 0) {
-                System.out.println("choosing from generic.");
                 chosen = EvenMoreFish.competitionConfig.getRewardPositions();
                 path = "rewards.";
             } else {
-                System.out.println("choosing from specific: " + competitionName);
                 chosen = EvenMoreFish.competitionConfig.getRewardPositions(competitionName);
                 path = "competitions." + competitionName + ".rewards.";
             }
@@ -367,5 +362,17 @@ public class Competition {
                 reward.run(player);
             }
         }
+    }
+
+    public void initBar(String competionName) {
+        this.statusBar = new Bar();
+
+        try {
+            this.statusBar.setColour(BarColor.valueOf(EvenMoreFish.competitionConfig.getBarColour(competionName)));
+        } catch (IllegalArgumentException iae) {
+            Bukkit.getLogger().log(Level.SEVERE, EvenMoreFish.competitionConfig.getBarColour(competionName) + " is not a valid bossbar colour, check ");
+        }
+
+        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.competitionConfig.getBarPrefix(competionName)));
     }
 }
