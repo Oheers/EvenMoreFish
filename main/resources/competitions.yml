@@ -1,0 +1,139 @@
+competitions:
+
+  mainCompetition:
+    # What type of competition it is,
+    # LARGEST-FISH: The standard, whoever has the largest fish wins
+    # MOST_FISH: Whoever catches the most fish wins
+    # SPECIFIC_FISH: Whoever is the first to catch a specific fish wins
+    type: LARGEST_FISH
+    # How long (minutes) the competition should last for
+    duration: 10
+    # Does it occur every day? (See below examples for how to choose specific days & times to run the competitions on)
+    daily: true
+    # If you preferred the older system you can still use that system, and select days to be blacklisted.
+    times:
+      - "00:00"
+      - "06:00"
+      - "12:00"
+      - "18:00"
+    # Sets days that this competition type won't run on, this is useful if you want one day to be dominated by another competition type
+    blacklisted-days:
+      - "Sunday"
+    # The colour of the bossbar shown at the top of the screen, (defaults to GREEN)
+    bossbar-colour: GREEN
+    # The title of the bossbar (defaults to the one set in messages.yml) - like messages.yml, this won't include the "_s left"
+    bossbar-prefix: "&a&lFishing Contest: "
+
+  weekendCompetition:
+    type: SPECIFIC_FISH
+    # If no players catch the specific fish in the below time, the competition will end.
+    duration: 60
+    # Which rarities can be selected by the plugin to be the chosen fish, keep in mind that the number of fish in that rarity and the weight of the
+    # rarity will affect how easy it is to get the specific fish and may require a longer competition duration
+    allowed-rarities:
+      - "Uncommon"
+      - "Epic"
+      - "Legendary"
+    # ALlows for specific times to be set, if your competition isn't running, make sure it isn't set to start during another competition.
+    # The timezone for these is whichever timezone your server is set to.
+    days:
+      Saturday:
+        - "03:00"
+        - "15:00"
+      Sunday:
+        - "03:00"
+        - "15:00"
+    # You might want to set custom rewards for each competition, especially if you've got number-needed set to greater than 1
+    rewards:
+      1:
+        - "MONEY:5000"
+        - "MESSAGE:&eCongratulations!"
+      2:
+        - "MONEY:2000"
+
+    # How many of the specific fish need to be caught to win the competition? (defaults to 1)
+    # Anything greater than 1 will allow /emf top to work with this competition type.
+    number-needed: 1
+    bossbar-colour: YELLOW
+    bossbar-prefix: "&6&lFishing Contest: "
+
+  sundayCompetition1:
+    type: LARGEST_FISH
+    duration: 30
+    days:
+      Sunday:
+        - "13:00"
+
+  sundayCompetition2:
+    type: MOST_FISH
+    duration: 45
+    days:
+      Sunday:
+        - "20:00"
+    # When should the plugin broadcast the time remaining? (time-alert in messages.yml) in the format MM:SS
+    alerts:
+      - "30:00"
+      - "15:00"
+      - "5:00"
+    bossbar-colour: BLUE
+    bossbar-prefix: "&b&lFishing Contest: "
+
+# By copying and pasting competitions from the "competitions" section, you can make as many as you want. Please make sure that your
+# competition names are all different, otherwise the system may behave unexpectedly.
+
+general:
+
+  # This is the minimum needed amount of players for an automatic competition to start.
+  minimum-players: 5
+
+  # Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
+  broadcast-only-rods: true
+
+  # This is the allowed-rarities value used for /emf admin competition start <time> specific_fish
+  allowed-rarities:
+    - "Uncommon"
+    - "Epic"
+    - "Legendary"
+
+  # The colour of the bossbar shown at the top of the screen, (defaults to GREEN)
+  bossbar-colour: GREEN
+  # The title of the bossbar (defaults to the one set in messages.yml) - like messages.yml, this won't include the "_s left"
+  bossbar-prefix: "&a&lFishing Contest: "
+
+  # This is the number-needed value used for /emf admin competition start <time> specific_fish
+  number-needed: 1
+
+leaderboard:
+
+  # This is the colours used in the variable {pos_colour} for each position, if you aren't using this variable, it isn't needed.
+  # Start from #1 then go down as many as you like
+  position-colours:
+    - "&6"
+    - "&e"
+    - "&7"
+    - "&7"
+    - "&#888888"
+
+rewards:
+  1:
+    # Commands are run by the console, it's advised to change these rewards before releasing your server.
+    - "COMMAND:give {player} diamond 5"
+    - "MESSAGE:&aCongratulations for coming 1st!"
+    # Can't contain decimals.
+    - "MONEY:5000"
+    # formatted as "effect_name,amplifier,duration", view a list of effects: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+    - "EFFECT:SPEED,2,5"
+    - "ITEM:DIAMOND,2"
+  2:
+    - "ITEM:DIAMOND,1"
+    - "MESSAGE:&bCongratulations for coming 2nd!"
+    - "MONEY:2500"
+  3:
+    - "EFFECT:SPEED,1,5"
+    - "MESSAGE:&eCongratulations for coming 3rd!"
+    - "MONEY:1000"
+  # Add as many more places as you need
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
+config-version: 1

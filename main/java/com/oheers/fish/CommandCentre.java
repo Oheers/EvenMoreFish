@@ -1,7 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.competition.reward.gui.RewardGUI;
+import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -53,7 +53,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     if (EvenMoreFish.active == null) {
                         sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     } else {
-                        sender.sendMessage(Objects.requireNonNull(Competition.getLeaderboard(false)));
+                        EvenMoreFish.active.sendLeaderboard((Player) sender);
                     }
                 } else {
                     sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
@@ -75,23 +75,6 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
-            case "rewards":
-                if (sender instanceof Player) {
-                    if (EvenMoreFish.mainConfig.isRewardGUIEnabled()) {
-                        if (EvenMoreFish.permission.has(sender, "emf.rewards")) {
-                            RewardGUI rGUI = new RewardGUI((Player) sender);
-                            rGUI.display();
-                        } else {
-                            sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
-                        }
-                    } else {
-                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
-                    }
-
-                } else {
-                    EvenMoreFish.msgs.disabledInConsole();
-                }
-                break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
@@ -106,7 +89,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         }
     }
 
-    private static List<String> emfTabs, adminTabs, compTabs;
+    private static List<String> emfTabs, adminTabs, compTabs, compTypes;
 
     public static void loadTabCompletes() {
         adminTabs = Arrays.asList(
@@ -123,9 +106,14 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         emfTabs = Arrays.asList(
                 "help",
-                "rewards",
                 "shop",
                 "top"
+        );
+
+        compTypes = Arrays.asList(
+                "largest_fish",
+                "most_fish",
+                "specific_fish"
         );
     }
 
@@ -181,6 +169,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         return empty;
                     }
                     return empty;
+                case 5:
+                    if (EvenMoreFish.permission.has(sender, "emf.admin") && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
+                        return l(args, compTypes);
+                    } else {
+                        return empty;
+                }
             }
 
             return empty;
@@ -263,7 +257,7 @@ class Controls{
                             if (args[2].equalsIgnoreCase(r.getValue())) {
                                 for (Fish f : EvenMoreFish.fishCollection.get(r)) {
                                     if (f.getName().equalsIgnoreCase(using.toString())) {
-                                        f.setFisherman((Player) sender);
+                                        f.setFisherman(((Player) sender).getUniqueId());
                                         f.init();
                                         FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
                                     }
@@ -292,6 +286,7 @@ class Controls{
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
                 EvenMoreFish.messageFile.reload();
+                EvenMoreFish.competitionFile.reload();
 
                 plugin.reload();
                 plugin.reloadConfig();
@@ -324,15 +319,20 @@ class Controls{
                 if (args[2].equalsIgnoreCase("start")) {
                     // if the admin has only done /emf admin competition start
                     if (args.length < 4) {
-                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration()*60), player);
+                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration()*60), player, CompetitionType.LARGEST_FISH);
                     } else {
-                        startComp(args[3], player);
+                        if (args.length < 5) {
+                            startComp(args[3], player, CompetitionType.LARGEST_FISH);
+                        } else {
+                            startComp(args[3], player, CompetitionType.valueOf(args[4].toUpperCase()));
+                        }
                     }
                 }
 
                 else if (args[2].equalsIgnoreCase("end")) {
-                    if (EvenMoreFish.active != null) {
-                        EvenMoreFish.active.end();
+                    if (Competition.isActive()) {
+                        Competition competition = EvenMoreFish.active;
+                        competition.end();
                     } else {
                         player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     }
@@ -343,9 +343,8 @@ class Controls{
         }
     }
 
-    protected static void startComp(String argsDuration, CommandSender player) {
-
-        if (EvenMoreFish.active != null) {
+    protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {
+        if (Competition.isActive()) {
             player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionRunning()));
             return;
         }
@@ -355,8 +354,15 @@ class Controls{
             int duration = Integer.parseInt(argsDuration);
             // I've just discovered /emf admin competition start -1 causes some funky stuff - so this prevents that.
             if (duration > 0) {
-                Competition comp = new Competition(duration);
-                comp.start(true);
+                Competition comp = new Competition(duration, type);
+
+                if (type == CompetitionType.SPECIFIC_FISH) comp.chooseFish(null, true);
+                else comp.leaderboardApplicable = true;
+
+                comp.initRewards(null, true);
+                comp.initBar(null);
+                EvenMoreFish.active = comp;
+                comp.begin();
             } else {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.notInteger()));
             }

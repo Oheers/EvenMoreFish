@@ -32,61 +32,6 @@ gui:
   # Should the items be dropped(false) or sold(true) when a player exits an inventory?
   sell-over-drop: false
 
-
-
-competitions:
-
-  # When should competitions run?
-  # It will use server's local timezone using a 24hour time format
-  times:
-    - "00:00" # midnight
-    - "06:00"
-    - "12:00" # midday
-    - "18:00"
-
-  # The days for the competitions to run, use integers to represent the day
-  days:
-    - 2 # Monday
-    - 3 # Tuesday
-    - 4 # Wednesday
-    - 5 # Thursday
-    - 6 # Friday
-    - 7 # Saturday
-    - 1 # Sunday
-
-  # How long should the competition go on for? (In minutes)
-  duration: 10
-
-  # What colour should the bossbar cooldown be? (values can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/boss/BarColor.html)
-  # Set the text and text colour above the bossbar in messages.yml
-  bossbar-colour: GREEN
-
-  winnings:
-    1:
-      # Commands are run by the console, it's advised to change these before releasing your server.
-      - "COMMAND:give {player} diamond 5"
-      - "MESSAGE:&aCongratulations for coming 1st!"
-      # Can't contain decimals.
-      - "MONEY:5000"
-      # formatted as "effect_name,amplifier,duration", view a list of effects: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
-      - "EFFECT:SPEED,2,5"
-      - "ITEM:DIAMOND,2"
-    2:
-      - "ITEM:DIAMOND,1"
-      - "MESSAGE:&bCongratulations for coming 2nd!"
-      - "MONEY:2500"
-    3:
-      - "EFFECT:SPEED,1,5"
-      - "MESSAGE:&eCongratulations for coming 3rd!"
-      - "MONEY:1000"
-  # Add as many more places as you need
-
-  # This is the minimum needed amount of players for an automatic competition to start.
-  minimum-players: 5
-
-# Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
-broadcast-only-rods: true
-
 # Uncomment the below section to enable this feature. It sets the plugin to only give custom fish when users are
 # in a list of set defined regions (this requires the worldguard/redprotect plugin). EvenMoreFish automatically
 # detects your protection plugin so it's important you don't run both at once. Note- Changing this value requires
@@ -94,53 +39,9 @@ broadcast-only-rods: true
 #allowed-regions:
 #  - "fishing"
 
-# Configuration regarding the "/emf rewards" gui.
-reward-gui:
-  # Should this be enabled?
-  enabled: true
-  # The materials to be shown for each position in the gui, apart from the top 3 if defaults to a brick
-  positions:
-    1:
-      material: "DIAMOND"
-      title: "&bFirst Place (#1)"
-    2:
-      material: "GOLD_INGOT"
-      title: "&6Second Place (#2)"
-    3:
-      material: "IRON_INGOT"
-      title: "&#ddddddThird Place (#3)"
-    4:
-      material: "BRICK"
-      title: "&fFourth Place (#4)"
-    5:
-      material: "STICK"
-      title: "&fFifth Place (#5)"
-  # The "cleaned" descriptions for the reward values
-  reward-effect: "&f» &e&l{effect} &e{amplifier} &ffor &e{time}"
-  reward-item: "&f» &e{amount}x &l{item}"
-  reward-money: "&f» &e$&l{amount}"
-  reward-hunger: "&f» &e&l+{amount} &fHunger"
-  reward-health: "&f» &e&l+{amount} &fHealth"
-  # Since commands don't look particularly friendly to players, this allows you to set what appears in place of the command
-  command-override:
-    "give {player} diamond 5": "&f- &e5x &lDIAMOND"
-    "give {player} diamond 64": "&f- &e64x &lDIAMOND"
-
-  # The filler item
-  filler: "BLACK_STAINED_GLASS_PANE"
-  # Shown when the user can go forward/backwards by pages
-  scroll-item: "SPECTRAL_ARROW"
-  # Name given to an arrow allowing the user to go forward/backwards a page
-  scroll-forward-name: "&rForward »"
-  scroll-previous-name: "&rPrevious «"
-  # Shown when the user can't go forward/backwards by pages
-  no-scroll: "GRAY_STAINED_GLASS_PANE"
-  # The name of the /emf rewards GUI
-  title: "&2&lRewards"
-
 # Prevents mcMMO from overriding fishing loot, this means treasure won't appear when fish can.
 disable-mcmmo-loot: true
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 6
+config-version: 7

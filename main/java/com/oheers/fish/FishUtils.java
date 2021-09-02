@@ -4,6 +4,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -12,10 +13,11 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -172,34 +174,6 @@ public class FishUtils {
         return skull;
     }
 
-    public static ItemStack setScrollItem(boolean forward) {
-        ItemStack rawItem = new ItemStack(Material.SPECTRAL_ARROW);
-        // creates key and plops in the value of "value"
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-scroll");
-
-        ItemMeta itemMeta = rawItem.getItemMeta();
-
-        if (forward) {
-            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, 1);
-            itemMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.mainConfig.getForwardName()));
-        } else {
-            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, 0);
-            itemMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.mainConfig.getPreviousName()));
-        }
-
-        rawItem.setItemMeta(itemMeta);
-        return rawItem;
-    }
-
-    public static boolean getScrollDirection(ItemStack arrow) {
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-scroll");
-
-        if (arrow.hasItemMeta()) {
-            int direction = arrow.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER);
-            return direction == 1;
-        } else return false;
-    }
-
     public static String timeFormat(int timeLeft) {
         String returning = "";
         int hours = timeLeft/3600;
@@ -215,5 +189,42 @@ public class FishUtils {
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
         returning += (timeLeft%60) + EvenMoreFish.msgs.getBarSecond();
         return returning;
+    }
+
+    public static String timeRaw(int timeLeft) {
+        String returning = "";
+        int hours = timeLeft/3600;
+
+        if (timeLeft >= 3600) {
+            returning += hours + ":";
+        }
+
+        if (timeLeft >= 60) {
+            returning += ((timeLeft%3600)/60) + ":";
+        }
+
+        // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
+        returning += (timeLeft%60);
+        return returning;
+    }
+
+    public static void broadcastFishMessage(Message msg, boolean actionBar) {
+        if (EvenMoreFish.mainConfig.broadcastOnlyRods()) {
+            // sends it to all players holding ords
+            if (actionBar) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
+                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg.toString()));
+                    }
+                }
+            } else {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
+                        p.sendMessage(msg.toString());
+                    }
+                }
+            }
+            // sends it to everyone
+        } else for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
     }
 }

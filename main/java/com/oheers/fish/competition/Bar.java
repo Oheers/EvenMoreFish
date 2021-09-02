@@ -14,43 +14,18 @@ public class Bar {
     String title;
     BossBar bar;
 
-    int timeLeft;
-    int totalTime;
+    String prefix;
 
-    Ticker ticker;
-
-    public Bar(int totalTime) {
-        this.totalTime = totalTime;
-        // adding an offset so it doesn't instantly start counting down
-        this.timeLeft = totalTime+1;
-
+    public Bar() {
         createBar();
-        renderBars();
-        begin();
     }
 
-    public boolean timerUpdate() {
-        if (checkEnd()) {
-            timeLeft--;
-            setTitle();
-            setProgress();
-            return true;
-        } else {
-            return false;
-        }
+    public void timerUpdate(int timeLeft, int totalTime) {
+        setTitle(timeLeft);
+        setProgress(timeLeft, totalTime);
     }
 
-    private void begin() {
-        this.ticker = new Ticker(this);
-        ticker.runTaskTimer(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 0, 20);
-    }
-
-    public void end() {
-        removeAllPlayers();
-        this.ticker.cancel();
-    }
-
-    private void setProgress() {
+    public void setProgress(int timeLeft, int totalTime) {
         double progress = (double) (timeLeft) / (double) (totalTime);
 
         if (progress < 0) {
@@ -63,40 +38,34 @@ public class Bar {
 
     }
 
-    private void setTitle() {
-        bar.setTitle(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getBarPrefix()) + ChatColor.RESET + FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord());
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
-    private void show() {
+    public void setColour(BarColor colour) {
+        this.bar.setColor(colour);
+    }
+
+    public void setTitle(int timeLeft) {
+        bar.setTitle(prefix + ChatColor.RESET + FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord());
+    }
+
+    public void show() {
         bar.setVisible(true);
     }
 
-    private void hide() {
+    public void hide() {
         bar.setVisible(false);
     }
 
     public void createBar() {
-        BarColor bC = BarColor.valueOf(EvenMoreFish.mainConfig.getBossbarColour());
-        if (bC == null) bC = BarColor.GREEN;
-
-        bar = Bukkit.getServer().createBossBar(title, bC, BarStyle.SEGMENTED_10);
+        bar = Bukkit.getServer().createBossBar(title, BarColor.WHITE, BarStyle.SEGMENTED_10);
     }
 
     // Shows the bar to all players online
-    private void renderBars() {
+    public void renderBars() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             bar.addPlayer(player);
-        }
-        show();
-    }
-
-    // Checks if there's 0 seconds left on the timer
-    private boolean checkEnd() {
-        if (timeLeft == 1) {
-            hide();
-            return false;
-        } else {
-            return true;
         }
     }
 

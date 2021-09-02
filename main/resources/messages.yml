@@ -6,8 +6,28 @@ fish-caught: "&l{player} &rhas fished a {length}cm {rarity} {fish}!"
 no-permission: "&cYou don't have permission to run that command."
 
 # The message to be sent when a competition starts and ends
-contest-start: "&rThe fishing contest has started."
+contest-start: "&rA fishing contest for {type} has started."
 contest-end: "&rThe fishing contest has ended."
+# The message to be sent when a player joins whilst a competition is going on
+contest-join: "&rA fishing contest for {type} is occurring."
+
+# Shown to players when a new player takes #1 spot, remove this value or set it to "" to disable this message
+new-first: "&r{player} is now #1"
+# Should this message appear in chat (false) or above the exp bar (true)
+action-bar-message: true
+# What competition types should the action bar be used for? (recommended: MOST_FISH)
+action-bar-types:
+  - MOST_FISH
+
+# What should replace the {type} variable for each competition type?
+competition-types:
+  # MOST_FISH
+  most: "the most fish"
+  # LARGEST_FISH
+  largest: "the largest fish"
+  # SPECIFIC_FISH
+  specific: "{amount} {rarity} {fish}&r"
+
 # Segments shown in the bossbar when competitions run
 bossbar:
   # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
@@ -39,15 +59,22 @@ fish-length: "&fMeasures {length}cm"
 help: "/{command} - {description}"
 
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
-leaderboard: "&r&l{position} &r| {player} - {length}cm {rarity} {fish}"
+leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity} {fish}&r, {length}cm)"
+leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
 # The number of positions shown in the leaderboard - can't be less than 1.
 leaderboard-count: 5
+# If the player doesn't appear on /emf top, should their position be displayed at the bottom?
+always-show-pos: true
 # Sent to players when nobody got a record during a competition
 no-winners: "&rThere were no fishing records."
 # When an individual player didn't get a record
 no-record: "&rYou didn't catch any fish."
 # Sent to all online players when not enough players are on to start a competition
 not-enough-players: "&rThere's not enough players online to start the scheduled fishing competition."
+# Sent to all players at specific times to show the remaining time left
+# {time_formatted} shows the time (e.g. 5m left, 10m 30s left)
+# {time_raw} is what you input in competitions.yml
+time-alert: "&rThere is {time_formatted} left on the competition for {type}"
 
 # The GUI title for /emf shop
 worth-gui-name: "&1&lSell Fish"
@@ -84,4 +111,4 @@ emf-competition-fish-null: true
 emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 6
+config-version: 7

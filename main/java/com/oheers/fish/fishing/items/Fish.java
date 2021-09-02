@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,7 +27,7 @@ public class Fish implements Cloneable {
     String name;
     Rarity rarity;
     ItemStack type;
-    Player fisherman;
+    UUID fisherman;
     Float length;
 
     List<Reward> actionRewards;
@@ -94,7 +93,7 @@ public class Fish implements Cloneable {
         return rarity;
     }
 
-    public void setFisherman(Player fisherman) {
+    public void setFisherman(UUID fisherman) {
         this.fisherman = fisherman;
     }
 
@@ -164,7 +163,11 @@ public class Fish implements Cloneable {
     private void checkMessage() {
         String msg = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
 
-        if (msg != null) this.fisherman.sendMessage(FishUtils.translateHexColorCodes(msg));
+        if (msg != null) {
+            if (Bukkit.getPlayer(fisherman) != null) {
+                Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).sendMessage(FishUtils.translateHexColorCodes(msg));
+            }
+        }
 
     }
 
@@ -177,7 +180,7 @@ public class Fish implements Cloneable {
 
         String[] separated = effectConfig.split(":");
         // if it's formatted wrong, it'll just give the player this as a stock effect
-        if (separated.length != 3) this.fisherman.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
+        if (separated.length != 3) Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
 
         PotionEffectType effect = PotionEffectType.getByName(separated[0].toUpperCase());
         int amplitude = Integer.parseInt(separated[1]);
@@ -185,7 +188,7 @@ public class Fish implements Cloneable {
         int time = Integer.parseInt(separated[2])*20;
 
         try {
-            this.fisherman.addPotionEffect(new PotionEffect(effect, time, amplitude));
+            Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(effect, time, amplitude));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             Bukkit.getServer().getLogger().log(Level.SEVERE, "ATTENTION! There was an error adding the effect from the " + this.name + " fish.");
@@ -216,7 +219,7 @@ public class Fish implements Cloneable {
         // standard lore
         List<String> lore = new ArrayList<>();
 
-        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer(fisherman.getName()).toString());
+        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer(Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).getName()).toString());
         lore.add(new Message().setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setColour("").toString());
         lore.add(" ");
 

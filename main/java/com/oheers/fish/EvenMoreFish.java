@@ -2,15 +2,11 @@ package com.oheers.fish;
 
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.reward.LoadRewards;
 import com.oheers.fish.competition.reward.Reward;
-import com.oheers.fish.competition.reward.gui.GUIClick;
-import com.oheers.fish.competition.reward.gui.GUIClose;
-import com.oheers.fish.competition.reward.gui.RewardGUI;
-import com.oheers.fish.config.FishFile;
-import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.config.RaritiesFile;
+import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.LocaleGen;
 import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
@@ -44,9 +40,11 @@ public class EvenMoreFish extends JavaPlugin {
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
     public static MessageFile messageFile;
+    public static CompetitionFile competitionFile;
 
     public static Messages msgs;
     public static MainConfig mainConfig;
+    public static CompetitionConfig competitionConfig;
 
     public static Permission permission = null;
     public static Economy econ = null;
@@ -61,9 +59,9 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean checkingIntEvent;
 
     public static Competition active;
+    public static CompetitionQueue competitionQueue;
 
     public static ArrayList<SellGUI> guis;
-    public static ArrayList<RewardGUI> rGuis;
 
     public static boolean isUpdateAvailable;
 
@@ -75,20 +73,25 @@ public class EvenMoreFish extends JavaPlugin {
 
     public void onEnable() {
 
-        //snapshotBreaker();
-
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
         messageFile = new MessageFile(this);
+        competitionFile = new CompetitionFile(this);
 
         msgs = new Messages();
         mainConfig = new MainConfig();
+        competitionConfig = new CompetitionConfig();
+
+        Names names = new Names();
+        names.loadRarities();
+
+        competitionQueue = new CompetitionQueue();
+        competitionQueue.load();
 
         LocaleGen lG = new LocaleGen();
         lG.createLocaleFiles(this);
 
         guis = new ArrayList<>();
-        rGuis = new ArrayList<>();
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
@@ -114,9 +117,6 @@ public class EvenMoreFish extends JavaPlugin {
         } else if (checkRP()) {
             guardPL = "redprotect";
         }
-
-        Names names = new Names();
-        names.loadRarities();
 
         rewards = LoadRewards.load();
 
@@ -174,8 +174,6 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FishingProcessor(), this);
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
-        getServer().getPluginManager().registerEvents(new GUIClick(), this);
-        getServer().getPluginManager().registerEvents(new GUIClose(), this);
 
         optionalListeners();
     }
@@ -250,6 +248,9 @@ public class EvenMoreFish extends JavaPlugin {
 
         msgs = new Messages();
         mainConfig = new MainConfig();
+        competitionConfig = new CompetitionConfig();
+
+        competitionQueue.load();
 
         rewards = LoadRewards.load();
 
@@ -264,17 +265,24 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void checkConfigVers() {
-        int MSG_CONFIG_VERSION = 6;
-        if (msgs.configVersion() > MSG_CONFIG_VERSION) {
+        int MSG_CONFIG_VERSION = 7;
+        if (msgs.configVersion() < MSG_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your messages.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
         }
 
-        int MAIN_CONFIG_VERSION = 6;
-        if (mainConfig.configVersion() > MAIN_CONFIG_VERSION) {
+        int MAIN_CONFIG_VERSION = 7;
+        if (mainConfig.configVersion() < MAIN_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your config.yml config is not up to date. Certain new configurable features may have been added, and without" +
             " an updated config, you won't be able to modify them. To update, either delete your config.yml file and restart the server to create a new" +
+                    " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
+        }
+
+        int COMP_CONFIG_VERSION = 1;
+        if (competitionConfig.configVersion() < COMP_CONFIG_VERSION) {
+            getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
+                    " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
         }
     }
@@ -301,14 +309,5 @@ public class EvenMoreFish extends JavaPlugin {
     private boolean checkWG(){
         Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
         return (pWG != null && mainConfig.regionWhitelist());
-    }
-
-    // This causes the plugin to become unloadable when a new update is released, this is only ever included in snapshot versions
-    // and official won't use this security measure.
-    private void snapshotBreaker() {
-        if (!new UpdateChecker(this, 91310).getVersion().equals("1.3.2")) {
-            Bukkit.getLogger().log(Level.SEVERE, "This snapshot version has been superseded by a newer version and will no longer function. Please update to the latest version available on the Spigot page.");
-            getServer().getPluginManager().disablePlugin(this);
-        }
     }
 }

@@ -42,12 +42,33 @@ public class Messages {
         return getSTDPrefix() + config.getString("contest-start");
     }
 
+    public String getCompetitionJoin() {
+        String returning = config.getString("contest-join");
+        if (returning != null) return getSTDPrefix() + returning;
+        else return getSTDPrefix() + "&rA fishing contest for {type} is going on.";
+    }
+
     public int getLeaderboardCount() {
         return config.getInt("leaderboard-count");
     }
 
-    public String getLeaderboard() {
-        return getSTDPrefix() + config.getString("leaderboard");
+    public String getLargestFishLeaderboard() {
+        if (config.getString("leaderboard-largest-fish") != null) {
+            return getSTDPrefix() + config.getString("leaderboard-largest-fish");
+        } else {
+            if (config.getString("leaderboard") != null) {
+                return getSTDPrefix() + config.getString("leaderboard");
+            }
+        }
+        return "&r#{position} | {pos_colour}{player} &r({rarity} {fish}&r, {length}cm)";
+    }
+
+    public String getMostFishLeaderboard() {
+        if (config.getString("leaderboard-most-fish") != null) {
+            return getSTDPrefix() + config.getString("leaderboard-most-fish");
+        } else {
+            return "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)";
+        }
     }
 
     public String getEMFHelp() {
@@ -214,5 +235,31 @@ public class Messages {
         String returning = config.getString("emf-competition-fish-format");
         if (returning != null) return returning;
         else return "{length}cm &l{rarity} {fish}";
+    }
+
+    public String getTypeVariable(String sub) {
+        return config.getString("competition-types." + sub);
+    }
+
+    public String getFirstPlaceNotification() {
+        return getSTDPrefix() + config.getString("new-first");
+    }
+
+    public boolean doFirstPlaceNotification() {
+        return config.getString("new-first") != null;
+    }
+
+    public boolean shouldAlwaysShowPos() {
+        return config.getBoolean("always-show-pos");
+    }
+
+    public boolean doFirstPlaceActionbar() {
+        boolean a = config.getBoolean("action-bar-message");
+        boolean b = config.getStringList("action-bar-types").size() == 0 || config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
+        return a && b;
+    }
+
+    public String getTimeAlertMessage() {
+        return getSTDPrefix() + config.getString("time-alert");
     }
 }

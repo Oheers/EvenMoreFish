@@ -2,6 +2,7 @@ package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.competition.CompetitionType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,8 @@ public class Message {
     // msg is the string got from the messages.yml file
     // all the others are values that don't need to be set.
 
-    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount, sellprice, effect, amplifier, time, item;
+    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount,
+            sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw;
     Player receiver;
 
     public Message() {
@@ -96,12 +98,40 @@ public class Message {
         return this;
     }
 
+    public Message setTimeRaw(String timeRaw) {
+        this.timeRaw = timeRaw;
+        return this;
+    }
+
+    public Message setTimeFormatted(String timeFormatted) {
+        this.timeFormatted = timeFormatted;
+        return this;
+    }
+
     public Message setItem(String item) {
         this.item = item;
         return this;
     }
 
+    public Message setPositionColour(String colour) {
+        this.posColour = colour;
+        return this;
+    }
+
+    public Message setType(CompetitionType type) {
+        switch (type) {
+            case MOST_FISH: this.type = EvenMoreFish.msgs.getTypeVariable("most"); break;
+            case SPECIFIC_FISH: this.type = EvenMoreFish.msgs.getTypeVariable("specific"); break;
+            default: this.type = EvenMoreFish.msgs.getTypeVariable("largest"); break;
+        }
+        return this;
+    }
+
     public String toString() {
+
+        if (type != null) {
+            msg = msg.replace("{type}", type);
+        }
 
         if (player != null) {
             msg = msg.replace("{player}", player);
@@ -153,8 +183,20 @@ public class Message {
             msg = msg.replace("{time}", time);
         }
 
+        if (timeRaw != null) {
+            msg = msg.replace("{time_raw}", timeRaw);
+        }
+
+        if (timeFormatted != null) {
+            msg = msg.replace("{time_formatted}", timeFormatted);
+        }
+
         if (item != null) {
             msg = msg.replace("{item}", item);
+        }
+
+        if (posColour != null) {
+            msg = msg.replace("{pos_colour}", posColour);
         }
 
         if (EvenMoreFish.papi) {

@@ -3,6 +3,7 @@ package com.oheers.fish.fishing;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
+import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
@@ -58,7 +59,7 @@ public class FishingProcessor implements Listener {
                     Player player = event.getPlayer();
 
                     Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome());
-                    fish.setFisherman(player);
+                    fish.setFisherman(player.getUniqueId());
                     fish.init();
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
@@ -84,15 +85,7 @@ public class FishingProcessor implements Listener {
                     // Gets whether it's a serverwide announce or not
                     if (fish.getRarity().getAnnounce()) {
                         // should we only broadcast this information to rod holders?
-                        if (EvenMoreFish.mainConfig.broadcastOnlyRods()) {
-                            // sends it to all players holding ords
-                            for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                                    p.sendMessage(msg.toString());
-                                }
-                            }
-                            // sends it to everyone
-                        } else for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
+                        FishUtils.broadcastFishMessage(msg, false);
                     } else {
                         // sends it to just the fisher
                         player.sendMessage(msg.toString());
@@ -191,15 +184,15 @@ public class FishingProcessor implements Listener {
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
     private static boolean competitionOnlyCheck() {
         if (EvenMoreFish.mainConfig.isCompetitionUnique()) {
-            return EvenMoreFish.active != null;
+            return Competition.isActive();
         } else {
             return true;
         }
     }
 
     private static void competitionCheck(Fish fish, Player fisherman) {
-        if (EvenMoreFish.active != null) {
-            EvenMoreFish.active.runLeaderboardScan(fisherman, fish);
+        if (Competition.isActive()) {
+            EvenMoreFish.active.applyToLeaderboard(fish, fisherman);
         }
     }
 
