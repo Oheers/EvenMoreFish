@@ -64,6 +64,10 @@ public class Competition {
             for (Player player : Bukkit.getOnlinePlayers()) sendLeaderboard(player);
             handleRewards();
             leaderboard.clear();
+        } else {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners()));
+            }
         }
     }
 
@@ -133,6 +137,7 @@ public class Competition {
                     }
 
                     if (entry.getValue() == numberNeeded && competitionType == CompetitionType.SPECIFIC_FISH) {
+                        singleReward(fisher);
                         end();
                     }
 
@@ -405,6 +410,13 @@ public class Competition {
     }
 
     public void singleReward(Player player) {
+        String m = new Message()
+                .setMSG(EvenMoreFish.msgs.singleWinner())
+                .setPlayer(player.getName())
+                .toString();
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.sendMessage(m);
+        }
         if (rewards.size() > 0) {
             for (Reward reward : rewards.get(1)) {
                 reward.run(player);
