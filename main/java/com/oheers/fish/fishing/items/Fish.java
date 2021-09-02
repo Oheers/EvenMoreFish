@@ -330,7 +330,7 @@ public class Fish implements Cloneable {
         return previewFish;
     }
 
-    public Player getFisherman() {
+    public UUID getFisherman() {
         return fisherman;
     }
 }
