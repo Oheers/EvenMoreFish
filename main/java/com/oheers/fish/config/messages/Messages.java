@@ -268,4 +268,10 @@ public class Messages {
         if (returning != null) return getErrorPrefix() + returning;
         else return getErrorPrefix() + "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH";
     }
+
+    public String singleWinner() {
+        String returning = config.getString("single-winner");
+        if (returning != null) return getSTDPrefix() + returning;
+        else return getSTDPrefix() + "&r{player} has won the competition for {type}. Congratulations!";
+    }
 }
