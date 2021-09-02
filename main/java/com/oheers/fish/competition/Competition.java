@@ -64,10 +64,6 @@ public class Competition {
             for (Player player : Bukkit.getOnlinePlayers()) sendLeaderboard(player);
             handleRewards();
             leaderboard.clear();
-        } else {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners()));
-            }
         }
     }
 
@@ -403,19 +399,30 @@ public class Competition {
                 i++;
             }
         } else {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                p.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners()));
+            if (leaderboardApplicable) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners()));
+                }
             }
         }
     }
 
     public void singleReward(Player player) {
-        String m = new Message()
+        Message m = new Message()
                 .setMSG(EvenMoreFish.msgs.singleWinner())
                 .setPlayer(player.getName())
-                .toString();
+                .setType(competitionType);
+        String broadcast;
+        if (competitionType == CompetitionType.SPECIFIC_FISH) {
+            broadcast = m
+                    .setRarity(selectedFish.getRarity().getValue())
+                    .setAmount(Integer.toString(numberNeeded))
+                    .setColour(selectedFish.getRarity().getColour())
+                    .setFishCaught(selectedFish.getName())
+                    .toString();
+        } else broadcast = m.toString();
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(m);
+            p.sendMessage(broadcast);
         }
         if (rewards.size() > 0) {
             for (Reward reward : rewards.get(1)) {
