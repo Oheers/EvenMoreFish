@@ -121,24 +121,18 @@ public class CompetitionConfig {
     }
 
     public String getBarPrefix(String competitionName) {
-        System.out.println("Loading: " + competitionName);
         if (competitionName != null) {
             if (config.getString("competitions." + competitionName + ".bossbar-prefix") != null) {
-                System.out.println("1: " + config.getString("competitions." + competitionName + ".bossbar-prefix"));
                 return config.getString("competitions." + competitionName + ".bossbar-prefix");
             } else if (config.getString("general.bossbar-prefix") != null) {
-                System.out.println("2: " + config.getString("general.bossbar-prefix"));
                 return config.getString("general.bossbar-prefix");
             } else {
-                System.out.println("3");
                 return "&a&lFishing Contest: ";
             }
         } else {
             if (config.getString("general.bossbar-prefix") != null) {
-                System.out.println("4: " + config.getString("general.bossbar-prefix"));
                 return config.getString("general.bossbar-prefix");
             } else {
-                System.out.println("52");
                 return "&a&lFishing Contest: ";
             }
         }
