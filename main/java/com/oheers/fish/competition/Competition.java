@@ -386,14 +386,16 @@ public class Competition {
 
     private void handleRewards() {
         if (leaderboard.getSize() != 0) {
-            for (int i = 1; i < rewards.size(); i++) {
-                CompetitionEntry entry = leaderboard.getTopEntry();
+            Iterator<CompetitionEntry> iterator = leaderboard.getIterator();
+            int i = 1;
+            while (iterator.hasNext()) {
+                CompetitionEntry entry = iterator.next();
                 if (Bukkit.getPlayer(entry.getPlayer()) != null) {
                     for (Reward reward : rewards.get(i)) {
                         reward.run(Bukkit.getPlayer(entry.getPlayer()));
                     }
                 }
-                leaderboard.removeEntry(entry);
+                i++;
             }
         } else {
             for (Player p : Bukkit.getOnlinePlayers()) {

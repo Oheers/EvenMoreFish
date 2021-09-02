@@ -4,6 +4,7 @@ import com.oheers.fish.fishing.items.Fish;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -84,6 +85,8 @@ interface LeaderboardHandler {
 
 	CompetitionEntry getEntry(UUID player);
 
+	Iterator<CompetitionEntry> getIterator();
+
 	int getSize();
 
 	boolean hasEntry(UUID player);
@@ -139,6 +142,11 @@ public class Leaderboard implements LeaderboardHandler {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public Iterator<CompetitionEntry> getIterator() {
+		return entries.iterator();
 	}
 
 	@Override
