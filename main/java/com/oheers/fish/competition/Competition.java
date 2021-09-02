@@ -61,6 +61,7 @@ public class Competition {
         this.timingSystem.cancel();
         statusBar.hide();
         if (leaderboardApplicable) {
+            for (Player player : Bukkit.getOnlinePlayers()) sendLeaderboard(player);
             handleRewards();
             leaderboard.clear();
         }
