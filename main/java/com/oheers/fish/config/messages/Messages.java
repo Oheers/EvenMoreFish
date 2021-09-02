@@ -262,4 +262,10 @@ public class Messages {
     public String getTimeAlertMessage() {
         return getSTDPrefix() + config.getString("time-alert");
     }
+
+    public String getInvalidType() {
+        String returning = config.getString("invalid-type");
+        if (returning != null) return getErrorPrefix() + returning;
+        else return getErrorPrefix() + "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH";
+    }
 }

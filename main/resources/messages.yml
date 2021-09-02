@@ -69,6 +69,8 @@ always-show-pos: true
 no-winners: "&rThere were no fishing records."
 # When an individual player didn't get a record
 no-record: "&rYou didn't catch any fish."
+# Sent when an admin tries to start a competition where the type doesn't exist e.g. /emf admin competition start 600 ABCDEFGH
+invalid-type: "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
 # Sent to all online players when not enough players are on to start a competition
 not-enough-players: "&rThere's not enough players online to start the scheduled fishing competition."
 # Sent to all players at specific times to show the remaining time left

@@ -324,7 +324,11 @@ class Controls{
                         if (args.length < 5) {
                             startComp(args[3], player, CompetitionType.LARGEST_FISH);
                         } else {
-                            startComp(args[3], player, CompetitionType.valueOf(args[4].toUpperCase()));
+                            try {
+                                startComp(args[3], player, CompetitionType.valueOf(args[4].toUpperCase()));
+                            } catch (IllegalArgumentException iae) {
+                                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getInvalidType()));
+                            }
                         }
                     }
                 }
