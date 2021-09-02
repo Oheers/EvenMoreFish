@@ -133,7 +133,6 @@ public class Competition {
                     }
 
                     if (entry.getValue() == numberNeeded && competitionType == CompetitionType.SPECIFIC_FISH) {
-                        singleReward(fisher);
                         end();
                     }
 
