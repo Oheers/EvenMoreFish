@@ -27,6 +27,8 @@ public class Competition {
     List<Integer> alertTimes;
     Map<Integer, List<Reward>> rewards;
 
+    int playersNeeded;
+
     BukkitTask timingSystem;
 
     Message startMessage;
@@ -47,11 +49,17 @@ public class Competition {
     }
 
     public void begin() {
-        active = true;
-        if (leaderboardApplicable) initLeaderboard();
-        statusBar.renderBars();
-        initTimer();
-        announceBegin();
+        if (Bukkit.getOnlinePlayers().size() >= playersNeeded) {
+            active = true;
+            if (leaderboardApplicable) initLeaderboard();
+            statusBar.renderBars();
+            initTimer();
+            announceBegin();
+        } else {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNotEnoughPlayers()));
+            }
+        }
     }
 
     public void end() {
@@ -60,7 +68,10 @@ public class Competition {
         this.timingSystem.cancel();
         statusBar.hide();
         if (leaderboardApplicable) {
-            for (Player player : Bukkit.getOnlinePlayers()) sendLeaderboard(player);
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
+                sendLeaderboard(player);
+            }
             handleRewards();
             leaderboard.clear();
         }
@@ -440,5 +451,9 @@ public class Competition {
         }
 
         this.statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.competitionConfig.getBarPrefix(competionName)));
+    }
+
+    public void initGetNumbersNeeded(String competitionName) {
+        this.playersNeeded = EvenMoreFish.competitionConfig.getPlayersNeeded(competitionName);
     }
 }

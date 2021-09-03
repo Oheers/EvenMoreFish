@@ -86,10 +86,6 @@ public class Messages {
         return config.getString("bossbar.hour");
     }
 
-    public String getBarPrefix() {
-        return config.getString("bossbar.prefix");
-    }
-
     private String getPrefix() {
         return config.getString("prefix");
     }

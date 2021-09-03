@@ -364,6 +364,7 @@ class Controls{
 
                 comp.initRewards(null, true);
                 comp.initBar(null);
+                comp.initGetNumbersNeeded(null);
                 EvenMoreFish.active = comp;
                 comp.begin();
             } else {
@@ -388,7 +389,6 @@ class Help {
 
         cmdDictionary.put("emf admin", "Admin command help page.");
         cmdDictionary.put("emf help", "Shows you this page.");
-        cmdDictionary.put("emf rewards", "Displays rewards from fishing competitions.");
         cmdDictionary.put("emf shop", "Opens a shop to sell your fish.");
         cmdDictionary.put("emf top", "Shows an ongoing competition's leaderboard.");
 

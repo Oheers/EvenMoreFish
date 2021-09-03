@@ -137,4 +137,18 @@ public class CompetitionConfig {
             }
         }
     }
+
+    public int getPlayersNeeded(String competitionName) {
+        if (competitionName != null) {
+            if (config.getInt("competitions." + competitionName + ".minimum-players") != 0) {
+                return config.getInt("competitions." + competitionName + ".minimum-players");
+            } else if (config.getInt("general.minimum-players") != 0) {
+                return config.getInt("general.minimum-players");
+            } else return 1;
+        } else {
+            if (config.getInt("general.minimum-players") != 0) {
+                return config.getInt("general.minimum-players");
+            } else return 1;
+        }
+    }
 }

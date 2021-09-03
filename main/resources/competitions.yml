@@ -55,6 +55,9 @@ competitions:
     bossbar-colour: YELLOW
     bossbar-prefix: "&6&lFishing Contest: "
 
+    # The number of players needed to start the competition
+    minimum-players: 10
+
   sundayCompetition1:
     type: LARGEST_FISH
     duration: 30

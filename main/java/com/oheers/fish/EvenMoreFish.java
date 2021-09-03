@@ -4,8 +4,6 @@ import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
-import com.oheers.fish.competition.reward.LoadRewards;
-import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.LocaleGen;
 import com.oheers.fish.config.messages.MessageFile;
@@ -52,8 +50,6 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<Integer, Set<String>> fish = new HashMap<>();
 
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
-    public static Map<Integer, List<Reward>> rewards = new HashMap<>();
-    // ^ <Position in competition, list of rewards to be given>
 
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
@@ -117,8 +113,6 @@ public class EvenMoreFish extends JavaPlugin {
         } else if (checkRP()) {
             guardPL = "redprotect";
         }
-
-        rewards = LoadRewards.load();
 
         listeners();
         commands();
@@ -233,7 +227,6 @@ public class EvenMoreFish extends JavaPlugin {
 
         fish = new HashMap<>();
         fishCollection = new HashMap<>();
-        rewards = new HashMap<>();
 
         reloadConfig();
         saveDefaultConfig();
@@ -251,8 +244,6 @@ public class EvenMoreFish extends JavaPlugin {
         competitionConfig = new CompetitionConfig();
 
         competitionQueue.load();
-
-        rewards = LoadRewards.load();
 
         guis = new ArrayList<>();
     }
