@@ -8,8 +8,6 @@ competitions:
     type: LARGEST_FISH
     # How long (minutes) the competition should last for
     duration: 10
-    # Does it occur every day? (See below examples for how to choose specific days & times to run the competitions on)
-    daily: true
     # If you preferred the older system you can still use that system, and select days to be blacklisted.
     times:
       - "00:00"
