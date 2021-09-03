@@ -1,6 +1,6 @@
 name: EvenMoreFish
 author: Oheers
-version: 1.4_b4
+version: 1.4
 main: com.oheers.fish.EvenMoreFish
 api-version: 1.16
 depend: [Vault]
