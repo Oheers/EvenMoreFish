@@ -50,7 +50,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "top":
                 if (EvenMoreFish.permission.has(sender, "emf.top")) {
-                    if (Competition.isActive()) {
+                    if (!Competition.isActive()) {
                         sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     } else {
                         EvenMoreFish.active.sendLeaderboard((Player) sender);
