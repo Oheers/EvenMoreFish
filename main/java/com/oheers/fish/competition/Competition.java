@@ -48,8 +48,8 @@ public class Competition {
 
     }
 
-    public void begin() {
-        if (Bukkit.getOnlinePlayers().size() >= playersNeeded) {
+    public void begin(boolean adminStart) {
+        if (Bukkit.getOnlinePlayers().size() >= playersNeeded || adminStart) {
             active = true;
             if (leaderboardApplicable) initLeaderboard();
             statusBar.renderBars();

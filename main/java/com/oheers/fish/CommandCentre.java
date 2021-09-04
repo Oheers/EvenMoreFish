@@ -366,7 +366,7 @@ class Controls{
                 comp.initBar(null);
                 comp.initGetNumbersNeeded(null);
                 EvenMoreFish.active = comp;
-                comp.begin();
+                comp.begin(true);
             } else {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.notInteger()));
             }
