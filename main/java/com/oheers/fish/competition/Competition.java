@@ -332,7 +332,7 @@ public class Competition {
         leaderboard = new Leaderboard(competitionType);
     }
 
-    public void chooseFish(String competitionName, boolean adminStart) {
+    public boolean chooseFish(String competitionName, boolean adminStart) {
         List<String> allowedRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
         List<Fish> fish = new ArrayList<>();
         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
@@ -345,8 +345,16 @@ public class Competition {
         if (y > 1) this.leaderboardApplicable = true;
         setNumberNeeded(y);
 
-        Random r = new Random();
-        this.selectedFish = fish.get(r.nextInt(fish.size()));
+        try {
+            Random r = new Random();
+            this.selectedFish = fish.get(r.nextInt(fish.size()));
+            return true;
+        } catch (IllegalArgumentException exception) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not load: " + competitionName + " because a random fish could not chose. \nIf you need support, please provide the following information:");
+            Bukkit.getLogger().log(Level.SEVERE, "fish.size(): " + fish.size());
+            Bukkit.getLogger().log(Level.SEVERE, "allowedRarities.size(): " + allowedRarities.size());
+            return false;
+        }
     }
 
     public void initAlerts(String competitionName) {
