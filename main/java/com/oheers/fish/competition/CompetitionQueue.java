@@ -48,6 +48,12 @@ public class CompetitionQueue {
                                 }
                             }
                         }
+                    } else {
+                        for (String time : EvenMoreFish.competitionConfig.getRepeatedTiming(comp)) {
+                            for (String day : days) {
+                                    competitions.put(generateTimeCode(day, time), competition);
+                            }
+                        }
                     }
                 }
             }
