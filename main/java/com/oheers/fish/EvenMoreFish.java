@@ -69,6 +69,8 @@ public class EvenMoreFish extends JavaPlugin {
 
     public void onEnable() {
 
+        guis = new ArrayList<>();
+
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
         messageFile = new MessageFile(this);
@@ -86,8 +88,6 @@ public class EvenMoreFish extends JavaPlugin {
 
         LocaleGen lG = new LocaleGen();
         lG.createLocaleFiles(this);
-
-        guis = new ArrayList<>();
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
@@ -149,6 +149,11 @@ public class EvenMoreFish extends JavaPlugin {
     public void onDisable() {
 
         terminateSellGUIS();
+
+        // Ends the current competition in case the plugin is being disabled when the server will continue running
+        if (Competition.isActive()) {
+            active.end();
+        }
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
             try {
