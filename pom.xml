@@ -6,7 +6,7 @@
 
     <groupId>com.oheers.evenmorefish</groupId>
     <artifactId>even-more-fish</artifactId>
-    <version>1.4</version>
+    <version>1.4.0.5</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
