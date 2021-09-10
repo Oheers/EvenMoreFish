@@ -67,6 +67,7 @@ public class Bar {
         for (Player player : Bukkit.getOnlinePlayers()) {
             bar.addPlayer(player);
         }
+        bar.setVisible(true);
     }
 
     public void addPlayer(Player player) {

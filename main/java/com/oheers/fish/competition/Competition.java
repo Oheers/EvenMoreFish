@@ -41,7 +41,6 @@ public class Competition {
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
-        this.timeLeft = duration;
         this.competitionType = type;
         this.alertTimes = new ArrayList<>();
         this.rewards = new HashMap<>();
@@ -49,6 +48,7 @@ public class Competition {
     }
 
     public void begin(boolean adminStart) {
+        this.timeLeft = this.maxDuration;
         if (Bukkit.getOnlinePlayers().size() >= playersNeeded || adminStart) {
             active = true;
             if (leaderboardApplicable) initLeaderboard();
@@ -64,7 +64,6 @@ public class Competition {
 
     public void end() {
         // print leaderboard
-        this.statusBar.removeAllPlayers();
         this.timingSystem.cancel();
         statusBar.hide();
         if (leaderboardApplicable) {
