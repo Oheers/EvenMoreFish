@@ -64,10 +64,10 @@ public class Bar {
 
     // Shows the bar to all players online
     public void renderBars() {
+        bar.setVisible(true);
         for (Player player : Bukkit.getOnlinePlayers()) {
             bar.addPlayer(player);
         }
-        bar.setVisible(true);
     }
 
     public void addPlayer(Player player) {

@@ -66,6 +66,7 @@ public class Competition {
         // print leaderboard
         this.timingSystem.cancel();
         statusBar.hide();
+        statusBar.removeAllPlayers();
         if (leaderboardApplicable) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
@@ -126,10 +127,12 @@ public class Competition {
                 if (entry != null) {
                     if (entry.getValue()+1 >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
                         if (EvenMoreFish.msgs.doFirstPlaceNotification()) {
-                            Message message = new Message()
-                                    .setMSG(EvenMoreFish.msgs.getFirstPlaceNotification())
-                                    .setPlayer(fisher.getName());
-                            FishUtils.broadcastFishMessage(message, EvenMoreFish.msgs.doFirstPlaceActionbar());
+                            if (EvenMoreFish.msgs.getFirstPlaceNotification() != null) {
+                                Message message = new Message()
+                                        .setMSG(EvenMoreFish.msgs.getFirstPlaceNotification())
+                                        .setPlayer(fisher.getName());
+                                FishUtils.broadcastFishMessage(message, EvenMoreFish.msgs.doFirstPlaceActionbar());
+                            }
                         }
                     }
 
