@@ -77,6 +77,10 @@ public class CompetitionConfig {
         else return 1;
     }
 
+    public boolean broadcastOnlyRods() {
+        return config.getBoolean("broadcast-only-rods");
+    }
+
     public List<String> getPositionColours() {
         List<String> returning = config.getStringList("leaderboard.position-colours");
 

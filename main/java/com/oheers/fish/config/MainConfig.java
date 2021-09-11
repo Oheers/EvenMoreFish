@@ -33,10 +33,6 @@ public class MainConfig {
         return config.getBoolean("enabled");
     }
 
-    public boolean broadcastOnlyRods() {
-        return config.getBoolean("broadcast-only-rods");
-    }
-
     public boolean regionWhitelist() {
         return config.getStringList("allowed-regions").size() != 0;
     }

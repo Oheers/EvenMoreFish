@@ -209,7 +209,7 @@ public class FishUtils {
     }
 
     public static void broadcastFishMessage(Message msg, boolean actionBar) {
-        if (EvenMoreFish.mainConfig.broadcastOnlyRods()) {
+        if (EvenMoreFish.competitionConfig.broadcastOnlyRods()) {
             // sends it to all players holding ords
             if (actionBar) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
@@ -225,6 +225,15 @@ public class FishUtils {
                 }
             }
             // sends it to everyone
-        } else for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
+        } else {
+            if (actionBar) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg.toString()));
+                }
+            } else {
+                for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
+            }
+
+        }
     }
 }
