@@ -137,7 +137,7 @@ public class Leaderboard implements LeaderboardHandler {
 	@Override
 	public CompetitionEntry getEntry(UUID player) {
 		for (CompetitionEntry entry : entries) {
-			if (entry.getPlayer() == player) {
+			if (entry.getPlayer().equals(player)) {
 				return entry;
 			}
 		}
