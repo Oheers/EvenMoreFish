@@ -127,7 +127,7 @@ public class Messages {
     }
 
     public String notInteger() {
-        return getErrorPrefix() + "Please provide an integer video.";
+        return getErrorPrefix() + "Please provide an integer value.";
     }
 
     public String competitionRunning() {
