@@ -51,10 +51,12 @@ public class Bar {
     }
 
     public void show() {
+        for (Player p : Bukkit.getOnlinePlayers()) addPlayer(p);
         bar.setVisible(true);
     }
 
     public void hide() {
+        for (Player p : Bukkit.getOnlinePlayers()) removePlayer(p);
         bar.setVisible(false);
     }
 
@@ -79,6 +81,6 @@ public class Bar {
     }
 
     public void removeAllPlayers() {
-        bar.removeAll();
+        //bar.sr
     }
 }

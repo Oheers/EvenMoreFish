@@ -52,7 +52,7 @@ public class Competition {
         if (Bukkit.getOnlinePlayers().size() >= playersNeeded || adminStart) {
             active = true;
             if (leaderboardApplicable) initLeaderboard();
-            statusBar.renderBars();
+            statusBar.show();
             initTimer();
             announceBegin();
         } else {
@@ -66,7 +66,6 @@ public class Competition {
         // print leaderboard
         this.timingSystem.cancel();
         statusBar.hide();
-        statusBar.removeAllPlayers();
         if (leaderboardApplicable) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
