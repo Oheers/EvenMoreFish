@@ -328,6 +328,14 @@ public class Competition {
         this.numberNeeded = numberNeeded;
     }
 
+    public int getLeaderboardSize() {
+        return leaderboard.getSize();
+    }
+
+    public Leaderboard getLeaderboard() {
+        return leaderboard;
+    }
+
     public void initLeaderboard() {
         leaderboardApplicable = true;
         leaderboard = new Leaderboard(competitionType);

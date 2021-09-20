@@ -95,6 +95,12 @@ interface LeaderboardHandler {
 
 	CompetitionEntry getTopEntry();
 
+	UUID getPlayer(int i);
+
+	float getPlaceValue(int i);
+
+	Fish getPlaceFish(int i);
+
 }
 
 public class Leaderboard implements LeaderboardHandler {
@@ -172,5 +178,41 @@ public class Leaderboard implements LeaderboardHandler {
 	@Override
 	public CompetitionEntry getTopEntry() {
 		return entries.first();
+	}
+
+	@Override
+	public UUID getPlayer(int i) {
+		int count = 1;
+		for (CompetitionEntry entry : entries) {
+			if (count == i) {
+				return entry.getPlayer();
+			}
+			count++;
+		}
+		return null;
+	}
+
+	@Override
+	public float getPlaceValue(int i) {
+		int count = 1;
+		for (CompetitionEntry entry : entries) {
+			if (count == i) {
+				return entry.getValue();
+			}
+			count++;
+		}
+		return -1.0f;
+	}
+
+	@Override
+	public Fish getPlaceFish(int i) {
+		int count = 1;
+		for (CompetitionEntry entry : entries) {
+			if (count == i) {
+				return entry.getFish();
+			}
+			count++;
+		}
+		return null;
 	}
 }

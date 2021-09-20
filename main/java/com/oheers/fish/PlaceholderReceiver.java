@@ -1,8 +1,15 @@
 package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.fishing.items.Fish;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.Objects;
+import java.util.UUID;
 
 public class PlaceholderReceiver extends PlaceholderExpansion {
 
@@ -103,19 +110,17 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
 
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
-            if (Competition.isActive()) {/*
+            if (Competition.isActive()) {
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);
                 Competition competition = EvenMoreFish.active;
-                if (competition..size() >= place) {
+                if (competition.getLeaderboardSize() >= place) {
                     // getting "place" place in the competition
-                    int count = 1;
-                    for (Fish fish : EvenMoreFish.active.getLeaderboard().keySet()) {
-                        if (count == place) {
-                            return Bukkit.getPlayer(EvenMoreFish.active.getLeaderboard().get(fish)).getName();
-                        }
-                        count++;
+                    UUID uuid = EvenMoreFish.active.getLeaderboard().getPlayer(place);
+                    if (uuid != null) {
+                        // To be in the leaderboard the player must have joined
+                        return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
                     }
                 } else {
                     if (EvenMoreFish.msgs.shouldNullPlayerCompPlaceholder()) {
@@ -123,25 +128,22 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                     } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPlayerInposPlaceholder());
 
 
-                }*/
+                }
             } else {
                 if (EvenMoreFish.msgs.shouldNullPlayerCompPlaceholder()) {
                     return "";
                 } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
             }
         } else if (identifier.startsWith("competition_place_size_")) {
-            if (Competition.isActive()) {/*
+            if (Competition.isActive()) {
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);
-                if (EvenMoreFish.active.getLeaderboard().size() >= place) {
+                if (EvenMoreFish.active.getLeaderboardSize() >= place) {
                     // getting "place" place in the competition
-                    int count = 1;
-                    for (Fish fish : EvenMoreFish.active.getLeaderboard().keySet()) {
-                        if (count == place) {
-                            return Float.toString(fish.getLength());
-                        }
-                        count++;
+                    float value = EvenMoreFish.active.getLeaderboard().getPlaceValue(place);
+                    if (value != -1.0f) {
+                        return Float.toString(value);
                     }
                 } else {
                     if (EvenMoreFish.msgs.shouldNullSizeCompPlaceholder()) {
@@ -151,33 +153,30 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             } else {
                 if (EvenMoreFish.msgs.shouldNullSizeCompPlaceholder()) {
                     return "";
-                } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());*/
+                } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
             }
         } else if (identifier.startsWith("competition_place_fish_")) {
-            if (Competition.isActive()) {/*
+            if (Competition.isActive() && EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH) {
                 // checking the leaderboard actually contains the value of place
                 String[] brokendown = identifier.split("_");
                 int place = Integer.parseInt(brokendown[brokendown.length - 1]);
-                if (EvenMoreFish.active.getLeaderboard().size() >= place) {
+                if (EvenMoreFish.active.getLeaderboardSize() >= place) {
                     // getting "place" place in the competition
-                    int count = 1;
-                    for (Fish fish : EvenMoreFish.active.getLeaderboard().keySet()) {
-                        if (count == place) {
-                            return new Message()
-                                    .setMSG(EvenMoreFish.msgs.getFishFormat())
-                                    .setRarity(fish.getRarity().getValue())
-                                    .setFishCaught(fish.getName())
-                                    .setLength(Float.toString(fish.getLength()))
-                                    .setColour(fish.getRarity().getColour())
-                                    .toString();
-                        }
-                        count++;
+                    Fish fish = EvenMoreFish.active.getLeaderboard().getPlaceFish(place);
+                    if (fish != null) {
+                        return new Message()
+                                .setMSG(EvenMoreFish.msgs.getFishFormat())
+                                .setRarity(fish.getRarity().getValue())
+                                .setFishCaught(fish.getName())
+                                .setLength(Float.toString(fish.getLength()))
+                                .setColour(fish.getRarity().getColour())
+                                .toString();
                     }
                 } else {
                     if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {
                         return "";
                     } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPlayerInposPlaceholder());
-                }*/
+                }
             } else {
                 if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {
                     return "";
