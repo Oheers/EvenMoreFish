@@ -103,7 +103,6 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
      */
     @Override
     public String onPlaceholderRequest(Player player, String identifier) {
-
         if (player == null) {
             return "";
         }

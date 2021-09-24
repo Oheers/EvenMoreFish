@@ -344,11 +344,8 @@ public class Competition {
     public boolean chooseFish(String competitionName, boolean adminStart) {
         List<String> allowedRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
         List<Fish> fish = new ArrayList<>();
-        System.out.println("sss:" + EvenMoreFish.fishCollection.keySet().size());
         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-            System.out.println("checkign rarity: " + r.getValue());
             if (allowedRarities.contains(r.getValue())) {
-                System.out.println("adding the rarity");
                 fish.addAll(EvenMoreFish.fishCollection.get(r));
             }
         }
