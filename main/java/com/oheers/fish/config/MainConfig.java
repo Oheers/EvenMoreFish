@@ -1,9 +1,11 @@
 package com.oheers.fish.config;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
+import java.util.logging.Level;
 
 public class MainConfig {
 
@@ -111,5 +113,41 @@ public class MainConfig {
 
     public String rewardCommand(String command) {
         return config.getString("reward-gui.command-override." + command);
+    }
+
+    public Material getSellAllMaterial() {
+        String s = config.getString("gui.sell-all-item");
+        if (s != null) {
+            try {
+                return Material.valueOf(s);
+            } catch (IllegalArgumentException exception) {
+                Bukkit.getLogger().log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item.");
+            }
+        }
+        return Material.COD_BUCKET;
+    }
+
+    public Material getSellAllConfirmMaterial() {
+        String s = config.getString("gui.sell-all-item-confirm");
+        if (s != null) {
+            try {
+                return Material.valueOf(s);
+            } catch (IllegalArgumentException exception) {
+                Bukkit.getLogger().log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
+            }
+        }
+        return Material.TROPICAL_FISH_BUCKET;
+    }
+
+    public int getSellAllSlot() {
+        int returning = config.getInt("gui.sell-all-slot");
+        if (returning > 9 || returning < 1) return 6;
+        else return returning;
+    }
+
+    public int getSellSlot() {
+        int returning = config.getInt("gui.sell-slot");
+        if (returning > 9 || returning < 1) return 4;
+        else return returning;
     }
 }

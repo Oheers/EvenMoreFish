@@ -23,8 +23,16 @@ gui:
   filler-error: RED_STAINED_GLASS_PANE
   # The item for the player to click to sell their fish
   sell-item: GOLD_INGOT
+  # The slot to put the item in on the bottom row, accepts values 1-9 inclusive.
+  sell-slot: 4
+  # The item for the player to click to automatically sell all their fish
+  sell-all-item: COD_BUCKET
+  # The slot to put the item in on the bottom row, accepts values 1-9 inclusive.
+  sell-all-slot: 6
   # The item for the player to click to confirm selling their fish
   sell-item-confirm: GOLD_BLOCK
+  # The item for the player to click to confirm selling all of their fish
+  sell-all-item-confirm: TROPICAL_FISH_BUCKET
   # The item shown to the player when an error occurs (i.e. trying to sell nothing of value)
   sell-item-error: REDSTONE_BLOCK
   # How many rows the selling area of the GUI should be (max 5, min 1)

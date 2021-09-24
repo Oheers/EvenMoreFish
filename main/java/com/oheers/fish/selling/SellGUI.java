@@ -34,7 +34,7 @@ public class SellGUI {
 
     public int guiSize;
 
-    private ItemStack sellIcon, filler, errorFiller, confirmIcon, noValueIcon;
+    private ItemStack sellIcon, sellAllIcon, filler, errorFiller, confirmIcon, confirmAllIcon, noValueIcon;
 
     public SellGUI(Player p) {
         this.guiSize = (EvenMoreFish.mainConfig.getGUISize()+1)*9;
@@ -44,6 +44,7 @@ public class SellGUI {
         setFiller();
         addFiller(filler);
         setSellItem();
+        setSellAllItem();
         this.player.openInventory(menu);
     }
 
@@ -72,15 +73,13 @@ public class SellGUI {
     }
 
     public void addFiller(ItemStack fill) {
-        menu.setItem(guiSize-9, fill);
-        menu.setItem(guiSize-8, fill);
-        menu.setItem(guiSize-7, fill);
-        menu.setItem(guiSize-6, fill);
-        // Sell icon
-        menu.setItem(guiSize-4, fill);
-        menu.setItem(guiSize-3, fill);
-        menu.setItem(guiSize-2, fill);
-        menu.setItem(guiSize-1, fill);
+        for (int i = guiSize-9; i < guiSize; i++) {
+            if (menu.getItem(i) == null) {
+                menu.setItem(i, fill);
+            } else if (menu.getItem(i).isSimilar(filler)) {
+                menu.setItem(i, fill);
+            }
+        }
     }
 
     public void setSellItem() {
@@ -90,7 +89,7 @@ public class SellGUI {
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
         List<String> lore = new ArrayList<>();
         for (String line : EvenMoreFish.msgs.sellLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth()).setReceiver(this.player).toString());
+            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(false)).setReceiver(this.player).toString());
         }
         sellMeta.setLore(lore);
 
@@ -98,7 +97,25 @@ public class SellGUI {
         glowify(sIcon);
 
         this.sellIcon = WorthNBT.attributeDefault(sIcon);
-        menu.setItem(guiSize-5, this.sellIcon);
+        menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.sellIcon);
+    }
+
+    public void setSellAllItem() {
+        ItemStack saIcon = new ItemStack(EvenMoreFish.mainConfig.getSellAllMaterial());
+        ItemMeta saMeta = saIcon.getItemMeta();
+        saMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSellAllName()));
+
+        List<String> lore = new ArrayList<>();
+        for (String line : EvenMoreFish.msgs.getSellAllLore()) {
+            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(true)).setReceiver(this.player).toString());
+        }
+        saMeta.setLore(lore);
+
+        saIcon.setItemMeta(saMeta);
+        glowify(saIcon);
+
+        this.sellAllIcon = WorthNBT.attributeDefault(saIcon);
+        menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.sellAllIcon);
     }
 
     public void updateSellItem() {
@@ -107,16 +124,34 @@ public class SellGUI {
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
         List<String> lore = new ArrayList<>();
         for (String line : EvenMoreFish.msgs.sellLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth()).setReceiver(this.player).toString());
+            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(false)).setReceiver(this.player).toString());
         }
         sellMeta.setLore(lore);
 
         this.sellIcon.setItemMeta(sellMeta);
-        menu.setItem(guiSize-5, this.sellIcon);
+        menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.sellIcon);
+    }
+
+    public void updateSellAllItem() {
+        ItemMeta saMeta = this.sellAllIcon.getItemMeta();
+        saMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSellAllName()));
+        // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
+        List<String> lore = new ArrayList<>();
+        for (String line : EvenMoreFish.msgs.getSellAllLore()) {
+            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(false)).setReceiver(this.player).toString());
+        }
+        saMeta.setLore(lore);
+
+        this.sellAllIcon.setItemMeta(saMeta);
+        menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.sellAllIcon);
     }
 
     public ItemStack getSellIcon() {
         return this.sellIcon;
+    }
+
+    public ItemStack getSellAllIcon() {
+        return this.sellAllIcon;
     }
 
     public ItemStack getConfirmIcon() {
@@ -127,8 +162,8 @@ public class SellGUI {
         return this.noValueIcon;
     }
 
-    public void createIcon() {
-        String totalWorth = getTotalWorth();
+    public void createIcon(boolean sellAll) {
+        String totalWorth = getTotalWorth(sellAll);
         if (totalWorth.equals("0.0")) {
             ItemStack error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemError()));
             ItemMeta errorMeta = error.getItemMeta();
@@ -143,9 +178,14 @@ public class SellGUI {
             this.noValueIcon = WorthNBT.attributeDefault(error);
             this.error = true;
         } else {
-            ItemStack confirm = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemConfirm()));
+
+            ItemStack confirm;
+            if (sellAll) confirm = new ItemStack(EvenMoreFish.mainConfig.getSellAllConfirmMaterial());
+            else confirm = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemConfirm()));
+
             ItemMeta cMeta = confirm.getItemMeta();
-            cMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getConfirmName()));
+            if (sellAll) cMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getConfirmSellAllName()));
+            else cMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getConfirmName()));
             // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
             List<String> lore = new ArrayList<>();
             for (String line : EvenMoreFish.msgs.sellLore()) {
@@ -160,32 +200,50 @@ public class SellGUI {
         }
     }
 
-    public void setIcon() {
+    public void setIcon(boolean sellAll) {
         if (this.error) {
-            this.menu.setItem(guiSize-5, null);
-            this.menu.setItem(guiSize-5, this.noValueIcon);
+            if (sellAll) {
+                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.noValueIcon);
+            } else {
+                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.noValueIcon);
+            }
+
             this.addFiller(errorFiller);
             this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1.0f, 0.0f);
         } else {
-            this.menu.setItem(guiSize-5, null);
-            this.menu.setItem(guiSize-5, this.confirmIcon);
+            if (sellAll) {
+                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.confirmIcon);
+            } else {
+                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.confirmIcon);
+            }
+
             this.addFiller(filler);
             this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.75f);
         }
 
     }
 
-    public String getTotalWorth() {
+    public String getTotalWorth(boolean inventory) {
         if (this.menu == null) return Double.toString(0.0d);
 
         double val = 0.0d;
         int count = 0;
 
-        for (ItemStack is : this.menu.getContents()) {
-            // -1.0 is given when there's no worth NBT value
-            if (WorthNBT.getValue(is) != -1.0) {
-                val += (WorthNBT.getValue(is) * is.getAmount());
-                count += is.getAmount();
+        if (inventory) {
+            for (ItemStack is : player.getInventory().getStorageContents()) {
+                // -1.0 is given when there's no worth NBT value
+                if (WorthNBT.getValue(is) != -1.0) {
+                    val += (WorthNBT.getValue(is) * is.getAmount());
+                    count += is.getAmount();
+                }
+            }
+        } else {
+            for (ItemStack is : this.menu.getContents()) {
+                // -1.0 is given when there's no worth NBT value
+                if (WorthNBT.getValue(is) != -1.0) {
+                    val += (WorthNBT.getValue(is) * is.getAmount());
+                    count += is.getAmount();
+                }
             }
         }
 
@@ -263,7 +321,7 @@ public class SellGUI {
     }
 
     public boolean sell() {
-        getTotalWorth();
+        getTotalWorth(false);
         EvenMoreFish.econ.depositPlayer(this.player, value);
         // running a tick later to prevent ghost blocks in the player's inventory
         Bukkit.getScheduler().runTaskLater(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), this::close, 1);

@@ -45,8 +45,17 @@ public class InteractHandler implements Listener {
                         }
 
                         // makes the player confirm their choice
-                        gui.createIcon();
-                        gui.setIcon();
+                        gui.createIcon(false);
+                        gui.setIcon(false);
+                        gui.setFiller();
+
+                        gui.setModified(false);
+                        event.setCancelled(true);
+
+                    } else if (clickedItem.isSimilar(gui.getSellAllIcon())) {
+                        System.out.println(222);
+                        gui.createIcon(true);
+                        gui.setIcon(true);
                         gui.setFiller();
 
                         gui.setModified(false);
@@ -62,8 +71,8 @@ public class InteractHandler implements Listener {
                         }
 
                         // makes the player confirm their choice
-                        gui.createIcon();
-                        gui.setIcon();
+                        gui.createIcon(false);
+                        gui.setIcon(false);
                         gui.setFiller();
 
                         gui.setModified(false);
@@ -84,8 +93,8 @@ public class InteractHandler implements Listener {
                         if (gui.getModified()) {
 
                             // the menu has been modified since we last gave the confirmation button, so it sends it again
-                            gui.createIcon();
-                            gui.setIcon();
+                            gui.createIcon(event.getSlot() != EvenMoreFish.mainConfig.getSellSlot());
+                            gui.setIcon(false);
 
                             gui.setModified(false);
                         } else {
@@ -109,6 +118,7 @@ public class InteractHandler implements Listener {
                         @Override
                         public void run() {
                             gui.setSellItem();
+                            gui.setSellAllItem();
                         }
                     }.runTaskLaterAsynchronously(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 1);
                 }
