@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -37,6 +39,8 @@ public class Fish implements Cloneable {
 
     double minSize, maxSize;
 
+    boolean glowing;
+
     public Fish(Rarity rarity, String name) {
         this.rarity = rarity;
         this.name = name;
@@ -50,10 +54,16 @@ public class Fish implements Cloneable {
     public ItemStack give() {
 
         ItemStack fish = this.type;
+
+        if (glowing) fish.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+
         ItemMeta fishMeta = fish.getItemMeta();
 
         fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
         fishMeta.setLore(generateLore());
+
+        if (glowing) fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
         fish.setItemMeta(fishMeta);
 
         WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
@@ -204,6 +214,10 @@ public class Fish implements Cloneable {
 
     public List<Biome> getBiomes() {
         return biomes;
+    }
+
+    public void setGlowing(boolean glowing) {
+        this.glowing = glowing;
     }
 
     // prepares it to be given to the player

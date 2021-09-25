@@ -39,6 +39,7 @@ public class Names {
                 // for each fish name, a fish object is made that contains the information gathered from that name
                 Fish canvas = new Fish(r, fish);
                 canvas.setBiomes(getBiomes(fish, r.getValue()));
+                canvas.setGlowing(getGlowing(fish, r.getValue()));
                 fishQueue.add(canvas);
 
             }
@@ -78,6 +79,10 @@ public class Names {
         }
 
         return biomes;
+    }
+
+    private boolean getGlowing(String name, String rarity) {
+        return EvenMoreFish.fishFile.getConfig().getBoolean("fish." + rarity + "." + name + ".glowing");
     }
 
 }
