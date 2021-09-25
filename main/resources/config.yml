@@ -33,8 +33,10 @@ gui:
   sell-item-confirm: GOLD_BLOCK
   # The item for the player to click to confirm selling all of their fish
   sell-all-item-confirm: TROPICAL_FISH_BUCKET
-  # The item shown to the player when an error occurs (i.e. trying to sell nothing of value)
+  # The item shown to the player when an error occurs (trying to sell nothing of value from the gui)
   sell-item-error: REDSTONE_BLOCK
+  # The item shown to the player when an error occurs (trying to sell nothing of value from their inventory)
+  sell-all-item-error: SALMON_BUCKET
   # How many rows the selling area of the GUI should be (max 5, min 1)
   size: 3
   # Should the items be dropped(false) or sold(true) when a player exits an inventory?

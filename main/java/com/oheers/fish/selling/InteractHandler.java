@@ -47,16 +47,13 @@ public class InteractHandler implements Listener {
                         // makes the player confirm their choice
                         gui.createIcon(false);
                         gui.setIcon(false);
-                        gui.setFiller();
 
                         gui.setModified(false);
                         event.setCancelled(true);
 
                     } else if (clickedItem.isSimilar(gui.getSellAllIcon())) {
-                        System.out.println(222);
                         gui.createIcon(true);
                         gui.setIcon(true);
-                        gui.setFiller();
 
                         gui.setModified(false);
                         event.setCancelled(true);
@@ -73,10 +70,23 @@ public class InteractHandler implements Listener {
                         // makes the player confirm their choice
                         gui.createIcon(false);
                         gui.setIcon(false);
-                        gui.setFiller();
 
                         gui.setModified(false);
                         event.setCancelled(true);
+                    } else if (clickedItem.isSimilar(gui.getSellAllErrorIcon())) {
+
+                        // makes the player confirm their choice
+                        gui.createIcon(true);
+                        gui.setIcon(true);
+
+                        gui.setModified(false);
+                        event.setCancelled(true);
+
+                    } else if (clickedItem.isSimilar(gui.getConfirmSellAllIcon())) {
+
+                            gui.sell(true);
+                            gui.close();
+                            gui.doRescue(false);
 
                     } else if (clickedItem.isSimilar(gui.getConfirmIcon())) {
                         // cancels on right click
@@ -98,7 +108,7 @@ public class InteractHandler implements Listener {
 
                             gui.setModified(false);
                         } else {
-                            gui.sell();
+                            gui.sell(false);
                             gui.close();
                             gui.doRescue(true);
                         }
@@ -109,7 +119,10 @@ public class InteractHandler implements Listener {
                             @Override
                             public void run() {
                                 gui.updateSellItem();
+                                gui.updateSellAllItem();
                                 gui.setModified(true);
+
+                                gui.error = false;
                             }
                         }.runTaskLaterAsynchronously(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 1);
                     }

@@ -163,6 +163,12 @@ public class Messages {
         else return "&c&lCan't Sell";
     }
 
+    public String getNoValueSellAllName() {
+        String s = config.getString("error-sell-all-gui-name");
+        if (s != null) return s;
+        else return "&c&lCan't Sell";
+    }
+
     public List<String> sellLore() {
         return config.getStringList("sell-gui-lore");
     }
@@ -174,6 +180,17 @@ public class Messages {
             l.add("&c&lValue: &c$0");
             l.add("&cAdd your caught fish to this.");
             l.add("&cGUI to sell them.");
+            return l;
+        }
+    }
+
+    public List<String> noValueSellAllLore() {
+        List<String> l = config.getStringList("error-sell-all-gui-lore");
+        if (!l.isEmpty()) return l;
+        else {
+            l.add("&c&lValue: &c$0");
+            l.add("&cThere are 0 sellable fish");
+            l.add("&cin your inventory.");
             return l;
         }
     }

@@ -139,6 +139,18 @@ public class MainConfig {
         return Material.TROPICAL_FISH_BUCKET;
     }
 
+    public Material getSellAllErrorMaterial() {
+        String s = config.getString("gui.sell-all-item-error");
+        if (s != null) {
+            try {
+                return Material.valueOf(s);
+            } catch (IllegalArgumentException exception) {
+                Bukkit.getLogger().log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
+            }
+        }
+        return Material.SALMON_BUCKET;
+    }
+
     public int getSellAllSlot() {
         int returning = config.getInt("gui.sell-all-slot");
         if (returning > 9 || returning < 1) return 6;

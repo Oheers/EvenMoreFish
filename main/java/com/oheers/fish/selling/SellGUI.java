@@ -28,13 +28,13 @@ public class SellGUI {
 
     public double value;
 
-    private boolean error;
+    public boolean error;
 
     public int fishCount;
 
     public int guiSize;
 
-    private ItemStack sellIcon, sellAllIcon, filler, errorFiller, confirmIcon, confirmAllIcon, noValueIcon;
+    private ItemStack sellIcon, sellAllIcon, filler, errorFiller, confirmIcon, confirmSellAllIcon, noValueIcon, sellAllErrorIcon;
 
     public SellGUI(Player p) {
         this.guiSize = (EvenMoreFish.mainConfig.getGUISize()+1)*9;
@@ -76,7 +76,7 @@ public class SellGUI {
         for (int i = guiSize-9; i < guiSize; i++) {
             if (menu.getItem(i) == null) {
                 menu.setItem(i, fill);
-            } else if (menu.getItem(i).isSimilar(filler)) {
+            } else if (menu.getItem(i).isSimilar(filler) || menu.getItem(i).isSimilar(errorFiller)) {
                 menu.setItem(i, fill);
             }
         }
@@ -138,7 +138,7 @@ public class SellGUI {
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
         List<String> lore = new ArrayList<>();
         for (String line : EvenMoreFish.msgs.getSellAllLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(false)).setReceiver(this.player).toString());
+            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(true)).setReceiver(this.player).toString());
         }
         saMeta.setLore(lore);
 
@@ -158,24 +158,48 @@ public class SellGUI {
         return this.confirmIcon;
     }
 
+    public ItemStack getConfirmSellAllIcon() {
+        return this.confirmSellAllIcon;
+    }
+
     public ItemStack getErrorIcon() {
         return this.noValueIcon;
+    }
+
+    public ItemStack getSellAllErrorIcon() {
+        return this.sellAllErrorIcon;
     }
 
     public void createIcon(boolean sellAll) {
         String totalWorth = getTotalWorth(sellAll);
         if (totalWorth.equals("0.0")) {
-            ItemStack error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemError()));
+
+            ItemStack error;
+            if (sellAll) error = new ItemStack(EvenMoreFish.mainConfig.getSellAllErrorMaterial());
+            else error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemError()));
+
             ItemMeta errorMeta = error.getItemMeta();
-            errorMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoValueName()));
+
+            if (sellAll) errorMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoValueSellAllName()));
+            else errorMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoValueName()));
+
             List<String> lore = new ArrayList<>();
-            for (String line : EvenMoreFish.msgs.noValueLore()) {
-                lore.add(FishUtils.translateHexColorCodes(line));
+
+            if (sellAll) {
+                for (String line : EvenMoreFish.msgs.noValueSellAllLore()) {
+                    lore.add(FishUtils.translateHexColorCodes(line));
+                }
+            } else {
+                for (String line : EvenMoreFish.msgs.noValueLore()) {
+                    lore.add(FishUtils.translateHexColorCodes(line));
+                }
             }
+
             errorMeta.setLore(lore);
             error.setItemMeta(errorMeta);
             glowify(error);
-            this.noValueIcon = WorthNBT.attributeDefault(error);
+            if (sellAll) this.sellAllErrorIcon = WorthNBT.attributeDefault(error);
+            else this.noValueIcon = WorthNBT.attributeDefault(error);
             this.error = true;
         } else {
 
@@ -195,7 +219,10 @@ public class SellGUI {
 
             confirm.setItemMeta(cMeta);
             glowify(confirm);
-            this.confirmIcon = WorthNBT.attributeDefault(confirm);
+
+            if (sellAll) this.confirmSellAllIcon = WorthNBT.attributeDefault(confirm);
+            else this.confirmIcon = WorthNBT.attributeDefault(confirm);
+
             this.error = false;
         }
     }
@@ -203,7 +230,7 @@ public class SellGUI {
     public void setIcon(boolean sellAll) {
         if (this.error) {
             if (sellAll) {
-                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.noValueIcon);
+                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.sellAllErrorIcon);
             } else {
                 this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.noValueIcon);
             }
@@ -212,7 +239,7 @@ public class SellGUI {
             this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1.0f, 0.0f);
         } else {
             if (sellAll) {
-                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.confirmIcon);
+                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.confirmSellAllIcon);
             } else {
                 this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.confirmIcon);
             }
@@ -320,8 +347,8 @@ public class SellGUI {
         i.setItemMeta(meta);
     }
 
-    public boolean sell() {
-        getTotalWorth(false);
+    public boolean sell(boolean sellAll) {
+        getTotalWorth(sellAll);
         EvenMoreFish.econ.depositPlayer(this.player, value);
         // running a tick later to prevent ghost blocks in the player's inventory
         Bukkit.getScheduler().runTaskLater(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), this::close, 1);
@@ -334,6 +361,13 @@ public class SellGUI {
                 .setReceiver(this.player);
         this.player.sendMessage(msg.toString());
         this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
+
+        if (sellAll) {
+            for (ItemStack item : this.player.getInventory()) {
+                if (FishUtils.isFish(item)) this.player.getInventory().remove(item);
+            }
+        }
+
         return this.value != 0.0;
     }
 }
