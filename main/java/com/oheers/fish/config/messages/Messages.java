@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -150,8 +151,20 @@ public class Messages {
         return config.getString("confirm-gui-name");
     }
 
+    public String getConfirmSellAllName() {
+        String returning = config.getString("confirm-sell-all-gui-name");
+        if (returning != null) return returning;
+        else return "&6&lCONFIRM";
+    }
+
     public String getNoValueName() {
         String s = config.getString("error-gui-name");
+        if (s != null) return s;
+        else return "&c&lCan't Sell";
+    }
+
+    public String getNoValueSellAllName() {
+        String s = config.getString("error-sell-all-gui-name");
         if (s != null) return s;
         else return "&c&lCan't Sell";
     }
@@ -167,6 +180,17 @@ public class Messages {
             l.add("&c&lValue: &c$0");
             l.add("&cAdd your caught fish to this.");
             l.add("&cGUI to sell them.");
+            return l;
+        }
+    }
+
+    public List<String> noValueSellAllLore() {
+        List<String> l = config.getStringList("error-sell-all-gui-lore");
+        if (!l.isEmpty()) return l;
+        else {
+            l.add("&c&lValue: &c$0");
+            l.add("&cThere are 0 sellable fish");
+            l.add("&cin your inventory.");
             return l;
         }
     }
@@ -269,5 +293,17 @@ public class Messages {
         String returning = config.getString("single-winner");
         if (returning != null) return getSTDPrefix() + returning;
         else return getSTDPrefix() + "&r{player} has won the competition for {type}. Congratulations!";
+    }
+
+    public String getSellAllName() {
+        String returning = config.getString("sell-all-name");
+        if (returning != null) return returning;
+        else return "&6&lSELL ALL";
+    }
+
+    public List<String> getSellAllLore() {
+        List<String> returning = config.getStringList("sell-all-lore");
+        if (returning.size() != 0) return returning;
+        else return Arrays.asList("&e&lValue: &e${sell-price}", "&7LEFT CLICK to sell all fish in your inventory.");
     }
 }

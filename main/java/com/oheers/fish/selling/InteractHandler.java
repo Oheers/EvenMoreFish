@@ -45,9 +45,15 @@ public class InteractHandler implements Listener {
                         }
 
                         // makes the player confirm their choice
-                        gui.createIcon();
-                        gui.setIcon();
-                        gui.setFiller();
+                        gui.createIcon(false);
+                        gui.setIcon(false);
+
+                        gui.setModified(false);
+                        event.setCancelled(true);
+
+                    } else if (clickedItem.isSimilar(gui.getSellAllIcon())) {
+                        gui.createIcon(true);
+                        gui.setIcon(true);
 
                         gui.setModified(false);
                         event.setCancelled(true);
@@ -62,12 +68,25 @@ public class InteractHandler implements Listener {
                         }
 
                         // makes the player confirm their choice
-                        gui.createIcon();
-                        gui.setIcon();
-                        gui.setFiller();
+                        gui.createIcon(false);
+                        gui.setIcon(false);
 
                         gui.setModified(false);
                         event.setCancelled(true);
+                    } else if (clickedItem.isSimilar(gui.getSellAllErrorIcon())) {
+
+                        // makes the player confirm their choice
+                        gui.createIcon(true);
+                        gui.setIcon(true);
+
+                        gui.setModified(false);
+                        event.setCancelled(true);
+
+                    } else if (clickedItem.isSimilar(gui.getConfirmSellAllIcon())) {
+
+                            gui.sell(true);
+                            gui.close();
+                            gui.doRescue(false);
 
                     } else if (clickedItem.isSimilar(gui.getConfirmIcon())) {
                         // cancels on right click
@@ -84,12 +103,12 @@ public class InteractHandler implements Listener {
                         if (gui.getModified()) {
 
                             // the menu has been modified since we last gave the confirmation button, so it sends it again
-                            gui.createIcon();
-                            gui.setIcon();
+                            gui.createIcon(event.getSlot() != EvenMoreFish.mainConfig.getSellSlot());
+                            gui.setIcon(false);
 
                             gui.setModified(false);
                         } else {
-                            gui.sell();
+                            gui.sell(false);
                             gui.close();
                             gui.doRescue(true);
                         }
@@ -100,7 +119,10 @@ public class InteractHandler implements Listener {
                             @Override
                             public void run() {
                                 gui.updateSellItem();
+                                gui.updateSellAllItem();
                                 gui.setModified(true);
+
+                                gui.error = false;
                             }
                         }.runTaskLaterAsynchronously(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 1);
                     }
@@ -109,6 +131,7 @@ public class InteractHandler implements Listener {
                         @Override
                         public void run() {
                             gui.setSellItem();
+                            gui.setSellAllItem();
                         }
                     }.runTaskLaterAsynchronously(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), 1);
                 }

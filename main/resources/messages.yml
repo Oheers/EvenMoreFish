@@ -82,20 +82,35 @@ time-alert: "&rThere is {time_formatted} left on the competition for {type}"
 worth-gui-name: "&1&lSell Fish"
 # The name found on the selling item in /emf shop
 sell-gui-name: "&6&lSELL"
+# The name found on the item to sell all fish in inventory in /emf shop
+sell-all-name: "&6&lSELL ALL"
 # The name found on the confirming item in /emf shop
 confirm-gui-name: "&6&lCONFIRM"
+# The name found on the confirming sell all item in /emf shop
+confirm-sell-all-gui-name: "&6&lCONFIRM"
 # The name found on the error item in /emf shop when the gui contains no items of value.
 error-gui-name: "&c&lCan't Sell"
+# The name found on the error item in /emf shop when the player's inventory contains no items of value.
+error-sell-all-gui-name: "&c&lCan't Sell"
 # The lore found on the selling/confirmation item in /emf shop
 sell-gui-lore:
   - "&e&lValue: &e${sell-price}"
   - "&7LEFT CLICK to sell the fish."
   - "&7RIGHT CLICK to cancel."
+# The lore for the sell-all item in the GUI
+sell-all-lore:
+  - "&e&lValue: &e${sell-price}"
+  - "&7LEFT CLICK to sell all fish in your inventory."
 # The lore below the error item in /emf shop when the gui contains no items of value.
 error-gui-lore:
   - "&c&lValue: &c$0"
-  - "&cAdd your caught fish to this."
+  - "&cAdd your caught fish to this"
   - "&cGUI to sell them."
+# The lore for the error item which replaces the sell-all item when there's no fish in the player's inventory.
+error-sell-all-gui-lore:
+  - "&c&lValue: &c$0"
+  - "&cThere are 0 sellable fish"
+  - "&cin your inventory."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
 
