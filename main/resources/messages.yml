@@ -97,7 +97,7 @@ sell-gui-lore:
   - "&e&lValue: &e${sell-price}"
   - "&7LEFT CLICK to sell the fish."
   - "&7RIGHT CLICK to cancel."
-
+# The lore for the sell-all item in the GUI
 sell-all-lore:
   - "&e&lValue: &e${sell-price}"
   - "&7LEFT CLICK to sell all fish in your inventory."
@@ -106,7 +106,7 @@ error-gui-lore:
   - "&c&lValue: &c$0"
   - "&cAdd your caught fish to this"
   - "&cGUI to sell them."
-
+# The lore for the error item which replaces the sell-all item when there's no fish in the player's inventory.
 error-sell-all-gui-lore:
   - "&c&lValue: &c$0"
   - "&cThere are 0 sellable fish"
