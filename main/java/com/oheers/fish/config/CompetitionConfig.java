@@ -78,7 +78,7 @@ public class CompetitionConfig {
     }
 
     public boolean broadcastOnlyRods() {
-        return config.getBoolean("broadcast-only-rods");
+        return config.getBoolean("general.broadcast-only-rods");
     }
 
     public List<String> getPositionColours() {
