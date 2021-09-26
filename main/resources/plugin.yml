@@ -1,8 +1,8 @@
 name: EvenMoreFish
 author: Oheers
-version: 1.4.0.13
+version: 1.4.0.13 (1.14 compatible)
 main: com.oheers.fish.EvenMoreFish
-api-version: 1.16
+api-version: 1.14
 depend: [Vault]
 softdepend: [WorldGuard, PlaceholderAPI, RedProtect, mcMMO]
 loadbefore: [AntiAC]

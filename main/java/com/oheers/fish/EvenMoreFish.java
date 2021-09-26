@@ -5,7 +5,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
-import com.oheers.fish.config.messages.LocaleGen;
 import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
@@ -86,8 +85,8 @@ public class EvenMoreFish extends JavaPlugin {
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
 
-        LocaleGen lG = new LocaleGen();
-        lG.createLocaleFiles(this);
+        /*LocaleGen lG = new LocaleGen();
+        lG.createLocaleFiles(this);*/
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
