@@ -122,7 +122,9 @@ fish:
     Massive Goldfish:
       item:
         material: TROPICAL_FISH
-        # The results from the custom event follow the same format as the rewards given in config.yml's competition reward section.
+      # Should the item glow? (The enchantment glint) - defaults to false.
+      glowing: true
+      # The results from the custom event follow the same format as the rewards given in config.yml's competition reward section.
       eat-event:
         - "ITEM:GOLD_INGOT,1"
         - "MESSAGE:&eYou've received a gold ingot!"
@@ -148,6 +150,7 @@ fish:
         # Add custom model data for making texture packs, you can add a material/head-64 value too to change it from the default cod fish.
         # https://www.planetminecraft.com/forums/communities/texturing/new-1-14-custom-item-models-tuto-578834/
         custom-model-data: 1234567
+      glowing: true
       biomes:
         - FLOWER_FOREST
       lore:
