@@ -33,6 +33,7 @@ public class Fish implements Cloneable {
     Float length;
 
     List<Reward> actionRewards;
+    List<Reward> fishRewards;
     String eventType;
 
     List<Biome> biomes;
@@ -49,6 +50,9 @@ public class Fish implements Cloneable {
         setSize();
         checkEatEvent();
         checkIntEvent();
+
+        fishRewards = new ArrayList<>();
+        checkFishEvent();
     }
 
     public ItemStack give() {
@@ -119,10 +123,18 @@ public class Fish implements Cloneable {
         return actionRewards;
     }
 
+    public List<Reward> getFishRewards() {
+        return fishRewards;
+    }
+
     public boolean hasEatRewards() {
         if (eventType != null) {
             return eventType.equals("eat");
         } else return false;
+    }
+
+    public boolean hasFishRewards() {
+        return fishRewards.size() != 0;
     }
 
     public boolean hasIntRewards() {
@@ -279,6 +291,16 @@ public class Fish implements Cloneable {
             // Translates all the rewards into Reward objects and adds them to the fish.
             for (String reward : configRewards) {
                 this.actionRewards.add(new Reward(reward));
+            }
+        }
+    }
+
+    public void checkFishEvent() {
+        List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".fish-event");
+        if (!configRewards.isEmpty()) {
+            // Translates all the rewards into Reward objects and adds them to the fish.
+            for (String reward : configRewards) {
+                this.fishRewards.add(new Reward(reward));
             }
         }
     }

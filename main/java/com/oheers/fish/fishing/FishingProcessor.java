@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.fishing.items.Fish;
@@ -66,6 +67,12 @@ public class FishingProcessor implements Listener {
                     String length = Float.toString(fish.getLength());
                     String name = FishUtils.translateHexColorCodes(fish.getRarity().getColour() + "&l" + fish.getName());
                     String rarity = FishUtils.translateHexColorCodes(fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
+
+                    if (fish.hasFishRewards()) {
+                        for (Reward fishReward : fish.getFishRewards()) {
+                            fishReward.run(player);
+                        }
+                    }
 
                     // checks if the fish can have durability, and if it's set in the config it receives random durability
                     if (checkBreakable(fish.getType().getType())) fish.randomBreak();
