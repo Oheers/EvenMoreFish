@@ -212,9 +212,17 @@ public class SellGUI {
             else cMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getConfirmName()));
             // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
             List<String> lore = new ArrayList<>();
-            for (String line : EvenMoreFish.msgs.sellLore()) {
-                lore.add(new Message().setMSG(line).setSellPrice(totalWorth).setReceiver(this.player).toString());
+
+            if (sellAll) {
+                for (String line : EvenMoreFish.msgs.getSellAllLore()) {
+                    lore.add(new Message().setMSG(line).setSellPrice(totalWorth).setReceiver(this.player).toString());
+                }
+            } else {
+                for (String line : EvenMoreFish.msgs.sellLore()) {
+                    lore.add(new Message().setMSG(line).setSellPrice(totalWorth).setReceiver(this.player).toString());
+                }
             }
+
             cMeta.setLore(lore);
 
             confirm.setItemMeta(cMeta);

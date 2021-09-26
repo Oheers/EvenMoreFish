@@ -94,23 +94,48 @@ error-gui-name: "&c&lCan't Sell"
 error-sell-all-gui-name: "&c&lCan't Sell"
 # The lore found on the selling/confirmation item in /emf shop
 sell-gui-lore:
-  - "&e&lValue: &e${sell-price}"
-  - "&7LEFT CLICK to sell the fish."
-  - "&7RIGHT CLICK to cancel."
-# The lore for the sell-all item in the GUI
+  - "&8Fish Shop"
+  - ""
+  - "&7Total Value » &e${sell-price}"
+  - ""
+  - "&7Sell your fish here to make"
+  - "&7some extra money."
+  - ""
+  - "&e» (Left-click) sell the fish."
+  - "&7» (Right-click) cancel."
+
 sell-all-lore:
-  - "&e&lValue: &e${sell-price}"
-  - "&7LEFT CLICK to sell all fish in your inventory."
+  - "&8Inventory"
+  - ""
+  - "&7Total Value » &e${sell-price}"
+  - ""
+  - "&7Click this button to sell"
+  - "&7the fish in your inventory to"
+  - "&7make some extra money."
+  - ""
+  - "&e» (Left-click) sell the fish."
 # The lore below the error item in /emf shop when the gui contains no items of value.
 error-gui-lore:
-  - "&c&lValue: &c$0"
-  - "&cAdd your caught fish to this"
-  - "&cGUI to sell them."
-# The lore for the error item which replaces the sell-all item when there's no fish in the player's inventory.
+  - "&8Fish Shop"
+  - ""
+  - "&7Total Value » &c$0"
+  - ""
+  - "&7Sell your fish here to make"
+  - "&7some extra money."
+  - ""
+  - "&c» (Left-click) sell the fish."
+  - "&7» (Right-click) cancel."
+
 error-sell-all-gui-lore:
-  - "&c&lValue: &c$0"
-  - "&cThere are 0 sellable fish"
-  - "&cin your inventory."
+  - "&8Inventory"
+  - ""
+  - "&7Total Value » &c$0"
+  - ""
+  - "&7Click this button to sell"
+  - "&7the fish in your inventory to"
+  - "&7make some extra money."
+  - ""
+  - "&c» (Left-click) sell the fish."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
 
