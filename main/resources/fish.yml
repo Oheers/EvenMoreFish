@@ -121,6 +121,14 @@ fish:
     Goldfish:
       item:
         material: GOLD_NUGGET
+    Golden Skull:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjc4ODNlYTQ4MDlhZjc0NWM5N2NhNzdlNzA0NDg1NDk4OTA1MTk4ZDZhZTI4MTM4YWRiZDRjNWQ0YjgxYjk0NCJ9fX0="
+      lore:
+        - "&eℸ ̣ ⍑ᒷ ⊣ꖎ↸ᒷリ リᒷ ╎ᓭ ⊣↸"
+      size:
+        minSize: 30
+        maxSize: 50
     Massive Goldfish:
       item:
         material: TROPICAL_FISH
