@@ -16,7 +16,7 @@ no-permission: "&cbạn không có quyền để chạy lệnh này."
 
 # The message to be sent when a competition starts and ends
 contest-start: "&rCuộc thi câu cá xếp hạng {type} đã bắt đầu."
-contest-end: "&aCuộc thi câu cá đã kết thúc."
+contest-end: "&rCuộc thi câu cá đã kết thúc."
 # The message to be sent when a player joins whilst a competition is going on
 contest-join: "&rA fishing contest for {type} is occurring."
 
