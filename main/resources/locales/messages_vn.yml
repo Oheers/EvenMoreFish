@@ -1,3 +1,12 @@
+########################################
+##                                    ##
+##    Dịch bởi ThatCorona - SimpMC    ##
+##         Át trí tủi loz             ##
+##                                    ##
+##                                    ##
+##                                    ##
+########################################
+
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
 # Sent to players when they fish an EvenMoreFish fish
@@ -6,12 +15,30 @@ fish-caught: "&l{player} &rđã câu được con {fish} dài {length}cm {rarity
 no-permission: "&cbạn không có quyền để chạy lệnh này."
 
 # The message to be sent when a competition starts and ends
-contest-start: "&aCuộc thi câu cá đã bắt đầu."
-contest-end: "&aCuộc thi câu cá đã kết thúc."
+contest-start: "&rCuộc thi câu cá xếp hạng {type} đã bắt đầu."
+contest-end: "&rCuộc thi câu cá đã kết thúc."
+# The message to be sent when a player joins whilst a competition is going on
+contest-join: "&rA fishing contest for {type} is occurring."
+
+# Shown to players when a new player takes #1 spot, remove this value or set it to "" to disable this message
+new-first: "&r{player} đang TOP #1"
+# Should this message appear in chat (false) or above the exp bar (true)
+action-bar-message: true
+# What competition types should the action bar be used for? (recommended: MOST_FISH)
+action-bar-types:
+  - MOST_FISH
+
+# What should replace the {type} variable for each competition type?
+competition-types:
+  # MOST_FISH
+  most: "nhiều cá nhất"
+  # LARGEST_FISH
+  largest: "cá to nhất"
+  # SPECIFIC_FISH
+  specific: "{amount} {rarity} {fish}&r"
+
 # Segments shown in the bossbar when competitions run
 bossbar:
-  # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
-  prefix: "&a&lThi câu cá: "
   # The abbreviations used for different units of time
   hour: "h"
   minute: "m"
@@ -20,7 +47,7 @@ bossbar:
   remaining: " còn lại"
 
 # The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
-prefix: "[EMF] "
+prefix: "[EvenMoreFish] "
 # The colour of the [EvenMoreFish] prefix in commands (for when your prefix doesn't have colours)
 prefix-regular: "&a"
 # The colour of the [EvenMoreFish] prefix in admin commands (for when your prefix doesn't have colours)
@@ -29,44 +56,95 @@ prefix-admin: "&c"
 prefix-error: "&c"
 
 # The text shown in a fish's lore before who caught the fish
-fish-caught-by: "&fCâu bởi {player}"
+fish-caught-by: "&fTóm bởi {player}"
 # The text shown in a fish's lore before the length of the fish
 fish-length: "&fDài {length}cm"
 # The text to come before the rarity of the fish i.e. "Rarity: UNCOMMON"
-#fish-rarity-prefix: "&fRarity: "
+#fish-rarity-prefix: "&fHạng: "
 
 # The format of commands in /emf help (this message doesn't support papi placeholders)
 help: "/{command} - {description}"
 
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
-leaderboard: "&r&l{position} &r| {player} - {length}cm {rarity} {fish}"
+leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity} {fish}&r, {length}cm&r)"
+leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
+# If you're running a competition where there's no leaderboard, this message is sent when there's a winner
+single-winner: "&r{player} đã thắng cuộc thi câu cá xếp hạng {type}. Chúc mừng!"
 # The number of positions shown in the leaderboard - can't be less than 1.
 leaderboard-count: 5
+# If the player doesn't appear on /emf top, should their position be displayed at the bottom?
+always-show-pos: true
 # Sent to players when nobody got a record during a competition
 no-winners: "&rKhông ai có TOP trong cuộc thi câu cá."
 # When an individual player didn't get a record
 no-record: "&rBạn chưa câu con cá nào cả."
+# Sent when an admin tries to start a competition where the type doesn't exist e.g. /emf admin competition start 600 ABCDEFGH
+invalid-type: "&rĐó không phải xếp hạng cuộc thi đúng, các xếp hạng có sẵn: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
 # Sent to all online players when not enough players are on to start a competition
 not-enough-players: "&rKhông có đủ người chơi online để bắt đầu cuộc thi câu cá."
+# Sent to all players at specific times to show the remaining time left
+# {time_formatted} shows the time (e.g. 5m left, 10m 30s left)
+# {time_raw} is what you input in competitions.yml
+time-alert: "&rCòn {time_formatted} cho cuộc thi câu cá xếp hạng {type}"
 
 # The GUI title for /emf shop
 worth-gui-name: "&1&lBán cá"
 # The name found on the selling item in /emf shop
 sell-gui-name: "&6&lBÁN"
+# The name found on the item to sell all fish in inventory in /emf shop
+sell-all-name: "&6&lSELL ALL"
 # The name found on the confirming item in /emf shop
 confirm-gui-name: "&6&lXÁC NHẬN"
+# The name found on the confirming sell all item in /emf shop
+confirm-sell-all-gui-name: "&6&lXÁC NHẬN"
 # The name found on the error item in /emf shop when the gui contains no items of value.
 error-gui-name: "&c&lKhông thể bán"
+# The name found on the error item in /emf shop when the player's inventory contains no items of value.
+error-sell-all-gui-name: "&c&lKhông thể bán"
 # The lore found on the selling/confirmation item in /emf shop
 sell-gui-lore:
-  - "&e&lGiá: &e${sell-price}"
-  - "&7Trái chuột để bán cá."
-  - "&7Phải chuột để huỷ bỏ."
+  - "&8Cửa hàng bán cá"
+  - ""
+  - "&7Tổng giá bán được » &e${sell-price}"
+  - ""
+  - "&7Bán cá để"
+  - "&7làm giàu."
+  - ""
+  - "&e» (Trái chuột) để bán."
+  - "&7» (Phải chuột) để huỷ."
+
+sell-all-lore:
+  - "&8Cửa hàng bán cá"
+  - ""
+  - "&7Tổng giá bán được » &e${sell-price}"
+  - ""
+  - "&7Bấm nút này để bán"
+  - "&7cá trong kho đồ của bạn để"
+  - "&7kiếm &atiền."
+  - ""
+  - "&e» (Trái chuột) để bán."
 # The lore below the error item in /emf shop when the gui contains no items of value.
 error-gui-lore:
-  - "&c&lGiá: &c$0"
-  - "&cThêm cá bạn đã câu được vào đây."
-  - "&cđể bán"
+  - "&8Cửa hàng bán cá"
+  - ""
+  - "&7Tổng giá bán được » &c$0"
+  - ""
+  - "&7Bán cá để"
+  - "&7làm giàu."
+  - ""
+  - "&c» (Trái chuột) để bán."
+  - "&7» (Phải chuột) để huỷ."
+
+error-sell-all-gui-lore:
+  - "&8Cửa hàng bán cá"
+  - ""
+  - "&7Tổng giá bán được » &c$0"
+  - ""
+  - "&7Bấm nút này để bán"
+  - "&7cá trong kho đồ của bạn để"
+  - "&7kiếm &atiền."
+  - ""
+  - "&c» (Trái chuột) để bán."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&fBạn đã bán &a{amount} &fcá với giá &a${sell-price}&f."
 
@@ -84,4 +162,4 @@ emf-competition-fish-null: true
 emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 6
+config-version: 7
