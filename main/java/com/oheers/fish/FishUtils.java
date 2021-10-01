@@ -16,6 +16,7 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -50,6 +51,16 @@ public class FishUtils {
         return false;
     }
 
+    public static boolean isFish(Skull s) {
+        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+
+        if (s != null) {
+            return s.getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
+        }
+
+        return false;
+    }
+
     public static Fish getFish(ItemStack i) {
         NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
         NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
@@ -62,7 +73,34 @@ public class FishUtils {
         Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
 
         // Generating an empty rarity
-        Rarity rarity = new Rarity(null, null, 0, false, null);
+        Rarity rarity = null;
+        // Hunting through the fish collection and creating a rarity that matches the fish's nbt
+        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+            if (r.getValue().equals(rarityString)) {
+                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.overridenLore);
+            }
+        }
+
+        // setting the correct length so it's an exact replica.
+        Fish fish = new Fish(rarity, nameString);
+        fish.setLength(lengthFloat);
+
+        return fish;
+    }
+
+    public static Fish getFish(Skull s) {
+        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
+        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+
+        // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
+        PersistentDataContainer container = s.getPersistentDataContainer();
+        String nameString = container.get(nbtname, PersistentDataType.STRING);
+        String rarityString = container.get(nbtrarity, PersistentDataType.STRING);
+        Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
+
+        // Generating an empty rarity
+        Rarity rarity = null;
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
             if (r.getValue().equals(rarityString)) {

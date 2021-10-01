@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -27,6 +28,22 @@ public class WorthNBT {
         fish.setItemMeta(itemMeta);
         return fish;
     }
+
+    public static Skull setNBT(Skull fish, Float length, String rarity, String name) {
+        // creates key and plops in the value of "value"
+        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
+
+        PersistentDataContainer itemMeta = fish.getPersistentDataContainer();
+
+        itemMeta.set(nbtlength, PersistentDataType.FLOAT, length);
+        itemMeta.set(nbtrarity, PersistentDataType.STRING, rarity);
+        itemMeta.set(nbtname, PersistentDataType.STRING, name);
+
+        return fish;
+    }
+
 
     public static double getValue(ItemStack item) {
         // creating the key to check for

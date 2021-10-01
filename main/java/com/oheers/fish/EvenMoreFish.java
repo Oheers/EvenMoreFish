@@ -173,6 +173,7 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FishingProcessor(), this);
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
+        getServer().getPluginManager().registerEvents(new SkullSaver(), this);
 
         optionalListeners();
     }
