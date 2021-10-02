@@ -57,6 +57,10 @@ public class FishingProcessor implements Listener {
                         return;
                     }
 
+                    if (!FishUtils.checkWorld(event.getHook().getLocation())) {
+                        return;
+                    }
+
                     Player player = event.getPlayer();
 
                     Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome());

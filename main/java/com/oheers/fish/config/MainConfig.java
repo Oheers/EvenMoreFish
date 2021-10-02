@@ -39,8 +39,16 @@ public class MainConfig {
         return config.getStringList("allowed-regions").size() != 0;
     }
 
+    public boolean worldWhitelist() {
+        return config.getStringList("allowed-worlds").size() != 0;
+    }
+
     public List<String> getAllowedRegions() {
         return config.getStringList("allowed-regions");
+    }
+
+    public List<String> getAllowedWorlds() {
+        return config.getStringList("allowed-worlds");
     }
 
     public boolean isEconomyEnabled() {

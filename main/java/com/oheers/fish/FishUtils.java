@@ -178,6 +178,20 @@ public class FishUtils {
         return true;
     }
 
+    public static boolean checkWorld(Location l) {
+        // if the user has defined a world whitelist
+        if (EvenMoreFish.mainConfig.worldWhitelist()) {
+
+            // Gets a list of user defined regions
+            List<String> whitelistedWorlds = EvenMoreFish.mainConfig.getAllowedWorlds();
+
+            if (whitelistedWorlds.contains(l.getWorld().getName())) return true;
+            else return false;
+        }
+
+        return true;
+    }
+
     // credit to https://www.spigotmc.org/members/elementeral.717560/
     public static String translateHexColorCodes(String message)
     {
