@@ -296,7 +296,7 @@ public class Fish implements Cloneable {
     }
 
     public void checkFishEvent() {
-        List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".fish-event");
+        List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".catch-event");
         if (!configRewards.isEmpty()) {
             // Translates all the rewards into Reward objects and adds them to the fish.
             for (String reward : configRewards) {
