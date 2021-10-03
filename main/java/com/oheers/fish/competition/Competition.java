@@ -418,10 +418,8 @@ public class Competition {
             int i = 1;
             while (iterator.hasNext() && i <= rewards.size()) {
                 CompetitionEntry entry = iterator.next();
-                if (Bukkit.getPlayer(entry.getPlayer()) != null) {
-                    for (Reward reward : rewards.get(i)) {
-                        reward.run(Bukkit.getPlayer(entry.getPlayer()));
-                    }
+                for (Reward reward : rewards.get(i)) {
+                    reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()));
                 }
                 i++;
             }

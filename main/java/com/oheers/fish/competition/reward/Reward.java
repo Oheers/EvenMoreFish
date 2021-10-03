@@ -7,6 +7,7 @@ import com.oheers.fish.config.messages.Message;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -50,7 +51,11 @@ public class Reward {
 
     Plugin plugin = Bukkit.getPluginManager().getPlugin("EvenMoreFish");
 
-    public void run(Player player) {
+    public void run(OfflinePlayer player) {
+        Player p = null;
+
+        if (player.isOnline()) p = (Player) player;
+
         switch (type) {
             case COMMAND:
                 // running the command
@@ -58,37 +63,55 @@ public class Reward {
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), this.action.replace("{player}", player.getName())));
                 break;
             case EFFECT:
-                String[] parsedEffect = action.split(",");
-                // Adds a potion effect in accordance to the config.yml "EFFECT:" value
-                player.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2])*20, Integer.parseInt(parsedEffect[1])));
+                if (p != null) {
+                    String[] parsedEffect = action.split(",");
+                    // Adds a potion effect in accordance to the config.yml "EFFECT:" value
+
+                    p.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2]) * 20, Integer.parseInt(parsedEffect[1])));
+                }
+
                 break;
             case HEALTH:
                 // checking the player doesn't have a special effect thingy on
-                if (!(player.getHealth() > 20)) {
-                    double newhealth = player.getHealth() + Integer.parseInt(action);
-                    // checking the new health won't go above 20
-                    if (newhealth > 20) {
-                        player.setHealth(20);
-                    } else {
-                        player.setHealth(newhealth);
+
+                if (p != null) {
+                    if (!(p.getHealth() > 20)) {
+                        double newhealth = p.getHealth() + Integer.parseInt(action);
+                        // checking the new health won't go above 20
+                        if (newhealth > 20) {
+                            p.setHealth(20);
+                        } else {
+                            p.setHealth(newhealth);
+                        }
                     }
                 }
+
                 break;
             case HUNGER:
-                player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(action));
+
+                if (p != null) {
+                    p.setFoodLevel(p.getFoodLevel() + Integer.parseInt(action));
+                }
+
                 break;
             case ITEM:
-                String[] parsedItem = action.split(",");
-                FishUtils.giveItems(Collections.singletonList(new ItemStack(Material.getMaterial(parsedItem[0]), Integer.parseInt(parsedItem[1]))), player);
+                if (p != null) {
+                    String[] parsedItem = action.split(",");
+                    FishUtils.giveItems(Collections.singletonList(new ItemStack(Material.getMaterial(parsedItem[0]), Integer.parseInt(parsedItem[1]))), p);
+                }
+
                 break;
             case MESSAGE:
-                player.sendMessage(FishUtils.translateHexColorCodes(action));
+                if (p != null) {
+                    p.sendMessage(FishUtils.translateHexColorCodes(action));
+                }
+
                 break;
             case MONEY:
                 EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));
                 break;
             case OTHER:
-                EMFRewardEvent event = new EMFRewardEvent(this, player);
+                EMFRewardEvent event = new EMFRewardEvent(this, p);
                 Bukkit.getPluginManager().callEvent(event);
                 break;
             default:

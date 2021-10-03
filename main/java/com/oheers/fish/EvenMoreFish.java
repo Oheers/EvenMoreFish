@@ -261,9 +261,6 @@ public class EvenMoreFish extends JavaPlugin {
         String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
         String[] serverVersion = getDescription().getVersion().split("\\.");
 
-        System.out.println("spigotVersion = " + Arrays.toString(spigotVersion));
-        System.out.println("serverVersion = " + Arrays.toString(serverVersion));
-
         for (int i=0; i<serverVersion.length; i++) {
             if (spigotVersion[i] != null) {
                 if (Integer.parseInt(spigotVersion[i]) > Integer.parseInt(serverVersion[i])) {
