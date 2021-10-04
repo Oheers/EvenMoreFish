@@ -91,7 +91,7 @@ public class Competition {
                     if (competitionType == CompetitionType.SPECIFIC_FISH) {
                         m.setAmount(Integer.toString(numberNeeded))
                                 .setRarity(selectedFish.getRarity().getValue())
-                                .setColour(selectedFish.getRarity().getColour())
+                                .setRarityColour(selectedFish.getRarity().getColour())
                                 .setFishCaught(selectedFish.getName());
                     }
 
@@ -207,7 +207,7 @@ public class Competition {
                     .setAmount(Integer.toString(this.numberNeeded))
                     .setType(this.competitionType)
                     .setRarity(selectedFish.getRarity().getValue())
-                    .setColour(selectedFish.getRarity().getColour())
+                    .setRarityColour(selectedFish.getRarity().getColour())
                     .setFishCaught(selectedFish.getName());
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -256,7 +256,7 @@ public class Competition {
                         if (competitionType == CompetitionType.LARGEST_FISH) {
                             Fish fish = entry.getFish();
                             message.setRarity(fish.getRarity().getValue())
-                                    .setColour(fish.getRarity().getColour())
+                                    .setRarityColour(fish.getRarity().getColour())
                                     .setFishCaught(fish.getName())
                                     .setLength(Float.toString(entry.getValue()))
                                     .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
@@ -286,7 +286,7 @@ public class Competition {
                             if (competitionType == CompetitionType.LARGEST_FISH) {
                                 Fish fish = entry.getFish();
                                 message.setRarity(fish.getRarity().getValue())
-                                        .setColour(fish.getRarity().getColour())
+                                        .setRarityColour(fish.getRarity().getColour())
                                         .setFishCaught(fish.getName())
                                         .setLength(Float.toString(entry.getValue()))
                                         .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
@@ -442,7 +442,7 @@ public class Competition {
             broadcast = m
                     .setRarity(selectedFish.getRarity().getValue())
                     .setAmount(Integer.toString(numberNeeded))
-                    .setColour(selectedFish.getRarity().getColour())
+                    .setRarityColour(selectedFish.getRarity().getColour())
                     .setFishCaught(selectedFish.getName())
                     .toString();
         } else broadcast = m.toString();

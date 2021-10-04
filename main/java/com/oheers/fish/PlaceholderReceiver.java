@@ -168,7 +168,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                                 .setRarity(fish.getRarity().getValue())
                                 .setFishCaught(fish.getName())
                                 .setLength(Float.toString(fish.getLength()))
-                                .setColour(fish.getRarity().getColour())
+                                .setRarityColour(fish.getRarity().getColour())
                                 .toString();
                     }
                 } else {

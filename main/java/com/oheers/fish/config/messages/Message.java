@@ -17,7 +17,7 @@ public class Message {
     // all the others are values that don't need to be set.
 
     String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount,
-            sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw;
+            sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw, rarityCol;
     Player receiver;
 
     public Message() {
@@ -31,11 +31,6 @@ public class Message {
 
     public Message setPlayer(String player) {
         this.player = player;
-        return this;
-    }
-
-    public Message setColour(String colour) {
-        this.colour = colour;
         return this;
     }
 
@@ -118,6 +113,11 @@ public class Message {
         return this;
     }
 
+    public Message setRarityColour(String colour) {
+        this.rarityCol = colour;
+        return this;
+    }
+
     public Message setType(CompetitionType type) {
         switch (type) {
             case MOST_FISH: this.type = EvenMoreFish.msgs.getTypeVariable("most"); break;
@@ -140,15 +140,15 @@ public class Message {
         if (length != null) {
             DecimalFormat df = new DecimalFormat("###,###.#");
             String formatted = df.format(Double.parseDouble(length));
-            msg = msg.replace("{length}", colour + formatted);
+            msg = msg.replace("{length}", formatted);
         }
 
         if (fishCaught != null) {
-            msg = msg.replace("{fish}", colour + "&l" + fishCaught);
+            msg = msg.replace("{fish}", fishCaught);
         }
 
         if (rarity != null) {
-            msg = msg.replace("{rarity}", colour + "&l" + rarity);
+            msg = msg.replace("{rarity}", rarity);
         }
 
         if (cmd != null) {
@@ -197,6 +197,10 @@ public class Message {
 
         if (posColour != null) {
             msg = msg.replace("{pos_colour}", posColour);
+        }
+
+        if (rarityCol != null) {
+            msg = msg.replace("{rarity_colour}", rarityCol);
         }
 
         if (EvenMoreFish.papi) {

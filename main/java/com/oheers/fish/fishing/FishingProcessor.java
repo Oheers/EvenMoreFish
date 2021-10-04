@@ -69,8 +69,9 @@ public class FishingProcessor implements Listener {
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
                     String length = Float.toString(fish.getLength());
-                    String name = FishUtils.translateHexColorCodes(fish.getRarity().getColour() + "&l" + fish.getName());
-                    String rarity = FishUtils.translateHexColorCodes(fish.getRarity().getColour() + "&l" + fish.getRarity().getValue());
+                    // Translating the colours because some servers store colour in their fish name
+                    String name = FishUtils.translateHexColorCodes(fish.getName());
+                    String rarity = FishUtils.translateHexColorCodes(fish.getRarity().getValue());
 
                     if (fish.hasFishRewards()) {
                         for (Reward fishReward : fish.getFishRewards()) {
@@ -87,7 +88,7 @@ public class FishingProcessor implements Listener {
                     Message msg = new Message()
                             .setMSG(EvenMoreFish.msgs.getFishCaught())
                             .setPlayer(player.getName())
-                            .setColour(fish.getRarity().getColour())
+                            .setRarityColour(fish.getRarity().getColour())
                             .setLength(length)
                             .setFishCaught(name)
                             .setRarity(rarity)

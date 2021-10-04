@@ -246,7 +246,7 @@ public class Fish implements Cloneable {
         List<String> lore = new ArrayList<>();
 
         lore.add(new Message().setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer(Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).getName()).toString());
-        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setColour("").toString());
+        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setRarityColour("").toString());
         lore.add(" ");
 
         // custom lore in fish.yml
