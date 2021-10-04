@@ -18,7 +18,7 @@ no-permission: "&cbạn không có quyền để chạy lệnh này."
 contest-start: "&rCuộc thi câu cá xếp hạng {type} đã bắt đầu."
 contest-end: "&rCuộc thi câu cá đã kết thúc."
 # The message to be sent when a player joins whilst a competition is going on
-contest-join: "&rA fishing contest for {type} is occurring."
+contest-join: "&rCuộc thi câu cá hạng {type} đang diễn ra."
 
 # Shown to players when a new player takes #1 spot, remove this value or set it to "" to disable this message
 new-first: "&r{player} đang TOP #1"
