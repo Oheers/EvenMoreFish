@@ -26,7 +26,7 @@ competition-types:
   # LARGEST_FISH
   largest: "the largest fish"
   # SPECIFIC_FISH
-  specific: "{amount} {rarity} {fish}&r"
+  specific: "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r"
 
 # Segments shown in the bossbar when competitions run
 bossbar:
@@ -57,7 +57,7 @@ fish-length: "&fMeasures {length}cm"
 help: "/{command} - {description}"
 
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
-leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity} {fish}&r, {length}cm&r)"
+leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
 leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
 # If you're running a competition where there's no leaderboard, this message is sent when there's a winner
 single-winner: "&r{player} has won the competition for {type}. Congratulations!"
