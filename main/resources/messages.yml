@@ -2,6 +2,8 @@
 
 # Sent to players when they fish an EvenMoreFish fish
 fish-caught: "&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!"
+# By setting a fish's minimum-length to less than 0, you can create a lengthless fish. This is used when a player fishes a lengthless fish.
+lengthless-fish-caught: "&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!"
 # Sent to a player when they don't have permission to execute a command.
 no-permission: "&cYou don't have permission to run that command."
 

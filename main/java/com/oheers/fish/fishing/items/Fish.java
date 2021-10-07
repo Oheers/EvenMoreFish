@@ -94,9 +94,13 @@ public class Fish implements Cloneable {
     }
 
     private void generateSize() {
-        // Random logic that returns a float to 1dp
-        int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
-        this.length = (float) len/10;
+        if (minSize < 0) {
+            this.length = -1f;
+        } else {
+            // Random logic that returns a float to 1dp
+            int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
+            this.length = (float) len/10;
+        }
     }
 
     public String getName() {
@@ -246,7 +250,7 @@ public class Fish implements Cloneable {
         List<String> lore = new ArrayList<>();
 
         lore.add(new Message().setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer(Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).getName()).toString());
-        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setRarityColour("").toString());
+        if (this.length != -1) lore.add(new Message().setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setRarityColour("").toString());
         lore.add(" ");
 
         // custom lore in fish.yml

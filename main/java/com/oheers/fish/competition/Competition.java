@@ -157,6 +157,10 @@ public class Competition {
                 end();
             }
         } else {
+
+            // If a fish has no size it shouldn't be able to join the competition
+            if (fish.getLength() <= 0) return;
+
             CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
 
             if (entry != null) {

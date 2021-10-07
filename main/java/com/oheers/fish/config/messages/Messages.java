@@ -123,6 +123,20 @@ public class Messages {
         return config.getString("fish-caught");
     }
 
+    public String getLengthlessFishCaught() {
+        String returning = config.getString("lengthless-fish-caught");
+        if (returning != null) return returning;
+
+        returning = getFishCaught();
+        if (returning != null) {
+            EvenMoreFish.getPlugin(EvenMoreFish.class).getLogger().log(Level.WARNING, "Missing config value: \"lengthless-fish-caught\". [messages.yml]");
+            return returning;
+        }
+
+        EvenMoreFish.getPlugin(EvenMoreFish.class).getLogger().log(Level.WARNING, "Missing config value: \"lengthless-fish-caught\". [messages.yml]");
+        return "&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!";
+    }
+
     public String getNoPermission() {
         return getErrorPrefix() + config.getString("no-permission");
     }

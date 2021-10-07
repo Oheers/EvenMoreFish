@@ -94,6 +94,12 @@ public class FishingProcessor implements Listener {
                             .setRarity(rarity)
                             .setReceiver(player);
 
+                    if (fish.getLength() != -1) {
+                        msg.setMSG(EvenMoreFish.msgs.getFishCaught());
+                    } else {
+                        msg.setMSG(EvenMoreFish.msgs.getLengthlessFishCaught());
+                    }
+
                     // Gets whether it's a serverwide announce or not
                     if (fish.getRarity().getAnnounce()) {
                         // should we only broadcast this information to rod holders?
