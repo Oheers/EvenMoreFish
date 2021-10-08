@@ -1,7 +1,6 @@
 package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
@@ -238,7 +237,7 @@ public class Messages {
     }
 
     public void disabledInConsole() {
-        Bukkit.getLogger().log(Level.SEVERE, "That command is disabled on the console, use it in-game instead.");
+        EvenMoreFish.logger.log(Level.SEVERE, "That command is disabled on the console, use it in-game instead.");
     }
 
     public String getNoCompPlaceholder() {

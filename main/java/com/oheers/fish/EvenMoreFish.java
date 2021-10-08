@@ -32,6 +32,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EvenMoreFish extends JavaPlugin {
 
@@ -56,6 +57,8 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Competition active;
     public static CompetitionQueue competitionQueue;
+
+    public static Logger logger;
 
     public static ArrayList<SellGUI> guis;
 
@@ -92,7 +95,7 @@ public class EvenMoreFish extends JavaPlugin {
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
             if (!setupEconomy()) {
-                Bukkit.getLogger().log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
+                EvenMoreFish.logger.log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
             }
         }
 
@@ -123,6 +126,8 @@ public class EvenMoreFish extends JavaPlugin {
         Help.loadValues();
 
         AutoRunner.init();
+
+        logger = getLogger();
 
         wgPlugin = getWorldGuard();
         checkPapi();

@@ -170,7 +170,7 @@ public class Fish implements Cloneable {
         String mValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.material");
         if (mValue != null) {
             if (Material.getMaterial(mValue) == null) {
-                Bukkit.getLogger().log(Level.WARNING, this.name + " has failed to load material: " + mValue);
+                EvenMoreFish.logger.log(Level.WARNING, this.name + " has failed to load material: " + mValue);
             }
             return new ItemStack(Objects.requireNonNull(Material.getMaterial(mValue.toUpperCase())));
         }

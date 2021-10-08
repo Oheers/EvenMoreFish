@@ -31,7 +31,7 @@ public class LocaleGen {
                     URL url = this.getClass().getClassLoader().getResource("locales/" + locale + ".yml");
                     FileUtils.copyToFile(Objects.requireNonNull(url.openStream()), file);
                 } catch (Exception e) {
-                    Bukkit.getLogger().log(Level.SEVERE, "Could not create " + locale + " locale. It will not appear in the locales folder.");
+                    EvenMoreFish.logger.log(Level.SEVERE, "Could not create " + locale + " locale. It will not appear in the locales folder.");
                     e.printStackTrace();
                 }
             }

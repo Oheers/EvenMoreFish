@@ -112,7 +112,7 @@ public class FishingProcessor implements Listener {
                     try {
                         competitionCheck(fish.clone(), event.getPlayer());
                     } catch (CloneNotSupportedException e) {
-                        Bukkit.getLogger().log(Level.SEVERE, "Failed to create a clone of: " + fish);
+                        EvenMoreFish.logger.log(Level.SEVERE, "Failed to create a clone of: " + fish);
                         e.printStackTrace();
                     }
 
@@ -185,7 +185,7 @@ public class FishingProcessor implements Listener {
 
         // if the config doesn't define any fish that can be fished in this biome.
         if (available.size() == 0) {
-            Bukkit.getLogger().log(Level.WARNING, "There are no fish of the rarity " + r.getValue() + " that can be fished in the " + b.name() + " biome.");
+            EvenMoreFish.logger.log(Level.WARNING, "There are no fish of the rarity " + r.getValue() + " that can be fished in the " + b.name() + " biome.");
             return defaultFish();
         }
 

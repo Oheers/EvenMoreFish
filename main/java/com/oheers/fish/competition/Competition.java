@@ -141,7 +141,7 @@ public class Competition {
                         entry.incrementValue();
                         leaderboard.addEntry(entry);
                     } catch (Exception exception) {
-                        Bukkit.getLogger().log(Level.SEVERE, "Could not delete: " + entry);
+                        EvenMoreFish.logger.log(Level.SEVERE, "Could not delete: " + entry);
                     }
 
                     if (entry.getValue() == numberNeeded && competitionType == CompetitionType.SPECIFIC_FISH) {
@@ -363,9 +363,9 @@ public class Competition {
             this.selectedFish = fish.get(r.nextInt(fish.size()));
             return true;
         } catch (IllegalArgumentException exception) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not load: " + competitionName + " because a random fish could not chose. \nIf you need support, please provide the following information:");
-            Bukkit.getLogger().log(Level.SEVERE, "fish.size(): " + fish.size());
-            Bukkit.getLogger().log(Level.SEVERE, "allowedRarities.size(): " + allowedRarities.size());
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not load: " + competitionName + " because a random fish could not chose. \nIf you need support, please provide the following information:");
+            EvenMoreFish.logger.log(Level.SEVERE, "fish.size(): " + fish.size());
+            EvenMoreFish.logger.log(Level.SEVERE, "allowedRarities.size(): " + allowedRarities.size());
             return false;
         }
     }
@@ -378,10 +378,10 @@ public class Competition {
                 try {
                     alertTimes.add(Integer.parseInt(split[0])*60 + Integer.parseInt(split[1]));
                 } catch (NumberFormatException nfe) {
-                    Bukkit.getLogger().log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
+                    EvenMoreFish.logger.log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
                 }
             } else {
-                Bukkit.getLogger().log(Level.SEVERE, s + " is not formatted correctly. Use MM:SS");
+                EvenMoreFish.logger.log(Level.SEVERE, s + " is not formatted correctly. Use MM:SS");
             }
         }
     }
@@ -466,7 +466,7 @@ public class Competition {
         try {
             this.statusBar.setColour(BarColor.valueOf(EvenMoreFish.competitionConfig.getBarColour(competionName)));
         } catch (IllegalArgumentException iae) {
-            Bukkit.getLogger().log(Level.SEVERE, EvenMoreFish.competitionConfig.getBarColour(competionName) + " is not a valid bossbar colour, check ");
+            EvenMoreFish.logger.log(Level.SEVERE, EvenMoreFish.competitionConfig.getBarColour(competionName) + " is not a valid bossbar colour, check ");
         }
 
         this.statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.competitionConfig.getBarPrefix(competionName)));

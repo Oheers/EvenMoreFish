@@ -53,7 +53,7 @@ public class MessageFile {
         try {
             this.messageConfig.save(getFile());
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not save EvenMoreFish/messages.yml");
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not save EvenMoreFish/messages.yml");
             e.printStackTrace();
         }
     }

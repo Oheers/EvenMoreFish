@@ -1,5 +1,6 @@
 package com.oheers.fish.config;
 
+import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -129,7 +130,7 @@ public class MainConfig {
             try {
                 return Material.valueOf(s);
             } catch (IllegalArgumentException exception) {
-                Bukkit.getLogger().log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item.");
+                EvenMoreFish.logger.log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item.");
             }
         }
         return Material.COD_BUCKET;
@@ -141,7 +142,7 @@ public class MainConfig {
             try {
                 return Material.valueOf(s);
             } catch (IllegalArgumentException exception) {
-                Bukkit.getLogger().log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
+                EvenMoreFish.logger.log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
             }
         }
         return Material.TROPICAL_FISH_BUCKET;
@@ -153,7 +154,7 @@ public class MainConfig {
             try {
                 return Material.valueOf(s);
             } catch (IllegalArgumentException exception) {
-                Bukkit.getLogger().log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
+                EvenMoreFish.logger.log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
             }
         }
         return Material.SALMON_BUCKET;
