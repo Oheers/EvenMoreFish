@@ -40,6 +40,7 @@ public class Names {
                 Fish canvas = new Fish(r, fish);
                 canvas.setBiomes(getBiomes(fish, r.getValue()));
                 canvas.setGlowing(getGlowing(fish, r.getValue()));
+                canvas.setPermissionNode(permissionCheck(fish, rarity));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
 
@@ -87,6 +88,10 @@ public class Names {
             rarityObject.setFishWeighted(true);
             fishObject.setWeight(EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".weight"));
         }
+    }
+
+    private String permissionCheck(String name, String rarity) {
+        return EvenMoreFish.fishFile.getConfig().getString("fish." + rarity + "." + name + ".permission");
     }
 
     private boolean getGlowing(String name, String rarity) {

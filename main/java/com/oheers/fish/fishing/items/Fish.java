@@ -38,6 +38,8 @@ public class Fish implements Cloneable {
 
     List<Biome> biomes;
 
+    String permissionNode;
+
     double weight;
 
     double minSize, maxSize;
@@ -156,6 +158,14 @@ public class Fish implements Cloneable {
 
     public double getWeight() {
         return weight;
+    }
+
+    public String getPermissionNode() {
+        return permissionNode;
+    }
+
+    public void setPermissionNode(String permissionNode) {
+        this.permissionNode = permissionNode;
     }
 
     private ItemStack setType() {

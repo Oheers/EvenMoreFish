@@ -63,7 +63,7 @@ public class FishingProcessor implements Listener {
 
                     Player player = event.getPlayer();
 
-                    Fish fish = getFish(randomWeightedRarity(), event.getHook().getLocation().getBlock().getBiome());
+                    Fish fish = getFish(randomWeightedRarity(), event.getHook().getLocation().getBlock().getBiome(), player);
                     fish.setFisherman(player.getUniqueId());
                     fish.init();
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
@@ -187,11 +187,17 @@ public class FishingProcessor implements Listener {
         return fishList.get(idx);
     }
 
-    private static Fish getFish(Rarity r, Biome b) {
+    private static Fish getFish(Rarity r, Biome b, Player p) {
         // will store all the fish that match the player's biome or don't discriminate biomes
         List<Fish> available = new ArrayList<>();
 
         for (Fish f : EvenMoreFish.fishCollection.get(r)) {
+
+            if (EvenMoreFish.permission != null && f.getPermissionNode() != null) {
+                if (!EvenMoreFish.permission.has(p, f.getPermissionNode())) {
+                    continue;
+                }
+            }
 
             if (f.getBiomes().contains(b) || f.getBiomes().size()==0) {
                 available.add(f);
