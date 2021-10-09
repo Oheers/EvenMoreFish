@@ -63,7 +63,7 @@ public class FishingProcessor implements Listener {
 
                     Player player = event.getPlayer();
 
-                    Fish fish = getFish(random(), event.getHook().getLocation().getBlock().getBiome());
+                    Fish fish = getFish(randomWeightedRarity(), event.getHook().getLocation().getBlock().getBiome());
                     fish.setFisherman(player.getUniqueId());
                     fish.init();
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
@@ -150,7 +150,7 @@ public class FishingProcessor implements Listener {
         }
     }
 
-    private static Rarity random() {
+    private static Rarity randomWeightedRarity() {
         // Loads all the rarities
         List<Rarity> rarities = new ArrayList<>(EvenMoreFish.fishCollection.keySet());
 
@@ -170,13 +170,28 @@ public class FishingProcessor implements Listener {
         return rarities.get(idx);
     }
 
+    private static Fish randomWeightedFish(List<Fish> fishList) {
+        double totalWeight = 0;
+
+        // Weighted random logic (nabbed from stackoverflow)
+        for (Fish fish : fishList) {
+            totalWeight += fish.getWeight();
+        }
+
+        int idx = 0;
+        for (double r = Math.random() * totalWeight; idx < fishList.size() - 1; ++idx) {
+            r -= fishList.get(idx).getWeight();
+            if (r <= 0.0) break;
+        }
+
+        return fishList.get(idx);
+    }
+
     private static Fish getFish(Rarity r, Biome b) {
-        // the fish that are of (Rarity r)
-        List<Fish> rarityFish = EvenMoreFish.fishCollection.get(r);
         // will store all the fish that match the player's biome or don't discriminate biomes
         List<Fish> available = new ArrayList<>();
 
-        for (Fish f : rarityFish) {
+        for (Fish f : EvenMoreFish.fishCollection.get(r)) {
 
             if (f.getBiomes().contains(b) || f.getBiomes().size()==0) {
                 available.add(f);
@@ -189,8 +204,13 @@ public class FishingProcessor implements Listener {
             return defaultFish();
         }
 
-        int ran = (int) (Math.random() * available.size());
-        return available.get(ran);
+        // checks whether weight calculations need doing for fish
+        if (r.isFishWeighted()) {
+            return randomWeightedFish(available);
+        } else {
+            int ran = (int) (Math.random() * available.size());
+            return available.get(ran);
+        }
     }
 
     // if there's no fish available in the current biome, this gets sent out

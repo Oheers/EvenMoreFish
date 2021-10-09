@@ -40,6 +40,7 @@ public class Names {
                 Fish canvas = new Fish(r, fish);
                 canvas.setBiomes(getBiomes(fish, r.getValue()));
                 canvas.setGlowing(getGlowing(fish, r.getValue()));
+                weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
 
             }
@@ -79,6 +80,13 @@ public class Names {
         }
 
         return biomes;
+    }
+
+    private void weightCheck(Fish fishObject, String name, Rarity rarityObject, String rarity) {
+        if (EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".weight") != 0) {
+            rarityObject.setFishWeighted(true);
+            fishObject.setWeight(EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".weight"));
+        }
     }
 
     private boolean getGlowing(String name, String rarity) {

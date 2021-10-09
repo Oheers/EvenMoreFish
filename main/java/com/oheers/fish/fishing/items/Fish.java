@@ -38,6 +38,8 @@ public class Fish implements Cloneable {
 
     List<Biome> biomes;
 
+    double weight;
+
     double minSize, maxSize;
 
     boolean glowing;
@@ -46,6 +48,7 @@ public class Fish implements Cloneable {
         this.rarity = rarity;
         this.name = name;
         this.type = setType();
+        this.weight = 0;
 
         setSize();
         checkEatEvent();
@@ -145,6 +148,14 @@ public class Fish implements Cloneable {
         if (eventType != null) {
             return eventType.equals("int");
         } else return false;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public double getWeight() {
+        return weight;
     }
 
     private ItemStack setType() {

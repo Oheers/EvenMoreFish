@@ -7,6 +7,7 @@ public class Rarity {
     String value, colour;
     double weight;
     boolean announce;
+    boolean fishWeighted;
     public String overridenLore;
 
     public Rarity(String value, String colour, double weight, boolean announce, String overridenLore) {
@@ -31,6 +32,14 @@ public class Rarity {
 
     public boolean getAnnounce() {
         return this.announce;
+    }
+
+    public boolean isFishWeighted() {
+        return fishWeighted;
+    }
+
+    public void setFishWeighted(boolean fishWeighted) {
+        this.fishWeighted = fishWeighted;
     }
 
     public String getLorePrep() {
