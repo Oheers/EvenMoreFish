@@ -225,7 +225,9 @@ class Controls{
                             else baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": ")));
 
                             for (Fish fish : EvenMoreFish.fishCollection.get(r)) {
-                                BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
+                                BaseComponent tC;
+                                if (fish.getDisplayName() != null) tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
+                                else tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
                                 tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
                                 tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + fish.getRarity().getValue() + " " + fish.getName()));
                                 baseComponent.addExtra(tC);
