@@ -29,6 +29,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
@@ -70,6 +71,10 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static final int METRIC_ID = 11054;
 
+    public static final int MSG_CONFIG_VERSION = 8;
+    public static final int MAIN_CONFIG_VERSION = 8;
+    public static final int COMP_CONFIG_VERSION = 1;
+
     public void onEnable() {
 
         guis = new ArrayList<>();
@@ -108,7 +113,11 @@ public class EvenMoreFish extends JavaPlugin {
         // async check for updates on the spigot page
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             isUpdateAvailable = checkUpdate();
-            checkConfigVers();
+            try {
+                checkConfigVers();
+            } catch (IOException exception) {
+                logger.log(Level.WARNING, "Could not update messages.yml");
+            }
         });
 
         // checks against both support region plugins and sets an active plugin (worldguard is priority)
@@ -277,22 +286,20 @@ public class EvenMoreFish extends JavaPlugin {
         return false;
     }
 
-    private void checkConfigVers() {
-        int MSG_CONFIG_VERSION = 7;
+    private void checkConfigVers() throws IOException {
+
         if (msgs.configVersion() < MSG_CONFIG_VERSION) {
-            getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. Certain new configurable features may have been added, and without" +
-                    " an updated config, you won't be able to modify them. To update, either delete your messages.yml file and restart the server to create a new" +
-                    " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
+            ConfigUpdater.updateMessages(msgs.configVersion());
+            getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. The plugin has automatically added the extra features but you may wish to" +
+                    " modify them to suit your server.");
         }
 
-        int MAIN_CONFIG_VERSION = 7;
         if (mainConfig.configVersion() < MAIN_CONFIG_VERSION) {
-            getLogger().log(Level.WARNING, "Your config.yml config is not up to date. Certain new configurable features may have been added, and without" +
-            " an updated config, you won't be able to modify them. To update, either delete your config.yml file and restart the server to create a new" +
-                    " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
+            ConfigUpdater.updateConfig(mainConfig.configVersion());
+            getLogger().log(Level.WARNING, "Your config.yml config is not up to date. The plugin has automatically added the extra features but you may wish to" +
+                    " modify them to suit your server.");
         }
 
-        int COMP_CONFIG_VERSION = 1;
         if (competitionConfig.configVersion() < COMP_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
