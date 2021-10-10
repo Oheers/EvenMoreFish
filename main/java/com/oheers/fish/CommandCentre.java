@@ -113,6 +113,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         compTypes = Arrays.asList(
                 "largest_fish",
                 "most_fish",
+                "random",
                 "specific_fish"
         );
     }
@@ -359,12 +360,12 @@ class Controls{
             if (duration > 0) {
                 Competition comp = new Competition(duration, type);
 
-                if (type == CompetitionType.SPECIFIC_FISH) comp.chooseFish(null, true);
-                else comp.leaderboardApplicable = true;
-
+                comp.setCompetitionName("[admin_started]");
+                comp.setAdminStarted(true);
                 comp.initRewards(null, true);
                 comp.initBar(null);
                 comp.initGetNumbersNeeded(null);
+
                 EvenMoreFish.active = comp;
                 comp.begin(true);
             } else {

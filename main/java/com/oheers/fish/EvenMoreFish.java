@@ -73,6 +73,7 @@ public class EvenMoreFish extends JavaPlugin {
     public void onEnable() {
 
         guis = new ArrayList<>();
+        logger = getLogger();
 
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
@@ -126,8 +127,6 @@ public class EvenMoreFish extends JavaPlugin {
         Help.loadValues();
 
         AutoRunner.init();
-
-        logger = getLogger();
 
         wgPlugin = getWorldGuard();
         checkPapi();

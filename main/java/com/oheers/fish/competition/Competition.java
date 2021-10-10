@@ -35,19 +35,35 @@ public class Competition {
 
     static boolean active;
 
+    static boolean originallyRandom;
+
+    public String competitionName;
+    public boolean adminStarted;
+
     // In a SPECIFIC_FISH competition, there won't be a leaderboard
     public boolean leaderboardApplicable;
     public static Leaderboard leaderboard;
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
-        this.competitionType = type;
         this.alertTimes = new ArrayList<>();
         this.rewards = new HashMap<>();
-
+        this.competitionType = type;
     }
 
     public void begin(boolean adminStart) {
+        if (competitionType == CompetitionType.RANDOM) {
+            competitionType = getRandomType();
+            System.out.println("resetting to " + competitionType);
+            originallyRandom = true;
+        }
+
+        if (competitionType == CompetitionType.SPECIFIC_FISH) {
+            if (!chooseFish(competitionName, adminStart)) return;
+        } else {
+            leaderboardApplicable = true;
+        }
+
         this.timeLeft = this.maxDuration;
         if (Bukkit.getOnlinePlayers().size() >= playersNeeded || adminStart) {
             active = true;
@@ -75,6 +91,7 @@ public class Competition {
             leaderboard.clear();
         }
         active = false;
+        if (originallyRandom) competitionType = CompetitionType.RANDOM;
     }
 
     // Starts an async task to decrease the time left by 1s each second
@@ -340,6 +357,18 @@ public class Competition {
         return leaderboard;
     }
 
+    public void setCompetitionName(String competitionName) {
+        this.competitionName = competitionName;
+    }
+
+    public void setAdminStarted(boolean adminStarted) {
+        this.adminStarted = adminStarted;
+    }
+
+    public static void setOriginallyRandom(boolean originallyRandom) {
+        Competition.originallyRandom = originallyRandom;
+    }
+
     public void initLeaderboard() {
         leaderboardApplicable = true;
         leaderboard = new Leaderboard(competitionType);
@@ -474,5 +503,11 @@ public class Competition {
 
     public void initGetNumbersNeeded(String competitionName) {
         this.playersNeeded = EvenMoreFish.competitionConfig.getPlayersNeeded(competitionName);
+    }
+
+    private CompetitionType getRandomType() {
+        // -1 from the length so that the RANDOM isn't chosen as the random value.
+        int type = new Random().nextInt(CompetitionType.values().length-1);
+        return CompetitionType.values()[type];
     }
 }

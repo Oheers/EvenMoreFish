@@ -21,12 +21,8 @@ public class CompetitionQueue {
                 CompetitionType type = EvenMoreFish.competitionConfig.getCompetitionType(comp);
                 Competition competition = new Competition(EvenMoreFish.competitionConfig.getCompetitionDuration(comp)*60, type);
 
-                if (type == CompetitionType.SPECIFIC_FISH) {
-                    if (!competition.chooseFish(comp, false)) {
-                        return;
-                    }
-                } else competition.leaderboardApplicable = true;
-
+                competition.setCompetitionName(comp);
+                competition.setAdminStarted(false);
                 competition.initAlerts(comp);
                 competition.initRewards(comp, false);
                 competition.initBar(comp);
