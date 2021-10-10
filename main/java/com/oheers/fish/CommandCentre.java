@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -260,7 +261,11 @@ class Controls{
                                     if (f.getName().equalsIgnoreCase(using.toString())) {
                                         f.setFisherman(((Player) sender).getUniqueId());
                                         f.init();
-                                        FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
+
+                                        if (f.getType().getType() != Material.AIR) {
+                                            FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
+                                        }
+
                                     }
                                 }
                             }

@@ -20,7 +20,9 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
@@ -117,7 +119,10 @@ public class FishingProcessor implements Listener {
 
                     // replaces the fishing item with a custom evenmorefish fish.
                     Item nonCustom = (Item) event.getCaught();
-                    nonCustom.setItemStack(fish.give());
+                    if (nonCustom != null) {
+                        if (fish.getType().getType() != Material.AIR) nonCustom.setItemStack(fish.give());
+                        else nonCustom.remove();
+                    }
 
                     if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
                         new BukkitRunnable() {
