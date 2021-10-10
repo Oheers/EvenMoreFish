@@ -94,11 +94,11 @@ public class FishingProcessor implements Listener {
                             .setRarity(rarity)
                             .setReceiver(player);
 
-                    if (fish.getDisplayName() != null) {
-                        msg.setFishCaught(fish.getDisplayName());
-                    } else {
-                        msg.setFishCaught(name);
-                    }
+                    if (fish.getDisplayName() != null) msg.setFishCaught(fish.getDisplayName());
+                    else msg.setFishCaught(name);
+
+                    if (fish.getRarity().getDisplayName() != null) msg.setRarity(fish.getRarity().getDisplayName());
+                    else msg.setRarity(rarity);
 
                     if (fish.getLength() != -1) {
                         msg.setMSG(EvenMoreFish.msgs.getFishCaught());

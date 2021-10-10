@@ -163,13 +163,15 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                     // getting "place" place in the competition
                     Fish fish = EvenMoreFish.active.getLeaderboard().getPlaceFish(place);
                     if (fish != null) {
-                        return new Message()
+                        Message message = new Message()
                                 .setMSG(EvenMoreFish.msgs.getFishFormat())
-                                .setRarity(fish.getRarity().getValue())
-                                .setFishCaught(fish.getDisplayName())
                                 .setLength(Float.toString(fish.getLength()))
-                                .setRarityColour(fish.getRarity().getColour())
-                                .toString();
+                                .setRarityColour(fish.getRarity().getColour());
+                        if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
+                        else message.setFishCaught(fish.getName());
+
+                        if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                        else message.setRarity(fish.getRarity().getValue());
                     }
                 } else {
                     if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {

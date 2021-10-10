@@ -106,10 +106,13 @@ public class Competition {
                             .setTimeRaw(FishUtils.timeRaw(timeLeft))
                             .setType(competitionType);
                     if (competitionType == CompetitionType.SPECIFIC_FISH) {
-                        m.setAmount(Integer.toString(numberNeeded))
-                                .setRarity(selectedFish.getRarity().getValue())
-                                .setRarityColour(selectedFish.getRarity().getColour())
-                                .setFishCaught(selectedFish.getDisplayName());
+                        m.setAmount(Integer.toString(numberNeeded)).setRarityColour(selectedFish.getRarity().getColour());
+
+                        if (selectedFish.getRarity().getDisplayName() != null) m.setRarity(selectedFish.getRarity().getDisplayName());
+                        else m.setRarity(selectedFish.getRarity().getValue());
+
+                        if (selectedFish.getDisplayName() != null) m.setFishCaught(selectedFish.getDisplayName());
+                        else m.setFishCaught(selectedFish.getName());
                     }
 
                     for (Player player : Bukkit.getOnlinePlayers()) {
@@ -227,9 +230,13 @@ public class Competition {
                     .setMSG(EvenMoreFish.msgs.getCompetitionStart())
                     .setAmount(Integer.toString(this.numberNeeded))
                     .setType(this.competitionType)
-                    .setRarity(selectedFish.getRarity().getValue())
-                    .setRarityColour(selectedFish.getRarity().getColour())
-                    .setFishCaught(selectedFish.getDisplayName());
+                    .setRarityColour(selectedFish.getRarity().getColour());
+
+            if (selectedFish.getRarity().getDisplayName() != null) msg.setRarity(selectedFish.getRarity().getDisplayName());
+            else msg.setRarity(selectedFish.getRarity().getValue());
+
+            if (selectedFish.getDisplayName() != null) msg.setFishCaught(selectedFish.getDisplayName());
+            else msg.setFishCaught(selectedFish.getName());
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(msg.toString());
@@ -276,11 +283,15 @@ public class Competition {
 
                         if (competitionType == CompetitionType.LARGEST_FISH) {
                             Fish fish = entry.getFish();
-                            message.setRarity(fish.getRarity().getValue())
-                                    .setRarityColour(fish.getRarity().getColour())
-                                    .setFishCaught(fish.getDisplayName())
+                            message.setRarityColour(fish.getRarity().getColour())
                                     .setLength(Float.toString(entry.getValue()))
                                     .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
+
+                            if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                            else message.setRarity(fish.getRarity().getValue());
+
+                            if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
+                            else message.setFishCaught(fish.getName());
                         } else {
                             message.setAmount(Integer.toString((int) entry.getValue()))
                                     .setMSG(EvenMoreFish.msgs.getMostFishLeaderboard());
@@ -306,11 +317,15 @@ public class Competition {
 
                             if (competitionType == CompetitionType.LARGEST_FISH) {
                                 Fish fish = entry.getFish();
-                                message.setRarity(fish.getRarity().getValue())
-                                        .setRarityColour(fish.getRarity().getColour())
-                                        .setFishCaught(fish.getDisplayName())
+                                message.setRarityColour(fish.getRarity().getColour())
                                         .setLength(Float.toString(entry.getValue()))
                                         .setMSG(EvenMoreFish.msgs.getLargestFishLeaderboard());
+
+                                if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                                else message.setRarity(fish.getRarity().getValue());
+
+                                if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
+                                else message.setFishCaught(fish.getName());
                             } else {
                                 message.setAmount(Integer.toString((int) entry.getValue()))
                                         .setMSG(EvenMoreFish.msgs.getMostFishLeaderboard());
@@ -472,12 +487,16 @@ public class Competition {
                 .setType(competitionType);
         String broadcast;
         if (competitionType == CompetitionType.SPECIFIC_FISH) {
-            broadcast = m
-                    .setRarity(selectedFish.getRarity().getValue())
-                    .setAmount(Integer.toString(numberNeeded))
-                    .setRarityColour(selectedFish.getRarity().getColour())
-                    .setFishCaught(selectedFish.getDisplayName())
-                    .toString();
+            m.setAmount(Integer.toString(numberNeeded))
+                    .setRarityColour(selectedFish.getRarity().getColour());
+
+            if (selectedFish.getRarity().getDisplayName() != null) m.setRarity(selectedFish.getRarity().getDisplayName());
+            else m.setRarity(selectedFish.getRarity().getValue());
+
+            if (selectedFish.getDisplayName() != null) m.setFishCaught(selectedFish.getDisplayName());
+            else m.setFishCaught(selectedFish.getName());
+
+            broadcast = m.toString();
         } else broadcast = m.toString();
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendMessage(broadcast);

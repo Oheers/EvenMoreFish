@@ -221,7 +221,8 @@ class Controls{
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                         if (args[2].equalsIgnoreCase(r.getValue())) {
                             BaseComponent baseComponent = new TextComponent("");
-                            baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": ")));
+                            if (r.getDisplayName() != null) baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getDisplayName())));
+                            else baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": ")));
 
                             for (Fish fish : EvenMoreFish.fishCollection.get(r)) {
                                 BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
@@ -236,8 +237,15 @@ class Controls{
                     }
                     BaseComponent baseComponent = new TextComponent("");
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
-                        tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish."))); // The only element of the hover events basecomponents is the item json
+                        BaseComponent tC;
+                        if (r.getDisplayName() != null) {
+                            tC = new TextComponent(FishUtils.translateHexColorCodes("&r[" + r.getDisplayName() + "] "));
+                            tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getDisplayName() + " fish.")));
+                        } else {
+                            tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
+                            tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish.")));
+                        }
+
                         tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + r.getValue()));
                         baseComponent.addExtra(tC);
                     }
@@ -277,8 +285,14 @@ class Controls{
                 } else {
                     BaseComponent baseComponent = new TextComponent("");
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        BaseComponent tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
-                        tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish."))); // The only element of the hover events basecomponents is the item json
+                        BaseComponent tC;
+                        if (r.getDisplayName() != null) {
+                            tC = new TextComponent(FishUtils.translateHexColorCodes("&r[" + r.getDisplayName() + "] "));
+                            tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getDisplayName() + " fish.")));
+                        } else {
+                            tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
+                            tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish.")));
+                        }
                         tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + r.getValue()));
                         baseComponent.addExtra(tC);
                     }
