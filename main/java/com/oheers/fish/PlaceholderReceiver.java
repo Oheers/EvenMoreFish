@@ -166,7 +166,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                         return new Message()
                                 .setMSG(EvenMoreFish.msgs.getFishFormat())
                                 .setRarity(fish.getRarity().getValue())
-                                .setFishCaught(fish.getName())
+                                .setFishCaught(fish.getDisplayName())
                                 .setLength(Float.toString(fish.getLength()))
                                 .setRarityColour(fish.getRarity().getColour())
                                 .toString();

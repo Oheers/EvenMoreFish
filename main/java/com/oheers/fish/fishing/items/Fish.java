@@ -32,6 +32,8 @@ public class Fish implements Cloneable {
     UUID fisherman;
     Float length;
 
+    String displayName;
+
     List<Reward> actionRewards;
     List<Reward> fishRewards;
     String eventType;
@@ -55,6 +57,7 @@ public class Fish implements Cloneable {
         setSize();
         checkEatEvent();
         checkIntEvent();
+        checkDisplayName();
 
         fishRewards = new ArrayList<>();
         checkFishEvent();
@@ -68,7 +71,9 @@ public class Fish implements Cloneable {
 
         ItemMeta fishMeta = fish.getItemMeta();
 
-        fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
+        if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
+        else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
+
         fishMeta.setLore(generateLore());
 
         if (glowing) fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -166,6 +171,14 @@ public class Fish implements Cloneable {
 
     public void setPermissionNode(String permissionNode) {
         this.permissionNode = permissionNode;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     private ItemStack setType() {
@@ -289,6 +302,10 @@ public class Fish implements Cloneable {
         lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + FishUtils.translateHexColorCodes(this.rarity.getLorePrep()));
 
         return lore;
+    }
+
+    public void checkDisplayName() {
+        this.displayName = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".displayname");
     }
 
     public void randomBreak() {
