@@ -10,6 +10,8 @@ public class Rarity {
     boolean fishWeighted;
     public String overridenLore;
 
+    public String permission;
+
     public Rarity(String value, String colour, double weight, boolean announce, String overridenLore) {
         this.value = value;
         this.colour = colour;
@@ -45,5 +47,13 @@ public class Rarity {
     public String getLorePrep() {
         if (overridenLore != null) return ChatColor.translateAlternateColorCodes('&', overridenLore);
         else return ChatColor.translateAlternateColorCodes('&', this.getColour() + "&l" + this.getValue().toUpperCase());
+    }
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 }

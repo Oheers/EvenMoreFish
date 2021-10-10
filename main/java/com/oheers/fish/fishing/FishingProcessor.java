@@ -20,9 +20,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
@@ -63,7 +61,8 @@ public class FishingProcessor implements Listener {
 
                     Player player = event.getPlayer();
 
-                    Fish fish = getFish(randomWeightedRarity(), event.getHook().getLocation().getBlock().getBiome(), player);
+                    Fish fish = getFish(randomWeightedRarity(player), event.getHook().getLocation().getBlock().getBiome(), player);
+                    if (fish == null) return;
                     fish.setFisherman(player.getUniqueId());
                     fish.init();
                     // puts all the fish information into a format that Messages.renderMessage() can print out nicely
@@ -150,24 +149,44 @@ public class FishingProcessor implements Listener {
         }
     }
 
-    private static Rarity randomWeightedRarity() {
+    private static Rarity randomWeightedRarity(Player fisher) {
         // Loads all the rarities
-        List<Rarity> rarities = new ArrayList<>(EvenMoreFish.fishCollection.keySet());
+        List<Rarity> allowedRarities = new ArrayList<>();
+
+        if (EvenMoreFish.permission != null) {
+            for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
+                if (rarity.getPermission() != null) {
+                    if (EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
+                        allowedRarities.add(rarity);
+                    }
+                } else {
+                    allowedRarities.add(rarity);
+                }
+            }
+
+        } else {
+            allowedRarities.addAll(EvenMoreFish.fishCollection.keySet());
+        }
 
         double totalWeight = 0;
 
         // Weighted random logic (nabbed from stackoverflow)
-        for (Rarity r : rarities) {
+        for (Rarity r : allowedRarities) {
             totalWeight += r.getWeight();
         }
 
         int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < rarities.size() - 1; ++idx) {
-            r -= rarities.get(idx).getWeight();
+        for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
+            r -= allowedRarities.get(idx).getWeight();
             if (r <= 0.0) break;
         }
 
-        return rarities.get(idx);
+        if (allowedRarities.size() == 0) {
+            EvenMoreFish.logger.log(Level.SEVERE, "There are no rarities for the user " + fisher.getName() + " to fish. They have received no fish.");
+            return null;
+        }
+
+        return allowedRarities.get(idx);
     }
 
     private static Fish randomWeightedFish(List<Fish> fishList) {
@@ -188,6 +207,7 @@ public class FishingProcessor implements Listener {
     }
 
     private static Fish getFish(Rarity r, Biome b, Player p) {
+        if (r == null) return null;
         // will store all the fish that match the player's biome or don't discriminate biomes
         List<Fish> available = new ArrayList<>();
 
@@ -207,7 +227,7 @@ public class FishingProcessor implements Listener {
         // if the config doesn't define any fish that can be fished in this biome.
         if (available.size() == 0) {
             EvenMoreFish.logger.log(Level.WARNING, "There are no fish of the rarity " + r.getValue() + " that can be fished in the " + b.name() + " biome.");
-            return defaultFish();
+            return null;
         }
 
         // checks whether weight calculations need doing for fish
@@ -217,12 +237,6 @@ public class FishingProcessor implements Listener {
             int ran = (int) (Math.random() * available.size());
             return available.get(ran);
         }
-    }
-
-    // if there's no fish available in the current biome, this gets sent out
-    private static Fish defaultFish() {
-        Rarity r = new Rarity("No biome found", "&4", 1.0d, false, null);
-        return new Fish(r, "");
     }
 
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml

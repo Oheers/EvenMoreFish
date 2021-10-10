@@ -83,15 +83,6 @@ public class EvenMoreFish extends JavaPlugin {
         mainConfig = new MainConfig();
         competitionConfig = new CompetitionConfig();
 
-        Names names = new Names();
-        names.loadRarities();
-
-        competitionQueue = new CompetitionQueue();
-        competitionQueue.load();
-
-        LocaleGen lG = new LocaleGen();
-        lG.createLocaleFiles(this);
-
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
             if (!setupEconomy()) {
@@ -103,6 +94,15 @@ public class EvenMoreFish extends JavaPlugin {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
             getServer().getPluginManager().disablePlugin(this);
         }
+
+        Names names = new Names();
+        names.loadRarities();
+
+        competitionQueue = new CompetitionQueue();
+        competitionQueue.load();
+
+        LocaleGen lG = new LocaleGen();
+        lG.createLocaleFiles(this);
 
         // async check for updates on the spigot page
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {

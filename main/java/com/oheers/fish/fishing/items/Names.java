@@ -32,6 +32,8 @@ public class Names {
 
             // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
+            r.setPermission(rarityPermission(rarity));
+
             List<Fish> fishQueue = new ArrayList<>();
 
             for (String fish : fishSet) {
@@ -70,6 +72,10 @@ public class Names {
 
     private String rarityOverridenLore(String rarity) {
         return EvenMoreFish.raritiesFile.getConfig().getString("rarities." + rarity + ".override-lore");
+    }
+
+    private String rarityPermission(String rarity) {
+        return EvenMoreFish.raritiesFile.getConfig().getString("rarities." + rarity + ".permission");
     }
 
     private List<Biome> getBiomes(String name, String rarity) {
