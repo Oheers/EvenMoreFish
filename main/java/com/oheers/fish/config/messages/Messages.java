@@ -319,4 +319,22 @@ public class Messages {
         if (returning.size() != 0) return returning;
         else return Arrays.asList("&e&lValue: &e${sell-price}", "&7LEFT CLICK to sell all fish in your inventory.");
     }
+
+    public List<String> getGeneralHelp() {
+        List<String> returning = config.getStringList("help-general");
+        if (returning.size() == 0) EvenMoreFish.logger.log(Level.WARNING, "Missing config value: \"help-general\". [messages.yml]");
+        return returning;
+    }
+
+    public List<String> getAdminHelp() {
+        List<String> returning = config.getStringList("help-admin");
+        if (returning.size() == 0) EvenMoreFish.logger.log(Level.WARNING, "Missing config value: \"help-admin\". [messages.yml]");
+        return returning;
+    }
+
+    public List<String> getCompetitionHelp() {
+        List<String> returning = config.getStringList("help-competition");
+        if (returning.size() == 0) EvenMoreFish.logger.log(Level.WARNING, "Missing config value: \"help-competition\". [messages.yml]");
+        return returning;
+    }
 }

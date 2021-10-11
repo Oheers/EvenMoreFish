@@ -36,7 +36,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         // Aliases are set in the plugin.yml
         if (cmd.getName().equalsIgnoreCase("evenmorefish")) {
             if (args.length == 0) {
-                sender.sendMessage(Help.std_help);
+                sender.sendMessage(Help.formGeneralHelp(sender));
             } else {
                 control(sender, args);
             }
@@ -86,7 +86,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 break;
             default:
-                sender.sendMessage(Help.std_help);
+                sender.sendMessage(Help.formGeneralHelp(sender));
         }
     }
 
@@ -205,7 +205,7 @@ class Controls{
 
         // will only proceed after this if at least args[1] exists
         if (args.length == 1) {
-            sender.sendMessage(Help.admin_help);
+            sender.sendMessage(Help.formAdminHelp());
             return;
         }
 
@@ -329,13 +329,13 @@ class Controls{
                 sender.sendMessage(msg.toString());
                 break;
             default:
-                sender.sendMessage(Help.admin_help);
+                sender.sendMessage(Help.formAdminHelp());
         }
     }
 
     protected static void competitionControl(String[] args, CommandSender player) {
         if (args.length == 2) {
-            player.sendMessage(Help.comp_help);
+            player.sendMessage(Help.formCompetitionHelp());
         } else {
             {
                 if (args[2].equalsIgnoreCase("start")) {
@@ -362,7 +362,7 @@ class Controls{
                         player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
                     }
                 } else {
-                    player.sendMessage(Help.comp_help);
+                    player.sendMessage(Help.formCompetitionHelp());
                 }
             }
         }
@@ -400,47 +400,58 @@ class Controls{
 
 class Help {
 
-    public static Map<String, String> cmdDictionary = new HashMap<>();
-    public static Map<String, String> adminDictionary = new HashMap<>();
-    public static Map<String, String> compDictionary = new HashMap<>();
+    public static String formGeneralHelp(CommandSender user) {
 
-    public static String std_help, admin_help, comp_help;
+        StringBuilder out = new StringBuilder();
+        List<String> commands = EvenMoreFish.msgs.getGeneralHelp();
 
-    // puts values into the command dictionaries for later use in /emf help and what not
-    public static void loadValues() {
+        String escape = "\n";
+        if (EvenMoreFish.permission != null && user != null) {
+            for (int i=0; i<commands.size(); i++) {
+                if (i == commands.size()-1) escape = "";
+                if (commands.get(i).contains("/emf admin")) {
+                    if (EvenMoreFish.permission.has(user, "emf.admin")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                } else if (commands.get(i).contains("/emf top")) {
+                    if (EvenMoreFish.permission.has(user, "emf.top")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                } else if (commands.get(i).contains("/emf shop")) {
+                    if (EvenMoreFish.permission.has(user, "emf.shop")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                } else out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+            }
+        } else {
+            for (int i=0; i<commands.size(); i++) {
+                if (i == commands.size()-1) escape = "";
+                out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+            }
+        }
 
-        cmdDictionary.put("emf admin", "Admin command help page.");
-        cmdDictionary.put("emf help", "Shows you this page.");
-        cmdDictionary.put("emf shop", "Opens a shop to sell your fish.");
-        cmdDictionary.put("emf top", "Shows an ongoing competition's leaderboard.");
-
-        adminDictionary.put("emf admin competition <start/end> <time(seconds)>", "Starts or stops a competition");
-        adminDictionary.put("emf admin reload", "Reloads the plugin's config files");
-        adminDictionary.put("emf admin version", "Displays plugin information.");
-
-        compDictionary.put("emf admin competition start <time<seconds>", "Starts a competition of a specified duration");
-        compDictionary.put("emf admin competition end <time<seconds>", "Ends the current competition (if there is one)");
-
-        std_help = formString(cmdDictionary);
-        admin_help = formString(adminDictionary);
-        comp_help = formString(compDictionary);
-
-        // gc
-        cmdDictionary = null;
-        adminDictionary = null;
-        compDictionary = null;
+        return out.toString();
 
     }
 
-    public static String formString(Map<String, String> dictionary) {
+    public static String formCompetitionHelp() {
 
         StringBuilder out = new StringBuilder();
+        List<String> commands = EvenMoreFish.msgs.getCompetitionHelp();
 
-        out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + "----- &a&lEvenMoreFish &r-----\n"));
+        String escape = "\n";
+        for (int i=0; i<commands.size(); i++) {
+            if (i == commands.size()-1) escape = "";
+            out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+        }
 
-        for (String s : dictionary.keySet()) {
-            // we pass a null into here since there's no need to use placeholders in a help message.
-            out.append(new Message().setCMD(s).setDesc(dictionary.get(s)).setMSG(EvenMoreFish.msgs.getEMFHelp()).toString()).append("\n");
+        return out.toString();
+
+    }
+
+    public static String formAdminHelp() {
+
+        StringBuilder out = new StringBuilder();
+        List<String> commands = EvenMoreFish.msgs.getAdminHelp();
+
+        String escape = "\n";
+        for (int i=0; i<commands.size(); i++) {
+            if (i == commands.size()-1) escape = "";
+            out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
         }
 
         return out.toString();

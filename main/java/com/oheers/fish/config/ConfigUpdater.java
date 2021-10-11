@@ -91,7 +91,28 @@ public class ConfigUpdater {
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
 	private static final String MSG_UPDATE_8 =
-			"# The name found on the item to sell all fish in inventory in /emf shop\n" +
+			"# Help messages\n" +
+					"# General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.\n" +
+					"help-general:\n" +
+					"  - \"&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#f1ffed&m &f&m &f\"\n" +
+					"  - \"/emf top - Shows an ongoing competition's leaderboard.\"\n" +
+					"  - \"/emf help - Shows you this page.\"\n" +
+					"  - \"/emf shop - Opens a shop to sell your fish.\"\n" +
+					"  - \"/emf admin - Admin command help page.\"\n" +
+					"\n" +
+					"# Competition help (/emf admin competition help)\n" +
+					"help-competition:\n" +
+					"  - \"&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#f1ffed&m &f&m &f\"\n" +
+					"  - \"/emf admin competition start <duration> <type> - Starts a competition of a specified duration\"\n" +
+					"  - \"/emf admin competition end - Ends the current competition (if there is one)\"\n" +
+					"\n" +
+					"# Admin help (/emf admin help)\n" +
+					"help-admin:\n" +
+					"  - \"&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#f1ffed&m &f&m &f\"\n" +
+					"  - \"/emf admin competition <start/end> <duration> <type> - Starts or stops a competition\"\n" +
+					"  - \"/emf admin reload - Reloads the plugin's config files\"\n" +
+					"  - \"/emf admin version - Displays plugin information.\"\n\n" +
+					"# The name found on the item to sell all fish in inventory in /emf shop\n" +
 					"sell-all-name: \"&6&lSELL ALL\"\n" +
 					"# The name found on the confirming item in /emf shop\n" +
 					"confirm-sell-all-gui-name: \"&6&lCONFIRM\"\n" +
@@ -101,7 +122,7 @@ public class ConfigUpdater {
 					"sell-all-lore:\n" +
 					"  - \"&8Inventory\"\n" +
 					"  - \"\"\n" +
-					"  - \"&7Total Value » &e${sell-price}\"\n" +
+					"  - \"&7Total Value = &e${sell-price}\"\n" +
 					"  - \"\"\n" +
 					"  - \"&7Click this button to sell\"\n" +
 					"  - \"&7the fish in your inventory to\"\n" +
@@ -112,7 +133,7 @@ public class ConfigUpdater {
 					"error-sell-all-gui-lore:\n" +
 					"  - \"&8Inventory\"\n" +
 					"  - \"\"\n" +
-					"  - \"&7Total Value » &c$0\"\n" +
+					"  - \"&7Total Value = &c$0\"\n" +
 					"  - \"\"\n" +
 					"  - \"&7Click this button to sell\"\n" +
 					"  - \"&7the fish in your inventory to\"\n" +
@@ -121,6 +142,7 @@ public class ConfigUpdater {
 					"  - \"&c» (Left-click) sell the fish.\"" +
 					"# By setting a fish's minimum-length to less than 0, you can create a lengthless fish. This is used when a player fishes a lengthless fish.\n" +
 					"lengthless-fish-caught: \"&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!\"";
+
 
 	private static final String CONFIG_UPDATE_8 =
 			"gui: \n" +

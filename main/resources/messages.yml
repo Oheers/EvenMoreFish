@@ -141,6 +141,28 @@ error-sell-all-gui-lore:
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
 
+# Help messages
+# General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
+help-general:
+  - "&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#f1ffed&m &f&m &f"
+  - "/emf top - Shows an ongoing competition's leaderboard."
+  - "/emf help - Shows you this page."
+  - "/emf shop - Opens a shop to sell your fish."
+  - "/emf admin - Admin command help page."
+
+# Competition help (/emf admin competition help)
+help-competition:
+  - "&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#f1ffed&m &f&m &f"
+  - "/emf admin competition start <duration> <type> - Starts a competition of a specified duration"
+  - "/emf admin competition end - Ends the current competition (if there is one)"
+
+# Admin help (/emf admin help)
+help-admin:
+  - "&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#f1ffed&m &f&m &f"
+  - "/emf admin competition <start/end> <duration> <type> - Starts or stops a competition"
+  - "/emf admin reload - Reloads the plugin's config files"
+  - "/emf admin version - Displays plugin information."
+
 # Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
 no-player-in-place: "Start fishing to take this place"
 # Shown when the emf competition placeholders are used when there's no competition running
@@ -153,6 +175,7 @@ emf-competition-size-null: true
 emf-competition-fish-null: true
 # How should the %emf_competition_place_fish_*% be formatted?
 emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
 config-version: 7

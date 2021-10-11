@@ -133,8 +133,6 @@ public class EvenMoreFish extends JavaPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
-        Help.loadValues();
-
         AutoRunner.init();
 
         wgPlugin = getWorldGuard();
@@ -292,18 +290,24 @@ public class EvenMoreFish extends JavaPlugin {
             ConfigUpdater.updateMessages(msgs.configVersion());
             getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. The plugin has automatically added the extra features but you may wish to" +
                     " modify them to suit your server.");
+
+            EvenMoreFish.messageFile.reload();
         }
 
         if (mainConfig.configVersion() < MAIN_CONFIG_VERSION) {
             ConfigUpdater.updateConfig(mainConfig.configVersion());
             getLogger().log(Level.WARNING, "Your config.yml config is not up to date. The plugin has automatically added the extra features but you may wish to" +
                     " modify them to suit your server.");
+
+            reloadConfig();
         }
 
         if (competitionConfig.configVersion() < COMP_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
+
+            EvenMoreFish.competitionFile.reload();
         }
     }
 
