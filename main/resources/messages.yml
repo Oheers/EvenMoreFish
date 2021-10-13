@@ -178,4 +178,4 @@ emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 7
+config-version: 8
