@@ -2,7 +2,6 @@ package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.net.URL;
@@ -17,7 +16,9 @@ public class LocaleGen {
             "messages_es",
             "messages_fr",
             "messages_nl",
-            "messages_ru"
+            "messages_pt-br",
+            "messages_ru",
+            "messages_vn"
     };
 
     // creates locale files in a /locales/ folder from a list of available locales
