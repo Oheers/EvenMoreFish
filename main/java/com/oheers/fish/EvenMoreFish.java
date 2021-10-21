@@ -288,7 +288,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (msgs.configVersion() < MSG_CONFIG_VERSION) {
             ConfigUpdater.updateMessages(msgs.configVersion());
-            getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. The plugin has automatically added the extra features but you may wish to" +
+            getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. The plugin may have automatically added the extra features but you may wish to" +
                     " modify them to suit your server.");
 
             EvenMoreFish.messageFile.reload();
@@ -296,7 +296,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (mainConfig.configVersion() < MAIN_CONFIG_VERSION) {
             ConfigUpdater.updateConfig(mainConfig.configVersion());
-            getLogger().log(Level.WARNING, "Your config.yml config is not up to date. The plugin has automatically added the extra features but you may wish to" +
+            getLogger().log(Level.WARNING, "Your config.yml config is not up to date. The plugin may have automatically added the extra features but you may wish to" +
                     " modify them to suit your server.");
 
             reloadConfig();
