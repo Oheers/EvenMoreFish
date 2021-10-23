@@ -98,6 +98,8 @@ public class Fish implements Cloneable {
             }
         }
 
+        fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+
         fish.setItemMeta(fishMeta);
 
         WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
