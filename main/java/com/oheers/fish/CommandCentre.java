@@ -6,10 +6,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -18,7 +15,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
@@ -220,38 +220,37 @@ class Controls{
                 if (args.length == 3) {
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                         if (args[2].equalsIgnoreCase(r.getValue())) {
-                            BaseComponent baseComponent = new TextComponent("");
-                            if (r.getDisplayName() != null) baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getDisplayName())));
-                            else baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": ")));
+                            ComponentBuilder builder = new ComponentBuilder();
+
+                            if (r.getDisplayName() != null) builder.append(FishUtils.translateHexColorCodes(r.getDisplayName()), ComponentBuilder.FormatRetention.NONE);
+                            else builder.append(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": "), ComponentBuilder.FormatRetention.NONE);
 
                             for (Fish fish : EvenMoreFish.fishCollection.get(r)) {
-                                BaseComponent tC;
-                                if (fish.getDisplayName() != null) tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
-                                else tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
-                                tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
-                                tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + fish.getRarity().getValue() + " " + fish.getName()));
-                                baseComponent.addExtra(tC);
+                                if (fish.getDisplayName() != null) builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
+                                else builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
+
+                                builder.event(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
+                                builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + fish.getRarity().getValue() + " " + fish.getName()));
                             }
 
-                            sender.spigot().sendMessage(baseComponent);
+                            sender.spigot().sendMessage(builder.create());
                             return;
                         }
                     }
-                    BaseComponent baseComponent = new TextComponent("");
+                    ComponentBuilder builder = new ComponentBuilder();
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        BaseComponent tC;
+
                         if (r.getDisplayName() != null) {
-                            tC = new TextComponent(FishUtils.translateHexColorCodes("&r[" + r.getDisplayName() + "] "));
-                            tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getDisplayName() + " fish.")));
+                            builder.append(FishUtils.translateHexColorCodes("&r[" + r.getDisplayName() + "] "));
+                            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getDisplayName() + " fish.")));
                         } else {
-                            tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
-                            tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish.")));
+                            builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
+                            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish.")));
                         }
 
-                        tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + r.getValue()));
-                        baseComponent.addExtra(tC);
+                        builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + r.getValue()));
                     }
-                    sender.spigot().sendMessage(baseComponent);
+                    sender.spigot().sendMessage(builder.create());
                 } else if (args.length >= 4) {
                     StringBuilder using = new StringBuilder();
 
