@@ -14,10 +14,12 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +35,8 @@ public class Fish implements Cloneable {
     Float length;
 
     String displayName;
+
+    String dyeColour;
 
     List<Reward> actionRewards;
     List<Reward> fishRewards;
@@ -59,6 +63,8 @@ public class Fish implements Cloneable {
         checkIntEvent();
         checkDisplayName();
 
+        checkDye();
+
         fishRewards = new ArrayList<>();
         checkFishEvent();
     }
@@ -77,6 +83,20 @@ public class Fish implements Cloneable {
         fishMeta.setLore(generateLore());
 
         if (glowing) fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        if (dyeColour != null) {
+            try {
+                LeatherArmorMeta meta = (LeatherArmorMeta) fishMeta;
+
+                Color colour = Color.decode(dyeColour);
+
+                meta.setColor(org.bukkit.Color.fromRGB(colour.getRed(), colour.getGreen(), colour.getBlue()));
+                meta.addItemFlags(ItemFlag.HIDE_DYE);
+                fish.setItemMeta(meta);
+            } catch (ClassCastException exception) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Could not add hex value: " + dyeColour + " to " + name + ". Item is likely not a leather material.");
+            }
+        }
 
         fish.setItemMeta(fishMeta);
 
@@ -306,6 +326,10 @@ public class Fish implements Cloneable {
 
     public void checkDisplayName() {
         this.displayName = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".displayname");
+    }
+
+    public void checkDye() {
+        this.dyeColour = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".dye-colour");
     }
 
     public void randomBreak() {
