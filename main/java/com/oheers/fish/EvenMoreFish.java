@@ -106,7 +106,8 @@ public class EvenMoreFish extends JavaPlugin {
         }
 
         Names names = new Names();
-        names.loadRarities();
+        names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig(), false);
+        names.loadRarities(c2021Config.getConfig(), c2021Config.getConfig(), true);
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
@@ -254,7 +255,7 @@ public class EvenMoreFish extends JavaPlugin {
         saveDefaultConfig();
 
         Names names = new Names();
-        names.loadRarities();
+        names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig(), false);
 
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());

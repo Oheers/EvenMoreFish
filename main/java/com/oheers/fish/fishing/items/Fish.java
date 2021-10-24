@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -52,7 +53,12 @@ public class Fish implements Cloneable {
 
     boolean glowing;
 
+    FileConfiguration configurationFile, rarityConfiguration;
+
     public Fish(Rarity rarity, String name) {
+        configurationFile = findConfigFile(rarity.getValue(), name);
+        rarityConfiguration = findRarityFile(rarity.getValue());
+
         this.rarity = rarity;
         this.name = name;
         this.type = setType();
@@ -109,13 +115,13 @@ public class Fish implements Cloneable {
     }
 
     private void setSize() {
-        this.minSize = EvenMoreFish.fishFile.getConfig().getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.minSize");
-        this.maxSize = EvenMoreFish.fishFile.getConfig().getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.maxSize");
+        this.minSize = configurationFile.getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.minSize");
+        this.maxSize = configurationFile.getDouble("fish." + this.rarity.getValue() + "." + this.name + ".size.maxSize");
 
         // are min & max size changed? If not, there's no fish-specific value. Check the rarity's value
         if (minSize == 0.0 && maxSize == 0.0) {
-            this.minSize = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + this.rarity.getValue() + ".size.minSize");
-            this.maxSize = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + this.rarity.getValue() + ".size.maxSize");
+            this.minSize = rarityConfiguration.getDouble("rarities." + this.rarity.getValue() + ".size.minSize");
+            this.maxSize = rarityConfiguration.getDouble("rarities." + this.rarity.getValue() + ".size.maxSize");
         }
 
         // If there's no rarity-specific value (or max is smaller than min), to avoid being in a pickle we just set min default to 0 and max default to 10
@@ -187,6 +193,14 @@ public class Fish implements Cloneable {
         return weight;
     }
 
+    public FileConfiguration getConfigurationFile() {
+        return configurationFile;
+    }
+
+    public void setConfigurationFile(FileConfiguration configurationFile) {
+        this.configurationFile = configurationFile;
+    }
+
     public String getPermissionNode() {
         return permissionNode;
     }
@@ -203,9 +217,27 @@ public class Fish implements Cloneable {
         this.displayName = displayName;
     }
 
+    private FileConfiguration findConfigFile(String rarity, String name) {
+        System.out.println("EvenMoreFish.fishFile(): " + EvenMoreFish.fishFile);
+        System.out.println("EvenMoreFish.fishFile.getConfig(): " + EvenMoreFish.fishFile.getConfig());
+        if (EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish." + rarity) != null) {
+            return EvenMoreFish.fishFile.getConfig();
+        } else if (EvenMoreFish.c2021Config.getConfig().getConfigurationSection("fish." + rarity) != null) {
+            return EvenMoreFish.c2021Config.getConfig();
+        } else return null;
+    }
+
+    private FileConfiguration findRarityFile(String rarity) {
+        if (EvenMoreFish.raritiesFile.getConfig().getConfigurationSection("rarities." + rarity) != null) {
+            return EvenMoreFish.fishFile.getConfig();
+        } else if (EvenMoreFish.c2021Config.getConfig().getConfigurationSection("rarities." + rarity) != null) {
+            return EvenMoreFish.c2021Config.getConfig();
+        } else return null;
+    }
+
     private ItemStack setType() {
 
-        String uValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-uuid");
+        String uValue = configurationFile.getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-uuid");
         // The fish has item: uuid selected
         // note - only works for players who have joined the server previously, not sure if this'll make it to release.
         if (uValue != null) {
@@ -217,13 +249,13 @@ public class Fish implements Cloneable {
         }
 
         // The fish has item: 64 selected
-        String bValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-64");
+        String bValue = configurationFile.getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-64");
         if (bValue != null) {
             return FishUtils.get(bValue);
         }
 
         // The fish has item: material selected
-        String mValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.material");
+        String mValue = configurationFile.getString("fish." + this.rarity.getValue() + "." + this.name + ".item.material");
         if (mValue != null) {
             if (Material.getMaterial(mValue) == null) {
                 EvenMoreFish.logger.log(Level.WARNING, this.name + " has failed to load material: " + mValue);
@@ -243,7 +275,7 @@ public class Fish implements Cloneable {
 
     // checks if the config contains a message to be displayed when the fish is fished
     private void checkMessage() {
-        String msg = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
+        String msg = configurationFile.getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
 
         if (msg != null) {
             if (Bukkit.getPlayer(fisherman) != null) {
@@ -255,7 +287,7 @@ public class Fish implements Cloneable {
 
     private void checkEffects() {
 
-        String effectConfig = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".effect");
+        String effectConfig = configurationFile.getString("fish." + this.rarity.getValue() + "." + this.name + ".effect");
 
         // if the config doesn't have an effect stated to be given
         if (effectConfig == null) return;
@@ -310,7 +342,7 @@ public class Fish implements Cloneable {
         lore.add(" ");
 
         // custom lore in fish.yml
-        List<String> potentialLore = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore");
+        List<String> potentialLore = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore");
 
         // checks that the custom lore exists, then adds it on to the lore
         if (potentialLore.size() > 0) {
@@ -327,11 +359,11 @@ public class Fish implements Cloneable {
     }
 
     public void checkDisplayName() {
-        this.displayName = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".displayname");
+        this.displayName = configurationFile.getString("fish." + this.rarity.getValue() + "." + this.name + ".displayname");
     }
 
     public void checkDye() {
-        this.dyeColour = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".dye-colour");
+        this.dyeColour = configurationFile.getString("fish." + this.rarity.getValue() + "." + this.name + ".dye-colour");
     }
 
     public void randomBreak() {
@@ -348,7 +380,7 @@ public class Fish implements Cloneable {
     }
 
     public void checkEatEvent() {
-        List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".eat-event");
+        List<String> configRewards = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".eat-event");
         // Checks if the player has actually set rewards for an eat event
         if (!configRewards.isEmpty()) {
             // Informs the main class to load up an PlayerItemConsumeEvent listener
@@ -364,7 +396,7 @@ public class Fish implements Cloneable {
     }
 
     public void checkFishEvent() {
-        List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".catch-event");
+        List<String> configRewards = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".catch-event");
         if (!configRewards.isEmpty()) {
             // Translates all the rewards into Reward objects and adds them to the fish.
             for (String reward : configRewards) {
@@ -374,7 +406,7 @@ public class Fish implements Cloneable {
     }
 
     public void checkIntEvent() {
-        List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".interact-event");
+        List<String> configRewards = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".interact-event");
         // Checks if the player has actually set rewards for an interact event
         if (!configRewards.isEmpty()) {
             // Informs the main class to load up an PlayerItemConsumeEvent listener
@@ -390,7 +422,7 @@ public class Fish implements Cloneable {
     }
 
     private void addModelData(ItemStack fish) {
-        int value = EvenMoreFish.fishFile.getConfig().getInt("fish." + this.rarity.getValue() + "." + this.name + ".item.custom-model-data");
+        int value = configurationFile.getInt("fish." + this.rarity.getValue() + "." + this.name + ".item.custom-model-data");
         if (value != 0) {
             ItemMeta meta = fish.getItemMeta();
             meta.setCustomModelData(value);
@@ -415,7 +447,7 @@ public class Fish implements Cloneable {
         lore.add(" ");
 
         // custom lore in fish.yml
-        List<String> potentialLore = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore");
+        List<String> potentialLore = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore");
 
         // checks that the custom lore exists, then adds it on to the lore
         if (potentialLore.size() > 0) {
