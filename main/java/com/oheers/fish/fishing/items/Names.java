@@ -1,6 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.c2021.c2021Event;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -55,6 +56,8 @@ public class Names {
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
 
+                if (isC2021) c2021Check(canvas);
+
             }
 
             // puts the collection of fish and their rarities into the main class
@@ -66,7 +69,6 @@ public class Names {
     }
 
     private String rarityColour(String rarity) {
-        System.out.println("searching " + this.rarityConfiguration.getName() + " for rarities." + rarity + ".colour");
         String colour = this.rarityConfiguration.getString("rarities." + rarity + ".colour");
         if (colour == null) return "&f";
         return colour;
@@ -90,6 +92,15 @@ public class Names {
 
     private String rarityPermission(String rarity) {
         return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
+    }
+
+    private void c2021Check(Fish f) {
+        System.out.println("checking: " + f.getRarity().getValue() + ", " + f.getName());
+        System.out.println("doing the check " + this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
+        if (this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day") != 0) {
+            System.out.println("\"fish.\" + f.getRarity().getValue() + \".\" + f.getName() + \"day\"" + " != 0");
+            c2021Event.setRegisteredFish(f, this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
+        }
     }
 
     private List<Biome> getBiomes(String name, String rarity) {

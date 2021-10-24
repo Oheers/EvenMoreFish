@@ -218,8 +218,6 @@ public class Fish implements Cloneable {
     }
 
     private FileConfiguration findConfigFile(String rarity, String name) {
-        System.out.println("EvenMoreFish.fishFile(): " + EvenMoreFish.fishFile);
-        System.out.println("EvenMoreFish.fishFile.getConfig(): " + EvenMoreFish.fishFile.getConfig());
         if (EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish." + rarity) != null) {
             return EvenMoreFish.fishFile.getConfig();
         } else if (EvenMoreFish.c2021Config.getConfig().getConfigurationSection("fish." + rarity) != null) {

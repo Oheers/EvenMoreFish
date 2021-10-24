@@ -256,6 +256,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig(), false);
+        names.loadRarities(c2021Config.getConfig(), c2021Config.getConfig(), true);
 
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());
