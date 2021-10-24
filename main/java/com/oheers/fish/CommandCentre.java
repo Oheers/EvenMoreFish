@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.c2021.c2021Event;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.Message;
@@ -76,6 +77,13 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
+            case "c2021":
+                if (sender instanceof Player) {
+                    Controls.c2021Control((Player) sender);
+                } else {
+                    EvenMoreFish.msgs.disabledInConsole();
+                }
+                break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
@@ -106,6 +114,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         );
 
         emfTabs = Arrays.asList(
+                "c2021",
                 "help",
                 "shop",
                 "top"
@@ -308,6 +317,7 @@ class Controls{
                 EvenMoreFish.raritiesFile.reload();
                 EvenMoreFish.messageFile.reload();
                 EvenMoreFish.competitionFile.reload();
+                EvenMoreFish.c2021Config.reload();
 
                 plugin.reload();
                 plugin.reloadConfig();
@@ -365,6 +375,10 @@ class Controls{
                 }
             }
         }
+    }
+
+    protected static void c2021Control(Player player) {
+        c2021Event.generateGUI(player);
     }
 
     protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {

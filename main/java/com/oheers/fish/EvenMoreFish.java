@@ -1,5 +1,7 @@
 package com.oheers.fish;
 
+import com.oheers.fish.c2021.ConfigReader;
+import com.oheers.fish.c2021.GUISecurity;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
@@ -41,6 +43,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static RaritiesFile raritiesFile;
     public static MessageFile messageFile;
     public static CompetitionFile competitionFile;
+    public static ConfigReader c2021Config;
 
     public static Messages msgs;
     public static MainConfig mainConfig;
@@ -84,6 +87,7 @@ public class EvenMoreFish extends JavaPlugin {
         raritiesFile = new RaritiesFile(this);
         messageFile = new MessageFile(this);
         competitionFile = new CompetitionFile(this);
+        c2021Config = new ConfigReader(this);
 
         msgs = new Messages();
         mainConfig = new MainConfig();
@@ -185,6 +189,7 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
         getServer().getPluginManager().registerEvents(new SkullSaver(), this);
+        getServer().getPluginManager().registerEvents(new GUISecurity(), this);
 
         optionalListeners();
     }
