@@ -95,10 +95,7 @@ public class Names {
     }
 
     private void c2021Check(Fish f) {
-        System.out.println("checking: " + f.getRarity().getValue() + ", " + f.getName());
-        System.out.println("doing the check " + this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
         if (this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day") != 0) {
-            System.out.println("\"fish.\" + f.getRarity().getValue() + \".\" + f.getName() + \"day\"" + " != 0");
             c2021Event.setRegisteredFish(f, this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
         }
     }

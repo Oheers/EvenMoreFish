@@ -7,6 +7,7 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
+import com.oheers.fish.database.FishReport;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
@@ -148,8 +149,19 @@ public class FishingProcessor implements Listener {
                                         Database.add(fish.getName(), player, fish.getLength());
                                     }
 
+                                    boolean foundReport = false;
+
                                     if (EvenMoreFish.fishReports.containsKey(player.getUniqueId())) {
-                                        System.out.println("applying sexiness");
+                                        for (FishReport report : EvenMoreFish.fishReports.get(player.getUniqueId())) {
+                                            if (report.getName().equals(fish.getName()) && report.getRarity().equals(fish.getRarity().getValue())) {
+                                                report.addFish(fish);
+                                                foundReport = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (!foundReport) {
+                                        EvenMoreFish.fishReports.get(player.getUniqueId()).add(new FishReport(fish.getRarity().getValue(), fish.getName(), fish.getLength(), 1));
                                     }
 
                                 } catch (SQLException throwables) {

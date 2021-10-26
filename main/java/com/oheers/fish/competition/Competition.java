@@ -54,7 +54,6 @@ public class Competition {
     public void begin(boolean adminStart) {
         if (competitionType == CompetitionType.RANDOM) {
             competitionType = getRandomType();
-            System.out.println("resetting to " + competitionType);
             originallyRandom = true;
         }
 

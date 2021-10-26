@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,9 +29,7 @@ public class JoinChecker implements Listener {
         if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
             reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
             if (reports != null) {
-                System.out.println("reports == " + Arrays.toString(reports.toArray()));
-            } else {
-                System.out.println("null");
+                reports.add(new FishReport("Uncommon", "Starfish", 33.4f, 1));
             }
         } else {
             reports = new ArrayList<>();
@@ -47,9 +44,7 @@ public class JoinChecker implements Listener {
     public void onLeave(PlayerQuitEvent event) {
 
         for (UUID u : EvenMoreFish.fishReports.keySet()) {
-            System.out.println("u: " + u.toString());
             for (FishReport fR : EvenMoreFish.fishReports.get(u)) {
-                System.out.println("fR: " + fR.toString());
             }
         }
 
