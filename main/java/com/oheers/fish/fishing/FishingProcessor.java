@@ -148,6 +148,10 @@ public class FishingProcessor implements Listener {
                                         Database.add(fish.getName(), player, fish.getLength());
                                     }
 
+                                    if (EvenMoreFish.fishReports.containsKey(player.getUniqueId())) {
+                                        System.out.println("applying sexiness");
+                                    }
+
                                 } catch (SQLException throwables) {
                                     throwables.printStackTrace();
                                 }

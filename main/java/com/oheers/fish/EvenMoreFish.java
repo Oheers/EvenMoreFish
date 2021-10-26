@@ -11,6 +11,7 @@ import com.oheers.fish.config.messages.LocaleGen;
 import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
+import com.oheers.fish.database.FishReport;
 import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
 import com.oheers.fish.events.McMMOTreasureEvent;
@@ -55,6 +56,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<Integer, Set<String>> fish = new HashMap<>();
 
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
+
+    public static Map<UUID, List<FishReport>> fishReports = new HashMap<>();
 
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
@@ -149,8 +152,11 @@ public class EvenMoreFish extends JavaPlugin {
 
             // Attempts to connect to the database if enabled
             try {
-                if (!Database.dbExists()) {
+                if (!Database.fishTableExists()) {
                     Database.createDatabase();
+                }
+                if (!Database.userTableExists()) {
+                    Database.createUserTable();
                 }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -165,6 +171,7 @@ public class EvenMoreFish extends JavaPlugin {
     public void onDisable() {
 
         terminateSellGUIS();
+        saveUserData();
 
         // Ends the current competition in case the plugin is being disabled when the server will continue running
         if (Competition.isActive()) {
@@ -240,6 +247,16 @@ public class EvenMoreFish extends JavaPlugin {
             GUICache.attemptPop(gui.getPlayer(), true);
         }
         guis.clear();
+    }
+
+    private void saveUserData() {
+        for (UUID uuid : fishReports.keySet()) {
+            if (Database.hasUser(uuid.toString())) {
+                Database.writeUserData(uuid.toString(), fishReports.get(uuid));
+            } else {
+                Database.addUser(uuid.toString(), fishReports.get(uuid));
+            }
+        }
     }
 
     public void reload() {
