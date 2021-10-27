@@ -17,7 +17,8 @@ public class Message {
     // all the others are values that don't need to be set.
 
     String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount,
-            sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw, rarityCol;
+            sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw, rarityCol,
+            day, name, firstCaught, largestSize, numCaught;
     Player receiver;
 
     public Message() {
@@ -118,6 +119,31 @@ public class Message {
         return this;
     }
 
+    public Message setDay(String day) {
+        this.day = day;
+        return this;
+    }
+
+    public Message setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Message setFirstCaught(String firstCaught) {
+        this.firstCaught = firstCaught;
+        return this;
+    }
+
+    public Message setLargestSize(String largestSize) {
+        this.largestSize = largestSize;
+        return this;
+    }
+
+    public Message setNumCaught(String numCaught) {
+        this.numCaught = numCaught;
+        return this;
+    }
+
     public Message setType(CompetitionType type) {
         switch (type) {
             case MOST_FISH: this.type = EvenMoreFish.msgs.getTypeVariable("most"); break;
@@ -135,6 +161,10 @@ public class Message {
 
         if (player != null) {
             msg = msg.replace("{player}", player);
+        }
+
+        if (largestSize != null) {
+            msg = msg.replace("{largest_size}", largestSize);
         }
 
         if (length != null) {
@@ -205,6 +235,22 @@ public class Message {
 
         if (rarityCol != null) {
             msg = msg.replace("{rarity_colour}", rarityCol);
+        }
+
+        if (day != null) {
+            msg = msg.replace("{day}", day);
+        }
+
+        if (numCaught != null) {
+            msg = msg.replace("{num_caught}", numCaught);
+        }
+
+        if (firstCaught != null) {
+            msg = msg.replace("{first_caught}", firstCaught);
+        }
+
+        if (name != null) {
+            msg = msg.replace("{name}", name);
         }
 
         if (EvenMoreFish.papi) {
