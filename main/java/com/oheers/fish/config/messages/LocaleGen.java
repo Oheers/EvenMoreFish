@@ -18,6 +18,7 @@ public class LocaleGen {
             "messages_nl",
             "messages_pt-br",
             "messages_ru",
+            "messages_tr",
             "messages_vn"
     };
 
