@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class JoinChecker implements Listener {
 
@@ -28,9 +27,6 @@ public class JoinChecker implements Listener {
 
         if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
             reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
-            if (reports != null) {
-                reports.add(new FishReport("Uncommon", "Starfish", 33.4f, 1));
-            }
         } else {
             reports = new ArrayList<>();
             Database.addUser(event.getPlayer().getUniqueId().toString(), reports);
@@ -42,11 +38,6 @@ public class JoinChecker implements Listener {
     // Removes the player from the bar list if they leave the server
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-
-        for (UUID u : EvenMoreFish.fishReports.keySet()) {
-            for (FishReport fR : EvenMoreFish.fishReports.get(u)) {
-            }
-        }
 
         if (Competition.isActive()) {
             EvenMoreFish.active.getStatusBar().removePlayer(event.getPlayer());
