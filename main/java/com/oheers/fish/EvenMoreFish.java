@@ -31,6 +31,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -250,13 +251,19 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void saveUserData() {
-        for (UUID uuid : fishReports.keySet()) {
-            if (Database.hasUser(uuid.toString())) {
-                Database.writeUserData(uuid.toString(), fishReports.get(uuid));
-            } else {
-                Database.addUser(uuid.toString(), fishReports.get(uuid));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (UUID uuid : fishReports.keySet()) {
+                    if (Database.hasUser(uuid.toString())) {
+                        Database.writeUserData(uuid.toString(), fishReports.get(uuid));
+                    } else {
+                        Database.addUser(uuid.toString(), fishReports.get(uuid));
+                    }
+                }
             }
-        }
+        }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
+
     }
 
     public void reload() {

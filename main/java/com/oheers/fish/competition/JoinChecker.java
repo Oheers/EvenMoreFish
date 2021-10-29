@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +24,22 @@ public class JoinChecker implements Listener {
                     () -> event.getPlayer().sendMessage(EvenMoreFish.active.getStartMessage().setMSG(EvenMoreFish.msgs.getCompetitionJoin()).toString()), 20*3);
         }
 
-        List<FishReport> reports;
+        new BukkitRunnable() {
 
-        if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-            reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
-        } else {
-            reports = new ArrayList<>();
-            Database.addUser(event.getPlayer().getUniqueId().toString(), reports);
-        }
+            @Override
+            public void run() {
+                List<FishReport> reports;
 
-        EvenMoreFish.fishReports.put(event.getPlayer().getUniqueId(), reports);
+                if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
+                    reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
+                } else {
+                    reports = new ArrayList<>();
+                    Database.addUser(event.getPlayer().getUniqueId().toString(), reports);
+                }
+
+                EvenMoreFish.fishReports.put(event.getPlayer().getUniqueId(), reports);
+            }
+        }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
     }
 
     // Removes the player from the bar list if they leave the server
@@ -44,13 +51,21 @@ public class JoinChecker implements Listener {
         }
 
         if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {
-            if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-                Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
-            } else {
-                Database.addUser(event.getPlayer().getUniqueId().toString(), new ArrayList<>());
-            }
 
-            EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
+                        Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
+                    } else {
+                        Database.addUser(event.getPlayer().getUniqueId().toString(), new ArrayList<>());
+                    }
+
+                    EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());
+                }
+            }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
+
         }
     }
 }
