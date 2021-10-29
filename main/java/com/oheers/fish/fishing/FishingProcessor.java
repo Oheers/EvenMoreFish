@@ -3,6 +3,7 @@ package com.oheers.fish.fishing;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
+import com.oheers.fish.c2021.c2021Event;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
@@ -73,7 +74,7 @@ public class FishingProcessor implements Listener {
                     String length = Float.toString(fish.getLength());
                     // Translating the colours because some servers store colour in their fish name
                     String name = FishUtils.translateHexColorCodes(fish.getName());
-                    String rarity = FishUtils.translateHexColorCodes(fish.getRarity().getValue());
+                    String rarityName = FishUtils.translateHexColorCodes(fish.getRarity().getValue());
 
                     if (fish.hasFishRewards()) {
                         for (Reward fishReward : fish.getFishRewards()) {
@@ -92,14 +93,14 @@ public class FishingProcessor implements Listener {
                             .setPlayer(player.getName())
                             .setRarityColour(fish.getRarity().getColour())
                             .setLength(length)
-                            .setRarity(rarity)
+                            .setRarity(rarityName)
                             .setReceiver(player);
 
                     if (fish.getDisplayName() != null) msg.setFishCaught(fish.getDisplayName());
                     else msg.setFishCaught(name);
 
                     if (fish.getRarity().getDisplayName() != null) msg.setRarity(fish.getRarity().getDisplayName());
-                    else msg.setRarity(rarity);
+                    else msg.setRarity(rarityName);
 
                     if (fish.getLength() != -1) {
                         msg.setMSG(EvenMoreFish.msgs.getFishCaught());
@@ -175,23 +176,62 @@ public class FishingProcessor implements Listener {
         }
     }
 
+    public static boolean c2021Check(Rarity r, Player f) {
+        if (r.isC2021()) {
+            Fish fish = c2021Event.getFish();
+            for (FishReport report : EvenMoreFish.fishReports.get(f.getUniqueId())) {
+                if (report.getName().equals(fish.getName()) && report.getRarity().equals(r.getValue())) {
+                    // it's not ok to proceed with the selected rarity
+                    return false;
+                }
+            }
+        }
+        // it's ok to proceed with the selected rarity
+        return true;
+    }
+
     private static Rarity randomWeightedRarity(Player fisher) {
         // Loads all the rarities
         List<Rarity> allowedRarities = new ArrayList<>();
 
         if (EvenMoreFish.permission != null) {
             for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
+                boolean c2021pass = false;
+
+                if (rarity.isC2021()) {
+                    if (EvenMoreFish.c2021Config.isOneFishPerDay()) {
+                        if (c2021Event.hiddenCheck()) {
+                            if (c2021Check(rarity, fisher)) {
+                                c2021pass = true;
+                            }
+                        }
+                    } else c2021pass = true;
+                } else {
+                    c2021pass = true;
+                }
+
                 if (rarity.getPermission() != null) {
-                    if (EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
+                    if (EvenMoreFish.permission.has(fisher, rarity.getPermission()) && c2021pass) {
                         allowedRarities.add(rarity);
                     }
-                } else {
+                } else if (c2021pass) {
                     allowedRarities.add(rarity);
                 }
             }
 
         } else {
-            allowedRarities.addAll(EvenMoreFish.fishCollection.keySet());
+            for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                if (r.isC2021()) {
+                    if (c2021Check(r, fisher)) {
+                        if (EvenMoreFish.c2021Config.isOneFishPerDay()) {
+                            if (c2021Event.hiddenCheck()) allowedRarities.add(r);
+                        } else allowedRarities.add(r);
+                    }
+                } else {
+                    allowedRarities.addAll(EvenMoreFish.fishCollection.keySet());
+                }
+            }
+
         }
 
         double totalWeight = 0;
@@ -235,6 +275,11 @@ public class FishingProcessor implements Listener {
     private static Fish getFish(Rarity r, Biome b, Player p) {
         if (r == null) return null;
         // will store all the fish that match the player's biome or don't discriminate biomes
+
+        if (r.isC2021()) {
+            return c2021Event.getFish();
+        }
+
         List<Fish> available = new ArrayList<>();
 
         for (Fish f : EvenMoreFish.fishCollection.get(r)) {
