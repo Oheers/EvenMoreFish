@@ -18,7 +18,7 @@ public class Message {
 
     String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount,
             sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw, rarityCol,
-            day, name, firstCaught, largestSize, numCaught;
+            day, name, firstCaught, largestSize, numCaught, timeRemaining;
     Player receiver;
 
     public Message() {
@@ -47,15 +47,6 @@ public class Message {
 
     public Message setRarity(String rarity) {
         this.rarity = rarity;
-        return this;
-    }
-
-    public Message setCMD(String cmd) {
-        this.cmd = cmd;
-        return this;
-    }
-    public Message setDesc(String description) {
-        this.cmdDescription = description;
         return this;
     }
 
@@ -120,6 +111,7 @@ public class Message {
     }
 
     public Message setDay(String day) {
+        System.out.println("setting to: " + day);
         this.day = day;
         return this;
     }
@@ -141,6 +133,12 @@ public class Message {
 
     public Message setNumCaught(String numCaught) {
         this.numCaught = numCaught;
+        return this;
+    }
+
+    public Message setTimeRemaining(String timeRemaining) {
+        System.out.println("setting remaining time: " + timeRemaining);
+        this.timeRemaining = timeRemaining;
         return this;
     }
 
@@ -251,6 +249,10 @@ public class Message {
 
         if (name != null) {
             msg = msg.replace("{name}", name);
+        }
+
+        if (timeRemaining != null) {
+            msg = msg.replace("{time_remaining}", timeRemaining);
         }
 
         if (EvenMoreFish.papi) {
