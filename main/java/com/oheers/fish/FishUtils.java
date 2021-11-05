@@ -116,80 +116,66 @@ public class FishUtils {
     }
 
     public static void giveItems(List<ItemStack> items, Player player) {
-        int slots = 0;
-
-        for (ItemStack is : player.getInventory().getStorageContents()) {
-            if (is == null) {
-                slots++;
-            }
-        }
-
-        for (ItemStack item : items) {
-            if (slots > 0) {
-                player.getInventory().addItem(item);
-                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.5f);
-            } else {
-                new BukkitRunnable() {
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.5f);
+        player.getInventory().addItem(items.toArray(new ItemStack[0]))
+                .values()
+                .forEach(item -> new BukkitRunnable() {
                     public void run() {
-                        player.getLocation().getWorld().dropItem(player.getLocation(), item);
+                        player.getWorld().dropItem(player.getLocation(), item);
                     }
-                }.runTask(JavaPlugin.getProvidingPlugin(FishUtils.class));
-            }
-        }
+                }.runTask(JavaPlugin.getProvidingPlugin(FishUtils.class)));
     }
 
     public static boolean checkRegion(Location l) {
         // if there's any region plugin installed
-        if (EvenMoreFish.guardPL != null) {
-            // if the user has defined a region whitelist
-            if (EvenMoreFish.mainConfig.regionWhitelist()) {
-
-                // Gets a list of user defined regions
-                List<String> whitelistedRegions = EvenMoreFish.mainConfig.getAllowedRegions();
-
-                if (EvenMoreFish.guardPL.equals("worldguard")) {
-
-                    // Creates a query for whether the player is stood in a protectedregion defined by the user
-                    RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                    RegionQuery query = container.createQuery();
-                    ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
-
-                    // runs the query
-                    for (ProtectedRegion pr : set) {
-                        if (whitelistedRegions.contains(pr.getId())) return true;
-                    }
-                    return false;
-                } else if (EvenMoreFish.guardPL.equals("redprotect")) {
-                    Region r = RedProtect.get().getAPI().getRegion(l);
-                    // if the hook is in any redprotect region
-                    if (r != null) {
-                        // if the hook is in a whitelisted region
-                        return whitelistedRegions.contains(r.getName());
-                    }
-                    return false;
-                } else {
-                    // the user has defined a region whitelist but doesn't have a region plugin.
-                    EvenMoreFish.logger.log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
-                    return true;
-                }
-            }
+        if (EvenMoreFish.guardPL == null) {
             return true;
         }
-        return true;
+        // if the user has defined a region whitelist
+        if (!EvenMoreFish.mainConfig.regionWhitelist()) {
+            return true;
+        }
+
+        // Gets a list of user defined regions
+        List<String> whitelistedRegions = EvenMoreFish.mainConfig.getAllowedRegions();
+
+        if (EvenMoreFish.guardPL.equals("worldguard")) {
+
+            // Creates a query for whether the player is stood in a protectedregion defined by the user
+            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
+            ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
+
+            // runs the query
+            for (ProtectedRegion pr : set) {
+                if (whitelistedRegions.contains(pr.getId())) return true;
+            }
+            return false;
+        } else if (EvenMoreFish.guardPL.equals("redprotect")) {
+            Region r = RedProtect.get().getAPI().getRegion(l);
+            // if the hook is in any redprotect region
+            if (r != null) {
+                // if the hook is in a whitelisted region
+                return whitelistedRegions.contains(r.getName());
+            }
+            return false;
+        } else {
+            // the user has defined a region whitelist but doesn't have a region plugin.
+            EvenMoreFish.logger.log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
+            return true;
+        }
     }
 
     public static boolean checkWorld(Location l) {
         // if the user has defined a world whitelist
-        if (EvenMoreFish.mainConfig.worldWhitelist()) {
-
-            // Gets a list of user defined regions
-            List<String> whitelistedWorlds = EvenMoreFish.mainConfig.getAllowedWorlds();
-
-            if (whitelistedWorlds.contains(l.getWorld().getName())) return true;
-            else return false;
+        if (!EvenMoreFish.mainConfig.worldWhitelist()) {
+            return true;
         }
 
-        return true;
+        // Gets a list of user defined regions
+        List<String> whitelistedWorlds = EvenMoreFish.mainConfig.getAllowedWorlds();
+
+        return whitelistedWorlds.contains(l.getWorld().getName());
     }
 
     // credit to https://www.spigotmc.org/members/elementeral.717560/

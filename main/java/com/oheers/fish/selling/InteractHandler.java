@@ -29,8 +29,16 @@ public class InteractHandler implements Listener {
             return;
         }
         SellGUI gui = (SellGUI) holder;
-        ItemStack clickedItem = inventory.getItem(event.getSlot());
-        if (clickedItem != null) {
+        ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    gui.setSellItem();
+                    gui.setSellAllItem();
+                }
+            }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(getClass()));
+        } else {
             // determines what the player has clicked, or if they've just added an item
             // to the menu
             if (clickedItem.isSimilar(gui.getSellIcon()) || clickedItem.isSimilar(gui.getErrorIcon())) {
@@ -66,8 +74,6 @@ public class InteractHandler implements Listener {
                     return;
                 }
 
-                // the player is at the join stage
-                if (event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) event.setCancelled(true);
                 event.setCancelled(true);
                 if (gui.getModified()) {
 
@@ -92,16 +98,8 @@ public class InteractHandler implements Listener {
 
                         gui.error = false;
                     }
-                }.runTaskLaterAsynchronously(JavaPlugin.getProvidingPlugin(getClass()), 1);
+                }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(getClass()));
             }
-        } else {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    gui.setSellItem();
-                    gui.setSellAllItem();
-                }
-            }.runTaskLaterAsynchronously(JavaPlugin.getProvidingPlugin(getClass()), 1);
         }
     }
 
@@ -113,9 +111,8 @@ public class InteractHandler implements Listener {
         }
         SellGUI gui = (SellGUI) holder;
         if (EvenMoreFish.mainConfig.sellOverDrop()) {
-            gui.doRescue(gui.sell(false));
-        } else {
-            gui.doRescue(false);
+            gui.sell(false);
         }
+        gui.doRescue();
     }
 }

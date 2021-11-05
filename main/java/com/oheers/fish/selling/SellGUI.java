@@ -288,9 +288,15 @@ public class SellGUI implements InventoryHolder {
         player.closeInventory();
     }
 
-    public void doRescue(boolean selling) {
-        if (selling) rescueNonFish(this.menu, this.player);
-        else rescueAllItems();
+    // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
+    public void doRescue() {
+        List<ItemStack> throwing = new ArrayList<>();
+        for (ItemStack i : this.menu) {
+            if (i != null && !WorthNBT.isDefault(i)) {
+                throwing.add(i);
+            }
+        }
+        FishUtils.giveItems(throwing, this.player);
     }
 
     public ItemStack getFiller() {
@@ -309,27 +315,6 @@ public class SellGUI implements InventoryHolder {
         return this.modified;
     }
 
-    // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
-    private void rescueAllItems() {
-        List<ItemStack> throwing = new ArrayList<>();
-        for (ItemStack i : this.menu) {
-            if (i != null && !WorthNBT.isDefault(i)) {
-                throwing.add(i);
-            }
-        }
-        FishUtils.giveItems(throwing, this.player);
-    }
-
-    public static void rescueNonFish(Inventory inv, Player pl) {
-        List<ItemStack> throwing = new ArrayList<>();
-        for (ItemStack i : inv) {
-            if (i != null && !(WorthNBT.isDefault(i)) && !(FishUtils.isFish(i))) {
-                throwing.add(i);
-            }
-        }
-        FishUtils.giveItems(throwing, pl);
-    }
-
     private void glowify(ItemStack i) {
 
         // plops on the unbreaking 1 enchantment to make it glow
@@ -344,8 +329,6 @@ public class SellGUI implements InventoryHolder {
     public boolean sell(boolean sellAll) {
         getTotalWorth(sellAll);
         EvenMoreFish.econ.depositPlayer(this.player, value);
-        // running a tick later to prevent ghost blocks in the player's inventory
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getProvidingPlugin(getClass()), this::close, 1);
 
         // sending the sell message to the player
         Message msg = new Message()
@@ -355,6 +338,14 @@ public class SellGUI implements InventoryHolder {
                 .setReceiver(this.player);
         this.player.sendMessage(msg.toString());
         this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
+
+        // Remove sold items
+        for (int i = 0; i < guiSize - 9; i++) {
+            ItemStack item = menu.getItem(i);
+            if (WorthNBT.getValue(item) != -1.0) {
+                menu.setItem(i, null);
+            }
+        }
 
         if (sellAll) {
             for (ItemStack item : this.player.getInventory()) {
