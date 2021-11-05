@@ -116,6 +116,9 @@ public class FishUtils {
     }
 
     public static void giveItems(List<ItemStack> items, Player player) {
+        if (items.isEmpty()) {
+            return;
+        }
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.5f);
         player.getInventory().addItem(items.toArray(new ItemStack[0]))
                 .values()
