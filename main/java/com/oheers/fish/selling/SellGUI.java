@@ -10,19 +10,19 @@ import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class SellGUI {
+public class SellGUI implements InventoryHolder {
 
     private final Player player;
-
-    private Inventory menu;
+    private final Inventory menu;
 
     public boolean modified;
 
@@ -40,16 +40,12 @@ public class SellGUI {
         this.guiSize = (EvenMoreFish.mainConfig.getGUISize()+1)*9;
         this.player = p;
         this.modified = false;
-        makeMenu();
+        this.menu = Bukkit.createInventory(this, guiSize, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getWorthGUIName()));
         setFiller();
         addFiller(filler);
         setSellItem();
         setSellAllItem();
         this.player.openInventory(menu);
-    }
-
-    private void makeMenu() {
-        this.menu = Bukkit.createInventory(null, guiSize, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getWorthGUIName()));
     }
 
     public Player getPlayer() {
@@ -74,9 +70,8 @@ public class SellGUI {
 
     public void addFiller(ItemStack fill) {
         for (int i = guiSize-9; i < guiSize; i++) {
-            if (menu.getItem(i) == null) {
-                menu.setItem(i, fill);
-            } else if (menu.getItem(i).isSimilar(filler) || menu.getItem(i).isSimilar(errorFiller)) {
+            ItemStack item = menu.getItem(i);
+            if (item == null || item.isSimilar(filler) || item.isSimilar(errorFiller)) {
                 menu.setItem(i, fill);
             }
         }
@@ -290,7 +285,6 @@ public class SellGUI {
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
     public void close() {
-        EvenMoreFish.guis.remove(this);
         player.closeInventory();
     }
 
@@ -307,10 +301,6 @@ public class SellGUI {
         return this.errorFiller;
     }
 
-    public void setMenu(Inventory inv) {
-        this.menu = inv;
-    }
-
     public void setModified(boolean mod) {
         this.modified = mod;
     }
@@ -323,10 +313,8 @@ public class SellGUI {
     private void rescueAllItems() {
         List<ItemStack> throwing = new ArrayList<>();
         for (ItemStack i : this.menu) {
-            if (i != null) {
-                if (!WorthNBT.isDefault(i)) {
-                    throwing.add(i);
-                }
+            if (i != null && !WorthNBT.isDefault(i)) {
+                throwing.add(i);
             }
         }
         FishUtils.giveItems(throwing, this.player);
@@ -335,10 +323,8 @@ public class SellGUI {
     public static void rescueNonFish(Inventory inv, Player pl) {
         List<ItemStack> throwing = new ArrayList<>();
         for (ItemStack i : inv) {
-            if (i != null) {
-                if (!(WorthNBT.isDefault(i)) && !(FishUtils.isFish(i))) {
-                    throwing.add(i);
-                }
+            if (i != null && !(WorthNBT.isDefault(i)) && !(FishUtils.isFish(i))) {
+                throwing.add(i);
             }
         }
         FishUtils.giveItems(throwing, pl);
@@ -359,7 +345,7 @@ public class SellGUI {
         getTotalWorth(sellAll);
         EvenMoreFish.econ.depositPlayer(this.player, value);
         // running a tick later to prevent ghost blocks in the player's inventory
-        Bukkit.getScheduler().runTaskLater(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), this::close, 1);
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getProvidingPlugin(getClass()), this::close, 1);
 
         // sending the sell message to the player
         Message msg = new Message()
@@ -377,5 +363,10 @@ public class SellGUI {
         }
 
         return this.value != 0.0;
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return menu;
     }
 }

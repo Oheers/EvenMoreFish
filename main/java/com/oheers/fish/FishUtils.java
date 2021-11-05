@@ -22,11 +22,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -40,7 +40,7 @@ public class FishUtils {
     /* checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
      * we only need to check for the length since they're all added in a batch if it's an EMF fish */
     public static boolean isFish(ItemStack i) {
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         if (i != null) {
             if (i.hasItemMeta()) {
@@ -52,7 +52,7 @@ public class FishUtils {
     }
 
     public static boolean isFish(Skull s) {
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         if (s != null) {
             return s.getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
@@ -62,9 +62,9 @@ public class FishUtils {
     }
 
     public static Fish getFish(ItemStack i) {
-        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         PersistentDataContainer container = i.getItemMeta().getPersistentDataContainer();
@@ -89,9 +89,9 @@ public class FishUtils {
     }
 
     public static Fish getFish(Skull s) {
-        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         PersistentDataContainer container = s.getPersistentDataContainer();
@@ -133,7 +133,7 @@ public class FishUtils {
                     public void run() {
                         player.getLocation().getWorld().dropItem(player.getLocation(), item);
                     }
-                }.runTask(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")));
+                }.runTask(JavaPlugin.getProvidingPlugin(FishUtils.class));
             }
         }
     }
