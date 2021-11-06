@@ -1,16 +1,11 @@
 package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
 
 public class FishFile {
 

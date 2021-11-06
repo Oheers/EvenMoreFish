@@ -18,7 +18,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
@@ -64,8 +67,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (sender instanceof Player) {
                     if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
                         if (EvenMoreFish.permission.has(sender, "emf.shop")) {
-                            SellGUI gui = new SellGUI((Player) sender);
-                            EvenMoreFish.guis.add(gui);
+                            new SellGUI((Player) sender);
                         } else {
                             sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
                         }

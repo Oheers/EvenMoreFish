@@ -16,7 +16,6 @@ import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.selling.GUICache;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -31,7 +30,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,8 +63,6 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Logger logger;
 
-    public static ArrayList<SellGUI> guis;
-
     public static boolean isUpdateAvailable;
 
     public static WorldGuardPlugin wgPlugin;
@@ -77,7 +77,6 @@ public class EvenMoreFish extends JavaPlugin {
 
     public void onEnable() {
 
-        guis = new ArrayList<>();
         logger = getLogger();
 
         fishFile = new FishFile(this);
@@ -229,10 +228,11 @@ public class EvenMoreFish extends JavaPlugin {
 
     // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
     private void terminateSellGUIS() {
-        for (SellGUI gui : guis) {
-            GUICache.attemptPop(gui.getPlayer(), true);
-        }
-        guis.clear();
+        getServer().getOnlinePlayers().forEach(player -> {
+            if (player.getOpenInventory().getTopInventory().getHolder() instanceof SellGUI) {
+                player.closeInventory();
+            }
+        });
     }
 
     public void reload() {
@@ -260,8 +260,6 @@ public class EvenMoreFish extends JavaPlugin {
         competitionConfig = new CompetitionConfig();
 
         competitionQueue.load();
-
-        guis = new ArrayList<>();
     }
 
     // Checks for updates, surprisingly
