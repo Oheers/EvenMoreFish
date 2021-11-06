@@ -107,8 +107,7 @@ public class EvenMoreFish extends JavaPlugin {
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
 
-        LocaleGen lG = new LocaleGen();
-        lG.createLocaleFiles(this);
+        LocaleGen.createLocaleFiles(this);
 
         // async check for updates on the spigot page
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
