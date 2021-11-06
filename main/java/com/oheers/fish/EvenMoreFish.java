@@ -69,6 +69,10 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static ArrayList<SellGUI> guis;
 
+    // this is for pre-deciding a rarity and running particles if it will be chosen
+    // it's a work-in-progress solution and probably won't stick.
+    public static Map<UUID, Rarity> decidedRarities;
+
     public static boolean isUpdateAvailable;
 
     public static WorldGuardPlugin wgPlugin;
@@ -84,6 +88,7 @@ public class EvenMoreFish extends JavaPlugin {
     public void onEnable() {
 
         guis = new ArrayList<>();
+        decidedRarities = new HashMap<>();
         logger = getLogger();
 
         fishFile = new FishFile(this);

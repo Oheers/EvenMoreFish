@@ -3,6 +3,7 @@ package com.oheers.fish.fishing;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
+import com.oheers.fish.c2021.ParticleEngine;
 import com.oheers.fish.c2021.c2021Event;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
@@ -172,6 +173,14 @@ public class FishingProcessor implements Listener {
                         }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
                     }
                 }
+            } else if (event.getState() == PlayerFishEvent.State.FISHING) {
+                if (!EvenMoreFish.decidedRarities.containsKey(event.getPlayer().getUniqueId())) {
+                    EvenMoreFish.decidedRarities.put(event.getPlayer().getUniqueId(), randomWeightedRarity(event.getPlayer()));
+                }
+
+                if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isC2021()) {
+                    ParticleEngine.renderParticles(event.getHook());
+                }
             }
         }
     }
@@ -191,6 +200,13 @@ public class FishingProcessor implements Listener {
     }
 
     private static Rarity randomWeightedRarity(Player fisher) {
+
+        if (EvenMoreFish.decidedRarities.containsKey(fisher.getUniqueId())) {
+            Rarity chosenRarity = EvenMoreFish.decidedRarities.get(fisher.getUniqueId());
+            EvenMoreFish.decidedRarities.remove(fisher.getUniqueId());
+            return chosenRarity;
+        }
+
         // Loads all the rarities
         List<Rarity> allowedRarities = new ArrayList<>();
 
