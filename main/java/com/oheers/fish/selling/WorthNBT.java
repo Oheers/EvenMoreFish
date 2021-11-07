@@ -1,10 +1,10 @@
 package com.oheers.fish.selling;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Skull;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -62,7 +62,15 @@ public class WorthNBT {
                     String rarity = container.get(nbtrarity, PersistentDataType.STRING);
                     String name = container.get(nbtname, PersistentDataType.STRING);
                     // gets a possible set-worth in the fish.yml
-                    int setVal = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+                    FileConfiguration config = FishUtils.findConfigFile(rarity);
+                    int setVal;
+
+                    try {
+                        setVal = FishUtils.findConfigFile(rarity).getInt("fish." + rarity + "." + name + ".set-worth");
+                    } catch (NullPointerException npe) {
+                        setVal = 0;
+                    }
+
                     if (setVal != 0) return setVal;
                     // there's no set-worth so we're calculating the worth ourselves
                     return getMultipliedValue(
@@ -96,12 +104,15 @@ public class WorthNBT {
     }
 
     private static double getMultipliedValue(Float length, String rarity, String name) {
-        double value;
-        value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
+        double value = 0.0;
+
+        FileConfiguration config = FishUtils.findConfigFile(rarity);
+        if (config != null) value = config.getDouble("fish." + rarity + "." + name + ".worth-multiplier");
 
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            value = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+            config = FishUtils.findRarityFile(rarity);
+            if (config != null) value = config.getDouble("rarities." + rarity + ".worth-multiplier");
         }
 
         // Whatever it finds the value to be, gets multiplied by the fish length and set

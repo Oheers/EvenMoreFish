@@ -56,8 +56,8 @@ public class Fish implements Cloneable {
     FileConfiguration configurationFile, rarityConfiguration;
 
     public Fish(Rarity rarity, String name) {
-        configurationFile = findConfigFile(rarity.getValue(), name);
-        rarityConfiguration = findRarityFile(rarity.getValue());
+        this.configurationFile = FishUtils.findConfigFile(rarity.getValue());
+        this.rarityConfiguration = FishUtils.findRarityFile(rarity.getValue());
 
         this.rarity = rarity;
         this.name = name;
@@ -215,22 +215,6 @@ public class Fish implements Cloneable {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    private FileConfiguration findConfigFile(String rarity, String name) {
-        if (EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish." + rarity) != null) {
-            return EvenMoreFish.fishFile.getConfig();
-        } else if (EvenMoreFish.c2021Config.getConfig().getConfigurationSection("fish." + rarity) != null) {
-            return EvenMoreFish.c2021Config.getConfig();
-        } else return null;
-    }
-
-    private FileConfiguration findRarityFile(String rarity) {
-        if (EvenMoreFish.raritiesFile.getConfig().getConfigurationSection("rarities." + rarity) != null) {
-            return EvenMoreFish.fishFile.getConfig();
-        } else if (EvenMoreFish.c2021Config.getConfig().getConfigurationSection("rarities." + rarity) != null) {
-            return EvenMoreFish.c2021Config.getConfig();
-        } else return null;
     }
 
     private ItemStack setType() {

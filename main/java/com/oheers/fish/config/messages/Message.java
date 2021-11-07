@@ -111,7 +111,6 @@ public class Message {
     }
 
     public Message setDay(String day) {
-        System.out.println("setting to: " + day);
         this.day = day;
         return this;
     }
@@ -137,7 +136,6 @@ public class Message {
     }
 
     public Message setTimeRemaining(String timeRemaining) {
-        System.out.println("setting remaining time: " + timeRemaining);
         this.timeRemaining = timeRemaining;
         return this;
     }
