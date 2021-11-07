@@ -5,7 +5,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
-import com.oheers.fish.config.messages.LocaleGen;
 import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
@@ -79,13 +78,14 @@ public class EvenMoreFish extends JavaPlugin {
 
         logger = getLogger();
 
+        mainConfig = new MainConfig();
+
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
         messageFile = new MessageFile(this);
         competitionFile = new CompetitionFile(this);
 
         msgs = new Messages();
-        mainConfig = new MainConfig();
         competitionConfig = new CompetitionConfig();
 
         if (mainConfig.isEconomyEnabled()) {
@@ -105,8 +105,6 @@ public class EvenMoreFish extends JavaPlugin {
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
-
-        LocaleGen.createLocaleFiles(this);
 
         // async check for updates on the spigot page
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
@@ -255,8 +253,8 @@ public class EvenMoreFish extends JavaPlugin {
         HandlerList.unregisterAll(McMMOTreasureEvent.getInstance());
         optionalListeners();
 
-        msgs = new Messages();
         mainConfig = new MainConfig();
+        msgs = new Messages();
         competitionConfig = new CompetitionConfig();
 
         competitionQueue.load();
