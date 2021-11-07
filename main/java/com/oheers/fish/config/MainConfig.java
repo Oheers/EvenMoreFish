@@ -16,6 +16,10 @@ public class MainConfig {
         return config.getInt("config-version");
     }
 
+    public String getLocale() {
+        return config.getString("locale", "en");
+    }
+
     public int getCompetitionDuration() {
         return config.getInt("competitions.duration");
     }
@@ -37,11 +41,11 @@ public class MainConfig {
     }
 
     public boolean regionWhitelist() {
-        return config.getStringList("allowed-regions").size() != 0;
+        return !config.getStringList("allowed-regions").isEmpty();
     }
 
     public boolean worldWhitelist() {
-        return config.getStringList("allowed-worlds").size() != 0;
+        return !config.getStringList("allowed-worlds").isEmpty();
     }
 
     public List<String> getAllowedRegions() {

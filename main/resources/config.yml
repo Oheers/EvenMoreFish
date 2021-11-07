@@ -1,6 +1,11 @@
 # Is the plugin enabled?
 enabled: true
 
+# The locale of the message file
+# Currently: en, de, es, fr, nl, pt-br, ru, tr, vn
+# Delete messages.yml before changing this
+locale: en
+
 # Should EMF fish only be given during a competition?
 fish-only-in-competition: false
 

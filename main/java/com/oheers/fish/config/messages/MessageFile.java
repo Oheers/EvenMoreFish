@@ -6,6 +6,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 
 public class MessageFile {
@@ -23,8 +26,28 @@ public class MessageFile {
         File messageFile = getFile();
 
         if (!messageFile.exists()) {
-            messageFile.getParentFile().mkdirs();
-            this.plugin.saveResource("messages.yml", false);
+            File parentFile = messageFile.getAbsoluteFile().getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
+            try {
+                messageFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            InputStream stream = this.plugin.getResource("locales" + File.separator + "messages_" + EvenMoreFish.mainConfig.getLocale() + ".yml");
+            if (stream == null) {
+                stream = this.plugin.getResource("locales" + File.separator + "messages_en.yml");
+            }
+            if (stream == null) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Could not get resource for EvenMoreFish/messages.yml");
+                return;
+            }
+            try {
+                Files.copy(stream, messageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         this.messageConfig = new YamlConfiguration();
