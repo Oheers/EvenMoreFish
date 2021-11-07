@@ -253,8 +253,8 @@ public class EvenMoreFish extends JavaPlugin {
         HandlerList.unregisterAll(McMMOTreasureEvent.getInstance());
         optionalListeners();
 
-        msgs = new Messages();
         mainConfig = new MainConfig();
+        msgs = new Messages();
         competitionConfig = new CompetitionConfig();
 
         competitionQueue.load();
