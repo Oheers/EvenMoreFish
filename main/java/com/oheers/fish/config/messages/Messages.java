@@ -2,7 +2,13 @@ package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +16,50 @@ import java.util.logging.Level;
 
 public class Messages {
 
-    FileConfiguration config = EvenMoreFish.messageFile.getConfig();
+    private final EvenMoreFish plugin;
+    private FileConfiguration config;
+
+    public Messages(EvenMoreFish plugin) {
+        this.plugin = plugin;
+        reload();
+    }
+
+    public void reload() {
+        File messageFile = new File(this.plugin.getDataFolder(), "messages.yml");
+
+        if (!messageFile.exists()) {
+            File parentFile = messageFile.getAbsoluteFile().getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
+            try {
+                messageFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            InputStream stream = this.plugin.getResource("locales" + File.separator + "messages_" + EvenMoreFish.mainConfig.getLocale() + ".yml");
+            if (stream == null) {
+                stream = this.plugin.getResource("locales" + File.separator + "messages_en.yml");
+            }
+            if (stream == null) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Could not get resource for EvenMoreFish/messages.yml");
+                return;
+            }
+            try {
+                Files.copy(stream, messageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        this.config = new YamlConfiguration();
+
+        try {
+            this.config.load(messageFile);
+        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 
     public int configVersion() {
         return config.getInt("config-version");
