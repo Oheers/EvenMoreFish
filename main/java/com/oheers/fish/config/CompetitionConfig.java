@@ -4,12 +4,38 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.CompetitionType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class CompetitionConfig {
 
-    FileConfiguration config = EvenMoreFish.competitionFile.getConfig();
+    private final EvenMoreFish plugin;
+    private FileConfiguration config;
+
+    public CompetitionConfig(EvenMoreFish plugin) {
+        this.plugin = plugin;
+        reload();
+    }
+
+    public void reload() {
+        File competitionsFile = new File(this.plugin.getDataFolder(), "competitions.yml");
+
+        if (!competitionsFile.exists()) {
+            competitionsFile.getParentFile().mkdirs();
+            this.plugin.saveResource("competitions.yml", false);
+        }
+
+        this.config = new YamlConfiguration();
+
+        try {
+            this.config.load(competitionsFile);
+        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 
     public int configVersion() {
         return config.getInt("config-version");

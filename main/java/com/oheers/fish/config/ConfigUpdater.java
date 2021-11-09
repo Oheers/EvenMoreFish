@@ -9,54 +9,47 @@ public class ConfigUpdater {
 	public static void updateMessages(int version) throws IOException {
 		File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
 		if (messagesFile.exists()) {
-			BufferedReader file = new BufferedReader(new FileReader(messagesFile));
-			StringBuilder inputBuffer = new StringBuilder();
-			String line;
+			try (BufferedReader file = new BufferedReader(new FileReader(messagesFile));
+				 FileOutputStream fileOut = new FileOutputStream(messagesFile)) {
 
-			while ((line = file.readLine()) != null) {
-				if (line.equals("config-version: " + version)) {
-					line = "config-version: " + EvenMoreFish.MSG_CONFIG_VERSION; // replace the line here
+				StringBuilder inputBuffer = new StringBuilder();
+				String line;
+
+				while ((line = file.readLine()) != null) {
+					if (line.equals("config-version: " + version)) {
+						line = "config-version: " + EvenMoreFish.MSG_CONFIG_VERSION; // replace the line here
+					}
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
 				}
-				inputBuffer.append(line);
-				inputBuffer.append('\n');
+
+				inputBuffer.append(getMessageUpdates(version));
+				// write the new string with the replaced line OVER the same file
+				fileOut.write(inputBuffer.toString().getBytes());
 			}
-
-			inputBuffer.append(getMessageUpdates(version));
-
-			file.close();
-
-			// write the new string with the replaced line OVER the same file
-			FileOutputStream fileOut = new FileOutputStream(messagesFile);
-			fileOut.write(inputBuffer.toString().getBytes());
-			fileOut.close();
-
 		}
 	}
 
 	public static void updateConfig(int version) throws IOException {
 		File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\config.yml");
 		if (messagesFile.exists()) {
-			BufferedReader file = new BufferedReader(new FileReader(messagesFile));
-			StringBuilder inputBuffer = new StringBuilder();
-			String line;
+			try (BufferedReader file = new BufferedReader(new FileReader(messagesFile));
+				 FileOutputStream fileOut = new FileOutputStream(messagesFile)) {
+				StringBuilder inputBuffer = new StringBuilder();
+				String line;
 
-			while ((line = file.readLine()) != null) {
-				if (line.equals("config-version: " + version)) {
-					line = "config-version: " + EvenMoreFish.MAIN_CONFIG_VERSION; // replace the line here
+				while ((line = file.readLine()) != null) {
+					if (line.equals("config-version: " + version)) {
+						line = "config-version: " + EvenMoreFish.MAIN_CONFIG_VERSION; // replace the line here
+					}
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
 				}
-				inputBuffer.append(line);
-				inputBuffer.append('\n');
+
+				inputBuffer.append(getConfigUpdates(version));
+				// write the new string with the replaced line OVER the same file
+				fileOut.write(inputBuffer.toString().getBytes());
 			}
-
-			inputBuffer.append(getConfigUpdates(version));
-
-			file.close();
-
-			// write the new string with the replaced line OVER the same file
-			FileOutputStream fileOut = new FileOutputStream(messagesFile);
-			fileOut.write(inputBuffer.toString().getBytes());
-			fileOut.close();
-
 		}
 	}
 
