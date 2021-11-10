@@ -309,11 +309,8 @@ class Controls{
 
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
-                EvenMoreFish.messageFile.reload();
-                EvenMoreFish.competitionFile.reload();
 
                 plugin.reload();
-                plugin.reloadConfig();
 
                 Message message = new Message().setMSG(EvenMoreFish.msgs.getReloaded());
                 if (sender instanceof Player) message.setReceiver((Player) sender);
