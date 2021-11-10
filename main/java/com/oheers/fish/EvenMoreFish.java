@@ -71,7 +71,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static final int METRIC_ID = 11054;
 
     public static final int MSG_CONFIG_VERSION = 8;
-    public static final int MAIN_CONFIG_VERSION = 8;
+    public static final int MAIN_CONFIG_VERSION = 9;
     public static final int COMP_CONFIG_VERSION = 1;
 
     public void onEnable() {

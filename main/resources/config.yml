@@ -62,4 +62,4 @@ disable-mcmmo-loot: true
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 8
+config-version: 9

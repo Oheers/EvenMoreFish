@@ -78,9 +78,8 @@ public class ConfigUpdater {
 		StringBuilder update = new StringBuilder();
 		update.append(UPDATE_ALERT);
 		switch (version) {
-			case 7: {
-				update.append(CONFIG_UPDATE_8);
-			}
+			case 7: update.append(CONFIG_UPDATE_8);
+			case 8: update.append(CONFIG_UPDATE_9);
 		}
 
 		update.append(UPDATE_ALERT);
@@ -89,6 +88,12 @@ public class ConfigUpdater {
 	}
 
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
+
+	private static final String CONFIG_UPDATE_9 = "\n" +
+			"# The locale of the message file\n" +
+			"# Currently: en, de, es, fr, nl, pt-br, ru, tr, vn\n" +
+			"# Delete messages.yml before changing this\n" +
+			"locale: en";
 
 	private static final String MSG_UPDATE_8 =
 			"# Help messages\n" +
