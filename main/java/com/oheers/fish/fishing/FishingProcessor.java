@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
@@ -179,7 +180,19 @@ public class FishingProcessor implements Listener {
                 }
 
                 if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isC2021()) {
-                    ParticleEngine.renderParticles(event.getHook());
+
+                    if (!Objects.equals(EvenMoreFish.c2021Config.getParticleMessage(), "none")) {
+                        event.getPlayer().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.c2021Config.getParticleMessage()));
+                    }
+
+                    if (EvenMoreFish.c2021Config.doc2021Particles()) {
+                        ParticleEngine.renderParticles(event.getHook());
+                    }
+                }
+            } else if (event.getState() == PlayerFishEvent.State.REEL_IN) {
+                // For a failed attempt the player needs to have triggered a FISHING which generates a pre-decided rarity.
+                if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isC2021()) {
+                    EvenMoreFish.decidedRarities.remove(event.getPlayer().getUniqueId());
                 }
             }
         }

@@ -155,6 +155,8 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
 
+            Database.getUrl();
+
             // Attempts to connect to the database if enabled
             try {
                 if (!Database.fishTableExists()) {

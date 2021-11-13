@@ -4,9 +4,20 @@ enabled: true
 # Should EMF fish only be given during a competition?
 fish-only-in-competition: false
 
-# Should a database store data about fish such as how many have been caught and the first to catch it.
-# Setting to false will disable it. In a future update this will have a deeper meaning and purpose.
+# The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
+# of this feature.
 database: true
+# Info for connecting to a mysql database:
+mysql:
+  # Set to false if you're using a standard SQLITE .db file
+  use-mysql: false
+  # The address of the database (the port 3306 is automatically added in by default, if different: specify with address:port)
+  address: localhost
+  # The name of the database to store fish data in
+  database: evenmorefish
+  # Login information
+  username: root
+  password: ''
 
 # When dropping tool items (e.g. fishing rod) should they be dropped with a random durability
 # instead of always full durability?

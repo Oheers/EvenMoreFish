@@ -13,13 +13,34 @@ import java.util.logging.Level;
 
 public class Database {
 
-    static final String url = "jdbc:sqlite:plugins/EvenMoreFish/database.db";
+    static String url; // = "jdbc:sqlite:plugins/EvenMoreFish/database.db";
+    static boolean isMysql = EvenMoreFish.mainConfig.isMysql();
     private static Connection connection;
+    private final static String username = EvenMoreFish.mainConfig.getUsername();
+    private final static String password = EvenMoreFish.mainConfig.getPassword();
+
+    public static void getUrl() {
+        if (isMysql) {
+            String address = EvenMoreFish.mainConfig.getAddress();
+            String database = EvenMoreFish.mainConfig.getDatabase();
+            if (address != null && username != null && password != null && database != null) {
+                url = "jdbc:mysql://" + address + "/" + database;
+                return;
+            } else {
+                EvenMoreFish.logger.log(Level.SEVERE, "MySQL credentials do not exist, using alternative database system.");
+                isMysql = false;
+            }
+        }
+
+        url = "jdbc:sqlite:plugins/EvenMoreFish/database.db";
+
+    }
 
     public static void getConnection() throws SQLException {
         if (connection == null) {
             // creates a connection to the database
-            connection = DriverManager.getConnection(url);
+            if (isMysql) connection = DriverManager.getConnection(url, username, password);
+            else connection = DriverManager.getConnection(url);
         }
     }
 
@@ -57,14 +78,12 @@ public class Database {
     public static void createDatabase() throws SQLException {
         getConnection();
 
-        String sql = "CREATE TABLE \"Fish\" (\n" +
-                "\"FISH\"\tTEXT,\n" +
-                "\"firstFisher\" TEXT,\n" +
-                "\"totalCaught\" INTEGER,\n" +
-                "\"largestFish\" FLOAT,\n" +
-                "\"largestFishCatcher\" TEXT,\n" +
-                "PRIMARY KEY(\"FISH\")\n" +
-                ");";
+        String sql = "CREATE TABLE Fish (\n" +
+                "    fish VARCHAR(200) NOT NULL,\n" +
+                "    firstFisher VARCHAR(36) NOT NULL,\n" +
+                "    totalCaught INTEGER NOT NULL,\n" +
+                "    largestFish REAL NOT NULL,\n" +
+                "    largestFishCatcher VARCHAR(36) NOT NULL, PRIMARY KEY(fish));";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             // Creates a table with FISH as the primary key
@@ -75,12 +94,12 @@ public class Database {
     public static void createUserTable() throws SQLException {
         getConnection();
 
-        String sql = "CREATE TABLE \"Users\" (\n" +
-				"\t\"uuid\"\tTEXT,\n" +
-				"\t\"fish_caught\"\tTEXT,\n" +
-				"\t\"competitions_won\"\tINTEGER,\n" +
-				"\tPRIMARY KEY(\"uuid\")\n" +
-				");";
+        String sql = "CREATE TABLE Users(\n" +
+                "    UUID VARCHAR(36),\n" +
+                "    fish_caught VARCHAR(max),\n" +
+                "    competitions_won INTEGER,\n" +
+                "    PRIMARY KEY(UUID)\n" +
+                ");";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             prep.execute();
@@ -90,7 +109,7 @@ public class Database {
     public static boolean hasFish(String name) throws SQLException {
         getConnection();
 
-        String sql = "SELECT FISH FROM Fish;";
+        String sql = "SELECT fish FROM Fish;";
 
         try (
                 PreparedStatement prep = connection.prepareStatement(sql);
@@ -109,7 +128,7 @@ public class Database {
     public static void add(String fish, Player fisher, Float length) throws SQLException {
         getConnection();
 
-        String sql = "INSERT INTO Fish (FISH, firstFisher, totalCaught, largestFish, largestFishCatcher) VALUES (?,?,?,?,?);";
+        String sql = "INSERT INTO Fish (fish, firstFisher, totalCaught, largestFish, largestFishCatcher) VALUES (?,?,?,?,?);";
 
         // rounds it so it's all nice looking for when it goes into the database
         double lengthDouble = Math.round(length * 10.0) / 10.0;
@@ -129,7 +148,7 @@ public class Database {
     public static void fishIncrease(String fishName) throws SQLException {
         getConnection();
 
-        String sql = "UPDATE Fish SET totalCaught = totalCaught + 1 WHERE FISH = ?;";
+        String sql = "UPDATE Fish SET totalCaught = totalCaught + 1 WHERE fish = ?;";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             prep.setString(1, fishName);
@@ -141,7 +160,7 @@ public class Database {
     public static void newTopSpot(Player player, String fishName, Float length) throws SQLException {
         getConnection();
 
-        String sql = "UPDATE Fish SET largestFish = ?, largestFishCatcher=? WHERE FISH = ?;";
+        String sql = "UPDATE Fish SET largestFish = ?, largestFishCatcher=? WHERE fish = ?;";
 
         // rounds it so it's all nice looking for when it goes into the database
         double lengthDouble = Math.round(length * 10.0) / 10.0;
@@ -157,7 +176,7 @@ public class Database {
     public static float getTopLength(String fishName) throws SQLException {
         getConnection();
 
-        String sql = "SELECT largestFish FROM Fish WHERE FISH = ?;";
+        String sql = "SELECT largestFish FROM Fish WHERE fish = ?;";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             prep.setString(1, fishName);
