@@ -2,10 +2,13 @@ package com.oheers.fish.database;
 
 import com.oheers.fish.fishing.items.Fish;
 
+import java.time.Instant;
+
 public class FishReport {
 
 	String r, n;
 	int c;
+	long t;
 	float l;
 
 	public FishReport(String rarity, String name, float size, int numCaught) {
@@ -13,6 +16,7 @@ public class FishReport {
 		this.n = name;
 		this.c = numCaught;
 		this.l = size;
+		this.t = Instant.now().getEpochSecond();
 	}
 
 	public int getNumCaught() {

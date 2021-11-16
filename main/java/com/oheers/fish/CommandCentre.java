@@ -1,6 +1,6 @@
 package com.oheers.fish;
 
-import com.oheers.fish.c2021.c2021Event;
+import com.oheers.fish.xmas2021.Xmas2021;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.Message;
@@ -77,7 +77,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
-            case "c2021":
+            case "xmas2021":
                 if (sender instanceof Player) {
                     Controls.c2021Control((Player) sender);
                 } else {
@@ -114,7 +114,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         );
 
         emfTabs = Arrays.asList(
-                "c2021",
+                "xmas2021",
                 "help",
                 "shop",
                 "top"
@@ -378,7 +378,7 @@ class Controls{
     }
 
     protected static void c2021Control(Player player) {
-        c2021Event.generateGUI(player);
+        Xmas2021.generateGUI(player);
     }
 
     protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {

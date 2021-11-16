@@ -1,7 +1,7 @@
 package com.oheers.fish;
 
-import com.oheers.fish.c2021.ConfigReader;
-import com.oheers.fish.c2021.GUISecurity;
+import com.oheers.fish.xmas2021.ConfigReader;
+import com.oheers.fish.xmas2021.GUISecurity;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;

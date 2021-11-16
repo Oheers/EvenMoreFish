@@ -3,6 +3,7 @@ package com.oheers.fish.database;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Type;
@@ -78,12 +79,14 @@ public class Database {
     public static void createDatabase() throws SQLException {
         getConnection();
 
-        String sql = "CREATE TABLE Fish (\n" +
-                "    fish VARCHAR(200) NOT NULL,\n" +
-                "    firstFisher VARCHAR(36) NOT NULL,\n" +
-                "    totalCaught INTEGER NOT NULL,\n" +
-                "    largestFish REAL NOT NULL,\n" +
-                "    largestFishCatcher VARCHAR(36) NOT NULL, PRIMARY KEY(fish));";
+        String sql = "CREATE TABLE Fish2 (\n" +
+                "    fish_name VARCHAR(100) NOT NULL,\n" +
+                "    fish_rarity VARCHAR(100) NOT NULL,\n" +
+                "    total_caught INTEGER NOT NULL,\n" +
+                "    largest_fish REAL NOT NULL,\n" +
+                "    largest_fisher VARCHAR(36) NOT NULL,\n" +
+                "    first_catch_time INTEGER NOT NULL\n" +
+                ");";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             // Creates a table with FISH as the primary key
@@ -109,7 +112,7 @@ public class Database {
     public static boolean hasFish(String name) throws SQLException {
         getConnection();
 
-        String sql = "SELECT fish FROM Fish;";
+        String sql = "SELECT fish FROM Fish2;";
 
         try (
                 PreparedStatement prep = connection.prepareStatement(sql);
@@ -125,21 +128,23 @@ public class Database {
         }
     }
 
-    public static void add(String fish, Player fisher, Float length) throws SQLException {
+    public static void add(Fish fish, Player fisher, Float length) throws SQLException {
         getConnection();
 
-        String sql = "INSERT INTO Fish (fish, firstFisher, totalCaught, largestFish, largestFishCatcher) VALUES (?,?,?,?,?);";
+        String sql = "INSERT INTO Fish2 (fish_name, fish_rarity, first_fisher, total_caught, largest_fish, largest_fisher, first_catch_time) VALUES (?,?,?,?,?,?,?);";
 
         // rounds it so it's all nice looking for when it goes into the database
         double lengthDouble = Math.round(length * 10.0) / 10.0;
 
         // starts a field for the new fish that's been fished for the first time
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
-            prep.setString(1, fish);
-            prep.setString(2, fisher.getUniqueId().toString());
-            prep.setInt(3, 1);
-            prep.setDouble(4, lengthDouble);
-            prep.setString(5, fisher.getUniqueId().toString());
+            prep.setString(1, fish.getName());
+            prep.setString(2, fish.getRarity().getValue());
+            prep.setString(3, fisher.getUniqueId().toString());
+            prep.setDouble(4, 1);
+            prep.setFloat(5, fish.getLength());
+            prep.setString(6, fisher.getUniqueId().toString());
+            prep.setInt(7, );
             prep.execute();
         }
     }

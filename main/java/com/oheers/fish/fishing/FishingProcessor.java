@@ -3,8 +3,8 @@ package com.oheers.fish.fishing;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
-import com.oheers.fish.c2021.ParticleEngine;
-import com.oheers.fish.c2021.c2021Event;
+import com.oheers.fish.xmas2021.ParticleEngine;
+import com.oheers.fish.xmas2021.Xmas2021;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
@@ -200,7 +200,7 @@ public class FishingProcessor implements Listener {
 
     public static boolean c2021Check(Rarity r, Player f) {
         if (r.isC2021()) {
-            Fish fish = c2021Event.getFish();
+            Fish fish = Xmas2021.getFish();
             for (FishReport report : EvenMoreFish.fishReports.get(f.getUniqueId())) {
                 if (report.getName().equals(fish.getName()) && report.getRarity().equals(r.getValue())) {
                     // it's not ok to proceed with the selected rarity
@@ -229,7 +229,7 @@ public class FishingProcessor implements Listener {
 
                 if (rarity.isC2021()) {
                     if (EvenMoreFish.c2021Config.isOneFishPerDay()) {
-                        if (c2021Event.hiddenCheck()) {
+                        if (Xmas2021.hiddenCheck()) {
                             if (c2021Check(rarity, fisher)) {
                                 c2021pass = true;
                             }
@@ -253,7 +253,7 @@ public class FishingProcessor implements Listener {
                 if (r.isC2021()) {
                     if (c2021Check(r, fisher)) {
                         if (EvenMoreFish.c2021Config.isOneFishPerDay()) {
-                            if (c2021Event.hiddenCheck()) allowedRarities.add(r);
+                            if (Xmas2021.hiddenCheck()) allowedRarities.add(r);
                         } else allowedRarities.add(r);
                     }
                 } else {
@@ -306,7 +306,7 @@ public class FishingProcessor implements Listener {
         // will store all the fish that match the player's biome or don't discriminate biomes
 
         if (r.isC2021()) {
-            return c2021Event.getFish();
+            return Xmas2021.getFish();
         }
 
         List<Fish> available = new ArrayList<>();

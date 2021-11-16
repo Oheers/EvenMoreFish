@@ -1,7 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.c2021.c2021Event;
+import com.oheers.fish.xmas2021.Xmas2021;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -96,7 +96,7 @@ public class Names {
 
     private void c2021Check(Fish f) {
         if (this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day") != 0) {
-            c2021Event.setRegisteredFish(f, this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
+            Xmas2021.setRegisteredFish(f, this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
         }
     }
 
