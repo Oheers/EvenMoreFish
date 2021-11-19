@@ -34,7 +34,7 @@ public class JoinChecker implements Listener {
                     reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
                 } else {
                     reports = new ArrayList<>();
-                    Database.addUser(event.getPlayer().getUniqueId().toString(), reports);
+                    Database.addUser(event.getPlayer().getUniqueId().toString());
                 }
 
                 EvenMoreFish.fishReports.put(event.getPlayer().getUniqueId(), reports);
@@ -59,7 +59,8 @@ public class JoinChecker implements Listener {
                     if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
                         Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
                     } else {
-                        Database.addUser(event.getPlayer().getUniqueId().toString(), new ArrayList<>());
+                        Database.addUser(event.getPlayer().getUniqueId().toString());
+                        Database.writeUserData(event.getPlayer().getUniqueId().toString(), new ArrayList<>()); // Write user fish reports into their data file
                     }
 
                     EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());

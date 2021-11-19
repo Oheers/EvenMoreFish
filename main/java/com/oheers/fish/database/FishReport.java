@@ -43,6 +43,10 @@ public class FishReport {
 		this.l = largestLength;
 	}
 
+	public long getTimeEpoch() {
+		return t;
+	}
+
 	public void addFish(Fish f) {
 		if (f.getLength() > this.l) {
 			this.l = f.getLength();

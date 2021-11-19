@@ -2,12 +2,15 @@ package com.oheers.fish.database;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.entity.Player;
 
+import java.io.*;
 import java.lang.reflect.Type;
 import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,7 +61,7 @@ public class Database {
 
         // gets connection metadata
         DatabaseMetaData dbMD = connection.getMetaData();
-        try (ResultSet tables = dbMD.getTables(null, null, "Fish", null)) {
+        try (ResultSet tables = dbMD.getTables(null, null, "Fish2", null)) {
             // if there's a tables.next() it returns true, if not, it returns false
             return tables.next();
         }
@@ -82,10 +85,11 @@ public class Database {
         String sql = "CREATE TABLE Fish2 (\n" +
                 "    fish_name VARCHAR(100) NOT NULL,\n" +
                 "    fish_rarity VARCHAR(100) NOT NULL,\n" +
+                "    first_fisher VARCHAR(36) NOT NULL, \n" +
                 "    total_caught INTEGER NOT NULL,\n" +
                 "    largest_fish REAL NOT NULL,\n" +
                 "    largest_fisher VARCHAR(36) NOT NULL,\n" +
-                "    first_catch_time INTEGER NOT NULL\n" +
+                "    first_catch_time LONGBLOB NOT NULL\n" +
                 ");";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
@@ -98,9 +102,9 @@ public class Database {
         getConnection();
 
         String sql = "CREATE TABLE Users(\n" +
-                "    UUID VARCHAR(36),\n" +
-                "    fish_caught VARCHAR(max),\n" +
+                "    uuid VARCHAR(36),\n" +
                 "    competitions_won INTEGER,\n" +
+                "    fish_sold INTEGER,\n" +
                 "    PRIMARY KEY(UUID)\n" +
                 ");";
 
@@ -112,7 +116,7 @@ public class Database {
     public static boolean hasFish(String name) throws SQLException {
         getConnection();
 
-        String sql = "SELECT fish FROM Fish2;";
+        String sql = "SELECT fish_name FROM Fish2;";
 
         try (
                 PreparedStatement prep = connection.prepareStatement(sql);
@@ -128,13 +132,10 @@ public class Database {
         }
     }
 
-    public static void add(Fish fish, Player fisher, Float length) throws SQLException {
+    public static void add(Fish fish, Player fisher) throws SQLException {
         getConnection();
 
         String sql = "INSERT INTO Fish2 (fish_name, fish_rarity, first_fisher, total_caught, largest_fish, largest_fisher, first_catch_time) VALUES (?,?,?,?,?,?,?);";
-
-        // rounds it so it's all nice looking for when it goes into the database
-        double lengthDouble = Math.round(length * 10.0) / 10.0;
 
         // starts a field for the new fish that's been fished for the first time
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
@@ -144,7 +145,7 @@ public class Database {
             prep.setDouble(4, 1);
             prep.setFloat(5, fish.getLength());
             prep.setString(6, fisher.getUniqueId().toString());
-            prep.setInt(7, );
+            prep.setLong(7, Instant.now().getEpochSecond());
             prep.execute();
         }
     }
@@ -153,7 +154,7 @@ public class Database {
     public static void fishIncrease(String fishName) throws SQLException {
         getConnection();
 
-        String sql = "UPDATE Fish SET totalCaught = totalCaught + 1 WHERE fish = ?;";
+        String sql = "UPDATE Fish2 SET total_caught = total_caught + 1 WHERE fish_name = ?;";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             prep.setString(1, fishName);
@@ -165,7 +166,7 @@ public class Database {
     public static void newTopSpot(Player player, String fishName, Float length) throws SQLException {
         getConnection();
 
-        String sql = "UPDATE Fish SET largestFish = ?, largestFishCatcher=? WHERE fish = ?;";
+        String sql = "UPDATE Fish2 SET largest_fish = ?, largest_fisher=? WHERE fish_name = ?;";
 
         // rounds it so it's all nice looking for when it goes into the database
         double lengthDouble = Math.round(length * 10.0) / 10.0;
@@ -181,7 +182,7 @@ public class Database {
     public static float getTopLength(String fishName) throws SQLException {
         getConnection();
 
-        String sql = "SELECT largestFish FROM Fish WHERE fish = ?;";
+        String sql = "SELECT largest_fish FROM Fish2 WHERE fish_name = ?;";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             prep.setString(1, fishName);
@@ -213,7 +214,7 @@ public class Database {
         return false;
     }
 
-	public static void addUser(String uuid, List<FishReport> reports) {
+	public static void addUser(String uuid) {
 
 		try { getConnection(); }
 		catch (SQLException exception) {
@@ -222,14 +223,13 @@ public class Database {
 			return;
 		}
 
-		String sql = "INSERT INTO Users (uuid, fish_caught, competitions_won) VALUES (?,?,?);";
-		Gson gson = new Gson();
+		String sql = "INSERT INTO Users (uuid, competitions_won, fish_sold) VALUES (?,?,?);";
 
 		// starts a field for the new fish that's been fished for the first time
 		try (PreparedStatement prep = connection.prepareStatement(sql)) {
 
 			prep.setString(1, uuid);
-			prep.setString(2, gson.toJson(reports));
+			prep.setInt(2, 0);
 			prep.setInt(3, 0);
 			prep.execute();
 
@@ -241,7 +241,26 @@ public class Database {
 
     public static List<FishReport> readUserData(String uuid) {
 
-        String sql = "SELECT fish_caught FROM Users WHERE uuid = ?;";
+        File userFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder() + "/data/" + uuid + ".json");
+        if (userFile.exists()) {
+
+            try {
+                FileReader reader = new FileReader(userFile);
+                Type fishReportList = new TypeToken<ArrayList<FishReport>>(){}.getType();
+
+                Gson gson = new Gson();
+                return gson.fromJson(reader, fishReportList);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return new ArrayList<>();
+            }
+
+        } else {
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not load data file for: " + uuid);
+            return new ArrayList<>();
+        }
+
+        /*String sql = "SELECT fish_caught FROM Users WHERE uuid = ?;";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             getConnection();
@@ -262,12 +281,39 @@ public class Database {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not access " + uuid + "'s fish_caught record from the database. More errors will likely occur.");
             exception.printStackTrace();
             return null;
-        }
+        }*/
     }
 
     public static void writeUserData(String uuid, List<FishReport> reports) {
 
-        String sql = "UPDATE Users SET fish_caught = ? WHERE uuid = ?;";
+        File userFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder() + "/data/" + uuid + ".json");
+
+        try {
+            if (!userFile.exists()) {
+                if (!userFile.getParentFile().exists()) {
+                    if (!userFile.getParentFile().mkdir()) {
+                        throw new IOException("Data could not be written to disk: " + uuid);
+                    }
+                }
+
+                if (!userFile.createNewFile()) {
+                    throw new IOException("Data could not be written to disk: " + uuid);
+                }
+            }
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+            FileWriter writer = new FileWriter(userFile);
+            writer.write(gson.toJson(reports));
+            writer.close();
+
+        } catch (IOException e) {
+            EvenMoreFish.logger.log(Level.SEVERE, "Data could not be written to disk: " + uuid);
+            e.printStackTrace();
+        }
+    }
+
+/*        String sql = "UPDATE Users SET fish_caught = ? WHERE uuid = ?;";
 
         try (PreparedStatement prep = connection.prepareStatement(sql)) {
             getConnection();
@@ -281,5 +327,5 @@ public class Database {
             exception.printStackTrace();
         }
     }
-
+*/
 }

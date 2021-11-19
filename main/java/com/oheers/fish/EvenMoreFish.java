@@ -261,7 +261,8 @@ public class EvenMoreFish extends JavaPlugin {
             if (Database.hasUser(uuid.toString())) {
                 Database.writeUserData(uuid.toString(), fishReports.get(uuid));
             } else {
-                Database.addUser(uuid.toString(), fishReports.get(uuid));
+                Database.addUser(uuid.toString());
+                Database.writeUserData(uuid.toString(), fishReports.get(uuid));
             }
         }
     }

@@ -149,7 +149,7 @@ public class FishingProcessor implements Listener {
                                         }
                                     } else {
                                         // the database doesn't contain the fish yet
-                                        Database.add(fish.getName(), player, fish.getLength());
+                                        Database.add(fish, player);
                                     }
 
                                     boolean foundReport = false;

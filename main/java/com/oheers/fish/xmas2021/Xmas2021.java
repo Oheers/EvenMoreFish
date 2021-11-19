@@ -12,6 +12,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Xmas2021 {
@@ -69,6 +72,10 @@ public class Xmas2021 {
 								ItemMeta fishIconMeta = fishIcon.getItemMeta();
 								List<String> lore = new ArrayList<>();
 
+								LocalDateTime dateTime = LocalDateTime.ofEpochSecond(report.getTimeEpoch(), 0, ZoneOffset.UTC);
+								DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM, yyyy", Locale.ENGLISH);
+								String formattedDate = dateTime.format(formatter);
+
 								for (String line : EvenMoreFish.c2021Config.getAdventItemLore()) {
 									lore.add(new Message()
 											.setMSG(line)
@@ -76,7 +83,7 @@ public class Xmas2021 {
 											.setNumCaught(Integer.toString(report.getNumCaught()))
 											.setLargestSize(EvenMoreFish.c2021Config.getLengthFormat())
 											.setLength(Float.toString(report.getLargestLength()))
-											.setFirstCaught(Integer.toString(0))
+											.setFirstCaught(formattedDate)
 											.setDay(Integer.toString(day))
 											.toString());
 								}
