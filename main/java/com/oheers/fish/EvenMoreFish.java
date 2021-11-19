@@ -44,7 +44,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static RaritiesFile raritiesFile;
     public static MessageFile messageFile;
     public static CompetitionFile competitionFile;
-    public static ConfigReader c2021Config;
+    public static ConfigReader xmas2021Config;
 
     public static Messages msgs;
     public static MainConfig mainConfig;
@@ -95,7 +95,7 @@ public class EvenMoreFish extends JavaPlugin {
         raritiesFile = new RaritiesFile(this);
         messageFile = new MessageFile(this);
         competitionFile = new CompetitionFile(this);
-        c2021Config = new ConfigReader(this);
+        xmas2021Config = new ConfigReader(this);
 
         msgs = new Messages();
         mainConfig = new MainConfig();
@@ -115,7 +115,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig(), false);
-        names.loadRarities(c2021Config.getConfig(), c2021Config.getConfig(), true);
+        names.loadRarities(xmas2021Config.getConfig(), xmas2021Config.getConfig(), true);
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
@@ -281,7 +281,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig(), false);
-        names.loadRarities(c2021Config.getConfig(), c2021Config.getConfig(), true);
+        names.loadRarities(xmas2021Config.getConfig(), xmas2021Config.getConfig(), true);
 
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());

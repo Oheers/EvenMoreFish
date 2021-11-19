@@ -14,44 +14,44 @@ import java.util.logging.Level;
 public class ConfigReader {
 
 	private final EvenMoreFish plugin;
-	private FileConfiguration c2021config;
+	private FileConfiguration xmas2021Config;
 
 	public ConfigReader(EvenMoreFish plugin) {
 		this.plugin = plugin;
 		reload();
-		c2021config = getConfig();
+		xmas2021Config = getConfig();
 	}
 
 	// Makes sure all th
 	public void reload() {
 
-		File c2021File = new File(this.plugin.getDataFolder(), "xmas2021/xmas2021.yml");
+		File xmas2021File = new File(this.plugin.getDataFolder(), "xmas2021/xmas2021.yml");
 
-		if (!c2021File.exists()) {
-			c2021File.getParentFile().mkdirs();
+		if (!xmas2021File.exists()) {
+			xmas2021File.getParentFile().mkdirs();
 			this.plugin.saveResource("xmas2021/xmas2021.yml", false);
 		}
 
-		this.c2021config = new YamlConfiguration();
+		this.xmas2021Config = new YamlConfiguration();
 
 		try {
-			this.c2021config.load(c2021File);
+			this.xmas2021Config.load(xmas2021File);
 		} catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
 
-		EvenMoreFish.c2021Config = this;
+		EvenMoreFish.xmas2021Config = this;
 	}
 
 	public FileConfiguration getConfig() {
-		if (this.c2021config == null) reload();
-		return this.c2021config;
+		if (this.xmas2021Config == null) reload();
+		return this.xmas2021Config;
 	}
 
 	// Config methods
 
 	private String getString(String path, String defaultValue) {
-		String returning = c2021config.getString(path);
+		String returning = xmas2021Config.getString(path);
 
 		if (returning != null) return returning;
 		else {
@@ -61,11 +61,11 @@ public class ConfigReader {
 	}
 
 	private Boolean getBoolean(String path) {
-		return c2021config.getBoolean(path);
+		return xmas2021Config.getBoolean(path);
 	}
 
 	private Material getMaterial(String path, String defaultValue) {
-		String returning = c2021config.getString(path);
+		String returning = xmas2021Config.getString(path);
 
 		if (returning != null) {
 			try {
@@ -82,7 +82,7 @@ public class ConfigReader {
 	}
 
 	private List<String> getLore(String path) {
-		List<String> configLore = c2021config.getStringList(path);
+		List<String> configLore = xmas2021Config.getStringList(path);
 
 		if (configLore.size() == 0) {
 			EvenMoreFish.logger.log(Level.SEVERE, "You are missing the following value from your xmas2021.yml file: " + path);
@@ -128,7 +128,7 @@ public class ConfigReader {
 	}
 
 	public Boolean isOneFishPerDay() {
-		return getBoolean("gui.one-fish-per-day");
+		return getBoolean("general.one-fish-per-day");
 	}
 
 	public String getTimeUnitDay() {
@@ -148,10 +148,10 @@ public class ConfigReader {
 	}
 
 	public String getParticleMessage() {
-		return getString("messages.particle-message", "You feel a sense of christmas spirit.");
+		return getString("gui.particle-message", "You feel a sense of christmas spirit.");
 	}
 
-	public boolean doc2021Particles() {
+	public boolean doXmas2021Particles() {
 		return getBoolean("general.do-particles");
 	}
 

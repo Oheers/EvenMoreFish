@@ -293,16 +293,16 @@ public class FishUtils {
     public static FileConfiguration findConfigFile(String rarity) {
         if (EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish." + rarity) != null) {
             return EvenMoreFish.fishFile.getConfig();
-        } else if (EvenMoreFish.c2021Config.getConfig().getConfigurationSection("fish." + rarity) != null) {
-            return EvenMoreFish.c2021Config.getConfig();
+        } else if (EvenMoreFish.xmas2021Config.getConfig().getConfigurationSection("fish." + rarity) != null) {
+            return EvenMoreFish.xmas2021Config.getConfig();
         } else return null;
     }
 
     public static FileConfiguration findRarityFile(String rarity) {
         if (EvenMoreFish.raritiesFile.getConfig().getConfigurationSection("rarities." + rarity) != null) {
             return EvenMoreFish.raritiesFile.getConfig();
-        } else if (EvenMoreFish.c2021Config.getConfig().getConfigurationSection("rarities." + rarity) != null) {
-            return EvenMoreFish.c2021Config.getConfig();
+        } else if (EvenMoreFish.xmas2021Config.getConfig().getConfigurationSection("rarities." + rarity) != null) {
+            return EvenMoreFish.xmas2021Config.getConfig();
         } else return null;
     }
 }

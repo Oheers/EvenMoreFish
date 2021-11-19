@@ -79,7 +79,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 break;
             case "xmas2021":
                 if (sender instanceof Player) {
-                    Controls.c2021Control((Player) sender);
+                    Controls.xmas2021Control((Player) sender);
                 } else {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
@@ -317,7 +317,7 @@ class Controls{
                 EvenMoreFish.raritiesFile.reload();
                 EvenMoreFish.messageFile.reload();
                 EvenMoreFish.competitionFile.reload();
-                EvenMoreFish.c2021Config.reload();
+                EvenMoreFish.xmas2021Config.reload();
 
                 plugin.reload();
                 plugin.reloadConfig();
@@ -377,7 +377,7 @@ class Controls{
         }
     }
 
-    protected static void c2021Control(Player player) {
+    protected static void xmas2021Control(Player player) {
         Xmas2021.generateGUI(player);
     }
 

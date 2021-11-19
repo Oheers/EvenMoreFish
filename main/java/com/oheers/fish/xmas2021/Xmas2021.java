@@ -30,7 +30,7 @@ public class Xmas2021 {
 
 		FOCUSED_PLAYERS.add(player.getUniqueId());
 
-		Inventory gui = Bukkit.createInventory(null, 54, FishUtils.translateHexColorCodes(FishUtils.translateHexColorCodes(EvenMoreFish.c2021Config.getGUIName())));
+		Inventory gui = Bukkit.createInventory(null, 54, FishUtils.translateHexColorCodes(FishUtils.translateHexColorCodes(EvenMoreFish.xmas2021Config.getGUIName())));
 		loadFillers(gui);
 		loadFish(gui, player);
 		player.openInventory(gui);
@@ -38,7 +38,7 @@ public class Xmas2021 {
 
 	private static void loadFillers(Inventory inventory) {
 
-		ItemStack fillerStack = new ItemStack(EvenMoreFish.c2021Config.getFillerMaterial());
+		ItemStack fillerStack = new ItemStack(EvenMoreFish.xmas2021Config.getFillerMaterial());
 		ItemMeta meta = fillerStack.getItemMeta();
 
 		meta.setDisplayName(ChatColor.RESET + "");
@@ -76,12 +76,12 @@ public class Xmas2021 {
 								DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM, yyyy", Locale.ENGLISH);
 								String formattedDate = dateTime.format(formatter);
 
-								for (String line : EvenMoreFish.c2021Config.getAdventItemLore()) {
+								for (String line : EvenMoreFish.xmas2021Config.getAdventItemLore()) {
 									lore.add(new Message()
 											.setMSG(line)
 											.setName(fish.getName())
 											.setNumCaught(Integer.toString(report.getNumCaught()))
-											.setLargestSize(EvenMoreFish.c2021Config.getLengthFormat())
+											.setLargestSize(EvenMoreFish.xmas2021Config.getLengthFormat())
 											.setLength(Float.toString(report.getLargestLength()))
 											.setFirstCaught(formattedDate)
 											.setDay(Integer.toString(day))
@@ -91,7 +91,7 @@ public class Xmas2021 {
 								fishIconMeta.setLore(lore);
 
 								fishIconMeta.setDisplayName(new Message()
-										.setMSG(EvenMoreFish.c2021Config.getAdventItemName())
+										.setMSG(EvenMoreFish.xmas2021Config.getAdventItemName())
 										.setDay(Integer.toString(day))
 										.setName(fish.getName())
 										.toString());
@@ -127,12 +127,12 @@ public class Xmas2021 {
 	}
 
 	public static ItemStack unCaughtFish(int day) {
-		ItemStack uncaughtFish = new ItemStack(EvenMoreFish.c2021Config.getLockedFishMaterial());
+		ItemStack uncaughtFish = new ItemStack(EvenMoreFish.xmas2021Config.getLockedFishMaterial());
 
 		ItemMeta uncaughtMeta = uncaughtFish.getItemMeta();
 		List<String> lore = new ArrayList<>();
 
-		for (String line : EvenMoreFish.c2021Config.getAdventItemLore()) {
+		for (String line : EvenMoreFish.xmas2021Config.getAdventItemLore()) {
 			lore.add(new Message()
 					.setMSG(line)
 					.setName("???")
@@ -146,7 +146,7 @@ public class Xmas2021 {
 		uncaughtMeta.setLore(lore);
 
 		uncaughtMeta.setDisplayName(new Message()
-				.setMSG(EvenMoreFish.c2021Config.getAdventItemName())
+				.setMSG(EvenMoreFish.xmas2021Config.getAdventItemName())
 				.setDay(Integer.toString(day))
 				.setName("???")
 				.toString());
@@ -157,17 +157,17 @@ public class Xmas2021 {
 	}
 
 	public static ItemStack loadLockedFish(int day) {
-		ItemStack lockedFish = new ItemStack(EvenMoreFish.c2021Config.getLockedFishMaterial());
+		ItemStack lockedFish = new ItemStack(EvenMoreFish.xmas2021Config.getLockedFishMaterial());
 
 		ItemMeta lockedMeta = lockedFish.getItemMeta();
 
-		List<String> lore = EvenMoreFish.c2021Config.getAdventLockedItemLore();
+		List<String> lore = EvenMoreFish.xmas2021Config.getAdventLockedItemLore();
 		for (int i=0; i<lore.size(); i++) {
 			lore.set(i, new Message().setMSG(lore.get(i)).setTimeRemaining(timeFormat(getTimeRemaining(day))).toString());
 		}
 
 		lockedMeta.setLore(lore);
-		lockedMeta.setDisplayName(new Message().setMSG(EvenMoreFish.c2021Config.getAdventLockedItemName()).setDay(Integer.toString(day)).toString());
+		lockedMeta.setDisplayName(new Message().setMSG(EvenMoreFish.xmas2021Config.getAdventLockedItemName()).setDay(Integer.toString(day)).toString());
 		lockedFish.setItemMeta(lockedMeta);
 
 		lockedFish.setAmount(day);
@@ -196,19 +196,19 @@ public class Xmas2021 {
 		String returning = "";
 
 		if (timeLeft >= 86400) {
-			returning += timeLeft/86400 + EvenMoreFish.c2021Config.getTimeUnitDay() + " ";
+			returning += timeLeft/86400 + EvenMoreFish.xmas2021Config.getTimeUnitDay() + " ";
 		}
 
 		if (timeLeft >= 3600) {
-			returning += ((timeLeft%86400)/3600) + EvenMoreFish.c2021Config.getTimeUnitHour() + " ";
+			returning += ((timeLeft%86400)/3600) + EvenMoreFish.xmas2021Config.getTimeUnitHour() + " ";
 		}
 
 		if (timeLeft >= 60) {
-			returning += ((timeLeft%3600)/60) + EvenMoreFish.c2021Config.getTimeUnitMinute() + " ";
+			returning += ((timeLeft%3600)/60) + EvenMoreFish.xmas2021Config.getTimeUnitMinute() + " ";
 		}
 
 		// Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-		returning += (timeLeft%60) + EvenMoreFish.c2021Config.getTimeUnitSecond();
+		returning += (timeLeft%60) + EvenMoreFish.xmas2021Config.getTimeUnitSecond();
 		return returning;
 	}
 }

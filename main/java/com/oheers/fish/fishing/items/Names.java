@@ -22,7 +22,7 @@ public class Names {
      *  it goes down that branch looking for fish and their names. It then plops all this stuff into the
      *  main fish map. Badabing badaboom we've now populated our fish map.
      */
-    public void loadRarities(FileConfiguration fishConfiguration, FileConfiguration rarityConfiguration, boolean isC2021) {
+    public void loadRarities(FileConfiguration fishConfiguration, FileConfiguration rarityConfiguration, boolean isXmas2021) {
         this.fishConfiguration = fishConfiguration;
         this.rarityConfiguration = rarityConfiguration;
 
@@ -41,7 +41,7 @@ public class Names {
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
-            r.setC2021(isC2021);
+            r.setXmas2021(isXmas2021);
 
             List<Fish> fishQueue = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class Names {
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
 
-                if (isC2021) c2021Check(canvas);
+                if (isXmas2021) xmas2021Check(canvas);
 
             }
 
@@ -94,7 +94,7 @@ public class Names {
         return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
     }
 
-    private void c2021Check(Fish f) {
+    private void xmas2021Check(Fish f) {
         if (this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day") != 0) {
             Xmas2021.setRegisteredFish(f, this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
         }
