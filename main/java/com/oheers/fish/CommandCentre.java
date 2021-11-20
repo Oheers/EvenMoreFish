@@ -79,7 +79,11 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 break;
             case "xmas2021":
                 if (sender instanceof Player) {
-                    Controls.xmas2021Control((Player) sender);
+                    if (EvenMoreFish.permission.has((Player) sender, "emf.xmas2021")) {
+                        Controls.xmas2021Control((Player) sender);
+                    } else {
+                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
+                    }
                 } else {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
