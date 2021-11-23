@@ -1,15 +1,13 @@
 package com.oheers.fish;
 
+import com.oheers.fish.xmas2021.Xmas2021;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -78,6 +76,17 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
+            case "xmas2021":
+                if (sender instanceof Player) {
+                    if (EvenMoreFish.permission.has((Player) sender, "emf.xmas2021")) {
+                        Controls.xmas2021Control((Player) sender);
+                    } else {
+                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
+                    }
+                } else {
+                    EvenMoreFish.msgs.disabledInConsole();
+                }
+                break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
@@ -108,6 +117,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         );
 
         emfTabs = Arrays.asList(
+                "xmas2021",
                 "help",
                 "shop",
                 "top"
@@ -222,38 +232,37 @@ class Controls{
                 if (args.length == 3) {
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                         if (args[2].equalsIgnoreCase(r.getValue())) {
-                            BaseComponent baseComponent = new TextComponent("");
-                            if (r.getDisplayName() != null) baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getDisplayName())));
-                            else baseComponent.addExtra(new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": ")));
+                            ComponentBuilder builder = new ComponentBuilder();
+
+                            if (r.getDisplayName() != null) builder.append(FishUtils.translateHexColorCodes(r.getDisplayName()), ComponentBuilder.FormatRetention.NONE);
+                            else builder.append(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": "), ComponentBuilder.FormatRetention.NONE);
 
                             for (Fish fish : EvenMoreFish.fishCollection.get(r)) {
-                                BaseComponent tC;
-                                if (fish.getDisplayName() != null) tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
-                                else tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
-                                tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
-                                tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + fish.getRarity().getValue() + " " + fish.getName()));
-                                baseComponent.addExtra(tC);
+                                if (fish.getDisplayName() != null) builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
+                                else builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
+
+                                builder.event(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
+                                builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + fish.getRarity().getValue() + " " + fish.getName()));
                             }
 
-                            sender.spigot().sendMessage(baseComponent);
+                            sender.spigot().sendMessage(builder.create());
                             return;
                         }
                     }
-                    BaseComponent baseComponent = new TextComponent("");
+                    ComponentBuilder builder = new ComponentBuilder();
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        BaseComponent tC;
+
                         if (r.getDisplayName() != null) {
-                            tC = new TextComponent(FishUtils.translateHexColorCodes("&r[" + r.getDisplayName() + "] "));
-                            tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getDisplayName() + " fish.")));
+                            builder.append(FishUtils.translateHexColorCodes("&r[" + r.getDisplayName() + "] "));
+                            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getDisplayName() + " fish.")));
                         } else {
-                            tC = new TextComponent(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
-                            tC.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish.")));
+                            builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + r.getValue() + "] "));
+                            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + r.getValue() + " fish.")));
                         }
 
-                        tC.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + r.getValue()));
-                        baseComponent.addExtra(tC);
+                        builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + r.getValue()));
                     }
-                    sender.spigot().sendMessage(baseComponent);
+                    sender.spigot().sendMessage(builder.create());
                 } else if (args.length >= 4) {
                     StringBuilder using = new StringBuilder();
 
@@ -309,6 +318,9 @@ class Controls{
 
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
+                EvenMoreFish.messageFile.reload();
+                EvenMoreFish.competitionFile.reload();
+                EvenMoreFish.xmas2021Config.reload();
 
                 plugin.reload();
 
@@ -365,6 +377,10 @@ class Controls{
                 }
             }
         }
+    }
+
+    protected static void xmas2021Control(Player player) {
+        Xmas2021.generateGUI(player);
     }
 
     protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {

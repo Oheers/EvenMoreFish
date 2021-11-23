@@ -1,5 +1,7 @@
 package com.oheers.fish;
 
+import com.oheers.fish.xmas2021.ConfigReader;
+import com.oheers.fish.xmas2021.GUISecurity;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
@@ -7,6 +9,7 @@ import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
+import com.oheers.fish.database.FishReport;
 import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
 import com.oheers.fish.events.McMMOTreasureEvent;
@@ -39,6 +42,12 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
+<<<<<<< HEAD
+    public static MessageFile messageFile;
+    public static CompetitionFile competitionFile;
+    public static ConfigReader xmas2021Config;
+=======
+>>>>>>> master
 
     public static Messages msgs;
     public static MainConfig mainConfig;
@@ -51,6 +60,8 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
 
+    public static Map<UUID, List<FishReport>> fishReports = new HashMap<>();
+
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
 
@@ -59,6 +70,15 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Logger logger;
 
+<<<<<<< HEAD
+    public static ArrayList<SellGUI> guis;
+
+    // this is for pre-deciding a rarity and running particles if it will be chosen
+    // it's a work-in-progress solution and probably won't stick.
+    public static Map<UUID, Rarity> decidedRarities;
+
+=======
+>>>>>>> master
     public static boolean isUpdateAvailable;
 
     public static WorldGuardPlugin wgPlugin;
@@ -73,6 +93,12 @@ public class EvenMoreFish extends JavaPlugin {
 
     @Override
     public void onEnable() {
+<<<<<<< HEAD
+
+        guis = new ArrayList<>();
+        decidedRarities = new HashMap<>();
+=======
+>>>>>>> master
         logger = getLogger();
 
         getConfig().options().copyDefaults();
@@ -83,7 +109,17 @@ public class EvenMoreFish extends JavaPlugin {
 
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
+<<<<<<< HEAD
+        messageFile = new MessageFile(this);
+        competitionFile = new CompetitionFile(this);
+        xmas2021Config = new ConfigReader(this);
+
+        msgs = new Messages();
+        mainConfig = new MainConfig();
+        competitionConfig = new CompetitionConfig();
+=======
         competitionConfig = new CompetitionConfig(this);
+>>>>>>> master
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
@@ -98,7 +134,8 @@ public class EvenMoreFish extends JavaPlugin {
         }
 
         Names names = new Names();
-        names.loadRarities();
+        names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig(), false);
+        names.loadRarities(xmas2021Config.getConfig(), xmas2021Config.getConfig(), true);
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
@@ -132,10 +169,15 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
 
+            Database.getUrl();
+
             // Attempts to connect to the database if enabled
             try {
-                if (!Database.dbExists()) {
+                if (!Database.fishTableExists()) {
                     Database.createDatabase();
+                }
+                if (!Database.userTableExists()) {
+                    Database.createUserTable();
                 }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -151,6 +193,7 @@ public class EvenMoreFish extends JavaPlugin {
     public void onDisable() {
 
         terminateSellGUIS();
+        saveUserData();
 
         // Ends the current competition in case the plugin is being disabled when the server will continue running
         if (Competition.isActive()) {
@@ -176,6 +219,7 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
         getServer().getPluginManager().registerEvents(new SkullSaver(), this);
+        getServer().getPluginManager().registerEvents(new GUISecurity(), this);
 
         optionalListeners();
     }
@@ -228,6 +272,17 @@ public class EvenMoreFish extends JavaPlugin {
         });
     }
 
+    private void saveUserData() {
+        for (UUID uuid : fishReports.keySet()) {
+            if (Database.hasUser(uuid.toString())) {
+                Database.writeUserData(uuid.toString(), fishReports.get(uuid));
+            } else {
+                Database.addUser(uuid.toString());
+                Database.writeUserData(uuid.toString(), fishReports.get(uuid));
+            }
+        }
+    }
+
     public void reload() {
 
         terminateSellGUIS();
@@ -241,7 +296,8 @@ public class EvenMoreFish extends JavaPlugin {
         saveDefaultConfig();
 
         Names names = new Names();
-        names.loadRarities();
+        names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig(), false);
+        names.loadRarities(xmas2021Config.getConfig(), xmas2021Config.getConfig(), true);
 
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());

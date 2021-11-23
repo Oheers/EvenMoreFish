@@ -1,7 +1,9 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.xmas2021.Xmas2021;
 import org.bukkit.block.Biome;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,27 +15,33 @@ public class Names {
     // Gets all the fish names.
     Set<String> rarities, fishSet, fishList;
 
+    FileConfiguration fishConfiguration, rarityConfiguration;
+
     /*
      *  Goes through the fish branch of fish.yml, then for each rarity it realises on its journey,
      *  it goes down that branch looking for fish and their names. It then plops all this stuff into the
      *  main fish map. Badabing badaboom we've now populated our fish map.
      */
-    public void loadRarities() {
+    public void loadRarities(FileConfiguration fishConfiguration, FileConfiguration rarityConfiguration, boolean isXmas2021) {
+        this.fishConfiguration = fishConfiguration;
+        this.rarityConfiguration = rarityConfiguration;
+
         fishList = new HashSet<>();
 
         // gets all the rarities - just their names, nothing else
-        rarities = EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish").getKeys(false);
+        rarities = this.fishConfiguration.getConfigurationSection("fish").getKeys(false);
 
         for (String rarity : rarities) {
 
             // gets all the fish in said rarity, again - just their names
-            fishSet = EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish." + rarity).getKeys(false);
+            fishSet = this.fishConfiguration.getConfigurationSection("fish." + rarity).getKeys(false);
             fishList.addAll(fishSet);
 
             // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
+            r.setXmas2021(isXmas2021);
 
             List<Fish> fishQueue = new ArrayList<>();
 
@@ -41,11 +49,14 @@ public class Names {
 
                 // for each fish name, a fish object is made that contains the information gathered from that name
                 Fish canvas = new Fish(r, fish);
+                canvas.setConfigurationFile(fishConfiguration);
                 canvas.setBiomes(getBiomes(fish, r.getValue()));
                 canvas.setGlowing(getGlowing(fish, r.getValue()));
                 canvas.setPermissionNode(permissionCheck(fish, rarity));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
+
+                if (isXmas2021) xmas2021Check(canvas);
 
             }
 
@@ -58,36 +69,42 @@ public class Names {
     }
 
     private String rarityColour(String rarity) {
-        String colour = EvenMoreFish.raritiesFile.getConfig().getString("rarities." + rarity + ".colour");
+        String colour = this.rarityConfiguration.getString("rarities." + rarity + ".colour");
         if (colour == null) return "&f";
         return colour;
     }
 
     private double rarityWeight(String rarity) {
-        return EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".weight");
+        return this.rarityConfiguration.getDouble("rarities." + rarity + ".weight");
     }
 
     private boolean rarityAnnounce(String rarity) {
-        return EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + rarity + ".broadcast");
+        return this.rarityConfiguration.getBoolean("rarities." + rarity + ".broadcast");
     }
 
     private String rarityOverridenLore(String rarity) {
-        return EvenMoreFish.raritiesFile.getConfig().getString("rarities." + rarity + ".override-lore");
+        return this.rarityConfiguration.getString("rarities." + rarity + ".override-lore");
     }
 
     private String rarityDisplayName(String rarity) {
-        return EvenMoreFish.raritiesFile.getConfig().getString("rarities." + rarity + ".displayname");
+        return this.rarityConfiguration.getString("rarities." + rarity + ".displayname");
     }
 
     private String rarityPermission(String rarity) {
-        return EvenMoreFish.raritiesFile.getConfig().getString("rarities." + rarity + ".permission");
+        return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
+    }
+
+    private void xmas2021Check(Fish f) {
+        if (this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day") != 0) {
+            Xmas2021.setRegisteredFish(f, this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
+        }
     }
 
     private List<Biome> getBiomes(String name, String rarity) {
         // returns the biomes found in the "biomes:" section of the fish.yml
         List<Biome> biomes = new ArrayList<>();
 
-        for (String biome : EvenMoreFish.fishFile.getConfig().getStringList("fish." + rarity + "." + name + ".biomes")) {
+        for (String biome : this.fishConfiguration.getStringList("fish." + rarity + "." + name + ".biomes")) {
             biomes.add(Biome.valueOf(biome));
         }
 
@@ -95,18 +112,18 @@ public class Names {
     }
 
     private void weightCheck(Fish fishObject, String name, Rarity rarityObject, String rarity) {
-        if (EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".weight") != 0) {
+        if (this.fishConfiguration.getDouble("fish." + rarity + "." + name + ".weight") != 0) {
             rarityObject.setFishWeighted(true);
-            fishObject.setWeight(EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".weight"));
+            fishObject.setWeight(this.fishConfiguration.getDouble("fish." + rarity + "." + name + ".weight"));
         }
     }
 
     private String permissionCheck(String name, String rarity) {
-        return EvenMoreFish.fishFile.getConfig().getString("fish." + rarity + "." + name + ".permission");
+        return this.fishConfiguration.getString("fish." + rarity + "." + name + ".permission");
     }
 
     private boolean getGlowing(String name, String rarity) {
-        return EvenMoreFish.fishFile.getConfig().getBoolean("fish." + rarity + "." + name + ".glowing");
+        return this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".glowing");
     }
 
 }

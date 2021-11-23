@@ -1,0 +1,248 @@
+# 1.4.2 - The Christmas Update
+# This YML file is used for configuring the Christmas 2021 version of EvenMoreFish,
+
+
+fish:
+  Christmas:
+    Holly:
+      day: 1
+      item:
+        material: SWEET_BERRIES
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Red Present:
+      day: 2
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzViNzkyOTU0NGY5NTU2MmJjZmZkNTgyYWFjNzllYTQ1ZWQzYWU0Y2YyZTM0OTJmMzcwZmY4YWYxMWRjNmYifX19"
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Coal:
+      day: 3
+      item:
+        material: COAL
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+      lore:
+        - "&7&oFound in the stocking of a naughty child."
+    Turkey Dinner:
+      day: 4
+      item:
+        material: COOKED_CHICKEN
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Christmas Tree:
+      day: 5
+      item:
+        material: SPRUCE_SAPLING
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Elf Shoes:
+      day: 6
+      item:
+        material: LEATHER_BOOTS
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+      dye-colour: "#55ff55"
+    Christmas Card:
+      day: 7
+      item:
+        material: PAPER
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+      glowing: true
+    Blue Christmas Tree Decoration:
+      day: 8
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGM4YTgyNGI5Yjk0OTM5YWYyZThjZTE4ODQ4MjYxOGRhZDkzM2FlNWRkNjcxYTdiOWFjOTk5ZDNhM2I2MWE1In19fQ=="
+      glowing: true
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Roast Potatoes:
+      day: 9
+      item:
+        material: BAKED_POTATO
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Purple Present:
+      day: 10
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWM4NTVlNjM4NDE3Yjg2N2YwMjhhOTI0N2FmOWUwOGI3N2MzNTJlNTc2NjM2MzQwZjg2Yjc4OTAzYjgyMzhlZiJ9fX0="
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Christmas Songs:
+      day: 11
+      item:
+        material: MUSIC_DISC_BLOCKS
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Christmas Pudding Recipe:
+      day: 12
+      item:
+        material: BOOK
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+      glowing: true
+    Green Christmas Tree Decoration:
+      day: 13
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODNhMjc2OGRlMmFmNTJiMjdjN2JjMTQxNmRkNTM1MTk3YjY1MTU4NDIyNjczZGE5ZDNiMGU2MWQ0OWYzMzY2MiJ9fX0="
+      glowing: true
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Christmas Bells:
+      day: 14
+      item:
+        material: BELL
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Christmas Candle:
+      day: 15
+      item:
+        material: CANDLE
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Beer:
+      day: 16
+      item:
+        material: HONEY_BOTTLE
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Ice Skates:
+      day: 17
+      item:
+        material: IRON_BOOTS
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Gingerbread:
+      day: 18
+      item:
+        material: COOKIE
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Carrot for Rudolph:
+      day: 19
+      item:
+        material: CARROT
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Snowball:
+      day: 20
+      item:
+        material: SNOWBALL
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Snowman:
+      day: 21
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2Y5YmE2OWFhMjQ2N2RlZGFlNjljZWFmNzhlZDhjNzM0YTcwNWQzN2NmZTUxYWZiZTAyYTc1YjZmYjk4YmNlNyJ9fX0="
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Christmas Stocking:
+      day: 22
+      item:
+        material: LEATHER_BOOTS
+      dye-colour: "#ff5555"
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Christmas Pudding:
+      day: 23
+      item:
+        material: CAKE
+      catch-event:
+        - "MONEY:5000"
+        - "MESSAGE:&a+ $5,000"
+    Santa Claus:
+      day: 24
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTRlNDI0YjE2NzZmZWVjM2EzZjhlYmFkZTllN2Q2YTZmNzFmNzc1NmE4NjlmMzZmN2RmMGZjMTgyZDQzNmUifX19"
+      catch-event:
+        - "MONEY:5001"
+        - "MESSAGE:&a+ $5,001"
+
+rarities:
+  Christmas:
+    weight: 1
+    colour: '&#74d680'
+    worth-multiplier: 10
+    broadcast: true
+    use-this-casing: false
+    size:
+      minSize: 100
+      maxSize: 1000
+
+general:
+  # By default, the plugin will show christmas coloured particles when the user is going to catch a christmas rarity fish.
+  do-particles: true
+  # Should users only be able to catch 1 of the day's fish per day?
+  one-fish-per-day: true
+
+gui:
+  # The name of the "/emf advent" GUI
+  gui-name: "&8&m      &4 Christmas Fish | 2021 &8&m      "
+  # The material of the filler item
+  filler-item: GRAY_STAINED_GLASS_PANE
+  # The name of the fish displayed
+  fish-name: "&#74d680Day {day} - {name}"
+  # The lore of the fish displayed (the first and last lines create a long line)
+  fish-lore:
+    - "&#74d680&m                          "
+    - "&7▪ Name: &#74d680{name}"
+    - "&7▪ Caught: &#74d680{num_caught}"
+    - "&7▪ Largest Size: &#74d680{largest_size}"
+    - "&7▪ First Caught: &#74d680{first_caught}"
+    - "&#74d680&m                          "
+  # How {largest_size} should be formatted.
+  largest-length-format: "{length}cm"
+  # Fish that haven't been caught yet will appear like this.
+  locked-fish-name: "&cDay {day} - ???"
+  # The material of fish that haven't been caught yet
+  locked-fish-material: COD
+  # The lore of fish that haven't been caught yet
+  locked-fish-lore:
+    - "&c&m                          "
+    - "&7▪ Name: &c???"
+    - "&7▪ Caught: &c0"
+    - "&7▪ Largest Size: &c???"
+    - "&7▪ First Caught: &c???"
+    - "&c&m                          "
+    - "&c▪ Unlocking in {time_remaining}"
+  # The message displayed in chat when users are shown the particles (only if do-particles in general is true) - set to "none" to disable
+  particle-message: "&oYou feel a sense of christmas spirit."
+
+time-units:
+  # The abbreviations used for different units of time (for the {time_remaining} variable
+  day: "d"
+  hour: "h"
+  minute: "m"
+  second: "s"
+
+#  -----------------------------------------------------------------------------------------------------------------------  #
+#  Note: due to this event being temporary, some GUI settings were hard-coded. If you urgently need GUI settings changing,  #
+#                          please contact me on the EvenMoreFish support discord server.                                    #
+#                                                                                                                           #
+#                                       https://discord.gg/Hb9cj3tNbb                                                       #
+#  -----------------------------------------------------------------------------------------------------------------------  #
+
+#  Merry christmas, from Oheers :)

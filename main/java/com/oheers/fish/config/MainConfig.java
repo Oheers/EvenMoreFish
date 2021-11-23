@@ -184,4 +184,24 @@ public class MainConfig {
         if (returning > 9 || returning < 1) return 4;
         else return returning;
     }
+
+    public boolean isMysql() {
+        return config.getBoolean("mysql.use-mysql");
+    }
+
+    public String getAddress() {
+        return config.getString("mysql.address");
+    }
+
+    public String getDatabase() {
+        return config.getString("mysql.database");
+    }
+
+    public String getUsername() {
+        return config.getString("mysql.username");
+    }
+
+    public String getPassword() {
+        return config.getString("mysql.password");
+    }
 }
