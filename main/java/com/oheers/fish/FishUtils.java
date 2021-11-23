@@ -23,11 +23,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -41,7 +41,7 @@ public class FishUtils {
     /* checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
      * we only need to check for the length since they're all added in a batch if it's an EMF fish */
     public static boolean isFish(ItemStack i) {
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         if (i != null) {
             if (i.hasItemMeta()) {
@@ -53,7 +53,7 @@ public class FishUtils {
     }
 
     public static boolean isFish(Skull s) {
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         if (s != null) {
             return s.getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
@@ -63,9 +63,9 @@ public class FishUtils {
     }
 
     public static Fish getFish(ItemStack i) {
-        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         PersistentDataContainer container = i.getItemMeta().getPersistentDataContainer();
@@ -90,9 +90,9 @@ public class FishUtils {
     }
 
     public static Fish getFish(Skull s) {
-        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         PersistentDataContainer container = s.getPersistentDataContainer();
@@ -117,80 +117,69 @@ public class FishUtils {
     }
 
     public static void giveItems(List<ItemStack> items, Player player) {
-        int slots = 0;
-
-        for (ItemStack is : player.getInventory().getStorageContents()) {
-            if (is == null) {
-                slots++;
-            }
+        if (items.isEmpty()) {
+            return;
         }
-
-        for (ItemStack item : items) {
-            if (slots > 0) {
-                player.getInventory().addItem(item);
-                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.5f);
-            } else {
-                new BukkitRunnable() {
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.5f);
+        player.getInventory().addItem(items.toArray(new ItemStack[0]))
+                .values()
+                .forEach(item -> new BukkitRunnable() {
                     public void run() {
-                        player.getLocation().getWorld().dropItem(player.getLocation(), item);
+                        player.getWorld().dropItem(player.getLocation(), item);
                     }
-                }.runTask(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")));
-            }
-        }
+                }.runTask(JavaPlugin.getProvidingPlugin(FishUtils.class)));
     }
 
     public static boolean checkRegion(Location l) {
         // if there's any region plugin installed
-        if (EvenMoreFish.guardPL != null) {
-            // if the user has defined a region whitelist
-            if (EvenMoreFish.mainConfig.regionWhitelist()) {
-
-                // Gets a list of user defined regions
-                List<String> whitelistedRegions = EvenMoreFish.mainConfig.getAllowedRegions();
-
-                if (EvenMoreFish.guardPL.equals("worldguard")) {
-
-                    // Creates a query for whether the player is stood in a protectedregion defined by the user
-                    RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                    RegionQuery query = container.createQuery();
-                    ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
-
-                    // runs the query
-                    for (ProtectedRegion pr : set) {
-                        if (whitelistedRegions.contains(pr.getId())) return true;
-                    }
-                    return false;
-                } else if (EvenMoreFish.guardPL.equals("redprotect")) {
-                    Region r = RedProtect.get().getAPI().getRegion(l);
-                    // if the hook is in any redprotect region
-                    if (r != null) {
-                        // if the hook is in a whitelisted region
-                        return whitelistedRegions.contains(r.getName());
-                    }
-                    return false;
-                } else {
-                    // the user has defined a region whitelist but doesn't have a region plugin.
-                    EvenMoreFish.logger.log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
-                    return true;
-                }
-            }
+        if (EvenMoreFish.guardPL == null) {
             return true;
         }
-        return true;
+        // if the user has defined a region whitelist
+        if (!EvenMoreFish.mainConfig.regionWhitelist()) {
+            return true;
+        }
+
+        // Gets a list of user defined regions
+        List<String> whitelistedRegions = EvenMoreFish.mainConfig.getAllowedRegions();
+
+        if (EvenMoreFish.guardPL.equals("worldguard")) {
+
+            // Creates a query for whether the player is stood in a protectedregion defined by the user
+            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
+            ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
+
+            // runs the query
+            for (ProtectedRegion pr : set) {
+                if (whitelistedRegions.contains(pr.getId())) return true;
+            }
+            return false;
+        } else if (EvenMoreFish.guardPL.equals("redprotect")) {
+            Region r = RedProtect.get().getAPI().getRegion(l);
+            // if the hook is in any redprotect region
+            if (r != null) {
+                // if the hook is in a whitelisted region
+                return whitelistedRegions.contains(r.getName());
+            }
+            return false;
+        } else {
+            // the user has defined a region whitelist but doesn't have a region plugin.
+            EvenMoreFish.logger.log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
+            return true;
+        }
     }
 
     public static boolean checkWorld(Location l) {
         // if the user has defined a world whitelist
-        if (EvenMoreFish.mainConfig.worldWhitelist()) {
-
-            // Gets a list of user defined regions
-            List<String> whitelistedWorlds = EvenMoreFish.mainConfig.getAllowedWorlds();
-
-            if (whitelistedWorlds.contains(l.getWorld().getName())) return true;
-            else return false;
+        if (!EvenMoreFish.mainConfig.worldWhitelist()) {
+            return true;
         }
 
-        return true;
+        // Gets a list of user defined regions
+        List<String> whitelistedWorlds = EvenMoreFish.mainConfig.getAllowedWorlds();
+
+        return whitelistedWorlds.contains(l.getWorld().getName());
     }
 
     // credit to https://www.spigotmc.org/members/elementeral.717560/

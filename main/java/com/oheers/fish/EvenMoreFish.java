@@ -7,8 +7,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
-import com.oheers.fish.config.messages.LocaleGen;
-import com.oheers.fish.config.messages.MessageFile;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
@@ -19,7 +17,6 @@ import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.selling.GUICache;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -34,7 +31,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,9 +42,12 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
+<<<<<<< HEAD
     public static MessageFile messageFile;
     public static CompetitionFile competitionFile;
     public static ConfigReader xmas2021Config;
+=======
+>>>>>>> master
 
     public static Messages msgs;
     public static MainConfig mainConfig;
@@ -67,12 +70,15 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Logger logger;
 
+<<<<<<< HEAD
     public static ArrayList<SellGUI> guis;
 
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
     public static Map<UUID, Rarity> decidedRarities;
 
+=======
+>>>>>>> master
     public static boolean isUpdateAvailable;
 
     public static WorldGuardPlugin wgPlugin;
@@ -82,17 +88,28 @@ public class EvenMoreFish extends JavaPlugin {
     public static final int METRIC_ID = 11054;
 
     public static final int MSG_CONFIG_VERSION = 8;
-    public static final int MAIN_CONFIG_VERSION = 8;
+    public static final int MAIN_CONFIG_VERSION = 9;
     public static final int COMP_CONFIG_VERSION = 1;
 
+    @Override
     public void onEnable() {
+<<<<<<< HEAD
 
         guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
+=======
+>>>>>>> master
         logger = getLogger();
+
+        getConfig().options().copyDefaults();
+        saveDefaultConfig();
+
+        mainConfig = new MainConfig(this);
+        msgs = new Messages(this);
 
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
+<<<<<<< HEAD
         messageFile = new MessageFile(this);
         competitionFile = new CompetitionFile(this);
         xmas2021Config = new ConfigReader(this);
@@ -100,6 +117,9 @@ public class EvenMoreFish extends JavaPlugin {
         msgs = new Messages();
         mainConfig = new MainConfig();
         competitionConfig = new CompetitionConfig();
+=======
+        competitionConfig = new CompetitionConfig(this);
+>>>>>>> master
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
@@ -120,9 +140,6 @@ public class EvenMoreFish extends JavaPlugin {
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
 
-        LocaleGen lG = new LocaleGen();
-        lG.createLocaleFiles(this);
-
         // async check for updates on the spigot page
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             isUpdateAvailable = checkUpdate();
@@ -142,9 +159,6 @@ public class EvenMoreFish extends JavaPlugin {
 
         listeners();
         commands();
-
-        getConfig().options().copyDefaults();
-        saveDefaultConfig();
 
         AutoRunner.init();
 
@@ -175,6 +189,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     }
 
+    @Override
     public void onDisable() {
 
         terminateSellGUIS();
@@ -250,10 +265,11 @@ public class EvenMoreFish extends JavaPlugin {
 
     // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
     private void terminateSellGUIS() {
-        for (SellGUI gui : guis) {
-            GUICache.attemptPop(gui.getPlayer(), true);
-        }
-        guis.clear();
+        getServer().getOnlinePlayers().forEach(player -> {
+            if (player.getOpenInventory().getTopInventory().getHolder() instanceof SellGUI) {
+                player.closeInventory();
+            }
+        });
     }
 
     private void saveUserData() {
@@ -288,13 +304,11 @@ public class EvenMoreFish extends JavaPlugin {
         HandlerList.unregisterAll(McMMOTreasureEvent.getInstance());
         optionalListeners();
 
-        msgs = new Messages();
-        mainConfig = new MainConfig();
-        competitionConfig = new CompetitionConfig();
+        mainConfig.reload();
+        msgs.reload();
+        competitionConfig.reload();
 
         competitionQueue.load();
-
-        guis = new ArrayList<>();
     }
 
     // Checks for updates, surprisingly
@@ -323,7 +337,7 @@ public class EvenMoreFish extends JavaPlugin {
             getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. The plugin may have automatically added the extra features but you may wish to" +
                     " modify them to suit your server.");
 
-            EvenMoreFish.messageFile.reload();
+            msgs.reload();
         }
 
         if (mainConfig.configVersion() < MAIN_CONFIG_VERSION) {
@@ -339,7 +353,7 @@ public class EvenMoreFish extends JavaPlugin {
                     " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
 
-            EvenMoreFish.competitionFile.reload();
+            competitionConfig.reload();
         }
     }
 

@@ -65,8 +65,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (sender instanceof Player) {
                     if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
                         if (EvenMoreFish.permission.has(sender, "emf.shop")) {
-                            SellGUI gui = new SellGUI((Player) sender);
-                            EvenMoreFish.guis.add(gui);
+                            new SellGUI((Player) sender);
                         } else {
                             sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
                         }
@@ -324,7 +323,6 @@ class Controls{
                 EvenMoreFish.xmas2021Config.reload();
 
                 plugin.reload();
-                plugin.reloadConfig();
 
                 Message message = new Message().setMSG(EvenMoreFish.msgs.getReloaded());
                 if (sender instanceof Player) message.setReceiver((Player) sender);

@@ -1,7 +1,6 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.FishUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Skull;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,14 +8,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorthNBT {
 
     public static ItemStack setNBT(ItemStack fish, Float length, String rarity, String name) {
         // creates key and plops in the value of "value"
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
-        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
         ItemMeta itemMeta = fish.getItemMeta();
 
@@ -31,9 +31,9 @@ public class WorthNBT {
 
     public static Skull setNBT(Skull fish, Float length, String rarity, String name) {
         // creates key and plops in the value of "value"
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
-        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
         PersistentDataContainer itemMeta = fish.getPersistentDataContainer();
 
@@ -47,9 +47,9 @@ public class WorthNBT {
 
     public static double getValue(ItemStack item) {
         // creating the key to check for
-        NamespacedKey nbtlength = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-length");
-        NamespacedKey nbtrarity = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "emf-fish-name");
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
+        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
+        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
         if (item != null) {
             if (item.hasItemMeta()) {
@@ -85,7 +85,7 @@ public class WorthNBT {
     }
 
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "default-gui-item");
+        NamespacedKey key = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "default-gui-item");
         ItemMeta itemMeta = defaultGUIItem.getItemMeta();
         itemMeta.getPersistentDataContainer().set(key, PersistentDataType.BYTE, Byte.MAX_VALUE);
         // sets the nbt and returns it
@@ -94,7 +94,7 @@ public class WorthNBT {
     }
 
     public static boolean isDefault(ItemStack is) {
-        NamespacedKey key = new NamespacedKey(Bukkit.getPluginManager().getPlugin("EvenMoreFish"), "default-gui-item");
+        NamespacedKey key = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "default-gui-item");
         if (is.hasItemMeta()) {
             PersistentDataContainer container = is.getItemMeta().getPersistentDataContainer();
             return container.has(key, PersistentDataType.BYTE);

@@ -9,6 +9,7 @@ import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -126,7 +127,7 @@ public class Competition {
                 timeLeft--;
 
             }
-        }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), 0, 20);
+        }.runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), 0, 20);
     }
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
