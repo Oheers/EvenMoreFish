@@ -76,9 +76,9 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
-            case "xmas2021":
+            case "xmas":
                 if (sender instanceof Player) {
-                    if (EvenMoreFish.permission.has((Player) sender, "emf.xmas2021")) {
+                    if (EvenMoreFish.permission.has((Player) sender, "emf.xmas")) {
                         Controls.xmas2021Control((Player) sender);
                     } else {
                         sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
@@ -117,7 +117,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         );
 
         emfTabs = Arrays.asList(
-                "xmas2021",
+                "xmas",
                 "help",
                 "shop",
                 "top"
