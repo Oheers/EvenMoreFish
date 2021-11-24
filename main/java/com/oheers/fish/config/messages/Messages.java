@@ -386,4 +386,10 @@ public class Messages {
         if (returning.size() == 0) EvenMoreFish.logger.log(Level.WARNING, "Missing config value: \"help-competition\". [messages.yml]");
         return returning;
     }
+
+    public String getPlaceFishBlocked() {
+        String returning = config.getString("place-fish-blocked");
+        if (returning != null) return returning;
+        else return getErrorPrefix() + "You cannot place this fish.";
+    }
 }

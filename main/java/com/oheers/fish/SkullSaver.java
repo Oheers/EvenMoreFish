@@ -44,9 +44,17 @@ public class SkullSaver implements Listener {
 
 	@EventHandler
 	public void onPlace(BlockPlaceEvent event) {
-		if(event.isCancelled()) {
+
+		if (event.isCancelled()) {
 			return;
 		}
+
+		if (EvenMoreFish.mainConfig.blockPlacingHeads()) {
+			event.setCancelled(true);
+			event.getPlayer().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getPlaceFishBlocked()));
+			return;
+		}
+
 		Block block = event.getBlock();
 		ItemStack stack = event.getItemInHand();
 

@@ -204,4 +204,8 @@ public class MainConfig {
     public String getPassword() {
         return config.getString("mysql.password");
     }
+
+    public boolean blockPlacingHeads() {
+        return config.getBoolean("place-head-fish");
+    }
 }
