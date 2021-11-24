@@ -1,7 +1,5 @@
 package com.oheers.fish;
 
-import com.oheers.fish.xmas2021.ConfigReader;
-import com.oheers.fish.xmas2021.GUISecurity;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
@@ -19,6 +17,8 @@ import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.xmas2021.ConfigReader;
+import com.oheers.fish.xmas2021.GUISecurity;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -31,10 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,16 +39,11 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
-<<<<<<< HEAD
-    public static MessageFile messageFile;
-    public static CompetitionFile competitionFile;
-    public static ConfigReader xmas2021Config;
-=======
->>>>>>> master
 
     public static Messages msgs;
     public static MainConfig mainConfig;
     public static CompetitionConfig competitionConfig;
+    public static ConfigReader xmas2021Config;
 
     public static Permission permission = null;
     public static Economy econ = null;
@@ -69,16 +61,11 @@ public class EvenMoreFish extends JavaPlugin {
     public static CompetitionQueue competitionQueue;
 
     public static Logger logger;
-
-<<<<<<< HEAD
     public static ArrayList<SellGUI> guis;
 
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
     public static Map<UUID, Rarity> decidedRarities;
-
-=======
->>>>>>> master
     public static boolean isUpdateAvailable;
 
     public static WorldGuardPlugin wgPlugin;
@@ -93,12 +80,9 @@ public class EvenMoreFish extends JavaPlugin {
 
     @Override
     public void onEnable() {
-<<<<<<< HEAD
 
         guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
-=======
->>>>>>> master
         logger = getLogger();
 
         getConfig().options().copyDefaults();
@@ -109,17 +93,10 @@ public class EvenMoreFish extends JavaPlugin {
 
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
-<<<<<<< HEAD
-        messageFile = new MessageFile(this);
-        competitionFile = new CompetitionFile(this);
+        // HSGamer, this class was made before your contributions - I am incredibly grateful for your work and will incorporate your changes
+        // into following updates.
         xmas2021Config = new ConfigReader(this);
-
-        msgs = new Messages();
-        mainConfig = new MainConfig();
-        competitionConfig = new CompetitionConfig();
-=======
         competitionConfig = new CompetitionConfig(this);
->>>>>>> master
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.

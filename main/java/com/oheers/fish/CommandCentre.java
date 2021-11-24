@@ -318,8 +318,6 @@ class Controls{
 
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
-                EvenMoreFish.messageFile.reload();
-                EvenMoreFish.competitionFile.reload();
                 EvenMoreFish.xmas2021Config.reload();
 
                 plugin.reload();
