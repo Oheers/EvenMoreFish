@@ -378,7 +378,9 @@ class Controls{
     }
 
     protected static void xmas2021Control(Player player) {
-        Xmas2021.generateGUI(player);
+        if (!EvenMoreFish.mainConfig.isDatabaseOnline()) {
+            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPermission()));
+        } else Xmas2021.generateGUI(player);
     }
 
     protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {
