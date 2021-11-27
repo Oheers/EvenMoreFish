@@ -110,9 +110,18 @@ public class EvenMoreFish extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
 
+        // checks against both support region plugins and sets an active plugin (worldguard is priority)
+        if (checkWG()) {
+            guardPL = "worldguard";
+        } else if (checkRP()) {
+            guardPL = "redprotect";
+        }
+
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig(), false);
         names.loadRarities(xmas2021Config.getConfig(), xmas2021Config.getConfig(), true);
+
+        if (!names.regionCheck && !(mainConfig.getAllowedRegions().size() > 0)) guardPL = null;
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
@@ -126,13 +135,6 @@ public class EvenMoreFish extends JavaPlugin {
                 logger.log(Level.WARNING, "Could not update messages.yml");
             }
         });
-
-        // checks against both support region plugins and sets an active plugin (worldguard is priority)
-        if (checkWG()) {
-            guardPL = "worldguard";
-        } else if (checkRP()) {
-            guardPL = "redprotect";
-        }
 
         listeners();
         commands();
@@ -350,11 +352,11 @@ public class EvenMoreFish extends JavaPlugin {
 
     private boolean checkRP(){
         Plugin pRP = Bukkit.getPluginManager().getPlugin("RedProtect");
-        return (pRP != null && mainConfig.regionWhitelist());
+        return (pRP != null);
     }
 
     private boolean checkWG(){
         Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
-        return (pWG != null && mainConfig.regionWhitelist());
+        return (pWG != null);
     }
 }

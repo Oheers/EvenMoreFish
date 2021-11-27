@@ -49,10 +49,6 @@ public class MainConfig {
         return config.getBoolean("enabled");
     }
 
-    public boolean regionWhitelist() {
-        return !config.getStringList("allowed-regions").isEmpty();
-    }
-
     public boolean worldWhitelist() {
         return !config.getStringList("allowed-worlds").isEmpty();
     }

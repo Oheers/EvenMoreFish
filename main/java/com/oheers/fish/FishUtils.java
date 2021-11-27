@@ -130,18 +130,15 @@ public class FishUtils {
                 }.runTask(JavaPlugin.getProvidingPlugin(FishUtils.class)));
     }
 
-    public static boolean checkRegion(Location l) {
+    public static boolean checkRegion(Location l, List<String> whitelistedRegions) {
         // if there's any region plugin installed
         if (EvenMoreFish.guardPL == null) {
             return true;
         }
         // if the user has defined a region whitelist
-        if (!EvenMoreFish.mainConfig.regionWhitelist()) {
+        if (whitelistedRegions.size() == 0) {
             return true;
         }
-
-        // Gets a list of user defined regions
-        List<String> whitelistedRegions = EvenMoreFish.mainConfig.getAllowedRegions();
 
         if (EvenMoreFish.guardPL.equals("worldguard")) {
 

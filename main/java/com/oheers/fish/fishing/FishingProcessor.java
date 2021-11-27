@@ -13,8 +13,8 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.xmas2021.ParticleEngine;
 import com.oheers.fish.xmas2021.Xmas2021;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -63,7 +63,7 @@ public class FishingProcessor implements Listener {
                 return;
             }
 
-            if (!FishUtils.checkRegion(event.getHook().getLocation())) {
+            if (!FishUtils.checkRegion(event.getHook().getLocation(), EvenMoreFish.mainConfig.getAllowedRegions())) {
                 return;
             }
 
@@ -73,7 +73,7 @@ public class FishingProcessor implements Listener {
 
             Player player = event.getPlayer();
 
-            Fish fish = getFish(randomWeightedRarity(player), event.getHook().getLocation().getBlock().getBiome(), player);
+            Fish fish = getFish(randomWeightedRarity(player), event.getHook().getLocation(), player);
             if (fish == null) return;
             fish.setFisherman(player.getUniqueId());
             fish.init();
@@ -305,7 +305,7 @@ public class FishingProcessor implements Listener {
         return fishList.get(idx);
     }
 
-    public static Fish getFish(Rarity r, Biome b, Player p) {
+    public static Fish getFish(Rarity r, Location l, Player p) {
         if (r == null) return null;
         // will store all the fish that match the player's biome or don't discriminate biomes
 
@@ -315,8 +315,11 @@ public class FishingProcessor implements Listener {
         if (EvenMoreFish.fishCollection.get(r) == null) r = randomWeightedRarity(p);
 
         if (r.isXmas2021()) {
-            return Xmas2021.getFish();
+            if (FishUtils.checkRegion(l, Xmas2021.getFish().getAllowedRegions())) {
+                return Xmas2021.getFish();
+            }
         }
+
 
         for (Fish f : EvenMoreFish.fishCollection.get(r)) {
 
@@ -326,14 +329,20 @@ public class FishingProcessor implements Listener {
                 }
             }
 
-            if (f.getBiomes().contains(b) || f.getBiomes().isEmpty()) {
-                available.add(f);
+            if (!FishUtils.checkRegion(l, f.getAllowedRegions())) {
+                continue;
             }
+
+            if (l.getWorld() != null) {
+                if (f.getBiomes().contains(l.getWorld().getBiome(l)) || f.getBiomes().isEmpty()) {
+                    available.add(f);
+                }
+            } else EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + p.getUniqueId());
         }
 
         // if the config doesn't define any fish that can be fished in this biome.
         if (available.isEmpty()) {
-            EvenMoreFish.logger.log(Level.WARNING, "There are no fish of the rarity " + r.getValue() + " that can be fished in the " + b.name() + " biome.");
+            EvenMoreFish.logger.log(Level.WARNING, "There are no fish of the rarity " + r.getValue() + " that can be fished at (x=" + l.getX() + ", y=" + l.getY() + ", z=" + l.getZ() + ")");
             return null;
         }
 

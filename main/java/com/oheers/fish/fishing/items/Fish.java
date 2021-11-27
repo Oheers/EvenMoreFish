@@ -44,6 +44,7 @@ public class Fish implements Cloneable {
     String eventType;
 
     List<Biome> biomes;
+    List<String> allowedRegions;
 
     String permissionNode;
 
@@ -300,6 +301,14 @@ public class Fish implements Cloneable {
 
     public List<Biome> getBiomes() {
         return biomes;
+    }
+
+    public List<String> getAllowedRegions() {
+        return allowedRegions;
+    }
+
+    public void setAllowedRegions(List<String> allowedRegions) {
+        this.allowedRegions = allowedRegions;
     }
 
     public void setGlowing(boolean glowing) {

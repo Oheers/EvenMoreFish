@@ -181,8 +181,7 @@ public class Xmas2021 {
 
 	public static boolean hiddenCheck() {
 		Calendar calendar = new GregorianCalendar();
-		return true;
-		//return calendar.get(Calendar.DAY_OF_MONTH) <= 24 && calendar.get(Calendar.MONTH) == Calendar.DECEMBER;
+		return calendar.get(Calendar.DAY_OF_MONTH) <= 24 && calendar.get(Calendar.MONTH) == Calendar.DECEMBER && calendar.get(Calendar.YEAR) == 2021;
 	}
 
 	public static int getTimeRemaining(int day) {
