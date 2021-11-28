@@ -334,7 +334,7 @@ public class FishingProcessor implements Listener {
             }
 
             if (l.getWorld() != null) {
-                if (f.getBiomes().contains(l.getWorld().getBiome(l)) || f.getBiomes().isEmpty()) {
+                if (f.getBiomes().contains(l.getBlock().getBiome()) || f.getBiomes().isEmpty()) {
                     available.add(f);
                 }
             } else EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + p.getUniqueId());
