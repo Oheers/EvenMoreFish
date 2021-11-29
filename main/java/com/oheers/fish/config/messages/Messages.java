@@ -37,9 +37,10 @@ public class Messages {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            InputStream stream = this.plugin.getResource("locales" + File.separator + "messages_" + EvenMoreFish.mainConfig.getLocale() + ".yml");
+
+            InputStream stream = this.plugin.getResource("locales/messages_" + EvenMoreFish.mainConfig.getLocale() + ".yml");
             if (stream == null) {
-                stream = this.plugin.getResource("locales" + File.separator + "messages_en.yml");
+                stream = this.plugin.getResource("locales/messages_en.yml");
             }
             if (stream == null) {
                 EvenMoreFish.logger.log(Level.SEVERE, "Could not get resource for EvenMoreFish/messages.yml");
