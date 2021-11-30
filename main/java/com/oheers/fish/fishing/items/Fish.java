@@ -21,10 +21,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class Fish implements Cloneable {
@@ -240,10 +238,14 @@ public class Fish implements Cloneable {
         // The fish has item: material selected
         String mValue = configurationFile.getString("fish." + this.rarity.getValue() + "." + this.name + ".item.material");
         if (mValue != null) {
-            if (Material.getMaterial(mValue) == null) {
-                EvenMoreFish.logger.log(Level.WARNING, this.name + " has failed to load material: " + mValue);
+
+            Material m = Material.getMaterial(mValue.toUpperCase());
+            if (m == null) {
+                EvenMoreFish.logger.log(Level.SEVERE, this.name + " has failed to load material: " + mValue);
+                m = Material.COD;
             }
-            return new ItemStack(Objects.requireNonNull(Material.getMaterial(mValue.toUpperCase())));
+
+            return new ItemStack(m);
         }
 
         // The fish has no item type specified

@@ -32,6 +32,7 @@ public class JoinChecker implements Listener {
 
                 if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
                     reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
+                    System.out.println(reports);
                 } else {
                     reports = new ArrayList<>();
                     Database.addUser(event.getPlayer().getUniqueId().toString());

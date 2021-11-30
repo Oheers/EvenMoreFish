@@ -22,6 +22,7 @@ public class Database {
     private static Connection connection;
     private final static String username = EvenMoreFish.mainConfig.getUsername();
     private final static String password = EvenMoreFish.mainConfig.getPassword();
+    private static FileReader reader;
 
     public static void getUrl() {
         if (isMysql) {
@@ -246,10 +247,12 @@ public class Database {
 
             try {
                 FileReader reader = new FileReader(userFile);
-                Type fishReportList = new TypeToken<ArrayList<FishReport>>(){}.getType();
+                Type fishReportList = new TypeToken<List<FishReport>>(){}.getType();
 
                 Gson gson = new Gson();
-                return gson.fromJson(reader, fishReportList);
+                List<FishReport> reports = gson.fromJson(reader, fishReportList);
+
+                return reports;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 return new ArrayList<>();
