@@ -250,9 +250,8 @@ public class Database {
                 Type fishReportList = new TypeToken<List<FishReport>>(){}.getType();
 
                 Gson gson = new Gson();
-                List<FishReport> reports = gson.fromJson(reader, fishReportList);
 
-                return reports;
+                return gson.fromJson(reader, fishReportList);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 return new ArrayList<>();
