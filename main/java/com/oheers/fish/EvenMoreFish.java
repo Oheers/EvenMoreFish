@@ -298,7 +298,7 @@ public class EvenMoreFish extends JavaPlugin {
         String[] serverVersion = getDescription().getVersion().split("\\.");
 
         for (int i=0; i<serverVersion.length; i++) {
-            if (spigotVersion[i] != null) {
+            if (i < spigotVersion.length) {
                 if (Integer.parseInt(spigotVersion[i]) > Integer.parseInt(serverVersion[i])) {
                     return true;
                 }
