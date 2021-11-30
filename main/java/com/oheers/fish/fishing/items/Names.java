@@ -6,6 +6,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class Names {
 
@@ -107,7 +108,11 @@ public class Names {
         List<Biome> biomes = new ArrayList<>();
 
         for (String biome : this.fishConfiguration.getStringList("fish." + rarity + "." + name + ".biomes")) {
-            biomes.add(Biome.valueOf(biome));
+            try {
+                biomes.add(Biome.valueOf(biome));
+            } catch (IllegalArgumentException iae) {
+                EvenMoreFish.logger.log(Level.SEVERE, biome + " is not a valid biome, found when loading in: " + name);
+            }
         }
 
         return biomes;
