@@ -59,6 +59,7 @@ public class Xmas2021 {
 				if (calendar.get(Calendar.DAY_OF_MONTH) >= day) {
 
 					Fish fish = REGISTERED_FISH.get(day);
+					fish.setFisherman(player.getUniqueId());
 
 					if (EvenMoreFish.fishReports.containsKey(player.getUniqueId())) {
 						List<FishReport> reports = EvenMoreFish.fishReports.get(player.getUniqueId());
@@ -66,7 +67,7 @@ public class Xmas2021 {
 						for (FishReport report : reports) {
 							if (report.getRarity().equals(fish.getRarity().getValue()) && report.getName().equals(fish.getName())) {
 
-								ItemStack fishIcon = REGISTERED_FISH.get(day).give().clone();
+								ItemStack fishIcon = fish.give().clone();
 								fishIcon.setAmount(day);
 
 								ItemMeta fishIconMeta = fishIcon.getItemMeta();

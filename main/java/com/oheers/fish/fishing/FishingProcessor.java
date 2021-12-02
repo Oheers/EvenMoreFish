@@ -53,12 +53,11 @@ public class FishingProcessor implements Listener {
             return;
         }
 
+        if (!competitionOnlyCheck()) {
+            return;
+        }
+
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-
-
-            if (!competitionOnlyCheck()) {
-                return;
-            }
 
             if (!FishUtils.checkRegion(event.getHook().getLocation(), EvenMoreFish.mainConfig.getAllowedRegions())) {
                 return;
