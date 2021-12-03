@@ -365,13 +365,14 @@ public class Fish implements Cloneable {
     public void randomBreak() {
         Damageable nonDamaged = (Damageable) type.getItemMeta();
 
-        // checking if the user has already set this item to have durability in fish.yml (possible future update)
-        //if (nonDamaged.hasDamage()) return;
+        int predefinedDamage = configurationFile.getInt("fish." + this.rarity.getValue() + "." + this.name + ".durability");
+        if (predefinedDamage != 0 && predefinedDamage <= 100) {
+            nonDamaged.setDamage((int) ((100-predefinedDamage)/100.0 * this.type.getType().getMaxDurability()));
+        } else {
+            int max = this.type.getType().getMaxDurability();
+            nonDamaged.setDamage((int) (Math.random() * (max + 1)));
+        }
 
-        int min = nonDamaged.getDamage();
-        int max = this.type.getType().getMaxDurability();
-
-        nonDamaged.setDamage((int) (Math.random() * (max - min + 1) + min));
         type.setItemMeta((ItemMeta) nonDamaged);
     }
 
