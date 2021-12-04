@@ -33,6 +33,8 @@ public class Fish implements Cloneable {
     UUID fisherman;
     Float length;
 
+    boolean randomType = false;
+
     String displayName;
 
     String dyeColour;
@@ -75,6 +77,8 @@ public class Fish implements Cloneable {
     }
 
     public ItemStack give() {
+
+        if (randomType) this.type = setType();
 
         ItemStack fish = this.type;
 
@@ -246,6 +250,27 @@ public class Fish implements Cloneable {
             }
 
             return new ItemStack(m);
+        }
+
+        List<String> lValues = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".item.materials");
+        if (lValues.size() > 0) {
+
+            Random rand = new Random();
+            Material m = Material.getMaterial(lValues.get(rand.nextInt(lValues.size())).toUpperCase());
+            randomType = true;
+
+            if (m == null) {
+                EvenMoreFish.logger.log(Level.SEVERE, this.name + " has an incorrect material name in its materials list.");
+                for (String material : lValues) {
+                    if (Material.getMaterial(material.toUpperCase()) != null) {
+                        return new ItemStack(Objects.requireNonNull(Material.getMaterial(material.toUpperCase())));
+                    }
+                }
+
+                return new ItemStack(Material.COD);
+            } else {
+                return new ItemStack(m);
+            }
         }
 
         // The fish has no item type specified

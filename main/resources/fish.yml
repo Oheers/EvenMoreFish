@@ -68,7 +68,12 @@ fish:
         material: TROPICAL_FISH
     Coral:
       item:
-        material: FIRE_CORAL
+        materials:
+          - TUBE_CORAL
+          - BRAIN_CORAL
+          - FIRE_CORAL
+          - BUBBLE_CORAL
+          - HORN_CORAL
     Jellyfish:
       item:
         # You can get base-64 heads from https://minecraft-heads.com/custom-heads, copy and paste all of the base-64 value for the head you want.
