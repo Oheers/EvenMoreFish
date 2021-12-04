@@ -21,8 +21,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Fish implements Cloneable {
@@ -252,10 +252,11 @@ public class Fish implements Cloneable {
             return new ItemStack(m);
         }
 
+        Random rand = new Random();
+
         List<String> lValues = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".item.materials");
         if (lValues.size() > 0) {
 
-            Random rand = new Random();
             Material m = Material.getMaterial(lValues.get(rand.nextInt(lValues.size())).toUpperCase());
             randomType = true;
 
@@ -271,6 +272,33 @@ public class Fish implements Cloneable {
             } else {
                 return new ItemStack(m);
             }
+        }
+
+        List<String> mhuValues = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".item.multiple-head-uuid");
+        if (mhuValues.size() > 0) {
+
+            String uuid = mhuValues.get(rand.nextInt(mhuValues.size()));
+            randomType = true;
+
+            try {
+                ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+                SkullMeta meta = (SkullMeta) skull.getItemMeta();
+                meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+                skull.setItemMeta(meta);
+                return skull;
+            } catch (IllegalArgumentException illegalArgumentException) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Could not load uuid: " + uuid + " as a multiple-head-uuid option for " + this.name);
+                return new ItemStack(Material.COD);
+            }
+        }
+
+        List<String> mh64Values = configurationFile.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".item.multiple-head-64");
+        if (mh64Values.size() > 0) {
+
+            String base64 = mh64Values.get(rand.nextInt(mh64Values.size()));
+            randomType = true;
+
+            return FishUtils.get(base64);
         }
 
         // The fish has no item type specified
