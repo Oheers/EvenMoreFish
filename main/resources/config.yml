@@ -28,7 +28,8 @@ mysql:
 # instead of always full durability?
 random-durability: true
 
-# Should the plugin hook into vault economy? Having this disabled will only disable /emf shop.
+# Setting this to false disables /emf shop and money rewards from competitions. It's unlikely
+# you'll want to do this but it is possible.
 enable-economy: true
 
 # For customizing the /emf shop GUI
