@@ -28,16 +28,18 @@ public class JoinChecker implements Listener {
 
             @Override
             public void run() {
-                List<FishReport> reports;
+                if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+                    List<FishReport> reports;
 
-                if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-                    reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
-                } else {
-                    reports = new ArrayList<>();
-                    Database.addUser(event.getPlayer().getUniqueId().toString());
+                    if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
+                        reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
+                    } else {
+                        reports = new ArrayList<>();
+                        Database.addUser(event.getPlayer().getUniqueId().toString());
+                    }
+
+                    EvenMoreFish.fishReports.put(event.getPlayer().getUniqueId(), reports);
                 }
-
-                EvenMoreFish.fishReports.put(event.getPlayer().getUniqueId(), reports);
             }
         }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
     }
@@ -50,23 +52,25 @@ public class JoinChecker implements Listener {
             EvenMoreFish.active.getStatusBar().removePlayer(event.getPlayer());
         }
 
-        if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {
+        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+            if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {
 
-            new BukkitRunnable() {
+                new BukkitRunnable() {
 
-                @Override
-                public void run() {
-                    if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-                        Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
-                    } else {
-                        Database.addUser(event.getPlayer().getUniqueId().toString());
-                        Database.writeUserData(event.getPlayer().getUniqueId().toString(), new ArrayList<>()); // Write user fish reports into their data file
+                    @Override
+                    public void run() {
+                        if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
+                            Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
+                        } else {
+                            Database.addUser(event.getPlayer().getUniqueId().toString());
+                            Database.writeUserData(event.getPlayer().getUniqueId().toString(), new ArrayList<>()); // Write user fish reports into their data file
+                        }
+
+                        EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());
                     }
+                }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
 
-                    EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());
-                }
-            }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
-
+            }
         }
     }
 }

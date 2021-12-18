@@ -201,10 +201,12 @@ public class FishingProcessor implements Listener {
     public static boolean xmas2021Check(Rarity r, Player f) {
         if (r.isXmas2021()) {
             Fish fish = Xmas2021.getFish();
-            for (FishReport report : EvenMoreFish.fishReports.get(f.getUniqueId())) {
-                if (report.getName().equals(fish.getName()) && report.getRarity().equals(r.getValue())) {
-                    // it's not ok to proceed with the selected rarity
-                    return false;
+            if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+                for (FishReport report : EvenMoreFish.fishReports.get(f.getUniqueId())) {
+                    if (report.getName().equals(fish.getName()) && report.getRarity().equals(r.getValue())) {
+                        // it's not ok to proceed with the selected rarity
+                        return false;
+                    }
                 }
             }
         }
