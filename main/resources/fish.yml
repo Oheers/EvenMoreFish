@@ -29,8 +29,6 @@ fish:
       # define the biome(s) the fish can only be found in, without this marker the fish will be found anywhere
       biomes:
         - DESERT
-        - DESERT_HILLS
-        - DESERT_LAKES
 
   #  Oheers:
   #    item:
