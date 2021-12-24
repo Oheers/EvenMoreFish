@@ -62,7 +62,7 @@ public class SkullSaver implements Listener {
 			return;
 		}
 
-		if(FishUtils.isFish(stack)) {
+		if(FishUtils.isFish(stack) && block.getState() instanceof Skull) {
 			Fish f = FishUtils.getFish(stack);
 			BlockState state = block.getState();
 			Skull sm = (Skull) state;
