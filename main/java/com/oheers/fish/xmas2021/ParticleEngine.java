@@ -1,14 +1,15 @@
 package com.oheers.fish.xmas2021;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.FishHook;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ParticleEngine {
@@ -37,7 +38,7 @@ public class ParticleEngine {
                     hook.getLocation().getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, spawnLocation, 1, colours.get(ThreadLocalRandom.current().nextInt(0, 3)));
                 }
             }
-        }.runTaskTimer(JavaPlugin.getProvidingPlugin(ParticleEngine.class), 0, 1);
+        }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish")), 0, 1);
     }
 
 }
