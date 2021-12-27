@@ -1,6 +1,5 @@
 package com.oheers.fish;
 
-import com.oheers.fish.xmas2021.Xmas2021;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.Message;
@@ -76,17 +75,6 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
-            case "xmas":
-                if (sender instanceof Player) {
-                    if (EvenMoreFish.permission.has((Player) sender, "emf.xmas")) {
-                        Controls.xmas2021Control((Player) sender);
-                    } else {
-                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
-                    }
-                } else {
-                    EvenMoreFish.msgs.disabledInConsole();
-                }
-                break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
@@ -117,7 +105,6 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         );
 
         emfTabs = Arrays.asList(
-                "xmas",
                 "help",
                 "shop",
                 "top"
@@ -318,7 +305,6 @@ class Controls{
 
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
-                EvenMoreFish.xmas2021Config.reload();
 
                 plugin.reload();
 
@@ -375,12 +361,6 @@ class Controls{
                 }
             }
         }
-    }
-
-    protected static void xmas2021Control(Player player) {
-        if (!EvenMoreFish.mainConfig.isDatabaseOnline()) {
-            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPermission()));
-        } else Xmas2021.generateGUI(player);
     }
 
     protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {

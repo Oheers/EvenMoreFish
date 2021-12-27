@@ -10,8 +10,6 @@ public class Rarity {
     boolean fishWeighted;
     public String overridenLore;
 
-    boolean xmas2021;
-
     String displayName;
 
     public String permission;
@@ -22,7 +20,6 @@ public class Rarity {
         this.weight = weight;
         this.announce = announce;
         this.overridenLore = overridenLore;
-        this.xmas2021 = false;
     }
 
     public String getValue() {
@@ -55,14 +52,6 @@ public class Rarity {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public boolean isXmas2021() {
-        return xmas2021;
-    }
-
-    public void setXmas2021(boolean xmas2021) {
-        this.xmas2021 = xmas2021;
     }
 
     public String getLorePrep() {

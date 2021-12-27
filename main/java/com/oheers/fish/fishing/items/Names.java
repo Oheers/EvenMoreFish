@@ -1,7 +1,6 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.xmas2021.Xmas2021;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -22,7 +21,7 @@ public class Names {
      *  it goes down that branch looking for fish and their names. It then plops all this stuff into the
      *  main fish map. Badabing badaboom we've now populated our fish map.
      */
-    public void loadRarities(FileConfiguration fishConfiguration, FileConfiguration rarityConfiguration, boolean isXmas2021) {
+    public void loadRarities(FileConfiguration fishConfiguration, FileConfiguration rarityConfiguration) {
         this.fishConfiguration = fishConfiguration;
         this.rarityConfiguration = rarityConfiguration;
 
@@ -41,7 +40,6 @@ public class Names {
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
-            r.setXmas2021(isXmas2021);
 
             List<Fish> fishQueue = new ArrayList<>();
 
@@ -49,15 +47,12 @@ public class Names {
 
                 // for each fish name, a fish object is made that contains the information gathered from that name
                 Fish canvas = new Fish(r, fish);
-                canvas.setConfigurationFile(fishConfiguration);
                 canvas.setBiomes(getBiomes(fish, r.getValue()));
                 canvas.setAllowedRegions(getRegions(fish, r.getValue()));
                 canvas.setGlowing(getGlowing(fish, r.getValue()));
                 canvas.setPermissionNode(permissionCheck(fish, rarity));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
-
-                if (isXmas2021) xmas2021Check(canvas);
 
                 if (canvas.getAllowedRegions().size() > 0) regionCheck = true;
 
@@ -95,12 +90,6 @@ public class Names {
 
     private String rarityPermission(String rarity) {
         return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
-    }
-
-    private void xmas2021Check(Fish f) {
-        if (this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day") != 0) {
-            Xmas2021.setRegisteredFish(f, this.fishConfiguration.getInt("fish." + f.getRarity().getValue() + "." + f.getName() + ".day"));
-        }
     }
 
     private List<Biome> getBiomes(String name, String rarity) {

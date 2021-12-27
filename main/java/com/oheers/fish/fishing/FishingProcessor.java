@@ -10,8 +10,6 @@ import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.xmas2021.ParticleEngine;
-import com.oheers.fish.xmas2021.Xmas2021;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +21,9 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
@@ -180,6 +180,7 @@ public class FishingProcessor implements Listener {
                 EvenMoreFish.decidedRarities.put(event.getPlayer().getUniqueId(), randomWeightedRarity(event.getPlayer()));
             }
 
+            /*
             if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isXmas2021()) {
 
                 if (!Objects.equals(EvenMoreFish.xmas2021Config.getParticleMessage(), "none")) {
@@ -190,28 +191,16 @@ public class FishingProcessor implements Listener {
                     ParticleEngine.renderParticles(event.getHook());
                 }
             }
-        } else if (event.getState() == PlayerFishEvent.State.REEL_IN) {
-            // For a failed attempt the player needs to have triggered a FISHING which generates a pre-decided rarity.
+            - if the rarity is exposed by having particles showing
+             */
+
+        } // else if (event.getState() == PlayerFishEvent.State.REEL_IN) {
+            /* For a failed attempt the player needs to have triggered a FISHING which generates a pre-decided rarity.
             if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isXmas2021()) {
                 EvenMoreFish.decidedRarities.remove(event.getPlayer().getUniqueId());
             }
-        }
-    }
 
-    public static boolean xmas2021Check(Rarity r, Player f) {
-        if (r.isXmas2021()) {
-            Fish fish = Xmas2021.getFish();
-            if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-                for (FishReport report : EvenMoreFish.fishReports.get(f.getUniqueId())) {
-                    if (report.getName().equals(fish.getName()) && report.getRarity().equals(r.getValue())) {
-                        // it's not ok to proceed with the selected rarity
-                        return false;
-                    }
-                }
-            }
-        }
-        // it's ok to proceed with the selected rarity
-        return true;
+        } */
     }
 
     public static Rarity randomWeightedRarity(Player fisher) {
@@ -227,42 +216,17 @@ public class FishingProcessor implements Listener {
 
         if (EvenMoreFish.permission != null) {
             for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
-                boolean xmas2021Pass = false;
-
-                if (rarity.isXmas2021()) {
-                    if (EvenMoreFish.xmas2021Config.isOneFishPerDay()) {
-                        if (Xmas2021.hiddenCheck()) {
-                            if (xmas2021Check(rarity, fisher)) {
-                                xmas2021Pass = true;
-                            }
-                        }
-                    } else xmas2021Pass = true;
-                } else {
-                    xmas2021Pass = true;
-                }
-
                 if (rarity.getPermission() != null) {
-                    if (EvenMoreFish.permission.has(fisher, rarity.getPermission()) && xmas2021Pass) {
+                    if (EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
                         allowedRarities.add(rarity);
                     }
-                } else if (xmas2021Pass) {
+                } else {
                     allowedRarities.add(rarity);
                 }
             }
 
         } else {
-            for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                if (r.isXmas2021()) {
-                    if (xmas2021Check(r, fisher)) {
-                        if (EvenMoreFish.xmas2021Config.isOneFishPerDay()) {
-                            if (Xmas2021.hiddenCheck()) allowedRarities.add(r);
-                        } else allowedRarities.add(r);
-                    }
-                } else {
-                    allowedRarities.addAll(EvenMoreFish.fishCollection.keySet());
-                }
-            }
-
+            allowedRarities.addAll(EvenMoreFish.fishCollection.keySet());
         }
 
         double totalWeight = 0;
@@ -311,12 +275,6 @@ public class FishingProcessor implements Listener {
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
         if (EvenMoreFish.fishCollection.get(r) == null) r = randomWeightedRarity(p);
-
-        if (r.isXmas2021()) {
-            if (FishUtils.checkRegion(l, Xmas2021.getFish().getAllowedRegions())) {
-                return Xmas2021.getFish();
-            }
-        }
 
 
         for (Fish f : EvenMoreFish.fishCollection.get(r)) {

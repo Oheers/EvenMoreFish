@@ -17,7 +17,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Skull;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -274,21 +273,5 @@ public class FishUtils {
             }
 
         }
-    }
-
-    public static FileConfiguration findConfigFile(String rarity) {
-        if (EvenMoreFish.fishFile.getConfig().getConfigurationSection("fish." + rarity) != null) {
-            return EvenMoreFish.fishFile.getConfig();
-        } else if (EvenMoreFish.xmas2021Config.getConfig().getConfigurationSection("fish." + rarity) != null) {
-            return EvenMoreFish.xmas2021Config.getConfig();
-        } else return null;
-    }
-
-    public static FileConfiguration findRarityFile(String rarity) {
-        if (EvenMoreFish.raritiesFile.getConfig().getConfigurationSection("rarities." + rarity) != null) {
-            return EvenMoreFish.raritiesFile.getConfig();
-        } else if (EvenMoreFish.xmas2021Config.getConfig().getConfigurationSection("rarities." + rarity) != null) {
-            return EvenMoreFish.xmas2021Config.getConfig();
-        } else return null;
     }
 }
