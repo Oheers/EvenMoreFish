@@ -51,6 +51,8 @@ public class Fish implements Cloneable {
 
     double minSize, maxSize;
 
+    boolean isCompExemptFish;
+
     boolean glowing;
 
     public Fish(Rarity rarity, String name) {
@@ -504,5 +506,13 @@ public class Fish implements Cloneable {
 
     public UUID getFisherman() {
         return fisherman;
+    }
+
+    public boolean isCompExemptFish() {
+        return isCompExemptFish;
+    }
+
+    public void setCompExemptFish(boolean compExemptFish) {
+        isCompExemptFish = compExemptFish;
     }
 }

@@ -56,6 +56,12 @@ public class Names {
 
                 if (canvas.getAllowedRegions().size() > 0) regionCheck = true;
 
+                if (compCheckExempt(fish, rarity)) {
+                    r.setHasCompExemptFish(true);
+                    canvas.setCompExemptFish(true);
+                    EvenMoreFish.raritiesCompCheckExempt = true;
+                }
+
             }
 
             // puts the collection of fish and their rarities into the main class
@@ -125,6 +131,10 @@ public class Names {
 
     private boolean getGlowing(String name, String rarity) {
         return this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".glowing");
+    }
+
+    private boolean compCheckExempt(String name, String rarity) {
+        return this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".comp-check-exempt");
     }
 
 }

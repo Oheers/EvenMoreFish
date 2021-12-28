@@ -53,7 +53,7 @@ public class FishingProcessor implements Listener {
             return;
         }
 
-        if (!competitionOnlyCheck()) {
+        if (!competitionOnlyCheck() && !EvenMoreFish.raritiesCompCheckExempt) {
             return;
         }
 
@@ -69,8 +69,12 @@ public class FishingProcessor implements Listener {
 
             Player player = event.getPlayer();
 
-            Fish fish = getFish(randomWeightedRarity(player), event.getHook().getLocation(), player);
+            Rarity fishRarity = randomWeightedRarity(player);
+            if (fishRarity == null) return;
+
+            Fish fish = getFish(fishRarity, event.getHook().getLocation(), player);
             if (fish == null) return;
+
             fish.setFisherman(player.getUniqueId());
             fish.init();
             // puts all the fish information into a format that Messages.renderMessage() can print out nicely
@@ -247,7 +251,13 @@ public class FishingProcessor implements Listener {
             return null;
         }
 
-        return allowedRarities.get(idx);
+        if (!Competition.isActive() && EvenMoreFish.raritiesCompCheckExempt) {
+            if (allowedRarities.get(idx).hasCompExemptFish()) return allowedRarities.get(idx);
+        } else if (Competition.isActive() || !EvenMoreFish.mainConfig.isCompetitionUnique()) {
+            return allowedRarities.get(idx);
+        }
+
+        return null;
     }
 
     private static Fish randomWeightedFish(List<Fish> fishList) {
@@ -302,12 +312,20 @@ public class FishingProcessor implements Listener {
             return null;
         }
 
+        Fish returningFish;
+
         // checks whether weight calculations need doing for fish
         if (r.isFishWeighted()) {
-            return randomWeightedFish(available);
+            returningFish = randomWeightedFish(available);
         } else {
             int ran = ThreadLocalRandom.current().nextInt(available.size());
-            return available.get(ran);
+            returningFish = available.get(ran);
+        }
+
+        if (Competition.isActive() || !EvenMoreFish.mainConfig.isCompetitionUnique() ||(EvenMoreFish.raritiesCompCheckExempt && returningFish.isCompExemptFish())) {
+            return returningFish;
+        } else {
+            return null;
         }
     }
 

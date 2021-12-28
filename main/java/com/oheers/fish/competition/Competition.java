@@ -76,6 +76,9 @@ public class Competition {
                 p.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNotEnoughPlayers()));
             }
         }
+
+        // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
+        EvenMoreFish.decidedRarities.clear();
     }
 
     public void end() {

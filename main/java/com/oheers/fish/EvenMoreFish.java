@@ -54,6 +54,9 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
 
+    // Do some fish in some rarities have the comp-check-exempt: true.
+    public static boolean raritiesCompCheckExempt = false;
+
     public static Competition active;
     public static CompetitionQueue competitionQueue;
 

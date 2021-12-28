@@ -8,6 +8,7 @@ public class Rarity {
     double weight;
     boolean announce;
     boolean fishWeighted;
+    boolean hasCompExemptFish;
     public String overridenLore;
 
     String displayName;
@@ -72,5 +73,13 @@ public class Rarity {
 
     public void setPermission(String permission) {
         this.permission = permission;
+    }
+
+    public boolean hasCompExemptFish() {
+        return hasCompExemptFish;
+    }
+
+    public void setHasCompExemptFish(boolean hasCompExemptFish) {
+        this.hasCompExemptFish = hasCompExemptFish;
     }
 }
