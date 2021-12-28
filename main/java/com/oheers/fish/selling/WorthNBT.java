@@ -65,7 +65,7 @@ public class WorthNBT {
                     int setVal;
 
                     try {
-                        setVal = EvenMoreFish.raritiesFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+                        setVal = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
                     } catch (NullPointerException npe) {
                         setVal = 0;
                     }
@@ -106,10 +106,9 @@ public class WorthNBT {
         double value = 0.0;
 
         value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
-
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+            value = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
         }
 
         // Whatever it finds the value to be, gets multiplied by the fish length and set
