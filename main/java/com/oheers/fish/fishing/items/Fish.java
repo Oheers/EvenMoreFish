@@ -33,6 +33,7 @@ public class Fish implements Cloneable {
     Float length;
 
     boolean randomType = false;
+    boolean damageable = false;
 
     String displayName;
 
@@ -61,6 +62,7 @@ public class Fish implements Cloneable {
         this.type = setType();
         this.weight = 0;
 
+        setDamageable();
         setSize();
         checkEatEvent();
         checkIntEvent();
@@ -111,6 +113,11 @@ public class Fish implements Cloneable {
         addModelData(fish);
 
         return fish;
+    }
+
+    private void setDamageable() {
+        ItemMeta meta = type.getItemMeta();
+        damageable = meta instanceof Damageable;
     }
 
     private void setSize() {
@@ -297,6 +304,10 @@ public class Fish implements Cloneable {
 
     public ItemStack getType() {
         return type;
+    }
+
+    public boolean isDamageable() {
+        return damageable;
     }
 
     // checks if the config contains a message to be displayed when the fish is fished
