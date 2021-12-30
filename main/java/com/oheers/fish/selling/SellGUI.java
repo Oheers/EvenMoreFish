@@ -284,15 +284,18 @@ public class SellGUI implements InventoryHolder {
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
     public void close() {
+        System.out.println("confirming close of player's inventory");
         player.closeInventory();
     }
 
     // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
     public void doRescue() {
         List<ItemStack> throwing = new ArrayList<>();
-        for (ItemStack i : this.menu) {
-            if (i != null && !WorthNBT.isDefault(i)) {
-                throwing.add(i);
+        for (ItemStack i : this.menu.getContents()) {
+            if (i != null) {
+                if (!WorthNBT.isDefault(i)) {
+                    throwing.add(i);
+                }
             }
         }
         FishUtils.giveItems(throwing, this.player);
@@ -338,17 +341,17 @@ public class SellGUI implements InventoryHolder {
         this.player.sendMessage(msg.toString());
         this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
 
-        // Remove sold items
-        for (int i = 0; i < guiSize - 9; i++) {
-            ItemStack item = menu.getItem(i);
-            if (WorthNBT.getValue(item) != -1.0) {
-                menu.setItem(i, null);
-            }
-        }
-
         if (sellAll) {
             for (ItemStack item : this.player.getInventory()) {
                 if (FishUtils.isFish(item)) this.player.getInventory().remove(item);
+            }
+        } else {
+            // Remove sold items
+            for (int i = 0; i < guiSize - 9; i++) {
+                ItemStack item = menu.getItem(i);
+                if (WorthNBT.getValue(item) != -1.0) {
+                    menu.setItem(i, null);
+                }
             }
         }
 
