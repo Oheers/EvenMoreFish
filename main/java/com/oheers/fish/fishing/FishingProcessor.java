@@ -150,7 +150,7 @@ public class FishingProcessor implements Listener {
         }
 
         try {
-            competitionCheck(fish.clone(), player);
+            competitionCheck(fish.clone(), player, location);
         } catch (CloneNotSupportedException e) {
             EvenMoreFish.logger.log(Level.SEVERE, "Failed to create a clone of: " + fish);
             e.printStackTrace();
@@ -331,8 +331,17 @@ public class FishingProcessor implements Listener {
         }
     }
 
-    public static void competitionCheck(Fish fish, Player fisherman) {
-        if (Competition.isActive()) {
+    public static void competitionCheck(Fish fish, Player fisherman, Location location) {
+        if (Competition.isActive())
+            if (!EvenMoreFish.competitionWorlds.isEmpty()) {
+                if (location.getWorld() != null) {
+                    if (!EvenMoreFish.competitionWorlds.contains(location.getWorld().getName())) {
+                        return;
+                    }
+                } else {
+                    EvenMoreFish.logger.log(Level.SEVERE, fisherman.getName() + " was unable to be checked for \"general.required-worlds\" in competitions.yml because their world is null.");
+            }
+
             EvenMoreFish.active.applyToLeaderboard(fish, fisherman);
         }
     }

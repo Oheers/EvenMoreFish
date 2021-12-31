@@ -42,6 +42,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static MainConfig mainConfig;
     public static CompetitionConfig competitionConfig;
 
+    public static List<String> competitionWorlds = new ArrayList<>();
+
     public static Permission permission = null;
     public static Economy econ = null;
 
@@ -74,7 +76,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static final int METRIC_ID = 11054;
 
-    public static final int MSG_CONFIG_VERSION = 8;
+    public static final int MSG_CONFIG_VERSION = 9;
     public static final int MAIN_CONFIG_VERSION = 9;
     public static final int COMP_CONFIG_VERSION = 1;
 
@@ -113,6 +115,8 @@ public class EvenMoreFish extends JavaPlugin {
         } else if (checkRP()) {
             guardPL = "redprotect";
         }
+
+        competitionWorlds = competitionConfig.getRequiredWorlds();
 
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
@@ -282,6 +286,8 @@ public class EvenMoreFish extends JavaPlugin {
         mainConfig.reload();
         msgs.reload();
         competitionConfig.reload();
+
+        competitionWorlds = competitionConfig.getRequiredWorlds();
 
         competitionQueue.load();
     }

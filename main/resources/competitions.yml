@@ -104,6 +104,10 @@ general:
   # This is the number-needed value used for /emf admin competition start <time> specific_fish
   number-needed: 1
 
+  # Fish will only be entered into the competition if they're in this world.
+  required-worlds:
+    - "competition_world"
+
 leaderboard:
 
   # This is the colours used in the variable {pos_colour} for each position, if you aren't using this variable, it isn't needed.

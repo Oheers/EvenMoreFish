@@ -181,4 +181,9 @@ public class CompetitionConfig {
             } else return 1;
         }
     }
+
+
+    public List<String> getRequiredWorlds() {
+        return config.getStringList("general.required-worlds");
+    }
 }
