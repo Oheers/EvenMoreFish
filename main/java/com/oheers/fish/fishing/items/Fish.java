@@ -6,7 +6,6 @@ import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.enchantments.Enchantment;
@@ -378,8 +377,25 @@ public class Fish implements Cloneable {
     }
 
     private List<String> generateLore() {
+        if (EvenMoreFish.msgs.getFishLoreFormat().isEmpty()) {
+            return getFromOldLore();
+        } else {
+            return getFromNewLore();
+        }
+    }
 
-        // standard lore
+    /**
+     * From the old lore generation where the messages.yml asked users for the caught-by, length and rarity on separate
+     * lines and then merged it together manually, which was very limiting for servers that wanted fully stackable
+     * fish.
+     *
+     * The fisherman is checked to be null, if not then the {player} is replaced with their name. The length is then checked
+     * to be displayed, if it is it replaces {length}. A gap is added then the potential lore for the fish is fetched,
+     * the rarity is applied as a footer then the whole thing is returned.
+     *
+     * @return A lore to be used by fetching data from the old messages.yml set-up.
+     */
+    private List<String> getFromOldLore() {
         List<String> lore = new ArrayList<>();
 
         if (fisherman != null) {
@@ -389,6 +405,51 @@ public class Fish implements Cloneable {
         if (this.length != -1) lore.add(new Message().setMSG(EvenMoreFish.msgs.fishLength()).setLength(Float.toString(length)).setRarityColour("").toString());
         lore.add(" ");
 
+        applyCustomLore(lore);
+
+        // a little footer showing the rarity
+        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + FishUtils.translateHexColorCodes(this.rarity.getLorePrep()));
+        return lore;
+    }
+
+    /**
+     * From the new method of fetching the lore, where the admin specifies exactly how they want the lore to be set up,
+     * letting them modify the order, add a twist to how they want extra details and so on.
+     *
+     * It goes through each line of the Messages' getFishLoreFormat, if the line is just {fish_lore} then it gets replaced
+     * with a fish's lore value, if not then nothing is done.
+     *
+     * @return A lore to be used by fetching data from the old messages.yml set-up.
+     */
+    private List<String> getFromNewLore() {
+        List<String> resultantLore = new ArrayList<>();
+
+        for (String line : EvenMoreFish.msgs.getFishLoreFormat()) {
+            if (line.equals("{fish_lore}")) {
+                applyCustomLore(resultantLore);
+            } else {
+                Message loreLine = new Message()
+                        .setMSG(line)
+                        .setRarityColour(rarity.getColour())
+                        .setPlayer(Bukkit.getOfflinePlayer(fisherman).getName())
+                        .setLength(Float.toString(length));
+                if (rarity.getDisplayName() != null) loreLine.setRarity(rarity.getDisplayName());
+                else loreLine.setRarity(rarity.getValue().toUpperCase());
+
+                resultantLore.add(loreLine.toString());
+            }
+        }
+
+        return resultantLore;
+    }
+
+    /**
+     * Converts the lore option of the fish into a formatted version using the FishUtils#translateHexCode method.
+     * It's then added to the inputLore
+     *
+     * @param inputLore The current lore you want to ADD the custom lore to.
+     */
+    private void applyCustomLore(List<String> inputLore) {
         // custom lore in fish.yml
         List<String> potentialLore = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore");
 
@@ -396,14 +457,9 @@ public class Fish implements Cloneable {
         if (potentialLore.size() > 0) {
             // does colour coding, hence why .addAll() isn't used
             for (String line : potentialLore) {
-                lore.add(FishUtils.translateHexColorCodes(line));
+                inputLore.add(FishUtils.translateHexColorCodes(line));
             }
         }
-
-        // a little footer showing the rarity
-        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + FishUtils.translateHexColorCodes(this.rarity.getLorePrep()));
-
-        return lore;
     }
 
     public void checkDisplayName() {
@@ -482,37 +538,6 @@ public class Fish implements Cloneable {
     @Override
     public Fish clone() throws CloneNotSupportedException {
         return (Fish) super.clone();
-    }
-
-    public ItemStack preview() {
-        ItemStack previewFish = type;
-        ItemMeta previewMeta = previewFish.getItemMeta();
-
-        // standard lore
-        List<String> lore = new ArrayList<>();
-
-        lore.add(new Message().setMSG(EvenMoreFish.msgs.fishCaughtBy()).setPlayer("Player").toString());
-        lore.add(new Message().setMSG(ChatColor.WHITE + Double.toString(minSize) + " to " + maxSize).toString());
-        lore.add(" ");
-
-        // custom lore in fish.yml
-        List<String> potentialLore = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore");
-
-        // checks that the custom lore exists, then adds it on to the lore
-        if (potentialLore.size() > 0) {
-            // does colour coding, hence why .addAll() isn't used
-            for (String line : potentialLore) {
-                lore.add(FishUtils.translateHexColorCodes(line));
-            }
-        }
-
-        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getRarityPrefix()) + FishUtils.translateHexColorCodes(this.rarity.getLorePrep()));
-
-        previewMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
-        previewMeta.setLore(lore);
-
-        previewFish.setItemMeta(previewMeta);
-        return previewFish;
     }
 
     public UUID getFisherman() {

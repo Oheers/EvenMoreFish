@@ -48,12 +48,16 @@ prefix-admin: "&c"
 # The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command (for when your prefix doesn't have colours)
 prefix-error: "&c"
 
-# The text shown in a fish's lore before who caught the fish
-fish-caught-by: "&fCaught by {player}"
-# The text shown in a fish's lore before the length of the fish
-fish-length: "&fMeasures {length}cm"
-# The text to come before the rarity of the fish i.e. "Rarity: UNCOMMON"
-#fish-rarity-prefix: "&fRarity: "
+# This is the format of the lore given to fish when they're caught.
+# {custom-lore} is specified in the fish.yml under the lore: section, if the fish has a lore, the lore's lines will
+# replace the {fish_lore}, however if it's empty the line will be removed. DO NOT ADD ANYTHING OTHER THAN THIS VARIABLE
+# TO THAT LINE.
+fish-lore:
+  - "&rCaught by {player}"
+  - "&rMeasures {length}cm"
+  - ""
+  - "{fish_lore}"
+  - "{rarity_colour}&l{rarity}"
 
 # The format of commands in /emf help (this message doesn't support papi placeholders)
 help: "/{command} - {description}"
@@ -178,4 +182,4 @@ emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 8
+config-version: 9

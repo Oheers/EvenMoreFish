@@ -393,4 +393,8 @@ public class Messages {
         if (returning != null) return returning;
         else return getErrorPrefix() + "You cannot place this fish.";
     }
+
+    public List<String> getFishLoreFormat() {
+        return config.getStringList("fish-lore");
+    }
 }
