@@ -26,7 +26,9 @@ public class Competition {
     int numberNeeded;
 
     List<Integer> alertTimes;
+
     Map<Integer, List<Reward>> rewards;
+    List<Reward> participationRewards;
 
     int playersNeeded;
 
@@ -470,7 +472,9 @@ public class Competition {
                     Reward reward = new Reward(j);
                     addingRewards.add(reward);
                 }
-                this.rewards.put(Integer.parseInt(i), addingRewards);
+
+                if (Objects.equals(i, "participation")) this.participationRewards = addingRewards;
+                else this.rewards.put(Integer.parseInt(i), addingRewards);
             }
         }
     }
@@ -479,13 +483,26 @@ public class Competition {
         if (leaderboard.getSize() != 0) {
             Iterator<CompetitionEntry> iterator = leaderboard.getIterator();
             int i = 1;
-            while (iterator.hasNext() && i <= rewards.size()) {
-                CompetitionEntry entry = iterator.next();
-                for (Reward reward : rewards.get(i)) {
-                    reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()));
+            while (iterator.hasNext()) {
+                if (i <= rewards.size()) {
+                    CompetitionEntry entry = iterator.next();
+                    for (Reward reward : rewards.get(i)) {
+                        reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()));
+                    }
+                    i++;
+                } else {
+                    if (participationRewards != null) {
+                        iterator.forEachRemaining(competitionEntry -> {
+                            for (Reward reward : participationRewards) {
+                                reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()));
+                            }
+                        });
+                    } else {
+                        break;
+                    }
                 }
-                i++;
             }
+
         } else {
             if (leaderboardApplicable) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
