@@ -9,8 +9,8 @@ public class ConfigUpdater {
 	public static void updateMessages(int version) throws IOException {
 		File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
 		if (messagesFile.exists()) {
-			try (BufferedReader file = new BufferedReader(new FileReader(messagesFile));
-				 FileOutputStream fileOut = new FileOutputStream(messagesFile)) {
+			System.out.println("messages file exists");
+			try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
 				StringBuilder inputBuffer = new StringBuilder();
 				String line;
@@ -23,8 +23,11 @@ public class ConfigUpdater {
 					inputBuffer.append('\n');
 				}
 
+				System.out.println("stopped adding to the buffer. Length = " + inputBuffer.length());
+
 				inputBuffer.append(getMessageUpdates(version));
 				// write the new string with the replaced line OVER the same file
+				FileOutputStream fileOut = new FileOutputStream(messagesFile);
 				fileOut.write(inputBuffer.toString().getBytes());
 			}
 		}
@@ -33,12 +36,13 @@ public class ConfigUpdater {
 	public static void updateConfig(int version) throws IOException {
 		File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\config.yml");
 		if (messagesFile.exists()) {
-			try (BufferedReader file = new BufferedReader(new FileReader(messagesFile));
-				 FileOutputStream fileOut = new FileOutputStream(messagesFile)) {
+			try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
+
 				StringBuilder inputBuffer = new StringBuilder();
 				String line;
 
 				while ((line = file.readLine()) != null) {
+					System.out.println("reading line: " + line);
 					if (line.equals("config-version: " + version)) {
 						line = "config-version: " + EvenMoreFish.MAIN_CONFIG_VERSION; // replace the line here
 					}
@@ -48,6 +52,7 @@ public class ConfigUpdater {
 
 				inputBuffer.append(getConfigUpdates(version));
 				// write the new string with the replaced line OVER the same file
+				FileOutputStream fileOut = new FileOutputStream(messagesFile);
 				fileOut.write(inputBuffer.toString().getBytes());
 			}
 		}
@@ -57,9 +62,8 @@ public class ConfigUpdater {
 		StringBuilder update = new StringBuilder();
 		update.append(UPDATE_ALERT);
 		switch (version) {
-			case 7: {
-				update.append(MSG_UPDATE_8);
-			}
+			case 7: update.append(MSG_UPDATE_8);
+			case 8: update.append(MSG_UPDATE_9);
 		}
 
 		update.append(UPDATE_ALERT);
@@ -81,6 +85,17 @@ public class ConfigUpdater {
 	}
 
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
+
+	private static final String MSG_UPDATE_9 = "# This is the format of the lore given to fish when they're caught.\n" +
+			"# {custom-lore} is specified in the fish.yml under the lore: section, if the fish has a lore, the lore's lines will\n" +
+			"# replace the {fish_lore}, however if it's empty the line will be removed. DO NOT ADD ANYTHING OTHER THAN THIS VARIABLE\n" +
+			"# TO THAT LINE.\n" +
+			"fish-lore:\n" +
+			"  - \"&rCaught by {player}\"\n" +
+			"  - \"&rMeasures {length}cm\"\n" +
+			"  - \"\"\n" +
+			"  - \"{fish_lore}\"\n" +
+			"  - \"{rarity_colour}&l{rarity}\"";
 
 	private static final String CONFIG_UPDATE_9 = "\n" +
 			"# The locale of the message file\n" +
