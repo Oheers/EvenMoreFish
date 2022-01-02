@@ -184,6 +184,8 @@ public class FishingProcessor implements Listener {
                                     foundReport = true;
                                 }
                             }
+                        } else {
+                            EvenMoreFish.fishReports.put(player.getUniqueId(), new ArrayList<>());
                         }
 
                         if (!foundReport) {
