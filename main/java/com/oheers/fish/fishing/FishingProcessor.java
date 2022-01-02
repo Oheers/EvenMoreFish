@@ -315,7 +315,7 @@ public class FishingProcessor implements Listener {
             returningFish = available.get(ran);
         }
 
-        if (Competition.isActive() || !EvenMoreFish.mainConfig.isCompetitionUnique() ||(EvenMoreFish.raritiesCompCheckExempt && returningFish.isCompExemptFish())) {
+        if (Competition.isActive() || !EvenMoreFish.mainConfig.isCompetitionUnique() || (EvenMoreFish.raritiesCompCheckExempt && returningFish.isCompExemptFish())) {
             return returningFish;
         } else {
             return null;
@@ -332,7 +332,7 @@ public class FishingProcessor implements Listener {
     }
 
     public static void competitionCheck(Fish fish, Player fisherman, Location location) {
-        if (Competition.isActive())
+        if (Competition.isActive()) {
             if (!EvenMoreFish.competitionWorlds.isEmpty()) {
                 if (location.getWorld() != null) {
                     if (!EvenMoreFish.competitionWorlds.contains(location.getWorld().getName())) {
@@ -340,6 +340,7 @@ public class FishingProcessor implements Listener {
                     }
                 } else {
                     EvenMoreFish.logger.log(Level.SEVERE, fisherman.getName() + " was unable to be checked for \"general.required-worlds\" in competitions.yml because their world is null.");
+                }
             }
 
             EvenMoreFish.active.applyToLeaderboard(fish, fisherman);

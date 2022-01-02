@@ -137,6 +137,8 @@ rewards:
     - "EFFECT:SPEED,1,5"
     - "MESSAGE:&eCongratulations for coming 3rd!"
     - "MONEY:1000"
+  participation:
+    - "MESSAGE:&eUnfortunately only the top 3 players receive awards for fishing. Better luck next time. :)"
   # Add as many more places as you need
 
 # ATTENTION ATTENTION ATTENTION
