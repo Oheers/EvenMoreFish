@@ -353,6 +353,9 @@ public class Competition {
                     }
                 }
                 player.sendMessage(builder.toString());
+                if (!Objects.equals(EvenMoreFish.msgs.getTotalPlayersMessage(), "")) {
+                    player.sendMessage(new Message().setMSG((EvenMoreFish.msgs.getTotalPlayersMessage())).setAmount(Integer.toString(leaderboard.getSize())).toString());
+                }
             } else {
                 player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noFish()));
             }

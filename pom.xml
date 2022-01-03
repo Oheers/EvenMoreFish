@@ -6,7 +6,7 @@
 
     <groupId>com.oheers.evenmorefish</groupId>
     <artifactId>even-more-fish</artifactId>
-    <version>1.4.4.8</version>
+    <version>1.4.4.9</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -14,15 +14,6 @@
     </properties>
 
     <build>
-        <finalName>${project.name}-${project.version}</finalName>
-        <sourceDirectory>main/java</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,11 +36,11 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>com.oheers.fish.metrics</shadedPattern>
+                                    <!-- Replace this with your package! -->
+                                    <shadedPattern>com.oheers.evenmorefish</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -57,6 +48,12 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <repositories>
@@ -113,7 +110,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.18-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

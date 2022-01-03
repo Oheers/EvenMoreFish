@@ -397,4 +397,8 @@ public class Messages {
     public List<String> getFishLoreFormat() {
         return config.getStringList("fish-lore");
     }
+
+    public String getTotalPlayersMessage() {
+        return getSTDPrefix() + config.getString("total-players", "&rThere are a total of {amount} player(s) in the leaderboard.");
+    }
 }

@@ -67,6 +67,8 @@ leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colou
 leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
 # If you're running a competition where there's no leaderboard, this message is sent when there's a winner
 single-winner: "&r{player} has won the competition for {type}. Congratulations!"
+# This shows the number of players currently in the competition, set to "" to disable.
+total-players: "&rThere are a total of {amount} player(s) in the leaderboard."
 # The number of positions shown in the leaderboard - can't be less than 1.
 leaderboard-count: 5
 # If the player doesn't appear on /emf top, should their position be displayed at the bottom?
