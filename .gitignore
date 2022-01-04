@@ -48,6 +48,9 @@ hs_err_pid*
 .AppleDouble
 .LSOverride
 
+# Gradle
+.gradle/
+
 # Icon must end with two \r
 Icon
 
