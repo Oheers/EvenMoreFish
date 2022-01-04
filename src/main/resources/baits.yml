@@ -1,0 +1,49 @@
+baits:
+  Shrimp:
+    item:
+      material: NAUTILUS_SHELL
+    # This lists the fish that are attracted to this bait (make sure to specify the rarity and ensure there's no typos)
+    fish:
+      Common:
+        - "Carp"
+        - "Sea Bass"
+      Uncommon:
+        - "Silver Carp"
+    # How should this be displayed in game?
+    displayname: "&#e69c73Shrimps"
+    # How likely should it be to find this bait when they're caught.
+    weight: 10
+  Rare Elixir:
+    item:
+      material: HONEY_BOTTLE
+    glowing: true
+    # This specifies just the rarities, any fish in this rarity will be attracted to this bait.
+    rarities:
+      - "Rare"
+    weight: 2
+
+general:
+  # This defines the multiplier for how frequently a rarity/fish appears.
+  # Setting to -1 will mean players are guaranteed to get a fish available from the bait.
+  boost: -1
+
+  # Prevents players being able to use their baits during competitions, this is recommended if your rarer rarities are
+  # longer, as players could abuse these baits to get into the leaderboard
+  competition-disable: true
+
+  # When baits are applied to rods, should they show at the bottom of the lore of a fishing rod?
+  add-to-lore: true
+
+  # As a percentage, how often should baits appear?
+  catch-percentage: 2.5
+
+format:
+  # How the lore should look ({baits} takes up multiple lines)
+  lore:
+    - "&f"
+    - "{baits}"
+    - "&f"
+
+  # How the baits should look in each line of the {baits} variable above ^. {baits} respects the display name setting,
+  # the &e is there for baits without a display name set.
+  baits: "&6{amount} &e{bait}"
