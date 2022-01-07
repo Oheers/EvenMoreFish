@@ -271,7 +271,23 @@ public class FishUtils {
             } else {
                 for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
             }
-
         }
+    }
+
+    /**
+     * Determines whether the bait has the emf nbt tag "bait:", this can be used to decide whether this is a bait that
+     * can be applied to a rod or not.
+     *
+     * @param item The item being considered.
+     * @return Whether this ItemStack is a bait.
+     */
+    public boolean isBaitObject(ItemStack item) {
+        NamespacedKey nbtbait = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-bait");
+
+        if (item.getItemMeta() != null) {
+            return item.getItemMeta().getPersistentDataContainer().has(nbtbait, PersistentDataType.STRING);
+        }
+
+        return false;
     }
 }

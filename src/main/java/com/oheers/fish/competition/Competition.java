@@ -13,14 +13,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
 
 public class Competition {
 
-    Integer maxDuration, timeLeft;
+    int maxDuration, timeLeft;
     CompetitionType competitionType;
     Bar statusBar;
+
+    long epochStartTime;
 
     Fish selectedFish;
     int numberNeeded;
@@ -79,6 +82,8 @@ public class Competition {
             }
         }
 
+        epochStartTime = Instant.now().getEpochSecond();
+
         // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
         EvenMoreFish.decidedRarities.clear();
     }
@@ -99,40 +104,87 @@ public class Competition {
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
     }
 
-    // Starts an async task to decrease the time left by 1s each second
+    private int calibrationKeep = 0;
+
+    // Starts a runnable to decrease the time left by 1s each second
     private void initTimer() {
         this.timingSystem = new BukkitRunnable() {
             @Override
             public void run() {
-                if (alertTimes.contains(timeLeft)) {
-                    Message m = new Message()
-                            .setMSG(EvenMoreFish.msgs.getTimeAlertMessage())
-                            .setTimeFormatted(FishUtils.timeFormat(timeLeft))
-                            .setTimeRaw(FishUtils.timeRaw(timeLeft))
-                            .setType(competitionType);
-                    if (competitionType == CompetitionType.SPECIFIC_FISH) {
-                        m.setAmount(Integer.toString(numberNeeded)).setRarityColour(selectedFish.getRarity().getColour());
-
-                        if (selectedFish.getRarity().getDisplayName() != null) m.setRarity(selectedFish.getRarity().getDisplayName());
-                        else m.setRarity(selectedFish.getRarity().getValue());
-
-                        if (selectedFish.getDisplayName() != null) m.setFishCaught(selectedFish.getDisplayName());
-                        else m.setFishCaught(selectedFish.getName());
-                    }
-
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.sendMessage(m.toString());
-                    }
-
-                } else if (timeLeft == 0) {
-                    end();
-                    return;
-                }
+                if (processCompetitionSecond(timeLeft)) return;
                 statusBar.timerUpdate(timeLeft, maxDuration);
                 timeLeft--;
 
+                if (calibrationKeep == 10) {
+                    reCalibrateTime();
+                    calibrationKeep = 0;
+                } else {
+                    calibrationKeep++;
+                }
+
             }
-        }.runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), 0, 20);
+        }.runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), 0, 40);
+    }
+
+    /**
+     * Checks for scheduled alerts and whether the competition should end for each second - this is called automatically
+     * by the competition ticker every 20 ticks.
+     *
+     * @param timeLeft How many seconds are left for the competition.
+     * @returns true if the competition is ending, false if not.
+     */
+    private boolean processCompetitionSecond(int timeLeft) {
+        if (alertTimes.contains(timeLeft)) {
+            Message m = new Message()
+                    .setMSG(EvenMoreFish.msgs.getTimeAlertMessage())
+                    .setTimeFormatted(FishUtils.timeFormat(timeLeft))
+                    .setTimeRaw(FishUtils.timeRaw(timeLeft))
+                    .setType(competitionType);
+            if (competitionType == CompetitionType.SPECIFIC_FISH) {
+                m.setAmount(Integer.toString(numberNeeded)).setRarityColour(selectedFish.getRarity().getColour());
+
+                if (selectedFish.getRarity().getDisplayName() != null) m.setRarity(selectedFish.getRarity().getDisplayName());
+                else m.setRarity(selectedFish.getRarity().getValue());
+
+                if (selectedFish.getDisplayName() != null) m.setFishCaught(selectedFish.getDisplayName());
+                else m.setFishCaught(selectedFish.getName());
+            }
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.sendMessage(m.toString());
+            }
+
+        } else if (timeLeft == 0) {
+            end();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * On servers with low tps, 20 ticks != 1 second, so competitions can last for considerably longer, this re-calibrates
+     * the time left with an epoch version of the time left. It runs through each second skipped to make sure all necessary
+     * processes take place i.e. alerts.
+     */
+    private void reCalibrateTime() {
+        long lagDif;
+        long current = Instant.now().getEpochSecond();
+
+        // +1 to counteract the seconds starting on 0 (or something like that)
+        if ((lagDif = (current - epochStartTime) + 1) != maxDuration - timeLeft) {
+            System.out.println("epoch: " + epochStartTime);
+            System.out.println("current: " + current);
+            System.out.println("max: " + maxDuration);
+            System.out.println("tL: " + timeLeft);
+            System.out.println("max - tL = " + (maxDuration - timeLeft));
+            System.out.println("lag = " + lagDif);
+            for (int i = maxDuration - timeLeft; i < lagDif; i++) {
+                if (processCompetitionSecond(timeLeft)) return;
+                timeLeft--;
+            }
+        }
+
     }
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
