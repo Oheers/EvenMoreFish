@@ -284,7 +284,6 @@ public class SellGUI implements InventoryHolder {
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
     public void close() {
-        System.out.println("confirming close of player's inventory");
         player.closeInventory();
     }
 

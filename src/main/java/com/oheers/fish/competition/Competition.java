@@ -173,12 +173,6 @@ public class Competition {
 
         // +1 to counteract the seconds starting on 0 (or something like that)
         if ((lagDif = (current - epochStartTime) + 1) != maxDuration - timeLeft) {
-            System.out.println("epoch: " + epochStartTime);
-            System.out.println("current: " + current);
-            System.out.println("max: " + maxDuration);
-            System.out.println("tL: " + timeLeft);
-            System.out.println("max - tL = " + (maxDuration - timeLeft));
-            System.out.println("lag = " + lagDif);
             for (int i = maxDuration - timeLeft; i < lagDif; i++) {
                 if (processCompetitionSecond(timeLeft)) return;
                 timeLeft--;
