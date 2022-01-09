@@ -105,9 +105,6 @@ public class FishingProcessor implements Listener {
             }
         }
 
-        // checks if the fish can have durability, and if it's set in the config it receives random durability
-        if (fish.isDamageable()) fish.randomBreak();
-
         EMFFishEvent cEvent = new EMFFishEvent(fish, player);
         Bukkit.getPluginManager().callEvent(cEvent);
 

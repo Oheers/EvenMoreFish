@@ -270,7 +270,7 @@ class Controls{
                                         f.setFisherman(((Player) sender).getUniqueId());
                                         f.init();
 
-                                        if (f.getType().getType() != Material.AIR) {
+                                        if (f.getFactory().getMaterial() != Material.AIR) {
                                             FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
                                         }
 
