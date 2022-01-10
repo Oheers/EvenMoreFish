@@ -6,14 +6,17 @@ import com.oheers.fish.api.EMFRewardEvent;
 import com.oheers.fish.config.messages.Message;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -23,6 +26,8 @@ public class Reward {
 
     RewardType type;
     String action;
+
+    Vector fishVelocity;
 
     public Reward(String value) {
         String[] split = value.split(":");
@@ -52,16 +57,27 @@ public class Reward {
 
     Plugin plugin = JavaPlugin.getProvidingPlugin(getClass());
 
-    public void run(OfflinePlayer player) {
+    public void run(OfflinePlayer player, Location hookLocation) {
         Player p = null;
 
         if (player.isOnline()) p = (Player) player;
 
         switch (type) {
             case COMMAND:
+                String inputCommand = this.action
+                        .replace("{player}", player.getName());
+                if (hookLocation != null) {
+                    inputCommand = inputCommand
+                            .replace("{x}", Double.toString(hookLocation.getX()))
+                            .replace("{y}", Double.toString(hookLocation.getY()))
+                            .replace("{z}", Double.toString(hookLocation.getZ()))
+                            .replace("{world}", hookLocation.getWorld().getName());
+                }
+
                 // running the command
+                String finalCommand = inputCommand;
                 Bukkit.getScheduler().callSyncMethod( plugin, () ->
-                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), this.action.replace("{player}", player.getName())));
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand));
                 break;
             case EFFECT:
                 if (p != null) {
@@ -112,8 +128,9 @@ public class Reward {
                 EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));
                 break;
             case OTHER:
-                EMFRewardEvent event = new EMFRewardEvent(this, p);
-                Bukkit.getPluginManager().callEvent(event);
+                PluginManager pM = Bukkit.getPluginManager();
+                EMFRewardEvent event = new EMFRewardEvent(this, p, fishVelocity, hookLocation);
+                pM.callEvent(event);
                 break;
             default:
                 EvenMoreFish.logger.log(Level.SEVERE, "Error in loading a reward.");
@@ -167,5 +184,9 @@ public class Reward {
                 return null;
 
         }
+    }
+
+    public void setFishVelocity(Vector fishVelocity) {
+        this.fishVelocity = fishVelocity;
     }
 }

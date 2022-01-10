@@ -536,14 +536,14 @@ public class Competition {
                 if (i <= rewards.size()) {
                     CompetitionEntry entry = iterator.next();
                     for (Reward reward : rewards.get(i)) {
-                        reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()));
+                        reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null);
                     }
                     i++;
                 } else {
                     if (participationRewards != null) {
                         iterator.forEachRemaining(competitionEntry -> {
                             for (Reward reward : participationRewards) {
-                                reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()));
+                                reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()), null);
                             }
                         });
                     } else {
@@ -584,7 +584,7 @@ public class Competition {
         }
         if (rewards.size() > 0) {
             for (Reward reward : rewards.get(1)) {
-                reward.run(player);
+                reward.run(player, null);
             }
         }
     }

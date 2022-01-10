@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,8 +35,15 @@ public class FishingProcessor implements Listener {
             return;
         }
 
+        // used to pass through the api if people want to have a mob appear from the fish
+        Vector itemVelocity = new Vector();
+
+        if (event.getCaught() != null) {
+            itemVelocity = event.getCaught().getVelocity();
+        }
+
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-            ItemStack fish = getFish(event.getPlayer(), event.getHook().getLocation(), true, true);
+            ItemStack fish = getFish(event.getPlayer(), event.getHook().getLocation(), true, true, itemVelocity);
             if (fish == null) {
                 return;
             }
@@ -81,7 +89,7 @@ public class FishingProcessor implements Listener {
         return EvenMoreFish.mainConfig.getEnabled() && (competitionOnlyCheck() || EvenMoreFish.raritiesCompCheckExempt);
     }
 
-    public static ItemStack getFish(Player player, Location location, boolean runRewards, boolean sendMessages) {
+    public static ItemStack getFish(Player player, Location location, boolean runRewards, boolean sendMessages, Vector fishVelocity) {
         if (!FishUtils.checkRegion(location, EvenMoreFish.mainConfig.getAllowedRegions())) {
             return null;
         }
@@ -101,7 +109,8 @@ public class FishingProcessor implements Listener {
 
         if (runRewards && fish.hasFishRewards()) {
             for (Reward fishReward : fish.getFishRewards()) {
-                fishReward.run(player);
+                fishReward.setFishVelocity(fishVelocity);
+                fishReward.run(player, location);
             }
         }
 
