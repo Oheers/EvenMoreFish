@@ -109,6 +109,10 @@ public class MainConfig {
         return config.getBoolean("disable-mcmmo-loot");
     }
 
+    public boolean disableAureliumSkills() {
+        return config.getBoolean("disable-aureliumskills-loot");
+    }
+
     public String rewardEffect() {
         return config.getString("reward-gui.reward-effect");
     }
