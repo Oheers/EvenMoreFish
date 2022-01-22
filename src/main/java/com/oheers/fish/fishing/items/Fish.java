@@ -83,33 +83,35 @@ public class Fish implements Cloneable {
 
         ItemMeta fishMeta = fish.getItemMeta();
 
-        if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
-        else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
+        if (fishMeta != null) {
+            if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
+            else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
 
-        fishMeta.setLore(generateLore());
+            fishMeta.setLore(generateLore());
 
-        if (glowing) fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            if (glowing) fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
-        if (dyeColour != null) {
-            try {
-                LeatherArmorMeta meta = (LeatherArmorMeta) fishMeta;
+            if (dyeColour != null) {
+                try {
+                    LeatherArmorMeta meta = (LeatherArmorMeta) fishMeta;
 
-                Color colour = Color.decode(dyeColour);
+                    Color colour = Color.decode(dyeColour);
 
-                meta.setColor(org.bukkit.Color.fromRGB(colour.getRed(), colour.getGreen(), colour.getBlue()));
-                meta.addItemFlags(ItemFlag.HIDE_DYE);
-                fish.setItemMeta(meta);
-            } catch (ClassCastException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not add hex value: " + dyeColour + " to " + name + ". Item is likely not a leather material.");
+                    meta.setColor(org.bukkit.Color.fromRGB(colour.getRed(), colour.getGreen(), colour.getBlue()));
+                    meta.addItemFlags(ItemFlag.HIDE_DYE);
+                    fish.setItemMeta(meta);
+                } catch (ClassCastException exception) {
+                    EvenMoreFish.logger.log(Level.SEVERE, "Could not add hex value: " + dyeColour + " to " + name + ". Item is likely not a leather material.");
+                }
             }
+
+            fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+
+            fish.setItemMeta(fishMeta);
+
+            WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
+            addModelData(fish);
         }
-
-        fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-
-        fish.setItemMeta(fishMeta);
-
-        WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
-        addModelData(fish);
 
         return fish;
     }
