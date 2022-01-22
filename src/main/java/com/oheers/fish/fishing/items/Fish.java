@@ -49,17 +49,18 @@ public class Fish implements Cloneable {
         this.weight = 0;
 
         this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name);
+        checkDisplayName();
 
         // These settings don't mean these will be applied, but they will be considered if the settings exist.
         factory.setItemModelDataCheck(true);
         factory.setItemDamageCheck(true);
+        factory.setItemDisplayNameCheck(this.displayName != null);
         factory.setItemDyeCheck(true);
         factory.setItemGlowCheck(true);
 
         setSize();
         checkEatEvent();
         checkIntEvent();
-        checkDisplayName();
 
         fishRewards = new ArrayList<>();
         checkFishEvent();
@@ -82,7 +83,6 @@ public class Fish implements Cloneable {
         fish.setItemMeta(fishMeta);
 
         WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
-        addModelData(fish);
 
         return fish;
     }

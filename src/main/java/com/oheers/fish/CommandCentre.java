@@ -305,6 +305,7 @@ class Controls{
 
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
+                EvenMoreFish.baitFile.reload();
 
                 plugin.reload();
 

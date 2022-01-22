@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -26,10 +27,13 @@ public class ItemFactory {
 	private ItemStack product;
 
 	private boolean itemRandom,
-			itemModelDataCheck, itemDamageCheck, itemDyeCheck, itemGlowCheck;
+			itemModelDataCheck, itemDamageCheck, itemDisplayNameCheck, itemDyeCheck, itemGlowCheck;
+
+	private final FileConfiguration configurationFile;
 
 	public ItemFactory(String configLocation) {
 		this.configLocation = configLocation;
+		this.configurationFile = getConfiguration();
 		this.product = getType();
 	}
 
@@ -44,8 +48,11 @@ public class ItemFactory {
 
 		if (itemModelDataCheck) applyModelData();
 		if (itemDamageCheck) applyDamage();
+		if (itemDisplayNameCheck) applyDisplayName();
 		if (itemDyeCheck) applyDyeColour();
 		if (itemGlowCheck) applyGlow();
+
+		applyFlags();
 
 		return product;
 	}
@@ -87,7 +94,7 @@ public class ItemFactory {
 	 * @return Null if the setting doesn't exist, the head in ItemStack form if it does.
 	 */
 	private ItemStack checkHeadUUID() {
-		String uValue = EvenMoreFish.fishFile.getConfig().getString(configLocation + ".item.head-uuid");
+		String uValue = this.configurationFile.getString(configLocation + ".item.head-uuid");
 
 		// The fish has item: uuid selected
 		// note - only works for players who have joined the server previously
@@ -113,7 +120,7 @@ public class ItemFactory {
 	 */
 	private ItemStack checkHead64() {
 		// The fish has item: 64 selected
-		String bValue = EvenMoreFish.fishFile.getConfig().getString(configLocation + ".item.head-64");
+		String bValue = this.configurationFile.getString(configLocation + ".item.head-64");
 		if (bValue != null) {
 			return FishUtils.get(bValue);
 		}
@@ -128,7 +135,7 @@ public class ItemFactory {
 	 */
 	private ItemStack checkMaterial() {
 		// The fish has item: material selected
-		String mValue = EvenMoreFish.fishFile.getConfig().getString(configLocation + ".item.material");
+		String mValue = this.configurationFile.getString(configLocation + ".item.material");
 		if (mValue != null) {
 
 			Material m;
@@ -151,7 +158,7 @@ public class ItemFactory {
 	 */
 	private ItemStack checkRandomMaterial() {
 
-		List<String> lValues = EvenMoreFish.fishFile.getConfig().getStringList(configLocation + ".item.materials");
+		List<String> lValues = this.configurationFile.getStringList(configLocation + ".item.materials");
 		if (lValues.size() > 0) {
 
 			Random rand = new Random();
@@ -184,7 +191,7 @@ public class ItemFactory {
 	 * @return Null if the setting doesn't exist, a random ItemStack representation from a list of head-64 values if it does.
 	 */
 	private ItemStack checkRandomHead64() {
-		List<String> mh64Values = EvenMoreFish.fishFile.getConfig().getStringList(configLocation + ".item.multiple-head-64");
+		List<String> mh64Values = this.configurationFile.getStringList(configLocation + ".item.multiple-head-64");
 		if (mh64Values.size() > 0) {
 
 			Random rand = new Random();
@@ -205,7 +212,7 @@ public class ItemFactory {
 	 * @return Null if the setting doesn't exist, a random ItemStack representation from a list of head-uuid values if it does.
 	 */
 	private ItemStack checkRandomHeadUUID() {
-		List<String> mhuValues = EvenMoreFish.fishFile.getConfig().getStringList(configLocation + ".item.multiple-head-uuid");
+		List<String> mhuValues = this.configurationFile.getStringList(configLocation + ".item.multiple-head-uuid");
 		if (mhuValues.size() > 0) {
 
 			Random rand = new Random();
@@ -238,7 +245,7 @@ public class ItemFactory {
 	 * This requires that the item has been set using the setType() method.
 	 */
 	private void applyGlow() {
-		if (EvenMoreFish.fishFile.getConfig().getBoolean(configLocation + ".glowing", false)) {
+		if (this.configurationFile.getBoolean(configLocation + ".glowing", false)) {
 			this.product.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
 		}
 	}
@@ -248,7 +255,7 @@ public class ItemFactory {
 	 * can be dyed (leather armour). The HIDE_DYE item flag is finally applied to the product's metadata.
 	 */
 	public void applyDyeColour() {
-		String dyeColour = EvenMoreFish.fishFile.getConfig().getString(configLocation + ".dye-colour");
+		String dyeColour = this.configurationFile.getString(configLocation + ".dye-colour");
 
 		if (dyeColour != null) {
 			try {
@@ -258,7 +265,6 @@ public class ItemFactory {
 
 				if (meta != null) {
 					meta.setColor(org.bukkit.Color.fromRGB(colour.getRed(), colour.getGreen(), colour.getBlue()));
-					meta.addItemFlags(ItemFlag.HIDE_DYE);
 				}
 
 				product.setItemMeta(meta);
@@ -278,7 +284,7 @@ public class ItemFactory {
 		if (meta instanceof Damageable) {
 			Damageable nonDamaged = (Damageable) meta;
 
-			int predefinedDamage = EvenMoreFish.fishFile.getConfig().getInt(configLocation + ".durability");
+			int predefinedDamage = this.configurationFile.getInt(configLocation + ".durability");
 			if (predefinedDamage >= 0 && predefinedDamage <= 100) {
 				nonDamaged.setDamage((int) ((100-predefinedDamage)/100.0 * product.getType().getMaxDurability()));
 			} else {
@@ -296,7 +302,7 @@ public class ItemFactory {
 	 * Adds model data to the item for use in custom texture packs etc.,
 	 */
 	private void applyModelData() {
-		int value = EvenMoreFish.fishFile.getConfig().getInt(configLocation + ".item.custom-model-data");
+		int value = this.configurationFile.getInt(configLocation + ".item.custom-model-data");
 		if (value != 0) {
 			ItemMeta meta = product.getItemMeta();
 
@@ -305,6 +311,49 @@ public class ItemFactory {
 			}
 
 			product.setItemMeta(meta);
+		}
+	}
+
+	/**
+	 * Applies a custom display name to the item, this is if server owners don't like the default colour or whatever their
+	 * reason is.
+	 */
+	private void applyDisplayName() {
+		String displayname = this.configurationFile.getString(configLocation + ".item.displayname");
+		if (displayname != null) {
+			ItemMeta meta = product.getItemMeta();
+
+			if (meta != null) {
+				meta.setDisplayName(FishUtils.translateHexColorCodes(displayname));
+			}
+
+			product.setItemMeta(meta);
+		}
+	}
+
+	/**
+	 * Applies flags that hide unnecessary information from players such as enchantments (glow effect), dye colour and
+	 * future stuff. This is always run whenever an item is created and checks whether it's even worth adding some flags
+	 * before they're added.
+	 */
+	private void applyFlags() {
+		ItemMeta meta = product.getItemMeta();
+
+		if (meta != null) {
+			if (itemDyeCheck) meta.addItemFlags(ItemFlag.HIDE_DYE);
+			if (itemGlowCheck) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			this.product.setItemMeta(meta);
+		}
+	}
+
+	private FileConfiguration getConfiguration() {
+		if (this.configLocation.startsWith("fish.")) {
+			return EvenMoreFish.fishFile.getConfig();
+		} else if (this.configLocation.startsWith("baits.")) {
+			return EvenMoreFish.baitFile.getConfig();
+		} else {
+			EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch file configuration for: " + this.configLocation);
+			return null;
 		}
 	}
 
@@ -322,6 +371,10 @@ public class ItemFactory {
 
 	public void setItemGlowCheck(boolean itemGlowCheck) {
 		this.itemGlowCheck = itemGlowCheck;
+	}
+
+	public void setItemDisplayNameCheck(boolean itemDisplayNameCheck) {
+		this.itemDisplayNameCheck = itemDisplayNameCheck;
 	}
 
 	public Material getMaterial() {

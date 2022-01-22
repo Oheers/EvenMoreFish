@@ -21,7 +21,9 @@ public class BaitApplicationListener implements Listener {
 			if ((clickedItem = inventory.getItem(event.getSlot())) == null) return;
 
 			if (clickedItem.getType() == Material.FISHING_ROD) {
-				// bait may have been applied
+				if (BaitNBTManager.isBaitObject(event.getCursor())) {
+					System.out.println("bait application.");
+				}
 			}
 		}
 	}

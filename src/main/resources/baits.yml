@@ -2,6 +2,8 @@ baits:
   Shrimp:
     item:
       material: NAUTILUS_SHELL
+      # How should this be displayed in game?
+      displayname: "&#e69c73Shrimps"
     # This lists the fish that are attracted to this bait (make sure to specify the rarity and ensure there's no typos)
     fish:
       Common:
@@ -9,8 +11,6 @@ baits:
         - "Sea Bass"
       Uncommon:
         - "Silver Carp"
-    # How should this be displayed in game?
-    displayname: "&#e69c73Shrimps"
     # How likely should it be to find this bait when they're caught.
     weight: 10
   Rare Elixir:
@@ -38,7 +38,8 @@ general:
   catch-percentage: 2.5
 
 format:
-  # How the lore should look ({baits} takes up multiple lines)
+  # How the lore should look on the fishing rod ({baits} takes up multiple lines) - this requires general.add-to-lore to
+  # be true.
   lore:
     - "&f"
     - "{baits}"
