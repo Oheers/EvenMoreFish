@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
@@ -50,6 +51,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Economy econ = null;
 
     public static Map<Integer, Set<String>> fish = new HashMap<>();
+    public static Map<String, Bait> baits = new HashMap<>();
 
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
 
@@ -123,6 +125,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
+        names.loadBaits(baitFile.getConfig());
 
         if (!names.regionCheck && !(mainConfig.getAllowedRegions().size() > 0)) guardPL = null;
 
@@ -282,6 +285,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
+        names.loadBaits(baitFile.getConfig());
 
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());

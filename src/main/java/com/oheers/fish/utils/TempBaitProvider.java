@@ -14,7 +14,7 @@ public class TempBaitProvider implements Listener {
 	public void onMove(PlayerMoveEvent event) {
 		try {
 			if (event.getFrom().getChunk() != event.getTo().getChunk()) {
-				Bait bait = new Bait("Shrimp");
+				Bait bait = new Bait("Rare Elixir");
 				FishUtils.giveItems(Collections.singletonList(bait.create()), event.getPlayer());
 			}
 		} catch (NullPointerException ignored) {}

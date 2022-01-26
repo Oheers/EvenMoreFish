@@ -1,6 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.baits.Bait;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -68,6 +69,50 @@ public class Names {
 
             // memory saving or something
             fishList.clear();
+        }
+    }
+
+    public void loadBaits(FileConfiguration baitConfiguration) {
+        for (String s : baitConfiguration.getStringList("baits.")) {
+            Bait bait = new Bait(s);
+
+            List<String> itemList;
+
+            if ((itemList = baitConfiguration.getStringList("baits. " + s + ".rarities")).size() != 0) {
+                for (String rarityString : itemList) {
+                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        if (r.getValue().equalsIgnoreCase(rarityString)) {
+                            bait.addRarity(r);
+                            break;
+                        }
+                    }
+                    EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
+                }
+            } else if ((itemList = baitConfiguration.getStringList("baits. " + s + ".fish")).size() != 0) {
+                for (String rarityString : itemList) {
+                    Rarity rarity = null;
+                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        if (r.getValue().equalsIgnoreCase(rarityString)) {
+                            rarity = r;
+                            break;
+                        }
+                    }
+
+                    if (rarity == null) {
+                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
+                    } else {
+                        for (String fishString : baitConfiguration.getStringList("baits. " + s + ".fish." + rarityString)) {
+                            for (Fish f : EvenMoreFish.fishCollection.get(rarity)) {
+                                if (f.getName().equalsIgnoreCase(fishString)) {
+                                    bait.addFish(f);
+                                    break;
+                                }
+                            }
+                            EvenMoreFish.logger.log(Level.SEVERE, fishString + " is not a loaded fish value. It was not added to the " + s + " bait.");
+                        }
+                    }
+                }
+            }
         }
     }
 
