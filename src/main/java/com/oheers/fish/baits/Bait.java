@@ -15,6 +15,8 @@ public class Bait {
 
 	List<Fish> fishList = new ArrayList<>();
 
+	private final String name;
+
 	double boostRate;
 
 	/**
@@ -29,6 +31,7 @@ public class Bait {
 	 * @param name The name of the bait to be referenced from the baits.yml file
 	 */
 	public Bait(String name) {
+		this.name = name;
 		this.itemFactory = new ItemFactory("baits." + name);
 
 		this.itemFactory.setItemGlowCheck(true);
@@ -45,8 +48,9 @@ public class Bait {
 	 * @return An item stack representing the bait object, with nbt.
 	 */
 	public ItemStack create() {
-		System.out.println("creating");
-		return itemFactory.createItem();
+		ItemStack baitItem = itemFactory.createItem();
+		BaitNBTManager.applyBaitNBT(baitItem, this.name);
+		return baitItem;
 	}
 
 	/**

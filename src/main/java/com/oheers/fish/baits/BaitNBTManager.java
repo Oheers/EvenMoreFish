@@ -1,5 +1,6 @@
 package com.oheers.fish.baits;
 
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -9,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class BaitNBTManager {
 
 	private static final NamespacedKey baitNBT = new NamespacedKey(JavaPlugin.getProvidingPlugin(BaitNBTManager.class), "emf-bait");
+	private static final NamespacedKey baitedRodNBT = new NamespacedKey(JavaPlugin.getProvidingPlugin(BaitNBTManager.class), "emf-applied-bait");
 
 	/**
 	 * Checks whether the item has nbt to suggest it is a bait object.
@@ -42,4 +44,73 @@ public class BaitNBTManager {
 			item.setItemMeta(itemMeta);
 		}
 	}
+
+	/**
+	 * This checks against the item's NBTs to work out whether the fishing rod passed through has applied baits.
+	 *
+	 * @param itemStack The fishing rod that could maybe have bait NBTs applied.
+	 * @return Whether the fishing rod has bait NBT.
+	 */
+	public static boolean isBaitedRod(ItemStack itemStack) {
+		if (itemStack == null) return false;
+		if (itemStack.getType() == Material.FISHING_ROD) return false;
+
+		if (itemStack.hasItemMeta()) {
+			return itemStack.getItemMeta().getPersistentDataContainer().has(baitedRodNBT, PersistentDataType.STRING);
+		}
+
+		return false;
+	}
+
+	/**
+	 * This applies a bait NBT reference to a fishing rod, and also checks whether the bait is already applied,
+	 * making an effort to increase it rather than apply it.
+	 *
+	 * @param item The fishing rod having its bait applied.
+	 * @param bait The name of the bait being applied.
+	 */
+	public static void applyBaitedRodNBT(ItemStack item, String bait) {
+		if (isBaitedRod(item)) {
+
+			ItemMeta meta = item.getItemMeta();
+			String[] baitList = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(":");
+			StringBuilder combined = new StringBuilder();
+
+			for (String s : baitList) {
+				if (s.split(",")[0].equals(bait)) {
+					s = s.split(",")[0] + "," + Integer.parseInt(s.split(",")[1]) + 1;
+				}
+				combined.append(s).append(":");
+			}
+
+			combined.deleteCharAt(combined.length()-1);
+
+			meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, combined.toString());
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
