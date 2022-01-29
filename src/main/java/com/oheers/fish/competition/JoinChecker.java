@@ -29,16 +29,17 @@ public class JoinChecker implements Listener {
             @Override
             public void run() {
                 if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-                    List<FishReport> reports;
+                    List<FishReport> reports = null;
 
                     if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
                         reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
                     } else {
-                        reports = new ArrayList<>();
                         Database.addUser(event.getPlayer().getUniqueId().toString());
                     }
 
-                    EvenMoreFish.fishReports.put(event.getPlayer().getUniqueId(), reports);
+                    if (reports != null) {
+                        EvenMoreFish.fishReports.put(event.getPlayer().getUniqueId(), reports);
+                    }
                 }
             }
         }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));

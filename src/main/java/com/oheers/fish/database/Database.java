@@ -258,7 +258,7 @@ public class Database {
             }
 
         } else {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not load data file for: " + uuid);
+            EvenMoreFish.logger.log(Level.SEVERE, "Creating data file for: " + uuid);
             return new ArrayList<>();
         }
 
