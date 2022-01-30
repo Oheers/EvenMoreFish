@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class BaitFile {
 
@@ -41,5 +42,13 @@ public class BaitFile {
 	public FileConfiguration getConfig() {
 		if (this.baitConfig == null) reload();
 		return this.baitConfig;
+	}
+
+	public List<String> getLoreFormat() {
+		return baitConfig.getStringList("format.lore");
+	}
+
+	public String getBaitFormat() {
+		return baitConfig.getString("format.baits", "&6{amount} &e{bait}");
 	}
 }

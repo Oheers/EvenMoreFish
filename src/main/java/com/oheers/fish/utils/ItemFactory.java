@@ -29,6 +29,8 @@ public class ItemFactory {
 	private boolean itemRandom,
 			itemModelDataCheck, itemDamageCheck, itemDisplayNameCheck, itemDyeCheck, itemGlowCheck;
 
+	private String displayName;
+
 	private final FileConfiguration configurationFile;
 
 	public ItemFactory(String configLocation) {
@@ -319,12 +321,15 @@ public class ItemFactory {
 	 * reason is.
 	 */
 	private void applyDisplayName() {
-		String displayname = this.configurationFile.getString(configLocation + ".item.displayname");
-		if (displayname != null) {
+		String displayName = this.configurationFile.getString(configLocation + ".item.displayname");
+
+		if (displayName == null && this.displayName != null) displayName = this.displayName;
+
+		if (displayName != null) {
 			ItemMeta meta = product.getItemMeta();
 
 			if (meta != null) {
-				meta.setDisplayName(FishUtils.translateHexColorCodes(displayname));
+				meta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
 			}
 
 			product.setItemMeta(meta);
@@ -355,6 +360,16 @@ public class ItemFactory {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch file configuration for: " + this.configLocation);
 			return null;
 		}
+	}
+
+	/**
+	 * This is used if a displayname can't be found for the item, however it requires that the displayname check is being
+	 * done on the item.
+	 *
+	 * @param displayName The displayname for the item stack.
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public void setItemModelDataCheck(boolean itemModelDataCheck) {

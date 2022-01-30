@@ -48,3 +48,5 @@ format:
   # How the baits should look in each line of the {baits} variable above ^. {baits} respects the display name setting,
   # the &e is there for baits without a display name set.
   baits: "&6{amount} &e{bait}"
+
+config-version: 1

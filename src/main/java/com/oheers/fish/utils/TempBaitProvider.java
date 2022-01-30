@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.Collections;
+import java.util.Random;
 
 public class TempBaitProvider implements Listener {
 
@@ -14,8 +15,8 @@ public class TempBaitProvider implements Listener {
 	public void onMove(PlayerMoveEvent event) {
 		try {
 			if (event.getFrom().getChunk() != event.getTo().getChunk()) {
-				Bait bait = new Bait("Shrimp");
-				FishUtils.giveItems(Collections.singletonList(bait.create()), event.getPlayer());
+				String[] knownBaits = { "Shrimp", "Rare Elixir" };
+				FishUtils.giveItems(Collections.singletonList(new Bait(knownBaits[new Random().nextInt(2)]).create()), event.getPlayer());
 			}
 		} catch (NullPointerException ignored) {}
 	}

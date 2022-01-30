@@ -113,6 +113,8 @@ public class Names {
                     }
                 }
             }
+
+            EvenMoreFish.baits.put(s, bait);
         }
     }
 

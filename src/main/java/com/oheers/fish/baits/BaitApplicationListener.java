@@ -29,7 +29,6 @@ public class BaitApplicationListener implements Listener {
 
 				event.setCancelled(true);
 
-
 				event.setCurrentItem(BaitNBTManager.applyBaitedRodNBT(clickedItem, BaitNBTManager.getBaitName(event.getCursor())));
 
 				if (cursor.getAmount() == 1) {

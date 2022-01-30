@@ -1,6 +1,7 @@
 package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.ItemFactory;
@@ -39,6 +40,8 @@ public class Bait {
 		this.itemFactory.setItemModelDataCheck(true);
 		this.itemFactory.setItemDamageCheck(true);
 		this.itemFactory.setItemDyeCheck(true);
+
+		this.itemFactory.setDisplayName(FishUtils.translateHexColorCodes("&e" + name));
 	}
 
 	/**

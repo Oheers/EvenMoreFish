@@ -16,7 +16,7 @@ public class Message {
     // msg is the string got from the messages.yml file
     // all the others are values that don't need to be set.
 
-    String msg, player, colour, length, fishCaught, rarity, cmd, cmdDescription, position, amount,
+    String msg, player, bait, length, fishCaught, rarity, cmd, cmdDescription, position, amount,
             sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw, rarityCol,
             day, name, firstCaught, largestSize, numCaught, timeRemaining;
     Player receiver;
@@ -140,6 +140,11 @@ public class Message {
         return this;
     }
 
+    public Message setBait(String bait) {
+        this.bait = bait;
+        return this;
+    }
+
     public Message setType(CompetitionType type) {
         switch (type) {
             case MOST_FISH: this.type = EvenMoreFish.msgs.getTypeVariable("most"); break;
@@ -251,6 +256,10 @@ public class Message {
 
         if (timeRemaining != null) {
             msg = msg.replace("{time_remaining}", timeRemaining);
+        }
+
+        if (bait != null) {
+            msg = msg.replace("{bait}", bait);
         }
 
         if (EvenMoreFish.papi) {
