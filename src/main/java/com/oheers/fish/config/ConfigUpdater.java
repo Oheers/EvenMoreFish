@@ -9,7 +9,6 @@ public class ConfigUpdater {
 	public static void updateMessages(int version) throws IOException {
 		File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
 		if (messagesFile.exists()) {
-			System.out.println("messages file exists");
 			try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
 				StringBuilder inputBuffer = new StringBuilder();
@@ -22,8 +21,6 @@ public class ConfigUpdater {
 					inputBuffer.append(line);
 					inputBuffer.append('\n');
 				}
-
-				System.out.println("stopped adding to the buffer. Length = " + inputBuffer.length());
 
 				inputBuffer.append(getMessageUpdates(version));
 				// write the new string with the replaced line OVER the same file
@@ -42,7 +39,6 @@ public class ConfigUpdater {
 				String line;
 
 				while ((line = file.readLine()) != null) {
-					System.out.println("reading line: " + line);
 					if (line.equals("config-version: " + version)) {
 						line = "config-version: " + EvenMoreFish.MAIN_CONFIG_VERSION; // replace the line here
 					}

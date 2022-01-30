@@ -27,6 +27,18 @@ public class BaitNBTManager {
 	}
 
 	/**
+	 * @param itemStack The item stack that is a bait.
+	 * @return The name of the bait.
+	 */
+	public static String getBaitName(ItemStack itemStack) {
+		if (itemStack == null) return null;
+
+		if (itemStack.hasItemMeta()) {
+			return itemStack.getItemMeta().getPersistentDataContainer().get(baitNBT, PersistentDataType.STRING);
+		} else return null;
+	}
+
+	/**
 	 * Gives an ItemStack the nbt required for the plugin to see it as a valid bait that can be applied to fishing rods.
 	 * It is inadvisable to use a block as a bait, as these will lose their nbt tags if they're placed - and the plugin
 	 * will forget that it was ever a bait.
@@ -53,7 +65,7 @@ public class BaitNBTManager {
 	 */
 	public static boolean isBaitedRod(ItemStack itemStack) {
 		if (itemStack == null) return false;
-		if (itemStack.getType() == Material.FISHING_ROD) return false;
+		if (itemStack.getType() != Material.FISHING_ROD) return false;
 
 		if (itemStack.hasItemMeta()) {
 			return itemStack.getItemMeta().getPersistentDataContainer().has(baitedRodNBT, PersistentDataType.STRING);
@@ -68,25 +80,42 @@ public class BaitNBTManager {
 	 *
 	 * @param item The fishing rod having its bait applied.
 	 * @param bait The name of the bait being applied.
+	 * @returns The item parameter with baited NBT added to it.
 	 */
-	public static void applyBaitedRodNBT(ItemStack item, String bait) {
+	public static ItemStack applyBaitedRodNBT(ItemStack item, String bait) {
 		if (isBaitedRod(item)) {
 
 			ItemMeta meta = item.getItemMeta();
-			String[] baitList = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(":");
+			String[] baitList = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",");
 			StringBuilder combined = new StringBuilder();
 
+			boolean foundBait = false;
+
 			for (String s : baitList) {
-				if (s.split(",")[0].equals(bait)) {
-					s = s.split(",")[0] + "," + Integer.parseInt(s.split(",")[1]) + 1;
+				if (s.split(":")[0].equals(bait)) {
+					combined.append(s.split(":")[0]).append(":").append(Integer.parseInt(s.split(":")[1]) + 1).append(",");
+					foundBait = true;
+				} else {
+					combined.append(s).append(",");
 				}
-				combined.append(s).append(":");
 			}
 
-			combined.deleteCharAt(combined.length()-1);
+			// We can manage the last character not being a colon if we have to add it in ourselves.
+			if (!foundBait) {
+				combined.append(bait).append(":").append(1);
+			} else {
+				combined.deleteCharAt(combined.length() - 1);
+			}
 
 			meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, combined.toString());
+			item.setItemMeta(meta);
+		} else {
+			ItemMeta meta = item.getItemMeta();
+			meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait + ":1");
+			item.setItemMeta(meta);
 		}
+
+		return item;
 	}
 }
 
