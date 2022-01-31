@@ -3,6 +3,7 @@ package com.oheers.fish.baits;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -10,10 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
 
 public class BaitNBTManager {
 
@@ -88,13 +88,21 @@ public class BaitNBTManager {
 	 *
 	 * @param item The fishing rod having its bait applied.
 	 * @param bait The name of the bait being applied.
+	 * @throws MaxBaitsReachedException When too many baits are tried to be applied to a fishing rod.
 	 * @returns The item parameter with baited NBT added to it.
 	 */
-	public static ItemStack applyBaitedRodNBT(ItemStack item, String bait) {
+	public static ItemStack applyBaitedRodNBT(ItemStack item, String bait) throws MaxBaitsReachedException {
 
-		applyLore(item, bait);
+		//applyLore(item, bait);
 
 		if (isBaitedRod(item)) {
+
+			try {
+				deleteOldLore(item);
+			} catch (IndexOutOfBoundsException exception) {
+				EvenMoreFish.logger.log(Level.SEVERE, "Failed to apply bait: " + bait + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
+				return null;
+			}
 
 			ItemMeta meta = item.getItemMeta();
 			String[] baitList = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",");
@@ -113,6 +121,13 @@ public class BaitNBTManager {
 
 			// We can manage the last character not being a colon if we have to add it in ourselves.
 			if (!foundBait) {
+
+				if (getNumBaitsApplied(item) >= EvenMoreFish.baitFile.getMaxBaits()) {
+					// the lore's been taken out, we're not going to be doing anymore here, so we're just re-adding it now.
+					newApplyLore(item);
+					throw new MaxBaitsReachedException("Max baits reached.");
+				}
+
 				combined.append(bait).append(":").append(1);
 			} else {
 				combined.deleteCharAt(combined.length() - 1);
@@ -125,6 +140,8 @@ public class BaitNBTManager {
 			meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait + ":1");
 			item.setItemMeta(meta);
 		}
+
+		newApplyLore(item);
 
 		return item;
 	}
@@ -148,111 +165,94 @@ public class BaitNBTManager {
 		return false;
 	}
 
-	/**
-	 * This calculates how the new lore should look for the fishing rod. It uses the config options in baits.yml to
-	 * decide how the formatting for the new rod's lore should look, increasing any numbers that need increasing by
-	 * finding the respective line for the bait, or adding a new one in.
-	 *
-	 * @param itemStack The fishing rod in item stack form.
-	 * @param bait The name identifier for the bait.
-	 */
-	public static void applyLore(ItemStack itemStack, String bait) {
-
+	public static void newApplyLore(ItemStack itemStack) {
 		ItemMeta meta;
 		if ((meta = itemStack.getItemMeta()) == null) return;
 
-		List<String> lore = meta.getLore();
+		List<String> lore;
+		if ((lore = meta.getLore()) == null) lore = new ArrayList<>();
 
-		boolean isBaited;
+		for (String lineAddition : EvenMoreFish.baitFile.getLoreFormat()) {
+			if (lineAddition.equals("{baits}")) {
 
-		LORE_APPLICATION: {
-			if ((isBaited = isBaitedRod(itemStack)) && hasBaitApplied(itemStack, bait)) {
+				String rodNBT = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING);
+				if (rodNBT == null) return;
 
-				if (lore == null) lore = new ArrayList<>();
+				int baitCount = 0;
 
-				Map.Entry<Integer, Integer> editInfo;
-				if ((editInfo = findBaitLine(itemStack, bait)).getKey() == -1) return;
-
-				lore.set(editInfo.getKey(), new Message().setMSG(EvenMoreFish.baitFile.getBaitFormat()).setAmount(Integer.toString(editInfo.getValue())).setBait(bait).toString());
-			} else {
-
-				if (lore == null) lore = new ArrayList<>();
-
-				if (isBaited) {
-					lore.add(lore.size() - getGapAfterBaits(), new Message().setMSG(EvenMoreFish.baitFile.getBaitFormat()).setAmount("1").setBait(bait).toString());
-					break LORE_APPLICATION;
+				for (String bait : rodNBT.split(",")) {
+					baitCount++;
+					lore.add(new Message()
+							.setMSG(EvenMoreFish.baitFile.getBaitFormat())
+							.setAmount(bait.split(":")[1])
+							.setBait(bait.split(":")[0])
+							.toString());
 				}
 
-				for (String lineAddition : EvenMoreFish.baitFile.getLoreFormat()) {
-					if (lineAddition.equals("{baits}")) {
-						lore.add(new Message().setMSG(EvenMoreFish.baitFile.getBaitFormat()).setAmount("1").setBait(bait).toString());
-					} else {
-						lore.add(FishUtils.translateHexColorCodes(lineAddition));
+				if (EvenMoreFish.baitFile.showUnusedBaitSlots()) {
+					for (int i = baitCount; i < EvenMoreFish.baitFile.getMaxBaits(); i++) {
+						lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.baitFile.unusedBaitSlotFormat()));
 					}
 				}
+			} else {
+				lore.add(new Message()
+						.setMSG(lineAddition)
+						.setCurrBaits(Integer.toString(getNumBaitsApplied(itemStack)))
+						.setMaxBaits(Integer.toString(EvenMoreFish.baitFile.getMaxBaits()))
+						.toString());
 			}
 		}
 
 		meta.setLore(lore);
 		itemStack.setItemMeta(meta);
-
 	}
 
 	/**
-	 * This finds the line of the lore that the fishing rod has that indicates to the bait mentioned, so it can be modified
-	 * to increase/decrease the value.
+	 * This deletes all the old lore inserted by the plugin to the baited fishing rod. If the config value for the lore
+	 * format had lines added/removed this will break the old rods.
 	 *
-	 * @param itemStack The fishing rod
-	 * @return The line (0 index) that the bait is in as the key and the amount of baits + 1 applied as the value.
+	 * @throws IndexOutOfBoundsException When the fishing rod doesn't have enough lines of lore to delete, this could be
+	 * caused by a modification to the format in the baits.yml config.
+	 * @param itemStack The item stack having the bait section of its lore removed.
 	 */
-	private static Map.Entry<Integer, Integer> findBaitLine(ItemStack itemStack, String bait) {
+	public static void deleteOldLore(ItemStack itemStack) throws IndexOutOfBoundsException {
+		ItemMeta meta;
+		if ((meta = itemStack.getItemMeta()) == null) return;
 
-		int afterCounter;
-		if (itemStack.getItemMeta() != null) {
-			afterCounter = (itemStack.getItemMeta().getLore().size() - 1) - getGapAfterBaits();
+		List<String> lore;
+		if ((lore = meta.getLore()) == null) return;
+
+		if (EvenMoreFish.baitFile.showUnusedBaitSlots()) {
+			// starting at 1, because at least one bait replacing {baits} is repeated.
+			for (int i = 1; i < EvenMoreFish.baitFile.getMaxBaits() + EvenMoreFish.baitFile.getLoreFormat().size(); i++) {
+				lore.remove(lore.size()-1);
+			}
 		} else {
-			afterCounter = getGapAfterBaits();
-		}
-
-		// Prevents the plugin messing up the lore in the case of a problem reading the lore format.
-		if (afterCounter == -1) return new AbstractMap.SimpleEntry<>(-1, -1);
-
-		// Puts the afterCounter to the start of the baits in the lore
-		String[] appliedBaits = itemStack.getItemMeta().getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",");
-		afterCounter -= (appliedBaits.length - 1);
-
-		for (String baitStore : appliedBaits) {
-			if (baitStore.split(":")[0].equals(bait)) {
-				return new AbstractMap.SimpleEntry<>(afterCounter, Integer.parseInt(baitStore.split(":")[1]) + 1);
-			} else {
-				afterCounter++;
+			// starting at 1, because at least one bait replacing {baits} is repeated.
+			for (int i = 1; i < getNumBaitsApplied(itemStack) + EvenMoreFish.baitFile.getLoreFormat().size(); i++) {
+				lore.remove(lore.size()-1);
 			}
 		}
 
-		// Something failed, the rod doesn't have the bait parameter applied.
-		return new AbstractMap.SimpleEntry<>(-1, -1);
+
+		meta.setLore(lore);
+		itemStack.setItemMeta(meta);
 	}
 
 	/**
-	 * @return How many lines are after {baits} in the baits.yml format.lore section.
+	 * Works out how many baits are applied to an object based on the nbt data.
+	 *
+	 * @param itemStack The fishing rod with baits applied
+	 * @return How many baits have been applied to this fishing rod.
 	 */
-	private static int getGapAfterBaits() {
-		// How many lines after the baits are added.
-		int afterCounter = 0;
+	private static int getNumBaitsApplied(ItemStack itemStack) {
 
-		boolean failedCheck = true;
+		ItemMeta meta;
+		if ((meta = itemStack.getItemMeta()) == null) return 0;
 
-		List<String> loreFormat = EvenMoreFish.baitFile.getLoreFormat();
-		for (int i = loreFormat.size() - 1; i >= 0; i--) {
-			if (loreFormat.get(i).equals("{baits}")) {
-				failedCheck = false;
-				break;
-			} else {
-				afterCounter++;
-			}
-		}
+		String rodNBT = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING);
+		if (rodNBT == null) return 1;
 
-		if (failedCheck) return -1;
-		else return afterCounter;
+		return rodNBT.split(",").length;
 	}
 }

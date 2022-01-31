@@ -51,4 +51,16 @@ public class BaitFile {
 	public String getBaitFormat() {
 		return baitConfig.getString("format.baits", "&6{amount} &e{bait}");
 	}
+
+	public int getMaxBaits() {
+		return baitConfig.getInt("general.baits-per-rod", 7);
+	}
+
+	public boolean showUnusedBaitSlots() {
+		return baitConfig.getBoolean("general.show-unused-slots", true);
+	}
+
+	public String unusedBaitSlotFormat() {
+		return baitConfig.getString("format.unused-slot", "&7+ Available Slot");
+	}
 }

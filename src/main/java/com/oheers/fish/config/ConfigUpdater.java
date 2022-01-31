@@ -91,7 +91,9 @@ public class ConfigUpdater {
 			"  - \"&rMeasures {length}cm\"\n" +
 			"  - \"\"\n" +
 			"  - \"{fish_lore}\"\n" +
-			"  - \"{rarity_colour}&l{rarity}\"";
+			"  - \"{rarity_colour}&l{rarity}\"\n" +
+			"# Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml\n" +
+			"max-baits-reached: \"You have reached the maximum number of types of baits for this fishing rod.\"";
 
 	private static final String CONFIG_UPDATE_9 = "\n" +
 			"# The locale of the message file\n" +

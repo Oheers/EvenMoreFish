@@ -1,6 +1,8 @@
 package com.oheers.fish.baits;
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -12,6 +14,8 @@ public class BaitApplicationListener implements Listener {
 
 	@EventHandler
 	public void onClickEvent(InventoryClickEvent event) {
+
+		System.out.println(event.getAction());
 
 		ItemStack clickedItem;
 		ItemStack cursor;
@@ -27,9 +31,20 @@ public class BaitApplicationListener implements Listener {
 					return;
 				}
 
+				ItemStack completedItem;
+
+				try {
+					completedItem = BaitNBTManager.applyBaitedRodNBT(clickedItem, BaitNBTManager.getBaitName(event.getCursor()));
+				} catch (MaxBaitsReachedException exception) {
+					event.getWhoClicked().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getMaxBaitsReceived()));
+					return;
+				}
+
+				if (completedItem == null) return;
+
 				event.setCancelled(true);
 
-				event.setCurrentItem(BaitNBTManager.applyBaitedRodNBT(clickedItem, BaitNBTManager.getBaitName(event.getCursor())));
+				event.setCurrentItem(completedItem);
 
 				if (cursor.getAmount() == 1) {
 					event.getWhoClicked().setItemOnCursor(new ItemStack(Material.AIR));

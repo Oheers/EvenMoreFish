@@ -18,7 +18,7 @@ public class Message {
 
     String msg, player, bait, length, fishCaught, rarity, cmd, cmdDescription, position, amount,
             sellprice, effect, amplifier, time, item, posColour, type, timeFormatted, timeRaw, rarityCol,
-            day, name, firstCaught, largestSize, numCaught, timeRemaining;
+            day, name, firstCaught, largestSize, numCaught, timeRemaining, currBaits, maxBaits;
     Player receiver;
 
     public Message() {
@@ -145,6 +145,16 @@ public class Message {
         return this;
     }
 
+    public Message setCurrBaits(String currBaits) {
+        this.currBaits = currBaits;
+        return this;
+    }
+
+    public Message setMaxBaits(String maxBaits) {
+        this.maxBaits = maxBaits;
+        return this;
+    }
+
     public Message setType(CompetitionType type) {
         switch (type) {
             case MOST_FISH: this.type = EvenMoreFish.msgs.getTypeVariable("most"); break;
@@ -260,6 +270,14 @@ public class Message {
 
         if (bait != null) {
             msg = msg.replace("{bait}", bait);
+        }
+
+        if (currBaits != null) {
+            msg = msg.replace("{current_baits}", currBaits);
+        }
+
+        if (maxBaits != null) {
+            msg = msg.replace("{max_baits}", maxBaits);
         }
 
         if (EvenMoreFish.papi) {

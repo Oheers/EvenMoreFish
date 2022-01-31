@@ -401,4 +401,8 @@ public class Messages {
     public String getTotalPlayersMessage() {
         return getSTDPrefix() + config.getString("total-players", "&rThere are a total of {amount} player(s) in the leaderboard.");
     }
+
+    public String getMaxBaitsReceived() {
+        return getErrorPrefix() + config.getString("max-baits-reached", "You have reached the maximum number of types of baits for this fishing rod.");
+    }
 }

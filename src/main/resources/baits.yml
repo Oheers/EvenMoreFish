@@ -37,16 +37,30 @@ general:
   # As a percentage, how often should baits appear?
   catch-percentage: 2.5
 
+  # How many types of bait can be applied to each fishing rod.
+  # NOTE: DO NOT CHANGE THIS ONCE PLAYERS HAVE HAD A CHANCE TO USE BAITS. IT WILL BREAK FISHING RODS.
+  baits-per-rod: 7
+
+  # Should unused bait slots show a message in their place?
+  # NOTE: DO NOT CHANGE THIS ONCE PLAYERS HAVE HAD A CHANCE TO USE BAITS. IT WILL BREAK FISHING RODS.
+  show-unused-slots: true
+
 format:
   # How the lore should look on the fishing rod ({baits} takes up multiple lines) - this requires general.add-to-lore to
   # be true.
+  # NOTE: Adding/deleting lines around the {baits} line may break existing fishing rods: do not change this after baits
+  # have been applied to rods in circulation.
   lore:
     - "&f"
-    - "{baits}"
+    - "&fBait Slots: &e({current_baits}/{max_baits})"
     - "&f"
+    - "{baits}"
 
   # How the baits should look in each line of the {baits} variable above ^. {baits} respects the display name setting,
   # the &e is there for baits without a display name set.
-  baits: "&6{amount} &e{bait}"
+  baits: "&6+ {amount} &e{bait}"
+
+  # This is added to the lore in place of a bait if show-unused-slots is enabled in the general section.
+  unused-slot: "&7+ Available Slot"
 
 config-version: 1
