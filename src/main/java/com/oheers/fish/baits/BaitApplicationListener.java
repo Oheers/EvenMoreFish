@@ -7,6 +7,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,7 +35,12 @@ public class BaitApplicationListener implements Listener {
 				ItemStack completedItem;
 
 				try {
-					completedItem = BaitNBTManager.applyBaitedRodNBT(clickedItem, BaitNBTManager.getBaitName(event.getCursor()));
+					if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+						completedItem = BaitNBTManager.applyBaitedRodNBT(clickedItem, BaitNBTManager.getBaitName(event.getCursor()), event.getCursor().getAmount());
+					} else {
+						completedItem = BaitNBTManager.applyBaitedRodNBT(clickedItem, BaitNBTManager.getBaitName(event.getCursor()), 1);
+					}
+
 				} catch (MaxBaitsReachedException exception) {
 					event.getWhoClicked().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getMaxBaitsReceived()));
 					return;
@@ -46,7 +52,7 @@ public class BaitApplicationListener implements Listener {
 
 				event.setCurrentItem(completedItem);
 
-				if (cursor.getAmount() == 1) {
+				if (cursor.getAmount() == 1 || event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
 					event.getWhoClicked().setItemOnCursor(new ItemStack(Material.AIR));
 				} else {
 					cursor.setAmount(cursor.getAmount() - 1);

@@ -88,10 +88,11 @@ public class BaitNBTManager {
 	 *
 	 * @param item The fishing rod having its bait applied.
 	 * @param bait The name of the bait being applied.
+	 * @param quantity The number of baits being applied. These must be of the same bait.
 	 * @throws MaxBaitsReachedException When too many baits are tried to be applied to a fishing rod.
 	 * @returns The item parameter with baited NBT added to it.
 	 */
-	public static ItemStack applyBaitedRodNBT(ItemStack item, String bait) throws MaxBaitsReachedException {
+	public static ItemStack applyBaitedRodNBT(ItemStack item, String bait, int quantity) throws MaxBaitsReachedException {
 
 		//applyLore(item, bait);
 
@@ -112,7 +113,7 @@ public class BaitNBTManager {
 
 			for (String s : baitList) {
 				if (s.split(":")[0].equals(bait)) {
-					combined.append(s.split(":")[0]).append(":").append(Integer.parseInt(s.split(":")[1]) + 1).append(",");
+					combined.append(s.split(":")[0]).append(":").append(Integer.parseInt(s.split(":")[1]) + quantity).append(",");
 					foundBait = true;
 				} else {
 					combined.append(s).append(",");
@@ -137,7 +138,7 @@ public class BaitNBTManager {
 			item.setItemMeta(meta);
 		} else {
 			ItemMeta meta = item.getItemMeta();
-			meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait + ":1");
+			meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait + ":" + quantity);
 			item.setItemMeta(meta);
 		}
 

@@ -60,6 +60,12 @@ format:
   # the &e is there for baits without a display name set.
   baits: "&6+ {amount} &e{bait}"
 
+  # This is the default lore given to each bait item by default.
+  bait-lore:
+    - "&8Bait"
+    - "&f"
+    -
+
   # This is added to the lore in place of a bait if show-unused-slots is enabled in the general section.
   unused-slot: "&7+ Available Slot"
 
