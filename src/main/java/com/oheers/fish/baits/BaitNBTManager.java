@@ -173,7 +173,7 @@ public class BaitNBTManager {
 		List<String> lore;
 		if ((lore = meta.getLore()) == null) lore = new ArrayList<>();
 
-		for (String lineAddition : EvenMoreFish.baitFile.getLoreFormat()) {
+		for (String lineAddition : EvenMoreFish.baitFile.getRodLoreFormat()) {
 			if (lineAddition.equals("{baits}")) {
 
 				String rodNBT = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING);
@@ -225,12 +225,12 @@ public class BaitNBTManager {
 
 		if (EvenMoreFish.baitFile.showUnusedBaitSlots()) {
 			// starting at 1, because at least one bait replacing {baits} is repeated.
-			for (int i = 1; i < EvenMoreFish.baitFile.getMaxBaits() + EvenMoreFish.baitFile.getLoreFormat().size(); i++) {
+			for (int i = 1; i < EvenMoreFish.baitFile.getMaxBaits() + EvenMoreFish.baitFile.getRodLoreFormat().size(); i++) {
 				lore.remove(lore.size()-1);
 			}
 		} else {
 			// starting at 1, because at least one bait replacing {baits} is repeated.
-			for (int i = 1; i < getNumBaitsApplied(itemStack) + EvenMoreFish.baitFile.getLoreFormat().size(); i++) {
+			for (int i = 1; i < getNumBaitsApplied(itemStack) + EvenMoreFish.baitFile.getRodLoreFormat().size(); i++) {
 				lore.remove(lore.size()-1);
 			}
 		}

@@ -2,10 +2,12 @@ package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.ItemFactory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +17,10 @@ public class Bait {
 	private final ItemFactory itemFactory;
 
 	List<Fish> fishList = new ArrayList<>();
+	List<Rarity> rarityList = new ArrayList<>();
 
 	private final String name;
+	private final String theme;
 
 	double boostRate;
 
@@ -33,6 +37,13 @@ public class Bait {
 	 */
 	public Bait(String name) {
 		this.name = name;
+
+		if (EvenMoreFish.baitFile.getBaitTheme(name) != null) {
+			this.theme = FishUtils.translateHexColorCodes(EvenMoreFish.baitFile.getBaitTheme(name));
+		} else {
+			this.theme = "&e";
+		}
+
 		this.itemFactory = new ItemFactory("baits." + name);
 
 		this.itemFactory.setItemGlowCheck(true);
@@ -52,6 +63,11 @@ public class Bait {
 	 */
 	public ItemStack create() {
 		ItemStack baitItem = itemFactory.createItem();
+
+		ItemMeta meta = baitItem.getItemMeta();
+		if (meta != null) meta.setLore(createBoostLore());
+		baitItem.setItemMeta(meta);
+
 		BaitNBTManager.applyBaitNBT(baitItem, this.name);
 		return baitItem;
 	}
@@ -72,7 +88,39 @@ public class Bait {
 	 * @param r The rarity having its fish added.
 	 */
 	public void addRarity(Rarity r) {
-		fishList.addAll(EvenMoreFish.fishCollection.get(r));
+		rarityList.add(r);
+	}
+
+
+	/**
+	 * This fetches the boost's lore from the config and inserts the boost-rates into the {boosts} variable. This needs
+	 * to be called after the bait theme is set and the boosts have been initialized, since it uses those variables.
+	 */
+	private List<String> createBoostLore() {
+
+		List<String> lore = new ArrayList<>();
+
+		for (String lineAddition : EvenMoreFish.baitFile.getBaitLoreFormat()) {
+			if (lineAddition.equals("{boosts}")) {
+
+				if (rarityList.size() > 0) {
+					if (rarityList.size() > 1) lore.add(new Message().setMSG(EvenMoreFish.baitFile.getBoostRaritiesFormat()).setAmount(Integer.toString(rarityList.size())).setBaitTheme(theme).toString());
+					else lore.add(new Message().setMSG(EvenMoreFish.baitFile.getBoostRarityFormat()).setAmount(Integer.toString(1)).setBaitTheme(theme).toString());
+				}
+
+				if (fishList.size() > 0) {
+					lore.add(new Message().setMSG(EvenMoreFish.baitFile.getBoostFishFormat()).setAmount(Integer.toString(fishList.size())).setBaitTheme(theme).toString());
+				}
+
+			} else {
+				lore.add(new Message()
+						.setMSG(lineAddition)
+						.setBaitTheme(theme)
+						.toString());
+			}
+		}
+
+		return lore;
 	}
 
 	/**

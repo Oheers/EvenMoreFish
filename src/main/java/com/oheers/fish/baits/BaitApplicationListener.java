@@ -16,8 +16,6 @@ public class BaitApplicationListener implements Listener {
 	@EventHandler
 	public void onClickEvent(InventoryClickEvent event) {
 
-		System.out.println(event.getAction());
-
 		ItemStack clickedItem;
 		ItemStack cursor;
 

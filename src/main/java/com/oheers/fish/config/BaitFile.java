@@ -44,8 +44,8 @@ public class BaitFile {
 		return this.baitConfig;
 	}
 
-	public List<String> getLoreFormat() {
-		return baitConfig.getStringList("format.lore");
+	public List<String> getRodLoreFormat() {
+		return baitConfig.getStringList("format.rod-lore");
 	}
 
 	public String getBaitFormat() {
@@ -62,5 +62,25 @@ public class BaitFile {
 
 	public String unusedBaitSlotFormat() {
 		return baitConfig.getString("format.unused-slot", "&7+ Available Slot");
+	}
+
+	public String getBaitTheme(String bait) {
+		return baitConfig.getString("baits." + bait + ".bait-theme");
+	}
+
+	public List<String> getBaitLoreFormat() {
+		return baitConfig.getStringList("format.bait-lore");
+	}
+
+	public String getBoostFishFormat() {
+		return baitConfig.getString("format.boosts-fish");
+	}
+
+	public String getBoostRarityFormat() {
+		return baitConfig.getString("format.boosts-rarity");
+	}
+
+	public String getBoostRaritiesFormat() {
+		return baitConfig.getString("format.boosts-rarities");
 	}
 }

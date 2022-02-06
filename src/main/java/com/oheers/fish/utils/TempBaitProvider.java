@@ -1,7 +1,7 @@
 package com.oheers.fish.utils;
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.baits.Bait;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -16,8 +16,10 @@ public class TempBaitProvider implements Listener {
 		try {
 			if (event.getFrom().getChunk() != event.getTo().getChunk()) {
 				String[] knownBaits = { "Shrimp", "Rare Elixir", "Stringy Worms" };
-				FishUtils.giveItems(Collections.singletonList(new Bait(knownBaits[new Random().nextInt(3)]).create()), event.getPlayer());
+				FishUtils.giveItems(Collections.singletonList(EvenMoreFish.baits.get(knownBaits[new Random().nextInt(3)]).create()), event.getPlayer());
 			}
-		} catch (NullPointerException ignored) {}
+		} catch (NullPointerException error) {
+			error.printStackTrace();
+		}
 	}
 }

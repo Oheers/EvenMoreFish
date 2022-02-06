@@ -156,6 +156,11 @@ public class Message {
         return this;
     }
 
+    public Message setBaitTheme(String theme) {
+        variableMap.add(new AbstractMap.SimpleEntry<>("{bait_theme}", theme));
+        return this;
+    }
+
     public Message setType(CompetitionType type) {
         switch (type) {
             case MOST_FISH: variableMap.add(new AbstractMap.SimpleEntry<>("{type}", EvenMoreFish.msgs.getTypeVariable("most"))); break;

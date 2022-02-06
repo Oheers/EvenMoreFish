@@ -3,7 +3,8 @@ baits:
     item:
       material: NAUTILUS_SHELL
       # How should this be displayed in game?
-      displayname: "&#e69c73Shrimps"
+      displayname: "&#ff7777Shrimps"
+    bait-theme: "&#ff7777"
     # This lists the fish that are attracted to this bait (make sure to specify the rarity and ensure there's no typos)
     fish:
       Common:
@@ -16,6 +17,7 @@ baits:
   Rare Elixir:
     item:
       material: HONEY_BOTTLE
+    bait-theme: "&e"
     glowing: true
     # This specifies just the rarities, any fish in this rarity will be attracted to this bait.
     rarities:
@@ -50,22 +52,36 @@ format:
   # be true.
   # NOTE: Adding/deleting lines around the {baits} line may break existing fishing rods: do not change this after baits
   # have been applied to rods in circulation.
-  lore:
+  rod-lore:
     - "&f"
-    - "&fBait Slots: &e({current_baits}/{max_baits})"
+    - "&7Bait Slots: &#00ff55({current_baits}/{max_baits})"
     - "&f"
     - "{baits}"
+    - "&f"
+
+  # The default lore of the bait, changing this will not modify existing baits, but with an /emf admin reload, new baits
+  # given out will have this lore. Bait themes can be set as a colour or prefix and be used in this lore.
+  bait-lore:
+    - "&f"
+    - "{bait_theme}Increases catch rates by &f4% {bait_theme}for:"
+    - "{boosts}"
+    - "&f"
+    - "&#dadadaDrop onto a fishing rod to apply,"
+    - "&#dadadaor hold &nSHIFT&#dadada to apply all."
+    - "&f"
 
   # How the baits should look in each line of the {baits} variable above ^. {baits} respects the display name setting,
   # the &e is there for baits without a display name set.
-  baits: "&6+ {amount} &e{bait}"
+  baits: "&#00ff55► {amount} {bait}"
 
-  # This is the default lore given to each bait item by default.
-  bait-lore:
-    - "&8Bait"
-    - "&f"
+  # These are listed in the {boosts} variable above in bait-lore
+  # boost-rarity/rarities: shown when the bait only impacts 1 rarity or when it impacts multiple rarities.
+  # boost-fish: shown when the bait impacts some fish individually.
+  boosts-rarity: "{bait_theme}► &f1 {bait_theme}Rarity"
+  boosts-rarities: "{bait_theme}► &f{amount} {bait_theme}Rarities"
+  boosts-fish: "{bait_theme}► &f{amount} {bait_theme}Fish"
 
   # This is added to the lore in place of a bait if show-unused-slots is enabled in the general section.
-  unused-slot: "&7+ Available Slot"
+  unused-slot: "&7► ? &oAvailable Slot"
 
 config-version: 1

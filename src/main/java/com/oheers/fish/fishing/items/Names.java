@@ -73,13 +73,13 @@ public class Names {
     }
 
     public void loadBaits(FileConfiguration baitConfiguration) {
-        for (String s : baitConfiguration.getStringList("baits.")) {
+        for (String s : baitConfiguration.getConfigurationSection("baits.").getKeys(false)) {
             Bait bait = new Bait(s);
 
-            List<String> itemList;
+            List<String> rarityList;
 
-            if ((itemList = baitConfiguration.getStringList("baits. " + s + ".rarities")).size() != 0) {
-                for (String rarityString : itemList) {
+            if ((rarityList = baitConfiguration.getStringList("baits." + s + ".rarities")).size() != 0) {
+                for (String rarityString : rarityList) {
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                         if (r.getValue().equalsIgnoreCase(rarityString)) {
                             bait.addRarity(r);
@@ -88,8 +88,10 @@ public class Names {
                     }
                     EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
                 }
-            } else if ((itemList = baitConfiguration.getStringList("baits. " + s + ".fish")).size() != 0) {
-                for (String rarityString : itemList) {
+            }
+
+            if (baitConfiguration.getConfigurationSection("baits." + s + ".fish") != null) {
+                for (String rarityString : baitConfiguration.getConfigurationSection("baits." + s + ".fish").getKeys(false)) {
                     Rarity rarity = null;
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                         if (r.getValue().equalsIgnoreCase(rarityString)) {
@@ -101,7 +103,7 @@ public class Names {
                     if (rarity == null) {
                         EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
                     } else {
-                        for (String fishString : baitConfiguration.getStringList("baits. " + s + ".fish." + rarityString)) {
+                        for (String fishString : baitConfiguration.getStringList("baits." + s + ".fish." + rarityString)) {
                             for (Fish f : EvenMoreFish.fishCollection.get(rarity)) {
                                 if (f.getName().equalsIgnoreCase(fishString)) {
                                     bait.addFish(f);
