@@ -34,6 +34,7 @@ general:
   competition-disable: true
 
   # When baits are applied to rods, should they show at the bottom of the lore of a fishing rod?
+  # Setting this to false will not affect currently baited rods, and their lore will stop being modified by the plugin.
   add-to-lore: true
 
   # As a percentage, how often should baits appear?

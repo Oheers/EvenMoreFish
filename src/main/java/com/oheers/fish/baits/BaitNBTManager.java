@@ -94,12 +94,12 @@ public class BaitNBTManager {
 	 */
 	public static ItemStack applyBaitedRodNBT(ItemStack item, String bait, int quantity) throws MaxBaitsReachedException {
 
-		//applyLore(item, bait);
+		boolean doingLoreStuff = EvenMoreFish.baitFile.doRodLore();
 
 		if (isBaitedRod(item)) {
 
 			try {
-				deleteOldLore(item);
+				if (doingLoreStuff) deleteOldLore(item);
 			} catch (IndexOutOfBoundsException exception) {
 				EvenMoreFish.logger.log(Level.SEVERE, "Failed to apply bait: " + bait + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
 				return null;
@@ -125,7 +125,7 @@ public class BaitNBTManager {
 
 				if (getNumBaitsApplied(item) >= EvenMoreFish.baitFile.getMaxBaits()) {
 					// the lore's been taken out, we're not going to be doing anymore here, so we're just re-adding it now.
-					newApplyLore(item);
+					if (doingLoreStuff) newApplyLore(item);
 					throw new MaxBaitsReachedException("Max baits reached.");
 				}
 
@@ -142,7 +142,7 @@ public class BaitNBTManager {
 			item.setItemMeta(meta);
 		}
 
-		newApplyLore(item);
+		if (doingLoreStuff) newApplyLore(item);
 
 		return item;
 	}

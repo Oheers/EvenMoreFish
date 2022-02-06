@@ -60,6 +60,10 @@ public class BaitFile {
 		return baitConfig.getBoolean("general.show-unused-slots", true);
 	}
 
+	public boolean doRodLore() {
+		return baitConfig.getBoolean("general.add-to-lore", true);
+	}
+
 	public String unusedBaitSlotFormat() {
 		return baitConfig.getString("format.unused-slot", "&7+ Available Slot");
 	}
