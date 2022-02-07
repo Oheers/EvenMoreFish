@@ -196,8 +196,14 @@ public class FishingProcessor implements Listener {
                             }
                         }
 
-                        if (!foundReport) {
-                            EvenMoreFish.fishReports.get(player.getUniqueId()).add(new FishReport(fish.getRarity().getValue(), fish.getName(), fish.getLength(), 1));
+                        try {
+                            if (!foundReport) {
+                                EvenMoreFish.fishReports.get(player.getUniqueId()).add(new FishReport(fish.getRarity().getValue(), fish.getName(), fish.getLength(), 1));
+                            }
+                        } catch (NullPointerException exception) {
+                            // Hopefully someone reports this.
+                            EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch fishing data for: " + player.getName());
+                            exception.printStackTrace();
                         }
 
                     } catch (SQLException throwables) {
