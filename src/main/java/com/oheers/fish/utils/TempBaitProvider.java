@@ -15,8 +15,8 @@ public class TempBaitProvider implements Listener {
 	public void onMove(PlayerMoveEvent event) {
 		try {
 			if (event.getFrom().getChunk() != event.getTo().getChunk()) {
-				String[] knownBaits = { "Shrimp", "Rare Elixir", "Stringy Worms" };
-				FishUtils.giveItems(Collections.singletonList(EvenMoreFish.baits.get(knownBaits[new Random().nextInt(3)]).create()), event.getPlayer());
+				String[] knownBaits = { "Shrimp", "Rare Elixir", "Stringy Worms", "Fresh Water" };
+				FishUtils.giveItems(Collections.singletonList(EvenMoreFish.baits.get(knownBaits[new Random().nextInt(4)]).create()), event.getPlayer());
 			}
 		} catch (NullPointerException error) {
 			error.printStackTrace();

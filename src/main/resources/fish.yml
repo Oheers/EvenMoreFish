@@ -39,6 +39,10 @@ fish:
     Stonefish: ""
     Starfish: ""
     Eel: ""
+    Tiger Shark: ""
+    Cookiecutter Shark:
+      item:
+        material: COOKIE
     Swordfish:
       item:
         material: STONE_SWORD
@@ -77,7 +81,8 @@ fish:
         # You can get base-64 heads from https://minecraft-heads.com/custom-heads, copy and paste all of the base-64 value for the head you want.
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNkZTQ4YTg0NjY4YTM2MTkxODdkYTE5NmU3NzdmOTMxZjc1NTQ4NDllOGYyNDM4OTdhYzgzYzhhZDYxIn19fQ=="
   Epic:
-    Parrotfish:
+    Lemon Shark: ""
+    Salmon Shark:
       item:
         material: SALMON
     Frog:
@@ -91,13 +96,6 @@ fish:
         - "&7&oWhat's the difference between pork and"
         - "&7&oa meteorite? One's meaty the other"
         - "&7&oone's a little meteor."
-    Shark Fin:
-      item:
-        material: PRISMARINE_SHARD
-      interact-event:
-        "HEALTH:-1"
-      lore:
-        - "&7Be careful when handling this!"
     Dolphin:
       item:
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGU5Njg4Yjk1MGQ4ODBiNTViN2FhMmNmY2Q3NmU1YTBmYTk0YWFjNmQxNmY3OGU4MzNmNzQ0M2VhMjlmZWQzIn19fQ=="
@@ -118,6 +116,9 @@ fish:
       item:
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMGE0MDUwZTdhYWNjNDUzOTIwMjY1OGZkYzMzOWRkMTgyZDdlMzIyZjlmYmNjNGQ1Zjk5YjU3MThhIn19fQ=="
   Legendary:
+    Great White Shark:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjEyNGM1NDFkZWRhNGIyNjZmZjE0ZTYxYjBhMTMyNDRiMmQ0YjdjMThkMmI2YzhkZDIxNzZkNWQzNjVmYmQifX19"
     Breaded Fish:
       item:
         material: BREAD
