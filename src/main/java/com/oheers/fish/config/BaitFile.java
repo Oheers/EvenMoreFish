@@ -87,4 +87,16 @@ public class BaitFile {
 	public String getBoostRaritiesFormat() {
 		return baitConfig.getString("format.boosts-rarities");
 	}
+
+	public double getCatchWeight(String bait) {
+		return baitConfig.getDouble("baits." + bait + ".catch-weight");
+	}
+
+	public double getApplicationWeight(String bait) {
+		return baitConfig.getDouble("baits." + bait + ".application-weight");
+	}
+
+	public double getBoostRate() {
+		return baitConfig.getDouble("general.boost", 1.0);
+	}
 }

@@ -13,7 +13,9 @@ baits:
       Uncommon:
         - "Silver Carp"
     # How likely should it be to find this bait when they're caught.
-    weight: 10
+    catch-weight: 10
+    # How likely should it be to be applied when more than 1 bait is given to the fishing rod.
+    application-weight: 8
 
   Fresh Water:
     item:
@@ -23,7 +25,8 @@ baits:
     rarities:
       - "Epic"
       - "Legendary"
-    weight: 2
+    catch-weight: 2
+    application-weight: 2
   Rare Elixir:
     item:
       material: HONEY_BOTTLE
@@ -32,7 +35,8 @@ baits:
     # This specifies just the rarities, any fish in this rarity will be attracted to this bait.
     rarities:
       - "Rare"
-    weight: 2
+    catch-weight: 2
+    application-weight: 3
 
 general:
   # This defines the multiplier for how frequently a rarity/fish appears.

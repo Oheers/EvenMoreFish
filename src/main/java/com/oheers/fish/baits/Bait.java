@@ -3,14 +3,19 @@ package com.oheers.fish.baits;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.ItemFactory;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Bait {
 
@@ -19,10 +24,9 @@ public class Bait {
 	List<Fish> fishList = new ArrayList<>();
 	List<Rarity> rarityList = new ArrayList<>();
 
-	private final String name;
-	private final String theme;
+	private final String name, theme;
 
-	double boostRate;
+	double boostRate, applicationWeight, catchWeight;
 
 	/**
 	 * This represents a bait, which can be used to boost the likelihood that a certain fish or fish rarity appears from
@@ -43,6 +47,11 @@ public class Bait {
 		} else {
 			this.theme = "&e";
 		}
+
+		setApplicationWeight(EvenMoreFish.baitFile.getApplicationWeight(name));
+		setCatchWeight(EvenMoreFish.baitFile.getCatchWeight(name));
+
+		this.boostRate = EvenMoreFish.baitFile.getBoostRate();
 
 		this.itemFactory = new ItemFactory("baits." + name);
 
@@ -124,6 +133,74 @@ public class Bait {
 	}
 
 	/**
+	 * This chooses a random fish based on the set boosts of the bait's config.
+	 *
+	 * If there's rarities in the rarityList, choose a rarity first, applying multiplication of weight.
+	 * If there's no rarities in the server list: *
+	 * Check if there's any fish in the bait for this rarity, boost them. REMOVE BAIT
+	 * If the rarity chosen was not boosted, check if any fish are in this rarity and boost them. REMOVE BAIT
+	 *
+	 * * Pick a rarity, boosting all rarities referenced in the fishList, from that rarity choose a random fish, if that
+	 * fish is within the fishList then give it to the player as the fish roll. REMOVE BAIT
+	 * @return A chosen fish.
+	 */
+	public Fish chooseFish(Player player, Location location) {
+		Set<Rarity> boostedRarities = new HashSet<>(getRarityList());
+
+		for (Fish f : getFishList()) {
+			boostedRarities.add(f.getRarity());
+		}
+
+		Rarity fishRarity = FishingProcessor.randomWeightedRarity(player, getBoostRate(), boostedRarities);
+		Fish fish;
+
+		if (getFishList().size() > 0) {
+			fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), getFishList());
+
+			if (!getRarityList().contains(fishRarity) && (fish == null || !getFishList().contains(fish))) {
+				return FishingProcessor.getFish(fishRarity, location, player, 1, null);
+			} else {
+				player.sendMessage("BAIT APPLIED 1");
+			}
+		} else {
+			fish = FishingProcessor.getFish(fishRarity, location, player, 1, null);
+			if (getRarityList().contains(fishRarity)) {
+				player.sendMessage("BAIT APPLIED 2");
+			}
+		}
+
+		return fish;
+	}
+
+	/**
+	 * @return How likely the bait is to apply out of all others applied baits.
+	 */
+	public double getApplicationWeight() {
+		return applicationWeight;
+	}
+
+	/**
+	 * @param applicationWeight How likely the bait is to apply out of all others applied baits.
+	 */
+	public void setApplicationWeight(double applicationWeight) {
+		this.applicationWeight = applicationWeight;
+	}
+
+	/**
+	 * @return How likely the bait is to appear out of all other baits when caught.
+	 */
+	public double getCatchWeight() {
+		return catchWeight;
+	}
+
+	/**
+	 * @param catchWeight How likely the bait is to appear out of all other baits when caught.
+	 */
+	public void setCatchWeight(double catchWeight) {
+		this.catchWeight = catchWeight;
+	}
+
+	/**
 	 * @return The x multiplier of a chance to get one of the fish in the bait's fish to appear.
 	 */
 	public double getBoostRate() {
@@ -131,7 +208,7 @@ public class Bait {
 	}
 
 	/**
-	 * @param boostRate A percentage multiplier for how likely it is that a fish from this bait is fetched from random.
+	 * @param boostRate The x multiplier of a chance to get one of the fish in the bait's fish to appear.
 	 */
 	public void setBoostRate(double boostRate) {
 		this.boostRate = boostRate;
@@ -142,5 +219,12 @@ public class Bait {
 	 */
 	public List<Fish> getFishList() {
 		return this.fishList;
+	}
+
+	/**
+	 * @return The list of rarities this bait will boost the chances of catching.
+	 */
+	public List<Rarity> getRarityList() {
+		return this.rarityList;
 	}
 }

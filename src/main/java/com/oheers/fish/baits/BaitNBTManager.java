@@ -148,6 +148,45 @@ public class BaitNBTManager {
 	}
 
 	/**
+	 * This fetches a random bait applied to the rod, based on the application-weight of the baits (if they exist). The
+	 * weight defaults to "1" if there is no value applied for them.
+	 *
+	 * @param fishingRod The fishing rod.
+	 * @return A random bait applied to the fishing rod.
+	 */
+	public static Bait randomBaitApplication(ItemStack fishingRod) {
+		if (fishingRod.getItemMeta() == null) return null;
+
+		ItemMeta meta = fishingRod.getItemMeta();
+		String[] baitNameList = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",");
+		List<Bait> baitList = new ArrayList<>();
+
+		for (String baitName : baitNameList) {
+
+			Bait bait;
+			if ((bait = EvenMoreFish.baits.get(baitName.split(":")[0])) != null) {
+				baitList.add(bait);
+			}
+
+		}
+
+		double totalWeight = 0;
+
+		// Weighted random logic (nabbed from stackoverflow)
+		for (Bait bait : baitList) {
+			totalWeight += (bait.getApplicationWeight());
+		}
+
+		int idx = 0;
+		for (double r = Math.random() * totalWeight; idx < baitList.size() - 1; ++idx) {
+			r -= baitList.get(idx).getApplicationWeight();
+			if (r <= 0.0) break;
+		}
+
+		return baitList.get(idx);
+	}
+
+	/**
 	 * Runs through the metadata of the rod to try and figure out whether a certain bait is applied or not.
 	 *
 	 * @param itemStack The fishing rod in item stack form.
