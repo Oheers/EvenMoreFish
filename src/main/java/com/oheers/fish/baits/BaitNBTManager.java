@@ -113,7 +113,8 @@ public class BaitNBTManager {
 
 			for (String s : baitList) {
 				if (s.split(":")[0].equals(bait)) {
-					combined.append(s.split(":")[0]).append(":").append(Integer.parseInt(s.split(":")[1]) + quantity).append(",");
+					int newQuantity = Integer.parseInt(s.split(":")[1]) + quantity;
+					if (newQuantity != 0) combined.append(s.split(":")[0]).append(":").append(Integer.parseInt(s.split(":")[1]) + quantity).append(",");
 					foundBait = true;
 				} else {
 					combined.append(s).append(",");

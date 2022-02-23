@@ -227,4 +227,11 @@ public class Bait {
 	public List<Rarity> getRarityList() {
 		return this.rarityList;
 	}
+
+	/**
+	 * @return The name identifier of the bait.
+	 */
+	public String getName() {
+		return name;
+	}
 }

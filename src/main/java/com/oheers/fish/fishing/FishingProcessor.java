@@ -10,6 +10,7 @@ import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
+import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
@@ -94,11 +95,16 @@ public class FishingProcessor implements Listener {
 
         Fish fish;
 
-        if (BaitNBTManager.isBaitedRod(fishingRod)) {
+        if (BaitNBTManager.isBaitedRod(fishingRod) && (!EvenMoreFish.baitFile.competitionsBlockBaits() || !Competition.isActive())) {
 
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
             fish = applyingBait.chooseFish(player, location);
             fish.setFisherman(player.getUniqueId());
+            try {
+                BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait.getName(), -1);
+            } catch (MaxBaitsReachedException ignored) {
+                // Decreasing the number of baits won't make them increase beyond the max number of baits allowed.
+            }
         } else {
             Rarity fishRarity = randomWeightedRarity(player, 1, null);
             if (fishRarity == null) return null;
@@ -238,7 +244,6 @@ public class FishingProcessor implements Listener {
 
         double totalWeight = 0;
 
-        // Weighted random logic (nabbed from stackoverflow)
         for (Rarity r : allowedRarities) {
             if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(r)) {
                 totalWeight += (r.getWeight() * boostRate);
@@ -249,7 +254,11 @@ public class FishingProcessor implements Listener {
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
-            r -= allowedRarities.get(idx).getWeight();
+            if (boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
+                r -= allowedRarities.get(idx).getWeight() * boostRate;
+            } else {
+                r -= allowedRarities.get(idx).getWeight();
+            }
             if (r <= 0.0) break;
         }
 
@@ -270,9 +279,13 @@ public class FishingProcessor implements Listener {
     private static Fish randomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
         double totalWeight = 0;
 
-        // Weighted random logic (nabbed from stackoverflow)
         for (Fish fish : fishList) {
+            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
+            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
             if (boostRate != -1.0 && boostedFish != null && boostedFish.contains(fish)) {
+
+                //
+
                 if (fish.getWeight() == 0.0d) totalWeight += (5 * boostRate);
                 else totalWeight += fish.getWeight() * boostRate;
             } else {
@@ -284,8 +297,20 @@ public class FishingProcessor implements Listener {
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < fishList.size() - 1; ++idx) {
 
-            if (fishList.get(idx).getWeight() == 0.0d) r -= 5;
-            else r -= fishList.get(idx).getWeight();
+            if (fishList.get(idx).getWeight() == 0.0d) {
+                if (boostedFish != null && boostedFish.contains(fishList.get(idx))) {
+                    r -= 5 * boostRate;
+                } else {
+                    r -= 5;
+                }
+            }
+            else {
+                if (boostedFish != null && boostedFish.contains(fishList.get(idx))) {
+                    r -= fishList.get(idx).getWeight() * boostRate;
+                } else {
+                    r -= fishList.get(idx).getWeight();;
+                }
+            }
 
             if (r <= 0.0) break;
         }

@@ -99,4 +99,8 @@ public class BaitFile {
 	public double getBoostRate() {
 		return baitConfig.getDouble("general.boost", 1.0);
 	}
+
+	public boolean competitionsBlockBaits() {
+		return baitConfig.getBoolean("general.competition-disable", true);
+	}
 }
