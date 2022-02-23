@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -16,7 +17,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class SkullSaver implements Listener {
 
-	@EventHandler
+	// EventPriority.HIGHEST makes this run last so it can listen to the cancels of protection plugins like Towny
+	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onBreak(BlockBreakEvent event) {
 		if(event.isCancelled()) return;
 		if (event.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
