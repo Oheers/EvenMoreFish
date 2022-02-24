@@ -132,10 +132,17 @@ public class BaitNBTManager {
 
 				combined.append(bait).append(":").append(1);
 			} else {
-				combined.deleteCharAt(combined.length() - 1);
+				if (combined.length() > 0) {
+					combined.deleteCharAt(combined.length() - 1);
+				}
 			}
 
-			meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, combined.toString());
+			if (combined.length() > 0) {
+				meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, combined.toString());
+			} else {
+				meta.getPersistentDataContainer().remove(baitedRodNBT);
+			}
+
 			item.setItemMeta(meta);
 		} else {
 			ItemMeta meta = item.getItemMeta();
