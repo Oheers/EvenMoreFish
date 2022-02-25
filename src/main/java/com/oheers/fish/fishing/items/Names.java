@@ -1,6 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.baits.Bait;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -49,7 +50,6 @@ public class Names {
                 Fish canvas = new Fish(r, fish);
                 canvas.setBiomes(getBiomes(fish, r.getValue()));
                 canvas.setAllowedRegions(getRegions(fish, r.getValue()));
-                canvas.setGlowing(getGlowing(fish, r.getValue()));
                 canvas.setPermissionNode(permissionCheck(fish, rarity));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
@@ -69,6 +69,58 @@ public class Names {
 
             // memory saving or something
             fishList.clear();
+        }
+    }
+
+    public void loadBaits(FileConfiguration baitConfiguration) {
+        for (String s : baitConfiguration.getConfigurationSection("baits.").getKeys(false)) {
+            Bait bait = new Bait(s);
+
+            List<String> rarityList;
+
+            if ((rarityList = baitConfiguration.getStringList("baits." + s + ".rarities")).size() != 0) {
+                for (String rarityString : rarityList) {
+                    boolean foundRarity = false;
+                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        if (r.getValue().equalsIgnoreCase(rarityString)) {
+                            bait.addRarity(r);
+                            foundRarity = true;
+                            break;
+                        }
+                    }
+                    if (!foundRarity) EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is nots a loaded rarity value. It was not added to the " + s + " bait.");
+                }
+            }
+
+            if (baitConfiguration.getConfigurationSection("baits." + s + ".fish") != null) {
+                for (String rarityString : baitConfiguration.getConfigurationSection("baits." + s + ".fish").getKeys(false)) {
+                    Rarity rarity = null;
+                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        if (r.getValue().equalsIgnoreCase(rarityString)) {
+                            rarity = r;
+                            break;
+                        }
+                    }
+
+                    if (rarity == null) {
+                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is nsot a loaded rarity value. It was not added to the " + s + " bait.");
+                    } else {
+                        for (String fishString : baitConfiguration.getStringList("baits." + s + ".fish." + rarityString)) {
+                            boolean foundFish = false;
+                            for (Fish f : EvenMoreFish.fishCollection.get(rarity)) {
+                                if (f.getName().equalsIgnoreCase(fishString)) {
+                                    bait.addFish(f);
+                                    foundFish = true;
+                                    break;
+                                }
+                            }
+                            if (!foundFish) EvenMoreFish.logger.log(Level.SEVERE, fishString + " could not be found in the " + rarity.getValue() + " config. It was not added to the " + s + " bait.");
+                        }
+                    }
+                }
+            }
+
+            EvenMoreFish.baits.put(s, bait);
         }
     }
 
@@ -127,10 +179,6 @@ public class Names {
 
     private String permissionCheck(String name, String rarity) {
         return this.fishConfiguration.getString("fish." + rarity + "." + name + ".permission");
-    }
-
-    private boolean getGlowing(String name, String rarity) {
-        return this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".glowing");
     }
 
     private boolean compCheckExempt(String name, String rarity) {

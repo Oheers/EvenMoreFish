@@ -3,11 +3,14 @@ package com.oheers.fish.fishing;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
+import com.oheers.fish.baits.Bait;
+import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
+import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
@@ -24,7 +27,8 @@ import org.bukkit.util.Vector;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
@@ -43,7 +47,8 @@ public class FishingProcessor implements Listener {
         }
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-            ItemStack fish = getFish(event.getPlayer(), event.getHook().getLocation(), true, true, itemVelocity);
+            ItemStack fish = getFish(event.getPlayer(), event.getHook().getLocation(), event.getPlayer().getInventory().getItemInMainHand(), true, true);
+
             if (fish == null) {
                 return;
             }
@@ -57,12 +62,12 @@ public class FishingProcessor implements Listener {
                     nonCustom.setItemStack(fish);
                 }
             }
-        } else if (event.getState() == PlayerFishEvent.State.FISHING) {
+        } /*else if (event.getState() == PlayerFishEvent.State.FISHING) {
             if (!EvenMoreFish.decidedRarities.containsKey(event.getPlayer().getUniqueId())) {
-                EvenMoreFish.decidedRarities.put(event.getPlayer().getUniqueId(), randomWeightedRarity(event.getPlayer()));
+                EvenMoreFish.decidedRarities.put(event.getPlayer().getUniqueId(), randomWeightedRarity(event.getPlayer(), 1, null));
             }
 
-            /*
+
             if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isXmas2021()) {
 
                 if (!Objects.equals(EvenMoreFish.xmas2021Config.getParticleMessage(), "none")) {
@@ -76,7 +81,7 @@ public class FishingProcessor implements Listener {
             - if the rarity is exposed by having particles showing
              */
 
-        } // else if (event.getState() == PlayerFishEvent.State.REEL_IN) {
+         // } else if (event.getState() == PlayerFishEvent.State.REEL_IN) {
             /* For a failed attempt the player needs to have triggered a FISHING which generates a pre-decided rarity.
             if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isXmas2021()) {
                 EvenMoreFish.decidedRarities.remove(event.getPlayer().getUniqueId());
@@ -89,7 +94,8 @@ public class FishingProcessor implements Listener {
         return EvenMoreFish.mainConfig.getEnabled() && (competitionOnlyCheck() || EvenMoreFish.raritiesCompCheckExempt);
     }
 
-    public static ItemStack getFish(Player player, Location location, boolean runRewards, boolean sendMessages, Vector fishVelocity) {
+    public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {
+      
         if (!FishUtils.checkRegion(location, EvenMoreFish.mainConfig.getAllowedRegions())) {
             return null;
         }
@@ -98,13 +104,40 @@ public class FishingProcessor implements Listener {
             return null;
         }
 
-        Rarity fishRarity = randomWeightedRarity(player);
-        if (fishRarity == null) return null;
+        if (EvenMoreFish.baitFile.getBaitCatchPercentage() > 0) {
+            if (new Random().nextDouble() * 100.0 < EvenMoreFish.baitFile.getBaitCatchPercentage()) {
+                Bait caughtBait = BaitNBTManager.randomBaitCatch();
+                player.sendMessage(new Message()
+                        .setMSG(EvenMoreFish.msgs.getCatchBait())
+                        .setBaitTheme(caughtBait.getTheme())
+                        .setBait(caughtBait.getName())
+                        .setPlayer(player.getName())
+                        .toString());
+                return caughtBait.create();
+            }
+        }
 
-        Fish fish = getFish(fishRarity, location, player);
-        if (fish == null) return null;
+        Fish fish;
 
-        fish.setFisherman(player.getUniqueId());
+        if (BaitNBTManager.isBaitedRod(fishingRod) && (!EvenMoreFish.baitFile.competitionsBlockBaits() || !Competition.isActive())) {
+
+            Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
+            fish = applyingBait.chooseFish(player, location);
+            fish.setFisherman(player.getUniqueId());
+            try {
+                BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait.getName(), -1);
+            } catch (MaxBaitsReachedException ignored) {
+                // Decreasing the number of baits won't make them increase beyond the max number of baits allowed.
+            }
+        } else {
+            Rarity fishRarity = randomWeightedRarity(player, 1, null);
+            if (fishRarity == null) return null;
+
+            fish = getFish(fishRarity, location, player, 1, null);
+            if (fish == null) return null;
+            fish.setFisherman(player.getUniqueId());
+        }
+
         fish.init();
 
         if (runRewards && fish.hasFishRewards()) {
@@ -113,9 +146,6 @@ public class FishingProcessor implements Listener {
                 fishReward.run(player, location);
             }
         }
-
-        // checks if the fish can have durability, and if it's set in the config it receives random durability
-        if (fish.isDamageable()) fish.randomBreak();
 
         EMFFishEvent cEvent = new EMFFishEvent(fish, player);
         Bukkit.getPluginManager().callEvent(cEvent);
@@ -166,22 +196,23 @@ public class FishingProcessor implements Listener {
         }
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+            Fish finalFish = fish;
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     try {
 
                         // increases the fish fished count if the fish is already in the db
-                        if (Database.hasFish(fish.getName())) {
-                            Database.fishIncrease(fish.getName());
+                        if (Database.hasFish(finalFish.getName())) {
+                            Database.fishIncrease(finalFish.getName());
 
                             // sets the new leader in top fish, if the player has fished a record fish
-                            if (Database.getTopLength(fish.getName()) < fish.getLength()) {
-                                Database.newTopSpot(player, fish.getName(), fish.getLength());
+                            if (Database.getTopLength(finalFish.getName()) < finalFish.getLength()) {
+                                Database.newTopSpot(player, finalFish.getName(), finalFish.getLength());
                             }
                         } else {
                             // the database doesn't contain the fish yet
-                            Database.add(fish, player);
+                            Database.add(finalFish, player);
                         }
 
 
@@ -189,8 +220,8 @@ public class FishingProcessor implements Listener {
 
                         if (EvenMoreFish.fishReports.containsKey(player.getUniqueId())) {
                             for (FishReport report : EvenMoreFish.fishReports.get(player.getUniqueId())) {
-                                if (report.getName().equals(fish.getName()) && report.getRarity().equals(fish.getRarity().getValue())) {
-                                    report.addFish(fish);
+                                if (report.getName().equals(finalFish.getName()) && report.getRarity().equals(finalFish.getRarity().getValue())) {
+                                    report.addFish(finalFish);
                                     foundReport = true;
                                 }
                             }
@@ -216,7 +247,7 @@ public class FishingProcessor implements Listener {
         return fish.give();
     }
 
-    public static Rarity randomWeightedRarity(Player fisher) {
+    public static Rarity randomWeightedRarity(Player fisher, double boostRate, Set<Rarity> boostedRarities) {
 
         if (EvenMoreFish.decidedRarities.containsKey(fisher.getUniqueId())) {
             Rarity chosenRarity = EvenMoreFish.decidedRarities.get(fisher.getUniqueId());
@@ -229,31 +260,38 @@ public class FishingProcessor implements Listener {
 
         if (EvenMoreFish.permission != null) {
             for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
-                if (rarity.getPermission() != null) {
-                    if (EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
-                        allowedRarities.add(rarity);
-                    }
-                } else {
+                if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
+                    continue;
+                }
+
+                if (rarity.getPermission() == null || EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
                     allowedRarities.add(rarity);
                 }
             }
-
         } else {
             allowedRarities.addAll(EvenMoreFish.fishCollection.keySet());
         }
 
         double totalWeight = 0;
 
-        // Weighted random logic (nabbed from stackoverflow)
         for (Rarity r : allowedRarities) {
-            totalWeight += r.getWeight();
+            if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(r)) {
+                totalWeight += (r.getWeight() * boostRate);
+            } else {
+                totalWeight += r.getWeight();
+            }
         }
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
-            r -= allowedRarities.get(idx).getWeight();
+            if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
+                r -= allowedRarities.get(idx).getWeight() * boostRate;
+            } else {
+                r -= allowedRarities.get(idx).getWeight();
+            }
             if (r <= 0.0) break;
         }
+
 
         if (allowedRarities.isEmpty()) {
             EvenMoreFish.logger.log(Level.SEVERE, "There are no rarities for the user " + fisher.getName() + " to fish. They have received no fish.");
@@ -269,31 +307,54 @@ public class FishingProcessor implements Listener {
         return null;
     }
 
-    private static Fish randomWeightedFish(List<Fish> fishList) {
+    private static Fish randomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
         double totalWeight = 0;
 
-        // Weighted random logic (nabbed from stackoverflow)
         for (Fish fish : fishList) {
-            totalWeight += fish.getWeight();
+            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
+            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
+            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
+
+                if (fish.getWeight() == 0.0d) totalWeight += (5 * boostRate);
+                else totalWeight += fish.getWeight() * boostRate;
+            } else {
+                if (fish.getWeight() == 0.0d) totalWeight += 5;
+                else totalWeight += fish.getWeight();
+            }
         }
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < fishList.size() - 1; ++idx) {
-            r -= fishList.get(idx).getWeight();
+
+            if (fishList.get(idx).getWeight() == 0.0d) {
+                if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
+                    r -= 5 * boostRate;
+                } else {
+                    r -= 5;
+                }
+            }
+            else {
+                if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
+                    r -= fishList.get(idx).getWeight() * boostRate;
+                } else {
+                    r -= fishList.get(idx).getWeight();;
+                }
+            }
+
             if (r <= 0.0) break;
         }
 
         return fishList.get(idx);
     }
 
-    public static Fish getFish(Rarity r, Location l, Player p) {
+    public static Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish) {
         if (r == null) return null;
         // will store all the fish that match the player's biome or don't discriminate biomes
 
         List<Fish> available = new ArrayList<>();
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (EvenMoreFish.fishCollection.get(r) == null) r = randomWeightedRarity(p);
+        if (EvenMoreFish.fishCollection.get(r) == null) r = randomWeightedRarity(p, 1, null);
 
 
         for (Fish f : EvenMoreFish.fishCollection.get(r)) {
@@ -305,6 +366,10 @@ public class FishingProcessor implements Listener {
             }
 
             if (!FishUtils.checkRegion(l, f.getAllowedRegions())) {
+                continue;
+            }
+
+            if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                 continue;
             }
 
@@ -324,12 +389,7 @@ public class FishingProcessor implements Listener {
         Fish returningFish;
 
         // checks whether weight calculations need doing for fish
-        if (r.isFishWeighted()) {
-            returningFish = randomWeightedFish(available);
-        } else {
-            int ran = ThreadLocalRandom.current().nextInt(available.size());
-            returningFish = available.get(ran);
-        }
+        returningFish = randomWeightedFish(available, boostRate, boostedFish);
 
         if (Competition.isActive() || !EvenMoreFish.mainConfig.isCompetitionUnique() || (EvenMoreFish.raritiesCompCheckExempt && returningFish.isCompExemptFish())) {
             return returningFish;

@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.baits.Bait;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.Message;
@@ -8,6 +9,7 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -93,6 +95,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
     public static void loadTabCompletes() {
         adminTabs = Arrays.asList(
+                "bait",
                 "competition",
                 "fish",
                 "reload",
@@ -153,6 +156,8 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         }
 
                         return l(args, returning);
+                    } else if (args[1].equalsIgnoreCase("bait") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                        return l(args, new ArrayList<>(EvenMoreFish.baits.keySet()));
                     } else {
                         return empty;
                     }
@@ -270,7 +275,7 @@ class Controls{
                                         f.setFisherman(((Player) sender).getUniqueId());
                                         f.init();
 
-                                        if (f.getType().getType() != Material.AIR) {
+                                        if (f.getFactory().getMaterial() != Material.AIR) {
                                             FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
                                         }
 
@@ -301,10 +306,38 @@ class Controls{
 
                 break;
 
+            case "bait":
+                if (args.length >= 3) {
+
+                    // Some baits will probably have spaces in, this sorts out that issue.
+                    StringBuilder builtName = new StringBuilder();
+                    for (int i = 2; i < args.length; i++) {
+                        builtName.append(args[i]);
+                        if (i != args.length - 1) builtName.append(" ");
+                    }
+
+                    // Finding the bait and giving it to the (presumably) admin.
+                    for (String baitID : EvenMoreFish.baits.keySet()) {
+                        if (baitID.equalsIgnoreCase(builtName.toString())) {
+                            Bait bait = EvenMoreFish.baits.get(baitID);
+                            if (sender instanceof Player) {
+                                FishUtils.giveItems(Collections.singletonList(bait.create()), (Player) sender);
+                            } else {
+                                sender.sendMessage(ChatColor.RED + "Command cannot be run from console.");
+                            }
+                        }
+                    }
+                } else {
+                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + "Must provide a name of bait."));
+                }
+
+                break;
+
             case "reload":
 
                 EvenMoreFish.fishFile.reload();
                 EvenMoreFish.raritiesFile.reload();
+                EvenMoreFish.baitFile.reload();
 
                 plugin.reload();
 

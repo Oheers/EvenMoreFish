@@ -119,7 +119,7 @@ public class FishUtils {
         if (items.isEmpty()) {
             return;
         }
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.5f);
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
         player.getInventory().addItem(items.toArray(new ItemStack[0]))
                 .values()
                 .forEach(item -> new BukkitRunnable() {

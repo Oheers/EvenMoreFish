@@ -6,19 +6,14 @@ import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Biome;
-import org.bukkit.enchantments.Enchantment;
+import com.oheers.fish.utils.ItemFactory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
@@ -27,16 +22,11 @@ public class Fish implements Cloneable {
 
     String name;
     Rarity rarity;
-    ItemStack type;
+    ItemFactory factory;
     UUID fisherman;
     Float length;
 
-    boolean randomType = false;
-    boolean damageable = false;
-
     String displayName;
-
-    String dyeColour;
 
     List<Reward> actionRewards;
     List<Reward> fishRewards;
@@ -53,21 +43,24 @@ public class Fish implements Cloneable {
 
     boolean isCompExemptFish;
 
-    boolean glowing;
-
     public Fish(Rarity rarity, String name) {
         this.rarity = rarity;
         this.name = name;
-        this.type = setType();
         this.weight = 0;
 
-        setDamageable();
+        this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name);
+        checkDisplayName();
+
+        // These settings don't mean these will be applied, but they will be considered if the settings exist.
+        factory.setItemModelDataCheck(true);
+        factory.setItemDamageCheck(true);
+        factory.setItemDisplayNameCheck(this.displayName != null);
+        factory.setItemDyeCheck(true);
+        factory.setItemGlowCheck(true);
+
         setSize();
         checkEatEvent();
         checkIntEvent();
-        checkDisplayName();
-
-        checkDye();
 
         fishRewards = new ArrayList<>();
         checkFishEvent();
@@ -75,11 +68,7 @@ public class Fish implements Cloneable {
 
     public ItemStack give() {
 
-        if (randomType) this.type = setType();
-
-        ItemStack fish = this.type;
-
-        if (glowing) fish.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        ItemStack fish = factory.createItem();
 
         ItemMeta fishMeta = fish.getItemMeta();
 
@@ -106,7 +95,6 @@ public class Fish implements Cloneable {
             }
 
             fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-
             fish.setItemMeta(fishMeta);
 
             WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
@@ -114,11 +102,6 @@ public class Fish implements Cloneable {
         }
 
         return fish;
-    }
-
-    private void setDamageable() {
-        ItemMeta meta = type.getItemMeta();
-        damageable = meta instanceof Damageable;
     }
 
     private void setSize() {
@@ -148,34 +131,6 @@ public class Fish implements Cloneable {
         }
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Rarity getRarity() {
-        return rarity;
-    }
-
-    public void setFisherman(UUID fisherman) {
-        this.fisherman = fisherman;
-    }
-
-    public void setLength(Float length) {
-        this.length = length;
-    }
-
-    public Float getLength() {
-        return length;
-    }
-
-    public List<Reward> getActionRewards() {
-        return actionRewards;
-    }
-
-    public List<Reward> getFishRewards() {
-        return fishRewards;
-    }
-
     public boolean hasEatRewards() {
         if (eventType != null) {
             return eventType.equals("eat");
@@ -190,125 +145,6 @@ public class Fish implements Cloneable {
         if (eventType != null) {
             return eventType.equals("int");
         } else return false;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public String getPermissionNode() {
-        return permissionNode;
-    }
-
-    public void setPermissionNode(String permissionNode) {
-        this.permissionNode = permissionNode;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    private ItemStack setType() {
-
-        String uValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-uuid");
-        // The fish has item: uuid selected
-        // note - only works for players who have joined the server previously, not sure if this'll make it to release.
-        if (uValue != null) {
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) skull.getItemMeta();
-            meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uValue)));
-            skull.setItemMeta(meta);
-            return skull;
-        }
-
-        // The fish has item: 64 selected
-        String bValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.head-64");
-        if (bValue != null) {
-            return FishUtils.get(bValue);
-        }
-
-        // The fish has item: material selected
-        String mValue = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".item.material");
-        if (mValue != null) {
-
-            Material m = Material.getMaterial(mValue.toUpperCase());
-            if (m == null) {
-                EvenMoreFish.logger.log(Level.SEVERE, this.name + " has failed to load material: " + mValue);
-                m = Material.COD;
-            }
-
-            return new ItemStack(m);
-        }
-
-        Random rand = new Random();
-
-        List<String> lValues = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".item.materials");
-        if (lValues.size() > 0) {
-
-            Material m = Material.getMaterial(lValues.get(rand.nextInt(lValues.size())).toUpperCase());
-            randomType = true;
-
-            if (m == null) {
-                EvenMoreFish.logger.log(Level.SEVERE, this.name + " has an incorrect material name in its materials list.");
-                for (String material : lValues) {
-                    if (Material.getMaterial(material.toUpperCase()) != null) {
-                        return new ItemStack(Objects.requireNonNull(Material.getMaterial(material.toUpperCase())));
-                    }
-                }
-
-                return new ItemStack(Material.COD);
-            } else {
-                return new ItemStack(m);
-            }
-        }
-
-        List<String> mhuValues = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".item.multiple-head-uuid");
-        if (mhuValues.size() > 0) {
-
-            String uuid = mhuValues.get(rand.nextInt(mhuValues.size()));
-            randomType = true;
-
-            try {
-                ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta meta = (SkullMeta) skull.getItemMeta();
-                meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
-                skull.setItemMeta(meta);
-                return skull;
-            } catch (IllegalArgumentException illegalArgumentException) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not load uuid: " + uuid + " as a multiple-head-uuid option for " + this.name);
-                return new ItemStack(Material.COD);
-            }
-        }
-
-        List<String> mh64Values = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".item.multiple-head-64");
-        if (mh64Values.size() > 0) {
-
-            String base64 = mh64Values.get(rand.nextInt(mh64Values.size()));
-            randomType = true;
-
-            return FishUtils.get(base64);
-        }
-
-        // The fish has no item type specified
-        else {
-            return new ItemStack(Material.COD);
-        }
-    }
-
-    public ItemStack getType() {
-        return type;
-    }
-
-    public boolean isDamageable() {
-        return damageable;
     }
 
     // checks if the config contains a message to be displayed when the fish is fished
@@ -348,26 +184,6 @@ public class Fish implements Cloneable {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "ATTENTION! If the problem persists, ask for help on the support discord server.");
         }
 
-    }
-
-    public void setBiomes(List<Biome> biomes) {
-        this.biomes = biomes;
-    }
-
-    public List<Biome> getBiomes() {
-        return biomes;
-    }
-
-    public List<String> getAllowedRegions() {
-        return allowedRegions;
-    }
-
-    public void setAllowedRegions(List<String> allowedRegions) {
-        this.allowedRegions = allowedRegions;
-    }
-
-    public void setGlowing(boolean glowing) {
-        this.glowing = glowing;
     }
 
     // prepares it to be given to the player
@@ -468,24 +284,6 @@ public class Fish implements Cloneable {
         this.displayName = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".displayname");
     }
 
-    public void checkDye() {
-        this.dyeColour = EvenMoreFish.fishFile.getConfig().getString("fish." + this.rarity.getValue() + "." + this.name + ".dye-colour");
-    }
-
-    public void randomBreak() {
-        Damageable nonDamaged = (Damageable) type.getItemMeta();
-
-        int predefinedDamage = EvenMoreFish.fishFile.getConfig().getInt("fish." + this.rarity.getValue() + "." + this.name + ".durability");
-        if (predefinedDamage != 0 && predefinedDamage <= 100) {
-            nonDamaged.setDamage((int) ((100-predefinedDamage)/100.0 * this.type.getType().getMaxDurability()));
-        } else {
-            int max = this.type.getType().getMaxDurability();
-            nonDamaged.setDamage((int) (Math.random() * (max + 1)));
-        }
-
-        type.setItemMeta((ItemMeta) nonDamaged);
-    }
-
     public void checkEatEvent() {
         List<String> configRewards = EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".eat-event");
         // Checks if the player has actually set rewards for an eat event
@@ -528,15 +326,6 @@ public class Fish implements Cloneable {
         }
     }
 
-    private void addModelData(ItemStack fish) {
-        int value = EvenMoreFish.fishFile.getConfig().getInt("fish." + this.rarity.getValue() + "." + this.name + ".item.custom-model-data");
-        if (value != 0) {
-            ItemMeta meta = fish.getItemMeta();
-            meta.setCustomModelData(value);
-            fish.setItemMeta(meta);
-        }
-    }
-
     @Override
     public Fish clone() throws CloneNotSupportedException {
         return (Fish) super.clone();
@@ -552,5 +341,73 @@ public class Fish implements Cloneable {
 
     public void setCompExemptFish(boolean compExemptFish) {
         isCompExemptFish = compExemptFish;
+    }
+
+    public void setBiomes(List<Biome> biomes) {
+        this.biomes = biomes;
+    }
+
+    public List<Biome> getBiomes() {
+        return biomes;
+    }
+
+    public List<String> getAllowedRegions() {
+        return allowedRegions;
+    }
+
+    public void setAllowedRegions(List<String> allowedRegions) {
+        this.allowedRegions = allowedRegions;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public void setFisherman(UUID fisherman) {
+        this.fisherman = fisherman;
+    }
+
+    public void setLength(Float length) {
+        this.length = length;
+    }
+
+    public Float getLength() {
+        return length;
+    }
+
+    public List<Reward> getActionRewards() {
+        return actionRewards;
+    }
+
+    public List<Reward> getFishRewards() {
+        return fishRewards;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public String getPermissionNode() {
+        return permissionNode;
+    }
+
+    public void setPermissionNode(String permissionNode) {
+        this.permissionNode = permissionNode;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public ItemFactory getFactory() {
+        return factory;
     }
 }

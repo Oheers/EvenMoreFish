@@ -1,5 +1,7 @@
 package com.oheers.fish;
 
+import com.oheers.fish.baits.Bait;
+import com.oheers.fish.baits.BaitApplicationListener;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
@@ -18,6 +20,7 @@ import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.utils.TempBaitProvider;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -38,6 +41,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
+    public static BaitFile baitFile;
 
     public static Messages msgs;
     public static MainConfig mainConfig;
@@ -49,6 +53,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Economy econ = null;
 
     public static Map<Integer, Set<String>> fish = new HashMap<>();
+    public static Map<String, Bait> baits = new HashMap<>();
 
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
 
@@ -100,6 +105,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
+        baitFile = new BaitFile(this);
         competitionConfig = new CompetitionConfig(this);
 
         if (mainConfig.isEconomyEnabled()) {
@@ -125,6 +131,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
+        names.loadBaits(baitFile.getConfig());
 
         if (!names.regionCheck && !(mainConfig.getAllowedRegions().size() > 0)) guardPL = null;
 
@@ -203,6 +210,8 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
         getServer().getPluginManager().registerEvents(new SkullSaver(), this);
+        getServer().getPluginManager().registerEvents(new BaitApplicationListener(), this);
+        getServer().getPluginManager().registerEvents(new TempBaitProvider(), this);
 
         optionalListeners();
     }
@@ -288,6 +297,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         Names names = new Names();
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
+        names.loadBaits(baitFile.getConfig());
 
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());

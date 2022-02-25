@@ -182,6 +182,13 @@ emf-competition-fish-null: true
 # How should the %emf_competition_place_fish_*% be formatted?
 emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 
+# Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
+max-baits-reached: "You have reached the maximum number of types of baits for this fishing rod."
+# Sent when a player catches a bait from fishing (this can be disabled by setting catch-percentage to 0 in baits.yml
+bait-catch: "&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!"
+# Sent when a bait is applied and a fish is caught.
+bait-use: "You have used one of your rod's {bait_theme}&l{bait} &rbait."
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
 config-version: 9
