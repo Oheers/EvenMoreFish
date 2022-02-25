@@ -93,7 +93,12 @@ public class ConfigUpdater {
 			"  - \"{fish_lore}\"\n" +
 			"  - \"{rarity_colour}&l{rarity}\"\n" +
 			"# Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml\n" +
-			"max-baits-reached: \"You have reached the maximum number of types of baits for this fishing rod.\"";
+			"# Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml\n" +
+			"max-baits-reached: \"You have reached the maximum number of types of baits for this fishing rod.\"\n" +
+			"# Sent when a player catches a bait from fishing (this can be disabled by setting catch-percentage to 0 in baits.yml\n" +
+			"bait-catch: \"&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!\"\n" +
+			"# Sent when a bait is applied and a fish is caught.\n" +
+			"bait-use: \"You have used one of your rod's {bait_theme}&l{bait} &rbait.\"";
 
 	private static final String CONFIG_UPDATE_9 = "\n" +
 			"# The locale of the message file\n" +

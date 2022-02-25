@@ -24,6 +24,8 @@ public class Bait {
 	List<Fish> fishList = new ArrayList<>();
 	List<Rarity> rarityList = new ArrayList<>();
 
+	Set<Rarity> fishListRarities = new HashSet<>();
+
 	private final String name, theme;
 
 	double boostRate, applicationWeight, catchWeight;
@@ -88,6 +90,7 @@ public class Bait {
 	 * @param f The fish being boosted.
 	 */
 	public void addFish(Fish f) {
+		fishListRarities.add(f.getRarity());
 		fishList.add(f);
 	}
 
@@ -146,30 +149,47 @@ public class Bait {
 	 */
 	public Fish chooseFish(Player player, Location location) {
 		Set<Rarity> boostedRarities = new HashSet<>(getRarityList());
-
-		for (Fish f : getFishList()) {
-			boostedRarities.add(f.getRarity());
-		}
+		boostedRarities.addAll(fishListRarities);
 
 		Rarity fishRarity = FishingProcessor.randomWeightedRarity(player, getBoostRate(), boostedRarities);
 		Fish fish;
 
 		if (getFishList().size() > 0) {
-			fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), getFishList());
+			// The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
+			// the method isn't given an empty list.
+			if (!fishListRarities.contains(fishRarity)) {
+				fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), EvenMoreFish.fishCollection.get(fishRarity));
+			} else {
+				fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), getFishList());
+			}
 
 			if (!getRarityList().contains(fishRarity) && (fish == null || !getFishList().contains(fish))) {
+				// boost effect chose a fish but the randomizer didn't pick out the right fish - they've been incorrectly boosted.
 				return FishingProcessor.getFish(fishRarity, location, player, 1, null);
 			} else {
-				player.sendMessage("BAIT APPLIED 1");
+				alertUsage(player);
 			}
 		} else {
 			fish = FishingProcessor.getFish(fishRarity, location, player, 1, null);
 			if (getRarityList().contains(fishRarity)) {
-				player.sendMessage("BAIT APPLIED 2");
+				alertUsage(player);
 			}
 		}
 
 		return fish;
+	}
+
+	/**
+	 * Lets the player know that they've used one of their baits. Uses the value in messages.yml under "bait-use".
+	 *
+	 * @param player The player that's used the bait.
+	 */
+	private void alertUsage(Player player) {
+		player.sendMessage(new Message()
+				.setMSG(EvenMoreFish.msgs.getUseBait())
+				.setBait(this.name)
+				.setBaitTheme(this.theme)
+				.toString());
 	}
 
 	/**
@@ -233,5 +253,12 @@ public class Bait {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return The colour theme defined for the bait.
+	 */
+	public String getTheme() {
+		return theme;
 	}
 }

@@ -51,7 +51,8 @@ general:
   # Setting this to false will not affect currently baited rods, and their lore will stop being modified by the plugin.
   add-to-lore: true
 
-  # As a percentage, how often should baits appear?
+  # As a percentage, how often should baits appear? (The bait will be more likely to be selected if it has a higher catch-weight. It will also
+  # replace any fish that might have been caught in its place.)
   catch-percentage: 2.5
 
   # How many types of bait can be applied to each fishing rod.

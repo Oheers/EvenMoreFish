@@ -195,6 +195,31 @@ public class BaitNBTManager {
 	}
 
 	/**
+	 * Calculates a random bait to throw out based on their catch-weight. It uses the same weight algorithm as
+	 * randomBaitApplication, using the baits from the main class in the baits list.
+	 *
+	 * @return A random bait weighted by its catch-weight.
+	 */
+	public static Bait randomBaitCatch() {
+		double totalWeight = 0;
+
+		List<Bait> baitList = new ArrayList<>(EvenMoreFish.baits.values());
+
+		// Weighted random logic (nabbed from stackoverflow)
+		for (Bait bait : baitList) {
+			totalWeight += (bait.getCatchWeight());
+		}
+
+		int idx = 0;
+		for (double r = Math.random() * totalWeight; idx < EvenMoreFish.baits.size() - 1; ++idx) {
+			r -= baitList.get(idx).getCatchWeight();
+			if (r <= 0.0) break;
+		}
+
+		return baitList.get(idx);
+	}
+
+	/**
 	 * Runs through the metadata of the rod to try and figure out whether a certain bait is applied or not.
 	 *
 	 * @param itemStack The fishing rod in item stack form.

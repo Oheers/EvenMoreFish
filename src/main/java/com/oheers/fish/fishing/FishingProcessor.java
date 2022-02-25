@@ -26,6 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -91,6 +92,19 @@ public class FishingProcessor implements Listener {
 
         if (!FishUtils.checkWorld(location)) {
             return null;
+        }
+
+        if (EvenMoreFish.baitFile.getBaitCatchPercentage() > 0) {
+            if (new Random().nextDouble() * 100.0 < EvenMoreFish.baitFile.getBaitCatchPercentage()) {
+                Bait caughtBait = BaitNBTManager.randomBaitCatch();
+                player.sendMessage(new Message()
+                        .setMSG(EvenMoreFish.msgs.getCatchBait())
+                        .setBaitTheme(caughtBait.getTheme())
+                        .setBait(caughtBait.getName())
+                        .setPlayer(player.getName())
+                        .toString());
+                return caughtBait.create();
+            }
         }
 
         Fish fish;
@@ -230,7 +244,7 @@ public class FishingProcessor implements Listener {
 
         if (EvenMoreFish.permission != null) {
             for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
-                if (!(boostRate != -1 || boostedRarities == null || boostedRarities.contains(rarity))) {
+                if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
                     continue;
                 }
 
@@ -254,13 +268,14 @@ public class FishingProcessor implements Listener {
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
-            if (boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
+            if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
                 r -= allowedRarities.get(idx).getWeight() * boostRate;
             } else {
                 r -= allowedRarities.get(idx).getWeight();
             }
             if (r <= 0.0) break;
         }
+
 
         if (allowedRarities.isEmpty()) {
             EvenMoreFish.logger.log(Level.SEVERE, "There are no rarities for the user " + fisher.getName() + " to fish. They have received no fish.");
@@ -282,9 +297,7 @@ public class FishingProcessor implements Listener {
         for (Fish fish : fishList) {
             // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
             // boosted fish. The other 2 check that the plugin wants the bait calculations too.
-            if (boostRate != -1.0 && boostedFish != null && boostedFish.contains(fish)) {
-
-                //
+            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
 
                 if (fish.getWeight() == 0.0d) totalWeight += (5 * boostRate);
                 else totalWeight += fish.getWeight() * boostRate;
@@ -298,14 +311,14 @@ public class FishingProcessor implements Listener {
         for (double r = Math.random() * totalWeight; idx < fishList.size() - 1; ++idx) {
 
             if (fishList.get(idx).getWeight() == 0.0d) {
-                if (boostedFish != null && boostedFish.contains(fishList.get(idx))) {
+                if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
                     r -= 5 * boostRate;
                 } else {
                     r -= 5;
                 }
             }
             else {
-                if (boostedFish != null && boostedFish.contains(fishList.get(idx))) {
+                if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
                     r -= fishList.get(idx).getWeight() * boostRate;
                 } else {
                     r -= fishList.get(idx).getWeight();;

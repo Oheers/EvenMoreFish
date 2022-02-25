@@ -405,4 +405,12 @@ public class Messages {
     public String getMaxBaitsReceived() {
         return getErrorPrefix() + config.getString("max-baits-reached", "You have reached the maximum number of types of baits for this fishing rod.");
     }
+
+    public String getCatchBait() {
+        return config.getString("bait-catch", "&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!");
+    }
+
+    public String getUseBait() {
+        return config.getString("bait-use", "You have used one of your rod's {bait_theme}&l{bait} &rbait.");
+    }
 }

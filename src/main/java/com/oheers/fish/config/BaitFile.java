@@ -103,4 +103,8 @@ public class BaitFile {
 	public boolean competitionsBlockBaits() {
 		return baitConfig.getBoolean("general.competition-disable", true);
 	}
+
+	public double getBaitCatchPercentage() {
+		return baitConfig.getDouble("general.catch-percentage");
+	}
 }
