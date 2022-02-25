@@ -80,13 +80,15 @@ public class Names {
 
             if ((rarityList = baitConfiguration.getStringList("baits." + s + ".rarities")).size() != 0) {
                 for (String rarityString : rarityList) {
+                    boolean foundRarity = false;
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                         if (r.getValue().equalsIgnoreCase(rarityString)) {
                             bait.addRarity(r);
+                            foundRarity = true;
                             break;
                         }
                     }
-                    EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
+                    if (!foundRarity) EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is nots a loaded rarity value. It was not added to the " + s + " bait.");
                 }
             }
 
@@ -101,16 +103,18 @@ public class Names {
                     }
 
                     if (rarity == null) {
-                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
+                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is nsot a loaded rarity value. It was not added to the " + s + " bait.");
                     } else {
                         for (String fishString : baitConfiguration.getStringList("baits." + s + ".fish." + rarityString)) {
+                            boolean foundFish = false;
                             for (Fish f : EvenMoreFish.fishCollection.get(rarity)) {
                                 if (f.getName().equalsIgnoreCase(fishString)) {
                                     bait.addFish(f);
+                                    foundFish = true;
                                     break;
                                 }
                             }
-                            EvenMoreFish.logger.log(Level.SEVERE, fishString + " is not a loaded fish value. It was not added to the " + s + " bait.");
+                            if (!foundFish) EvenMoreFish.logger.log(Level.SEVERE, fishString + " could not be found in the " + rarity.getValue() + " config. It was not added to the " + s + " bait.");
                         }
                     }
                 }
