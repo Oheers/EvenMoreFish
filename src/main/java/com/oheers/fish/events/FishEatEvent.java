@@ -28,7 +28,7 @@ public class FishEatEvent implements Listener {
             if (fish.hasEatRewards()) {
                 // Runs through each eat-event
                 for (Reward r : fish.getActionRewards()) {
-                    r.run(event.getPlayer());
+                    r.run(event.getPlayer(), null);
                 }
             }
         }

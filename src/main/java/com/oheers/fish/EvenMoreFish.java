@@ -10,6 +10,7 @@ import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
+import com.oheers.fish.events.AureliumSkillsFishingEvent;
 import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
 import com.oheers.fish.events.McMMOTreasureEvent;
@@ -26,6 +27,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -67,6 +69,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static CompetitionQueue competitionQueue;
 
     public static Logger logger;
+    public static PluginManager pluginManager;
+
     public static ArrayList<SellGUI> guis;
 
     // this is for pre-deciding a rarity and running particles if it will be chosen
@@ -89,7 +93,9 @@ public class EvenMoreFish extends JavaPlugin {
 
         guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
+
         logger = getLogger();
+        pluginManager = getServer().getPluginManager();
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -222,6 +228,12 @@ public class EvenMoreFish extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
             if (mainConfig.disableMcMMOTreasure()) {
                 getServer().getPluginManager().registerEvents(McMMOTreasureEvent.getInstance(), this);
+            }
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("AureliumSkills") != null) {
+            if (mainConfig.disableAureliumSkills()) {
+                getServer().getPluginManager().registerEvents(AureliumSkillsFishingEvent.getInstance(), this);
             }
         }
     }

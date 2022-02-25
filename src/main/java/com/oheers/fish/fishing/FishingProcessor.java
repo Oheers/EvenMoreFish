@@ -22,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,8 +39,16 @@ public class FishingProcessor implements Listener {
             return;
         }
 
+        // used to pass through the api if people want to have a mob appear from the fish
+        Vector itemVelocity = new Vector();
+
+        if (event.getCaught() != null) {
+            itemVelocity = event.getCaught().getVelocity();
+        }
+
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
             ItemStack fish = getFish(event.getPlayer(), event.getHook().getLocation(), event.getPlayer().getInventory().getItemInMainHand(), true, true);
+
             if (fish == null) {
                 return;
             }
@@ -86,6 +95,7 @@ public class FishingProcessor implements Listener {
     }
 
     public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {
+      
         if (!FishUtils.checkRegion(location, EvenMoreFish.mainConfig.getAllowedRegions())) {
             return null;
         }
@@ -132,7 +142,8 @@ public class FishingProcessor implements Listener {
 
         if (runRewards && fish.hasFishRewards()) {
             for (Reward fishReward : fish.getFishRewards()) {
-                fishReward.run(player);
+                fishReward.setFishVelocity(fishVelocity);
+                fishReward.run(player, location);
             }
         }
 
@@ -204,6 +215,7 @@ public class FishingProcessor implements Listener {
                             Database.add(finalFish, player);
                         }
 
+
                         boolean foundReport = false;
 
                         if (EvenMoreFish.fishReports.containsKey(player.getUniqueId())) {
@@ -213,12 +225,16 @@ public class FishingProcessor implements Listener {
                                     foundReport = true;
                                 }
                             }
-                        } else {
-                            EvenMoreFish.fishReports.put(player.getUniqueId(), new ArrayList<>());
                         }
 
-                        if (!foundReport) {
-                            EvenMoreFish.fishReports.get(player.getUniqueId()).add(new FishReport(finalFish.getRarity().getValue(), finalFish.getName(), finalFish.getLength(), 1));
+                        try {
+                            if (!foundReport) {
+                                EvenMoreFish.fishReports.get(player.getUniqueId()).add(new FishReport(fish.getRarity().getValue(), fish.getName(), fish.getLength(), 1));
+                            }
+                        } catch (NullPointerException exception) {
+                            // Hopefully someone reports this.
+                            EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch fishing data for: " + player.getName());
+                            exception.printStackTrace();
                         }
 
                     } catch (SQLException throwables) {

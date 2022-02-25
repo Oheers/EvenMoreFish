@@ -72,17 +72,34 @@ public class Fish implements Cloneable {
 
         ItemMeta fishMeta = fish.getItemMeta();
 
-        if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
-        else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
+        if (fishMeta != null) {
+            if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
+            else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
 
-        fishMeta.setLore(generateLore());
+            fishMeta.setLore(generateLore());
 
-        fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            if (glowing) fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
-        fish.setItemMeta(fishMeta);
+            if (dyeColour != null) {
+                try {
+                    LeatherArmorMeta meta = (LeatherArmorMeta) fishMeta;
 
-        WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
+                    Color colour = Color.decode(dyeColour);
+
+                    meta.setColor(org.bukkit.Color.fromRGB(colour.getRed(), colour.getGreen(), colour.getBlue()));
+                    meta.addItemFlags(ItemFlag.HIDE_DYE);
+                    fish.setItemMeta(meta);
+                } catch (ClassCastException exception) {
+                    EvenMoreFish.logger.log(Level.SEVERE, "Could not add hex value: " + dyeColour + " to " + name + ". Item is likely not a leather material.");
+                }
+            }
+
+            fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+            fish.setItemMeta(fishMeta);
+
+            WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
+            addModelData(fish);
+        }
 
         return fish;
     }
