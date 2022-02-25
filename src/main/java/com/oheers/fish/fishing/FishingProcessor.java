@@ -22,7 +22,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,13 +36,6 @@ public class FishingProcessor implements Listener {
     public static void process(PlayerFishEvent event) {
         if (!isCustomFishAllowed()) {
             return;
-        }
-
-        // used to pass through the api if people want to have a mob appear from the fish
-        Vector itemVelocity = new Vector();
-
-        if (event.getCaught() != null) {
-            itemVelocity = event.getCaught().getVelocity();
         }
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
@@ -142,7 +134,6 @@ public class FishingProcessor implements Listener {
 
         if (runRewards && fish.hasFishRewards()) {
             for (Reward fishReward : fish.getFishRewards()) {
-                fishReward.setFishVelocity(fishVelocity);
                 fishReward.run(player, location);
             }
         }

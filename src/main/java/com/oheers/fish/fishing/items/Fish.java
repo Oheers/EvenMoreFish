@@ -5,17 +5,19 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
+import com.oheers.fish.utils.ItemFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Biome;
-import com.oheers.fish.utils.ItemFactory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Fish implements Cloneable {
@@ -61,6 +63,7 @@ public class Fish implements Cloneable {
         setSize();
         checkEatEvent();
         checkIntEvent();
+        checkDisplayName();
 
         fishRewards = new ArrayList<>();
         checkFishEvent();
@@ -72,34 +75,17 @@ public class Fish implements Cloneable {
 
         ItemMeta fishMeta = fish.getItemMeta();
 
-        if (fishMeta != null) {
-            if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
-            else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
+        if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
+        else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
 
-            fishMeta.setLore(generateLore());
+        fishMeta.setLore(generateLore());
 
-            if (glowing) fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
-            if (dyeColour != null) {
-                try {
-                    LeatherArmorMeta meta = (LeatherArmorMeta) fishMeta;
+        fish.setItemMeta(fishMeta);
 
-                    Color colour = Color.decode(dyeColour);
-
-                    meta.setColor(org.bukkit.Color.fromRGB(colour.getRed(), colour.getGreen(), colour.getBlue()));
-                    meta.addItemFlags(ItemFlag.HIDE_DYE);
-                    fish.setItemMeta(meta);
-                } catch (ClassCastException exception) {
-                    EvenMoreFish.logger.log(Level.SEVERE, "Could not add hex value: " + dyeColour + " to " + name + ". Item is likely not a leather material.");
-                }
-            }
-
-            fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-            fish.setItemMeta(fishMeta);
-
-            WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
-            addModelData(fish);
-        }
+        WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
 
         return fish;
     }
@@ -156,7 +142,6 @@ public class Fish implements Cloneable {
                 Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).sendMessage(FishUtils.translateHexColorCodes(msg));
             }
         }
-
     }
 
     private void checkEffects() {

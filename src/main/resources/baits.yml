@@ -4,6 +4,8 @@ baits:
       material: NAUTILUS_SHELL
       # How should this be displayed in game?
       displayname: "&#ff7777Shrimps"
+    glowing: true
+    # This can be used in the lore format to create a consistent colour theme.
     bait-theme: "&#ff7777"
     # This lists the fish that are attracted to this bait (make sure to specify the rarity and ensure there's no typos)
     fish:
@@ -13,35 +15,56 @@ baits:
       Uncommon:
         - "Silver Carp"
     # How likely should it be to find this bait when they're caught.
-    catch-weight: 10
-    # How likely should it be to be applied when more than 1 bait is given to the fishing rod.
-    application-weight: 8
+    catch-weight: 100
+    application-weight: 150
 
-  Fresh Water:
-    item:
-      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2I0YWUzYTM1ZWE4NTQ4ZTMzNGQ2OWZmODc4ZGZlZGIyMDgyMTU0MDJmZTk2NmI3YjhkZmFhMTZiNmE2M2I4OSJ9fX0="
-      displayname: "&bFresh Water"
-    bait-theme: "&b"
-    rarities:
-      - "Epic"
-      - "Legendary"
-    catch-weight: 2
-    application-weight: 2
-  Rare Elixir:
-    item:
-      material: HONEY_BOTTLE
-    bait-theme: "&e"
-    glowing: true
-    # This specifies just the rarities, any fish in this rarity will be attracted to this bait.
-    rarities:
-      - "Rare"
-    catch-weight: 2
-    application-weight: 3
+    Fresh Water:
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2I0YWUzYTM1ZWE4NTQ4ZTMzNGQ2OWZmODc4ZGZlZGIyMDgyMTU0MDJmZTk2NmI3YjhkZmFhMTZiNmE2M2I4OSJ9fX0="
+        displayname: "&bFresh Water"
+      bait-theme: "&b"
+      # This specifies just the rarities, any fish in this rarity will be attracted to this bait.
+      rarities:
+        - "Epic"
+        - "Legendary"
+      lore:
+        - "&7Boosts Epic & Legendary fish."
+      catch-weight: 2
+      application-weight: 5
+
+    Epic Elixir:
+      item:
+        material: HONEY_BOTTLE
+      glowing: true
+      rarities:
+        - "Epic"
+      catch-weight: 3
+      application-weight: 7
+
+    Stringy Worms:
+      item:
+        material: STRING
+      glowing: true
+      rarities:
+        - "Common"
+        - "Legendary"
+      catch-weight: 20
+      application-weight: 40
+
+    Legendary Lure:
+      item:
+        material: GOLDEN_CARROT
+        displayname: "&6Legendary Lure"
+      glowing: true
+      rarities:
+        - "Legendary"
+      catch-weight: 2
+      application-weight: 40
 
 general:
   # This defines the multiplier for how frequently a rarity/fish appears.
   # Setting to -1 will mean players are guaranteed to get a fish available from the bait.
-  boost: -1
+  boost: 1.5
 
   # Prevents players being able to use their baits during competitions, this is recommended if your rarer rarities are
   # longer, as players could abuse these baits to get into the leaderboard
@@ -56,21 +79,18 @@ general:
   catch-percentage: 2.5
 
   # How many types of bait can be applied to each fishing rod.
-  # NOTE: DO NOT CHANGE THIS ONCE PLAYERS HAVE HAD A CHANCE TO USE BAITS. IT WILL BREAK FISHING RODS.
+  # NOTE: THIS WILL BREAK RODS THAT ALREADY HAVE BAITS APPLIED.
   baits-per-rod: 7
 
   # Should unused bait slots show a message in their place?
-  # NOTE: DO NOT CHANGE THIS ONCE PLAYERS HAVE HAD A CHANCE TO USE BAITS. IT WILL BREAK FISHING RODS.
+  # NOTE: THIS WILL BREAK RODS THAT ALREADY HAVE BAITS APPLIED.
   show-unused-slots: true
 
 format:
-  # How the lore should look on the fishing rod ({baits} takes up multiple lines) - this requires general.add-to-lore to
-  # be true.
-  # NOTE: Adding/deleting lines around the {baits} line may break existing fishing rods: do not change this after baits
-  # have been applied to rods in circulation.
+  # How the lore should look ({baits} takes up multiple lines)
   rod-lore:
     - "&f"
-    - "&7Bait Slots: &#00ff55({current_baits}/{max_baits})"
+    - "&7Bait Slots: &e({current_baits}/{max_baits})"
     - "&f"
     - "{baits}"
     - "&f"
@@ -79,16 +99,15 @@ format:
   # given out will have this lore. Bait themes can be set as a colour or prefix and be used in this lore.
   bait-lore:
     - "&f"
-    - "{bait_theme}Increases catch rates by &f4% {bait_theme}for:"
+    - "{bait_theme}Increases the catch rates for:"
     - "{boosts}"
     - "&f"
     - "&#dadadaDrop onto a fishing rod to apply,"
     - "&#dadadaor hold &nSHIFT&#dadada to apply all."
     - "&f"
-
   # How the baits should look in each line of the {baits} variable above ^. {baits} respects the display name setting,
   # the &e is there for baits without a display name set.
-  baits: "&#00ff55► {amount} {bait}"
+  baits: "&6► {amount} {bait}"
 
   # These are listed in the {boosts} variable above in bait-lore
   # boost-rarity/rarities: shown when the bait only impacts 1 rarity or when it impacts multiple rarities.
