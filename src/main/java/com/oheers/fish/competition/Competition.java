@@ -255,6 +255,7 @@ public class Competition {
             if (selectedFish.getDisplayName() != null) msg.setFishCaught(selectedFish.getDisplayName());
             else msg.setFishCaught(selectedFish.getName());
         }
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(msg.toString());
         }

@@ -130,7 +130,7 @@ public class BaitNBTManager {
 					throw new MaxBaitsReachedException("Max baits reached.");
 				}
 
-				combined.append(bait).append(":").append(1);
+				combined.append(bait).append(":").append(quantity);
 			} else {
 				if (combined.length() > 0) {
 					combined.deleteCharAt(combined.length() - 1);
