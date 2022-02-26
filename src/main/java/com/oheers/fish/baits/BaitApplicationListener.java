@@ -26,7 +26,7 @@ public class BaitApplicationListener implements Listener {
 			if (BaitNBTManager.isBaitObject(event.getCursor())) {
 
 				if (!event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL)) {
-					event.getWhoClicked().sendMessage(FishUtils.translateHexColorCodes("&cYou must be in &nsurvival&c to apply baits to fishing rods."));
+					event.getWhoClicked().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSurvivalOnly()));
 					return;
 				}
 

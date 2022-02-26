@@ -18,48 +18,45 @@ baits:
     catch-weight: 100
     application-weight: 150
 
-    Fresh Water:
-      item:
-        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2I0YWUzYTM1ZWE4NTQ4ZTMzNGQ2OWZmODc4ZGZlZGIyMDgyMTU0MDJmZTk2NmI3YjhkZmFhMTZiNmE2M2I4OSJ9fX0="
-        displayname: "&bFresh Water"
-      bait-theme: "&b"
-      # This specifies just the rarities, any fish in this rarity will be attracted to this bait.
-      rarities:
-        - "Epic"
-        - "Legendary"
-      lore:
-        - "&7Boosts Epic & Legendary fish."
-      catch-weight: 2
-      application-weight: 5
+  Fresh Water:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2I0YWUzYTM1ZWE4NTQ4ZTMzNGQ2OWZmODc4ZGZlZGIyMDgyMTU0MDJmZTk2NmI3YjhkZmFhMTZiNmE2M2I4OSJ9fX0="
+      displayname: "&bFresh Water"
+    bait-theme: "&b"
+    # This specifies just the rarities, any fish in this rarity will be attracted to this bait.
+    rarities:
+      - "Epic"
+      - "Legendary"
+    lore:
+      - "&7Boosts Epic & Legendary fish."
+    catch-weight: 2
+    application-weight: 5
 
-    Epic Elixir:
-      item:
-        material: HONEY_BOTTLE
-      glowing: true
-      rarities:
-        - "Epic"
-      catch-weight: 3
-      application-weight: 7
+  Epic Elixir:
+    item:
+      material: HONEY_BOTTLE
+    glowing: true
+    application-weight: 7
 
-    Stringy Worms:
-      item:
-        material: STRING
-      glowing: true
-      rarities:
-        - "Common"
-        - "Legendary"
-      catch-weight: 20
-      application-weight: 40
+  Stringy Worms:
+    item:
+      material: STRING
+    glowing: true
+    rarities:
+      - "Common"
+      - "Legendary"
+    catch-weight: 20
+    application-weight: 40
 
-    Legendary Lure:
-      item:
-        material: GOLDEN_CARROT
-        displayname: "&6Legendary Lure"
-      glowing: true
-      rarities:
-        - "Legendary"
-      catch-weight: 2
-      application-weight: 40
+  Legendary Lure:
+    item:
+      material: GOLDEN_CARROT
+      displayname: "&6Legendary Lure"
+    glowing: true
+    rarities:
+      - "Legendary"
+    catch-weight: 2
+    application-weight: 40
 
 general:
   # This defines the multiplier for how frequently a rarity/fish appears.

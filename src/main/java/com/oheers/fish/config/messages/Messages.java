@@ -413,4 +413,8 @@ public class Messages {
     public String getUseBait() {
         return config.getString("bait-use", "You have used one of your rod's {bait_theme}&l{bait} &rbait.");
     }
+
+    public String getSurvivalOnly() {
+        return config.getString("bait-survival-limited", "&cYou must be in &nsurvival&c to apply baits to fishing rods.");
+    }
 }

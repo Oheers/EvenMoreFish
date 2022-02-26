@@ -20,7 +20,6 @@ import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
-import com.oheers.fish.utils.TempBaitProvider;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -211,7 +210,6 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
         getServer().getPluginManager().registerEvents(new SkullSaver(), this);
         getServer().getPluginManager().registerEvents(new BaitApplicationListener(), this);
-        getServer().getPluginManager().registerEvents(new TempBaitProvider(), this);
 
         optionalListeners();
     }
