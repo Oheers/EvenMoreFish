@@ -16,7 +16,10 @@ baits:
         - "Silver Carp"
     # How likely should it be to find this bait when they're caught.
     catch-weight: 100
+    # When more than 1 types of baits are applied, how likely is it that this one should be used?
     application-weight: 150
+    # How many of this bait can be applied to a rod at once?
+    max-baits: 100
 
   Fresh Water:
     item:
@@ -31,12 +34,14 @@ baits:
       - "&7Boosts Epic & Legendary fish."
     catch-weight: 2
     application-weight: 5
+    max-baits: 64
 
   Epic Elixir:
     item:
       material: HONEY_BOTTLE
     glowing: true
     application-weight: 7
+    max-baits: 64
 
   Stringy Worms:
     item:
@@ -47,6 +52,7 @@ baits:
       - "Legendary"
     catch-weight: 20
     application-weight: 40
+    max-baits: 16
 
   Legendary Lure:
     item:
@@ -57,6 +63,7 @@ baits:
       - "Legendary"
     catch-weight: 2
     application-weight: 40
+    max-baits: 20
 
 general:
   # This defines the multiplier for how frequently a rarity/fish appears.

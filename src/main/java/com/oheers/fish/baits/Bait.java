@@ -28,6 +28,8 @@ public class Bait {
 
 	private final String name, theme;
 
+	private final int maxApplications;
+
 	double boostRate, applicationWeight, catchWeight;
 
 	/**
@@ -54,6 +56,7 @@ public class Bait {
 		setCatchWeight(EvenMoreFish.baitFile.getCatchWeight(name));
 
 		this.boostRate = EvenMoreFish.baitFile.getBoostRate();
+		this.maxApplications = EvenMoreFish.baitFile.getMaxBaitApplication(this.name);
 
 		this.itemFactory = new ItemFactory("baits." + name);
 
@@ -260,5 +263,12 @@ public class Bait {
 	 */
 	public String getTheme() {
 		return theme;
+	}
+
+	/**
+	 * @return How many of this bait can be applied to a fishing rod.
+	 */
+	public int getMaxApplications() {
+		return maxApplications;
 	}
 }

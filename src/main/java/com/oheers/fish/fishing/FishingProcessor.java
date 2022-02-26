@@ -10,6 +10,7 @@ import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
+import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -117,8 +118,8 @@ public class FishingProcessor implements Listener {
             fish = applyingBait.chooseFish(player, location);
             fish.setFisherman(player.getUniqueId());
             try {
-                BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait.getName(), -1);
-            } catch (MaxBaitsReachedException ignored) {
+                BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1);
+            } catch (MaxBaitsReachedException | MaxBaitReachedException ignored) {
                 // Decreasing the number of baits won't make them increase beyond the max number of baits allowed.
             }
         } else {

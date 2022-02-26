@@ -417,4 +417,8 @@ public class Messages {
     public String getSurvivalOnly() {
         return config.getString("bait-survival-limited", "&cYou must be in &nsurvival&c to apply baits to fishing rods.");
     }
+
+    public String getMaxBaitReceived() {
+        return getErrorPrefix() + config.getString("max-bait-reached", "You have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.");
+    }
 }

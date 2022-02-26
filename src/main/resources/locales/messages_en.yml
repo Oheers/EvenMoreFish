@@ -184,6 +184,8 @@ emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 
 # Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
 max-baits-reached: "You have reached the maximum number of types of baits for this fishing rod."
+# Not to be confused with the above, this is sent when the maximum of a specific bait is reached. Define this in baits.yml using "max-baits".
+max-bait-reached: "You have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod."
 # Sent when a player catches a bait from fishing (this can be disabled by setting catch-percentage to 0 in baits.yml
 bait-catch: "&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!"
 # Sent when a bait is applied and a fish is caught.

@@ -107,4 +107,8 @@ public class BaitFile {
 	public double getBaitCatchPercentage() {
 		return baitConfig.getDouble("general.catch-percentage");
 	}
+
+	public int getMaxBaitApplication(String baitName) {
+		return baitConfig.getInt("baits." + baitName + ".max-baits", -1);
+	}
 }

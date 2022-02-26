@@ -3,6 +3,7 @@ package com.oheers.fish.baits;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -90,11 +91,14 @@ public class BaitNBTManager {
 	 * @param bait The name of the bait being applied.
 	 * @param quantity The number of baits being applied. These must be of the same bait.
 	 * @throws MaxBaitsReachedException When too many baits are tried to be applied to a fishing rod.
-	 * @returns The item parameter with baited NBT added to it.
+	 * @throws MaxBaitReachedException When one of the baits has hit maximum set by max-baits in baits.yml
+	 * @returns An ApplicationResult containing the updated "item" itemstack and the remaining baits for the cursor.
 	 */
-	public static ItemStack applyBaitedRodNBT(ItemStack item, String bait, int quantity) throws MaxBaitsReachedException {
+	public static ApplicationResult applyBaitedRodNBT(ItemStack item, Bait bait, int quantity) throws MaxBaitsReachedException, MaxBaitReachedException {
 
 		boolean doingLoreStuff = EvenMoreFish.baitFile.doRodLore();
+		boolean maxBait = false;
+		int cursorModifier = 0;
 
 		if (isBaitedRod(item)) {
 
@@ -112,9 +116,18 @@ public class BaitNBTManager {
 			boolean foundBait = false;
 
 			for (String s : baitList) {
-				if (s.split(":")[0].equals(bait)) {
+				if (s.split(":")[0].equals(bait.getName())) {
 					int newQuantity = Integer.parseInt(s.split(":")[1]) + quantity;
-					if (newQuantity != 0) combined.append(s.split(":")[0]).append(":").append(Integer.parseInt(s.split(":")[1]) + quantity).append(",");
+
+					if (newQuantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
+						combined.append(s.split(":")[0]).append(":").append(bait.getMaxApplications()).append(",");
+						// new cursor amt = -(max app - old app)
+						cursorModifier = -bait.getMaxApplications() + (newQuantity - quantity);
+						maxBait = true;
+					} else if (newQuantity != 0) {
+						combined.append(s.split(":")[0]).append(":").append(Integer.parseInt(s.split(":")[1]) + quantity).append(",");
+						cursorModifier = -quantity;
+					}
 					foundBait = true;
 				} else {
 					combined.append(s).append(",");
@@ -130,7 +143,13 @@ public class BaitNBTManager {
 					throw new MaxBaitsReachedException("Max baits reached.");
 				}
 
-				combined.append(bait).append(":").append(quantity);
+				if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
+					cursorModifier = -bait.getMaxApplications();
+					maxBait = true;
+				} else {
+					combined.append(bait.getName()).append(":").append(quantity);
+					cursorModifier = -quantity;
+				}
 			} else {
 				if (combined.length() > 0) {
 					combined.deleteCharAt(combined.length() - 1);
@@ -146,13 +165,22 @@ public class BaitNBTManager {
 			item.setItemMeta(meta);
 		} else {
 			ItemMeta meta = item.getItemMeta();
-			meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait + ":" + quantity);
+			if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
+				meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait.getName() + ":" + bait.getMaxApplications());
+				cursorModifier = -bait.getMaxApplications();
+				maxBait = true;
+			} else {
+				meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait.getName() + ":" + quantity);
+				cursorModifier = -quantity;
+			}
 			item.setItemMeta(meta);
 		}
 
 		if (doingLoreStuff) newApplyLore(item);
 
-		return item;
+		if (maxBait) throw new MaxBaitReachedException(bait.getName() + " has reached its maximum number of uses on the fishing rod.");
+
+		return new ApplicationResult(item, cursorModifier);
 	}
 
 	/**
