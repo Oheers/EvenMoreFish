@@ -167,7 +167,7 @@ help-admin:
   - "/emf admin version - 显示插件版本信息."
 
 # Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
-no-player-in-place: "开始钓鱼，占领这片区域"
+no-player-in-place: "开始钓鱼以占领这个地方"
 # Shown when the emf competition placeholders are used when there's no competition running
 no-competition-running: "目前没有正在进行的比赛."
 # Should %emf_competition_place_player_*% contain the above (false) or return null (true).
@@ -180,9 +180,9 @@ emf-competition-fish-null: true
 emf-competition-fish-format: "{length}厘米 &l{rarity} {fish}"
 
 # Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
-max-baits-reached: "这条鱼竿的鱼饵已经满了."
+max-baits-reached: "这根鱼竿的鱼饵已经满了."
 # Not to be confused with the above, this is sent when the maximum of a specific bait is reached. Define this in baits.yml using "max-baits".
-max-bait-reached: "你已经达到了一个鱼竿可以应用的 {bait_theme}{bait} &r的最大数量。"
+max-bait-reached: "你已经达到了一根鱼竿可以应用的 {bait_theme}{bait} &r的最大数量。"
 # Sent when a player catches a bait from fishing (this can be disabled by setting catch-percentage to 0 in baits.yml
 bait-catch: "&l{player} &r 抓到了一个 {bait_theme}&l{bait} &r！"
 # Sent when a bait is applied and a fish is caught.
