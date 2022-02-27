@@ -177,7 +177,7 @@ emf-competition-size-null: true
 # Should %emf_competition_place_fish_*% contain the above (false) or return null (true).
 emf-competition-fish-null: true
 # How should the %emf_competition_place_fish_*% be formatted?
-emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
+emf-competition-fish-format: "{length}厘米 &l{rarity} {fish}"
 
 # Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
 max-baits-reached: "这条鱼竿的鱼饵已经满了."
