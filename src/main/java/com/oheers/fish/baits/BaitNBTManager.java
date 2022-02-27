@@ -286,7 +286,7 @@ public class BaitNBTManager {
 					lore.add(new Message()
 							.setMSG(EvenMoreFish.baitFile.getBaitFormat())
 							.setAmount(bait.split(":")[1])
-							.setBait(bait.split(":")[0])
+							.setBait(getBaitFormatted(bait.split(":")[0]))
 							.toString());
 				}
 
@@ -355,5 +355,18 @@ public class BaitNBTManager {
 		if (rodNBT == null) return 1;
 
 		return rodNBT.split(",").length;
+	}
+
+	/**
+	 * Checks the bait from baitID to see if it has a displayname and returns that if necessary - else it just returns
+	 * the baitID itself.
+	 *
+	 * @param baitID The baitID the bait is registered under in baits.yml
+	 * @return How the bait should look in the lore of the fishing rod, for example.
+	 */
+	private static String getBaitFormatted(String baitID) {
+		Bait bait = EvenMoreFish.baits.get(baitID);
+		if (bait.getDisplayName().equals("")) return baitID;
+		else return FishUtils.translateHexColorCodes(bait.getDisplayName());
 	}
 }

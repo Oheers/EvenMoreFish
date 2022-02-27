@@ -111,4 +111,8 @@ public class BaitFile {
 	public int getMaxBaitApplication(String baitName) {
 		return baitConfig.getInt("baits." + baitName + ".max-baits", -1);
 	}
+
+	public String getDisplayName(String baitName) {
+		return baitConfig.getString("baits." + baitName + ".displayname");
+	}
 }

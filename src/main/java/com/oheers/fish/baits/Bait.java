@@ -26,7 +26,7 @@ public class Bait {
 
 	Set<Rarity> fishListRarities = new HashSet<>();
 
-	private final String name, theme;
+	private final String name, displayName, theme;
 
 	private final int maxApplications;
 
@@ -57,6 +57,7 @@ public class Bait {
 
 		this.boostRate = EvenMoreFish.baitFile.getBoostRate();
 		this.maxApplications = EvenMoreFish.baitFile.getMaxBaitApplication(this.name);
+		this.displayName = EvenMoreFish.baitFile.getDisplayName(this.name);
 
 		this.itemFactory = new ItemFactory("baits." + name);
 
@@ -270,5 +271,12 @@ public class Bait {
 	 */
 	public int getMaxApplications() {
 		return maxApplications;
+	}
+
+	/**
+	 * @return The displayname setting for the bait.
+	 */
+	public String getDisplayName() {
+		return displayName;
 	}
 }
