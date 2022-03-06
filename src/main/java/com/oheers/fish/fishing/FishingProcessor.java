@@ -119,8 +119,9 @@ public class FishingProcessor implements Listener {
             fish.setFisherman(player.getUniqueId());
             try {
                 BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1);
-            } catch (MaxBaitsReachedException | MaxBaitReachedException ignored) {
-                // Decreasing the number of baits won't make them increase beyond the max number of baits allowed.
+            } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
+                System.out.println("THIS IS THE ERROR BEING CALLED, PLEASE SEND THIS TO THE TICKET IN ITS ENTIRETY.");
+                exception.printStackTrace();
             }
         } else {
             Rarity fishRarity = randomWeightedRarity(player, 1, null);

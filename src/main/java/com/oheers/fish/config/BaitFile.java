@@ -113,6 +113,6 @@ public class BaitFile {
 	}
 
 	public String getDisplayName(String baitName) {
-		return baitConfig.getString("baits." + baitName + ".displayname");
+		return baitConfig.getString("baits." + baitName + ".item.displayname");
 	}
 }

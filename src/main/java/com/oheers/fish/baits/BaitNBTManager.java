@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class BaitNBTManager {
@@ -366,7 +367,7 @@ public class BaitNBTManager {
 	 */
 	private static String getBaitFormatted(String baitID) {
 		Bait bait = EvenMoreFish.baits.get(baitID);
-		if (bait.getDisplayName().equals("")) return baitID;
+		if (Objects.equals(bait.getDisplayName(), "")) return baitID;
 		else return FishUtils.translateHexColorCodes(bait.getDisplayName());
 	}
 }
