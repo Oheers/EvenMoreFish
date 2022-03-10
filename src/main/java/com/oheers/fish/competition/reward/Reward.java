@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFRewardEvent;
 import com.oheers.fish.config.messages.Message;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -66,6 +67,7 @@ public class Reward {
             case COMMAND:
                 String inputCommand = this.action
                         .replace("{player}", player.getName());
+                inputCommand = PlaceholderAPI.setPlaceholders(p, inputCommand);
                 if (hookLocation != null) {
                     inputCommand = inputCommand
                             .replace("{x}", Double.toString(hookLocation.getX()))
