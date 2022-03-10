@@ -120,7 +120,7 @@ public class Reward {
                 break;
             case MESSAGE:
                 if (p != null) {
-                    p.sendMessage(FishUtils.translateHexColorCodes(action));
+                    p.sendMessage(new Message().setMSG(action).setReceiver(p).toString());
                 }
 
                 break;
