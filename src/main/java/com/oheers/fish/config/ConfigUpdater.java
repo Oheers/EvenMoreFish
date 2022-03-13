@@ -87,8 +87,8 @@ public class ConfigUpdater {
 			"# replace the {fish_lore}, however if it's empty the line will be removed. DO NOT ADD ANYTHING OTHER THAN THIS VARIABLE\n" +
 			"# TO THAT LINE.\n" +
 			"fish-lore:\n" +
-			"  - \"&rCaught by {player}\"\n" +
-			"  - \"&rMeasures {length}cm\"\n" +
+			"  - \"&fCaught by {player}\"\n" +
+			"  - \"&fMeasures {length}cm\"\n" +
 			"  - \"\"\n" +
 			"  - \"{fish_lore}\"\n" +
 			"  - \"{rarity_colour}&l{rarity}\"\n" +

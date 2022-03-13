@@ -53,8 +53,8 @@ prefix-error: "&c"
 # replace the {fish_lore}, however if it's empty the line will be removed. DO NOT ADD ANYTHING OTHER THAN THIS VARIABLE
 # TO THAT LINE.
 fish-lore:
-  - "&rCaught by {player}"
-  - "&rMeasures {length}cm"
+  - "&fCaught by {player}"
+  - "&fMeasures {length}cm"
   - ""
   - "{fish_lore}"
   - "{rarity_colour}&l{rarity}"
