@@ -285,8 +285,8 @@ public class Competition {
         } else {
             msg = new Message()
                     .setMSG(EvenMoreFish.msgs.getCompetitionStart())
-                    .setAmount(Integer.toString(this.numberNeeded))
                     .setType(this.competitionType)
+                    .setAmount(Integer.toString(this.numberNeeded))
                     .setRarityColour(selectedFish.getRarity().getColour());
 
             if (selectedFish.getRarity().getDisplayName() != null) msg.setRarity(selectedFish.getRarity().getDisplayName());
