@@ -311,9 +311,19 @@ class Controls{
 
                     // Some baits will probably have spaces in, this sorts out that issue.
                     StringBuilder builtName = new StringBuilder();
+                    Player player;
+
                     for (int i = 2; i < args.length; i++) {
-                        builtName.append(args[i]);
-                        if (i != args.length - 1) builtName.append(" ");
+                        if (args[i].startsWith("-p:")) {
+                            player = Bukkit.getPlayer(args[i].substring(3));
+                            if (player == null) {
+                                sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[i] + " is not a known player."));
+                                break;
+                            }
+                        } else {
+                            builtName.append(args[i]);
+                            if (i != args.length - 1) builtName.append(" ");
+                        }
                     }
 
                     // Finding the bait and giving it to the (presumably) admin.

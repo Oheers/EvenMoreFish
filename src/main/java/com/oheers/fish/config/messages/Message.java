@@ -179,10 +179,7 @@ public class Message {
         }
 
         for (Map.Entry<String, String> replacement : variableMap) {
-            System.out.println("replacing: " + replacement.getKey() + " with " + replacement.getValue());
-            System.out.println("msg: " + msg);
             msg = msg.replace(replacement.getKey(), replacement.getValue());
-            System.out.println("msg: " + msg);
         }
 
         return FishUtils.translateHexColorCodes(msg);
