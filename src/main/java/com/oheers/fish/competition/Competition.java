@@ -46,8 +46,6 @@ public class Competition {
     public String competitionName;
     public boolean adminStarted;
 
-    // In a SPECIFIC_FISH competition, there won't be a leaderboard
-    public boolean leaderboardApplicable;
     public static Leaderboard leaderboard;
 
     public Competition(final Integer duration, final CompetitionType type) {
@@ -65,14 +63,12 @@ public class Competition {
 
         if (competitionType == CompetitionType.SPECIFIC_FISH) {
             if (!chooseFish(competitionName, adminStart)) return;
-        } else {
-            leaderboardApplicable = true;
         }
 
         this.timeLeft = this.maxDuration;
         if (Bukkit.getOnlinePlayers().size() >= playersNeeded || adminStart) {
             active = true;
-            if (leaderboardApplicable) initLeaderboard();
+            leaderboard = new Leaderboard(competitionType);
             statusBar.show();
             initTimer();
             announceBegin();
@@ -92,14 +88,12 @@ public class Competition {
         // print leaderboard
         this.timingSystem.cancel();
         statusBar.hide();
-        if (leaderboardApplicable) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
-                sendLeaderboard(player);
-            }
-            handleRewards();
-            leaderboard.clear();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getCompetitionEnd()));
+            sendLeaderboard(player);
         }
+        handleRewards();
+        leaderboard.clear();
         active = false;
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
     }
@@ -191,7 +185,10 @@ public class Competition {
                 }
             }
 
-            if (leaderboardApplicable) {
+            if (competitionType == CompetitionType.SPECIFIC_FISH && numberNeeded == 1) {
+                singleReward(fisher);
+                end();
+            } else {
                 CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
 
                 if (entry != null) {
@@ -227,9 +224,6 @@ public class Competition {
                     CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
                     leaderboard.addEntry(newEntry);
                 }
-            } else {
-                singleReward(fisher);
-                end();
             }
         } else {
 
@@ -451,11 +445,6 @@ public class Competition {
         Competition.originallyRandom = originallyRandom;
     }
 
-    public void initLeaderboard() {
-        leaderboardApplicable = true;
-        leaderboard = new Leaderboard(competitionType);
-    }
-
     public boolean chooseFish(String competitionName, boolean adminStart) {
         List<String> allowedRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
         List<Fish> fish = new ArrayList<>();
@@ -465,9 +454,7 @@ public class Competition {
             }
         }
 
-        int y = EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart);
-        if (y > 1) this.leaderboardApplicable = true;
-        setNumberNeeded(y);
+        setNumberNeeded(EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart));
 
         try {
             Random r = new Random();
@@ -554,7 +541,7 @@ public class Competition {
             }
 
         } else {
-            if (leaderboardApplicable) {
+            if (!(competitionType == CompetitionType.SPECIFIC_FISH && numberNeeded == 1)) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.noWinners()));
                 }
