@@ -367,7 +367,7 @@ public class BaitNBTManager {
 	 */
 	private static String getBaitFormatted(String baitID) {
 		Bait bait = EvenMoreFish.baits.get(baitID);
-		if (Objects.equals(bait.getDisplayName(), "")) return baitID;
+		if (Objects.equals(bait.getDisplayName(), null)) return baitID;
 		else return FishUtils.translateHexColorCodes(bait.getDisplayName());
 	}
 }
