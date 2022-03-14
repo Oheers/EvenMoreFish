@@ -125,39 +125,51 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (sender instanceof Player) {
 
+            if (args.length > 2 && args[args.length - 1].startsWith("-p:")) {
+                if (args[1].equalsIgnoreCase("fish") || args[1].equalsIgnoreCase("bait")) {
+                    if (EvenMoreFish.permission.has(sender, "emf.admin")) {
+                        List<String> playerNames = new ArrayList<>();
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            playerNames.add("-p:" + p.getName());
+                        }
+                        return l(args[args.length - 1], playerNames);
+                    }
+                }
+            }
+
             switch (args.length) {
                 case 1:
                     if (EvenMoreFish.permission.has(sender, "emf.admin")) {
 
                         // creates a temp version of tablist where only the qualified completes go through
-                        List<String> TEMP_townTabCompletes = l(args, emfTabs);
+                        List<String> TEMP_townTabCompletes = l(args[args.length - 1], emfTabs);
                         // if the player is writing "admin" it adds it to the temporary tabcomplete list
                         if ("admin".startsWith(args[args.length - 1].toLowerCase())) {
                             TEMP_townTabCompletes.add("admin");
                         }
                         return TEMP_townTabCompletes;
                     } else {
-                        return l(args, emfTabs);
+                        return l(args[args.length - 1], emfTabs);
                     }
                 case 2:
                     // checks player has admin perms and has actually used "/emf admin" prior to the 2nd arg
                     if (args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        return l(args, adminTabs);
+                        return l(args[args.length - 1], adminTabs);
                     } else {
                         return empty;
                     }
                 case 3:
                     if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        return l(args, compTabs);
+                        return l(args[args.length - 1], compTabs);
                     } else if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
                         List<String> returning = new ArrayList<>();
                         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                             returning.add(r.getValue());
                         }
 
-                        return l(args, returning);
+                        return l(args[args.length - 1], returning);
                     } else if (args[1].equalsIgnoreCase("bait") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        return l(args, new ArrayList<>(EvenMoreFish.baits.keySet()));
+                        return l(args[args.length - 1], new ArrayList<>(EvenMoreFish.baits.keySet()));
                     } else {
                         return empty;
                     }
@@ -169,7 +181,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                                 for (Fish f : EvenMoreFish.fishCollection.get(r)) {
                                     fish.add(f.getName());
                                 }
-                                return l(args, fish);
+                                return l(args[args.length - 1], fish);
                             }
                         }
                         return empty;
@@ -177,7 +189,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     return empty;
                 case 5:
                     if (EvenMoreFish.permission.has(sender, "emf.admin") && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
-                        return l(args, compTypes);
+                        return l(args[args.length - 1], compTypes);
                     } else {
                         return empty;
                 }
@@ -191,10 +203,10 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
     }
 
     // works out how far the player is into the tab and reduces the returned list accordingly
-    private List<String> l(String[] progress, List<String> total) {
+    private List<String> l(String lastArg, List<String> total) {
         List<String> prep = new ArrayList<>();
         for (String s : total) {
-            if (s.toLowerCase().startsWith(progress[progress.length - 1].toLowerCase())) {
+            if (s.toLowerCase().startsWith(lastArg.toLowerCase())) {
                 prep.add(s);
             }
         }
@@ -258,10 +270,18 @@ class Controls{
                 } else if (args.length >= 4) {
                     StringBuilder using = new StringBuilder();
 
+                    Player player = null;
                     if (args.length > 4) {
                         for (int section = 3; section < args.length; section++) {
-                            if (section == args.length-1) using.append(args[section]);
-                            else using.append(args[section]).append(" ");
+                            if (args[section].startsWith("-p:")) {
+                                if ((player = Bukkit.getPlayer(args[section].substring(3))) == null) {
+                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[section] + " is not a known player."));
+                                    break;
+                                }
+                            } else {
+                                using.append(args[section]);
+                                if (section != args.length - 1 && !(args[section+1].startsWith("-p:"))) using.append(" ");
+                            }
                         }
                     } else {
                         using = new StringBuilder(args[3]);
@@ -272,12 +292,25 @@ class Controls{
                             if (args[2].equalsIgnoreCase(r.getValue())) {
                                 for (Fish f : EvenMoreFish.fishCollection.get(r)) {
                                     if (f.getName().equalsIgnoreCase(using.toString())) {
-                                        f.setFisherman(((Player) sender).getUniqueId());
+
+                                        if (player == null) {
+                                            f.setFisherman(((Player) sender).getUniqueId());
+                                        } else {
+                                            f.setFisherman((player).getUniqueId());
+                                        }
+
                                         f.init();
 
                                         if (f.getFactory().getMaterial() != Material.AIR) {
-                                            FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
+                                            if (player == null) FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
+                                            else FishUtils.giveItems(Collections.singletonList(f.give()), player);
                                         }
+
+                                        if (player != null) {
+                                            sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getAdminPrefix() + "You have given " + player.getName() + " a " + using));
+                                        }
+
+                                        break;
 
                                     }
                                 }
@@ -311,18 +344,17 @@ class Controls{
 
                     // Some baits will probably have spaces in, this sorts out that issue.
                     StringBuilder builtName = new StringBuilder();
-                    Player player;
+                    Player player = null;
 
                     for (int i = 2; i < args.length; i++) {
                         if (args[i].startsWith("-p:")) {
-                            player = Bukkit.getPlayer(args[i].substring(3));
-                            if (player == null) {
+                            if ((player = Bukkit.getPlayer(args[i].substring(3))) == null) {
                                 sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[i] + " is not a known player."));
                                 break;
                             }
                         } else {
                             builtName.append(args[i]);
-                            if (i != args.length - 1) builtName.append(" ");
+                            if (i != args.length - 1 && !(args[i+1].startsWith("-p:"))) builtName.append(" ");
                         }
                     }
 
@@ -331,7 +363,11 @@ class Controls{
                         if (baitID.equalsIgnoreCase(builtName.toString())) {
                             Bait bait = EvenMoreFish.baits.get(baitID);
                             if (sender instanceof Player) {
-                                FishUtils.giveItems(Collections.singletonList(bait.create()), (Player) sender);
+                                if (player == null) FishUtils.giveItems(Collections.singletonList(bait.create()), (Player) sender);
+                                else {
+                                    FishUtils.giveItems(Collections.singletonList(bait.create()), player);
+                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getAdminPrefix() + "You have given " + player.getName() + " a " + baitID));
+                                }
                             } else {
                                 sender.sendMessage(ChatColor.RED + "Command cannot be run from console.");
                             }
