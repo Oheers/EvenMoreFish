@@ -228,18 +228,18 @@ public class Fish implements Cloneable {
     private List<String> getFromNewLore() {
         List<String> resultantLore = new ArrayList<>();
 
+        Message loreLine = new Message()
+                .setRarityColour(rarity.getColour())
+                .setPlayer(Bukkit.getOfflinePlayer(fisherman).getName())
+                .setLength(Float.toString(length));
+        if (rarity.getDisplayName() != null) loreLine.setRarity(rarity.getDisplayName());
+        else loreLine.setRarity(FishUtils.translateHexColorCodes(this.rarity.getLorePrep()));
+
         for (String line : EvenMoreFish.msgs.getFishLoreFormat()) {
             if (line.equals("{fish_lore}")) {
                 applyCustomLore(resultantLore);
             } else {
-                Message loreLine = new Message()
-                        .setMSG(line)
-                        .setRarityColour(rarity.getColour())
-                        .setPlayer(Bukkit.getOfflinePlayer(fisherman).getName())
-                        .setLength(Float.toString(length));
-                if (rarity.getDisplayName() != null) loreLine.setRarity(rarity.getDisplayName());
-                else loreLine.setRarity(rarity.getValue().toUpperCase());
-
+                loreLine.setMSG(line);
                 resultantLore.add(loreLine.toString());
             }
         }
