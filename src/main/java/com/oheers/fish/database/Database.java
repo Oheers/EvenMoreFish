@@ -197,6 +197,16 @@ public class Database {
         }
     }
 
+    /**
+     * Checks the /data/ directory for an existence of a file representing the user.
+     *
+     * @param uuid The user being queried.
+     * @return If the file exists or not.
+     */
+    public static boolean hasFlatFile(String uuid) {
+        return new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder() + "/data/" + uuid + ".json").exists();
+    }
+
     public static boolean hasUser(String uuid) {
         String sql = "SELECT uuid FROM Users WHERE uuid = ?;";
 

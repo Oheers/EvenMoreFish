@@ -29,9 +29,9 @@ public class JoinChecker implements Listener {
             @Override
             public void run() {
                 if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-                    List<FishReport> reports = null;
+                    List<FishReport> reports = new ArrayList<>();
 
-                    if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
+                    if (Database.hasFlatFile(event.getPlayer().getUniqueId().toString())) {
                         reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
                     } else {
                         Database.addUser(event.getPlayer().getUniqueId().toString());
@@ -60,12 +60,12 @@ public class JoinChecker implements Listener {
 
                     @Override
                     public void run() {
-                        if (Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-                            Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
-                        } else {
+                        if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
                             Database.addUser(event.getPlayer().getUniqueId().toString());
-                            Database.writeUserData(event.getPlayer().getUniqueId().toString(), new ArrayList<>()); // Write user fish reports into their data file
                         }
+
+                        List<FishReport> fishReports = EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId());
+                        if (fishReports != null) Database.writeUserData(event.getPlayer().getUniqueId().toString(), fishReports);
 
                         EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());
                     }
