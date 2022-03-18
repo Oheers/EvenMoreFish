@@ -66,7 +66,17 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (sender instanceof Player) {
                     if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
                         if (EvenMoreFish.permission.has(sender, "emf.shop")) {
-                            new SellGUI((Player) sender);
+                            if (EvenMoreFish.permission.has(sender, "emf.admin") && args.length == 2) {
+                                Player p = Bukkit.getPlayer(args[1]);
+                                if (p != null) {
+                                    new SellGUI(p);
+                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getAdminPrefix() + "Opened a shop inventory for " + args[1]));
+                                } else {
+                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[1] + " could not be found."));
+                                }
+                            } else {
+                                new SellGUI((Player) sender);
+                            }
                         } else {
                             sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
                         }
