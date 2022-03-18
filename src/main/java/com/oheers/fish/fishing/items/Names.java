@@ -103,7 +103,7 @@ public class Names {
                     }
 
                     if (rarity == null) {
-                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is nsot a loaded rarity value. It was not added to the " + s + " bait.");
+                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
                     } else {
                         for (String fishString : baitConfiguration.getStringList("baits." + s + ".fish." + rarityString)) {
                             boolean foundFish = false;

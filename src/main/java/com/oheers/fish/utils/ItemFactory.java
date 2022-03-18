@@ -8,10 +8,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.*;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.awt.*;
 import java.util.List;
@@ -27,7 +26,7 @@ public class ItemFactory {
 	private ItemStack product;
 
 	private boolean itemRandom,
-			itemModelDataCheck, itemDamageCheck, itemDisplayNameCheck, itemDyeCheck, itemGlowCheck;
+			itemModelDataCheck, itemDamageCheck, itemDisplayNameCheck, itemDyeCheck, itemGlowCheck, itemPotionMetaCheck;
 
 	private String displayName;
 
@@ -53,6 +52,7 @@ public class ItemFactory {
 		if (itemDisplayNameCheck) applyDisplayName();
 		if (itemDyeCheck) applyDyeColour();
 		if (itemGlowCheck) applyGlow();
+		if (itemPotionMetaCheck) applyPotionMeta();
 
 		applyFlags();
 
@@ -337,6 +337,35 @@ public class ItemFactory {
 	}
 
 	/**
+	 * The fish is a material of type POTION, if this isn't done it's just an "Uncraftable Potion" which obviously isn't
+	 * desired. If the material isn't a potion then it won't be added and a message will be thrown to the console to
+	 * alert the admins.
+	 */
+	private void applyPotionMeta() {
+		String potionSettings = this.configurationFile.getString(configLocation + ".item.potion");
+
+		if (potionSettings == null) return;
+		if (!(product.getItemMeta() instanceof PotionMeta)) return;
+
+		String[] split = potionSettings.split(":");
+		if (split.length != 3) {
+			EvenMoreFish.logger.log(Level.SEVERE, configLocation + ".item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\".");
+		}
+
+		PotionMeta meta = ((PotionMeta) product.getItemMeta());
+		try {
+			meta.addCustomEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(split[0])), Integer.parseInt(split[1])*20, Integer.parseInt(split[2])-1, false), true);
+		} catch (NumberFormatException exception) {
+			EvenMoreFish.logger.log(Level.SEVERE, configLocation + ".item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\", where duration & amplifier are integer values.");
+		} catch (NullPointerException exception) {
+			EvenMoreFish.logger.log(Level.SEVERE, configLocation + ".item.potion: " + split[0] + " is not a valid potion name. A list can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html");
+		}
+
+		product.setItemMeta(meta);
+
+	}
+
+	/**
 	 * Applies flags that hide unnecessary information from players such as enchantments (glow effect), dye colour and
 	 * future stuff. This is always run whenever an item is created and checks whether it's even worth adding some flags
 	 * before they're added.
@@ -390,6 +419,10 @@ public class ItemFactory {
 
 	public void setItemDisplayNameCheck(boolean itemDisplayNameCheck) {
 		this.itemDisplayNameCheck = itemDisplayNameCheck;
+	}
+
+	public void setPotionMetaCheck(boolean metaPotionCheck) {
+		this.itemPotionMetaCheck = metaPotionCheck;
 	}
 
 	public Material getMaterial() {

@@ -59,6 +59,7 @@ public class Fish implements Cloneable {
         factory.setItemDisplayNameCheck(this.displayName != null);
         factory.setItemDyeCheck(true);
         factory.setItemGlowCheck(true);
+        factory.setPotionMetaCheck(true);
 
         setSize();
         checkEatEvent();
