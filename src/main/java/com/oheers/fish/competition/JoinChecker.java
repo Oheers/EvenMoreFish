@@ -10,8 +10,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class JoinChecker implements Listener {
 
@@ -32,13 +34,22 @@ public class JoinChecker implements Listener {
                     List<FishReport> reports = new ArrayList<>();
 
                     if (Database.hasFlatFile(event.getPlayer().getUniqueId().toString())) {
-                        reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
-                    } else {
-                        Database.addUser(event.getPlayer().getUniqueId().toString());
+                        try {
+                            reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
+                        } catch (FileNotFoundException e) {
+                            EvenMoreFish.logger.log(Level.SEVERE, "Failed to check existence of user file in /data/ for: " + event.getPlayer().getUniqueId());
+                            e.printStackTrace();
+                        }
                     }
 
                     if (reports != null) {
                         EvenMoreFish.fishReports.put(event.getPlayer().getUniqueId(), reports);
+                    } else {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Fetched a null reports file for: " + event.getPlayer().getUniqueId());
+                    }
+
+                    if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
+                        Database.addUser(event.getPlayer().getUniqueId().toString());
                     }
                 }
             }
@@ -64,8 +75,9 @@ public class JoinChecker implements Listener {
                             Database.addUser(event.getPlayer().getUniqueId().toString());
                         }
 
-                        List<FishReport> fishReports = EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId());
-                        if (fishReports != null) Database.writeUserData(event.getPlayer().getUniqueId().toString(), fishReports);
+                        if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {
+                            Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
+                        }
 
                         EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());
                     }

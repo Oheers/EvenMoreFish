@@ -11,7 +11,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -250,50 +249,22 @@ public class Database {
 		}
 	}
 
-    public static List<FishReport> readUserData(String uuid) {
+    /**
+     * Adds the user data found in flat-file format from /data/ directory and returns it. Checks must first be done to
+     * ensure the file exists.
+     *
+     * @param uuid The UUID of the user being checked.
+     * @throws FileNotFoundException If the user file does not exist.
+     * @return The list of fish reports fetched from the user.
+     */
+    public static List<FishReport> readUserData(String uuid) throws FileNotFoundException{
 
-        File userFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder() + "/data/" + uuid + ".json");
-        if (userFile.exists()) {
+        FileReader reader = new FileReader(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder() + "/data/" + uuid + ".json");
+        Type fishReportList = new TypeToken<List<FishReport>>(){}.getType();
 
-            try {
-                FileReader reader = new FileReader(userFile);
-                Type fishReportList = new TypeToken<List<FishReport>>(){}.getType();
+        Gson gson = new Gson();
 
-                Gson gson = new Gson();
-
-                return gson.fromJson(reader, fishReportList);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return new ArrayList<>();
-            }
-
-        } else {
-            EvenMoreFish.logger.log(Level.INFO, "Creating data file for: " + uuid);
-            return new ArrayList<>();
-        }
-
-        /*String sql = "SELECT fish_caught FROM Users WHERE uuid = ?;";
-
-        try (PreparedStatement prep = connection.prepareStatement(sql)) {
-            getConnection();
-
-            prep.setString(1, uuid);
-            ResultSet rs = prep.executeQuery();
-
-			Type fishReportList = new TypeToken<ArrayList<FishReport>>(){}.getType();
-			List<FishReport> reports = new ArrayList<>();
-
-            while (rs.next()) {
-                Gson gson = new Gson();
-                reports = gson.fromJson(rs.getString("fish_caught"), fishReportList);
-            }
-			rs.close();
-            return reports;
-        } catch (SQLException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not access " + uuid + "'s fish_caught record from the database. More errors will likely occur.");
-            exception.printStackTrace();
-            return null;
-        }*/
+        return gson.fromJson(reader, fishReportList);
     }
 
     public static void writeUserData(String uuid, List<FishReport> reports) {
@@ -304,12 +275,12 @@ public class Database {
             if (!userFile.exists()) {
                 if (!userFile.getParentFile().exists()) {
                     if (!userFile.getParentFile().mkdir()) {
-                        throw new IOException("Data could not be written to disk: " + uuid);
+                        throw new IOException("Could not create parent data folder when storing data for: " + uuid);
                     }
                 }
 
                 if (!userFile.createNewFile()) {
-                    throw new IOException("Data could not be written to disk: " + uuid);
+                    throw new IOException("Could not create data file for: " + uuid);
                 }
             }
 
@@ -320,24 +291,8 @@ public class Database {
             writer.close();
 
         } catch (IOException e) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Data could not be written to disk: " + uuid);
+            EvenMoreFish.logger.log(Level.SEVERE, "Data could not be written to disk for: " + uuid);
             e.printStackTrace();
         }
     }
-
-/*        String sql = "UPDATE Users SET fish_caught = ? WHERE uuid = ?;";
-
-        try (PreparedStatement prep = connection.prepareStatement(sql)) {
-            getConnection();
-
-            Gson gson = new Gson();
-            prep.setString(1, gson.toJson(reports));
-            prep.setString(2, uuid);
-            prep.execute();
-        } catch (SQLException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not write to " + uuid + "'s fish_caught record from the database. More errors will likely occur.");
-            exception.printStackTrace();
-        }
-    }
-*/
 }
