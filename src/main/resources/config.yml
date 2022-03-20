@@ -11,6 +11,7 @@ fish-only-in-competition: false
 
 # The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
 # of this feature.
+# ATTENTION: Toggling this requires a full server restart.
 database: true
 # Info for connecting to a mysql database:
 mysql:

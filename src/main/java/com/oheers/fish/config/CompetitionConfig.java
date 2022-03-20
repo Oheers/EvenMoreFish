@@ -46,7 +46,12 @@ public class CompetitionConfig {
     }
 
     public Set<String> getCompetitions() {
-        return Objects.requireNonNull(config.getConfigurationSection("competitions")).getKeys(false);
+        try {
+            return config.getConfigurationSection("competitions").getKeys(false);
+        } catch (NullPointerException exception) {
+            return null;
+        }
+
     }
 
     public boolean specificDayTimes(String competitionName) {
