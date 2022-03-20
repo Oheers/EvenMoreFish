@@ -119,6 +119,7 @@ public class FishingProcessor implements Listener {
             fish.setFisherman(player.getUniqueId());
             try {
                 BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1);
+                EvenMoreFish.metric_baitsUsed++;
             } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
                 exception.printStackTrace();
             }
@@ -158,6 +159,8 @@ public class FishingProcessor implements Listener {
                     .setRarity(rarity)
                     .setReceiver(player);
 
+            EvenMoreFish.metric_fishCaught++;
+
             if (fish.getDisplayName() != null) msg.setFishCaught(fish.getDisplayName());
             else msg.setFishCaught(name);
 
@@ -188,23 +191,22 @@ public class FishingProcessor implements Listener {
         }
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-            Fish finalFish = fish;
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     try {
 
                         // increases the fish fished count if the fish is already in the db
-                        if (Database.hasFish(finalFish.getName())) {
-                            Database.fishIncrease(finalFish.getName());
+                        if (Database.hasFish(fish.getName())) {
+                            Database.fishIncrease(fish.getName());
 
                             // sets the new leader in top fish, if the player has fished a record fish
-                            if (Database.getTopLength(finalFish.getName()) < finalFish.getLength()) {
-                                Database.newTopSpot(player, finalFish.getName(), finalFish.getLength());
+                            if (Database.getTopLength(fish.getName()) < fish.getLength()) {
+                                Database.newTopSpot(player, fish.getName(), fish.getLength());
                             }
                         } else {
                             // the database doesn't contain the fish yet
-                            Database.add(finalFish, player);
+                            Database.add(fish, player);
                         }
 
 
@@ -212,8 +214,8 @@ public class FishingProcessor implements Listener {
 
                         if (EvenMoreFish.fishReports.containsKey(player.getUniqueId())) {
                             for (FishReport report : EvenMoreFish.fishReports.get(player.getUniqueId())) {
-                                if (report.getName().equals(finalFish.getName()) && report.getRarity().equals(finalFish.getRarity().getValue())) {
-                                    report.addFish(finalFish);
+                                if (report.getName().equals(fish.getName()) && report.getRarity().equals(fish.getRarity().getValue())) {
+                                    report.addFish(fish);
                                     foundReport = true;
                                 }
                             }

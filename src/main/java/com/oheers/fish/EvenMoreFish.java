@@ -23,6 +23,8 @@ import com.oheers.fish.selling.SellGUI;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
@@ -71,6 +73,10 @@ public class EvenMoreFish extends JavaPlugin {
     public static PluginManager pluginManager;
 
     public static ArrayList<SellGUI> guis;
+
+    public static int metric_fishCaught = 0;
+    public static int metric_baitsUsed = 0;
+    public static int metric_baitsApplied = 0;
 
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
@@ -150,12 +156,12 @@ public class EvenMoreFish extends JavaPlugin {
         listeners();
         commands();
 
+        metrics();
+
         AutoRunner.init();
 
         wgPlugin = getWorldGuard();
         checkPapi();
-
-        Metrics metrics = new Metrics(this, METRIC_ID);
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
 
@@ -234,6 +240,28 @@ public class EvenMoreFish extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(AureliumSkillsFishingEvent.getInstance(), this);
             }
         }
+    }
+
+    private void metrics() {
+        Metrics metrics = new Metrics(this, METRIC_ID);
+
+        metrics.addCustomChart(new SingleLineChart("fish_caught", () -> {
+            int returning = metric_fishCaught;
+            metric_fishCaught = 0;
+            return returning;
+        }));
+
+        metrics.addCustomChart(new SingleLineChart("baits_applied", () -> {
+            int returning = metric_baitsApplied;
+            metric_baitsApplied = 0;
+            return returning;
+        }));
+
+        metrics.addCustomChart(new SingleLineChart("baits_used", () -> {
+            int returning = metric_baitsUsed;
+            metric_baitsUsed = 0;
+            return returning;
+        }));
     }
 
     private void commands() {

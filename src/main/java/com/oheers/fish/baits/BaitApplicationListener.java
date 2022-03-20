@@ -38,8 +38,10 @@ public class BaitApplicationListener implements Listener {
 				try {
 					if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
 						result = BaitNBTManager.applyBaitedRodNBT(clickedItem, bait, event.getCursor().getAmount());
+						EvenMoreFish.metric_baitsApplied += event.getCursor().getAmount();
 					} else {
 						result = BaitNBTManager.applyBaitedRodNBT(clickedItem, bait, 1);
+						EvenMoreFish.metric_baitsApplied++;
 					}
 
 				} catch (MaxBaitsReachedException exception) {
