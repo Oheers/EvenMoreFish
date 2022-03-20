@@ -60,30 +60,33 @@ public class JoinChecker implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
 
+        EvenMoreFish.logger.log(Level.INFO, "Quit event triggered for: @" + event.getPlayer().getName() + ".");
+
         if (Competition.isActive()) {
             EvenMoreFish.active.getStatusBar().removePlayer(event.getPlayer());
         }
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-            if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {
+            EvenMoreFish.logger.log(Level.INFO, "Database is online.");
 
-                new BukkitRunnable() {
+            new BukkitRunnable() {
 
-                    @Override
-                    public void run() {
-                        if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-                            Database.addUser(event.getPlayer().getUniqueId().toString());
-                        }
-
-                        if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {
-                            Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
-                        }
-
-                        EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());
+                @Override
+                public void run() {
+                    if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
+                        EvenMoreFish.logger.log(Level.INFO, "User not present in SQL database, adding.");
+                        Database.addUser(event.getPlayer().getUniqueId().toString());
                     }
-                }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
 
-            }
+                    if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {
+                        EvenMoreFish.logger.log(Level.INFO, "User present in fish-reports list.");
+                        Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
+                    }
+
+                    EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());
+                }
+            }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
+
         }
     }
 }

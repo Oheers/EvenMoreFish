@@ -273,21 +273,29 @@ public class Database {
 
         try {
             if (!userFile.exists()) {
+                EvenMoreFish.logger.log(Level.INFO, "File does not exist, attempting to create.");
                 if (!userFile.getParentFile().exists()) {
+                    EvenMoreFish.logger.log(Level.INFO, "Parent file does not exist, attempting to create.");
                     if (!userFile.getParentFile().mkdir()) {
                         throw new IOException("Could not create parent data folder when storing data for: " + uuid);
+                    } else {
+                        EvenMoreFish.logger.log(Level.INFO, "Parent file created.");
                     }
                 }
 
                 if (!userFile.createNewFile()) {
                     throw new IOException("Could not create data file for: " + uuid);
+                } else {
+                    EvenMoreFish.logger.log(Level.INFO, "File created.");
                 }
             }
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = new GsonBuilder().setPrettyPrinting().create().toJson(reports);
 
             FileWriter writer = new FileWriter(userFile);
-            writer.write(gson.toJson(reports));
+            EvenMoreFish.logger.log(Level.INFO, "Writing user data using" + writer + ".");
+            EvenMoreFish.logger.log(Level.INFO, "Writing: " + json);
+            writer.write(json);
             writer.close();
 
         } catch (IOException e) {
