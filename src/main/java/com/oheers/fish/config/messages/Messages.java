@@ -421,4 +421,12 @@ public class Messages {
     public String getMaxBaitReceived() {
         return getErrorPrefix() + config.getString("max-bait-reached", "You have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.");
     }
+
+    public String getToggleOn() {
+        return getSTDPrefix() + config.getString("toggle-on", "You will now catch custom fish.");
+    }
+
+    public String getToggleOff() {
+        return getErrorPrefix() + config.getString("toggle-off", "You will no longer catch custom fish.");
+    }
 }

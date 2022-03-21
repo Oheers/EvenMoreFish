@@ -154,6 +154,7 @@ help-general:
   - "/emf top - Shows an ongoing competition's leaderboard."
   - "/emf help - Shows you this page."
   - "/emf shop - Opens a shop to sell your fish."
+  - "/emf toggle - Toggles whether or not you receive custom fish."
   - "/emf admin - Admin command help page."
 
 # Competition help (/emf admin competition help)
@@ -191,6 +192,10 @@ bait-catch: "&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!"
 # Sent when a bait is applied and a fish is caught.
 bait-use: "You have used one of your rod's {bait_theme}&l{bait} &rbait."
 
+# Shown when /emf toggle is run, to turn off and on respectively.
+toggle-off: "You will no longer catch custom fish."
+toggle-on: "You will now catch custom fish."
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 9
+config-version: 10

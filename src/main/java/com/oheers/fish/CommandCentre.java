@@ -87,6 +87,25 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     EvenMoreFish.msgs.disabledInConsole();
                 }
                 break;
+            case "toggle":
+                if (!(sender instanceof Player)) {
+                    EvenMoreFish.msgs.disabledInConsole();
+                    break;
+                }
+
+                if (!(EvenMoreFish.permission.has(sender, "emf.toggle"))) {
+                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
+                    break;
+                }
+
+                if (EvenMoreFish.disabledPlayers.contains(((Player) sender).getUniqueId())) {
+                    EvenMoreFish.disabledPlayers.remove(((Player) sender).getUniqueId());
+                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getToggleOn()));
+                } else {
+                    EvenMoreFish.disabledPlayers.add(((Player) sender).getUniqueId());
+                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getToggleOff()));
+                }
+                break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
@@ -120,6 +139,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         emfTabs = Arrays.asList(
                 "help",
                 "shop",
+                "toggle",
                 "top"
         );
 

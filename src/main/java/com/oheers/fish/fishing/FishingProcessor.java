@@ -25,17 +25,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
 
     @EventHandler
     public static void process(PlayerFishEvent event) {
-        if (!isCustomFishAllowed()) {
+        if (!isCustomFishAllowed(event.getPlayer().getUniqueId())) {
             return;
         }
 
@@ -83,8 +80,8 @@ public class FishingProcessor implements Listener {
         } */
     }
 
-    public static boolean isCustomFishAllowed() {
-        return EvenMoreFish.mainConfig.getEnabled() && (competitionOnlyCheck() || EvenMoreFish.raritiesCompCheckExempt);
+    public static boolean isCustomFishAllowed(UUID player) {
+        return EvenMoreFish.mainConfig.getEnabled() && (competitionOnlyCheck() || EvenMoreFish.raritiesCompCheckExempt) && !EvenMoreFish.disabledPlayers.contains(player);
     }
 
     public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {

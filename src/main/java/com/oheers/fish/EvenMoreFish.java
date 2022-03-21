@@ -60,6 +60,8 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static Map<UUID, List<FishReport>> fishReports = new HashMap<>();
 
+    public static List<UUID> disabledPlayers = new ArrayList<>();
+
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
 
@@ -89,7 +91,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     public static final int METRIC_ID = 11054;
 
-    public static final int MSG_CONFIG_VERSION = 9;
+    public static final int MSG_CONFIG_VERSION = 10;
     public static final int MAIN_CONFIG_VERSION = 9;
     public static final int COMP_CONFIG_VERSION = 1;
 
@@ -156,7 +158,7 @@ public class EvenMoreFish extends JavaPlugin {
         listeners();
         commands();
 
-        metrics();
+        //metrics();
 
         AutoRunner.init();
 
@@ -380,6 +382,8 @@ public class EvenMoreFish extends JavaPlugin {
 
             competitionConfig.reload();
         }
+
+        ConfigUpdater.clearUpdaters();
     }
 
     /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it

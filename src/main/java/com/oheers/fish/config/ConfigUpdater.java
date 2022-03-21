@@ -60,6 +60,7 @@ public class ConfigUpdater {
 		switch (version) {
 			case 7: update.append(MSG_UPDATE_8);
 			case 8: update.append(MSG_UPDATE_9);
+			case 9: update.append(MSG_UPDATE_10);
 		}
 
 		update.append(UPDATE_ALERT);
@@ -80,9 +81,25 @@ public class ConfigUpdater {
 		return update.toString();
 	}
 
+	/**
+	 * Removes all data from variables storing update strings to reduce memory usage in server memory.
+	 */
+	public static void clearUpdaters() {
+		MSG_UPDATE_8 = null;
+		MSG_UPDATE_9 = null;
+		MSG_UPDATE_10 = null;
+
+		CONFIG_UPDATE_8 = null;
+		CONFIG_UPDATE_9	= null;
+	}
+
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
-	private static final String MSG_UPDATE_9 = "# This is the format of the lore given to fish when they're caught.\n" +
+	private static String MSG_UPDATE_10 = "# Shown when /emf toggle is run, to turn off and on respectively.\n" +
+			"toggle-off: \"You will no longer catch custom fish.\"\n" +
+			"toggle-on: \"You will now catch custom fish.\"";
+
+	private static String MSG_UPDATE_9 = "# This is the format of the lore given to fish when they're caught.\n" +
 			"# {custom-lore} is specified in the fish.yml under the lore: section, if the fish has a lore, the lore's lines will\n" +
 			"# replace the {fish_lore}, however if it's empty the line will be removed. DO NOT ADD ANYTHING OTHER THAN THIS VARIABLE\n" +
 			"# TO THAT LINE.\n" +
@@ -100,13 +117,13 @@ public class ConfigUpdater {
 			"# Sent when a bait is applied and a fish is caught.\n" +
 			"bait-use: \"You have used one of your rod's {bait_theme}&l{bait} &rbait.\"";
 
-	private static final String CONFIG_UPDATE_9 = "\n" +
+	private static String CONFIG_UPDATE_9 = "\n" +
 			"# The locale of the message file\n" +
 			"# Currently: en, de, es, fr, nl, pt-br, ru, tr, vn\n" +
 			"# Delete messages.yml before changing this\n" +
 			"locale: en";
 
-	private static final String MSG_UPDATE_8 =
+	private static String MSG_UPDATE_8 =
 			"# Help messages\n" +
 					"# General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.\n" +
 					"help-general:\n" +
@@ -160,7 +177,7 @@ public class ConfigUpdater {
 					"lengthless-fish-caught: \"&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!\"";
 
 
-	private static final String CONFIG_UPDATE_8 =
+	private static String CONFIG_UPDATE_8 =
 			"gui: \n" +
 			"  # The slot to put the item in on the bottom row, accepts values 1-9 inclusive.\n" +
 					"  sell-slot: 4\n" +
