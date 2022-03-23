@@ -105,8 +105,8 @@ general:
   number-needed: 1
 
   # Fish will only be entered into the competition if they're in this world.
-  required-worlds:
-    - "competition_world"
+  #required-worlds:
+  #  - "competition_world"
 
 leaderboard:
 
