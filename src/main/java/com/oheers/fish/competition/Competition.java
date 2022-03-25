@@ -7,6 +7,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,6 +35,8 @@ public class Competition {
     List<Reward> participationRewards;
 
     int playersNeeded;
+
+    Sound startSound;
 
     BukkitTask timingSystem;
 
@@ -296,8 +299,11 @@ public class Competition {
             else msg.setFishCaught(selectedFish.getName());
         }
 
+        boolean doingNoise = startSound != null;
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(msg.toString());
+            if (doingNoise) player.playSound(player.getLocation(), startSound, 10f, 1f);
         }
 
         this.startMessage = msg;
@@ -591,6 +597,15 @@ public class Competition {
 
     public void initGetNumbersNeeded(String competitionName) {
         this.playersNeeded = EvenMoreFish.competitionConfig.getPlayersNeeded(competitionName);
+    }
+
+    /**
+     * The sound that gets sent to players when the competition begins, defined in competitions.yml
+     *
+     * @param competitionName The name of the competition as stated in the competitions.yml file.
+     */
+    public void initStartSound(String competitionName) {
+        this.startSound = EvenMoreFish.competitionConfig.getStartNoise(competitionName);
     }
 
     private CompetitionType getRandomType() {

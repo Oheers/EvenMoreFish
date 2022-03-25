@@ -490,6 +490,7 @@ class Controls{
                 comp.initRewards(null, true);
                 comp.initBar(null);
                 comp.initGetNumbersNeeded(null);
+                comp.initStartSound(null);
 
                 EvenMoreFish.active = comp;
                 comp.begin(true);

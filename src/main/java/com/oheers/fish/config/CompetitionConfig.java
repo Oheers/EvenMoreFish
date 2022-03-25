@@ -2,6 +2,7 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.CompetitionType;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -187,6 +188,20 @@ public class CompetitionConfig {
         }
     }
 
+    public Sound getStartNoise(String competitionName) {
+        String stringSound;
+        if (competitionName != null) {
+            stringSound = config.getString("competitions." + competitionName + ".start-sound", "NONE");
+        } else {
+            stringSound = config.getString("general.start-sound", "NONE");
+        }
+
+        if (!stringSound.equalsIgnoreCase("NONE")) {
+            return Sound.valueOf(stringSound);
+        } else {
+            return null;
+        }
+    }
 
     public List<String> getRequiredWorlds() {
         return config.getStringList("general.required-worlds");

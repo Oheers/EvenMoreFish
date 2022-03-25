@@ -27,6 +27,7 @@ public class CompetitionQueue {
                 competition.initRewards(comp, false);
                 competition.initBar(comp);
                 competition.initGetNumbersNeeded(comp);
+                competition.initStartSound(comp);
 
                 if (EvenMoreFish.competitionConfig.specificDayTimes(comp)) {
                     for (String day : EvenMoreFish.competitionConfig.activeDays(comp)) {
