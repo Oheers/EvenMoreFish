@@ -63,7 +63,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 break;
             case "shop":
-                if (sender instanceof Player) {
+                if (sender instanceof Player || args.length > 1) {
                     if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
                         if (EvenMoreFish.permission.has(sender, "emf.shop")) {
                             if (EvenMoreFish.permission.has(sender, "emf.admin") && args.length == 2) {
