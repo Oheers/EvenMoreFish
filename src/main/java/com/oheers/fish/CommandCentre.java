@@ -520,6 +520,8 @@ class Help {
                     if (EvenMoreFish.permission.has(user, "emf.top")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
                 } else if (commands.get(i).contains("/emf shop")) {
                     if (EvenMoreFish.permission.has(user, "emf.shop")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                } else if (commands.get(i).contains("/emf toggle")) {
+                    if (EvenMoreFish.permission.has(user, "emf.toggle")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
                 } else out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
             }
         } else {
