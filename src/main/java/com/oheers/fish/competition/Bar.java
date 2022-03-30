@@ -47,7 +47,7 @@ public class Bar {
     }
 
     public void setTitle(int timeLeft) {
-        bar.setTitle(prefix + ChatColor.RESET + FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord());
+        bar.setTitle(prefix + ChatColor.RESET + FishUtils.translateHexColorCodes(FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord()));
     }
 
     public void show() {
