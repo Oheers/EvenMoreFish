@@ -16,6 +16,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -301,16 +302,29 @@ class Controls{
                     StringBuilder using = new StringBuilder();
 
                     Player player = null;
+                    int quantity = 1;
                     if (args.length > 4) {
                         for (int section = 3; section < args.length; section++) {
                             if (args[section].startsWith("-p:")) {
                                 if ((player = Bukkit.getPlayer(args[section].substring(3))) == null) {
                                     sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[section] + " is not a known player."));
-                                    break;
+                                    return;
+                                }
+                            } else if (args[section].startsWith("-q:")) {
+                                try {
+                                    quantity = Integer.parseInt(args[section].substring(3));
+                                } catch (NumberFormatException exception) {
+                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[section].substring(3) + " is not a number."));
+                                    return;
+                                }
+
+                                if (quantity <= 0 || quantity > 64) {
+                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[section].substring(3) + " is not a number between 1-64."));
+                                    return;
                                 }
                             } else {
                                 using.append(args[section]);
-                                if (section != args.length - 1 && !(args[section+1].startsWith("-p:"))) using.append(" ");
+                                if (section != args.length - 1 && !(args[section+1].startsWith("-p:")) && !(args[section+1].startsWith("-q:")))  using.append(" ");
                             }
                         }
                     } else {
@@ -332,7 +346,9 @@ class Controls{
                                         f.init();
 
                                         if (f.getFactory().getMaterial() != Material.AIR) {
-                                            if (player == null) FishUtils.giveItems(Collections.singletonList(f.give()), (Player) sender);
+                                            ItemStack fish = f.give();
+                                            fish.setAmount(quantity);
+                                            if (player == null) FishUtils.giveItems(Collections.singletonList(fish), (Player) sender);
                                             else FishUtils.giveItems(Collections.singletonList(f.give()), player);
                                         }
 
@@ -375,16 +391,29 @@ class Controls{
                     // Some baits will probably have spaces in, this sorts out that issue.
                     StringBuilder builtName = new StringBuilder();
                     Player player = null;
+                    int quantity = 1;
 
                     for (int i = 2; i < args.length; i++) {
                         if (args[i].startsWith("-p:")) {
                             if ((player = Bukkit.getPlayer(args[i].substring(3))) == null) {
                                 sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[i] + " is not a known player."));
-                                break;
+                                return;
+                            }
+                        } else if (args[i].startsWith("-q:")) {
+                            try {
+                                quantity = Integer.parseInt(args[i].substring(3));
+                            } catch (NumberFormatException exception) {
+                                sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[i].substring(3) + " is not a number."));
+                                return;
+                            }
+
+                            if (quantity <= 0 || quantity > 64) {
+                                sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[i].substring(3) + " is not a number between 1-64."));
+                                return;
                             }
                         } else {
                             builtName.append(args[i]);
-                            if (i != args.length - 1 && !(args[i+1].startsWith("-p:"))) builtName.append(" ");
+                            if (i != args.length - 1 && !(args[i+1].startsWith("-p:")) && !(args[i+1].startsWith("-q:"))) builtName.append(" ");
                         }
                     }
 
@@ -393,9 +422,11 @@ class Controls{
                         if (baitID.equalsIgnoreCase(builtName.toString())) {
                             Bait bait = EvenMoreFish.baits.get(baitID);
                             if (sender instanceof Player) {
-                                if (player == null) FishUtils.giveItems(Collections.singletonList(bait.create()), (Player) sender);
+                                ItemStack baitItem = bait.create();
+                                baitItem.setAmount(quantity);
+                                if (player == null) FishUtils.giveItems(Collections.singletonList(baitItem), (Player) sender);
                                 else {
-                                    FishUtils.giveItems(Collections.singletonList(bait.create()), player);
+                                    FishUtils.giveItems(Collections.singletonList(baitItem), player);
                                     sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getAdminPrefix() + "You have given " + player.getName() + " a " + baitID));
                                 }
                             } else {
