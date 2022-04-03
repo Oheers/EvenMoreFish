@@ -28,7 +28,7 @@ public class Bait {
 
 	private final String name, displayName, theme;
 
-	private final int maxApplications;
+	private final int maxApplications, dropQuantity;
 
 	double boostRate, applicationWeight, catchWeight;
 
@@ -58,6 +58,7 @@ public class Bait {
 		this.boostRate = EvenMoreFish.baitFile.getBoostRate();
 		this.maxApplications = EvenMoreFish.baitFile.getMaxBaitApplication(this.name);
 		this.displayName = EvenMoreFish.baitFile.getDisplayName(this.name);
+		this.dropQuantity = EvenMoreFish.baitFile.getDropQuantity(this.name);
 
 		this.itemFactory = new ItemFactory("baits." + name);
 
@@ -79,6 +80,7 @@ public class Bait {
 	 */
 	public ItemStack create() {
 		ItemStack baitItem = itemFactory.createItem();
+		baitItem.setAmount(dropQuantity);
 
 		ItemMeta meta = baitItem.getItemMeta();
 		if (meta != null) meta.setLore(createBoostLore());

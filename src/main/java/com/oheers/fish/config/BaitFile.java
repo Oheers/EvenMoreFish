@@ -115,4 +115,8 @@ public class BaitFile {
 	public String getDisplayName(String baitName) {
 		return baitConfig.getString("baits." + baitName + ".item.displayname");
 	}
+
+	public int getDropQuantity(String baitName) {
+		return baitConfig.getInt("baits." + baitName + ".drop-quantity", 1);
+	}
 }
