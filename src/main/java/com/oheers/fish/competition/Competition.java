@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
@@ -452,24 +453,42 @@ public class Competition {
     }
 
     public boolean chooseFish(String competitionName, boolean adminStart) {
-        List<String> allowedRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
+        List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
+
+        if (configRarities.size() == 0) {
+            EvenMoreFish.logger.log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
+            return false;
+        }
+
         List<Fish> fish = new ArrayList<>();
+        List<Rarity> allowedRarities = new ArrayList<>();
+        double totalWeight = 0;
+
         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-            if (allowedRarities.contains(r.getValue())) {
+            if (configRarities.contains(r.getValue())) {
                 fish.addAll(EvenMoreFish.fishCollection.get(r));
+                allowedRarities.add(r);
+                totalWeight += (r.getWeight());
             }
+        }
+
+        configRarities = null;
+
+        int idx = 0;
+        for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
+            r -= allowedRarities.get(idx).getWeight();
+            if (r <= 0.0) break;
         }
 
         setNumberNeeded(EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart));
 
         try {
-            Random r = new Random();
-            this.selectedFish = fish.get(r.nextInt(fish.size()));
+            this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null);
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not load: " + competitionName + " because a random fish could not chose. \nIf you need support, please provide the following information:");
             EvenMoreFish.logger.log(Level.SEVERE, "fish.size(): " + fish.size());
-            EvenMoreFish.logger.log(Level.SEVERE, "allowedRarities.size(): " + allowedRarities.size());
+            EvenMoreFish.logger.log(Level.SEVERE, "allowedRarities.size(): " + configRarities.size());
             return false;
         }
     }

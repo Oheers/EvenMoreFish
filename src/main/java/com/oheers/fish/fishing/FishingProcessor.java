@@ -241,7 +241,7 @@ public class FishingProcessor implements Listener {
 
     public static Rarity randomWeightedRarity(Player fisher, double boostRate, Set<Rarity> boostedRarities) {
 
-        if (EvenMoreFish.decidedRarities.containsKey(fisher.getUniqueId())) {
+        if (fisher != null && EvenMoreFish.decidedRarities.containsKey(fisher.getUniqueId())) {
             Rarity chosenRarity = EvenMoreFish.decidedRarities.get(fisher.getUniqueId());
             EvenMoreFish.decidedRarities.remove(fisher.getUniqueId());
             return chosenRarity;
@@ -250,7 +250,7 @@ public class FishingProcessor implements Listener {
         // Loads all the rarities
         List<Rarity> allowedRarities = new ArrayList<>();
 
-        if (EvenMoreFish.permission != null) {
+        if (fisher != null && EvenMoreFish.permission != null) {
             for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
                 if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
                     continue;
@@ -352,24 +352,29 @@ public class FishingProcessor implements Listener {
         for (Fish f : EvenMoreFish.fishCollection.get(r)) {
 
             if (EvenMoreFish.permission != null && f.getPermissionNode() != null) {
-                if (!EvenMoreFish.permission.has(p, f.getPermissionNode())) {
+                if (p != null && !EvenMoreFish.permission.has(p, f.getPermissionNode())) {
                     continue;
                 }
-            }
-
-            if (!FishUtils.checkRegion(l, f.getAllowedRegions())) {
-                continue;
             }
 
             if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                 continue;
             }
 
-            if (l.getWorld() != null) {
-                if (f.getBiomes().contains(l.getBlock().getBiome()) || f.getBiomes().isEmpty()) {
-                    available.add(f);
+            if (l != null) {
+
+                if (!FishUtils.checkRegion(l, f.getAllowedRegions())) {
+                    continue;
                 }
-            } else EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + p.getUniqueId());
+
+                if (l.getWorld() != null) {
+                    if (f.getBiomes().contains(l.getBlock().getBiome()) || f.getBiomes().isEmpty()) {
+                        available.add(f);
+                    }
+                } else EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + p.getUniqueId());
+            } else {
+                available.add(f);
+            }
         }
 
         // if the config doesn't define any fish that can be fished in this biome.

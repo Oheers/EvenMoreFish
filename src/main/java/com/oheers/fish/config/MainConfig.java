@@ -208,4 +208,8 @@ public class MainConfig {
     public boolean blockPlacingHeads() {
         return config.getBoolean("place-head-fish");
     }
+
+    public boolean debugSession() {
+        return config.getBoolean("debug-session", false);
+    }
 }

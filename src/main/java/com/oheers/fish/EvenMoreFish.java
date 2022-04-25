@@ -158,7 +158,7 @@ public class EvenMoreFish extends JavaPlugin {
         listeners();
         commands();
 
-        metrics();
+        if (!mainConfig.debugSession()) metrics();
 
         AutoRunner.init();
 
