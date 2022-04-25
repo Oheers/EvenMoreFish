@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
 import org.bukkit.Bukkit;
@@ -45,10 +46,12 @@ public class Fish implements Cloneable {
 
     boolean isCompExemptFish;
 
-    public Fish(Rarity rarity, String name) {
+    public Fish(Rarity rarity, String name) throws InvalidFishException {
         this.rarity = rarity;
         this.name = name;
         this.weight = 0;
+
+        if (rarity == null) throw new InvalidFishException(name + " could not be fetched from the config.");
 
         this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name);
         checkDisplayName();

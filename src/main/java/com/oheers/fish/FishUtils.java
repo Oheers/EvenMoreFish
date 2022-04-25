@@ -5,6 +5,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -82,13 +83,20 @@ public class FishUtils {
         }
 
         // setting the correct length so it's an exact replica.
-        Fish fish = new Fish(rarity, nameString);
-        fish.setLength(lengthFloat);
+        try {
+            Fish fish = new Fish(rarity, nameString);
+            fish.setLength(lengthFloat);
 
-        return fish;
+            return fish;
+        } catch (InvalidFishException exception) {
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
+                    "deleted the fish since this fish was caught.");
+        }
+
+        return null;
     }
 
-    public static Fish getFish(Skull s) {
+    public static Fish getFish(Skull s) throws InvalidFishException {
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");

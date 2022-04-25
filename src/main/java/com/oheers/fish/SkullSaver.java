@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.GameMode;
@@ -14,6 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.logging.Level;
 
 public class SkullSaver implements Listener {
 
@@ -32,14 +35,21 @@ public class SkullSaver implements Listener {
 				ItemStack stack = block.getDrops().iterator().next().clone();
 				event.setCancelled(true);
 
-				Fish f = FishUtils.getFish(sm);
-				f.setFisherman(event.getPlayer().getUniqueId());
+				try {
+					Fish f = FishUtils.getFish(sm);
+					f.setFisherman(event.getPlayer().getUniqueId());
 
-				stack.setItemMeta(f.give().getItemMeta());
-
-				block.setType(Material.AIR);
-				block.getWorld().dropItem(block.getLocation(), stack);
-				block.getWorld().playSound(block.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 1);
+					stack.setItemMeta(f.give().getItemMeta());
+					block.setType(Material.AIR);
+					block.getWorld().dropItem(block.getLocation(), stack);
+					block.getWorld().playSound(block.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 1);
+				} catch (InvalidFishException exception) {
+					EvenMoreFish.logger.log(Level.SEVERE, "Error fetching fish from config at location:" +
+							" x:" + event.getBlock().getLocation().getBlockX() +
+							" y:" + event.getBlock().getLocation().getBlockY() +
+							" z:" + event.getBlock().getLocation().getBlockZ() +
+							" world:" + event.getBlock().getLocation().getBlock().getWorld().getName());
+				}
 			}
 		}
 	}

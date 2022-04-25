@@ -2,6 +2,7 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.baits.Bait;
+import com.oheers.fish.exceptions.InvalidFishException;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -45,9 +46,16 @@ public class Names {
             List<Fish> fishQueue = new ArrayList<>();
 
             for (String fish : fishSet) {
+                Fish canvas = null;
 
                 // for each fish name, a fish object is made that contains the information gathered from that name
-                Fish canvas = new Fish(r, fish);
+                try {
+                    canvas = new Fish(r, fish);
+                } catch (InvalidFishException ignored) {
+                    // We're looping through the config, this isn't be an issue.
+                }
+
+                assert canvas != null;
                 canvas.setBiomes(getBiomes(fish, r.getValue()));
                 canvas.setAllowedRegions(getRegions(fish, r.getValue()));
                 canvas.setPermissionNode(permissionCheck(fish, rarity));
