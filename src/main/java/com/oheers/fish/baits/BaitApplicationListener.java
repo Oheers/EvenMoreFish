@@ -48,6 +48,7 @@ public class BaitApplicationListener implements Listener {
 					event.getWhoClicked().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getMaxBaitsReceived()));
 					return;
 				} catch (MaxBaitReachedException exception) {
+					result = exception.getRecoveryResult();
 					event.getWhoClicked().sendMessage(new Message()
 							.setMSG(EvenMoreFish.msgs.getMaxBaitReceived())
 							.setBaitTheme(bait.getTheme())

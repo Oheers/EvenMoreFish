@@ -179,7 +179,7 @@ public class BaitNBTManager {
 
 		if (doingLoreStuff) newApplyLore(item);
 
-		if (maxBait) throw new MaxBaitReachedException(bait.getName() + " has reached its maximum number of uses on the fishing rod.");
+		if (maxBait) throw new MaxBaitReachedException(bait.getName() + " has reached its maximum number of uses on the fishing rod.", new ApplicationResult(item, cursorModifier));
 
 		return new ApplicationResult(item, cursorModifier);
 	}
