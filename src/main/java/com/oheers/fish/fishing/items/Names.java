@@ -4,9 +4,13 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.exceptions.InvalidFishException;
 import org.bukkit.block.Biome;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class Names {
@@ -81,7 +85,10 @@ public class Names {
     }
 
     public void loadBaits(FileConfiguration baitConfiguration) {
-        for (String s : baitConfiguration.getConfigurationSection("baits.").getKeys(false)) {
+        ConfigurationSection section = baitConfiguration.getConfigurationSection("baits.");
+        if (section == null) return;
+
+        for (String s : section.getKeys(false)) {
             Bait bait = new Bait(s);
 
             List<String> rarityList;
