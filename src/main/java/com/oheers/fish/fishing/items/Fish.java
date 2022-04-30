@@ -76,20 +76,21 @@ public class Fish implements Cloneable {
     public ItemStack give() {
 
         ItemStack fish = factory.createItem();
+        ItemMeta fishMeta;
 
-        ItemMeta fishMeta = fish.getItemMeta();
+        if ((fishMeta = fish.getItemMeta()) != null) {
+            if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
+            else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
 
-        if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
-        else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
+            fishMeta.setLore(generateLore());
 
-        fishMeta.setLore(generateLore());
+            fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+            fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
-        fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            fish.setItemMeta(fishMeta);
 
-        fish.setItemMeta(fishMeta);
-
-        WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
+            WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
+        }
 
         return fish;
     }
