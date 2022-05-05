@@ -74,6 +74,7 @@ public class ConfigUpdater {
 		switch (version) {
 			case 7: update.append(CONFIG_UPDATE_8);
 			case 8: update.append(CONFIG_UPDATE_9);
+			case 9: update.append(CONFIG_UPDATE_10);
 		}
 
 		update.append(UPDATE_ALERT);
@@ -91,6 +92,7 @@ public class ConfigUpdater {
 
 		CONFIG_UPDATE_8 = null;
 		CONFIG_UPDATE_9	= null;
+		CONFIG_UPDATE_10 = null;
 	}
 
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
@@ -122,6 +124,11 @@ public class ConfigUpdater {
 			"# Currently: en, de, es, fr, nl, pt-br, ru, tr, vn\n" +
 			"# Delete messages.yml before changing this\n" +
 			"locale: en";
+
+	private static String CONFIG_UPDATE_10 = "\n" +
+			"# Setting this to change the boosbar sytle\n" +
+			"# you can use like: SEGMENTED_6 SEGMENTED_10 SEGMENTED_12 SEGMENTED_20 SOLID\n" +
+			"barstyle: 'SEGMENTED_10'";
 
 	private static String MSG_UPDATE_8 =
 			"# Help messages\n" +

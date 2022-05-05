@@ -101,6 +101,12 @@ public class MainConfig {
         else return returning;
     }
 
+    public String getBarStyle() {
+        String returning = config.getString("barstyle");
+        if (returning != null) return returning;
+        else return "SEGMENTED_10";
+    }
+
     public boolean sellOverDrop() {
         return config.getBoolean("gui.sell-over-drop");
     }
