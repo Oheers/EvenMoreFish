@@ -140,6 +140,7 @@ public class FishingProcessor implements Listener {
 
         EMFFishEvent cEvent = new EMFFishEvent(fish, player);
         Bukkit.getPluginManager().callEvent(cEvent);
+        if (cEvent.isCancelled()) return null;
 
         if (sendMessages) {
             // puts all the fish information into a format that Messages.renderMessage() can print out nicely
