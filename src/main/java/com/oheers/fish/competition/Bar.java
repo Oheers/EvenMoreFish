@@ -2,6 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -61,7 +62,8 @@ public class Bar {
     }
 
     public void createBar() {
-        bar = Bukkit.getServer().createBossBar(title, BarColor.WHITE, BarStyle.SEGMENTED_10);
+        BarStyle barStyle = BarStyle.valueOf(EvenMoreFish.mainConfig.getBarStyle());
+        bar = Bukkit.getServer().createBossBar(title, BarColor.WHITE, barStyle);
     }
 
     // Shows the bar to all players online

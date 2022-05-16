@@ -33,6 +33,10 @@ random-durability: true
 # you'll want to do this but it is possible.
 enable-economy: true
 
+# Setting this to change the boosbar sytle
+# you can use like: SEGMENTED_6 SEGMENTED_10 SEGMENTED_12 SEGMENTED_20 SOLID
+barstyle: 'SEGMENTED_10'
+
 # For customizing the /emf shop GUI
 gui:
   # Fills the empty slots of a normal /emf shop
@@ -78,4 +82,4 @@ disable-aureliumskills-loot: true
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 9
+config-version: 10
