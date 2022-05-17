@@ -11,6 +11,7 @@ public class EMFFishEvent extends Event implements Cancellable {
 
     Fish fish;
     Player player;
+    boolean cancel;
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -44,11 +45,11 @@ public class EMFFishEvent extends Event implements Cancellable {
 
     @Override
     public boolean isCancelled() {
-        return false;
+        return cancel;
     }
 
     @Override
     public void setCancelled(boolean cancel) {
-
+        this.cancel = cancel;
     }
 }
