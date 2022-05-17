@@ -2,7 +2,6 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.config.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -21,12 +20,12 @@ public class Bar {
         createBar();
     }
 
-    public void timerUpdate(int timeLeft, int totalTime) {
+    public void timerUpdate(long timeLeft, long totalTime) {
         setTitle(timeLeft);
         setProgress(timeLeft, totalTime);
     }
 
-    public void setProgress(int timeLeft, int totalTime) {
+    public void setProgress(long timeLeft, long totalTime) {
         double progress = (double) (timeLeft) / (double) (totalTime);
 
         if (progress < 0) {
@@ -47,7 +46,7 @@ public class Bar {
         this.bar.setColor(colour);
     }
 
-    public void setTitle(int timeLeft) {
+    public void setTitle(long timeLeft) {
         bar.setTitle(prefix + ChatColor.RESET + FishUtils.translateHexColorCodes(FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord()));
     }
 

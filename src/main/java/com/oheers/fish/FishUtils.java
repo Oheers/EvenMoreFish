@@ -220,9 +220,9 @@ public class FishUtils {
         return skull;
     }
 
-    public static String timeFormat(int timeLeft) {
+    public static String timeFormat(long timeLeft) {
         String returning = "";
-        int hours = timeLeft/3600;
+        long hours = timeLeft/3600;
 
         if (timeLeft >= 3600) {
             returning += hours + EvenMoreFish.msgs.getBarHour() + " ";
@@ -237,9 +237,9 @@ public class FishUtils {
         return returning;
     }
 
-    public static String timeRaw(int timeLeft) {
+    public static String timeRaw(long timeLeft) {
         String returning = "";
-        int hours = timeLeft/3600;
+        long hours = timeLeft/3600;
 
         if (timeLeft >= 3600) {
             returning += hours + ":";

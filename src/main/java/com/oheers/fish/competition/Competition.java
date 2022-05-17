@@ -21,7 +21,7 @@ import java.util.logging.Level;
 
 public class Competition {
 
-    int maxDuration, timeLeft;
+    long maxDuration, timeLeft;
     CompetitionType competitionType;
     Bar statusBar;
 
@@ -102,8 +102,6 @@ public class Competition {
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
     }
 
-    private int calibrationKeep = 0;
-
     // Starts a runnable to decrease the time left by 1s each second
     private void initTimer() {
         this.timingSystem = new BukkitRunnable() {
@@ -113,15 +111,10 @@ public class Competition {
                 statusBar.timerUpdate(timeLeft, maxDuration);
                 timeLeft--;
 
-                if (calibrationKeep == 10) {
-                    reCalibrateTime();
-                    calibrationKeep = 0;
-                } else {
-                    calibrationKeep++;
-                }
+                decreaseTime();
 
             }
-        }.runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), 0, 40);
+        }.runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), 0, 20);
     }
 
     /**
@@ -131,7 +124,7 @@ public class Competition {
      * @param timeLeft How many seconds are left for the competition.
      * @returns true if the competition is ending, false if not.
      */
-    private boolean processCompetitionSecond(int timeLeft) {
+    private boolean processCompetitionSecond(long timeLeft) {
         if (alertTimes.contains(timeLeft)) {
             Message m = new Message()
                     .setMSG(EvenMoreFish.msgs.getTimeAlertMessage())
@@ -165,13 +158,14 @@ public class Competition {
      * the time left with an epoch version of the time left. It runs through each second skipped to make sure all necessary
      * processes take place i.e. alerts.
      */
-    private void reCalibrateTime() {
+    private void decreaseTime() {
         long lagDif;
         long current = Instant.now().getEpochSecond();
 
+        timeLeft = maxDuration - (current - epochStartTime);
         // +1 to counteract the seconds starting on 0 (or something like that)
         if ((lagDif = (current - epochStartTime) + 1) != maxDuration - timeLeft) {
-            for (int i = maxDuration - timeLeft; i < lagDif; i++) {
+            for (long i = maxDuration - timeLeft; i < lagDif; i++) {
                 if (processCompetitionSecond(timeLeft)) return;
                 timeLeft--;
             }
