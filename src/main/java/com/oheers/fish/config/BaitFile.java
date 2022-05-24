@@ -116,6 +116,10 @@ public class BaitFile {
 		return baitConfig.getString("baits." + baitName + ".item.displayname");
 	}
 
+	public List<String> getLore(String baitName) {
+		return baitConfig.getStringList("baits." + baitName + ".lore");
+	}
+
 	public int getDropQuantity(String baitName) {
 		return baitConfig.getInt("baits." + baitName + ".drop-quantity", 1);
 	}
