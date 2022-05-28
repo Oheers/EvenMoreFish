@@ -190,9 +190,6 @@ public class Messages {
         return getErrorPrefix() + config.getString("no-permission");
     }
 
-    public String notInteger() {
-        return getErrorPrefix() + "Please provide an integer value.";
-    }
 
     public String competitionRunning() {
         return getErrorPrefix() + "There's already a competition running.";
@@ -227,9 +224,7 @@ public class Messages {
     }
 
     public String getNoValueSellAllName() {
-        String s = config.getString("error-sell-all-gui-name");
-        if (s != null) return s;
-        else return "&c&lCan't Sell";
+        return config.getString("error-sell-all-gui-name", "&c&lCan't Sell");
     }
 
     public List<String> sellLore() {
@@ -238,24 +233,22 @@ public class Messages {
 
     public List<String> noValueLore() {
         List<String> l = config.getStringList("error-gui-lore");
-        if (!l.isEmpty()) return l;
-        else {
+        if (l.isEmpty()) {
             l.add("&c&lValue: &c$0");
             l.add("&cAdd your caught fish to this.");
             l.add("&cGUI to sell them.");
-            return l;
         }
+        return l;
     }
 
     public List<String> noValueSellAllLore() {
         List<String> l = config.getStringList("error-sell-all-gui-lore");
-        if (!l.isEmpty()) return l;
-        else {
+        if (l.isEmpty()) {
             l.add("&c&lValue: &c$0");
             l.add("&cThere are 0 sellable fish");
             l.add("&cin your inventory.");
-            return l;
         }
+        return l;
     }
 
     public String economyDisabled() {
@@ -263,37 +256,23 @@ public class Messages {
     }
 
     public String fishCaughtBy() {
-        String returning = config.getString("fish-caught-by");
-        if (returning != null) return returning;
-        else return "&fCaught by {player}";
+        return config.getString("fish-caught-by", "&fCaught by {player}");
     }
 
     public String fishLength() {
-        String returning = config.getString("fish-length");
-        if (returning != null) return returning;
-        else return "&fMeasures {length}cm";
+        return config.getString("fish-length", "&fMeasures {length}cm");
     }
 
     public String getRemainingWord() {
-        String returning = config.getString("bossbar.remaining");
-        if (returning != null) return returning;
-        else return " left";
+        return config.getString("bossbar.remaining", " left");
     }
 
     public String getRarityPrefix() {
-        String returning = config.getString("fish-rarity-prefix");
-        if (returning != null) return returning;
-        else return "";
-    }
-
-    public void disabledInConsole() {
-        EvenMoreFish.logger.log(Level.SEVERE, "That command is disabled on the console, use it in-game instead.");
+        return config.getString("fish-rarity-prefix", "");
     }
 
     public String getNoCompPlaceholder() {
-        String returning = config.getString("no-competition-running");
-        if (returning != null) return returning;
-        else return "No competition running right now.";
+        return config.getString("no-competition-running", "No competition running right now.");
     }
 
     public String getNoPlayerInposPlaceholder() {
@@ -428,5 +407,41 @@ public class Messages {
 
     public String getToggleOff() {
         return getErrorPrefix() + config.getString("toggle-off", "You will no longer catch custom fish.");
+    }
+
+    public String getOpenFishShop() {
+        return getAdminPrefix() + config.getString("admin.open-fish-shop", "Opened a shop inventory for {player}.");
+    }
+
+    public String getPlayerNotFound() {
+        return getErrorPrefix() + config.getString("admin.player-not-found", "{player} could not be found.");
+    }
+
+    public String numberFormatError() {
+        return getErrorPrefix() + config.getString("admin.number-format-error", "{amount} is not a valid number.");
+    }
+
+    public String numberRangeError() {
+        return getErrorPrefix() + config.getString("admin.number-range-error", "{amount} is not a number between 1-64.");
+    }
+
+    public String givenPlayerFish() {
+        return getAdminPrefix() + config.getString("admin.given-player-fish", "You have given {player} a {fish}.");
+    }
+
+    public String givenPlayerBait() {
+        return getAdminPrefix() + config.getString("admin.given-player-bait", "You have given {player} a {bait}.");
+    }
+
+    public String cannotRunFromConsole() {
+        return config.getString("admin.cannot-run-on-console", "Command cannot be run from console.");
+    }
+
+    public String noBaitSpecified() {
+        return getErrorPrefix() + config.getString("admin.no-bait-specified", "You must specify a bait name.");
+    }
+
+    public String getUpdateAvailable() {
+        return getAdminPrefix() + config.getString("admin.update-available", "There is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates");
     }
 }

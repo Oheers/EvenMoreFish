@@ -196,6 +196,28 @@ bait-use: "You have used one of your rod's {bait_theme}&l{bait} &rbait."
 toggle-off: "You will no longer catch custom fish."
 toggle-on: "You will now catch custom fish."
 
+admin:
+  # Opens an /emf shop for another player
+  open-fish-shop: "Opened a shop inventory for {player}."
+  # When a fish is given to a player
+  given-player-fish: "You have given {player} a {fish}."
+  # When a bait is given to a player
+  given-player-bait: "You have given {player} a {bait}."
+  # When an admin runs /emf admin bait without a bait name.
+  no-bait-specified: "You must specify a bait name."
+
+  # When the specified player can't be found when using -p: parameter.
+  player-not-found: "{player} could not be found."
+  # When the specified number in -q: is not a number.
+  number-format-error: "{amount} is not a valid number."
+  # When the specified number in -q: is not within the minecraft stack range (1-64)
+  number-range-error: "{amount} is not a number between 1-64."
+  # When a command cannot be run from the console
+  cannot-run-on-console: "Command cannot be run from console."
+
+  # When there's a spigot update available, don't translate the URL otherwise it won't direct to the correct page.
+  update-available: "There is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates"
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
 config-version: 10

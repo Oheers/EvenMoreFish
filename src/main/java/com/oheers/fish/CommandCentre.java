@@ -9,7 +9,6 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
@@ -71,9 +71,9 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                                 Player p = Bukkit.getPlayer(args[1]);
                                 if (p != null) {
                                     new SellGUI(p);
-                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getAdminPrefix() + "Opened a shop inventory for " + args[1]));
+                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getOpenFishShop()).setPlayer(p.getName()).toString());
                                 } else {
-                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[1] + " could not be found."));
+                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getPlayerNotFound()).setPlayer(args[1]).toString());
                                 }
                             } else {
                                 new SellGUI((Player) sender);
@@ -85,12 +85,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.economyDisabled()).setReceiver((Player) sender).toString());
                     }
                 } else {
-                    EvenMoreFish.msgs.disabledInConsole();
+                    EvenMoreFish.logger.log(Level.SEVERE, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.cannotRunFromConsole()));
                 }
                 break;
             case "toggle":
                 if (!(sender instanceof Player)) {
-                    EvenMoreFish.msgs.disabledInConsole();
+                    EvenMoreFish.logger.log(Level.SEVERE, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.cannotRunFromConsole()));
                     break;
                 }
 
@@ -307,19 +307,19 @@ class Controls{
                         for (int section = 3; section < args.length; section++) {
                             if (args[section].startsWith("-p:")) {
                                 if ((player = Bukkit.getPlayer(args[section].substring(3))) == null) {
-                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[section] + " is not a known player."));
+                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getPlayerNotFound()).setPlayer(args[section].substring(3)).toString());
                                     return;
                                 }
                             } else if (args[section].startsWith("-q:")) {
                                 try {
                                     quantity = Integer.parseInt(args[section].substring(3));
                                 } catch (NumberFormatException exception) {
-                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[section].substring(3) + " is not a number."));
+                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberFormatError()).setAmount(args[section].substring(3)).toString());
                                     return;
                                 }
 
                                 if (quantity <= 0 || quantity > 64) {
-                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[section].substring(3) + " is not a number between 1-64."));
+                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberRangeError()).setAmount(args[section].substring(3)).toString());
                                     return;
                                 }
                             } else {
@@ -353,7 +353,7 @@ class Controls{
                                         }
 
                                         if (player != null) {
-                                            sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getAdminPrefix() + "You have given " + player.getName() + " a " + using));
+                                            sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.givenPlayerFish()).setPlayer(player.getName()).setFishCaught(using.toString()).toString());
                                         }
 
                                         break;
@@ -363,7 +363,7 @@ class Controls{
                             }
                         }
                     } else {
-                        EvenMoreFish.msgs.disabledInConsole();
+                        EvenMoreFish.logger.log(Level.SEVERE, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.cannotRunFromConsole()));
                     }
 
                 } else {
@@ -396,19 +396,19 @@ class Controls{
                     for (int i = 2; i < args.length; i++) {
                         if (args[i].startsWith("-p:")) {
                             if ((player = Bukkit.getPlayer(args[i].substring(3))) == null) {
-                                sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[i] + " is not a known player."));
+                                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getPlayerNotFound()).setPlayer(args[i].substring(3)).toString());
                                 return;
                             }
                         } else if (args[i].startsWith("-q:")) {
                             try {
                                 quantity = Integer.parseInt(args[i].substring(3));
                             } catch (NumberFormatException exception) {
-                                sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[i].substring(3) + " is not a number."));
+                                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberFormatError()).setPlayer(args[i].substring(3)).setAmount(args[i].substring(3)).toString());
                                 return;
                             }
 
                             if (quantity <= 0 || quantity > 64) {
-                                sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + args[i].substring(3) + " is not a number between 1-64."));
+                                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberRangeError()).setPlayer(args[i].substring(3)).setAmount(args[i].substring(3)).toString());
                                 return;
                             }
                         } else {
@@ -427,15 +427,15 @@ class Controls{
                                 if (player == null) FishUtils.giveItems(Collections.singletonList(baitItem), (Player) sender);
                                 else {
                                     FishUtils.giveItems(Collections.singletonList(baitItem), player);
-                                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getAdminPrefix() + "You have given " + player.getName() + " a " + baitID));
+                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.givenPlayerBait()).setPlayer(player.getName()).setBait(baitID).toString());
                                 }
                             } else {
-                                sender.sendMessage(ChatColor.RED + "Command cannot be run from console.");
+                                EvenMoreFish.logger.log(Level.SEVERE, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.cannotRunFromConsole()));
                             }
                         }
                     }
                 } else {
-                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getErrorPrefix() + "Must provide a name of bait."));
+                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.noBaitSpecified()).toString());
                 }
 
                 break;
@@ -454,11 +454,17 @@ class Controls{
                 break;
 
             case "version":
+                int fishCount = 0;
+                for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                    fishCount += EvenMoreFish.fishCollection.get(r).size();
+                }
                 Message msg = new Message().setMSG(
                         EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
-                                EvenMoreFish.msgs.getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode()
+                                EvenMoreFish.msgs.getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
+                                EvenMoreFish.msgs.getSTDPrefix() + "Loaded: Rarities(" + EvenMoreFish.fishCollection.size() + ") Fish(" +
+                                fishCount + ") Baits(" + EvenMoreFish.baits.size() + ") Competitions(" + EvenMoreFish.competitionQueue.getSize() + ")"
                 );
                 if (sender instanceof Player) msg.setReceiver((Player) sender);
                 sender.sendMessage(msg.toString());
@@ -526,10 +532,10 @@ class Controls{
                 EvenMoreFish.active = comp;
                 comp.begin(true);
             } else {
-                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.notInteger()));
+                player.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberFormatError()).setAmount(Integer.toString(duration)).toString());
             }
         } catch (NumberFormatException nfe) {
-            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.notInteger()));
+            player.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberFormatError()).setAmount(argsDuration).toString());
         }
     }
 }

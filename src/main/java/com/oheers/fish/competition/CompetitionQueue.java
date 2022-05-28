@@ -79,4 +79,11 @@ public class CompetitionQueue {
 
         return beginning;
     }
+
+    /**
+     * @return The number of competitions in the competition queue.
+     */
+    public int getSize() {
+        return competitions.size();
+    }
 }
