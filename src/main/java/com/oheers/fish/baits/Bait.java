@@ -131,6 +131,12 @@ public class Bait {
 					lore.add(new Message().setMSG(EvenMoreFish.baitFile.getBoostFishFormat()).setAmount(Integer.toString(fishList.size())).setBaitTheme(theme).toString());
 				}
 
+			} else if (lineAddition.equals("{lore}")) {
+				EvenMoreFish.baitFile.getLore(this.name).stream().forEach(line -> {
+					lore.add(new Message()
+						.setMSG(line)
+						.toString());
+				});
 			} else {
 				lore.add(new Message()
 						.setMSG(lineAddition)
