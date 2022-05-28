@@ -8,6 +8,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.ItemFactory;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -78,8 +79,8 @@ public class Bait {
 	 *
 	 * @return An item stack representing the bait object, with nbt.
 	 */
-	public ItemStack create() {
-		ItemStack baitItem = itemFactory.createItem();
+	public ItemStack create(OfflinePlayer player) {
+		ItemStack baitItem = itemFactory.createItem(player);
 		baitItem.setAmount(dropQuantity);
 
 		ItemMeta meta = baitItem.getItemMeta();
@@ -109,7 +110,6 @@ public class Bait {
 	public void addRarity(Rarity r) {
 		rarityList.add(r);
 	}
-
 
 	/**
 	 * This fetches the boost's lore from the config and inserts the boost-rates into the {boosts} variable. This needs

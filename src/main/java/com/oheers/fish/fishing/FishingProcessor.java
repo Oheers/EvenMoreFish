@@ -104,7 +104,7 @@ public class FishingProcessor implements Listener {
                         .setBait(caughtBait.getName())
                         .setPlayer(player.getName())
                         .toString());
-                return caughtBait.create();
+                return caughtBait.create(player);
             }
         }
 

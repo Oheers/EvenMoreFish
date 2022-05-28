@@ -4,6 +4,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -35,7 +36,7 @@ public class ItemFactory {
 	public ItemFactory(String configLocation) {
 		this.configLocation = configLocation;
 		this.configurationFile = getConfiguration();
-		this.product = getType();
+		this.product = getType(null);
 	}
 
 	/**
@@ -44,8 +45,8 @@ public class ItemFactory {
 	 * @return The completed ItemStack
 	 * @throws NullPointerException The type has not been enabled, therefore the ItemStack was never set in the first place.
 	 */
-	public ItemStack createItem() {
-		if (itemRandom) this.product = getType();
+	public ItemStack createItem(OfflinePlayer player) {
+		if (itemRandom) this.product = getType(player);
 
 		if (itemModelDataCheck) applyModelData();
 		if (itemDamageCheck) applyDamage();
@@ -65,7 +66,7 @@ public class ItemFactory {
 	 *
 	 * @return The ItemStack of the item, with only skull metadata set if it's a player head.
 	 */
-	public ItemStack getType() {
+	public ItemStack getType(OfflinePlayer player) {
 
 		ItemStack oneMaterial = checkRandomMaterial();
 		if (oneMaterial != null) return oneMaterial;
@@ -75,6 +76,9 @@ public class ItemFactory {
 
 		ItemStack oneHeadUUID = checkRandomHeadUUID();
 		if (oneHeadUUID != null) return oneHeadUUID;
+
+		ItemStack oneOwnHead = checkOwnHead(player);
+		if (oneOwnHead != null) return oneOwnHead;
 
 		ItemStack material = checkMaterial();
 		if (material != null) return material;
@@ -239,6 +243,33 @@ public class ItemFactory {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Each time this is run, the fisher's head is loaded as the skull and set into meta. This must be done each time otherwise
+	 * it just creates a null head. By default, when the plugin first loads it's given a null player so it'll need to given
+	 * a head before any giving is done.
+	 *
+	 * @returns A skull with the player's head.
+	 */
+	private ItemStack checkOwnHead(OfflinePlayer player) {
+		boolean ownHead = this.configurationFile.getBoolean(configLocation + ".item.own-head");
+		// Causes this to run each turn the create() is called.
+		itemRandom = ownHead;
+
+		if (ownHead && player != null) {
+			ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+			SkullMeta meta = (SkullMeta) skull.getItemMeta();
+
+			if (meta != null) {
+				meta.setOwningPlayer(player);
+			} else {
+				return new ItemStack(Material.COD);
+			}
+
+			skull.setItemMeta(meta);
+			return skull;
+		} else return null;
 	}
 
 	/**

@@ -422,10 +422,14 @@ class Controls{
                         if (baitID.equalsIgnoreCase(builtName.toString())) {
                             Bait bait = EvenMoreFish.baits.get(baitID);
                             if (sender instanceof Player) {
-                                ItemStack baitItem = bait.create();
-                                baitItem.setAmount(quantity);
-                                if (player == null) FishUtils.giveItems(Collections.singletonList(baitItem), (Player) sender);
+                                if (player == null) {
+                                    ItemStack baitItem = bait.create(Bukkit.getOfflinePlayer(((Player) sender).getUniqueId()));
+                                    baitItem.setAmount(quantity);
+                                    FishUtils.giveItems(Collections.singletonList(baitItem), (Player) sender);
+                                }
                                 else {
+                                    ItemStack baitItem = bait.create(player);
+                                    baitItem.setAmount(quantity);
                                     FishUtils.giveItems(Collections.singletonList(baitItem), player);
                                     sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.givenPlayerBait()).setPlayer(player.getName()).setBait(baitID).toString());
                                 }
