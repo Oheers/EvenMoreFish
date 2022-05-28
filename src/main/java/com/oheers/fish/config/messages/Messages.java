@@ -165,7 +165,7 @@ public class Messages {
     }
 
     public String getReloaded() {
-        return getAdminPrefix() + "successfully reloaded the plugin.";
+        return getAdminPrefix() + config.getString("admin.reload", "Successfully reloaded the plugin.");
     }
 
     public String getFishCaught() {
@@ -192,7 +192,7 @@ public class Messages {
 
 
     public String competitionRunning() {
-        return getErrorPrefix() + "There's already a competition running.";
+        return getErrorPrefix() + config.getString("admin.competition-already-running", "There's already a competition running.");
     }
 
     public String competitionNotRunning() {
@@ -328,7 +328,7 @@ public class Messages {
     public String getInvalidType() {
         String returning = config.getString("invalid-type");
         if (returning != null) return getErrorPrefix() + returning;
-        else return getErrorPrefix() + "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH";
+        else return getErrorPrefix() + config.getString("admin.competition-type-invalid", "That isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH");
     }
 
     public String singleWinner() {

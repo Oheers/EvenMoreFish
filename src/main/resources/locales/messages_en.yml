@@ -215,8 +215,15 @@ admin:
   # When a command cannot be run from the console
   cannot-run-on-console: "Command cannot be run from console."
 
+  # Sent when a competition is already running when using /emf admin competition start
+  competition-already-running: "There's already a competition running."
+  # When an invalid competition type is tried to be started
+  competition-type-invalid: "That isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+
   # When there's a spigot update available, don't translate the URL otherwise it won't direct to the correct page.
   update-available: "There is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates"
+  # When the plugin is reloaded
+  reload: "Successfully reloaded the plugin."
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
