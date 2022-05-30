@@ -52,7 +52,7 @@ public enum ConfigMessage {
 			"{fish_lore}",
 			"{rarity_colour}&l{rarity}"
 	), PrefixType.NONE, false, false),
-	FISH_SALE("fish-sale", "&fYou've sold &a{amount} &ffish for &a${sell-price}&f.", PrefixType.DEFAULT,true, false),
+	FISH_SALE("fish-sale", "&fYou've sold &a{amount} &ffish for &a${sell-price}&f.", PrefixType.DEFAULT,true, true),
 
 	HELP_GENERAL("help-general", Arrays.asList(
 			"&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f",

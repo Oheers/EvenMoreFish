@@ -18,6 +18,8 @@ public class Message {
 
 	public String message;
 
+	private final boolean canSilent, canHidePrefix;
+
 	private final Map<String, String> liveVariables = new LinkedHashMap<>();
 	private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
 	private static final char COLOR_CHAR = '\u00A7';
@@ -31,6 +33,8 @@ public class Message {
 	 */
 	public Message(@NotNull final String message) {
 		this.message = message;
+		this.canSilent = false;
+		this.canHidePrefix = false;
 	}
 
 	/**
@@ -41,6 +45,8 @@ public class Message {
 	 * @param message The ConfigMessage object.
 	 */
 	public Message(@NotNull final ConfigMessage message) {
+		this.canSilent = message.isCanSilent();
+		this.canHidePrefix = message.isCanHidePrefix();
 		configMessageToString(message);
 	}
 
@@ -57,11 +63,17 @@ public class Message {
 			this.message = "";
 			List<String> list = getStringList(message.getId(), message.getNormalList());
 			for (String line : list) {
-				if (Objects.equals(line, list.get(list.size() - 1))) this.message = this.message.concat(message.getPrefixType().getPrefix() + line);
-				else this.message = this.message.concat(message.getPrefixType().getPrefix() + line + "\n");
+
+				if (this.canHidePrefix && line.startsWith("[noPrefix]")) this.message = this.message.concat(line.substring(10));
+				else this.message = this.message.concat(message.getPrefixType().getPrefix() + line);
+
+				if (!Objects.equals(line, list.get(list.size() - 1))) this.message = this.message.concat("\n");
 			}
 		} else {
-			this.message = message.getPrefixType().getPrefix() + getString(message.getId(), message.getNormal());
+			String line = getString(message.getId(), message.getNormal());
+
+			if (this.canHidePrefix && line.startsWith("[noPrefix]")) this.message = line.substring(10);
+			else this.message = message.getPrefixType().getPrefix() + line;
 		}
 	}
 
@@ -105,6 +117,7 @@ public class Message {
 	public void broadcast(final boolean doColour, final boolean doVariables) {
 		if (doVariables) variableFormat();
 		if (doColour) colourFormat();
+		if (this.message.endsWith(" -s") && this.canSilent) return;
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			p.sendMessage(this.message);
@@ -121,6 +134,8 @@ public class Message {
 	public void broadcast(@NotNull final Player player, final boolean doColour, final boolean doVariables) {
 		if (doVariables) variableFormat();
 		if (doColour) colourFormat();
+		if (this.message.endsWith(" -s") && this.canSilent) return;
+
 		player.sendMessage(this.message);
 	}
 
@@ -135,6 +150,8 @@ public class Message {
 	public void broadcast(@NotNull final CommandSender sender, final boolean doColour, final boolean doVariables) {
 		if (doVariables) variableFormat();
 		if (doColour) colourFormat();
+		if (this.message.endsWith(" -s") && this.canSilent) return;
+
 		sender.sendMessage(this.message);
 	}
 
