@@ -1,5 +1,7 @@
 package com.oheers.fish;
 
+import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.config.messages.Message;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -41,7 +43,7 @@ class UpdateNotify implements Listener {
     public void playerJoin(PlayerJoinEvent event) {
         if (EvenMoreFish.isUpdateAvailable) {
             if (EvenMoreFish.permission.playerHas(event.getPlayer(), "emf.admin")) {
-                event.getPlayer().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getUpdateAvailable()));
+                new Message(ConfigMessage.ADMIN_UPDATE_AVAILABLE).broadcast(event.getPlayer(), true, false);
             }
         }
     }

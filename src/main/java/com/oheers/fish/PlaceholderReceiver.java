@@ -2,6 +2,7 @@ package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -122,16 +123,16 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                         return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
                     }
                 } else {
-                    if (EvenMoreFish.msgs.shouldNullPlayerCompPlaceholder()) {
+                    if (EvenMoreFish.msgs.config.getBoolean("emf-competition-player-null")) {
                         return "";
-                    } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPlayerInposPlaceholder());
+                    } else return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
 
 
                 }
             } else {
-                if (EvenMoreFish.msgs.shouldNullPlayerCompPlaceholder()) {
+                if (EvenMoreFish.msgs.config.getBoolean("emf-competition-player-null")) {
                     return "";
-                } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
+                } else return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
             }
         } else if (identifier.startsWith("competition_place_size_")) {
             if (Competition.isActive()) {
@@ -145,14 +146,14 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                         return Float.toString(value);
                     }
                 } else {
-                    if (EvenMoreFish.msgs.shouldNullSizeCompPlaceholder()) {
+                    if (EvenMoreFish.msgs.config.getBoolean("emf-competition-size-null")) {
                         return "";
-                    } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPlayerInposPlaceholder());
+                    } else return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
                 }
             } else {
-                if (EvenMoreFish.msgs.shouldNullSizeCompPlaceholder()) {
+                if (EvenMoreFish.msgs.config.getBoolean("emf-competition-size-null")) {
                     return "";
-                } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
+                } else return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
             }
         } else if (identifier.startsWith("competition_place_fish_")) {
             if (Competition.isActive() && EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH) {
@@ -163,25 +164,27 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                     // getting "place" place in the competition
                     Fish fish = EvenMoreFish.active.getLeaderboard().getPlaceFish(place);
                     if (fish != null) {
-                        Message message = new Message()
-                                .setMSG(EvenMoreFish.msgs.getFishFormat())
-                                .setLength(Float.toString(fish.getLength()))
-                                .setRarityColour(fish.getRarity().getColour());
+                        Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
+                        message.setLength(Float.toString(fish.getLength()));
+                        message.setRarityColour(fish.getRarity().getColour());
+
                         if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
                         else message.setFishCaught(fish.getName());
 
                         if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
                         else message.setRarity(fish.getRarity().getValue());
+
+                        return message.getRawMessage(true, true);
                     }
                 } else {
-                    if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {
+                    if (EvenMoreFish.msgs.config.getBoolean("emf-fish-null")) {
                         return "";
-                    } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoPlayerInposPlaceholder());
+                    } else return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
                 }
             } else {
-                if (EvenMoreFish.msgs.shouldNullFishCompPlaceholder()) {
+                if (EvenMoreFish.msgs.config.getBoolean("emf-fish-null")) {
                     return "";
-                } else return FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoCompPlaceholder());
+                } else return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
             }
         }
 

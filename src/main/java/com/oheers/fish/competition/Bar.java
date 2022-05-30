@@ -2,6 +2,8 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -47,7 +49,7 @@ public class Bar {
     }
 
     public void setTitle(long timeLeft) {
-        bar.setTitle(prefix + ChatColor.RESET + FishUtils.translateHexColorCodes(FishUtils.timeFormat(timeLeft) + EvenMoreFish.msgs.getRemainingWord()));
+        bar.setTitle(prefix + ChatColor.RESET + FishUtils.translateHexColorCodes(FishUtils.timeFormat(timeLeft) + new Message(ConfigMessage.BAR_REMAINING).getRawMessage(true, false)));
     }
 
     public void show() {

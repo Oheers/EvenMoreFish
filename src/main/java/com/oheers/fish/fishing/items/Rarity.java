@@ -59,9 +59,9 @@ public class Rarity {
         if (overridenLore != null) return FishUtils.translateHexColorCodes(overridenLore);
         else {
             if (this.getDisplayName() != null) {
-                return FishUtils.translateHexColorCodes(this.getDisplayName());
+                return this.getDisplayName();
             } else {
-                return FishUtils.translateHexColorCodes(this.getColour() + "&l" + this.getValue().toUpperCase());
+                return this.getColour() + "&l" + this.getValue().toUpperCase();
             }
 
         }

@@ -3,7 +3,9 @@ package com.oheers.fish;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
@@ -55,12 +56,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
             case "top":
                 if (EvenMoreFish.permission.has(sender, "emf.top")) {
                     if (!Competition.isActive()) {
-                        sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
+                        new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
                     } else {
                         EvenMoreFish.active.sendLeaderboard((Player) sender);
                     }
                 } else {
-                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 }
                 break;
             case "shop":
@@ -71,49 +72,51 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                                 Player p = Bukkit.getPlayer(args[1]);
                                 if (p != null) {
                                     new SellGUI(p);
-                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getOpenFishShop()).setPlayer(p.getName()).toString());
+                                    Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
+                                    message.setPlayer(p.getName());
+                                    message.broadcast(sender, true, true);
                                 } else {
-                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getPlayerNotFound()).setPlayer(args[1]).toString());
+                                    Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
+                                    message.setPlayer(p.getName());
+                                    message.broadcast(sender, true, true);
                                 }
                             } else {
                                 new SellGUI((Player) sender);
                             }
                         } else {
-                            sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
+                            new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                         }
                     } else {
-                        sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.economyDisabled()).setReceiver((Player) sender).toString());
+                        new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
                     }
                 } else {
-                    EvenMoreFish.logger.log(Level.SEVERE, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.cannotRunFromConsole()));
+                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                 }
                 break;
             case "toggle":
                 if (!(sender instanceof Player)) {
-                    EvenMoreFish.logger.log(Level.SEVERE, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.cannotRunFromConsole()));
+                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                     break;
                 }
 
                 if (!(EvenMoreFish.permission.has(sender, "emf.toggle"))) {
-                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getNoPermission()).setReceiver((Player) sender).toString());
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                     break;
                 }
 
                 if (EvenMoreFish.disabledPlayers.contains(((Player) sender).getUniqueId())) {
                     EvenMoreFish.disabledPlayers.remove(((Player) sender).getUniqueId());
-                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getToggleOn()));
+                    new Message(ConfigMessage.TOGGLE_ON).broadcast(sender, true, false);
                 } else {
                     EvenMoreFish.disabledPlayers.add(((Player) sender).getUniqueId());
-                    sender.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getToggleOff()));
+                    new Message(ConfigMessage.TOGGLE_OFF).broadcast(sender, true, false);
                 }
                 break;
             case "admin":
                 if (EvenMoreFish.permission.has(sender, "emf.admin")) {
                     Controls.adminControl(this.plugin, args, sender);
                 } else {
-                    Message msg = new Message().setMSG(EvenMoreFish.msgs.getNoPermission());
-                    if (sender instanceof Player) msg.setReceiver((Player) sender);
-                    sender.sendMessage(msg.toString());
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 }
                 break;
             default:
@@ -252,7 +255,7 @@ class Controls{
 
         // will only proceed after this if at least args[1] exists
         if (args.length == 1) {
-            sender.sendMessage(Help.formAdminHelp());
+            new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, true, false);
             return;
         }
 
@@ -307,19 +310,25 @@ class Controls{
                         for (int section = 3; section < args.length; section++) {
                             if (args[section].startsWith("-p:")) {
                                 if ((player = Bukkit.getPlayer(args[section].substring(3))) == null) {
-                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getPlayerNotFound()).setPlayer(args[section].substring(3)).toString());
+                                    Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
+                                    message.setPlayer(args[section].substring(3));
+                                    message.broadcast(sender, true, true);
                                     return;
                                 }
                             } else if (args[section].startsWith("-q:")) {
                                 try {
                                     quantity = Integer.parseInt(args[section].substring(3));
                                 } catch (NumberFormatException exception) {
-                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberFormatError()).setAmount(args[section].substring(3)).toString());
+                                    Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
+                                    message.setAmount(args[section].substring(3));
+                                    message.broadcast(sender, true, true);
                                     return;
                                 }
 
                                 if (quantity <= 0 || quantity > 64) {
-                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberRangeError()).setAmount(args[section].substring(3)).toString());
+                                    Message message = new Message(ConfigMessage.ADMIN_NUMBER_RANGE_ERROR);
+                                    message.setAmount(args[section].substring(3));
+                                    message.broadcast(sender, true, true);
                                     return;
                                 }
                             } else {
@@ -353,7 +362,10 @@ class Controls{
                                         }
 
                                         if (player != null) {
-                                            sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.givenPlayerFish()).setPlayer(player.getName()).setFishCaught(using.toString()).toString());
+                                            Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_FISH);
+                                            message.setPlayer(player.getName());
+                                            message.setFishCaught(using.toString());
+                                            message.broadcast(sender, true, true);
                                         }
 
                                         break;
@@ -363,7 +375,7 @@ class Controls{
                             }
                         }
                     } else {
-                        EvenMoreFish.logger.log(Level.SEVERE, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.cannotRunFromConsole()));
+                        new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                     }
 
                 } else {
@@ -396,19 +408,25 @@ class Controls{
                     for (int i = 2; i < args.length; i++) {
                         if (args[i].startsWith("-p:")) {
                             if ((player = Bukkit.getPlayer(args[i].substring(3))) == null) {
-                                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.getPlayerNotFound()).setPlayer(args[i].substring(3)).toString());
+                                Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
+                                message.setPlayer(args[i].substring(3));
+                                message.broadcast(sender, true, true);
                                 return;
                             }
                         } else if (args[i].startsWith("-q:")) {
                             try {
                                 quantity = Integer.parseInt(args[i].substring(3));
                             } catch (NumberFormatException exception) {
-                                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberFormatError()).setPlayer(args[i].substring(3)).setAmount(args[i].substring(3)).toString());
+                                Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
+                                message.setAmount(args[i].substring(3));
+                                message.broadcast(sender, true, true);
                                 return;
                             }
 
                             if (quantity <= 0 || quantity > 64) {
-                                sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberRangeError()).setPlayer(args[i].substring(3)).setAmount(args[i].substring(3)).toString());
+                                Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
+                                message.setAmount(args[i].substring(3));
+                                message.broadcast(sender, true, true);
                                 return;
                             }
                         } else {
@@ -431,15 +449,18 @@ class Controls{
                                     ItemStack baitItem = bait.create(player);
                                     baitItem.setAmount(quantity);
                                     FishUtils.giveItems(Collections.singletonList(baitItem), player);
-                                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.givenPlayerBait()).setPlayer(player.getName()).setBait(baitID).toString());
+                                    Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
+                                    message.setPlayer(player.getName());
+                                    message.setBait(baitID);
+                                    message.broadcast(sender, true, true);
                                 }
                             } else {
-                                EvenMoreFish.logger.log(Level.SEVERE, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.cannotRunFromConsole()));
+                                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                             }
                         }
                     }
                 } else {
-                    sender.sendMessage(new Message().setMSG(EvenMoreFish.msgs.noBaitSpecified()).toString());
+                    new Message(ConfigMessage.ADMIN_NO_BAIT_SPECIFIED).broadcast(sender, true, false);
                 }
 
                 break;
@@ -452,9 +473,7 @@ class Controls{
 
                 plugin.reload();
 
-                Message message = new Message().setMSG(EvenMoreFish.msgs.getReloaded());
-                if (sender instanceof Player) message.setReceiver((Player) sender);
-                sender.sendMessage(message.toString());
+                new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, true, false);
                 break;
 
             case "version":
@@ -462,7 +481,7 @@ class Controls{
                 for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                     fishCount += EvenMoreFish.fishCollection.get(r).size();
                 }
-                Message msg = new Message().setMSG(
+                OldMessage msg = new OldMessage().setMSG(
                         EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                                 EvenMoreFish.msgs.getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
@@ -474,13 +493,13 @@ class Controls{
                 sender.sendMessage(msg.toString());
                 break;
             default:
-                sender.sendMessage(Help.formAdminHelp());
+                new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, true, false);
         }
     }
 
     protected static void competitionControl(String[] args, CommandSender player) {
         if (args.length == 2) {
-            player.sendMessage(Help.formCompetitionHelp());
+            new Message(ConfigMessage.HELP_COMPETITION).broadcast(player, true, false);
         } else {
             {
                 if (args[2].equalsIgnoreCase("start")) {
@@ -494,7 +513,7 @@ class Controls{
                             try {
                                 startComp(args[3], player, CompetitionType.valueOf(args[4].toUpperCase()));
                             } catch (IllegalArgumentException iae) {
-                                player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getInvalidType()));
+                                new Message(ConfigMessage.INVALID_COMPETITION_TYPE).broadcast(player, true, false);
                             }
                         }
                     }
@@ -504,10 +523,10 @@ class Controls{
                     if (Competition.isActive()) {
                         EvenMoreFish.active.end();
                     } else {
-                        player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionNotRunning()));
+                        new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true, true);
                     }
                 } else {
-                    player.sendMessage(Help.formCompetitionHelp());
+                    new Message(ConfigMessage.HELP_COMPETITION).broadcast(player, true, false);
                 }
             }
         }
@@ -515,7 +534,7 @@ class Controls{
 
     protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {
         if (Competition.isActive()) {
-            player.sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.competitionRunning()));
+            new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(player, true, false);
             return;
         }
 
@@ -536,10 +555,14 @@ class Controls{
                 EvenMoreFish.active = comp;
                 comp.begin(true);
             } else {
-                player.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberFormatError()).setAmount(Integer.toString(duration)).toString());
+                Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
+                message.setAmount(Integer.toString(duration));
+                message.broadcast(player, true, true);
             }
         } catch (NumberFormatException nfe) {
-            player.sendMessage(new Message().setMSG(EvenMoreFish.msgs.numberFormatError()).setAmount(argsDuration).toString());
+            Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
+            message.setAmount(argsDuration);
+            message.broadcast(player, true, true);
         }
     }
 }
@@ -548,22 +571,24 @@ class Help {
 
     public static String formGeneralHelp(CommandSender user) {
 
+        //return new Message(ConfigMessage.HELP_GENERAL).getRawMessage(true, false);
+
         StringBuilder out = new StringBuilder();
-        List<String> commands = EvenMoreFish.msgs.getGeneralHelp();
+        List<String> commands = Arrays.asList(new Message(ConfigMessage.HELP_GENERAL).getRawMessage(true, false).split("\n"));
 
         String escape = "\n";
         if (EvenMoreFish.permission != null && user != null) {
             for (int i=0; i<commands.size(); i++) {
                 if (i == commands.size()-1) escape = "";
                 if (commands.get(i).contains("/emf admin")) {
-                    if (EvenMoreFish.permission.has(user, "emf.admin")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                    if (EvenMoreFish.permission.has(user, "emf.admin")) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf top")) {
-                    if (EvenMoreFish.permission.has(user, "emf.top")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                    if (EvenMoreFish.permission.has(user, "emf.top")) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf shop")) {
-                    if (EvenMoreFish.permission.has(user, "emf.shop")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                    if (EvenMoreFish.permission.has(user, "emf.shop")) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf toggle")) {
-                    if (EvenMoreFish.permission.has(user, "emf.toggle")) out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
-                } else out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                    if (EvenMoreFish.permission.has(user, "emf.toggle")) out.append(commands.get(i)).append(escape);
+                } else out.append(commands.get(i)).append(escape);
             }
         } else {
             for (int i=0; i<commands.size(); i++) {
@@ -575,35 +600,4 @@ class Help {
         return out.toString();
 
     }
-
-    public static String formCompetitionHelp() {
-
-        StringBuilder out = new StringBuilder();
-        List<String> commands = EvenMoreFish.msgs.getCompetitionHelp();
-
-        String escape = "\n";
-        for (int i=0; i<commands.size(); i++) {
-            if (i == commands.size()-1) escape = "";
-            out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
-        }
-
-        return out.toString();
-
-    }
-
-    public static String formAdminHelp() {
-
-        StringBuilder out = new StringBuilder();
-        List<String> commands = EvenMoreFish.msgs.getAdminHelp();
-
-        String escape = "\n";
-        for (int i=0; i<commands.size(); i++) {
-            if (i == commands.size()-1) escape = "";
-            out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
-        }
-
-        return out.toString();
-
-    }
-
 }

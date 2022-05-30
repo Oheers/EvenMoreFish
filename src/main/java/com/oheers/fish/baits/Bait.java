@@ -2,7 +2,9 @@ package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -123,22 +125,22 @@ public class Bait {
 			if (lineAddition.equals("{boosts}")) {
 
 				if (rarityList.size() > 0) {
-					if (rarityList.size() > 1) lore.add(new Message().setMSG(EvenMoreFish.baitFile.getBoostRaritiesFormat()).setAmount(Integer.toString(rarityList.size())).setBaitTheme(theme).toString());
-					else lore.add(new Message().setMSG(EvenMoreFish.baitFile.getBoostRarityFormat()).setAmount(Integer.toString(1)).setBaitTheme(theme).toString());
+					if (rarityList.size() > 1) lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostRaritiesFormat()).setAmount(Integer.toString(rarityList.size())).setBaitTheme(theme).toString());
+					else lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostRarityFormat()).setAmount(Integer.toString(1)).setBaitTheme(theme).toString());
 				}
 
 				if (fishList.size() > 0) {
-					lore.add(new Message().setMSG(EvenMoreFish.baitFile.getBoostFishFormat()).setAmount(Integer.toString(fishList.size())).setBaitTheme(theme).toString());
+					lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostFishFormat()).setAmount(Integer.toString(fishList.size())).setBaitTheme(theme).toString());
 				}
 
 			} else if (lineAddition.equals("{lore}")) {
 				EvenMoreFish.baitFile.getLore(this.name).stream().forEach(line -> {
-					lore.add(new Message()
+					lore.add(new OldMessage()
 						.setMSG(line)
 						.toString());
 				});
 			} else {
-				lore.add(new Message()
+				lore.add(new OldMessage()
 						.setMSG(lineAddition)
 						.setBaitTheme(theme)
 						.toString());
@@ -198,11 +200,10 @@ public class Bait {
 	 * @param player The player that's used the bait.
 	 */
 	private void alertUsage(Player player) {
-		player.sendMessage(new Message()
-				.setMSG(EvenMoreFish.msgs.getUseBait())
-				.setBait(this.name)
-				.setBaitTheme(this.theme)
-				.toString());
+		Message message = new Message(ConfigMessage.BAIT_USED);
+		message.setBait(this.name);
+		message.setBaitTheme(this.theme);
+		message.broadcast(player, true, true);
 	}
 
 	/**

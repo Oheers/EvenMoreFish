@@ -4,6 +4,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
@@ -225,15 +226,15 @@ public class FishUtils {
         long hours = timeLeft/3600;
 
         if (timeLeft >= 3600) {
-            returning += hours + EvenMoreFish.msgs.getBarHour() + " ";
+            returning += hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false, false) + " ";
         }
 
         if (timeLeft >= 60) {
-            returning += ((timeLeft%3600)/60) + EvenMoreFish.msgs.getBarMinute() + " ";
+            returning += ((timeLeft%3600)/60) + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false, false) + " ";
         }
 
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft%60) + EvenMoreFish.msgs.getBarSecond();
+        returning += (timeLeft%60) + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false);
         return returning;
     }
 
@@ -254,19 +255,20 @@ public class FishUtils {
         return returning;
     }
 
-    public static void broadcastFishMessage(Message msg, boolean actionBar) {
+    public static void broadcastFishMessage(Message message, boolean actionBar) {
         if (EvenMoreFish.competitionConfig.broadcastOnlyRods()) {
             // sends it to all players holding ords
             if (actionBar) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg.toString()));
+                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true, true)));
                     }
                 }
             } else {
+                String formatted = message.getRawMessage(true, true);
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        p.sendMessage(msg.toString());
+                        p.sendMessage(formatted);
                     }
                 }
             }
@@ -274,10 +276,10 @@ public class FishUtils {
         } else {
             if (actionBar) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msg.toString()));
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true, true)));
                 }
             } else {
-                for (Player p : Bukkit.getOnlinePlayers()) p.sendMessage(msg.toString());
+                message.broadcast(true, true);
             }
         }
     }

@@ -2,7 +2,7 @@ package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import org.bukkit.Material;
@@ -284,7 +284,7 @@ public class BaitNBTManager {
 
 				for (String bait : rodNBT.split(",")) {
 					baitCount++;
-					lore.add(new Message()
+					lore.add(new OldMessage()
 							.setMSG(EvenMoreFish.baitFile.getBaitFormat())
 							.setAmount(bait.split(":")[1])
 							.setBait(getBaitFormatted(bait.split(":")[0]))
@@ -297,7 +297,7 @@ public class BaitNBTManager {
 					}
 				}
 			} else {
-				lore.add(new Message()
+				lore.add(new OldMessage()
 						.setMSG(lineAddition)
 						.setCurrBaits(Integer.toString(getNumBaitsApplied(itemStack)))
 						.setMaxBaits(Integer.toString(EvenMoreFish.baitFile.getMaxBaits()))

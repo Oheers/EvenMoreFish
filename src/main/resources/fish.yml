@@ -48,7 +48,7 @@ fish:
         material: STONE_SWORD
     Electric Eel:
       message: "&b*Zap!*"
-      #effect: "HARM:1:1"             - disabled since it's straight up killing the player right now. Not a good idea.
+      effect: "INSTANT_DAMAGE:1:1"
     Squid:
       item:
         material: INK_SAC

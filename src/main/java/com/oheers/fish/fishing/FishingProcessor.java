@@ -7,6 +7,7 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
@@ -98,12 +99,12 @@ public class FishingProcessor implements Listener {
         if (EvenMoreFish.baitFile.getBaitCatchPercentage() > 0) {
             if (new Random().nextDouble() * 100.0 < EvenMoreFish.baitFile.getBaitCatchPercentage()) {
                 Bait caughtBait = BaitNBTManager.randomBaitCatch();
-                player.sendMessage(new Message()
-                        .setMSG(EvenMoreFish.msgs.getCatchBait())
-                        .setBaitTheme(caughtBait.getTheme())
-                        .setBait(caughtBait.getName())
-                        .setPlayer(player.getName())
-                        .toString());
+                Message message = new Message(ConfigMessage.BAIT_CAUGHT);
+                message.setBaitTheme(caughtBait.getTheme());
+                message.setBait(caughtBait.getName());
+                message.setPlayer(player.getName());
+                message.broadcast(player, true, true);
+
                 return caughtBait.create(player);
             }
         }
@@ -150,35 +151,31 @@ public class FishingProcessor implements Listener {
             String name = FishUtils.translateHexColorCodes(fish.getName());
             String rarity = FishUtils.translateHexColorCodes(fish.getRarity().getValue());
 
-            Message msg = new Message()
-                    .setMSG(EvenMoreFish.msgs.getFishCaught())
-                    .setPlayer(player.getName())
-                    .setRarityColour(fish.getRarity().getColour())
-                    .setLength(length)
-                    .setRarity(rarity)
-                    .setReceiver(player);
+            Message message = new Message(ConfigMessage.FISH_CAUGHT);
+            message.setPlayer(player.getName());
+            message.setRarityColour(fish.getRarity().getColour());
+            message.setRarity(rarity);
+            message.setLength(length);
 
             EvenMoreFish.metric_fishCaught++;
 
-            if (fish.getDisplayName() != null) msg.setFishCaught(fish.getDisplayName());
-            else msg.setFishCaught(name);
+            if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
+            else message.setFishCaught(name);
 
-            if (fish.getRarity().getDisplayName() != null) msg.setRarity(fish.getRarity().getDisplayName());
-            else msg.setRarity(rarity);
+            if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+            else message.setRarity(rarity);
 
-            if (fish.getLength() != -1) {
-                msg.setMSG(EvenMoreFish.msgs.getFishCaught());
-            } else {
-                msg.setMSG(EvenMoreFish.msgs.getLengthlessFishCaught());
+            if (fish.getLength() == -1) {
+                message.setMessage(ConfigMessage.FISH_LENGTHLESS_CAUGHT);
             }
 
             // Gets whether it's a serverwide announce or not
             if (fish.getRarity().getAnnounce()) {
                 // should we only broadcast this information to rod holders?
-                FishUtils.broadcastFishMessage(msg, false);
+                FishUtils.broadcastFishMessage(message, false);
             } else {
                 // sends it to just the fisher
-                player.sendMessage(msg.toString());
+                message.broadcast(player, true, true);
             }
         }
 

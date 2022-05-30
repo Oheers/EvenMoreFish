@@ -2,6 +2,7 @@ package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SellGUI implements InventoryHolder {
@@ -39,7 +41,7 @@ public class SellGUI implements InventoryHolder {
         this.guiSize = (EvenMoreFish.mainConfig.getGUISize()+1)*9;
         this.player = p;
         this.modified = false;
-        this.menu = Bukkit.createInventory(this, guiSize, FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getWorthGUIName()));
+        this.menu = Bukkit.createInventory(this, guiSize, new Message(ConfigMessage.WORTH_GUI_NAME).getRawMessage(true, true));
         setFiller();
         addFiller(filler);
         setSellItem();
@@ -79,13 +81,13 @@ public class SellGUI implements InventoryHolder {
     public void setSellItem() {
         ItemStack sIcon = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItem()));
         ItemMeta sellMeta = sIcon.getItemMeta();
-        sellMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSellName()));
+        sellMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_NAME).getRawMessage(true, false));
+
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
-        List<String> lore = new ArrayList<>();
-        for (String line : EvenMoreFish.msgs.sellLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(false)).setReceiver(this.player).toString());
-        }
-        sellMeta.setLore(lore);
+        Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
+        message.setSellPrice(getTotalWorth(false));
+
+        sellMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
 
         sIcon.setItemMeta(sellMeta);
         glowify(sIcon);
@@ -97,13 +99,11 @@ public class SellGUI implements InventoryHolder {
     public void setSellAllItem() {
         ItemStack saIcon = new ItemStack(EvenMoreFish.mainConfig.getSellAllMaterial());
         ItemMeta saMeta = saIcon.getItemMeta();
-        saMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSellAllName()));
+        saMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_NAME).getRawMessage(true, false));
 
-        List<String> lore = new ArrayList<>();
-        for (String line : EvenMoreFish.msgs.getSellAllLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(true)).setReceiver(this.player).toString());
-        }
-        saMeta.setLore(lore);
+        Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
+        message.setSellPrice(getTotalWorth(true));
+        saMeta.setLore(Arrays.asList(message.getRawMessage(true, true).split("\n")));
 
         saIcon.setItemMeta(saMeta);
         glowify(saIcon);
@@ -114,13 +114,13 @@ public class SellGUI implements InventoryHolder {
 
     public void updateSellItem() {
         ItemMeta sellMeta = this.sellIcon.getItemMeta();
-        sellMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSellName()));
+        sellMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_NAME).getRawMessage(true, true));
+
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
-        List<String> lore = new ArrayList<>();
-        for (String line : EvenMoreFish.msgs.sellLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(false)).setReceiver(this.player).toString());
-        }
-        sellMeta.setLore(lore);
+        Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
+        message.setSellPrice(getTotalWorth(false));
+
+        sellMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
 
         this.sellIcon.setItemMeta(sellMeta);
         menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.sellIcon);
@@ -128,13 +128,12 @@ public class SellGUI implements InventoryHolder {
 
     public void updateSellAllItem() {
         ItemMeta saMeta = this.sellAllIcon.getItemMeta();
-        saMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSellAllName()));
+        saMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_NAME).getRawMessage(true, false));
+
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
-        List<String> lore = new ArrayList<>();
-        for (String line : EvenMoreFish.msgs.getSellAllLore()) {
-            lore.add(new Message().setMSG(line).setSellPrice(getTotalWorth(true)).setReceiver(this.player).toString());
-        }
-        saMeta.setLore(lore);
+        Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
+        message.setSellPrice(getTotalWorth(true));
+        saMeta.setLore(Arrays.asList(message.getRawMessage(true, true).split("\n")));
 
         this.sellAllIcon.setItemMeta(saMeta);
         menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.sellAllIcon);
@@ -174,22 +173,15 @@ public class SellGUI implements InventoryHolder {
 
             ItemMeta errorMeta = error.getItemMeta();
 
-            if (sellAll) errorMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoValueSellAllName()));
-            else errorMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getNoValueName()));
-
-            List<String> lore = new ArrayList<>();
+            if (sellAll) errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_ALL_BUTTON_NAME).getRawMessage(true, false));
+            else errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_NAME).getRawMessage(true, false));
 
             if (sellAll) {
-                for (String line : EvenMoreFish.msgs.noValueSellAllLore()) {
-                    lore.add(FishUtils.translateHexColorCodes(line));
-                }
+                errorMeta.setLore(new ArrayList<>(Arrays.asList(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_LORE).getRawMessage(true, false).split("\n"))));
             } else {
-                for (String line : EvenMoreFish.msgs.noValueLore()) {
-                    lore.add(FishUtils.translateHexColorCodes(line));
-                }
+                errorMeta.setLore(new ArrayList<>(Arrays.asList(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_LORE).getRawMessage(true, false).split("\n"))));
             }
 
-            errorMeta.setLore(lore);
             error.setItemMeta(errorMeta);
             glowify(error);
             if (sellAll) this.sellAllErrorIcon = WorthNBT.attributeDefault(error);
@@ -202,22 +194,21 @@ public class SellGUI implements InventoryHolder {
             else confirm = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemConfirm()));
 
             ItemMeta cMeta = confirm.getItemMeta();
-            if (sellAll) cMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getConfirmSellAllName()));
-            else cMeta.setDisplayName(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getConfirmName()));
+            if (sellAll) cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_ALL_BUTTON_NAME).getRawMessage(true, false));
+            else cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_BUTTON_NAME).getRawMessage(true, false));
             // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
             List<String> lore = new ArrayList<>();
 
             if (sellAll) {
-                for (String line : EvenMoreFish.msgs.getSellAllLore()) {
-                    lore.add(new Message().setMSG(line).setSellPrice(totalWorth).setReceiver(this.player).toString());
-                }
+                Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
+                message.setSellPrice(getTotalWorth(true));
+                cMeta.setLore(Arrays.asList(message.getRawMessage(true, true).split("\n")));
             } else {
-                for (String line : EvenMoreFish.msgs.sellLore()) {
-                    lore.add(new Message().setMSG(line).setSellPrice(totalWorth).setReceiver(this.player).toString());
-                }
-            }
+                Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
+                message.setSellPrice(getTotalWorth(false));
 
-            cMeta.setLore(lore);
+                cMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
+            }
 
             confirm.setItemMeta(cMeta);
             glowify(confirm);
@@ -332,12 +323,12 @@ public class SellGUI implements InventoryHolder {
         EvenMoreFish.econ.depositPlayer(this.player, value);
 
         // sending the sell message to the player
-        Message msg = new Message()
-                .setMSG(EvenMoreFish.msgs.getSellMessage())
-                .setSellPrice(Double.toString(value))
-                .setAmount(Integer.toString(fishCount))
-                .setReceiver(this.player);
-        this.player.sendMessage(msg.toString());
+        Message message = new Message(ConfigMessage.FISH_SALE);
+        message.setSellPrice(Double.toString(value));
+        message.setAmount(Integer.toString(fishCount));
+        message.setPlayer(this.player.toString());
+        message.broadcast(player, true, true);
+
         this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
 
         if (sellAll) {

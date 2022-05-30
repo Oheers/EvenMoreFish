@@ -1,7 +1,7 @@
 package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
@@ -28,7 +28,7 @@ public class BaitApplicationListener implements Listener {
 			if (BaitNBTManager.isBaitObject(event.getCursor())) {
 
 				if (!event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL)) {
-					event.getWhoClicked().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSurvivalOnly()));
+					new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), true, false);
 					return;
 				}
 
@@ -45,15 +45,14 @@ public class BaitApplicationListener implements Listener {
 					}
 
 				} catch (MaxBaitsReachedException exception) {
-					event.getWhoClicked().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getMaxBaitsReceived()));
+					new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked(), true, false);
 					return;
 				} catch (MaxBaitReachedException exception) {
 					result = exception.getRecoveryResult();
-					event.getWhoClicked().sendMessage(new Message()
-							.setMSG(EvenMoreFish.msgs.getMaxBaitReceived())
-							.setBaitTheme(bait.getTheme())
-							.setBait(bait.getName())
-							.toString());
+					Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
+					message.setBaitTheme(bait.getTheme());
+					message.setBait(bait.getName());
+					message.broadcast(event.getWhoClicked(), true, true);
 				}
 
 				if (result == null || result.getFishingRod() == null) return;
