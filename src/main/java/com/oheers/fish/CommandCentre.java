@@ -439,23 +439,23 @@ class Controls{
                     for (String baitID : EvenMoreFish.baits.keySet()) {
                         if (baitID.equalsIgnoreCase(builtName.toString())) {
                             Bait bait = EvenMoreFish.baits.get(baitID);
-                            if (sender instanceof Player) {
-                                if (player == null) {
+                            if (player == null) {
+                                if (sender instanceof Player) {
                                     ItemStack baitItem = bait.create(Bukkit.getOfflinePlayer(((Player) sender).getUniqueId()));
                                     baitItem.setAmount(quantity);
                                     FishUtils.giveItems(Collections.singletonList(baitItem), (Player) sender);
+                                } else {
+                                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                                 }
-                                else {
-                                    ItemStack baitItem = bait.create(player);
-                                    baitItem.setAmount(quantity);
-                                    FishUtils.giveItems(Collections.singletonList(baitItem), player);
-                                    Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
-                                    message.setPlayer(player.getName());
-                                    message.setBait(baitID);
-                                    message.broadcast(sender, true, true);
-                                }
-                            } else {
-                                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                            }
+                            else {
+                                ItemStack baitItem = bait.create(player);
+                                baitItem.setAmount(quantity);
+                                FishUtils.giveItems(Collections.singletonList(baitItem), player);
+                                Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
+                                message.setPlayer(player.getName());
+                                message.setBait(baitID);
+                                message.broadcast(sender, true, true);
                             }
                         }
                     }
