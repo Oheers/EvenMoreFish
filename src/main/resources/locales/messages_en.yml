@@ -145,7 +145,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» (Left-click) sell the fish."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&fYou've sold &a{amount} &ffish for &a${sell-price}&f."
+fish-sale: "&rYou've sold &a{amount} &ffish for &a${sell-price}&f."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
@@ -184,17 +184,20 @@ emf-competition-fish-null: true
 emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 
 # Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
-max-baits-reached: "You have reached the maximum number of types of baits for this fishing rod."
+max-baits-reached: "&rYou have reached the maximum number of types of baits for this fishing rod."
 # Not to be confused with the above, this is sent when the maximum of a specific bait is reached. Define this in baits.yml using "max-baits".
-max-bait-reached: "You have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod."
+max-bait-reached: "&rYou have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod."
 # Sent when a player catches a bait from fishing (this can be disabled by setting catch-percentage to 0 in baits.yml
-bait-catch: "&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!"
+bait-catch: "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!"
 # Sent when a bait is applied and a fish is caught.
-bait-use: "You have used one of your rod's {bait_theme}&l{bait} &rbait."
+bait-use: "&rYou have used one of your rod's {bait_theme}&l{bait} &rbait."
 
 # Shown when /emf toggle is run, to turn off and on respectively.
-toggle-off: "You will no longer catch custom fish."
-toggle-on: "You will now catch custom fish."
+toggle-off: "&rYou will no longer catch custom fish."
+toggle-on: "&rYou will now catch custom fish."
+
+# When trying to place a skull-fish when this is blocked in config.yml
+place-fish-blocked: "&rYou cannot place this fish."
 
 admin:
   # Opens an /emf shop for another player

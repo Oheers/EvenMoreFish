@@ -7,21 +7,21 @@ import java.util.List;
 
 public enum ConfigMessage {
 
-	ADMIN_CANT_BE_CONSOLE("admin.cannot-run-on-console", "Command cannot be run from console.", PrefixType.ERROR, false, true),
-	ADMIN_GIVE_PLAYER_BAIT("admin.given-player-bait", "You have given {player} a {bait}.", PrefixType.ADMIN, true, true),
-	ADMIN_GIVE_PLAYER_FISH("admin.given-player-fish", "You have given {player} a {fish}.", PrefixType.ADMIN, true, true),
-	ADMIN_OPEN_FISH_SHOP("admin.open-fish-shop", "Opened a shop inventory for {player}.", PrefixType.ADMIN, true, true),
-	ADMIN_NO_BAIT_SPECIFIED("admin.no-bait-specified", "You must specify a bait name.", PrefixType.ERROR, false, true),
-	ADMIN_NUMBER_FORMAT_ERROR("admin.number-format-error", "{amount} is not a valid number.", PrefixType.ERROR, false, true),
-	ADMIN_NUMBER_RANGE_ERROR("admin.number-range-error", "{amount} is not a number between 1-64.", PrefixType.ERROR, false, true),
-	ADMIN_UNKNOWN_PLAYER("admin.player-not-found", "{player} could not be found.", PrefixType.ERROR, false, true),
-	ADMIN_UPDATE_AVAILABLE("admin.update-available", "There is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates", PrefixType.ADMIN, false, false),
+	ADMIN_CANT_BE_CONSOLE("admin.cannot-run-on-console", "&rCommand cannot be run from console.", PrefixType.ERROR, false, true),
+	ADMIN_GIVE_PLAYER_BAIT("admin.given-player-bait", "&rYou have given {player} a {bait}.", PrefixType.ADMIN, true, true),
+	ADMIN_GIVE_PLAYER_FISH("admin.given-player-fish", "&rYou have given {player} a {fish}.", PrefixType.ADMIN, true, true),
+	ADMIN_OPEN_FISH_SHOP("admin.open-fish-shop", "&rOpened a shop inventory for {player}.", PrefixType.ADMIN, true, true),
+	ADMIN_NO_BAIT_SPECIFIED("admin.no-bait-specified", "&rYou must specify a bait name.", PrefixType.ERROR, false, true),
+	ADMIN_NUMBER_FORMAT_ERROR("admin.number-format-error", "&r{amount} is not a valid number.", PrefixType.ERROR, false, true),
+	ADMIN_NUMBER_RANGE_ERROR("admin.number-range-error", "&r{amount} is not a number between 1-64.", PrefixType.ERROR, false, true),
+	ADMIN_UNKNOWN_PLAYER("admin.player-not-found", "&r{player} could not be found.", PrefixType.ERROR, false, true),
+	ADMIN_UPDATE_AVAILABLE("admin.update-available", "&rThere is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates", PrefixType.ADMIN, false, false),
 
-	BAIT_CAUGHT("bait-caught", "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.DEFAULT, true, false),
+	BAIT_CAUGHT("bait-catch", "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.DEFAULT, true, false),
 	BAIT_USED("bait-use", "&rYou have used one of your rod's {bait_theme}&l{bait} &rbait.", PrefixType.DEFAULT, true, false),
 	BAIT_WRONG_GAMEMODE("bait-survival-limited", "&rYou must be in &nsurvival&c to apply baits to fishing rods.", PrefixType.ERROR, false, false),
-	BAITS_MAXED("max-baits-reached", "You have reached the maximum number of types of baits for this fishing rod.", PrefixType.DEFAULT, false, true),
-	BAITS_MAXED_ON_ROD("max-baits-reached", "You have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.", PrefixType.ERROR, false, false),
+	BAITS_MAXED("max-baits-reached", "&rYou have reached the maximum number of types of baits for this fishing rod.", PrefixType.DEFAULT, false, true),
+	BAITS_MAXED_ON_ROD("max-baits-reached", "&rYou have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.", PrefixType.ERROR, false, false),
 
 	BAR_SECOND("bossbar.second", "s", PrefixType.NONE, true, false),
 	BAR_MINUTE("bossbar.minute", "m", PrefixType.NONE, true, false),
@@ -40,11 +40,11 @@ public enum ConfigMessage {
 
 	COMPETITION_SINGLE_WINNER("single-winner", "&r{player} has won the competition for {type}. Congratulations!", PrefixType.DEFAULT, true, true),
 
-	ECONOMY_DISABLED("admin.economy-disabled", "EvenMoreFish's economy features are disabled.", PrefixType.ERROR, false, false),
+	ECONOMY_DISABLED("admin.economy-disabled", "&rEvenMoreFish's economy features are disabled.", PrefixType.ERROR, false, false),
 
-	FISH_CANT_BE_PLACED("place-fish-blocked", "You cannot place this fish.", PrefixType.ERROR, true, true),
-	FISH_CAUGHT("fish-caught", "&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, false),
-	FISH_LENGTHLESS_CAUGHT("lengthless-fish-caught", "&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, false),
+	FISH_CANT_BE_PLACED("place-fish-blocked", "&rYou cannot place this fish.", PrefixType.ERROR, true, true),
+	FISH_CAUGHT("fish-caught", "&r&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, false),
+	FISH_LENGTHLESS_CAUGHT("lengthless-fish-caught", "&r&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, false),
 	FISH_LORE("fish-lore", Arrays.asList(
 			"&fCaught by {player}",
 			"&fMeasures {length}cm",
@@ -52,7 +52,7 @@ public enum ConfigMessage {
 			"{fish_lore}",
 			"{rarity_colour}&l{rarity}"
 	), PrefixType.NONE, false, false),
-	FISH_SALE("fish-sale", "&fYou've sold &a{amount} &ffish for &a${sell-price}&f.", PrefixType.DEFAULT,true, true),
+	FISH_SALE("fish-sale", "&rYou've sold &a{amount} &ffish for &a${sell-price}&f.", PrefixType.DEFAULT,true, true),
 
 	HELP_GENERAL("help-general", Arrays.asList(
 			"&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f",
@@ -74,7 +74,7 @@ public enum ConfigMessage {
 			"&f/emf admin competition end - Ends the current competition (if there is one)"
 	), PrefixType.ADMIN, false, true),
 
-	INVALID_COMPETITION_TYPE("admin.competition-type-invalid", "That isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH", PrefixType.ADMIN, false, false),
+	INVALID_COMPETITION_TYPE("admin.competition-type-invalid", "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH", PrefixType.ADMIN, false, false),
 
 	LEADERBOARD_LARGEST_FISH("leaderboard-largest-fish", "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)", PrefixType.DEFAULT, false, true),
 	LEADERBOARD_MOST_FISH("leaderboard-most-fish", "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)", PrefixType.DEFAULT, false, true),
@@ -82,7 +82,7 @@ public enum ConfigMessage {
 
 	NEW_FIRST_PLACE_NOTIFICATION("new-first", "&r{player} is now #1", PrefixType.DEFAULT, true, true),
 
-	NO_COMPETITION_RUNNING("no-competition-running", "No competition running right now.", PrefixType.ERROR, false, false),
+	NO_COMPETITION_RUNNING("no-competition-running", "&rNo competition running right now.", PrefixType.ERROR, false, false),
 	NO_FISH_CAUGHT("no-record", "&rYou didn't catch any fish.", PrefixType.DEFAULT, true, true),
 	NO_PERMISSION("no-permission", "&cYou don't have permission to run that command.", PrefixType.ERROR, false, true),
 	NO_WINNERS("no-winners", "&rThere were no fishing records.", PrefixType.DEFAULT, true, true),
@@ -96,8 +96,8 @@ public enum ConfigMessage {
 
 	TIME_ALERT("time-alert", "&rThere is {time_formatted} left on the competition for {type}", PrefixType.DEFAULT, false, true),
 
-	TOGGLE_ON("toggle-on", "You will now catch custom fish.", PrefixType.DEFAULT, false, true),
-	TOGGLE_OFF("toggle-off", "You will no longer catch custom fish.", PrefixType.DEFAULT, false, true),
+	TOGGLE_ON("toggle-on", "&rYou will now catch custom fish.", PrefixType.DEFAULT, false, true),
+	TOGGLE_OFF("toggle-off", "&rYou will no longer catch custom fish.", PrefixType.DEFAULT, false, true),
 
 	WORTH_GUI_NAME("worth-gui-name", "&1&lSell Fish", PrefixType.NONE, false, false),
 	WORTH_GUI_CONFIRM_ALL_BUTTON_NAME("confirm-sell-all-gui-name", "&6&lCONFIRM", PrefixType.NONE, false, false),
