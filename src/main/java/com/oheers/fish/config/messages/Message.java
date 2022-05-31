@@ -197,7 +197,9 @@ public class Message {
 	public String getRawMessage(final boolean doColour, final boolean doVariables) {
 		if (doVariables) variableFormat();
 		if (doColour) colourFormat();
-		return this.message;
+
+		if (this.canSilent && this.message.endsWith(" -s")) return "";
+		else return this.message;
 	}
 
 	/**
@@ -332,6 +334,31 @@ public class Message {
 	 */
 	public void setBaitTheme(@NotNull final String baitTheme) {
 		setVariable("{bait_theme", baitTheme);
+	}
+
+
+	/**
+	 * Defines how many days should replace the {days} variable.
+ 	 * @param days The number of days.
+	 */
+	public void setDays(@NotNull final String days) {
+		setVariable("{days}", days);
+	}
+
+	/**
+	 * Defines how many hours should replace the {hours} variable.
+	 * @param hours The number of hours.
+	 */
+	public void setHours(@NotNull final String hours) {
+		setVariable("{hours}", hours);
+	}
+
+	/**
+	 * Defines how many minutes should replace the {minutes} variable.
+	 * @param minutes The number of minutes.
+	 */
+	public void setMinutes(@NotNull final String minutes) {
+		setVariable("{minutes}", minutes);
 	}
 
 	/**

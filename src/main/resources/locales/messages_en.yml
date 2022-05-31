@@ -174,14 +174,19 @@ help-admin:
 no-player-in-place: "Start fishing to take this place"
 # Shown when the emf competition placeholders are used when there's no competition running
 no-competition-running: "No competition running right now."
-# Should %emf_competition_place_player_*% contain the above (false) or return null (true).
-emf-competition-player-null: false
-# Should %emf_competition_place_size_*% contain the above (false) or return null (true).
-emf-competition-size-null: true
-# Should %emf_competition_place_fish_*% contain the above (false) or return null (true).
-emf-competition-fish-null: true
+
 # How should the %emf_competition_place_fish_*% be formatted?
-emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
+emf-competition-fish-format: "{rarity_colour}{length}cm &l{rarity} {fish}"
+# How should the %emf_competition_place_fish_*% be formatted when there's no length on the fish?
+emf-lengthless-fish-format: "{rarity_colour}&l{rarity} {fish}"
+# How should %emf_competition_place_fish_*% be formatted during MOST/SPECIFIC_FISH competitions?
+emf-most-fish-format: "{amount} fish"
+# What should be displayed for %emf_competition_place_size_*% during the MOST_FISH competition?
+emf-size-during-most-fish: "This is a competition for the most fish."
+# How the %emf_competition_time_left% variable should be formatted.
+emf-time-remaining: "Time left until next competition: {days}d, {hours}h, {minutes}m."
+# Replaces the %emf_competition_time_left% variable when there's a competition already running.
+emf-time-remaining-during-comp: "There is a competition running right now."
 
 # Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
 max-baits-reached: "&rYou have reached the maximum number of types of baits for this fishing rod."

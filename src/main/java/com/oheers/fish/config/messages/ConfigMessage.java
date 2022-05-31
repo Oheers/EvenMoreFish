@@ -88,9 +88,14 @@ public enum ConfigMessage {
 	NO_WINNERS("no-winners", "&rThere were no fishing records.", PrefixType.DEFAULT, true, true),
 	NOT_ENOUGH_PLAYERS("not-enough-players",  "&rThere's not enough players online to start the scheduled fishing competition.", PrefixType.ERROR, true, false),
 
-	PLACEHOLDER_FISH_FORMAT("emf-competition-fish-format", "{length}cm &l{rarity} {fish}", PrefixType.NONE, false, false),
-	PLACEHOLDER_NO_COMPETITION_RUNNING("no-competition-running", "No competition running right now.", PrefixType.NONE, false, false),
-	PLACEHOLDER_NO_PLAYER_IN_PLACE("no-player-in-place", "Start fishing to take this place", PrefixType.NONE, false, false),
+	PLACEHOLDER_FISH_FORMAT("emf-competition-fish-format", "{rarity_colour}{length}cm &l{rarity} {fish}", PrefixType.NONE, true, false),
+	PLACEHOLDER_FISH_LENGTHLESS_FORMAT("emf-lengthless-fish-format", "{rarity_colour}&l{rarity} {fish}", PrefixType.NONE, true, false),
+	PLACEHOLDER_FISH_MOST_FORMAT("emf-most-fish-format", "{amount} fish", PrefixType.NONE, true, false),
+	PLACEHOLDER_NO_COMPETITION_RUNNING("no-competition-running", "No competition running right now.", PrefixType.NONE, true, false),
+	PLACEHOLDER_NO_PLAYER_IN_PLACE("no-player-in-place", "Start fishing to take this place", PrefixType.NONE, true, false),
+	PLACEHOLDER_SIZE_DURING_MOST_FISH("emf-size-during-most-fish", "This is a competition for the most fish.", PrefixType.NONE, true, false),
+	PLACEHOLDER_TIME_REMAINING("emf-time-remaining", "Time left until next competition: {days}d, {hours}h, {minutes}m.", PrefixType.NONE, true, false),
+	PLACEHOLDER_TIME_REMAINING_DURING_COMP("emf-time-remaining-during-comp", "There is a competition running right now.", PrefixType.NONE, true, false),
 
 	RELOAD_SUCCESS("admin.reload", "&rSuccessfully reloaded the plugin.", PrefixType.ADMIN, false, false),
 

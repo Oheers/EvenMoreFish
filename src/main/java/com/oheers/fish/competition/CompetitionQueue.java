@@ -2,10 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CompetitionQueue {
 
@@ -13,7 +10,7 @@ public class CompetitionQueue {
     List<String> days = Arrays.asList("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY");
 
     public void load() {
-        competitions = new HashMap<>();
+        competitions = new TreeMap<>();
         // Competitions exist in the competitions.yml
         if (EvenMoreFish.competitionConfig.getCompetitions() != null) {
             for (String comp : EvenMoreFish.competitionConfig.getCompetitions()) {
@@ -85,5 +82,34 @@ public class CompetitionQueue {
      */
     public int getSize() {
         return competitions.size();
+    }
+
+    /**
+     * Puts a test competition into the competition queue and figures out the location of the test competition. If there's
+     * values after this, the next one's time is returned, otherwise the first competition's time is returned.
+     *
+     * @return The next competition starting timecode.
+     */
+    public int getNextCompetition() {
+        Competition competition = new Competition(-1, CompetitionType.LARGEST_FISH);
+        int currentTimeCode = AutoRunner.getCurrentTimeCode();
+        if (this.competitions.containsKey(currentTimeCode)) return currentTimeCode;
+        this.competitions.put(currentTimeCode, competition);
+        int position = new ArrayList<>(this.competitions.keySet()).indexOf(currentTimeCode);
+        if (position == this.competitions.size() - 1) {
+            this.competitions.remove(currentTimeCode);
+            return this.competitions.keySet().iterator().next();
+        } else {
+            int i = 0;
+            for (Map.Entry<Integer, Competition> integerCompetitionEntry : this.competitions.entrySet()) {
+                if (i == position + 1) {
+                    this.competitions.remove(currentTimeCode);
+                    return integerCompetitionEntry.getKey();
+                }
+                i++;
+            }
+            this.competitions.remove(currentTimeCode);
+            return -1;
+        }
     }
 }

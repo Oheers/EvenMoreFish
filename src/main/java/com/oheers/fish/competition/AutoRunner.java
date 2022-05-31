@@ -17,12 +17,7 @@ public class AutoRunner {
             public void run(){
                 // If the minute hasn't been checked against the competition queue.
                 if (!wasMinuteChecked()) {
-                    // creates a key similar to the time key given in config.yml
-                    timeKey = String.format("%02d", LocalTime.now().getHour()) + ":" + String.format("%02d", LocalTime.now().getMinute());
-
-                    // Obtaining how many minutes have passed since midnight last Sunday
-                    String day = LocalDate.now().getDayOfWeek().toString();
-                    int weekMinute = EvenMoreFish.competitionQueue.generateTimeCode(day, timeKey);
+                    int weekMinute = getCurrentTimeCode();
 
                     // Beginning the competition set for schedule
                     if (EvenMoreFish.competitionQueue.competitions.containsKey(weekMinute)) {
@@ -36,6 +31,20 @@ public class AutoRunner {
 
             // delay is set to start at bang on :00 of every minute (assuming the tps to be 20), period is set to run once a minute
         }.runTaskTimer(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class), (60-LocalTime.now().getSecond())*20, 20);
+    }
+
+    /**
+     * Feeds through the current timekey and day name to the generateTimeCode method in the competition queue.
+     *
+     * @return The integer timecode for the current minute.
+     */
+    public static int getCurrentTimeCode() {
+        // creates a key similar to the time key given in config.yml
+        timeKey = String.format("%02d", LocalTime.now().getHour()) + ":" + String.format("%02d", LocalTime.now().getMinute());
+
+        // Obtaining how many minutes have passed since midnight last Sunday
+        String day = LocalDate.now().getDayOfWeek().toString();
+        return EvenMoreFish.competitionQueue.generateTimeCode(day, timeKey);
     }
 
     /**

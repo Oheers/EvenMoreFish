@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -112,10 +113,8 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         if (identifier.startsWith("competition_place_player_")) {
             if (Competition.isActive()) {
                 // checking the leaderboard actually contains the value of place
-                String[] brokendown = identifier.split("_");
-                int place = Integer.parseInt(brokendown[brokendown.length - 1]);
-                Competition competition = EvenMoreFish.active;
-                if (competition.getLeaderboardSize() >= place) {
+                int place = Integer.parseInt(identifier.substring(25));
+                if (EvenMoreFish.active.getLeaderboardSize() >= place) {
                     // getting "place" place in the competition
                     UUID uuid = EvenMoreFish.active.getLeaderboard().getPlayer(place);
                     if (uuid != null) {
@@ -123,68 +122,90 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                         return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
                     }
                 } else {
-                    if (EvenMoreFish.msgs.config.getBoolean("emf-competition-player-null")) {
-                        return "";
-                    } else return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
-
-
+                    return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
                 }
             } else {
-                if (EvenMoreFish.msgs.config.getBoolean("emf-competition-player-null")) {
-                    return "";
-                } else return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
             }
         } else if (identifier.startsWith("competition_place_size_")) {
             if (Competition.isActive()) {
-                // checking the leaderboard actually contains the value of place
-                String[] brokendown = identifier.split("_");
-                int place = Integer.parseInt(brokendown[brokendown.length - 1]);
-                if (EvenMoreFish.active.getLeaderboardSize() >= place) {
-                    // getting "place" place in the competition
-                    float value = EvenMoreFish.active.getLeaderboard().getPlaceValue(place);
-                    if (value != -1.0f) {
-                        return Float.toString(value);
+                if (EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH) {
+                    // checking the leaderboard actually contains the value of place
+                    int place = Integer.parseInt(identifier.substring(23));
+                    if (EvenMoreFish.active.getLeaderboardSize() >= place) {
+                        // getting "place" place in the competition
+                        float value = EvenMoreFish.active.getLeaderboard().getPlaceValue(place);
+
+                        if (value != -1.0f) return Float.toString(value);
+                        else return "";
+                    } else {
+                        return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
                     }
                 } else {
-                    if (EvenMoreFish.msgs.config.getBoolean("emf-competition-size-null")) {
-                        return "";
-                    } else return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
+                    return new Message(ConfigMessage.PLACEHOLDER_SIZE_DURING_MOST_FISH).getRawMessage(true, false);
                 }
             } else {
-                if (EvenMoreFish.msgs.config.getBoolean("emf-competition-size-null")) {
-                    return "";
-                } else return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
             }
         } else if (identifier.startsWith("competition_place_fish_")) {
-            if (Competition.isActive() && EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH) {
-                // checking the leaderboard actually contains the value of place
-                String[] brokendown = identifier.split("_");
-                int place = Integer.parseInt(brokendown[brokendown.length - 1]);
-                if (EvenMoreFish.active.getLeaderboardSize() >= place) {
-                    // getting "place" place in the competition
-                    Fish fish = EvenMoreFish.active.getLeaderboard().getPlaceFish(place);
-                    if (fish != null) {
-                        Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
-                        message.setLength(Float.toString(fish.getLength()));
-                        message.setRarityColour(fish.getRarity().getColour());
+            if (Competition.isActive()) {
+                if (EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH) {
+                    // checking the leaderboard actually contains the value of place
+                    int place = Integer.parseInt(identifier.substring(23));
+                    if (EvenMoreFish.active.getLeaderboardSize() >= place) {
+                        // getting "place" place in the competition
+                        Fish fish = EvenMoreFish.active.getLeaderboard().getPlaceFish(place);
+                        if (fish != null) {
+                            Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
+                            if (fish.getLength() == -1) message.setMessage(ConfigMessage.PLACEHOLDER_FISH_LENGTHLESS_FORMAT);
+                            else message.setLength(Float.toString(fish.getLength()));
 
-                        if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
-                        else message.setFishCaught(fish.getName());
+                            message.setRarityColour(fish.getRarity().getColour());
 
-                        if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
-                        else message.setRarity(fish.getRarity().getValue());
+                            if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
+                            else message.setFishCaught(fish.getName());
 
-                        return message.getRawMessage(true, true);
+                            if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                            else message.setRarity(fish.getRarity().getValue());
+
+                            return message.getRawMessage(true, true);
+                        }
+                    } else {
+                        return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
                     }
                 } else {
-                    if (EvenMoreFish.msgs.config.getBoolean("emf-fish-null")) {
-                        return "";
-                    } else return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
+                    // checking the leaderboard actually contains the value of place
+                    float value = Competition.leaderboard.getPlaceValue(Integer.parseInt(identifier.substring(23)));
+                    if (value == -1) return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
+
+                    Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_MOST_FORMAT);
+                    message.setAmount(Integer.toString((int) value));
+                    return message.getRawMessage(true, true);
                 }
             } else {
-                if (EvenMoreFish.msgs.config.getBoolean("emf-fish-null")) {
-                    return "";
-                } else return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
+            }
+        } else if (identifier.equals("competition_time_left")) {
+            if (Competition.isActive()) {
+                return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP).getRawMessage(true, false);
+            } else {
+                int competitionStartTime = EvenMoreFish.competitionQueue.getNextCompetition();
+                int currentTime = AutoRunner.getCurrentTimeCode();
+                int remainingTime;
+
+                if (competitionStartTime > currentTime) {
+                    remainingTime = competitionStartTime - currentTime;
+                } else {
+                    // time left of the current week + the time next week until next competition
+                    remainingTime = (10080 - currentTime) + competitionStartTime;
+                }
+
+                Message message = new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING);
+                message.setDays(Integer.toString(remainingTime / 1440));
+                message.setHours(Integer.toString((remainingTime % 1440) / 60));
+                message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
+
+                return message.getRawMessage(true, true);
             }
         }
 
