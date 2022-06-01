@@ -12,11 +12,13 @@ public enum ConfigMessage {
 	ADMIN_GIVE_PLAYER_FISH("admin.given-player-fish", "&rYou have given {player} a {fish}.", PrefixType.ADMIN, true, true),
 	ADMIN_OPEN_FISH_SHOP("admin.open-fish-shop", "&rOpened a shop inventory for {player}.", PrefixType.ADMIN, true, true),
 	ADMIN_NO_BAIT_SPECIFIED("admin.no-bait-specified", "&rYou must specify a bait name.", PrefixType.ERROR, false, true),
+	ADMIN_NOT_HOLDING_ROD("admin.must-be-holding-rod", "&rYou need to be holding a fishing rod to run that command.", PrefixType.ERROR, false, false),
 	ADMIN_NUMBER_FORMAT_ERROR("admin.number-format-error", "&r{amount} is not a valid number.", PrefixType.ERROR, false, true),
 	ADMIN_NUMBER_RANGE_ERROR("admin.number-range-error", "&r{amount} is not a number between 1-64.", PrefixType.ERROR, false, true),
 	ADMIN_UNKNOWN_PLAYER("admin.player-not-found", "&r{player} could not be found.", PrefixType.ERROR, false, true),
 	ADMIN_UPDATE_AVAILABLE("admin.update-available", "&rThere is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates", PrefixType.ADMIN, false, false),
 
+	BAITS_CLEARED("admin.all-baits-cleared", "&rYou have removed all {amount} baits from your fishing rod.", PrefixType.ADMIN, true, false),
 	BAIT_CAUGHT("bait-catch", "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.DEFAULT, true, false),
 	BAIT_USED("bait-use", "&rYou have used one of your rod's {bait_theme}&l{bait} &rbait.", PrefixType.DEFAULT, true, false),
 	BAIT_WRONG_GAMEMODE("bait-survival-limited", "&rYou must be in &nsurvival&r to apply baits to fishing rods.", PrefixType.ERROR, false, false),
@@ -65,6 +67,7 @@ public enum ConfigMessage {
 	HELP_ADMIN("help-admin", Arrays.asList(
 			"&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f",
 			"&f/emf admin competition <start/end> <duration> <type> - Starts or stops a competition",
+			"&f/emf admin clearbait - Removes all applied baits from a fishing rod.",
 			"&f/emf admin reload - Reloads the plugin's config files",
 			"&f/emf admin version - Displays plugin information."
 	), PrefixType.ADMIN, false, true),

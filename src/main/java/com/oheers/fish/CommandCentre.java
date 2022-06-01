@@ -1,6 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.baits.Bait;
+import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -129,6 +130,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
     public static void loadTabCompletes() {
         adminTabs = Arrays.asList(
                 "bait",
+                "clearbaits",
                 "competition",
                 "fish",
                 "reload",
@@ -463,6 +465,25 @@ class Controls{
                     new Message(ConfigMessage.ADMIN_NO_BAIT_SPECIFIED).broadcast(sender, true, false);
                 }
 
+                break;
+
+            case "clearbaits":
+                if (!(sender instanceof Player)) {
+                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                    return;
+                }
+
+                Player player = (Player) sender;
+                if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
+                    new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player, true, false);
+                    return;
+                }
+
+                ItemStack fishingRod = player.getInventory().getItemInMainHand();
+                BaitNBTManager.deleteOldLore(fishingRod);
+                Message message = new Message(ConfigMessage.BAITS_CLEARED);
+                message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
+                message.broadcast(player, true, true);
                 break;
 
             case "reload":

@@ -121,8 +121,11 @@ public class ConfigUpdater {
 			"  # When a bait is given to a player\n" +
 			"  given-player-bait: \"&rYou have given {player} a {bait}.\"\n" +
 			"  # When an admin runs /emf admin bait without a bait name.\n" +
-			"  no-bait-specified: \"&rYou must specify a bait name.\"\n" +
-			"\n" +
+			"  no-bait-specified: \"&rYou must specify a bait name.\n" +
+			"  # When the admin tries the command /emf admin clearbaits whe not holding a fishing rod.\n" +
+			"  must-be-holding-rod: \"&rYou need to be holding a fishing rod to run that command.\"\n" +
+			"  # When /emf admin clearbaits command is run.\n" +
+			"  all-baits-cleared: \"&rYou have removed all {amount} baits from your fishing rod.\"\n" +
 			"  # When economy is disabled for the plugin\n" +
 			"  economy-disabled: \"&rEvenMoreFish's economy features are disabled.\"\n" +
 			"\n" +

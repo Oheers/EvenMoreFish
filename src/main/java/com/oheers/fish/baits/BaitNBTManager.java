@@ -267,6 +267,33 @@ public class BaitNBTManager {
 		return false;
 	}
 
+	/**
+	 * Removes all the baits stored in the nbt of the fishing rod. It then returns the total number of baits deleted just
+	 * incase you fancy doing something special with this number. It first checks whether there's any baits actually on
+	 * the rod in the first place. It loops through each bait stored to find out how many will be deleted then simply removes
+	 * the namespacedkey from the fishing rod.
+	 *
+	 * @param itemStack The fishing rod with baits on it/
+	 * @return The number of baits that were deleted in total.
+	 */
+	public static int deleteAllBaits(ItemStack itemStack) {
+		if (!itemStack.getItemMeta().getPersistentDataContainer().has(baitedRodNBT, PersistentDataType.STRING)) {
+			return 0;
+		}
+
+		ItemMeta meta = itemStack.getItemMeta();
+
+		int totalDeleted = 0;
+		String baits = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING);
+		for (String appliedBait : meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",")) {
+				totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
+			}
+
+		meta.getPersistentDataContainer().remove(baitedRodNBT);
+		itemStack.setItemMeta(meta);
+		return totalDeleted;
+	}
+
 	public static void newApplyLore(ItemStack itemStack) {
 		ItemMeta meta;
 		if ((meta = itemStack.getItemMeta()) == null) return;
