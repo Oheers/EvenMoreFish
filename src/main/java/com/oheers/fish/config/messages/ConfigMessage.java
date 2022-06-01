@@ -19,7 +19,7 @@ public enum ConfigMessage {
 
 	BAIT_CAUGHT("bait-catch", "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.DEFAULT, true, false),
 	BAIT_USED("bait-use", "&rYou have used one of your rod's {bait_theme}&l{bait} &rbait.", PrefixType.DEFAULT, true, false),
-	BAIT_WRONG_GAMEMODE("bait-survival-limited", "&rYou must be in &nsurvival&c to apply baits to fishing rods.", PrefixType.ERROR, false, false),
+	BAIT_WRONG_GAMEMODE("bait-survival-limited", "&rYou must be in &nsurvival&r to apply baits to fishing rods.", PrefixType.ERROR, false, false),
 	BAITS_MAXED("max-baits-reached", "&rYou have reached the maximum number of types of baits for this fishing rod.", PrefixType.DEFAULT, false, true),
 	BAITS_MAXED_ON_ROD("max-baits-reached", "&rYou have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.", PrefixType.ERROR, false, false),
 

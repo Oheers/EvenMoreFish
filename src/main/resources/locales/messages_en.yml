@@ -196,6 +196,8 @@ max-bait-reached: "&rYou have reached the maximum number of {bait_theme}{bait} &
 bait-catch: "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!"
 # Sent when a bait is applied and a fish is caught.
 bait-use: "&rYou have used one of your rod's {bait_theme}&l{bait} &rbait."
+# Sent when someone tries to use a bait in creative
+bait-survival-limited: "&rYou must be in &nsurvival&r to apply baits to fishing rods."
 
 # Shown when /emf toggle is run, to turn off and on respectively.
 toggle-off: "&rYou will no longer catch custom fish."
@@ -238,4 +240,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 10
+config-version: 11

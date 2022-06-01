@@ -61,6 +61,7 @@ public class ConfigUpdater {
 			case 7: update.append(MSG_UPDATE_8);
 			case 8: update.append(MSG_UPDATE_9);
 			case 9: update.append(MSG_UPDATE_10);
+			case 10: update.append(MSG_UPDATE_11);
 		}
 
 		update.append(UPDATE_ALERT);
@@ -89,6 +90,7 @@ public class ConfigUpdater {
 		MSG_UPDATE_8 = null;
 		MSG_UPDATE_9 = null;
 		MSG_UPDATE_10 = null;
+		MSG_UPDATE_11 = null;
 
 		CONFIG_UPDATE_8 = null;
 		CONFIG_UPDATE_9	= null;
@@ -96,6 +98,52 @@ public class ConfigUpdater {
 	}
 
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
+
+	private static String MSG_UPDATE_11 = "invalid-type: \"&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH\"\n" +
+			"# Sent to all online players when not enough players are on to start a competition\n# How should the %emf_competition_place_fish_*% be formatted when there's no length on the fish?\n" +
+			"emf-lengthless-fish-format: \"{rarity_colour}&l{rarity} {fish}\"\n" +
+			"# How should %emf_competition_place_fish_*% be formatted during MOST/SPECIFIC_FISH competitions?\n" +
+			"emf-most-fish-format: \"{amount} fish\"\n" +
+			"# What should be displayed for %emf_competition_place_size_*% during the MOST_FISH competition?\n" +
+			"emf-size-during-most-fish: \"This is a competition for the most fish.\"\n" +
+			"# How the %emf_competition_time_left% variable should be formatted.\n" +
+			"emf-time-remaining: \"Time left until next competition: {days}d, {hours}h, {minutes}m.\"\n" +
+			"# Replaces the %emf_competition_time_left% variable when there's a competition already running.\n" +
+			"emf-time-remaining-during-comp: \"There is a competition running right now.\"\n# Sent when someone tries to use a bait in creative\n" +
+			"bait-survival-limited: \"&rYou must be in &nsurvival&r to apply baits to fishing rods.\"\n# When trying to place a skull-fish when this is blocked in config.yml\n" +
+			"place-fish-blocked: \"&rYou cannot place this fish.\"\n" +
+			"\n" +
+			"admin:\n" +
+			"  # Opens an /emf shop for another player\n" +
+			"  open-fish-shop: \"&rOpened a shop inventory for {player}.\"\n" +
+			"  # When a fish is given to a player\n" +
+			"  given-player-fish: \"&rYou have given {player} a {fish}.\"\n" +
+			"  # When a bait is given to a player\n" +
+			"  given-player-bait: \"&rYou have given {player} a {bait}.\"\n" +
+			"  # When an admin runs /emf admin bait without a bait name.\n" +
+			"  no-bait-specified: \"&rYou must specify a bait name.\"\n" +
+			"\n" +
+			"  # When economy is disabled for the plugin\n" +
+			"  economy-disabled: \"&rEvenMoreFish's economy features are disabled.\"\n" +
+			"\n" +
+			"  # When the specified player can't be found when using -p: parameter.\n" +
+			"  player-not-found: \"&r{player} could not be found.\"\n" +
+			"  # When the specified number in -q: is not a number.\n" +
+			"  number-format-error: \"&r{amount} is not a valid number.\"\n" +
+			"  # When the specified number in -q: is not within the minecraft stack range (1-64)\n" +
+			"  number-range-error: \"&r{amount} is not a number between 1-64.\"\n" +
+			"  # When a command cannot be run from the console\n" +
+			"  cannot-run-on-console: \"&rCommand cannot be run from console.\"\n" +
+			"\n" +
+			"  # Sent when a competition is already running when using /emf admin competition start\n" +
+			"  competition-already-running: \"&rThere's already a competition running.\"\n" +
+			"  # When an invalid competition type is tried to be started\n" +
+			"  competition-type-invalid: \"&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH\"\n" +
+			"\n" +
+			"  # When there's a spigot update available, don't translate the URL otherwise it won't direct to the correct page.\n" +
+			"  update-available: \"&rThere is an update available: https://www.spigotmc.org/resources/evenmorefish.91310/updates\"\n" +
+			"  # When the plugin is reloaded\n" +
+			"  reload: \"&rSuccessfully reloaded the plugin.\"";
 
 	private static String MSG_UPDATE_10 = "# Shown when /emf toggle is run, to turn off and on respectively.\n" +
 			"toggle-off: \"You will no longer catch custom fish.\"\n" +
