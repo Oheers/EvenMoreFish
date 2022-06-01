@@ -37,8 +37,10 @@ public enum ConfigMessage {
 	COMPETITION_START("contest-start", "&rA fishing contest for {type} has started.", PrefixType.DEFAULT, false, false),
 
 	COMPETITION_TYPE_LARGEST("competition-types.largest", "the largest fish", PrefixType.NONE, true, false),
+	COMPETITION_TYPE_LARGEST_TOTAL("competition-types.largest", "the largest total fish length", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_MOST("competition-types.most", "the most fish", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_SPECIFIC("competition-types.specific", "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r", PrefixType.NONE, true, false),
+	COMPETITION_TYPE_SPECIFIC_RARITY("competition-types.specific-rarity", "{amount} {rarity_colour}&l{rarity}&r fish", PrefixType.NONE, true, false),
 
 	COMPETITION_SINGLE_WINNER("single-winner", "&r{player} has won the competition for {type}. Congratulations!", PrefixType.DEFAULT, true, true),
 
@@ -80,6 +82,7 @@ public enum ConfigMessage {
 	INVALID_COMPETITION_TYPE("admin.competition-type-invalid", "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH", PrefixType.ADMIN, false, false),
 
 	LEADERBOARD_LARGEST_FISH("leaderboard-largest-fish", "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)", PrefixType.DEFAULT, false, true),
+	LEADERBOARD_LARGEST_TOTAL("leaderboard-largest-total", "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)", PrefixType.DEFAULT, false, true),
 	LEADERBOARD_MOST_FISH("leaderboard-most-fish", "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)", PrefixType.DEFAULT, false, true),
 	LEADERBOARD_TOTAL_PLAYERS("total-players", "&rThere are a total of {amount} player(s) in the leaderboard.", PrefixType.DEFAULT, true, true),
 
@@ -96,7 +99,7 @@ public enum ConfigMessage {
 	PLACEHOLDER_FISH_MOST_FORMAT("emf-most-fish-format", "{amount} fish", PrefixType.NONE, true, false),
 	PLACEHOLDER_NO_COMPETITION_RUNNING("no-competition-running", "No competition running right now.", PrefixType.NONE, true, false),
 	PLACEHOLDER_NO_PLAYER_IN_PLACE("no-player-in-place", "Start fishing to take this place", PrefixType.NONE, true, false),
-	PLACEHOLDER_SIZE_DURING_MOST_FISH("emf-size-during-most-fish", "This is a competition for the most fish.", PrefixType.NONE, true, false),
+	PLACEHOLDER_SIZE_DURING_MOST_FISH("emf-size-during-most-fish", "N/A", PrefixType.NONE, true, false),
 	PLACEHOLDER_TIME_REMAINING("emf-time-remaining", "Time left until next competition: {days}d, {hours}h, {minutes}m.", PrefixType.NONE, true, false),
 	PLACEHOLDER_TIME_REMAINING_DURING_COMP("emf-time-remaining-during-comp", "There is a competition running right now.", PrefixType.NONE, true, false),
 
@@ -257,7 +260,7 @@ enum PrefixType {
 		if (id == null) return "";
 		else {
 			return new Message(EvenMoreFish.msgs.config.getString(id, normal)).getRawMessage(false, false)
-					+ new Message(EvenMoreFish.msgs.config.getString("prefix", "[EvenMoreFish] ")).getRawMessage(false, false);
+					+ new Message(EvenMoreFish.msgs.config.getString("prefix", "[EvenMoreFish]")  + "&r").getRawMessage(false, false);
 		}
 	}
 }

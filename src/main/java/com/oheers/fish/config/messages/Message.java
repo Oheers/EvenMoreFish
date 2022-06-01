@@ -18,7 +18,7 @@ public class Message {
 
 	public String message;
 
-	private final boolean canSilent, canHidePrefix;
+	private boolean canSilent, canHidePrefix;
 
 	private final Map<String, String> liveVariables = new LinkedHashMap<>();
 	private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
@@ -219,6 +219,8 @@ public class Message {
 	 * @param message The new message to be displayed.
 	 */
 	public void setMessage(ConfigMessage message) {
+		this.canSilent = message.isCanSilent();
+		this.canHidePrefix = message.isCanHidePrefix();
 		configMessageToString(message);
 	}
 
@@ -333,7 +335,7 @@ public class Message {
 	 * @param baitTheme The bait colour theme.
 	 */
 	public void setBaitTheme(@NotNull final String baitTheme) {
-		setVariable("{bait_theme", baitTheme);
+		setVariable("{bait_theme}", baitTheme);
 	}
 
 
@@ -370,6 +372,7 @@ public class Message {
 		switch (type) {
 			case MOST_FISH: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage(false, false)); break;
 			case SPECIFIC_FISH: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false, false)); break;
+			case SPECIFIC_RARITY: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false, false)); break;
 			default: case LARGEST_FISH: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false, false));
 		}
 	}
