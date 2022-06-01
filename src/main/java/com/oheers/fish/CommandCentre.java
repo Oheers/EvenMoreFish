@@ -153,7 +153,8 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "largest_fish",
                 "most_fish",
                 "random",
-                "specific_fish"
+                "specific_fish",
+                "specific_rarity"
         );
     }
 

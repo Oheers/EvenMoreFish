@@ -29,7 +29,8 @@ competition-types:
   largest: "the largest fish"
   # SPECIFIC_FISH
   specific: "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r"
-
+  # SPECIFIC_RARITY
+  specific-rarity: "{amount} {rarity_colour}&l{rarity}&r fish"
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
@@ -183,7 +184,7 @@ emf-lengthless-fish-format: "{rarity_colour}&l{rarity} {fish}"
 # How should %emf_competition_place_fish_*% be formatted during MOST/SPECIFIC_FISH competitions?
 emf-most-fish-format: "{amount} fish"
 # What should be displayed for %emf_competition_place_size_*% during the MOST_FISH competition?
-emf-size-during-most-fish: "This is a competition for the most fish."
+emf-size-during-most-fish: "N/A"
 # How the %emf_competition_time_left% variable should be formatted.
 emf-time-remaining: "Time left until next competition: {days}d, {hours}h, {minutes}m."
 # Replaces the %emf_competition_time_left% variable when there's a competition already running.

@@ -39,6 +39,7 @@ public enum ConfigMessage {
 	COMPETITION_TYPE_LARGEST("competition-types.largest", "the largest fish", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_MOST("competition-types.most", "the most fish", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_SPECIFIC("competition-types.specific", "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r", PrefixType.NONE, true, false),
+	COMPETITION_TYPE_SPECIFIC_RARITY("competition-types.specific-rarity", "{amount} {rarity_colour}&l{rarity}&r fish", PrefixType.NONE, true, false),
 
 	COMPETITION_SINGLE_WINNER("single-winner", "&r{player} has won the competition for {type}. Congratulations!", PrefixType.DEFAULT, true, true),
 
@@ -96,7 +97,7 @@ public enum ConfigMessage {
 	PLACEHOLDER_FISH_MOST_FORMAT("emf-most-fish-format", "{amount} fish", PrefixType.NONE, true, false),
 	PLACEHOLDER_NO_COMPETITION_RUNNING("no-competition-running", "No competition running right now.", PrefixType.NONE, true, false),
 	PLACEHOLDER_NO_PLAYER_IN_PLACE("no-player-in-place", "Start fishing to take this place", PrefixType.NONE, true, false),
-	PLACEHOLDER_SIZE_DURING_MOST_FISH("emf-size-during-most-fish", "This is a competition for the most fish.", PrefixType.NONE, true, false),
+	PLACEHOLDER_SIZE_DURING_MOST_FISH("emf-size-during-most-fish", "N/A", PrefixType.NONE, true, false),
 	PLACEHOLDER_TIME_REMAINING("emf-time-remaining", "Time left until next competition: {days}d, {hours}h, {minutes}m.", PrefixType.NONE, true, false),
 	PLACEHOLDER_TIME_REMAINING_DURING_COMP("emf-time-remaining-during-comp", "There is a competition running right now.", PrefixType.NONE, true, false),
 
@@ -257,7 +258,7 @@ enum PrefixType {
 		if (id == null) return "";
 		else {
 			return new Message(EvenMoreFish.msgs.config.getString(id, normal)).getRawMessage(false, false)
-					+ new Message(EvenMoreFish.msgs.config.getString("prefix", "[EvenMoreFish] ")).getRawMessage(false, false);
+					+ new Message(EvenMoreFish.msgs.config.getString("prefix", "[EvenMoreFish]")  + "&r").getRawMessage(false, false);
 		}
 	}
 }

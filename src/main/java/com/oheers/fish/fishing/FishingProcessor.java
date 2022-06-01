@@ -123,7 +123,7 @@ public class FishingProcessor implements Listener {
                 exception.printStackTrace();
             }
         } else {
-            Rarity fishRarity = randomWeightedRarity(player, 1, null);
+            Rarity fishRarity = randomWeightedRarity(player, 1, null, EvenMoreFish.fishCollection.keySet());
             if (fishRarity == null) return null;
 
             fish = getFish(fishRarity, location, player, 1, null);
@@ -237,7 +237,7 @@ public class FishingProcessor implements Listener {
         return fish.give();
     }
 
-    public static Rarity randomWeightedRarity(Player fisher, double boostRate, Set<Rarity> boostedRarities) {
+    public static Rarity randomWeightedRarity(Player fisher, double boostRate, Set<Rarity> boostedRarities, Set<Rarity> totalRarities) {
 
         if (fisher != null && EvenMoreFish.decidedRarities.containsKey(fisher.getUniqueId())) {
             Rarity chosenRarity = EvenMoreFish.decidedRarities.get(fisher.getUniqueId());
@@ -259,7 +259,7 @@ public class FishingProcessor implements Listener {
                 }
             }
         } else {
-            allowedRarities.addAll(EvenMoreFish.fishCollection.keySet());
+            allowedRarities.addAll(totalRarities);
         }
 
         double totalWeight = 0;
@@ -344,7 +344,7 @@ public class FishingProcessor implements Listener {
         List<Fish> available = new ArrayList<>();
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (EvenMoreFish.fishCollection.get(r) == null) r = randomWeightedRarity(p, 1, null);
+        if (EvenMoreFish.fishCollection.get(r) == null) r = randomWeightedRarity(p, 1, null, EvenMoreFish.fishCollection.keySet());
 
 
         for (Fish f : EvenMoreFish.fishCollection.get(r)) {
