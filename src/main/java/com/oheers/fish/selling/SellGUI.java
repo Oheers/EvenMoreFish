@@ -270,7 +270,7 @@ public class SellGUI implements InventoryHolder {
         this.value = val;
         this.fishCount = count;
 
-        return Double.toString(val);
+        return Double.toString(Math.floor(val*10)/10);
     }
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
@@ -324,7 +324,7 @@ public class SellGUI implements InventoryHolder {
 
         // sending the sell message to the player
         Message message = new Message(ConfigMessage.FISH_SALE);
-        message.setSellPrice(Double.toString(value));
+        message.setSellPrice(Double.toString(Math.floor(value*10)/10));
         message.setAmount(Integer.toString(fishCount));
         message.setPlayer(this.player.toString());
         message.broadcast(player, true, true);
