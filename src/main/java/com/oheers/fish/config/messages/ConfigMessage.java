@@ -37,6 +37,7 @@ public enum ConfigMessage {
 	COMPETITION_START("contest-start", "&rA fishing contest for {type} has started.", PrefixType.DEFAULT, false, false),
 
 	COMPETITION_TYPE_LARGEST("competition-types.largest", "the largest fish", PrefixType.NONE, true, false),
+	COMPETITION_TYPE_LARGEST_TOTAL("competition-types.largest", "the largest total fish length", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_MOST("competition-types.most", "the most fish", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_SPECIFIC("competition-types.specific", "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_SPECIFIC_RARITY("competition-types.specific-rarity", "{amount} {rarity_colour}&l{rarity}&r fish", PrefixType.NONE, true, false),
@@ -81,6 +82,7 @@ public enum ConfigMessage {
 	INVALID_COMPETITION_TYPE("admin.competition-type-invalid", "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH", PrefixType.ADMIN, false, false),
 
 	LEADERBOARD_LARGEST_FISH("leaderboard-largest-fish", "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)", PrefixType.DEFAULT, false, true),
+	LEADERBOARD_LARGEST_TOTAL("leaderboard-largest-total", "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)", PrefixType.DEFAULT, false, true),
 	LEADERBOARD_MOST_FISH("leaderboard-most-fish", "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)", PrefixType.DEFAULT, false, true),
 	LEADERBOARD_TOTAL_PLAYERS("total-players", "&rThere are a total of {amount} player(s) in the leaderboard.", PrefixType.DEFAULT, true, true),
 

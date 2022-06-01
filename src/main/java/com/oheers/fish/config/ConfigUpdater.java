@@ -146,7 +146,12 @@ public class ConfigUpdater {
 			"  # When there's a spigot update available, don't translate the URL otherwise it won't direct to the correct page.\n" +
 			"  update-available: \"&rThere is an update available: https://www.spigotmc.org/resources/evenmorefish.91310/updates\"\n" +
 			"  # When the plugin is reloaded\n" +
-			"  reload: \"&rSuccessfully reloaded the plugin.\"";
+			"  reload: \"&rSuccessfully reloaded the plugin.\"\n" +
+			"competition-types:\n" +
+			"  # LARGEST_TOTAL_FISH\n" +
+			"  largest-total: \"the largest total fish length\"\n" +
+			"  # SPECIFIC_RARITY\n" +
+			"  specific-rarity: \"{amount} {rarity_colour}&l{rarity}&r fish\"";
 
 	private static String MSG_UPDATE_10 = "# Shown when /emf toggle is run, to turn off and on respectively.\n" +
 			"toggle-off: \"You will no longer catch custom fish.\"\n" +

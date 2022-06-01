@@ -203,7 +203,12 @@ public class Competition {
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
 
-        if (competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY || competitionType == CompetitionType.MOST_FISH) {
+        if (
+                competitionType == CompetitionType.SPECIFIC_FISH ||
+                competitionType == CompetitionType.SPECIFIC_RARITY ||
+                competitionType == CompetitionType.MOST_FISH ||
+                competitionType == CompetitionType.LARGEST_TOTAL
+        ) {
             // is the fish the specific fish or rarity?
             if (competitionType == CompetitionType.SPECIFIC_FISH) {
                 if (!(fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity())) {
@@ -221,8 +226,12 @@ public class Competition {
             } else {
                 CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
 
+                float increaseAmount;
+                if (this.competitionType == CompetitionType.LARGEST_TOTAL) increaseAmount = fish.getLength();
+                else increaseAmount = 1.0f;
+
                 if (entry != null) {
-                    if (entry.getValue()+1 >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
+                    if (entry.getValue()+increaseAmount >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
                         Message message = new Message(ConfigMessage.NEW_FIRST_PLACE_NOTIFICATION);
                         message.setLength(Float.toString(fish.getLength()));
                         message.setRarityColour(fish.getRarity().getColour());
@@ -236,7 +245,7 @@ public class Competition {
                     try {
                         // re-adding the entry so it's sorted
                         leaderboard.removeEntry(entry);
-                        entry.incrementValue();
+                        entry.incrementValue(increaseAmount);
                         leaderboard.addEntry(entry);
                     } catch (Exception exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Could not delete: " + entry);
@@ -248,6 +257,7 @@ public class Competition {
 
                 } else {
                     CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
+                    if (this.competitionType == CompetitionType.LARGEST_TOTAL) newEntry.incrementValue(fish.getLength()-1);
                     leaderboard.addEntry(newEntry);
                 }
             }
@@ -288,10 +298,6 @@ public class Competition {
                         message.setFishCaught(fish.getName());
                         message.setRarity(fish.getRarity().getValue());
                         message.setPlayer(fisher.getName());
-
-                        boolean a = EvenMoreFish.msgs.config.getBoolean("action-bar-message");
-                        boolean b = EvenMoreFish.msgs.config.getStringList("action-bar-types").size() == 0 || EvenMoreFish.msgs.config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
-
 
                         FishUtils.broadcastFishMessage(message, isDoingFirstPlaceActionBar());
                     }
@@ -368,8 +374,16 @@ public class Competition {
                             if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
                             else message.setFishCaught(fish.getName());
                         } else {
-                            message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
-                            message.setAmount(Integer.toString((int) entry.getValue()));
+                            if (competitionType == CompetitionType.LARGEST_TOTAL) {
+                                message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                                // Clearing floating point .00000003 error not-cool stuff.
+                                message.setAmount(Double.toString(Math.floor(entry.getValue()*10)/10));
+                            }
+                            else {
+                                message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                                message.setAmount(Integer.toString((int) entry.getValue()));
+                            }
+
                         }
                         builder.append(message.getRawMessage(true, true));
 
@@ -402,7 +416,8 @@ public class Competition {
                                 else message.setFishCaught(fish.getName());
                             } else {
                                 message.setAmount(Integer.toString((int) entry.getValue()));
-                                message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                                if (competitionType == CompetitionType.LARGEST_TOTAL) message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                                else message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
                             }
 
                             builder.append("\n").append(message.getRawMessage(true, true));

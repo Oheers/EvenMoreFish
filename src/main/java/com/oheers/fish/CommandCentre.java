@@ -151,6 +151,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         compTypes = Arrays.asList(
                 "largest_fish",
+                "largest_total",
                 "most_fish",
                 "random",
                 "specific_fish",

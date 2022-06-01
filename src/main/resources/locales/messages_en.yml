@@ -27,6 +27,8 @@ competition-types:
   most: "the most fish"
   # LARGEST_FISH
   largest: "the largest fish"
+  # LARGEST_TOTAL_FISH
+  largest-total: "the largest total fish length"
   # SPECIFIC_FISH
   specific: "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r"
   # SPECIFIC_RARITY
@@ -65,6 +67,7 @@ help: "/{command} - {description}"
 
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
 leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
+leaderboard-largest-total: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)"
 leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
 # If you're running a competition where there's no leaderboard, this message is sent when there's a winner
 single-winner: "&r{player} has won the competition for {type}. Congratulations!"
@@ -247,3 +250,9 @@ admin:
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
 config-version: 11
+
+competition-types:
+  # LARGEST_TOTAL_FISH
+  largest-total: "the largest total fish length"
+  # SPECIFIC_RARITY
+  specific-rarity: "{amount} {rarity_colour}&l{rarity}&r fish"
