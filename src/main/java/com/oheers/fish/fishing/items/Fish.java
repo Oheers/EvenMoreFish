@@ -87,7 +87,7 @@ public class Fish implements Cloneable {
 
             fish.setItemMeta(fishMeta);
 
-            WorthNBT.setNBT(fish, this.length, this.getRarity().getValue(), this.getName());
+            WorthNBT.setNBT(fish, this.length, this.fisherman, this.getRarity().getValue(), this.getName());
         }
 
         return fish;

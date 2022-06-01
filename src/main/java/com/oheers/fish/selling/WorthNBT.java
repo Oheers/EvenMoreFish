@@ -10,17 +10,21 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.UUID;
+
 public class WorthNBT {
 
-    public static ItemStack setNBT(ItemStack fish, Float length, String rarity, String name) {
+    public static ItemStack setNBT(ItemStack fish, Float length, UUID player, String rarity, String name) {
         // creates key and plops in the value of "value"
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
+        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-player");
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
         ItemMeta itemMeta = fish.getItemMeta();
 
         itemMeta.getPersistentDataContainer().set(nbtlength, PersistentDataType.FLOAT, length);
+        itemMeta.getPersistentDataContainer().set(nbtplayer, PersistentDataType.STRING, player.toString());
         itemMeta.getPersistentDataContainer().set(nbtrarity, PersistentDataType.STRING, rarity);
         itemMeta.getPersistentDataContainer().set(nbtname, PersistentDataType.STRING, name);
 
@@ -29,19 +33,19 @@ public class WorthNBT {
         return fish;
     }
 
-    public static Skull setNBT(Skull fish, Float length, String rarity, String name) {
+    public static void setNBT(Skull fish, Float length, UUID player, String rarity, String name) {
         // creates key and plops in the value of "value"
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
+        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-player");
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
         PersistentDataContainer itemMeta = fish.getPersistentDataContainer();
 
         itemMeta.set(nbtlength, PersistentDataType.FLOAT, length);
+        if (player != null) itemMeta.set(nbtplayer, PersistentDataType.STRING, player.toString());
         itemMeta.set(nbtrarity, PersistentDataType.STRING, rarity);
         itemMeta.set(nbtname, PersistentDataType.STRING, name);
-
-        return fish;
     }
 
 

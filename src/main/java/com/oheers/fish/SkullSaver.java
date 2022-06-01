@@ -38,8 +38,7 @@ public class SkullSaver implements Listener {
 				event.setCancelled(true);
 
 				try {
-					Fish f = FishUtils.getFish(sm);
-					f.setFisherman(event.getPlayer().getUniqueId());
+					Fish f = FishUtils.getFish(sm, event.getPlayer());
 
 					stack.setItemMeta(f.give().getItemMeta());
 					block.setType(Material.AIR);
@@ -82,7 +81,7 @@ public class SkullSaver implements Listener {
 				BlockState state = block.getState();
 				Skull sm = (Skull) state;
 
-				WorthNBT.setNBT(sm, f.getLength(), f.getRarity().getValue(), f.getName());
+				WorthNBT.setNBT(sm, f.getLength(), f.getFisherman(), f.getRarity().getValue(), f.getName());
 
 				sm.update();
 			} else {

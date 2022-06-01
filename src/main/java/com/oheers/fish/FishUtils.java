@@ -65,12 +65,14 @@ public class FishUtils {
 
     public static Fish getFish(ItemStack i) {
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
+        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         PersistentDataContainer container = i.getItemMeta().getPersistentDataContainer();
         String nameString = container.get(nbtname, PersistentDataType.STRING);
+        String playerString = container.get(nbtplayer, PersistentDataType.STRING);
         String rarityString = container.get(nbtrarity, PersistentDataType.STRING);
         Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
 
@@ -87,6 +89,7 @@ public class FishUtils {
         try {
             Fish fish = new Fish(rarity, nameString);
             fish.setLength(lengthFloat);
+            if (playerString != null) fish.setFisherman(UUID.fromString(playerString));
 
             return fish;
         } catch (InvalidFishException exception) {
@@ -97,14 +100,16 @@ public class FishUtils {
         return null;
     }
 
-    public static Fish getFish(Skull s) throws InvalidFishException {
+    public static Fish getFish(Skull s, Player fisher) throws InvalidFishException {
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
+        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         PersistentDataContainer container = s.getPersistentDataContainer();
         String nameString = container.get(nbtname, PersistentDataType.STRING);
+        String playerString = container.get(nbtplayer, PersistentDataType.STRING);
         String rarityString = container.get(nbtrarity, PersistentDataType.STRING);
         Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
 
@@ -120,6 +125,11 @@ public class FishUtils {
         // setting the correct length so it's an exact replica.
         Fish fish = new Fish(rarity, nameString);
         fish.setLength(lengthFloat);
+        if (playerString != null) {
+            fish.setFisherman(UUID.fromString(playerString));
+        } else {
+            fish.setFisherman(fisher.getUniqueId());
+        }
 
         return fish;
     }
