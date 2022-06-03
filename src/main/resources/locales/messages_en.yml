@@ -250,9 +250,3 @@ admin:
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
 config-version: 11
-
-competition-types:
-  # LARGEST_TOTAL_FISH
-  largest-total: "the largest total fish length"
-  # SPECIFIC_RARITY
-  specific-rarity: "{amount} {rarity_colour}&l{rarity}&r fish"

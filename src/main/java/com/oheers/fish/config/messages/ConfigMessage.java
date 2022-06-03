@@ -19,7 +19,7 @@ public enum ConfigMessage {
 	ADMIN_UPDATE_AVAILABLE("admin.update-available", "&rThere is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates", PrefixType.ADMIN, false, false),
 
 	BAITS_CLEARED("admin.all-baits-cleared", "&rYou have removed all {amount} baits from your fishing rod.", PrefixType.ADMIN, true, false),
-	BAIT_CAUGHT("bait-catch", "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.DEFAULT, true, false),
+	BAIT_CAUGHT("bait-catch", "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.NONE, true, false),
 	BAIT_USED("bait-use", "&rYou have used one of your rod's {bait_theme}&l{bait} &rbait.", PrefixType.DEFAULT, true, false),
 	BAIT_WRONG_GAMEMODE("bait-survival-limited", "&rYou must be in &nsurvival&r to apply baits to fishing rods.", PrefixType.ERROR, false, false),
 	BAITS_MAXED("max-baits-reached", "&rYou have reached the maximum number of types of baits for this fishing rod.", PrefixType.DEFAULT, false, true),
