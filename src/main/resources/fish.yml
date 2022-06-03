@@ -48,7 +48,7 @@ fish:
         material: STONE_SWORD
     Electric Eel:
       message: "&b*Zap!*"
-      effect: "INSTANT_DAMAGE:1:1"
+      health: -1
     Squid:
       item:
         material: INK_SAC

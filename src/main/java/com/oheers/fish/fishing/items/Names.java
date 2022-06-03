@@ -3,7 +3,7 @@ package com.oheers.fish.fishing.items;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.exceptions.InvalidFishException;
-import org.bukkit.block.Biome;
+import com.oheers.fish.requirements.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -60,13 +60,9 @@ public class Names {
                 }
 
                 assert canvas != null;
-                canvas.setBiomes(getBiomes(fish, r.getValue()));
-                canvas.setAllowedRegions(getRegions(fish, r.getValue()));
-                canvas.setPermissionNode(permissionCheck(fish, rarity));
+                canvas.setRequirements(getRequirements(fish, rarity));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
-
-                if (canvas.getAllowedRegions().size() > 0) regionCheck = true;
 
                 if (compCheckExempt(fish, rarity)) {
                     r.setHasCompExemptFish(true);
@@ -165,24 +161,24 @@ public class Names {
         return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
     }
 
-    private List<Biome> getBiomes(String name, String rarity) {
-        // returns the biomes found in the "biomes:" section of the fish.yml
-        List<Biome> biomes = new ArrayList<>();
+    private List<Requirement> getRequirements(String name, String rarity) {
+        ConfigurationSection requirementSection = this.fishConfiguration.getConfigurationSection("fish." + rarity + "." + name + ".requirements");
+        if (requirementSection == null) return null;
 
-        for (String biome : this.fishConfiguration.getStringList("fish." + rarity + "." + name + ".biomes")) {
-            try {
-                biomes.add(Biome.valueOf(biome));
-            } catch (IllegalArgumentException iae) {
-                EvenMoreFish.logger.log(Level.SEVERE, biome + " is not a valid biome, found when loading in: " + name);
+        List<Requirement> currentRequirements = new ArrayList<>();
+        for (String s : requirementSection.getKeys(false)) {
+            switch (s.toLowerCase()) {
+                case "biome": currentRequirements.add(new com.oheers.fish.requirements.Biome("fish." + rarity + "." + name + ".requirements.biome")); break;
+                case "irl-time": currentRequirements.add(new IRLTime("fish." + rarity + "." + name + ".requirements.irl-time")); break;
+                case "ingame-time": currentRequirements.add(new InGameTime("fish." + rarity + "." + name + ".requirements.ingame-time")); break;
+                case "permission": currentRequirements.add(new Permission("fish." + rarity + "." + name + ".requirements.permission")); break;
+                case "region": currentRequirements.add(new Region("fish." + rarity + "." + name + ".requirements.region")); regionCheck = true; break;
+                case "weather": currentRequirements.add(new Weather("fish." + rarity + "." + name + ".requirements.weather")); break;
+                case "world": currentRequirements.add(new World("fish." + rarity + "." + name + ".requirements.world")); break;
             }
         }
 
-        return biomes;
-    }
-
-    private List<String> getRegions(String name, String rarity) {
-        // returns the regions found in the "allowed-regions:" section of the fish.yml
-        return new ArrayList<>(this.fishConfiguration.getStringList("fish." + rarity + "." + name + ".allowed-regions"));
+        return currentRequirements;
     }
 
     private void weightCheck(Fish fishObject, String name, Rarity rarityObject, String rarity) {
@@ -190,10 +186,6 @@ public class Names {
             rarityObject.setFishWeighted(true);
             fishObject.setWeight(this.fishConfiguration.getDouble("fish." + rarity + "." + name + ".weight"));
         }
-    }
-
-    private String permissionCheck(String name, String rarity) {
-        return this.fishConfiguration.getString("fish." + rarity + "." + name + ".permission");
     }
 
     private boolean compCheckExempt(String name, String rarity) {
