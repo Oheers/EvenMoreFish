@@ -9,6 +9,7 @@ import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
+import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.events.AureliumSkillsFishingEvent;
 import com.oheers.fish.events.FishEatEvent;
@@ -89,6 +90,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static String guardPL;
     public static boolean papi;
 
+    public static DatabaseV3 databaseV3;
+
     public static final int METRIC_ID = 11054;
 
     public static final int MSG_CONFIG_VERSION = 11;
@@ -167,19 +170,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
 
-            Database.getUrl();
-
-            // Attempts to connect to the database if enabled
-            try {
-                if (!Database.fishTableExists()) {
-                    Database.createDatabase();
-                }
-                if (!Database.userTableExists()) {
-                    Database.createUserTable();
-                }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+           databaseV3 = new DatabaseV3();
 
         }
 
