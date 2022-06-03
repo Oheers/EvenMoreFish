@@ -6,10 +6,10 @@ import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
+import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
 import org.bukkit.Bukkit;
-import org.bukkit.block.Biome;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,10 +33,9 @@ public class Fish implements Cloneable {
     List<Reward> fishRewards;
     String eventType;
 
-    List<Biome> biomes;
-    List<String> allowedRegions;
+    List<Requirement> requirements = new ArrayList<>();
 
-    String permissionNode;
+    List<String> allowedRegions;
 
     double weight;
 
@@ -156,12 +155,13 @@ public class Fish implements Cloneable {
 
         String[] separated = effectConfig.split(":");
         // if it's formatted wrong, it'll just give the player this as a stock effect
-        if (separated.length != 3) Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
+        if (separated.length != 3)
+            Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
 
         PotionEffectType effect = PotionEffectType.getByName(separated[0].toUpperCase());
         int amplitude = Integer.parseInt(separated[1]);
         // *20 to bring it to seconds rather than ticks
-        int time = Integer.parseInt(separated[2])*20;
+        int time = Integer.parseInt(separated[2]) * 20;
 
         try {
             Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(effect, time, amplitude));
@@ -171,7 +171,6 @@ public class Fish implements Cloneable {
             Bukkit.getServer().getLogger().log(Level.SEVERE, "ATTENTION! Check your config files and ensure spelling of the effect name is correct.");
             Bukkit.getServer().getLogger().log(Level.SEVERE, "ATTENTION! If the problem persists, ask for help on the support discord server.");
         }
-
     }
 
     // prepares it to be given to the player
@@ -266,22 +265,6 @@ public class Fish implements Cloneable {
         isCompExemptFish = compExemptFish;
     }
 
-    public void setBiomes(List<Biome> biomes) {
-        this.biomes = biomes;
-    }
-
-    public List<Biome> getBiomes() {
-        return biomes;
-    }
-
-    public List<String> getAllowedRegions() {
-        return allowedRegions;
-    }
-
-    public void setAllowedRegions(List<String> allowedRegions) {
-        this.allowedRegions = allowedRegions;
-    }
-
     public String getName() {
         return name;
     }
@@ -318,19 +301,19 @@ public class Fish implements Cloneable {
         return weight;
     }
 
-    public String getPermissionNode() {
-        return permissionNode;
-    }
-
-    public void setPermissionNode(String permissionNode) {
-        this.permissionNode = permissionNode;
-    }
-
     public String getDisplayName() {
         return displayName;
     }
 
     public ItemFactory getFactory() {
         return factory;
+    }
+
+    public void setRequirements(List<Requirement> requirements) {
+        this.requirements = requirements;
+    }
+
+    public List<Requirement> getRequirements() {
+        return this.requirements;
     }
 }

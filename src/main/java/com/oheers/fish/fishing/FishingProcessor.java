@@ -15,6 +15,8 @@ import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.requirements.Requirement;
+import com.oheers.fish.requirements.RequirementContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
@@ -346,32 +348,25 @@ public class FishingProcessor implements Listener {
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
         if (EvenMoreFish.fishCollection.get(r) == null) r = randomWeightedRarity(p, 1, null, EvenMoreFish.fishCollection.keySet());
 
+        RequirementContext context = new RequirementContext();
+        context.setLocation(l);
+        context.setPlayer(p);
 
+        fishLoop:
         for (Fish f : EvenMoreFish.fishCollection.get(r)) {
-
-            if (EvenMoreFish.permission != null && f.getPermissionNode() != null) {
-                if (p != null && !EvenMoreFish.permission.has(p, f.getPermissionNode())) {
-                    continue;
-                }
-            }
 
             if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                 continue;
             }
 
-            if (l != null) {
-
-                if (!FishUtils.checkRegion(l, f.getAllowedRegions())) {
-                    continue;
-                }
-
-                if (l.getWorld() != null) {
-                    if (f.getBiomes().contains(l.getBlock().getBiome()) || f.getBiomes().isEmpty()) {
-                        available.add(f);
-                    }
-                } else EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + p.getUniqueId());
-            } else {
+            List<Requirement> requirements;
+            if ((requirements = f.getRequirements()) == null) {
                 available.add(f);
+            } else {
+                for (Requirement requirement : requirements) {
+                    if (!requirement.requirementMet(context)) continue fishLoop;
+                    else available.add(f);
+                } available.add(f);
             }
         }
 
