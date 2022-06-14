@@ -89,8 +89,7 @@ public class Bait {
 		if (meta != null) meta.setLore(createBoostLore());
 		baitItem.setItemMeta(meta);
 
-		BaitNBTManager.applyBaitNBT(baitItem, this.name);
-		return baitItem;
+		return BaitNBTManager.applyBaitNBT(baitItem, this.name);
 	}
 
 	/**
