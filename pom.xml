@@ -15,7 +15,6 @@
     </properties>
 
     <build>
-        <finalName>even-more-fish-${project.version}-NBT-API</finalName> <!-- Temp for testing, remove before PR TODO -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
