@@ -5,6 +5,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
+import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +33,7 @@ public class BaitNBTManager {
 		if (itemStack == null) return false;
 
 		if (itemStack.hasItemMeta()) {
-			return itemStack.getItemMeta().getPersistentDataContainer().has(baitNBT, PersistentDataType.STRING);
+			return new NBTItem(itemStack).hasKey(baitNBT.toString());
 		} else return false;
 	}
 
@@ -44,7 +45,7 @@ public class BaitNBTManager {
 		if (itemStack == null) return null;
 
 		if (itemStack.hasItemMeta()) {
-			return itemStack.getItemMeta().getPersistentDataContainer().get(baitNBT, PersistentDataType.STRING);
+			return new NBTItem(itemStack).getString(baitNBT.toString());
 		} else return null;
 	}
 
@@ -56,15 +57,12 @@ public class BaitNBTManager {
 	 * @param item The item stack being turned into a bait.
 	 * @param bait The name of the bait to be applied.
 	 */
+	//TODO test this
 	public static void applyBaitNBT(ItemStack item, String bait) {
 		if (item == null) return;
-
-		if (item.hasItemMeta()) {
-			ItemMeta itemMeta = item.getItemMeta();
-			itemMeta.getPersistentDataContainer().set(baitNBT, PersistentDataType.STRING, bait);
-
-			item.setItemMeta(itemMeta);
-		}
+		NBTItem nbtItem = new NBTItem(item);
+		nbtItem.setString(baitNBT.toString(),bait);
+		item = nbtItem.getItem();
 	}
 
 	/**
@@ -78,7 +76,7 @@ public class BaitNBTManager {
 		if (itemStack.getType() != Material.FISHING_ROD) return false;
 
 		if (itemStack.hasItemMeta()) {
-			return itemStack.getItemMeta().getPersistentDataContainer().has(baitedRodNBT, PersistentDataType.STRING);
+			return new NBTItem(itemStack).hasKey(baitedRodNBT.toString());
 		}
 
 		return false;
@@ -101,6 +99,8 @@ public class BaitNBTManager {
 		boolean maxBait = false;
 		int cursorModifier = 0;
 
+		NBTItem nbtItem = new NBTItem(item);
+
 		if (isBaitedRod(item)) {
 
 			try {
@@ -110,8 +110,8 @@ public class BaitNBTManager {
 				return null;
 			}
 
+			String[] baitList = nbtItem.getString(baitedRodNBT.toString()).split(",");
 			ItemMeta meta = item.getItemMeta();
-			String[] baitList = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",");
 			StringBuilder combined = new StringBuilder();
 
 			boolean foundBait = false;
@@ -158,20 +158,20 @@ public class BaitNBTManager {
 			}
 
 			if (combined.length() > 0) {
-				meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, combined.toString());
+				nbtItem.setString(baitedRodNBT.toString(),combined.toString());
 			} else {
-				meta.getPersistentDataContainer().remove(baitedRodNBT);
+				nbtItem.removeKey(baitedRodNBT.toString());
 			}
 
 			item.setItemMeta(meta);
 		} else {
 			ItemMeta meta = item.getItemMeta();
 			if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
-				meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait.getName() + ":" + bait.getMaxApplications());
+				nbtItem.setString(baitedRodNBT.toString(),bait.getName() + ":" + bait.getMaxApplications());
 				cursorModifier = -bait.getMaxApplications();
 				maxBait = true;
 			} else {
-				meta.getPersistentDataContainer().set(baitedRodNBT, PersistentDataType.STRING, bait.getName() + ":" + quantity);
+				nbtItem.setString(baitedRodNBT.toString(),bait.getName() + ":" + quantity);
 				cursorModifier = -quantity;
 			}
 			item.setItemMeta(meta);
@@ -181,7 +181,7 @@ public class BaitNBTManager {
 
 		if (maxBait) throw new MaxBaitReachedException(bait.getName() + " has reached its maximum number of uses on the fishing rod.", new ApplicationResult(item, cursorModifier));
 
-		return new ApplicationResult(item, cursorModifier);
+		return new ApplicationResult(nbtItem.getItem(), cursorModifier);
 	}
 
 	/**
@@ -194,8 +194,8 @@ public class BaitNBTManager {
 	public static Bait randomBaitApplication(ItemStack fishingRod) {
 		if (fishingRod.getItemMeta() == null) return null;
 
-		ItemMeta meta = fishingRod.getItemMeta();
-		String[] baitNameList = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",");
+		NBTItem nbtItem = new NBTItem(fishingRod);
+		String[] baitNameList = nbtItem.getString(baitedRodNBT.toString()).split(",");
 		List<Bait> baitList = new ArrayList<>();
 
 		for (String baitName : baitNameList) {
@@ -257,10 +257,12 @@ public class BaitNBTManager {
 	 */
 	public static boolean hasBaitApplied(ItemStack itemStack, String bait) {
 		ItemMeta meta = itemStack.getItemMeta();
-
 		if (meta == null) return false;
 
-		for (String appliedBait : meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",")) {
+		NBTItem nbtItem = new NBTItem(itemStack);
+		String[] baitList = nbtItem.getString(baitedRodNBT.toString()).split(",");
+
+		for (String appliedBait : baitList) {
 			if (appliedBait.split(":")[0].equals(bait)) return true;
 		}
 
@@ -277,34 +279,34 @@ public class BaitNBTManager {
 	 * @return The number of baits that were deleted in total.
 	 */
 	public static int deleteAllBaits(ItemStack itemStack) {
-		if (!itemStack.getItemMeta().getPersistentDataContainer().has(baitedRodNBT, PersistentDataType.STRING)) {
+		NBTItem nbtItem = new NBTItem(itemStack);
+		if(!nbtItem.hasKey(baitedRodNBT.toString()))
 			return 0;
-		}
-
-		ItemMeta meta = itemStack.getItemMeta();
 
 		int totalDeleted = 0;
-		String baits = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING);
-		for (String appliedBait : meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING).split(",")) {
-				totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
-			}
+		String[] baitList = nbtItem.getString(baitedRodNBT.toString()).split(",");
+		for (String appliedBait : baitList) {
+			totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
+		}
 
-		meta.getPersistentDataContainer().remove(baitedRodNBT);
-		itemStack.setItemMeta(meta);
+		nbtItem.removeKey(baitedRodNBT.toString());
+		itemStack = nbtItem.getItem(); //todo test
 		return totalDeleted;
 	}
 
 	public static void newApplyLore(ItemStack itemStack) {
-		ItemMeta meta;
-		if ((meta = itemStack.getItemMeta()) == null) return;
+		if (itemStack.getItemMeta() == null) return;
+
+		ItemMeta meta = itemStack.getItemMeta();
 
 		List<String> lore;
-		if ((lore = meta.getLore()) == null) lore = new ArrayList<>();
+		if ((lore = meta.getLore()) == null)
+			lore = new ArrayList<>();
 
 		for (String lineAddition : EvenMoreFish.baitFile.getRodLoreFormat()) {
 			if (lineAddition.equals("{baits}")) {
 
-				String rodNBT = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING);
+				String rodNBT = new NBTItem(itemStack).getString(baitedRodNBT.toString());
 				if (rodNBT == null) return;
 
 				int baitCount = 0;
@@ -375,11 +377,9 @@ public class BaitNBTManager {
 	 * @return How many baits have been applied to this fishing rod.
 	 */
 	private static int getNumBaitsApplied(ItemStack itemStack) {
+		NBTItem nbtItem = new NBTItem(itemStack);
 
-		ItemMeta meta;
-		if ((meta = itemStack.getItemMeta()) == null) return 0;
-
-		String rodNBT = meta.getPersistentDataContainer().get(baitedRodNBT, PersistentDataType.STRING);
+		String rodNBT = nbtItem.getString(baitedRodNBT.toString());
 		if (rodNBT == null) return 1;
 
 		return rodNBT.split(",").length;

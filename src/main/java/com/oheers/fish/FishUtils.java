@@ -15,6 +15,10 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTListCompound;
+import de.tr7zw.nbtapi.NBTTileEntity;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -41,40 +45,41 @@ public class FishUtils {
 
     /* checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
      * we only need to check for the length since they're all added in a batch if it's an EMF fish */
-    public static boolean isFish(ItemStack i) {
+    public static boolean isFish(ItemStack item) {
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
-        if (i != null) {
-            if (i.hasItemMeta()) {
-                return i.getItemMeta().getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
+        if (item != null) {
+            if (item.hasItemMeta()) {
+                return new NBTItem(item).hasKey(nbtlength.toString());
             }
         }
 
         return false;
     }
 
-    public static boolean isFish(Skull s) {
+    public static boolean isFish(Skull skull) {
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
-        if (s != null) {
-            return s.getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
+        if (skull != null) {
+            return new NBTTileEntity(skull).hasKey(nbtlength.toString());
         }
 
         return false;
     }
 
-    public static Fish getFish(ItemStack i) {
+    public static Fish getFish(ItemStack item) {
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
         NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
-        PersistentDataContainer container = i.getItemMeta().getPersistentDataContainer();
-        String nameString = container.get(nbtname, PersistentDataType.STRING);
-        String playerString = container.get(nbtplayer, PersistentDataType.STRING);
-        String rarityString = container.get(nbtrarity, PersistentDataType.STRING);
-        Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
+        NBTItem nbtItem = new NBTItem(item);
+
+        String nameString = nbtItem.getString(nbtname.toString());
+        String playerString = nbtItem.getString(nbtplayer.toString());
+        String rarityString = nbtItem.getString(nbtrarity.toString());
+        Float lengthFloat = nbtItem.getFloat(nbtlength.toString());
 
         // Generating an empty rarity
         Rarity rarity = null;
@@ -100,18 +105,19 @@ public class FishUtils {
         return null;
     }
 
-    public static Fish getFish(Skull s, Player fisher) throws InvalidFishException {
+    public static Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
         NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
 
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
-        PersistentDataContainer container = s.getPersistentDataContainer();
-        String nameString = container.get(nbtname, PersistentDataType.STRING);
-        String playerString = container.get(nbtplayer, PersistentDataType.STRING);
-        String rarityString = container.get(nbtrarity, PersistentDataType.STRING);
-        Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
+        NBTTileEntity nbtSkull = new NBTTileEntity(skull);
+
+        String nameString = nbtSkull.getString(nbtname.toString());
+        String playerString = nbtSkull.getString(nbtplayer.toString());
+        String rarityString = nbtSkull.getString(nbtrarity.toString());
+        Float lengthFloat = nbtSkull.getFloat(nbtlength.toString());
 
         // Generating an empty rarity
         Rarity rarity = null;
@@ -214,21 +220,30 @@ public class FishUtils {
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
 
+    //todo test this
+    //gets the item with a custom texture
     public static ItemStack get(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        assert meta != null;
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-        profile.getProperties().put("textures", new Property("textures", base64EncodedString));
-        try {
-            Field profileField = meta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(meta, profile);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        skull.setItemMeta(meta);
-        return skull;
+        NBTItem nbtItem = new NBTItem(skull);
+        NBTCompound nbtCompound = nbtItem.addCompound("SkullOwner");
+        nbtCompound.setString("Id", UUID.randomUUID().toString());
+
+        NBTListCompound texture = nbtCompound.addCompound("Properties").getCompoundList("textures").addCompound();
+        texture.setString("Value", base64EncodedString);
+        return nbtItem.getItem();
+//        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+//        assert meta != null;
+//        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+//        profile.getProperties().put("textures", new Property("textures", base64EncodedString));
+//        try {
+//            Field profileField = meta.getClass().getDeclaredField("profile");
+//            profileField.setAccessible(true);
+//            profileField.set(meta, profile);
+//        } catch (NoSuchFieldException | IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+//        skull.setItemMeta(meta);
+//        return skull;
     }
 
     public static String timeFormat(long timeLeft) {
@@ -305,7 +320,7 @@ public class FishUtils {
         NamespacedKey nbtbait = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-bait");
 
         if (item.getItemMeta() != null) {
-            return item.getItemMeta().getPersistentDataContainer().has(nbtbait, PersistentDataType.STRING);
+            return new NBTItem(item).hasKey(nbtbait.toString());
         }
 
         return false;

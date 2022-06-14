@@ -2,6 +2,8 @@ package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTTileEntity;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
@@ -21,18 +23,15 @@ public class WorthNBT {
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
-        ItemMeta itemMeta = fish.getItemMeta();
+        NBTItem nbtItem = new NBTItem(fish);
+        nbtItem.setFloat(nbtlength.toString(),length);
+        nbtItem.setString(nbtplayer.toString(),player.toString());
+        nbtItem.setString(nbtrarity.toString(),rarity);
+        nbtItem.setString(nbtname.toString(),name);
 
-        itemMeta.getPersistentDataContainer().set(nbtlength, PersistentDataType.FLOAT, length);
-        itemMeta.getPersistentDataContainer().set(nbtplayer, PersistentDataType.STRING, player.toString());
-        itemMeta.getPersistentDataContainer().set(nbtrarity, PersistentDataType.STRING, rarity);
-        itemMeta.getPersistentDataContainer().set(nbtname, PersistentDataType.STRING, name);
-
-        // sets the nbt and returns it
-        fish.setItemMeta(itemMeta);
-        return fish;
+        return nbtItem.getItem();
     }
-
+    //todo test
     public static void setNBT(Skull fish, Float length, UUID player, String rarity, String name) {
         // creates key and plops in the value of "value"
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
@@ -40,12 +39,11 @@ public class WorthNBT {
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
-        PersistentDataContainer itemMeta = fish.getPersistentDataContainer();
-
-        itemMeta.set(nbtlength, PersistentDataType.FLOAT, length);
-        if (player != null) itemMeta.set(nbtplayer, PersistentDataType.STRING, player.toString());
-        itemMeta.set(nbtrarity, PersistentDataType.STRING, rarity);
-        itemMeta.set(nbtname, PersistentDataType.STRING, name);
+        NBTTileEntity nbtItem = new NBTTileEntity(fish);
+        nbtItem.setFloat(nbtlength.toString(),length);
+        if (player != null) nbtItem.setString(nbtplayer.toString(),player.toString());
+        nbtItem.setString(nbtrarity.toString(),rarity);
+        nbtItem.setString(nbtname.toString(),name);
     }
 
 
@@ -57,14 +55,12 @@ public class WorthNBT {
 
         if (item != null) {
             if (item.hasItemMeta()) {
-                ItemMeta itemMeta = item.getItemMeta();
-                PersistentDataContainer container = itemMeta.getPersistentDataContainer();
-
                 if (FishUtils.isFish(item)) {
+                    NBTItem nbtItem = new NBTItem(item);
                     // it's a fish so it'll definitely have these NBT values
-                    Float length = container.get(nbtlength, PersistentDataType.FLOAT);
-                    String rarity = container.get(nbtrarity, PersistentDataType.STRING);
-                    String name = container.get(nbtname, PersistentDataType.STRING);
+                    Float length = nbtItem.getFloat(nbtlength.toString());
+                    String rarity = nbtItem.getString(nbtrarity.toString());
+                    String name = nbtItem.getString(nbtname.toString());
                     // gets a possible set-worth in the fish.yml
                     int setVal;
 
@@ -89,21 +85,14 @@ public class WorthNBT {
 
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
         NamespacedKey key = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "default-gui-item");
-        ItemMeta itemMeta = defaultGUIItem.getItemMeta();
-        itemMeta.getPersistentDataContainer().set(key, PersistentDataType.BYTE, Byte.MAX_VALUE);
-        // sets the nbt and returns it
-        defaultGUIItem.setItemMeta(itemMeta);
-        return defaultGUIItem;
+        NBTItem nbtItem = new NBTItem(defaultGUIItem);
+        nbtItem.setByte(key.toString(),Byte.MAX_VALUE);
+        return nbtItem.getItem();
     }
 
     public static boolean isDefault(ItemStack is) {
         NamespacedKey key = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "default-gui-item");
-        if (is.hasItemMeta()) {
-            PersistentDataContainer container = is.getItemMeta().getPersistentDataContainer();
-            return container.has(key, PersistentDataType.BYTE);
-        }
-
-        return false;
+        return new NBTItem(is).hasKey(key.toString());
     }
 
     private static double getMultipliedValue(Float length, String rarity, String name) {
