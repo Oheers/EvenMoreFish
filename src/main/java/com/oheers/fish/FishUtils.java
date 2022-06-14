@@ -231,19 +231,6 @@ public class FishUtils {
         NBTListCompound texture = nbtCompound.addCompound("Properties").getCompoundList("textures").addCompound();
         texture.setString("Value", base64EncodedString);
         return nbtItem.getItem();
-//        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-//        assert meta != null;
-//        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-//        profile.getProperties().put("textures", new Property("textures", base64EncodedString));
-//        try {
-//            Field profileField = meta.getClass().getDeclaredField("profile");
-//            profileField.setAccessible(true);
-//            profileField.set(meta, profile);
-//        } catch (NoSuchFieldException | IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//        skull.setItemMeta(meta);
-//        return skull;
     }
 
     public static String timeFormat(long timeLeft) {
