@@ -37,6 +37,10 @@
                             <!-- Replace this with your package! -->
                             <shadedPattern>com.oheers.evenmorefish.bstats</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
+                            <shadedPattern>com.oheers.evenmorefish.nbt</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -102,6 +106,13 @@
         <repository>
             <id>neetgames</id>
             <url>https://nexus.neetgames.com/repository/maven-releases/</url>
+        </repository>
+
+        <!-- CodeMC -->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <layout>default</layout>
         </repository>
     </repositories>
 
@@ -192,6 +203,13 @@
             <groupId>com.github.Archy-X</groupId>
             <artifactId>AureliumSkills</artifactId>
             <version>Beta1.2.8</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api</artifactId>
+            <version>2.10.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
