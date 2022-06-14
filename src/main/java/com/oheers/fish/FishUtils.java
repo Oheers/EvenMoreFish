@@ -220,7 +220,6 @@ public class FishUtils {
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
 
-    //todo test this
     //gets the item with a custom texture
     public static ItemStack get(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);

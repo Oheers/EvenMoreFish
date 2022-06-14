@@ -31,7 +31,7 @@ public class WorthNBT {
 
         return nbtItem.getItem();
     }
-    //todo test
+
     public static void setNBT(Skull fish, Float length, UUID player, String rarity, String name) {
         // creates key and plops in the value of "value"
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
