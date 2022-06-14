@@ -57,11 +57,11 @@ public class BaitNBTManager {
 	 * @param bait The name of the bait to be applied.
 	 */
 	//TODO test this
-	public static void applyBaitNBT(ItemStack item, String bait) {
-		if (item == null) return;
+	public static ItemStack applyBaitNBT(ItemStack item, String bait) {
+		if (item == null) return null;
 		NBTItem nbtItem = new NBTItem(item);
 		nbtItem.setString(baitNBT.toString(),bait);
-		item = nbtItem.getItem();
+		return nbtItem.getItem();
 	}
 
 	/**
