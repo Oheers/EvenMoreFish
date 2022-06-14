@@ -295,7 +295,6 @@ public class BaitNBTManager {
 		}
 
 		nbtItem.removeKey(baitedRodNBT.toString());
-		itemStack = nbtItem.getItem();
 		return totalDeleted;
 	}
 
