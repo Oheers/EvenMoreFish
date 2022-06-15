@@ -15,60 +15,64 @@ import org.bukkit.inventory.ItemStack;
 
 public class BaitApplicationListener implements Listener {
 
-	@EventHandler
-	public void onClickEvent(InventoryClickEvent event) {
+    @EventHandler
+    public void onClickEvent(InventoryClickEvent event) {
+        if (event.getCurrentItem() == null || event.getCursor() == null)
+            return;
 
-		ItemStack clickedItem;
-		ItemStack cursor;
+        ItemStack clickedItem = event.getCurrentItem();
+        ItemStack cursor = event.getCursor();
 
-		if ((clickedItem = event.getCurrentItem()) == null) return;
-		if ((cursor = event.getCursor()) == null) return;
+        if (clickedItem.getType() != Material.FISHING_ROD)
+            return;
 
-		if (clickedItem.getType() == Material.FISHING_ROD) {
-			if (BaitNBTManager.isBaitObject(event.getCursor())) {
+        if (!BaitNBTManager.isBaitObject(cursor)) {
+            return;
+        }
 
-				if (!event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL)) {
-					new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), true, false);
-					return;
-				}
 
-				ApplicationResult result = null;
-				Bait bait = EvenMoreFish.baits.get(BaitNBTManager.getBaitName(event.getCursor()));
+        if (!event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL)) {
+            new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), true, false);
+            return;
+        }
 
-				try {
-					if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-						result = BaitNBTManager.applyBaitedRodNBT(clickedItem, bait, event.getCursor().getAmount());
-						EvenMoreFish.metric_baitsApplied += event.getCursor().getAmount();
-					} else {
-						result = BaitNBTManager.applyBaitedRodNBT(clickedItem, bait, 1);
-						EvenMoreFish.metric_baitsApplied++;
-					}
+        ApplicationResult result = null;
+        Bait bait = EvenMoreFish.baits.get(BaitNBTManager.getBaitName(event.getCursor()));
 
-				} catch (MaxBaitsReachedException exception) {
-					new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked(), true, false);
-					return;
-				} catch (MaxBaitReachedException exception) {
-					result = exception.getRecoveryResult();
-					Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
-					message.setBaitTheme(bait.getTheme());
-					message.setBait(bait.getName());
-					message.broadcast(event.getWhoClicked(), true, true);
-				}
+        try {
+            if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                result = BaitNBTManager.applyBaitedRodNBT(clickedItem, bait, event.getCursor().getAmount());
+                EvenMoreFish.metric_baitsApplied += event.getCursor().getAmount();
+            } else {
+                result = BaitNBTManager.applyBaitedRodNBT(clickedItem, bait, 1);
+                EvenMoreFish.metric_baitsApplied++;
+            }
 
-				if (result == null || result.getFishingRod() == null) return;
+        } catch (MaxBaitsReachedException exception) {
+            new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked(), true, false);
+            return;
+        } catch (MaxBaitReachedException exception) {
+            result = exception.getRecoveryResult();
+            Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
+            message.setBaitTheme(bait.getTheme());
+            message.setBait(bait.getName());
+            message.broadcast(event.getWhoClicked(), true, true);
+        }
 
-				event.setCancelled(true);
-				event.setCurrentItem(result.getFishingRod());
+        if (result == null || result.getFishingRod() == null) return;
 
-				int cursorModifier = result.getCursorItemModifier();
+        event.setCancelled(true);
+        event.setCurrentItem(result.getFishingRod());
 
-				if (cursor.getAmount() - cursorModifier == 0) {
-					event.getWhoClicked().setItemOnCursor(new ItemStack(Material.AIR));
-				} else {
-					cursor.setAmount(cursor.getAmount() + cursorModifier);
-					event.getWhoClicked().setItemOnCursor(cursor);
-				}
-			}
-		}
-	}
+        int cursorModifier = result.getCursorItemModifier();
+
+        if (cursor.getAmount() - cursorModifier == 0) {
+            event.getWhoClicked().setItemOnCursor(new ItemStack(Material.AIR));
+        } else {
+            cursor.setAmount(cursor.getAmount() + cursorModifier);
+            event.getWhoClicked().setItemOnCursor(cursor);
+        }
+
+
+    }
 }

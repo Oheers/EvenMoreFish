@@ -329,7 +329,7 @@ public class FishingProcessor implements Listener {
                 if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
                     r -= fishList.get(idx).getWeight() * boostRate;
                 } else {
-                    r -= fishList.get(idx).getWeight();;
+                    r -= fishList.get(idx).getWeight();
                 }
             }
 
