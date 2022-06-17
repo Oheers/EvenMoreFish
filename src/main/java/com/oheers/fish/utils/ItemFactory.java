@@ -148,7 +148,6 @@ public class ItemFactory {
             return null;
         }
 
-        //todo IA
         if (mValue.contains("itemsadder:")) {
 
             String[] splitMaterialValue = mValue.split(":");
