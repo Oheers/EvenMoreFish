@@ -26,15 +26,28 @@ public enum Table {
 					"    first_catch_time LONGBLOB NOT NULL\n" +
 					");"
 			),
+	EMF_FISH_LOG("emf_fish_log",
+			"CREATE TABLE emf_fish_log (\n" +
+					"    id INT NOT NULL,\n" +
+					"    rarity VARCHAR(128) NOT NULL,\n" +
+					"    fish VARCHAR(128) NOT NULL, \n" +
+					"    quantity INT NOT NULL,\n" +
+					"    first_catch_time LONGBLOB NOT NULL,\n" +
+					"    largest_length REAL NOT NULL\n" +
+					");"
+	),
 	EMF_USERS("emf_users",
 			"CREATE TABLE emf_users (\n" +
+			"	 id INTEGER NOT NULL, \n" +
+			"    uuid VARCHAR(128) NOT NULL, \n" +
 			"	 first_fish VARCHAR(256) NOT NULL, \n" +
 			" 	 last_fish VARCHAR(256) NOT NULL, \n" +
 			"    largest_fish VARCHAR(256) NOT NULL, \n" +
 			"    num_fish_caught VARCHAR(256) NOT NULL, \n" +
 			"    total_fish_length INT NOT NULL, \n" +
 			"    competitions_won INT NOT NULL, \n" +
-			"    competitions_joined INT NOT NULL\n" +
+			"    competitions_joined INT NOT NULL,\n" +
+			"    PRIMARY KEY(id AUTOINCREMENT) \n" +
 			");");
 
 	public final String tableID;

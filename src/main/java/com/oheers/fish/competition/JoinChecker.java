@@ -50,9 +50,9 @@ public class JoinChecker implements Listener {
                         EvenMoreFish.logger.log(Level.SEVERE, "Fetched a null reports file for: " + event.getPlayer().getUniqueId());
                     }
 
-                    if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
+                    /*if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
                         Database.addUser(event.getPlayer().getUniqueId().toString());
-                    }
+                    }*/
                 }
             }
         }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
@@ -73,7 +73,7 @@ public class JoinChecker implements Listener {
                 @Override
                 public void run() {
                     if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-                        Database.addUser(event.getPlayer().getUniqueId().toString());
+//                        Database.addUser(event.getPlayer().getUniqueId().toString());
                     }
 
                     if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {

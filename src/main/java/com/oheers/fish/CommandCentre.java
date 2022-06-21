@@ -120,6 +120,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 }
                 break;
+            case "migrate":
+                if (!EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                } else {
+                    EvenMoreFish.databaseV3.migrate(sender);
+                }
             default:
                 sender.sendMessage(Help.formGeneralHelp(sender));
         }
