@@ -96,7 +96,7 @@ public class BaitNBTManager {
 		boolean maxBait = false;
 		int cursorModifier = 0;
 
-		NBTItem nbtItem = new NBTItem(item);
+		NBTItem nbtItem;
 		if (isBaitedRod(item)) {
 
 			try {
@@ -110,7 +110,7 @@ public class BaitNBTManager {
 				return null;
 			}
 
-
+			nbtItem = new NBTItem(item);
 			String[] baitList = nbtItem.getString(baitedRodNBT.toString()).split(",");
 			StringBuilder combined = new StringBuilder();
 
@@ -164,6 +164,7 @@ public class BaitNBTManager {
 				nbtItem.removeKey(baitedRodNBT.toString());
 			}
 		} else {
+			nbtItem = new NBTItem(item);
 			if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
 				nbtItem.setString(baitedRodNBT.toString(),bait.getName() + ":" + bait.getMaxApplications());
 				cursorModifier = -bait.getMaxApplications();
