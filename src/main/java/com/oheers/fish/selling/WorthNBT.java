@@ -21,10 +21,10 @@ public class WorthNBT {
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
         NBTItem nbtItem = new NBTItem(fish);
-        nbtItem.setFloat(nbtlength.toString(),length);
-        nbtItem.setString(nbtplayer.toString(),player.toString());
-        nbtItem.setString(nbtrarity.toString(),rarity);
-        nbtItem.setString(nbtname.toString(),name);
+        nbtItem.setFloat(nbtlength.toString(), length);
+        nbtItem.setString(nbtplayer.toString(), player.toString());
+        nbtItem.setString(nbtrarity.toString(), rarity);
+        nbtItem.setString(nbtname.toString(), name);
 
         return nbtItem.getItem();
     }
@@ -37,53 +37,47 @@ public class WorthNBT {
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
         NBTTileEntity nbtItem = new NBTTileEntity(fish);
-        nbtItem.setFloat(nbtlength.toString(),length);
-        if (player != null) nbtItem.setString(nbtplayer.toString(),player.toString());
-        nbtItem.setString(nbtrarity.toString(),rarity);
-        nbtItem.setString(nbtname.toString(),name);
+        nbtItem.setFloat(nbtlength.toString(), length);
+        if (player != null) nbtItem.setString(nbtplayer.toString(), player.toString());
+        nbtItem.setString(nbtrarity.toString(), rarity);
+        nbtItem.setString(nbtname.toString(), name);
     }
 
 
     public static double getValue(ItemStack item) {
         // creating the key to check for
+        if (item == null || !item.hasItemMeta() || !FishUtils.isFish(item)) {
+            return -1.0;
+        }
+
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
 
-        if (item != null) {
-            if (item.hasItemMeta()) {
-                if (FishUtils.isFish(item)) {
-                    NBTItem nbtItem = new NBTItem(item);
-                    // it's a fish so it'll definitely have these NBT values
-                    Float length = nbtItem.getFloat(nbtlength.toString());
-                    String rarity = nbtItem.getString(nbtrarity.toString());
-                    String name = nbtItem.getString(nbtname.toString());
-                    // gets a possible set-worth in the fish.yml
-                    int setVal;
 
-                    try {
-                        setVal = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
-                    } catch (NullPointerException npe) {
-                        setVal = 0;
-                    }
+        NBTItem nbtItem = new NBTItem(item);
+        // it's a fish so it'll definitely have these NBT values
+        Float length = nbtItem.getFloat(nbtlength.toString());
+        String rarity = nbtItem.getString(nbtrarity.toString());
+        String name = nbtItem.getString(nbtname.toString());
+        // gets a possible set-worth in the fish.yml
+        int setVal;
 
-                    if (setVal != 0) return setVal;
-                    // there's no set-worth so we're calculating the worth ourselves
-                    return getMultipliedValue(
-                            length,
-                            rarity,
-                            name);
-                } else return -1.0;
-            } else {
-                return -1.0;
-            }
-        } else return -1.0;
+        try {
+            setVal = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+        } catch (NullPointerException npe) {
+            setVal = 0;
+        }
+
+        if (setVal != 0) return setVal;
+        // there's no set-worth so we're calculating the worth ourselves
+        return getMultipliedValue(length, rarity, name);
     }
 
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
         NamespacedKey key = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "default-gui-item");
         NBTItem nbtItem = new NBTItem(defaultGUIItem);
-        nbtItem.setByte(key.toString(),Byte.MAX_VALUE);
+        nbtItem.setByte(key.toString(), Byte.MAX_VALUE);
         return nbtItem.getItem();
     }
 
@@ -104,7 +98,7 @@ public class WorthNBT {
         // Whatever it finds the value to be, gets multiplied by the fish length and set
         value *= length;
         // Sorts out funky decimals during the above multiplication.
-        value = Math.round(value*10.0)/10.0;
+        value = Math.round(value * 10.0) / 10.0;
 
         return value;
     }
