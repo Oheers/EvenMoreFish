@@ -13,6 +13,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,12 +45,11 @@ public class BaitNBTManager {
 	 * @param itemStack The item stack that is a bait.
 	 * @return The name of the bait.
 	 */
-	public static String getBaitName(ItemStack itemStack) {
-		if (itemStack == null) return null;
-
+	public static @Nullable String getBaitName(@NotNull ItemStack itemStack) {
 		if (itemStack.hasItemMeta()) {
 			return NbtUtils.getString(new NBTItem(itemStack), NbtUtils.Keys.EMF_BAIT);
-		} else return null;
+		}
+		return null;
 	}
 
 	/**
@@ -64,7 +65,6 @@ public class BaitNBTManager {
 		NBTItem nbtItem = new NBTItem(item);
 		NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
 		emfCompound.setString(NbtUtils.Keys.EMF_BAIT, bait);
-		nbtItem.setObject(NbtUtils.Keys.EMF_BAIT, emfCompound);
 		return nbtItem.getItem();
 	}
 
@@ -169,7 +169,6 @@ public class BaitNBTManager {
 			} else {
 				emfCompound.removeKey(NbtUtils.Keys.EMF_APPLIED_BAIT);
 			}
-			nbtItem.setObject(NbtUtils.Keys.EMF_COMPOUND, emfCompound);
 		} else {
 			nbtItem = new NBTItem(item);
 			NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
@@ -181,7 +180,6 @@ public class BaitNBTManager {
 				emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, bait.getName() + ":" + quantity);
 				cursorModifier = -quantity;
 			}
-			nbtItem.setObject(NbtUtils.Keys.EMF_COMPOUND, emfCompound);
 		}
 
 		item = nbtItem.getItem();

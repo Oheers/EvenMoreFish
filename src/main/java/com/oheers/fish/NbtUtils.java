@@ -1,7 +1,9 @@
 package com.oheers.fish;
 
 import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -106,6 +108,11 @@ public class NbtUtils {
             return NbtVersion.LEGACY;
         return NbtVersion.NBTAPI;
     }
+
+    public static NbtVersion getNbtVersion(final ItemStack itemStack) {
+        return getNbtVersion(new NBTItem(itemStack));
+    }
+
 
 
     @Contract("_ -> new")
