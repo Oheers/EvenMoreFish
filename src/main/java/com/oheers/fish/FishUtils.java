@@ -41,40 +41,33 @@ public class FishUtils {
     /* checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
      * we only need to check for the length since they're all added in a batch if it's an EMF fish */
     public static boolean isFish(ItemStack item) {
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
-        if (item != null) {
-            if (item.hasItemMeta()) {
-                return new NBTItem(item).hasKey(nbtlength.toString());
-            }
+        if (item != null && item.hasItemMeta()) {
+            return NbtUtils.hasKey(new NBTItem(item), "emf-fish-length");
         }
 
         return false;
     }
 
     public static boolean isFish(Skull skull) {
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
         if (skull != null) {
-            return new NBTTileEntity(skull).hasKey(nbtlength.toString());
+            return NbtUtils.hasKey(new NBTTileEntity(skull),"emf-fish-length");
         }
 
         return false;
     }
 
     public static Fish getFish(ItemStack item) {
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         NBTItem nbtItem = new NBTItem(item);
 
-        String nameString = nbtItem.getString(nbtname.toString());
-        String playerString = nbtItem.getString(nbtplayer.toString());
-        String rarityString = nbtItem.getString(nbtrarity.toString());
-        Float lengthFloat = nbtItem.getFloat(nbtlength.toString());
+        String nameString = NbtUtils.getString(nbtItem,"emf-fish-name");
+        String playerString = NbtUtils.getString(nbtItem,"emf-fish-player");
+        String rarityString = NbtUtils.getString(nbtItem, "emf-fish-rarity");
+        Float lengthFloat = NbtUtils.getFloat(nbtItem, "emf-fish-length");
+
+        if(nameString == null || rarityString == null || lengthFloat == null)
+            return null; //throw new InvalidFishException("NBT Error");
+
 
         // Generating an empty rarity
         Rarity rarity = null;
