@@ -101,18 +101,16 @@ public class FishUtils {
     }
 
     public static Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         NBTTileEntity nbtSkull = new NBTTileEntity(skull);
 
-        String nameString = nbtSkull.getString(nbtname.toString());
-        String playerString = nbtSkull.getString(nbtplayer.toString());
-        String rarityString = nbtSkull.getString(nbtrarity.toString());
-        Float lengthFloat = nbtSkull.getFloat(nbtlength.toString());
+        String nameString = NbtUtils.getString(nbtSkull,"emf-fish-name");
+        String playerString = NbtUtils.getString(nbtSkull,"emf-fish-player");
+        String rarityString = NbtUtils.getString(nbtSkull, "emf-fish-rarity");
+        Float lengthFloat = NbtUtils.getFloat(nbtSkull, "emf-fish-length");
+
+        if(nameString == null || rarityString == null || lengthFloat == null)
+            throw new InvalidFishException("NBT Error");
 
         // Generating an empty rarity
         Rarity rarity = null;
@@ -298,10 +296,8 @@ public class FishUtils {
      * @return Whether this ItemStack is a bait.
      */
     public boolean isBaitObject(ItemStack item) {
-        NamespacedKey nbtbait = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-bait");
-
         if (item.getItemMeta() != null) {
-            return new NBTItem(item).hasKey(nbtbait.toString());
+            return NbtUtils.hasKey(new NBTItem(item),"emf-bait");
         }
 
         return false;
