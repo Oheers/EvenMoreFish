@@ -13,12 +13,14 @@ import java.util.Locale;
 public class NbtUtils {
     public static class Keys {
         public static final String EMF_COMPOUND = JavaPlugin.getProvidingPlugin(NbtUtils.class).getName().toLowerCase(Locale.ROOT);
-        public static final String PUBLIC_BUKKIT_VALUES = "PublicBukkitValues";
         public static final String EMF_FISH_PLAYER = "emf-fish-player";
         public static final String EMF_FISH_RARITY = "emf-fish-rarity";
         public static final String EMF_FISH_LENGTH = "emf-fish-length";
         public static final String EMF_FISH_NAME = "emf-fish-name";
         public static final String EMF_BAIT = "emf-bait";
+
+        public static final String PUBLIC_BUKKIT_VALUES = "PublicBukkitValues";
+        public static final String DEFAULT_GUI_ITEM = "default-gui-item";
     }
 
     /*
@@ -98,10 +100,48 @@ public class NbtUtils {
 
         return null;
     }
+    //todo could be void?
+    public static @NotNull NBTCompound setByte(final @NotNull NBTCompound nbtCompound, final String key, final Byte value) {
+        final NBTCompound emfCompound = nbtCompound.getOrCreateCompound(Keys.EMF_COMPOUND);
+        emfCompound.setByte(key,value);
+        return emfCompound;
+    }
+
+    public static @NotNull NBTCompound setString(final @NotNull NBTCompound nbtCompound, final String key, final String value) {
+        final NBTCompound emfCompound = nbtCompound.getOrCreateCompound(Keys.EMF_COMPOUND);
+        emfCompound.setString(key,value);
+        return emfCompound;
+    }
+
+    public static @NotNull NBTCompound setFloat(final @NotNull NBTCompound nbtCompound, final String key, final Float value) {
+        final NBTCompound emfCompound = nbtCompound.getOrCreateCompound(Keys.EMF_COMPOUND);
+        emfCompound.setFloat(key,value);
+        return emfCompound;
+    }
+
+    /**
+     * Returns the NBT Version of the item
+     * It does not mean that this is an emf item.
+     * @param compound
+     * @return
+     */
+    public static NbtVersion getNbtVersion(final NBTCompound compound) {
+        if(Boolean.TRUE.equals(compound.hasKey(Keys.EMF_COMPOUND)))
+            return NbtVersion.COMPAT; //def an emf item
+        if(Boolean.TRUE.equals(compound.hasKey(Keys.PUBLIC_BUKKIT_VALUES)))
+            return NbtVersion.LEGACY;
+        return NbtVersion.NBTAPI;
+    }
 
 
     @Contract("_ -> new")
     private static @NotNull NamespacedKey getNamespacedKey(final String key) {
         return new NamespacedKey(JavaPlugin.getProvidingPlugin(NbtUtils.class), key);
+    }
+
+    public enum NbtVersion {
+        LEGACY, //pre nbt-api pr
+        NBTAPI, //nbt-api pr
+        COMPAT //compatible with everything :)
     }
 }
