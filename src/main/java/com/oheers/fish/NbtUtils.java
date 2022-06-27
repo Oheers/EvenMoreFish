@@ -50,19 +50,22 @@ public class NbtUtils {
         NamespacedKey namespacedKey = getNamespacedKey(key);
         if(Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
             NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if(Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString())))
+            if(Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString()))) {
                 return publicBukkitValues.getString(namespacedKey.toString());
+            }
         }
 
         //NBT API PR
-        if(Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.toString())))
+        if(Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.toString()))) {
             return nbtCompound.getString(namespacedKey.toString());
+        }
 
         //NBT COMPAT
         if(Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.getNamespace()))) {
             NBTCompound emfCompound = nbtCompound.getCompound(namespacedKey.getNamespace());
-            if(Boolean.TRUE.equals(emfCompound.hasKey(namespacedKey.getKey())))
-                return nbtCompound.getString(namespacedKey.getKey());
+            if(Boolean.TRUE.equals(emfCompound.hasKey(namespacedKey.getKey()))) {
+                return emfCompound.getString(namespacedKey.getKey());
+            }
         }
 
         return null;
