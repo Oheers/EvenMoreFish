@@ -25,7 +25,6 @@ public class WorthNBT {
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, player.toString());
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, name);
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, rarity);
-        nbtItem.setObject(NbtUtils.Keys.EMF_COMPOUND, emfCompound);
 
         return nbtItem.getItem();
     }
@@ -41,7 +40,6 @@ public class WorthNBT {
         }
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, name);
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, rarity);
-        nbtItem.setObject(NbtUtils.Keys.EMF_COMPOUND, emfCompound);
     }
 
 
@@ -72,7 +70,6 @@ public class WorthNBT {
         NBTItem nbtItem = new NBTItem(defaultGUIItem);
         NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
         emfCompound.setByte(NbtUtils.Keys.DEFAULT_GUI_ITEM, Byte.MAX_VALUE);
-        nbtItem.setObject(NbtUtils.Keys.EMF_COMPOUND, emfCompound);
         return nbtItem.getItem();
     }
 
