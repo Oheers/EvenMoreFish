@@ -1,7 +1,6 @@
 package com.oheers.fish;
 
 import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
@@ -24,19 +23,8 @@ public class NbtUtils {
         public static final String DEFAULT_GUI_ITEM = "default-gui-item";
     }
 
-    /*
-        3 possible options:
-        legacy: <-- check for this first
-            compound for PublicBukkitValues
-        nbt-api-pr: <-- then this
-            evenmorefish:key: value
-        nbt-compat-pr: <-- then this
-            compound for evenmorefish:
-                            key: value
-     */
     public static boolean hasKey(final @NotNull NBTCompound nbtCompound, final String key) {
         NamespacedKey namespacedKey = getNamespacedKey(key);
-
         //Pre NBT-API PR
         if(Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
             NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
