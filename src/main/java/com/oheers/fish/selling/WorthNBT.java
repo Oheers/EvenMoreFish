@@ -60,18 +60,15 @@ public class WorthNBT {
         Float length = nbtItem.getFloat(nbtlength.toString());
         String rarity = nbtItem.getString(nbtrarity.toString());
         String name = nbtItem.getString(nbtname.toString());
+
+
         // gets a possible set-worth in the fish.yml
-        int setVal;
-
         try {
-            setVal = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            return EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
         } catch (NullPointerException npe) {
-            setVal = 0;
+            // there's no set-worth so we're calculating the worth ourselves
+            return getMultipliedValue(length, rarity, name);
         }
-
-        if (setVal != 0) return setVal;
-        // there's no set-worth so we're calculating the worth ourselves
-        return getMultipliedValue(length, rarity, name);
     }
 
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
