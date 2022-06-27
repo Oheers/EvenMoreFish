@@ -41,40 +41,33 @@ public class FishUtils {
     /* checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
      * we only need to check for the length since they're all added in a batch if it's an EMF fish */
     public static boolean isFish(ItemStack item) {
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
-        if (item != null) {
-            if (item.hasItemMeta()) {
-                return new NBTItem(item).hasKey(nbtlength.toString());
-            }
+        if (item != null && item.hasItemMeta()) {
+            return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_LENGTH);
         }
 
         return false;
     }
 
     public static boolean isFish(Skull skull) {
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
         if (skull != null) {
-            return new NBTTileEntity(skull).hasKey(nbtlength.toString());
+            return NbtUtils.hasKey(new NBTTileEntity(skull), NbtUtils.Keys.EMF_FISH_LENGTH);
         }
 
         return false;
     }
 
     public static Fish getFish(ItemStack item) {
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         NBTItem nbtItem = new NBTItem(item);
 
-        String nameString = nbtItem.getString(nbtname.toString());
-        String playerString = nbtItem.getString(nbtplayer.toString());
-        String rarityString = nbtItem.getString(nbtrarity.toString());
-        Float lengthFloat = nbtItem.getFloat(nbtlength.toString());
+        String nameString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
+        String playerString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_PLAYER);
+        String rarityString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
+        Float lengthFloat = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
+
+        if (nameString == null || rarityString == null || lengthFloat == null)
+            return null; //throw new InvalidFishException("NBT Error");
+
 
         // Generating an empty rarity
         Rarity rarity = null;
@@ -101,18 +94,16 @@ public class FishUtils {
     }
 
     public static Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         NBTTileEntity nbtSkull = new NBTTileEntity(skull);
 
-        String nameString = nbtSkull.getString(nbtname.toString());
-        String playerString = nbtSkull.getString(nbtplayer.toString());
-        String rarityString = nbtSkull.getString(nbtrarity.toString());
-        Float lengthFloat = nbtSkull.getFloat(nbtlength.toString());
+        String nameString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_NAME);
+        String playerString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_PLAYER);
+        String rarityString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_RARITY);
+        Float lengthFloat = NbtUtils.getFloat(nbtSkull, NbtUtils.Keys.EMF_FISH_LENGTH);
+
+        if (nameString == null || rarityString == null || lengthFloat == null)
+            throw new InvalidFishException("NBT Error");
 
         // Generating an empty rarity
         Rarity rarity = null;
@@ -199,12 +190,10 @@ public class FishUtils {
     }
 
     // credit to https://www.spigotmc.org/members/elementeral.717560/
-    public static String translateHexColorCodes(String message)
-    {
+    public static String translateHexColorCodes(String message) {
         Matcher matcher = HEX_PATTERN.matcher(message);
         StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
-        while (matcher.find())
-        {
+        while (matcher.find()) {
             String group = matcher.group(1);
             matcher.appendReplacement(buffer, COLOR_CHAR + "x"
                     + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
@@ -229,35 +218,35 @@ public class FishUtils {
 
     public static String timeFormat(long timeLeft) {
         String returning = "";
-        long hours = timeLeft/3600;
+        long hours = timeLeft / 3600;
 
         if (timeLeft >= 3600) {
             returning += hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false, false) + " ";
         }
 
         if (timeLeft >= 60) {
-            returning += ((timeLeft%3600)/60) + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false, false) + " ";
+            returning += ((timeLeft % 3600) / 60) + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false, false) + " ";
         }
 
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft%60) + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false);
+        returning += (timeLeft % 60) + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false);
         return returning;
     }
 
     public static String timeRaw(long timeLeft) {
         String returning = "";
-        long hours = timeLeft/3600;
+        long hours = timeLeft / 3600;
 
         if (timeLeft >= 3600) {
             returning += hours + ":";
         }
 
         if (timeLeft >= 60) {
-            returning += ((timeLeft%3600)/60) + ":";
+            returning += ((timeLeft % 3600) / 60) + ":";
         }
 
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft%60);
+        returning += (timeLeft % 60);
         return returning;
     }
 
@@ -298,10 +287,8 @@ public class FishUtils {
      * @return Whether this ItemStack is a bait.
      */
     public boolean isBaitObject(ItemStack item) {
-        NamespacedKey nbtbait = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-bait");
-
         if (item.getItemMeta() != null) {
-            return new NBTItem(item).hasKey(nbtbait.toString());
+            return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_BAIT);
         }
 
         return false;
