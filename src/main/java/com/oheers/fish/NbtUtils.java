@@ -8,7 +8,19 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+
 public class NbtUtils {
+    public static class Keys {
+        public static final String EMF_COMPOUND = JavaPlugin.getProvidingPlugin(NbtUtils.class).getName().toLowerCase(Locale.ROOT);
+        public static final String PUBLIC_BUKKIT_VALUES = "PublicBukkitValues";
+        public static final String EMF_FISH_PLAYER = "emf-fish-player";
+        public static final String EMF_FISH_RARITY = "emf-fish-rarity";
+        public static final String EMF_FISH_LENGTH = "emf-fish-length";
+        public static final String EMF_FISH_NAME = "emf-fish-name";
+        public static final String EMF_BAIT = "emf-bait";
+    }
+
     /*
         3 possible options:
         legacy: <-- check for this first
@@ -23,8 +35,8 @@ public class NbtUtils {
         NamespacedKey namespacedKey = getNamespacedKey(key);
 
         //Pre NBT-API PR
-        if(Boolean.TRUE.equals(nbtCompound.hasKey("PublicBukkitValues"))) {
-            NBTCompound publicBukkitValues = nbtCompound.getCompound("PublicBukkitValues");
+        if(Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
+            NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
             if(Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString())))
                 return true;
         }
@@ -45,8 +57,8 @@ public class NbtUtils {
 
     public static @Nullable String getString(final @NotNull NBTCompound nbtCompound, final String key) {
         NamespacedKey namespacedKey = getNamespacedKey(key);
-        if(Boolean.TRUE.equals(nbtCompound.hasKey("PublicBukkitValues"))) {
-            NBTCompound publicBukkitValues = nbtCompound.getCompound("PublicBukkitValues");
+        if(Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
+            NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
             if(Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString())))
                 return publicBukkitValues.getString(namespacedKey.toString());
         }
@@ -67,8 +79,8 @@ public class NbtUtils {
 
     public static @Nullable Float getFloat(final @NotNull NBTCompound nbtCompound, final String key) {
         NamespacedKey namespacedKey = getNamespacedKey(key);
-        if(Boolean.TRUE.equals(nbtCompound.hasKey("PublicBukkitValues"))) {
-            NBTCompound publicBukkitValues = nbtCompound.getCompound("PublicBukkitValues");
+        if(Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
+            NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
             if(Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString())))
                 return publicBukkitValues.getFloat(namespacedKey.toString());
         }
