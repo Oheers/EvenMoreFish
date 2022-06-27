@@ -18,6 +18,7 @@ public class NbtUtils {
         public static final String EMF_FISH_LENGTH = "emf-fish-length";
         public static final String EMF_FISH_NAME = "emf-fish-name";
         public static final String EMF_BAIT = "emf-bait";
+        public static final String EMF_APPLIED_BAIT = "emf-applied-bait";
 
         public static final String PUBLIC_BUKKIT_VALUES = "PublicBukkitValues";
         public static final String DEFAULT_GUI_ITEM = "default-gui-item";
@@ -99,24 +100,6 @@ public class NbtUtils {
         }
 
         return null;
-    }
-    //todo could be void?
-    public static @NotNull NBTCompound setByte(final @NotNull NBTCompound nbtCompound, final String key, final Byte value) {
-        final NBTCompound emfCompound = nbtCompound.getOrCreateCompound(Keys.EMF_COMPOUND);
-        emfCompound.setByte(key,value);
-        return emfCompound;
-    }
-
-    public static @NotNull NBTCompound setString(final @NotNull NBTCompound nbtCompound, final String key, final String value) {
-        final NBTCompound emfCompound = nbtCompound.getOrCreateCompound(Keys.EMF_COMPOUND);
-        emfCompound.setString(key,value);
-        return emfCompound;
-    }
-
-    public static @NotNull NBTCompound setFloat(final @NotNull NBTCompound nbtCompound, final String key, final Float value) {
-        final NBTCompound emfCompound = nbtCompound.getOrCreateCompound(Keys.EMF_COMPOUND);
-        emfCompound.setFloat(key,value);
-        return emfCompound;
     }
 
     /**
