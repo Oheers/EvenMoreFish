@@ -97,6 +97,7 @@ public class BaitApplicationListener implements Listener {
 
             if(Boolean.TRUE.equals(nbtFishingRod.hasKey(namespacedKey))) { //bugged version
                 nbtFishingRod.removeKey(namespacedKey);
+                nbtFishingRod.getCompound("display").setObject("Lore",null);
             }
         }
 

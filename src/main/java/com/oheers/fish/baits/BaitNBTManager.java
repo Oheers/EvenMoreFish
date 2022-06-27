@@ -24,9 +24,6 @@ import java.util.logging.Level;
 
 public class BaitNBTManager {
 
-	private static final NamespacedKey baitNBT = new NamespacedKey(JavaPlugin.getProvidingPlugin(BaitNBTManager.class), "emf-bait");
-	private static final NamespacedKey baitedRodNBT = new NamespacedKey(JavaPlugin.getProvidingPlugin(BaitNBTManager.class), "emf-applied-bait");
-
 	/**
 	 * Checks whether the item has nbt to suggest it is a bait object.
 	 *
@@ -360,15 +357,18 @@ public class BaitNBTManager {
 	 * @param itemStack The lore of the itemstack having the bait section of its lore removed.
 	 */
 	public static List<String> deleteOldLore(ItemStack itemStack) throws IndexOutOfBoundsException {
-		if(!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasLore())
+		if(!itemStack.hasItemMeta() || itemStack.getItemMeta()  == null || !itemStack.getItemMeta().hasLore())
 			return Collections.emptyList();
 
 		List<String> lore = itemStack.getItemMeta().getLore();
+		if(lore == null)
+			return Collections.emptyList();
 
 		if (EvenMoreFish.baitFile.showUnusedBaitSlots()) {
 			// starting at 1, because at least one bait replacing {baits} is repeated.
 			for (int i = 1; i < EvenMoreFish.baitFile.getMaxBaits() + EvenMoreFish.baitFile.getRodLoreFormat().size(); i++) {
 				lore.remove(lore.size()-1);
+
 			}
 		} else {
 			// starting at 1, because at least one bait replacing {baits} is repeated.
