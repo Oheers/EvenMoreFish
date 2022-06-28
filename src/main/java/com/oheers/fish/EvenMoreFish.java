@@ -10,10 +10,7 @@ import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
-import com.oheers.fish.events.AureliumSkillsFishingEvent;
-import com.oheers.fish.events.FishEatEvent;
-import com.oheers.fish.events.FishInteractEvent;
-import com.oheers.fish.events.McMMOTreasureEvent;
+import com.oheers.fish.events.*;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
@@ -154,6 +151,10 @@ public class EvenMoreFish extends JavaPlugin {
                 logger.log(Level.WARNING, "Could not update messages.yml");
             }
         });
+
+        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
+            Bukkit.getPluginManager().registerEvents(new ItemsAdderLoadEvent(this), this);
+        }
 
         listeners();
         commands();
