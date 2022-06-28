@@ -2,8 +2,10 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.database.Database;
 import com.oheers.fish.database.FishReport;
+import com.oheers.fish.database.Table;
+import com.oheers.fish.database.UserReport;
+import com.oheers.fish.exceptions.InvalidTableException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,7 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,13 +37,15 @@ public class JoinChecker implements Listener {
                 if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
                     List<FishReport> reports = new ArrayList<>();
 
-                    if (Database.hasFlatFile(event.getPlayer().getUniqueId().toString())) {
-                        try {
-                            reports = Database.readUserData(event.getPlayer().getUniqueId().toString());
-                        } catch (FileNotFoundException e) {
-                            EvenMoreFish.logger.log(Level.SEVERE, "Failed to check existence of user file in /data/ for: " + event.getPlayer().getUniqueId());
-                            e.printStackTrace();
+                    try {
+                        if (EvenMoreFish.databaseV3.hasUser(event.getPlayer().getUniqueId(), Table.EMF_FISH_LOG, true)) {
+                            reports = EvenMoreFish.databaseV3.getFishReports(event.getPlayer().getUniqueId());
+                        } else {
+                            reports = new ArrayList<>();
+                            EvenMoreFish.logger.log(Level.INFO, event.getPlayer().getName() + " has joined for the first time, creating new data handle for them.");
                         }
+                    } catch (SQLException | InvalidTableException exception) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Failed to check database exitence of user " + event.getPlayer().getUniqueId());
                     }
 
                     if (reports != null) {
@@ -50,9 +54,22 @@ public class JoinChecker implements Listener {
                         EvenMoreFish.logger.log(Level.SEVERE, "Fetched a null reports file for: " + event.getPlayer().getUniqueId());
                     }
 
-                    /*if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-                        Database.addUser(event.getPlayer().getUniqueId().toString());
-                    }*/
+                    try {
+                        UserReport report = EvenMoreFish.databaseV3.readUserReport(event.getPlayer().getUniqueId());
+                        if (report == null) {
+                            EvenMoreFish.databaseV3.createUser(event.getPlayer().getUniqueId());
+                            report = EvenMoreFish.databaseV3.readUserReport(event.getPlayer().getUniqueId());
+                            if (report == null) {
+                                EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new empty user report for " + event.getPlayer().getName());
+                            } else {
+                                EvenMoreFish.userReports.put(event.getPlayer().getUniqueId(), report);
+                            }
+                        } else {
+                            EvenMoreFish.userReports.put(event.getPlayer().getUniqueId(), report);
+                        }
+                    } catch (SQLException exception) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user reports for: " + event.getPlayer().getUniqueId());
+                    }
                 }
             }
         }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
@@ -72,12 +89,29 @@ public class JoinChecker implements Listener {
 
                 @Override
                 public void run() {
-                    if (!Database.hasUser(event.getPlayer().getUniqueId().toString())) {
-//                        Database.addUser(event.getPlayer().getUniqueId().toString());
+                    try {
+                        if (!EvenMoreFish.databaseV3.hasUser(event.getPlayer().getUniqueId(), Table.EMF_USERS, true)) {
+                            EvenMoreFish.databaseV3.createUser(event.getPlayer().getUniqueId());
+                        }
+                    } catch (SQLException | InvalidTableException exception) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Fatal error when running database checks for " + event.getPlayer().getName() + ", deleting data in primary storage.");
+                        exception.printStackTrace();
+                        return;
                     }
 
                     if (EvenMoreFish.fishReports.containsKey(event.getPlayer().getUniqueId())) {
-                        Database.writeUserData(event.getPlayer().getUniqueId().toString(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
+                        try {
+                            EvenMoreFish.databaseV3.writeFishReports(event.getPlayer().getUniqueId(), EvenMoreFish.fishReports.get(event.getPlayer().getUniqueId()));
+                        } catch (SQLException exception) {
+                            EvenMoreFish.logger.log(Level.SEVERE, "Fatal error whilst writing " + event.getPlayer().getName() + "'s data to the database.");
+                        }
+                    }
+
+                    try {
+                        EvenMoreFish.databaseV3.writeUserReport(event.getPlayer().getUniqueId(), EvenMoreFish.userReports.get(event.getPlayer().getUniqueId()));
+                    } catch (SQLException exception) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Fatal error writing " + event.getPlayer().getName() + "'s data to the SQL database.");
+                        exception.printStackTrace();
                     }
 
                     EvenMoreFish.fishReports.remove(event.getPlayer().getUniqueId());

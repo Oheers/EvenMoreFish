@@ -10,7 +10,7 @@ public enum Table {
 					" 	 competition_name VARCHAR(256) NOT NULL, \n" +
 					"    winner_uuid VARCHAR(128) NOT NULL, \n" +
 					"    winner_fish VARCHAR(256) NOT NULL, \n" +
-					"    winner_score INT NOT NULL, \n" +
+					"    winner_score REAL NOT NULL, \n" +
 					"    contestants VARCHAR(15000) NOT NULL, \n" +
 					"    PRIMARY KEY(id AUTOINCREMENT) \n" +
 					");"
@@ -43,8 +43,9 @@ public enum Table {
 			"	 first_fish VARCHAR(256) NOT NULL, \n" +
 			" 	 last_fish VARCHAR(256) NOT NULL, \n" +
 			"    largest_fish VARCHAR(256) NOT NULL, \n" +
+			"    largest_length REAL NOT NULL\n" +
 			"    num_fish_caught VARCHAR(256) NOT NULL, \n" +
-			"    total_fish_length INT NOT NULL, \n" +
+			"    total_fish_length REAL NOT NULL, \n" +
 			"    competitions_won INT NOT NULL, \n" +
 			"    competitions_joined INT NOT NULL,\n" +
 			"    PRIMARY KEY(id AUTOINCREMENT) \n" +

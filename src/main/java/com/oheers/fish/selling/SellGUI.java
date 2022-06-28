@@ -320,7 +320,7 @@ public class SellGUI implements InventoryHolder {
 
     public boolean sell(boolean sellAll) {
         getTotalWorth(sellAll);
-        EvenMoreFish.econ.depositPlayer(this.player, value);
+        if (EvenMoreFish.econ != null) EvenMoreFish.econ.depositPlayer(this.player, value);
 
         // sending the sell message to the player
         Message message = new Message(ConfigMessage.FISH_SALE);

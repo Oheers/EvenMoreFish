@@ -57,7 +57,7 @@ prefix-error: "&c"
 # TO THAT LINE.
 fish-lore:
   - "&fCaught by {player}"
-  - "&fMeasures {length}cm"
+  - "&fMeasures {length}cm" # <------ THIS ONE
   - ""
   - "{fish_lore}"
   - "{rarity_colour}&l{rarity}"
