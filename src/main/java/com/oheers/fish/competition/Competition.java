@@ -52,6 +52,8 @@ public class Competition {
 
     public static Leaderboard leaderboard;
 
+    public String competitionID;
+
     public Message startMessage;
 
     public Competition(final Integer duration, final CompetitionType type) {
@@ -101,9 +103,12 @@ public class Competition {
             sendLeaderboard(player);
         }
         handleRewards();
-        leaderboard.clear();
         active = false;
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
+        if (EvenMoreFish.mainConfig.databaseEnabled()) {
+            EvenMoreFish.databaseV3.createCompetitionReport(this);
+        }
+        leaderboard.clear();
     }
 
     // Starts a runnable to decrease the time left by 1s each second
@@ -436,46 +441,6 @@ public class Competition {
         }
     }
 
-    public Bar getStatusBar() {
-        return this.statusBar;
-    }
-
-    public static boolean isActive() {
-        return active;
-    }
-
-    public CompetitionType getCompetitionType() {
-        return competitionType;
-    }
-
-    public void setNumberNeeded(int numberNeeded) {
-        this.numberNeeded = numberNeeded;
-    }
-
-    public int getLeaderboardSize() {
-        return leaderboard.getSize();
-    }
-
-    public Leaderboard getLeaderboard() {
-        return leaderboard;
-    }
-
-    public void setCompetitionName(String competitionName) {
-        this.competitionName = competitionName;
-    }
-
-    public void setAdminStarted(boolean adminStarted) {
-        this.adminStarted = adminStarted;
-    }
-
-    public Message getStartMessage() {
-        return startMessage;
-    }
-
-    public static void setOriginallyRandom(boolean originallyRandom) {
-        Competition.originallyRandom = originallyRandom;
-    }
-
     public boolean chooseFish(String competitionName, boolean adminStart) {
         List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
 
@@ -667,5 +632,49 @@ public class Competition {
         // -1 from the length so that the RANDOM isn't chosen as the random value.
         int type = new Random().nextInt(CompetitionType.values().length-1);
         return CompetitionType.values()[type];
+    }
+
+    public Bar getStatusBar() {
+        return this.statusBar;
+    }
+
+    public static boolean isActive() {
+        return active;
+    }
+
+    public CompetitionType getCompetitionType() {
+        return competitionType;
+    }
+
+    public void setNumberNeeded(int numberNeeded) {
+        this.numberNeeded = numberNeeded;
+    }
+
+    public int getLeaderboardSize() {
+        return leaderboard.getSize();
+    }
+
+    public Leaderboard getLeaderboard() {
+        return leaderboard;
+    }
+
+    public void setCompetitionName(String competitionName) {
+        this.competitionName = competitionName;
+    }
+
+    public void setAdminStarted(boolean adminStarted) {
+        this.adminStarted = adminStarted;
+    }
+
+    public Message getStartMessage() {
+        return startMessage;
+    }
+
+    public static void setOriginallyRandom(boolean originallyRandom) {
+        Competition.originallyRandom = originallyRandom;
+    }
+
+    public String getCompetitionName() {
+        return competitionName;
     }
 }

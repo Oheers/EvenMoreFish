@@ -225,6 +225,16 @@ public class Message {
 	}
 
 	/**
+	 * Sets the message to use a specific prefix. This can only be done when the object was created using a string rather
+	 * than a ConfigMessage.
+	 *
+	 * @param type The type of prefix.
+	 */
+	public void usePrefix(PrefixType type) {
+		this.message = type.getPrefix() + this.message;
+	}
+
+	/**
 	 * Adds a variable to the object, when variables are being formatted they will be run through and replaced with their
 	 * proper values.
 	 *

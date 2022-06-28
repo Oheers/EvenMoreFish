@@ -210,13 +210,18 @@ public class Database {
         String sql = "SELECT uuid FROM Users WHERE uuid = ?;";
 
         try {
+            getConnection();
             PreparedStatement prep = connection.prepareStatement(sql);
             prep.setString(1, uuid);
             ResultSet rs = prep.executeQuery();
 			if (rs.next()) {
 				rs.close();
+                closeConnections();
 				return true;
-			} else return false;
+			} else {
+                closeConnections();
+                return false;
+            }
         } catch (SQLException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not test for existence of " + uuid + " in the table: Users.");
             exception.printStackTrace();

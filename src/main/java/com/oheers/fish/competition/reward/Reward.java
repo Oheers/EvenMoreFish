@@ -67,7 +67,7 @@ public class Reward {
             case COMMAND:
                 String inputCommand = this.action
                         .replace("{player}", player.getName());
-                inputCommand = PlaceholderAPI.setPlaceholders(p, inputCommand);
+                if (EvenMoreFish.usingPAPI) inputCommand = PlaceholderAPI.setPlaceholders(p, inputCommand);
                 if (hookLocation != null) {
                     inputCommand = inputCommand
                             .replace("{x}", Double.toString(hookLocation.getX()))
@@ -127,7 +127,7 @@ public class Reward {
 
                 break;
             case MONEY:
-                EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));
+                if (EvenMoreFish.econ != null) EvenMoreFish.econ.depositPlayer(player, Integer.parseInt(action));
                 break;
             case OTHER:
                 PluginManager pM = Bukkit.getPluginManager();
