@@ -103,9 +103,11 @@ public class DatabaseV3 {
 		getConnection();
 
 		for (Table table : Table.values()) {
-			if (!queryTableExistence(table.getTableID(), this.connection)) {
-				if (table.getCreationCode() != null) sendStatement(table.getCreationCode(), this.connection);
-			}
+			if (queryTableExistence(table.getTableID(), this.connection)) continue;
+			if (table.getCreationCode() == null) continue;
+			if (isMySQL && !table.isMySQLCompatible) continue;
+
+			sendStatement(table.getCreationCode(), this.connection);
 		}
 
 		closeConnection();
