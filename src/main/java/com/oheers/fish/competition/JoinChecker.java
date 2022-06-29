@@ -46,6 +46,7 @@ public class JoinChecker implements Listener {
                         }
                     } catch (SQLException | InvalidTableException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed to check database exitence of user " + event.getPlayer().getUniqueId());
+                        exception.printStackTrace();
                     }
 
                     if (reports != null) {

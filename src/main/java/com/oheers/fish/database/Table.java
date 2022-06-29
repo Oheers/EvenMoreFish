@@ -6,13 +6,13 @@ public enum Table {
 
 	EMF_COMPETITIONS("emf_competitions",
 			"CREATE TABLE emf_competitions (\n" +
-					"	 id INTEGER NOT NULL, \n" +
+					"	 id INTEGER NOT NULL  AUTO_INCREMENT, \n" +
 					" 	 competition_name VARCHAR(256) NOT NULL, \n" +
 					"    winner_uuid VARCHAR(128) NOT NULL, \n" +
 					"    winner_fish VARCHAR(256) NOT NULL, \n" +
 					"    winner_score REAL NOT NULL, \n" +
 					"    contestants VARCHAR(15000) NOT NULL, \n" +
-					"    PRIMARY KEY(id AUTOINCREMENT) \n" +
+					"    PRIMARY KEY(id) \n" +
 					");"
 			),
 	EMF_FISH("emf_fish",
@@ -38,7 +38,7 @@ public enum Table {
 	),
 	EMF_USERS("emf_users",
 			"CREATE TABLE emf_users (\n" +
-			"	 id INTEGER NOT NULL, \n" +
+			"	 id INTEGER NOT NULL AUTO_INCREMENT, \n" +
 			"    uuid VARCHAR(128) NOT NULL, \n" +
 			"	 first_fish VARCHAR(256) NOT NULL, \n" +
 			" 	 last_fish VARCHAR(256) NOT NULL, \n" +
@@ -48,7 +48,7 @@ public enum Table {
 			"    total_fish_length REAL NOT NULL, \n" +
 			"    competitions_won INT NOT NULL, \n" +
 			"    competitions_joined INT NOT NULL,\n" +
-			"    PRIMARY KEY(id AUTOINCREMENT) \n" +
+			"    PRIMARY KEY(id) \n" +
 			");");
 
 	public final String tableID;
