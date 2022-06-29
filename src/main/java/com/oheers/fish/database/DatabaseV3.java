@@ -28,7 +28,7 @@ import java.util.logging.Level;
 public class DatabaseV3 {
 
 	private final String URL;
-	private boolean isMySQL = EvenMoreFish.mainConfig.isMysql();
+	private boolean isMySQL;
 
 	private final String username = EvenMoreFish.mainConfig.getUsername();
 	private final String password = EvenMoreFish.mainConfig.getPassword();
@@ -103,9 +103,11 @@ public class DatabaseV3 {
 		getConnection();
 
 		for (Table table : Table.values()) {
-			if (!queryTableExistence(table.getTableID(), this.connection)) {
-				if (table.getCreationCode() != null) sendStatement(table.getCreationCode(), this.connection);
-			}
+			if (queryTableExistence(table.getTableID(), this.connection)) continue;
+			if (table.getCreationCode() == null) continue;
+			if (isMySQL && !table.isMySQLCompatible) continue;
+
+			sendStatement(table.getCreationCode(), this.connection);
 		}
 
 		closeConnection();
@@ -325,7 +327,11 @@ public class DatabaseV3 {
 		statement.setString(1, uuid.toString());
 		ResultSet resultSet = statement.executeQuery();
 
-		return resultSet.getInt("id");
+		if (resultSet.next()) {
+			return resultSet.getInt("id");
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -564,16 +570,17 @@ public class DatabaseV3 {
 		getConnection();
 
 		PreparedStatement statement = this.connection.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
-				"largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
+				"largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
 				"WHERE uuid = ?;");
 		statement.setString(1, report.getFirstFish());
 		statement.setString(2, report.getRecentFish());
 		statement.setString(3, report.getLargestFish());
-		statement.setInt(4, report.getNumFishCaught());
-		statement.setFloat(5, report.getTotalFishLength());
-		statement.setInt(6, report.getCompetitionsWon());
-		statement.setInt(7, report.getCompetitionsJoined());
-		statement.setString(8, uuid.toString());
+		statement.setFloat(4, report.getLargestLength());
+		statement.setInt(5, report.getNumFishCaught());
+		statement.setFloat(6, report.getTotalFishLength());
+		statement.setInt(7, report.getCompetitionsWon());
+		statement.setInt(8, report.getCompetitionsJoined());
+		statement.setString(9, uuid.toString());
 
 		statement.execute();
 
@@ -805,8 +812,8 @@ public class DatabaseV3 {
 	 * Data such as who won them, which fish won and the total number of participants is stored there.
 	 */
 	public DatabaseV3() {
+		this.isMySQL = EvenMoreFish.mainConfig.isMysql();
 		this.URL = fetchURL();
-		this.isMySQL = false;
 
 		try {
 			createTables(false);
