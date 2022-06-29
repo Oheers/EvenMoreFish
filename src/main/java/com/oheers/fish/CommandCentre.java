@@ -19,6 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,6 +121,12 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 }
                 break;
+            case "migrate":
+                if (!EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                } else {
+                    EvenMoreFish.databaseV3.migrate(sender);
+                }
             default:
                 sender.sendMessage(Help.formGeneralHelp(sender));
         }
@@ -482,7 +489,9 @@ class Controls{
                 }
 
                 ItemStack fishingRod = player.getInventory().getItemInMainHand();
-                BaitNBTManager.deleteOldLore(fishingRod);
+                ItemMeta meta = fishingRod.getItemMeta();
+                meta.setLore(BaitNBTManager.deleteOldLore(fishingRod));
+                fishingRod.setItemMeta(meta);
                 Message message = new Message(ConfigMessage.BAITS_CLEARED);
                 message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
                 message.broadcast(player, true, true);

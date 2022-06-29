@@ -37,8 +37,11 @@ public class MainConfig {
         return config.getBoolean("random-durability");
     }
 
-    public boolean isDatabaseOnline() {
+    public boolean databaseEnabled() {
         return config.getBoolean("database");
+    }
+    public boolean isDatabaseOnline() {
+        return config.getBoolean("database") && !EvenMoreFish.databaseV3.usingVersionV2();
     }
 
     public boolean isCompetitionUnique() {

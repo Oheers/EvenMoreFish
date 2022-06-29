@@ -2,8 +2,6 @@ package com.oheers.fish;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -15,19 +13,20 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTListCompound;
+import de.tr7zw.changeme.nbtapi.NBTTileEntity;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
+
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -41,40 +40,34 @@ public class FishUtils {
 
     /* checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
      * we only need to check for the length since they're all added in a batch if it's an EMF fish */
-    public static boolean isFish(ItemStack i) {
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
-        if (i != null) {
-            if (i.hasItemMeta()) {
-                return i.getItemMeta().getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
-            }
+    public static boolean isFish(ItemStack item) {
+        if (item != null && item.hasItemMeta()) {
+            return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_LENGTH);
         }
 
         return false;
     }
 
-    public static boolean isFish(Skull s) {
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
-        if (s != null) {
-            return s.getPersistentDataContainer().has(nbtlength, PersistentDataType.FLOAT);
+    public static boolean isFish(Skull skull) {
+        if (skull != null) {
+            return NbtUtils.hasKey(new NBTTileEntity(skull), NbtUtils.Keys.EMF_FISH_LENGTH);
         }
 
         return false;
     }
 
-    public static Fish getFish(ItemStack i) {
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
+    public static Fish getFish(ItemStack item) {
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
-        PersistentDataContainer container = i.getItemMeta().getPersistentDataContainer();
-        String nameString = container.get(nbtname, PersistentDataType.STRING);
-        String playerString = container.get(nbtplayer, PersistentDataType.STRING);
-        String rarityString = container.get(nbtrarity, PersistentDataType.STRING);
-        Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
+        NBTItem nbtItem = new NBTItem(item);
+
+        String nameString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
+        String playerString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_PLAYER);
+        String rarityString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
+        Float lengthFloat = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
+
+        if (nameString == null || rarityString == null || lengthFloat == null)
+            return null; //throw new InvalidFishException("NBT Error");
+
 
         // Generating an empty rarity
         Rarity rarity = null;
@@ -100,18 +93,17 @@ public class FishUtils {
         return null;
     }
 
-    public static Fish getFish(Skull s, Player fisher) throws InvalidFishException {
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-rarity");
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-player");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-name");
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-fish-length");
-
+    public static Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
-        PersistentDataContainer container = s.getPersistentDataContainer();
-        String nameString = container.get(nbtname, PersistentDataType.STRING);
-        String playerString = container.get(nbtplayer, PersistentDataType.STRING);
-        String rarityString = container.get(nbtrarity, PersistentDataType.STRING);
-        Float lengthFloat = container.get(nbtlength, PersistentDataType.FLOAT);
+        NBTTileEntity nbtSkull = new NBTTileEntity(skull);
+
+        String nameString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_NAME);
+        String playerString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_PLAYER);
+        String rarityString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_RARITY);
+        Float lengthFloat = NbtUtils.getFloat(nbtSkull, NbtUtils.Keys.EMF_FISH_LENGTH);
+
+        if (nameString == null || rarityString == null || lengthFloat == null)
+            throw new InvalidFishException("NBT Error");
 
         // Generating an empty rarity
         Rarity rarity = null;
@@ -198,12 +190,10 @@ public class FishUtils {
     }
 
     // credit to https://www.spigotmc.org/members/elementeral.717560/
-    public static String translateHexColorCodes(String message)
-    {
+    public static String translateHexColorCodes(String message) {
         Matcher matcher = HEX_PATTERN.matcher(message);
         StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
-        while (matcher.find())
-        {
+        while (matcher.find()) {
             String group = matcher.group(1);
             matcher.appendReplacement(buffer, COLOR_CHAR + "x"
                     + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
@@ -214,54 +204,49 @@ public class FishUtils {
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
     }
 
+    //gets the item with a custom texture
     public static ItemStack get(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        assert meta != null;
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
-        profile.getProperties().put("textures", new Property("textures", base64EncodedString));
-        try {
-            Field profileField = meta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(meta, profile);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        skull.setItemMeta(meta);
-        return skull;
+        NBTItem nbtItem = new NBTItem(skull);
+        NBTCompound nbtCompound = nbtItem.addCompound("SkullOwner");
+        nbtCompound.setString("Id", UUID.randomUUID().toString());
+
+        NBTListCompound texture = nbtCompound.addCompound("Properties").getCompoundList("textures").addCompound();
+        texture.setString("Value", base64EncodedString);
+        return nbtItem.getItem();
     }
 
     public static String timeFormat(long timeLeft) {
         String returning = "";
-        long hours = timeLeft/3600;
+        long hours = timeLeft / 3600;
 
         if (timeLeft >= 3600) {
             returning += hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false, false) + " ";
         }
 
         if (timeLeft >= 60) {
-            returning += ((timeLeft%3600)/60) + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false, false) + " ";
+            returning += ((timeLeft % 3600) / 60) + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false, false) + " ";
         }
 
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft%60) + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false);
+        returning += (timeLeft % 60) + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false);
         return returning;
     }
 
     public static String timeRaw(long timeLeft) {
         String returning = "";
-        long hours = timeLeft/3600;
+        long hours = timeLeft / 3600;
 
         if (timeLeft >= 3600) {
             returning += hours + ":";
         }
 
         if (timeLeft >= 60) {
-            returning += ((timeLeft%3600)/60) + ":";
+            returning += ((timeLeft % 3600) / 60) + ":";
         }
 
         // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft%60);
+        returning += (timeLeft % 60);
         return returning;
     }
 
@@ -302,10 +287,8 @@ public class FishUtils {
      * @return Whether this ItemStack is a bait.
      */
     public boolean isBaitObject(ItemStack item) {
-        NamespacedKey nbtbait = new NamespacedKey(JavaPlugin.getProvidingPlugin(FishUtils.class), "emf-bait");
-
         if (item.getItemMeta() != null) {
-            return item.getItemMeta().getPersistentDataContainer().has(nbtbait, PersistentDataType.STRING);
+            return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_BAIT);
         }
 
         return false;

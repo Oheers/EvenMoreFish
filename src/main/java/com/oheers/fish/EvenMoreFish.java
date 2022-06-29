@@ -8,12 +8,9 @@ import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
-import com.oheers.fish.database.Database;
-import com.oheers.fish.database.FishReport;
-import com.oheers.fish.events.AureliumSkillsFishingEvent;
-import com.oheers.fish.events.FishEatEvent;
-import com.oheers.fish.events.FishInteractEvent;
-import com.oheers.fish.events.McMMOTreasureEvent;
+import com.oheers.fish.database.*;
+import com.oheers.fish.exceptions.InvalidTableException;
+import com.oheers.fish.events.*;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
@@ -59,6 +56,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
 
     public static Map<UUID, List<FishReport>> fishReports = new HashMap<>();
+    public static Map<UUID, UserReport> userReports = new HashMap<>();
 
     public static List<UUID> disabledPlayers = new ArrayList<>();
 
@@ -84,10 +82,13 @@ public class EvenMoreFish extends JavaPlugin {
     // it's a work-in-progress solution and probably won't stick.
     public static Map<UUID, Rarity> decidedRarities;
     public static boolean isUpdateAvailable;
+    public static boolean usingPAPI;
 
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
+
+    public static DatabaseV3 databaseV3;
 
     public static final int METRIC_ID = 11054;
 
@@ -114,6 +115,8 @@ public class EvenMoreFish extends JavaPlugin {
         raritiesFile = new RaritiesFile(this);
         baitFile = new BaitFile(this);
         competitionConfig = new CompetitionConfig(this);
+
+        usingPAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
 
         if (mainConfig.isEconomyEnabled()) {
             // could not setup economy.
@@ -155,6 +158,10 @@ public class EvenMoreFish extends JavaPlugin {
             }
         });
 
+        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
+            Bukkit.getPluginManager().registerEvents(new ItemsAdderLoadEvent(this), this);
+        }
+
         listeners();
         commands();
 
@@ -165,21 +172,9 @@ public class EvenMoreFish extends JavaPlugin {
         wgPlugin = getWorldGuard();
         checkPapi();
 
-        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+        if (EvenMoreFish.mainConfig.databaseEnabled()) {
 
-            Database.getUrl();
-
-            // Attempts to connect to the database if enabled
-            try {
-                if (!Database.fishTableExists()) {
-                    Database.createDatabase();
-                }
-                if (!Database.userTableExists()) {
-                    Database.createUserTable();
-                }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+           databaseV3 = new DatabaseV3();
 
         }
 
@@ -301,9 +296,27 @@ public class EvenMoreFish extends JavaPlugin {
     private void saveUserData() {
         if (mainConfig.isDatabaseOnline()) {
             for (UUID uuid : fishReports.keySet()) {
-                Database.writeUserData(uuid.toString(), fishReports.get(uuid));
+                try {
+                    databaseV3.writeFishReports(uuid, fishReports.get(uuid));
+                } catch (SQLException e) {
+                    logger.log(Level.SEVERE, "Fatal error when saving data during shutdown for: " + uuid);
+                }
 
-                if (!Database.hasUser(uuid.toString())) Database.addUser(uuid.toString());
+                try {
+                    if (!databaseV3.hasUser(uuid, Table.EMF_USERS, true)) {
+                        databaseV3.createUser(uuid);
+                    }
+                } catch (SQLException | InvalidTableException exception) {
+                    logger.log(Level.SEVERE, "Fatal error when storing data for " + uuid + ", their data in primary storage has been deleted.");
+                }
+            }
+
+            for (UUID uuid : userReports.keySet()) {
+                try {
+                    databaseV3.writeUserReport(uuid, userReports.get(uuid));
+                } catch (SQLException e) {
+                    logger.log(Level.SEVERE, "Fatal error when saving data during shutdown for: " + uuid);
+                }
             }
         }
     }

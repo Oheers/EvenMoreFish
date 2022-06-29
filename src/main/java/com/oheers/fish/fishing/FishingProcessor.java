@@ -9,8 +9,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.database.Database;
-import com.oheers.fish.database.FishReport;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
@@ -28,7 +26,6 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -192,46 +189,21 @@ public class FishingProcessor implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    try {
 
-                        // increases the fish fished count if the fish is already in the db
-                        if (Database.hasFish(fish.getName())) {
-                            Database.fishIncrease(fish.getName());
+                    // increases the fish fished count if the fish is already in the db
+                    if (EvenMoreFish.databaseV3.hasFishData(fish)) {
+                        EvenMoreFish.databaseV3.incrementFish(fish);
 
-                            // sets the new leader in top fish, if the player has fished a record fish
-                            if (Database.getTopLength(fish.getName()) < fish.getLength()) {
-                                Database.newTopSpot(player, fish.getName(), fish.getLength());
-                            }
-                        } else {
-                            // the database doesn't contain the fish yet
-                            Database.add(fish, player);
+                        // sets the new leader in top fish, if the player has fished a record fish
+                        if (EvenMoreFish.databaseV3.getLargestFishSize(fish) < fish.getLength()) {
+                            EvenMoreFish.databaseV3.updateLargestFish(fish, player.getUniqueId());
                         }
-
-
-                        boolean foundReport = false;
-
-                        if (EvenMoreFish.fishReports.containsKey(player.getUniqueId())) {
-                            for (FishReport report : EvenMoreFish.fishReports.get(player.getUniqueId())) {
-                                if (report.getName().equals(fish.getName()) && report.getRarity().equals(fish.getRarity().getValue())) {
-                                    report.addFish(fish);
-                                    foundReport = true;
-                                }
-                            }
-                        }
-
-                        try {
-                            if (!foundReport) {
-                                EvenMoreFish.fishReports.get(player.getUniqueId()).add(new FishReport(fish.getRarity().getValue(), fish.getName(), fish.getLength(), 1));
-                            }
-                        } catch (NullPointerException exception) {
-                            // Hopefully someone reports this.
-                            EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch fishing data for: " + player.getName());
-                            exception.printStackTrace();
-                        }
-
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+                    } else {
+                        EvenMoreFish.databaseV3.createFishData(fish, player.getUniqueId());
                     }
+
+                    EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), fish);
+
                 }
             }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
         }
@@ -329,7 +301,7 @@ public class FishingProcessor implements Listener {
                 if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
                     r -= fishList.get(idx).getWeight() * boostRate;
                 } else {
-                    r -= fishList.get(idx).getWeight();;
+                    r -= fishList.get(idx).getWeight();
                 }
             }
 

@@ -2,108 +2,79 @@ package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.NbtUtils;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTTileEntity;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class WorthNBT {
 
-    public static ItemStack setNBT(ItemStack fish, Float length, UUID player, String rarity, String name) {
+    public static ItemStack setNBT(ItemStack fish, Float length, @NotNull UUID player, String rarity, String name) {
         // creates key and plops in the value of "value"
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-player");
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
+        NBTItem nbtItem = new NBTItem(fish);
 
-        ItemMeta itemMeta = fish.getItemMeta();
+        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+        emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, length);
+        emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, player.toString());
+        emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, name);
+        emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, rarity);
 
-        itemMeta.getPersistentDataContainer().set(nbtlength, PersistentDataType.FLOAT, length);
-        itemMeta.getPersistentDataContainer().set(nbtplayer, PersistentDataType.STRING, player.toString());
-        itemMeta.getPersistentDataContainer().set(nbtrarity, PersistentDataType.STRING, rarity);
-        itemMeta.getPersistentDataContainer().set(nbtname, PersistentDataType.STRING, name);
-
-        // sets the nbt and returns it
-        fish.setItemMeta(itemMeta);
-        return fish;
+        return nbtItem.getItem();
     }
 
     public static void setNBT(Skull fish, Float length, UUID player, String rarity, String name) {
         // creates key and plops in the value of "value"
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-player");
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
+        NBTTileEntity nbtItem = new NBTTileEntity(fish);
+        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+        emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, length);
 
-        PersistentDataContainer itemMeta = fish.getPersistentDataContainer();
-
-        itemMeta.set(nbtlength, PersistentDataType.FLOAT, length);
-        if (player != null) itemMeta.set(nbtplayer, PersistentDataType.STRING, player.toString());
-        itemMeta.set(nbtrarity, PersistentDataType.STRING, rarity);
-        itemMeta.set(nbtname, PersistentDataType.STRING, name);
+        if (player != null) {
+            emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, player.toString());
+        }
+        emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, name);
+        emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, rarity);
     }
 
 
     public static double getValue(ItemStack item) {
         // creating the key to check for
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-length");
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-rarity");
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "emf-fish-name");
+        if (item == null || !item.hasItemMeta() || !FishUtils.isFish(item)) {
+            return -1.0;
+        }
 
-        if (item != null) {
-            if (item.hasItemMeta()) {
-                ItemMeta itemMeta = item.getItemMeta();
-                PersistentDataContainer container = itemMeta.getPersistentDataContainer();
 
-                if (FishUtils.isFish(item)) {
-                    // it's a fish so it'll definitely have these NBT values
-                    Float length = container.get(nbtlength, PersistentDataType.FLOAT);
-                    String rarity = container.get(nbtrarity, PersistentDataType.STRING);
-                    String name = container.get(nbtname, PersistentDataType.STRING);
-                    // gets a possible set-worth in the fish.yml
-                    int setVal;
+        NBTItem nbtItem = new NBTItem(item);
+        // it's a fish so it'll definitely have these NBT values
+        Float length = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
+        String rarity = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
+        String name = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
 
-                    try {
-                        setVal = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
-                    } catch (NullPointerException npe) {
-                        setVal = 0;
-                    }
 
-                    if (setVal != 0) return setVal;
-                    // there's no set-worth so we're calculating the worth ourselves
-                    return getMultipliedValue(
-                            length,
-                            rarity,
-                            name);
-                } else return -1.0;
-            } else {
-                return -1.0;
-            }
-        } else return -1.0;
+        // gets a possible set-worth in the fish.yml
+        try {
+            return EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+        } catch (NullPointerException npe) {
+            // there's no set-worth so we're calculating the worth ourselves
+            return getMultipliedValue(length, rarity, name);
+        }
     }
 
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
-        NamespacedKey key = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "default-gui-item");
-        ItemMeta itemMeta = defaultGUIItem.getItemMeta();
-        itemMeta.getPersistentDataContainer().set(key, PersistentDataType.BYTE, Byte.MAX_VALUE);
-        // sets the nbt and returns it
-        defaultGUIItem.setItemMeta(itemMeta);
-        return defaultGUIItem;
+        NBTItem nbtItem = new NBTItem(defaultGUIItem);
+        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+        emfCompound.setByte(NbtUtils.Keys.DEFAULT_GUI_ITEM, Byte.MAX_VALUE);
+        return nbtItem.getItem();
     }
 
     public static boolean isDefault(ItemStack is) {
-        NamespacedKey key = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), "default-gui-item");
-        if (is.hasItemMeta()) {
-            PersistentDataContainer container = is.getItemMeta().getPersistentDataContainer();
-            return container.has(key, PersistentDataType.BYTE);
-        }
-
-        return false;
+        return NbtUtils.hasKey(new NBTItem(is), NbtUtils.Keys.DEFAULT_GUI_ITEM);
     }
 
     private static double getMultipliedValue(Float length, String rarity, String name) {
@@ -118,7 +89,7 @@ public class WorthNBT {
         // Whatever it finds the value to be, gets multiplied by the fish length and set
         value *= length;
         // Sorts out funky decimals during the above multiplication.
-        value = Math.round(value*10.0)/10.0;
+        value = Math.round(value * 10.0) / 10.0;
 
         return value;
     }
