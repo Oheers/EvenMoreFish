@@ -43,7 +43,7 @@ public enum Table {
 			"	 first_fish VARCHAR(256) NOT NULL, \n" +
 			" 	 last_fish VARCHAR(256) NOT NULL, \n" +
 			"    largest_fish VARCHAR(256) NOT NULL, \n" +
-			"    largest_length REAL NOT NULL\n" +
+			"    largest_length REAL NOT NULL, \n" +
 			"    num_fish_caught VARCHAR(256) NOT NULL, \n" +
 			"    total_fish_length REAL NOT NULL, \n" +
 			"    competitions_won INT NOT NULL, \n" +
