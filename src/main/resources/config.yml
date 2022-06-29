@@ -13,6 +13,8 @@ fish-only-in-competition: false
 # of this feature.
 # ATTENTION: Toggling this requires a full server restart.
 database: true
+# Prevents verbose output when a new user field is added to the database.
+disable-new-user-verbose: false
 # Info for connecting to a mysql database:
 mysql:
   # Set to false if you're using a standard SQLITE .db file
