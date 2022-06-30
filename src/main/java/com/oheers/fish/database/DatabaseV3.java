@@ -726,8 +726,11 @@ public class DatabaseV3 {
 			PreparedStatement prep = connection.prepareStatement(sql);
 			prep.setString(1, fish.getRarity().getValue());
 			prep.setString(2, fish.getName());
+			ResultSet resultSet = prep.executeQuery();
 			try {
-				return prep.executeQuery().getFloat("largest_fish");
+				if (resultSet.next()) {
+					return resultSet.getFloat("largest_fish");
+				}
 			} finally {
 				closeConnection();
 			}

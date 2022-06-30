@@ -9,10 +9,8 @@ import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -311,7 +309,8 @@ public class BaitNBTManager {
 		if (lore == null)
 			lore = new ArrayList<>();
 
-		for (String lineAddition : EvenMoreFish.baitFile.getRodLoreFormat()) {
+		List<String> format = EvenMoreFish.baitFile.getRodLoreFormat();
+		for (String lineAddition : format) {
 			if (lineAddition.equals("{baits}")) {
 				NBTItem nbtItem = new NBTItem(itemStack);
 

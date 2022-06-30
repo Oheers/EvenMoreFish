@@ -24,6 +24,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -116,7 +117,8 @@ public class FishingProcessor implements Listener {
             fish = applyingBait.chooseFish(player, location);
             fish.setFisherman(player.getUniqueId());
             try {
-                BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1);
+                ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
+                fishingRod.setItemMeta(newMeta);
                 EvenMoreFish.metric_baitsUsed++;
             } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
                 exception.printStackTrace();
