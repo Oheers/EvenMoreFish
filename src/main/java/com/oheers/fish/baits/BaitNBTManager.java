@@ -180,7 +180,7 @@ public class BaitNBTManager {
 
 		item = nbtItem.getItem();
 
-		if (doingLoreStuff && combined.length() > 1) {
+		if (doingLoreStuff && combined.length() >= 1) {
 			ItemMeta meta = item.getItemMeta();
 			meta.setLore(newApplyLore(item));
 			item.setItemMeta(meta);
