@@ -96,6 +96,8 @@ public class BaitNBTManager {
 		boolean maxBait = false;
 		int cursorModifier = 0;
 
+		StringBuilder combined = new StringBuilder();
+
 		NBTItem nbtItem;
 		if (isBaitedRod(item)) {
 
@@ -112,7 +114,6 @@ public class BaitNBTManager {
 
 			nbtItem = new NBTItem(item);
 			String[] baitList = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
-			StringBuilder combined = new StringBuilder();
 
 			boolean foundBait = false;
 
@@ -179,7 +180,7 @@ public class BaitNBTManager {
 
 		item = nbtItem.getItem();
 
-		if (doingLoreStuff) {
+		if (doingLoreStuff && combined.length() > 1) {
 			ItemMeta meta = item.getItemMeta();
 			meta.setLore(newApplyLore(item));
 			item.setItemMeta(meta);

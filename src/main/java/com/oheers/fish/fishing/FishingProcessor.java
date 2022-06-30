@@ -143,7 +143,7 @@ public class FishingProcessor implements Listener {
                 fish.setFisherman(player.getUniqueId());
                 try {
                     ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
-                    fishingRod.setItemMeta(newMeta);
+                    fishingRod.setItemMeta (newMeta);
                     EvenMoreFish.metric_baitsUsed++;
                 } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
                     exception.printStackTrace();
@@ -152,12 +152,7 @@ public class FishingProcessor implements Listener {
                 fish = chooseNonBaitFish(player, location);
             }
         } else {
-            Rarity fishRarity = randomWeightedRarity(player, 1, null, EvenMoreFish.fishCollection.keySet());
-            if (fishRarity == null) return null;
-
-            fish = getFish(fishRarity, location, player, 1, null);
-            if (fish == null) return null;
-            fish.setFisherman(player.getUniqueId());
+            fish = chooseNonBaitFish(player, location);
         }
 
         fish.init();
