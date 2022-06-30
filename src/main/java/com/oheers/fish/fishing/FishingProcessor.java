@@ -86,6 +86,30 @@ public class FishingProcessor implements Listener {
         return EvenMoreFish.mainConfig.getEnabled() && (competitionOnlyCheck() || EvenMoreFish.raritiesCompCheckExempt) && !EvenMoreFish.disabledPlayers.contains(player);
     }
 
+    /**
+     * Chooses a bait without needing to specify a bait to be used. randomWeightedRarity & getFish methods are used to
+     * choose the random fish.
+     *
+     * @param player The fisher catching the fish.
+     * @param location The location of the fisher.
+     * @returns A random fish without any bait application.
+     */
+    public static Fish chooseNonBaitFish(Player player, Location location) {
+        Rarity fishRarity = randomWeightedRarity(player, 1, null, EvenMoreFish.fishCollection.keySet());
+        if (fishRarity == null) {
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not determine a rarity for fish for " + player.getName());
+            return null;
+        }
+
+        Fish fish = getFish(fishRarity, location, player, 1, null);
+        if (fish == null) {
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not determine a fish for " + player.getName());
+            return null;
+        }
+        fish.setFisherman(player.getUniqueId());
+        return fish;
+    }
+
     public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {
       
         if (!FishUtils.checkRegion(location, EvenMoreFish.mainConfig.getAllowedRegions())) {
@@ -115,13 +139,17 @@ public class FishingProcessor implements Listener {
 
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
             fish = applyingBait.chooseFish(player, location);
-            fish.setFisherman(player.getUniqueId());
-            try {
-                ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
-                fishingRod.setItemMeta(newMeta);
-                EvenMoreFish.metric_baitsUsed++;
-            } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
-                exception.printStackTrace();
+            if (fish.isWasBaited()) {
+                fish.setFisherman(player.getUniqueId());
+                try {
+                    ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
+                    fishingRod.setItemMeta(newMeta);
+                    EvenMoreFish.metric_baitsUsed++;
+                } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
+                    exception.printStackTrace();
+                }
+            } else {
+                fish = chooseNonBaitFish(player, location);
             }
         } else {
             Rarity fishRarity = randomWeightedRarity(player, 1, null, EvenMoreFish.fishCollection.keySet());
@@ -188,23 +216,24 @@ public class FishingProcessor implements Listener {
         }
 
         if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+            Fish finalFish = fish;
             new BukkitRunnable() {
                 @Override
                 public void run() {
 
                     // increases the fish fished count if the fish is already in the db
-                    if (EvenMoreFish.databaseV3.hasFishData(fish)) {
-                        EvenMoreFish.databaseV3.incrementFish(fish);
+                    if (EvenMoreFish.databaseV3.hasFishData(finalFish)) {
+                        EvenMoreFish.databaseV3.incrementFish(finalFish);
 
                         // sets the new leader in top fish, if the player has fished a record fish
-                        if (EvenMoreFish.databaseV3.getLargestFishSize(fish) < fish.getLength()) {
-                            EvenMoreFish.databaseV3.updateLargestFish(fish, player.getUniqueId());
+                        if (EvenMoreFish.databaseV3.getLargestFishSize(finalFish) < finalFish.getLength()) {
+                            EvenMoreFish.databaseV3.updateLargestFish(finalFish, player.getUniqueId());
                         }
                     } else {
-                        EvenMoreFish.databaseV3.createFishData(fish, player.getUniqueId());
+                        EvenMoreFish.databaseV3.createFishData(finalFish, player.getUniqueId());
                     }
 
-                    EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), fish);
+                    EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
 
                 }
             }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));

@@ -176,10 +176,12 @@ public class Bait {
 			} else {
 				fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), getFishList());
 			}
+			if (fish != null) fish.setWasBaited(true);
 
 			if (!getRarityList().contains(fishRarity) && (fish == null || !getFishList().contains(fish))) {
 				// boost effect chose a fish but the randomizer didn't pick out the right fish - they've been incorrectly boosted.
-				return FishingProcessor.getFish(fishRarity, location, player, 1, null);
+				fish = FishingProcessor.getFish(fishRarity, location, player, 1, null);
+				if (fish != null) fish.setWasBaited(false);
 			} else {
 				alertUsage(player);
 			}
@@ -187,6 +189,7 @@ public class Bait {
 			fish = FishingProcessor.getFish(fishRarity, location, player, 1, null);
 			if (getRarityList().contains(fishRarity)) {
 				alertUsage(player);
+				if (fish != null) fish.setWasBaited(true);
 			}
 		}
 

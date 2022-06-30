@@ -35,6 +35,8 @@ public class Fish implements Cloneable {
 
     List<Requirement> requirements = new ArrayList<>();
 
+    boolean wasBaited;
+
     List<String> allowedRegions;
 
     double weight;
@@ -315,5 +317,13 @@ public class Fish implements Cloneable {
 
     public List<Requirement> getRequirements() {
         return this.requirements;
+    }
+
+    public boolean isWasBaited() {
+        return wasBaited;
+    }
+
+    public void setWasBaited(boolean wasBaited) {
+        this.wasBaited = wasBaited;
     }
 }
