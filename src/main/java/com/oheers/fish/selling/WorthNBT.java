@@ -42,10 +42,9 @@ public class WorthNBT {
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, rarity);
     }
 
-
     public static double getValue(ItemStack item) {
         // creating the key to check for
-        if (item == null || !item.hasItemMeta() || !FishUtils.isFish(item)) {
+        if (!FishUtils.isFish(item)) {
             return -1.0;
         }
 
@@ -59,7 +58,10 @@ public class WorthNBT {
 
         // gets a possible set-worth in the fish.yml
         try {
-            return EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            int configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            if (configValue == 0)
+                throw new NullPointerException();
+            return configValue;
         } catch (NullPointerException npe) {
             // there's no set-worth so we're calculating the worth ourselves
             return getMultipliedValue(length, rarity, name);
@@ -78,19 +80,26 @@ public class WorthNBT {
     }
 
     private static double getMultipliedValue(Float length, String rarity, String name) {
-        double value = 0.0;
-
-        value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
+        double worthMultiplier = getWorthMultiplier(rarity,name);
+        double value = multipleWorthByLength(worthMultiplier,length);
+        return sortFunkyDecimals(value);
+    }
+    private static double getWorthMultiplier(final String rarity,final String name) {
+        double value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            value = EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+            return EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
         }
 
-        // Whatever it finds the value to be, gets multiplied by the fish length and set
-        value *= length;
-        // Sorts out funky decimals during the above multiplication.
-        value = Math.round(value * 10.0) / 10.0;
-
         return value;
+    }
+
+    private static double multipleWorthByLength(final double worthMultiplier, final Float length) {
+        return worthMultiplier * length;
+    }
+
+    // Sorts out funky decimals during the above multiplication.
+    private static double sortFunkyDecimals(final double value) {
+        return Math.round(value * 10.0) / 10.0;
     }
 }

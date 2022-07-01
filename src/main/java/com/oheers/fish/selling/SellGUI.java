@@ -246,31 +246,33 @@ public class SellGUI implements InventoryHolder {
     public String getTotalWorth(boolean inventory) {
         if (this.menu == null) return Double.toString(0.0d);
 
-        double val = 0.0d;
+
+        double totalValue = 0.0d;
         int count = 0;
 
         if (inventory) {
-            for (ItemStack is : player.getInventory().getStorageContents()) {
+            for (ItemStack item : player.getInventory().getStorageContents()) {
                 // -1.0 is given when there's no worth NBT value
-                if (WorthNBT.getValue(is) != -1.0) {
-                    val += (WorthNBT.getValue(is) * is.getAmount());
-                    count += is.getAmount();
+                double itemValue = WorthNBT.getValue(item);
+                if (itemValue != -1.0) {
+                    totalValue += (itemValue * item.getAmount());
+                    count += item.getAmount();
                 }
             }
         } else {
-            for (ItemStack is : this.menu.getContents()) {
+            for (ItemStack item : this.menu.getContents()) {
                 // -1.0 is given when there's no worth NBT value
-                if (WorthNBT.getValue(is) != -1.0) {
-                    val += (WorthNBT.getValue(is) * is.getAmount());
-                    count += is.getAmount();
+                double itemValue = WorthNBT.getValue(item);
+                if (itemValue != -1.0) {
+                    totalValue += (itemValue * item.getAmount());
+                    count += item.getAmount();
                 }
             }
         }
 
-        this.value = val;
+        this.value = totalValue;
         this.fishCount = count;
-
-        return Double.toString(Math.floor(val*10)/10);
+        return Double.toString(Math.floor(totalValue*10)/10);
     }
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close

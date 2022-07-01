@@ -86,10 +86,10 @@ public class NbtUtils {
             return nbtCompound.getFloat(namespacedKey.toString());
 
         //NBT COMPAT
-        if(Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.getNamespace()))) {
-            NBTCompound emfCompound = nbtCompound.getCompound(namespacedKey.getNamespace());
-            if(Boolean.TRUE.equals(emfCompound.hasKey(namespacedKey.getKey())))
-                return nbtCompound.getFloat(namespacedKey.getKey());
+        if(Boolean.TRUE.equals(nbtCompound.hasKey(Keys.EMF_COMPOUND))) {
+            NBTCompound emfCompound = nbtCompound.getCompound(Keys.EMF_COMPOUND);
+            if(Boolean.TRUE.equals(emfCompound.hasKey(key)))
+                return emfCompound.getFloat(key);
         }
 
         return null;
