@@ -1,5 +1,7 @@
 package com.oheers.fish.fishing;
 
+import com.gmail.nossr50.config.experience.ExperienceConfig;
+import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
@@ -118,6 +120,14 @@ public class FishingProcessor implements Listener {
 
         if (!FishUtils.checkWorld(location)) {
             return null;
+        }
+
+        if (EvenMoreFish.usingMcMMO) {
+            if (ExperienceConfig.getInstance().isFishingExploitingPrevented()) {
+                if (UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector())) {
+                    return null;
+                }
+            }
         }
 
         if (EvenMoreFish.baitFile.getBaitCatchPercentage() > 0) {

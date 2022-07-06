@@ -83,6 +83,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<UUID, Rarity> decidedRarities;
     public static boolean isUpdateAvailable;
     public static boolean usingPAPI;
+    public static boolean usingMcMMO;
 
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
@@ -227,6 +228,7 @@ public class EvenMoreFish extends JavaPlugin {
         }
 
         if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
+            usingMcMMO = true;
             if (mainConfig.disableMcMMOTreasure()) {
                 getServer().getPluginManager().registerEvents(McMMOTreasureEvent.getInstance(), this);
             }
