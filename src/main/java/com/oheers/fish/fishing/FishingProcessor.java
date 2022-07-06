@@ -143,7 +143,7 @@ public class FishingProcessor implements Listener {
                 fish.setFisherman(player.getUniqueId());
                 try {
                     ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
-                    fishingRod.setItemMeta (newMeta);
+                    fishingRod.setItemMeta(newMeta);
                     EvenMoreFish.metric_baitsUsed++;
                 } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
                     exception.printStackTrace();

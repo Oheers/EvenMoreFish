@@ -169,11 +169,13 @@ public class BaitNBTManager {
 			nbtItem = new NBTItem(item);
 			NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
 			if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
-				emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, bait.getName() + ":" + bait.getMaxApplications());
+				combined.append(bait.getName()).append(":").append(bait.getMaxApplications());
+				emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, combined.toString());
 				cursorModifier = -bait.getMaxApplications();
 				maxBait = true;
 			} else {
-				emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, bait.getName() + ":" + quantity);
+				combined.append(bait.getName()).append(":").append(quantity);
+				emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, combined.toString());
 				cursorModifier = -quantity;
 			}
 		}
