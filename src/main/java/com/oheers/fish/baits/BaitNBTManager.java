@@ -108,7 +108,7 @@ public class BaitNBTManager {
 					item.setItemMeta(meta);
 				}
 			} catch (IndexOutOfBoundsException exception) {
-				EvenMoreFish.logger.log(Level.SEVERE, "Failed to apply bait: " + bait + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
+				EvenMoreFish.logger.log(Level.SEVERE, "Failed to apply bait: " + bait.getName() + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
 				return null;
 			}
 
@@ -300,7 +300,10 @@ public class BaitNBTManager {
 			totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
 		}
 
-		nbtItem.removeKey(NbtUtils.Keys.EMF_APPLIED_BAIT);
+		NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+		nbtCompound.removeKey(NbtUtils.Keys.EMF_APPLIED_BAIT);
+
+		itemStack.setItemMeta(nbtItem.getItem().getItemMeta());
 		return totalDeleted;
 	}
 
