@@ -102,6 +102,22 @@ public class UserReport {
 		this.totalFishLength += magnitude;
 	}
 
+	/**
+	 * Adds a specified number to the number of competitions the user has joined.
+	 * @param magnitude The size to increase the total number joined by.
+	 */
+	public void incrementCompetitionsJoined(final int magnitude) {
+		this.competitionsJoined += magnitude;
+	}
+
+	/**
+	 * Adds a specified number to the number of competitions the user has won.
+	 * @param magnitude The size to increase the total number won by.
+	 */
+	public void incrementCompetitionsWon(final int magnitude) {
+		this.competitionsWon += magnitude;
+	}
+
 	public int getId() {
 		return id;
 	}

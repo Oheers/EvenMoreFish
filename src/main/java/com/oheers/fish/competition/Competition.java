@@ -562,9 +562,11 @@ public class Competition {
         if (leaderboard.getSize() != 0) {
             Iterator<CompetitionEntry> iterator = leaderboard.getIterator();
             int i = 1;
+            EvenMoreFish.userReports.get(leaderboard.getTopEntry().getPlayer()).incrementCompetitionsWon(1);
             while (iterator.hasNext()) {
                 if (i <= rewards.size()) {
                     CompetitionEntry entry = iterator.next();
+                    EvenMoreFish.userReports.get(entry.getPlayer()).incrementCompetitionsJoined(1);
                     for (Reward reward : rewards.get(i)) {
                         reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null);
                     }
@@ -572,12 +574,15 @@ public class Competition {
                 } else {
                     if (participationRewards != null) {
                         iterator.forEachRemaining(competitionEntry -> {
+                            EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1);
                             for (Reward reward : participationRewards) {
                                 reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()), null);
                             }
                         });
                     } else {
-                        break;
+                        iterator.forEachRemaining(competitionEntry -> {
+                            EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1);
+                        });
                     }
                 }
             }
