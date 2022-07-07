@@ -6,7 +6,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
@@ -127,6 +126,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 } else {
                     EvenMoreFish.databaseV3.migrate(sender);
                 }
+                break;
             default:
                 sender.sendMessage(Help.formGeneralHelp(sender));
         }
@@ -513,16 +513,27 @@ class Controls{
                 for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                     fishCount += EvenMoreFish.fishCollection.get(r).size();
                 }
-                OldMessage msg = new OldMessage().setMSG(
-                        EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
-                                EvenMoreFish.msgs.getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
-                                EvenMoreFish.msgs.getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
-                                EvenMoreFish.msgs.getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
-                                EvenMoreFish.msgs.getSTDPrefix() + "Loaded: Rarities(" + EvenMoreFish.fishCollection.size() + ") Fish(" +
-                                fishCount + ") Baits(" + EvenMoreFish.baits.size() + ") Competitions(" + EvenMoreFish.competitionQueue.getSize() + ")"
-                );
-                if (sender instanceof Player) msg.setReceiver((Player) sender);
-                sender.sendMessage(msg.toString());
+
+                String msgString = EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
+                        EvenMoreFish.msgs.getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
+                        EvenMoreFish.msgs.getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
+                        EvenMoreFish.msgs.getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
+                        EvenMoreFish.msgs.getSTDPrefix() + "Loaded: Rarities(" + EvenMoreFish.fishCollection.size() + ") Fish(" +
+                        fishCount + ") Baits(" + EvenMoreFish.baits.size() + ") Competitions(" + EvenMoreFish.competitionQueue.getSize() + ")\n" +
+                        EvenMoreFish.msgs.getSTDPrefix();
+
+                if (EvenMoreFish.mainConfig.databaseEnabled()) {
+                    if (EvenMoreFish.databaseV3.usingVersionV2()) {
+                        msgString += "Database Engine: V2";
+                    } else {
+                        msgString += "Database Engine: V3";
+                    }
+                } else {
+                    msgString += "Database Engine: None";
+                }
+
+                Message msg = new Message(msgString);
+                msg.broadcast(sender, true, false);
                 break;
             default:
                 new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, true, false);

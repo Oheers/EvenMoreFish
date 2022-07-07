@@ -201,12 +201,18 @@ public class DatabaseV3 {
 				createUser(playerUUID);
 				translateFishReportsV2(playerUUID, reports);
 
-				Message migratedMSG = new Message("Migrated: " + playerUUID);
-				migratedMSG.usePrefix(PrefixType.ERROR);
+				Message migratedMSG = new Message("Migrated " + reports.size() + " fish for: " + playerUUID);
+				migratedMSG.usePrefix(PrefixType.ADMIN);
 				migratedMSG.broadcast(initiator, true, false);
 
 				file.delete();
 			}
+
+			Message migratedMSG = new Message("Migration completed. Your database is now using the V3 database engine, your" +
+					" server will be able to benefit from upcoming updates related to fishing progress. You do not need" +
+					" to reload your server.");
+			migratedMSG.usePrefix(PrefixType.ERROR);
+			migratedMSG.broadcast(initiator, true, false);
 		} catch (NullPointerException | SQLException | FileNotFoundException exception) {
 			exception.printStackTrace();
 			Message message = new Message("Fatal error whilst upgrading to V3 database engine.");
@@ -270,8 +276,6 @@ public class DatabaseV3 {
 			}
 
 			totalFish += report.getNumCaught();
-
-
 
 			// starts a field for the new fish for the user that's been fished for the first time
 			try {
