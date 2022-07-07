@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -186,39 +187,63 @@ public class DatabaseV3 {
 		msg.usePrefix(PrefixType.ADMIN);
 		msg.broadcast(initiator, true, false);
 
+		File oldDataFolder = new File(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data/");
+		File dataFolder = new File(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data-archived/");
+
+		if (oldDataFolder.renameTo(dataFolder)) {
+			Message message = new Message("Archived /data/ folder.");
+			message.usePrefix(PrefixType.ADMIN);
+			message.broadcast(initiator, true, false);
+		} else {
+			Message message = new Message("Failed to archive /data/ folder. Cancelling migration. [No further information]");
+			message.usePrefix(PrefixType.ADMIN);
+			message.broadcast(initiator, true, false);
+			return;
+		}
+
+		Message fishReportMSG = new Message("Beginning FishReport migrations. This may take a while.");
+		fishReportMSG.usePrefix(PrefixType.ADMIN);
+		fishReportMSG.broadcast(initiator, true, false);
+
 		try {
 			translateFishDataV2();
 			createTables(true);
 
-			File dataFolder = new File(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data/");
 			for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
 				Type fishReportList = new TypeToken<List<FishReport>>(){}.getType();
 
 				Gson gson = new Gson();
+				FileReader reader = new FileReader(file);
 				List<FishReport> reports = gson.fromJson(new FileReader(file), fishReportList);
 				UUID playerUUID = UUID.fromString(file.getName().substring(0, file.getName().lastIndexOf(".")));
-
+				reader.close();
 				createUser(playerUUID);
 				translateFishReportsV2(playerUUID, reports);
 
 				Message migratedMSG = new Message("Migrated " + reports.size() + " fish for: " + playerUUID);
 				migratedMSG.usePrefix(PrefixType.ADMIN);
 				migratedMSG.broadcast(initiator, true, false);
-
-				file.delete();
 			}
 
-			Message migratedMSG = new Message("Migration completed. Your database is now using the V3 database engine, your" +
-					" server will be able to benefit from upcoming updates related to fishing progress. You do not need" +
-					" to reload your server.");
-			migratedMSG.usePrefix(PrefixType.ERROR);
-			migratedMSG.broadcast(initiator, true, false);
 		} catch (NullPointerException | SQLException | FileNotFoundException exception) {
 			exception.printStackTrace();
 			Message message = new Message("Fatal error whilst upgrading to V3 database engine.");
 			message.usePrefix(PrefixType.ERROR);
 			message.broadcast(initiator, true, false);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
+
+		Message migratedMSG = new Message("Migration completed. Your database is now using the V3 database engine: you do" +
+				" not need to restart or reload your server to complete the process.");
+		migratedMSG.usePrefix(PrefixType.ERROR);
+		migratedMSG.broadcast(initiator, true, false);
+
+		Message thankyou = new Message("Now that migration is complete, you will be able to use functionality in upcoming" +
+				" updates such as quests, deliveries and a fish log. - Oheers");
+		thankyou.usePrefix(PrefixType.ERROR);
+		thankyou.broadcast(initiator, true, false);
 
 		this.usingV2 = false;
 	}
@@ -236,7 +261,12 @@ public class DatabaseV3 {
 				closeConnection();
 			}
 		}
-		sendStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";", this.connection);
+		if (queryTableExistence("Fish2", this.connection)) {
+			sendStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";", this.connection);
+		} else {
+			sendStatement(Table.EMF_FISH.creationCode, this.connection);
+		}
+
 		closeConnection();
 	}
 
