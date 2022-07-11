@@ -10,6 +10,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -606,15 +607,20 @@ public class DatabaseV3 {
 		PreparedStatement statement = this.connection.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
 				"largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
 				"WHERE uuid = ?;");
-		statement.setString(1, report.getFirstFish());
-		statement.setString(2, report.getRecentFish());
-		statement.setString(3, report.getLargestFish());
-		statement.setFloat(4, report.getLargestLength());
-		statement.setInt(5, report.getNumFishCaught());
-		statement.setFloat(6, report.getTotalFishLength());
-		statement.setInt(7, report.getCompetitionsWon());
-		statement.setInt(8, report.getCompetitionsJoined());
-		statement.setString(9, uuid.toString());
+		try {
+			statement.setString(1, report.getFirstFish());
+			statement.setString(2, report.getRecentFish());
+			statement.setString(3, report.getLargestFish());
+			statement.setFloat(4, report.getLargestLength());
+			statement.setInt(5, report.getNumFishCaught());
+			statement.setFloat(6, report.getTotalFishLength());
+			statement.setInt(7, report.getCompetitionsWon());
+			statement.setInt(8, report.getCompetitionsJoined());
+			statement.setString(9, uuid.toString());
+		} catch (NullPointerException exception) {
+			EvenMoreFish.logger.log(Level.SEVERE, "Could not write user data for " + uuid + ", stored users (" + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size() + ")");
+			exception.printStackTrace();
+		}
 
 		statement.execute();
 

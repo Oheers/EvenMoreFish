@@ -9,8 +9,8 @@ import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.*;
-import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.events.*;
+import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
@@ -23,6 +23,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -120,7 +121,7 @@ public class EvenMoreFish extends JavaPlugin {
         usingPAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
 
         if (mainConfig.isEconomyEnabled()) {
-            // could not setup economy.
+            // could not set up economy.
             if (!setupEconomy()) {
                 EvenMoreFish.logger.log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
             }
@@ -177,9 +178,18 @@ public class EvenMoreFish extends JavaPlugin {
 
            databaseV3 = new DatabaseV3();
 
+           for (Player player : getServer().getOnlinePlayers()) {
+               try {
+                   userReports.put(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
+               } catch (SQLException e) {
+                   logger.log(Level.SEVERE, "Could not load data for " + player.getName());
+                   e.printStackTrace();
+               }
+           }
+
         }
 
-        getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
+        logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
 
     }
 
@@ -192,14 +202,6 @@ public class EvenMoreFish extends JavaPlugin {
         // Ends the current competition in case the plugin is being disabled when the server will continue running
         if (Competition.isActive()) {
             active.end();
-        }
-
-        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-            try {
-                Database.closeConnections();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
         }
 
         getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
@@ -321,6 +323,7 @@ public class EvenMoreFish extends JavaPlugin {
                 }
             }
         }
+        EvenMoreFish.userReports.clear();
     }
 
     public void reload() {

@@ -562,7 +562,12 @@ public class Competition {
         if (leaderboard.getSize() != 0) {
             Iterator<CompetitionEntry> iterator = leaderboard.getIterator();
             int i = 1;
-            EvenMoreFish.userReports.get(leaderboard.getTopEntry().getPlayer()).incrementCompetitionsWon(1);
+            try {
+                EvenMoreFish.userReports.get(leaderboard.getTopEntry().getPlayer()).incrementCompetitionsWon(1);
+            } catch (NullPointerException exception) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user report for " + leaderboard.getTopEntry());
+                EvenMoreFish.logger.log(Level.SEVERE, "Recorded " + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size());
+            }
             while (iterator.hasNext()) {
                 if (i <= rewards.size()) {
                     CompetitionEntry entry = iterator.next();

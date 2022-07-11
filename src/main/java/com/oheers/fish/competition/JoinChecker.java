@@ -21,6 +21,52 @@ import java.util.logging.Level;
 
 public class JoinChecker implements Listener {
 
+    /**
+     * Reads all the database information for the user specified.
+     * @param userUUID The user UUID having their data read.
+     * @param userName the in-game username of the user having their data read.
+     */
+    public void databaseRegistration(UUID userUUID, String userName) {
+        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+            List<FishReport> reports = new ArrayList<>();
+
+            try {
+                if (EvenMoreFish.databaseV3.hasUser(userUUID, Table.EMF_FISH_LOG, true)) {
+                    reports = EvenMoreFish.databaseV3.getFishReports(userUUID);
+                } else {
+                    reports = new ArrayList<>();
+                    if (EvenMoreFish.mainConfig.doUserJoinVerbose()) EvenMoreFish.logger.log(Level.INFO, userName + " has joined for the first time, creating new data handle for them.");
+                }
+            } catch (SQLException | InvalidTableException exception) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Failed to check database existence of user " + userUUID);
+                exception.printStackTrace();
+            }
+
+            if (reports != null) {
+                EvenMoreFish.fishReports.put(userUUID, reports);
+            } else {
+                EvenMoreFish.logger.log(Level.SEVERE, "Fetched a null reports file for: " + userUUID);
+            }
+
+            try {
+                UserReport report = EvenMoreFish.databaseV3.readUserReport(userUUID);
+                if (report == null) {
+                    EvenMoreFish.databaseV3.createUser(userUUID);
+                    report = EvenMoreFish.databaseV3.readUserReport(userUUID);
+                    if (report == null) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new empty user report for " + userName);
+                    } else {
+                        EvenMoreFish.userReports.put(userUUID, report);
+                    }
+                } else {
+                    EvenMoreFish.userReports.put(userUUID, report);
+                }
+            } catch (SQLException exception) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user reports for: " + userUUID);
+            }
+        }
+    }
+
     // Gives the player the active fishing bar if there's a fishing event cracking off
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
@@ -35,45 +81,7 @@ public class JoinChecker implements Listener {
 
             @Override
             public void run() {
-                if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-                    List<FishReport> reports = new ArrayList<>();
-
-                    UUID userUUID = event.getPlayer().getUniqueId();
-                    try {
-                        if (EvenMoreFish.databaseV3.hasUser(userUUID, Table.EMF_FISH_LOG, true)) {
-                            reports = EvenMoreFish.databaseV3.getFishReports(userUUID);
-                        } else {
-                            reports = new ArrayList<>();
-                            if (EvenMoreFish.mainConfig.doUserJoinVerbose()) EvenMoreFish.logger.log(Level.INFO, event.getPlayer().getName() + " has joined for the first time, creating new data handle for them.");
-                        }
-                    } catch (SQLException | InvalidTableException exception) {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Failed to check database existence of user " + userUUID);
-                        exception.printStackTrace();
-                    }
-
-                    if (reports != null) {
-                        EvenMoreFish.fishReports.put(userUUID, reports);
-                    } else {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Fetched a null reports file for: " + userUUID);
-                    }
-
-                    try {
-                        UserReport report = EvenMoreFish.databaseV3.readUserReport(userUUID);
-                        if (report == null) {
-                            EvenMoreFish.databaseV3.createUser(userUUID);
-                            report = EvenMoreFish.databaseV3.readUserReport(userUUID);
-                            if (report == null) {
-                                EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new empty user report for " + event.getPlayer().getName());
-                            } else {
-                                EvenMoreFish.userReports.put(userUUID, report);
-                            }
-                        } else {
-                            EvenMoreFish.userReports.put(userUUID, report);
-                        }
-                    } catch (SQLException exception) {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user reports for: " + userUUID);
-                    }
-                }
+                databaseRegistration(event.getPlayer().getUniqueId(), event.getPlayer().getName());
             }
         }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
     }
