@@ -21,6 +21,8 @@ public class NbtUtils {
         public static final String EMF_BAIT = "emf-bait";
         public static final String EMF_APPLIED_BAIT = "emf-applied-bait";
 
+        public static final String EMF_ROD_NBT = "emf-rod-nbt";
+
         public static final String PUBLIC_BUKKIT_VALUES = "PublicBukkitValues";
         public static final String DEFAULT_GUI_ITEM = "default-gui-item";
     }
