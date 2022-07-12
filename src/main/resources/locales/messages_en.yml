@@ -224,6 +224,8 @@ admin:
   must-be-holding-rod: "&rYou need to be holding a fishing rod to run that command."
   # When /emf admin clearbaits command is run.
   all-baits-cleared: "&rYou have removed all {amount} baits from your fishing rod."
+  # /emf admin clearbaits is run, but there are no baits on the rod.
+  no-baits-on-rod: "&rThe fishing rod does not have any baits applied."
 
   # When economy is disabled for the plugin
   economy-disabled: "&rEvenMoreFish's economy features are disabled."

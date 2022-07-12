@@ -477,24 +477,42 @@ class Controls{
                 break;
 
             case "clearbaits":
-                if (!(sender instanceof Player)) {
+
+                Player player = null;
+                for (int i = 2; i < args.length; i++) {
+                    if (args[i].startsWith("-p:")) {
+                        if ((player = Bukkit.getPlayer(args[i].substring(3))) == null) {
+                            Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
+                            message.setPlayer(args[i].substring(3));
+                            message.broadcast(sender, true, true);
+                            return;
+                        }
+                    }
+                }
+
+                if (player == null && !(sender instanceof Player)) {
                     new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                     return;
                 }
 
-                Player player = (Player) sender;
+                if (player == null) player = (Player) sender;
                 if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
                     new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player, true, false);
                     return;
                 }
 
                 ItemStack fishingRod = player.getInventory().getItemInMainHand();
-                ItemMeta meta = fishingRod.getItemMeta();
-                meta.setLore(BaitNBTManager.deleteOldLore(fishingRod));
-                fishingRod.setItemMeta(meta);
-                Message message = new Message(ConfigMessage.BAITS_CLEARED);
-                message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
-                message.broadcast(player, true, true);
+                if (BaitNBTManager.isBaitedRod(fishingRod)) {
+                    ItemMeta meta = fishingRod.getItemMeta();
+                    meta.setLore(BaitNBTManager.deleteOldLore(fishingRod));
+                    fishingRod.setItemMeta(meta);
+                    Message message = new Message(ConfigMessage.BAITS_CLEARED);
+                    message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
+                    message.broadcast(player, true, true);
+                } else {
+                    new Message(ConfigMessage.NO_BAITS).broadcast(player, true, false);
+                }
+
                 break;
 
             case "reload":

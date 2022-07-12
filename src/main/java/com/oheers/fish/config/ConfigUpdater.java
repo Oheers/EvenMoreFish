@@ -62,6 +62,7 @@ public class ConfigUpdater {
 			case 8: update.append(MSG_UPDATE_9);
 			case 9: update.append(MSG_UPDATE_10);
 			case 10: update.append(MSG_UPDATE_11);
+			case 11: update.append(MSG_UPDATE_12);
 		}
 
 		update.append(UPDATE_ALERT);
@@ -92,6 +93,7 @@ public class ConfigUpdater {
 		MSG_UPDATE_9 = null;
 		MSG_UPDATE_10 = null;
 		MSG_UPDATE_11 = null;
+		MSG_UPDATE_12 = null;
 
 		CONFIG_UPDATE_8 = null;
 		CONFIG_UPDATE_9	= null;
@@ -101,6 +103,9 @@ public class ConfigUpdater {
 
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
+	private static String MSG_UPDATE_12 = "admin:\n" +
+			"  # /emf admin clearbaits is run, but there are no baits on the rod.\n" +
+			"  no-baits-on-rod: \"&rThe fishing rod does not have any baits applied.\"";
 	private static String CONFIG_UPDATE_11 = "# Requires that the fishing rod to have the \"emf-rod-nbt\" value in order to catch custom fish defined in fish.yml.\n" +
 			"# This allows you to sell rods that will be the only ones able to catch EvenMoreFish fish.\n" +
 			"require-nbt-rod: false\n" +
