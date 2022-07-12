@@ -18,7 +18,6 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.requirements.RequirementContext;
-import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -43,24 +42,24 @@ public class FishingProcessor implements Listener {
             return;
         }
 
-
-
-
-
-        //check if player is using the fishing rod with correct nbt value.
-        ItemStack rod_in_hand = event.getPlayer().getEquipment().getItemInMainHand();
-        NBTItem nbtItem = new NBTItem(rod_in_hand);
-        Boolean tag = nbtItem.getBoolean(NbtUtils.Keys.EMF_ROD_NBT);
-        if (tag == null || ! tag){//tag is null or tag is false
-            return;
+        if (EvenMoreFish.mainConfig.requireNBTRod()) {
+            //check if player is using the fishing rod with correct nbt value.
+            ItemStack rodInHand = event.getPlayer().getEquipment().getItemInMainHand();
+            NBTItem nbtItem = new NBTItem(rodInHand);
+            if(Boolean.FALSE.equals(NbtUtils.hasKey(nbtItem, NbtUtils.Keys.EMF_ROD_NBT))) {
+                //tag is null or tag is false
+                return;
+            }
         }
 
-        //check if player have permssion to fish emf fishes
-        if (! EvenMoreFish.permission.has(event.getPlayer(), "emf.use_rod")){
-            if (event.getState() == PlayerFishEvent.State.FISHING) {//send msg only when throw the lure
-                new Message(ConfigMessage.NO_PERMISSION_FISHING).broadcast(event.getPlayer(), true, false);
+        if (EvenMoreFish.mainConfig.requireFishingPermission()) {
+            //check if player have permssion to fish emf fishes
+            if (! EvenMoreFish.permission.has(event.getPlayer(), "emf.use_rod")){
+                if (event.getState() == PlayerFishEvent.State.FISHING) {//send msg only when throw the lure
+                    new Message(ConfigMessage.NO_PERMISSION_FISHING).broadcast(event.getPlayer(), true, false);
+                }
+                return;
             }
-            return;
         }
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {

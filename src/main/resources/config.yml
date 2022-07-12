@@ -32,12 +32,20 @@ mysql:
 random-durability: true
 
 # Setting this to false disables /emf shop and money rewards from competitions. It's unlikely
-# you'll want to do this but it is possible.
+# you'll want to do this, but it is possible.
 enable-economy: true
 
-# Setting this to change the boosbar sytle
+# Setting this to change the boosbar style
 # you can use like: SEGMENTED_6 SEGMENTED_10 SEGMENTED_12 SEGMENTED_20 SOLID
 barstyle: 'SEGMENTED_10'
+
+# Requires that the fishing rod to have the "emf-rod-nbt" value in order to catch custom fish defined in fish.yml.
+# This allows you to sell rods that will be the only ones able to catch EvenMoreFish fish.
+require-nbt-rod: false
+
+# Should the user need emf.use_rod permission in order to catch default custom fish defined in fish.yml. This requires
+# Vault and a permission manager such as LuckPerms.
+requires-fishing-permission: false
 
 # For customizing the /emf shop GUI
 gui:
@@ -84,4 +92,4 @@ disable-aureliumskills-loot: true
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 10
+config-version: 11

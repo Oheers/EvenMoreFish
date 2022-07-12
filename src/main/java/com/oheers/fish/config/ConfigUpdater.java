@@ -76,6 +76,7 @@ public class ConfigUpdater {
 			case 7: update.append(CONFIG_UPDATE_8);
 			case 8: update.append(CONFIG_UPDATE_9);
 			case 9: update.append(CONFIG_UPDATE_10);
+			case 10: update.append(CONFIG_UPDATE_11);
 		}
 
 		update.append(UPDATE_ALERT);
@@ -95,10 +96,19 @@ public class ConfigUpdater {
 		CONFIG_UPDATE_8 = null;
 		CONFIG_UPDATE_9	= null;
 		CONFIG_UPDATE_10 = null;
+		CONFIG_UPDATE_11 = null;
 	}
 
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
+	private static String CONFIG_UPDATE_11 = "# Requires that the fishing rod to have the \"emf-rod-nbt\" value in order to catch custom fish defined in fish.yml.\n" +
+			"# This allows you to sell rods that will be the only ones able to catch EvenMoreFish fish.\n" +
+			"require-nbt-rod: false\n" +
+			"\n" +
+			"# Should the user need emf.use_rod permission in order to catch default custom fish defined in fish.yml. This requires\n" +
+			"# Vault and a permission manager such as LuckPerms.\n" +
+			"requires-fishing-permission: false\n# Prevents verbose output when a new user field is added to the database.\n" +
+			"disable-new-user-verbose: false";
 	private static String MSG_UPDATE_11 = "invalid-type: \"&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH\"\n" +
 			"# Sent to all online players when not enough players are on to start a competition\n# How should the %emf_competition_place_fish_*% be formatted when there's no length on the fish?\n" +
 			"emf-lengthless-fish-format: \"{rarity_colour}&l{rarity} {fish}\"\n" +

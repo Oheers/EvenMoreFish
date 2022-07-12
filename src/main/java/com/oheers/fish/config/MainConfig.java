@@ -222,6 +222,14 @@ public class MainConfig {
         return config.getBoolean("place-head-fish");
     }
 
+    public boolean requireNBTRod() {
+        return config.getBoolean("require-nbt-rod", false);
+    }
+
+    public boolean requireFishingPermission() {
+        return config.getBoolean("requires-fishing-permission", false);
+    }
+
     public boolean debugSession() {
         return config.getBoolean("debug-session", false);
     }
