@@ -279,8 +279,14 @@ class Controls{
 
             case "fish":
                 if (args.length == 3) {
+                    // Making Word_Word2 into "Word Word2"
+                    StringBuilder args2 = new StringBuilder();
+                    for (String word : args[2].split("_")) {
+                        args2.append(word).append(" ");
+                    }
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        if (args[2].equalsIgnoreCase(r.getValue())) {
+                        String rarityName = args2.substring(0, args2.length()-1);
+                        if (rarityName.equalsIgnoreCase(r.getValue())) {
                             ComponentBuilder builder = new ComponentBuilder();
 
                             if (r.getDisplayName() != null) builder.append(FishUtils.translateHexColorCodes(r.getDisplayName()), ComponentBuilder.FormatRetention.NONE);
@@ -313,8 +319,6 @@ class Controls{
                     }
                     sender.spigot().sendMessage(builder.create());
                 } else if (args.length >= 4) {
-                    StringBuilder using = new StringBuilder();
-
                     Player player = null;
                     int quantity = 1;
                     if (args.length > 4) {
@@ -342,20 +346,28 @@ class Controls{
                                     message.broadcast(sender, true, true);
                                     return;
                                 }
-                            } else {
-                                using.append(args[section]);
-                                if (section != args.length - 1 && !(args[section+1].startsWith("-p:")) && !(args[section+1].startsWith("-q:")))  using.append(" ");
                             }
                         }
-                    } else {
-                        using = new StringBuilder(args[3]);
                     }
 
                     if (sender instanceof Player) {
+                        // Making Word_Word2 into "Word Word2"
+                        StringBuilder args2 = new StringBuilder();
+                        for (String word : args[2].split("_")) {
+                            args2.append(word).append(" ");
+                        }
+                        String rarityName = args2.substring(0, args2.length()-1);
+
+                        StringBuilder args3 = new StringBuilder();
+                        for (String word : args[3].split("_")) {
+                            args3.append(word).append(" ");
+                        }
+                        String fishName = args3.substring(0, args3.length()-1);
+
                         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                            if (args[2].equalsIgnoreCase(r.getValue())) {
+                            if (rarityName.equalsIgnoreCase(r.getValue())) {
                                 for (Fish f : EvenMoreFish.fishCollection.get(r)) {
-                                    if (f.getName().equalsIgnoreCase(using.toString())) {
+                                    if (fishName.equalsIgnoreCase(f.getName())) {
 
                                         if (player == null) {
                                             f.setFisherman(((Player) sender).getUniqueId());
@@ -375,7 +387,7 @@ class Controls{
                                         if (player != null) {
                                             Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_FISH);
                                             message.setPlayer(player.getName());
-                                            message.setFishCaught(using.toString());
+                                            message.setFishCaught(f.getName());
                                             message.broadcast(sender, true, true);
                                         }
 
