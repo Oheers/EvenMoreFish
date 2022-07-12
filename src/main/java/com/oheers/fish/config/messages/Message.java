@@ -406,7 +406,7 @@ public class Message {
 			}
 			// Replaces the fish lore with the value
 			setVariable("{fish_lore}", customLore.toString());
-		} else setVariable("{fish_lore}\n", "");
+		} else setVariable("{fish_lore}", "");
 	}
 }
 
