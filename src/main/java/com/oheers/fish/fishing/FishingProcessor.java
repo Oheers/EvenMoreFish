@@ -4,6 +4,7 @@ import com.gmail.nossr50.config.experience.ExperienceConfig;
 import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.NbtUtils;
 import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
@@ -17,6 +18,8 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.requirements.RequirementContext;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
@@ -37,6 +40,26 @@ public class FishingProcessor implements Listener {
     @EventHandler (priority = EventPriority.HIGHEST)
     public static void process(PlayerFishEvent event) {
         if (!isCustomFishAllowed(event.getPlayer().getUniqueId())) {
+            return;
+        }
+
+
+
+
+
+        //check if player is using the fishing rod with correct nbt value.
+        ItemStack rod_in_hand = event.getPlayer().getEquipment().getItemInMainHand();
+        NBTItem nbtItem = new NBTItem(rod_in_hand);
+        Boolean tag = nbtItem.getBoolean(NbtUtils.Keys.EMF_ROD_NBT);
+        if (tag == null || ! tag){//tag is null or tag is false
+            return;
+        }
+
+        //check if player have permssion to fish emf fishes
+        if (! EvenMoreFish.permission.has(event.getPlayer(), "emf.use_rod")){
+            if (event.getState() == PlayerFishEvent.State.FISHING) {//send msg only when throw the lure
+                new Message(ConfigMessage.NO_PERMISSION_FISHING).broadcast(event.getPlayer(), true, false);
+            }
             return;
         }
 
