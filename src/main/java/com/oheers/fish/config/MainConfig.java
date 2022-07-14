@@ -198,8 +198,8 @@ public class MainConfig {
         return config.getBoolean("mysql.use-mysql");
     }
 
-    public boolean doUserJoinVerbose() {
-        return !config.getBoolean("disable-new-user-verbose", false);
+    public boolean doDBVerbose() {
+        return !config.getBoolean("disable-db-verbose", false);
     }
 
     public String getAddress() {

@@ -191,6 +191,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
 
+        logger.log(Level.INFO, "ON: " + userReports.size());
     }
 
     @Override
@@ -204,7 +205,8 @@ public class EvenMoreFish extends JavaPlugin {
             active.end();
         }
 
-        getServer().getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
+        logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
+        logger.log(Level.INFO, "OFF: " + userReports.size());
 
     }
 

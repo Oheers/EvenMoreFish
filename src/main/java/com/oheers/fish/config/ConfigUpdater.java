@@ -112,8 +112,8 @@ public class ConfigUpdater {
 			"\n" +
 			"# Should the user need emf.use_rod permission in order to catch default custom fish defined in fish.yml. This requires\n" +
 			"# Vault and a permission manager such as LuckPerms.\n" +
-			"requires-fishing-permission: false\n# Prevents verbose output when a new user field is added to the database.\n" +
-			"disable-new-user-verbose: false";
+			"requires-fishing-permission: false\n# Prevents verbose output when the plugin interacts with the database.\n" +
+			"disable-db-verbose: false";
 	private static String MSG_UPDATE_11 = "invalid-type: \"&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH\"\n" +
 			"# Sent to all online players when not enough players are on to start a competition\n# How should the %emf_competition_place_fish_*% be formatted when there's no length on the fish?\n" +
 			"emf-lengthless-fish-format: \"{rarity_colour}&l{rarity} {fish}\"\n" +

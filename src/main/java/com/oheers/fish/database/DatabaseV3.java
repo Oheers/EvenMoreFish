@@ -410,6 +410,10 @@ public class DatabaseV3 {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not add the current competition in the table: emf_competitions.");
 			exception.printStackTrace();
 		}
+
+		if (EvenMoreFish.mainConfig.doDBVerbose()) {
+			EvenMoreFish.logger.log(Level.INFO, "Written competition report for (" + competition.getCompetitionName() + ") to the database.");
+		}
 	}
 
 	/**
@@ -432,6 +436,10 @@ public class DatabaseV3 {
 		} catch (SQLException exception) {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
 			exception.printStackTrace();
+		}
+
+		if (EvenMoreFish.mainConfig.doDBVerbose()) {
+			EvenMoreFish.logger.log(Level.INFO, "Written empty user report for (" + uuid + ") to the database.");
 		}
 	}
 
@@ -502,6 +510,10 @@ public class DatabaseV3 {
 			return reports;
 		} finally {
 			closeConnection();
+
+			if (EvenMoreFish.mainConfig.doDBVerbose()) {
+				EvenMoreFish.logger.log(Level.INFO, "Read fish reports for (" + uuid + ") from the database.");
+			}
 		}
 	}
 
@@ -545,6 +557,10 @@ public class DatabaseV3 {
 		statement.setFloat(6, report.getLargestLength());
 
 		statement.execute();
+
+		if (EvenMoreFish.mainConfig.doDBVerbose()) {
+			EvenMoreFish.logger.log(Level.INFO, "Written user fish log data for (userID:" + userID + ") to the database.");
+		}
 	}
 
 	/**
@@ -566,6 +582,10 @@ public class DatabaseV3 {
 		statement.setString(5, report.getName());
 
 		statement.execute();
+
+		if (EvenMoreFish.mainConfig.doDBVerbose()) {
+			EvenMoreFish.logger.log(Level.INFO, "Updated user report for (userID:" + userID + ") in the database.");
+		}
 	}
 
 	/**
@@ -622,6 +642,10 @@ public class DatabaseV3 {
 			exception.printStackTrace();
 		}
 
+		if (EvenMoreFish.mainConfig.doDBVerbose()) {
+			EvenMoreFish.logger.log(Level.INFO, "Written user report for (" + uuid + ") to the database.");
+		}
+
 		statement.execute();
 
 		closeConnection();
@@ -661,6 +685,10 @@ public class DatabaseV3 {
 			}
 		} finally {
 			closeConnection();
+
+			if (EvenMoreFish.mainConfig.doDBVerbose()) {
+				EvenMoreFish.logger.log(Level.INFO, "Read user report for (" + uuid + ") from the database.");
+			}
 		}
 	}
 
