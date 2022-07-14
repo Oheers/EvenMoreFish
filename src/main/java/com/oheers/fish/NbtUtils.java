@@ -18,6 +18,7 @@ public class NbtUtils {
         public static final String EMF_FISH_RARITY = "emf-fish-rarity";
         public static final String EMF_FISH_LENGTH = "emf-fish-length";
         public static final String EMF_FISH_NAME = "emf-fish-name";
+        public static final String EMF_FISH_RANDOM_INDEX = "emf-fish-random-index";
         public static final String EMF_BAIT = "emf-bait";
         public static final String EMF_APPLIED_BAIT = "emf-applied-bait";
 
@@ -92,6 +93,28 @@ public class NbtUtils {
             NBTCompound emfCompound = nbtCompound.getCompound(Keys.EMF_COMPOUND);
             if(Boolean.TRUE.equals(emfCompound.hasKey(key)))
                 return emfCompound.getFloat(key);
+        }
+
+        return null;
+    }
+
+    public static @Nullable Integer getInteger(final @NotNull NBTCompound nbtCompound, final String key) {
+        NamespacedKey namespacedKey = getNamespacedKey(key);
+        if(Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
+            NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
+            if(Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString())))
+                return publicBukkitValues.getInteger(namespacedKey.toString());
+        }
+
+        //NBT API PR
+        if(Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.toString())))
+            return nbtCompound.getInteger(namespacedKey.toString());
+
+        //NBT COMPAT
+        if(Boolean.TRUE.equals(nbtCompound.hasKey(Keys.EMF_COMPOUND))) {
+            NBTCompound emfCompound = nbtCompound.getCompound(Keys.EMF_COMPOUND);
+            if(Boolean.TRUE.equals(emfCompound.hasKey(key)))
+                return emfCompound.getInteger(key);
         }
 
         return null;

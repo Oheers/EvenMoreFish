@@ -3,43 +3,46 @@ package com.oheers.fish.selling;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
+import com.oheers.fish.fishing.items.Fish;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import de.tr7zw.changeme.nbtapi.NBTTileEntity;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class WorthNBT {
 
-    public static ItemStack setNBT(ItemStack fish, Float length, @NotNull UUID player, String rarity, String name) {
+    public static ItemStack setNBT(ItemStack fishItem, Fish fish) {
         // creates key and plops in the value of "value"
-        NBTItem nbtItem = new NBTItem(fish);
+        NBTItem nbtItem = new NBTItem(fishItem);
 
         NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
-        emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, length);
-        emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, player.toString());
-        emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, name);
-        emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, rarity);
+        emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, fish.getLength());
+        emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, fish.getFisherman().toString());
+        emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, fish.getName());
+        emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, fish.getRarity().getValue());
+        emfCompound.setInteger(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX, fish.getFactory().getChosenRandomIndex());
 
         return nbtItem.getItem();
     }
 
-    public static void setNBT(Skull fish, Float length, UUID player, String rarity, String name) {
-        // creates key and plops in the value of "value"
-        NBTTileEntity nbtItem = new NBTTileEntity(fish);
-        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
-        emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, length);
+    public static void setNBT(Skull fishSkull, Fish fish) {
+        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_LENGTH);
+        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_PLAYER);
+        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RARITY);
+        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_NAME);
+        NamespacedKey nbtrandomIndex = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
 
-        if (player != null) {
-            emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, player.toString());
-        }
-        emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, name);
-        emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, rarity);
+        PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
+
+        itemMeta.set(nbtlength, PersistentDataType.FLOAT, fish.getLength());
+        if (fish.getFisherman() != null) itemMeta.set(nbtplayer, PersistentDataType.STRING, fish.getFisherman().toString());
+        itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getChosenRandomIndex());
+        itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getValue());
+        itemMeta.set(nbtname, PersistentDataType.STRING, fish.getName());
     }
 
     public static double getValue(ItemStack item) {

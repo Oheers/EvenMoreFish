@@ -559,7 +559,7 @@ public class DatabaseV3 {
 		statement.execute();
 
 		if (EvenMoreFish.mainConfig.doDBVerbose()) {
-			EvenMoreFish.logger.log(Level.INFO, "Written user fish log data for (userID:" + userID + ") to the database.");
+			EvenMoreFish.logger.log(Level.INFO, "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
 		}
 	}
 
@@ -582,10 +582,6 @@ public class DatabaseV3 {
 		statement.setString(5, report.getName());
 
 		statement.execute();
-
-		if (EvenMoreFish.mainConfig.doDBVerbose()) {
-			EvenMoreFish.logger.log(Level.INFO, "Updated user report for (userID:" + userID + ") in the database.");
-		}
 	}
 
 	/**
@@ -607,6 +603,10 @@ public class DatabaseV3 {
 			} else {
 				addUserFish(report, this.connection, userID);
 			}
+		}
+
+		if (EvenMoreFish.mainConfig.doDBVerbose()) {
+			EvenMoreFish.logger.log(Level.INFO, "Updated user report for (userID:" + userID + ") in the database.");
 		}
 
 		closeConnection();

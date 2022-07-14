@@ -266,7 +266,7 @@ public class FishingProcessor implements Listener {
             }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
         }
 
-        return fish.give();
+        return fish.give(-1);
     }
 
     public static Rarity randomWeightedRarity(Player fisher, double boostRate, Set<Rarity> boostedRarities, Set<Rarity> totalRarities) {

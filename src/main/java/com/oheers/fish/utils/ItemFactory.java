@@ -3,7 +3,6 @@ package com.oheers.fish.utils;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import dev.lone.itemsadder.api.CustomStack;
-import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -28,6 +27,8 @@ public class ItemFactory {
 
     private ItemStack product;
 
+    private int chosenRandomIndex = -1;
+
     private boolean itemRandom,
             itemModelDataCheck, itemDamageCheck, itemDisplayNameCheck, itemDyeCheck, itemGlowCheck, itemPotionMetaCheck;
 
@@ -47,8 +48,11 @@ public class ItemFactory {
      * @return The completed ItemStack
      * @throws NullPointerException The type has not been enabled, therefore the ItemStack was never set in the first place.
      */
-    public ItemStack createItem(OfflinePlayer player) {
-        if (itemRandom) this.product = getType(player);
+    public ItemStack createItem(OfflinePlayer player, int randomIndex) {
+        if (itemRandom) {
+            if (randomIndex == -1) this.product = getType(player);
+            else this.product = setType(randomIndex);
+        }
 
         if (itemModelDataCheck) applyModelData();
         if (itemDamageCheck) applyDamage();
@@ -70,13 +74,13 @@ public class ItemFactory {
      */
     public ItemStack getType(OfflinePlayer player) {
 
-        ItemStack oneMaterial = checkRandomMaterial();
+        ItemStack oneMaterial = checkRandomMaterial(-1);
         if (oneMaterial != null) return oneMaterial;
 
-        ItemStack oneHead64 = checkRandomHead64();
+        ItemStack oneHead64 = checkRandomHead64(-1);
         if (oneHead64 != null) return oneHead64;
 
-        ItemStack oneHeadUUID = checkRandomHeadUUID();
+        ItemStack oneHeadUUID = checkRandomHeadUUID(-1);
         if (oneHeadUUID != null) return oneHeadUUID;
 
         ItemStack oneOwnHead = checkOwnHead(player);
@@ -94,6 +98,26 @@ public class ItemFactory {
         // The fish has no item type specified
         return new ItemStack(Material.COD);
 
+    }
+
+    /**
+     * Sets the index for a random item based on its location in the config. For example, if four values are given and
+     * randomIndex = 0, the first one is given.
+     *
+     * @param randomIndex The index to use.
+     * @return The type for the fish based on the random index.
+     */
+    public ItemStack setType(int randomIndex) {
+        ItemStack oneMaterial = checkRandomMaterial(randomIndex);
+        if (oneMaterial != null) return oneMaterial;
+
+        ItemStack oneHead64 = checkRandomHead64(randomIndex);
+        if (oneHead64 != null) return oneHead64;
+
+        ItemStack oneHeadUUID = checkRandomHeadUUID(randomIndex);
+        if (oneHeadUUID != null) return oneHeadUUID;
+
+        return new ItemStack(Material.COD);
     }
 
     /**
@@ -181,14 +205,19 @@ public class ItemFactory {
      *
      * @return Null if the setting doesn't exist, a random ItemStack representation from a list of materials if it does.
      */
-    private ItemStack checkRandomMaterial() {
+    private ItemStack checkRandomMaterial(int randomIndex) {
 
         List<String> lValues = this.configurationFile.getStringList(configLocation + ".item.materials");
         if (lValues.size() > 0) {
 
             Random rand = new Random();
 
-            Material m = Material.getMaterial(lValues.get(rand.nextInt(lValues.size())).toUpperCase());
+            if (randomIndex == -1 || randomIndex + 1 > lValues.size()) {
+                randomIndex = rand.nextInt(lValues.size());
+                this.chosenRandomIndex = randomIndex;
+            }
+
+            Material m = Material.getMaterial(lValues.get(randomIndex).toUpperCase());
             itemRandom = true;
 
             if (m == null) {
@@ -215,13 +244,19 @@ public class ItemFactory {
      *
      * @return Null if the setting doesn't exist, a random ItemStack representation from a list of head-64 values if it does.
      */
-    private ItemStack checkRandomHead64() {
+    private ItemStack checkRandomHead64(int randomIndex) {
         List<String> mh64Values = this.configurationFile.getStringList(configLocation + ".item.multiple-head-64");
         if (mh64Values.size() > 0) {
 
             Random rand = new Random();
 
-            String base64 = mh64Values.get(rand.nextInt(mh64Values.size()));
+            if (randomIndex == -1 || randomIndex + 1 > mh64Values.size()) {
+                randomIndex = rand.nextInt(mh64Values.size());
+            }
+
+            this.chosenRandomIndex = randomIndex;
+
+            String base64 = mh64Values.get(randomIndex);
             itemRandom = true;
 
             return FishUtils.get(base64);
@@ -236,13 +271,18 @@ public class ItemFactory {
      *
      * @return Null if the setting doesn't exist, a random ItemStack representation from a list of head-uuid values if it does.
      */
-    private ItemStack checkRandomHeadUUID() {
+    private ItemStack checkRandomHeadUUID(int randomIndex) {
         List<String> mhuValues = this.configurationFile.getStringList(configLocation + ".item.multiple-head-uuid");
         if (mhuValues.size() > 0) {
 
             Random rand = new Random();
 
-            String uuid = mhuValues.get(rand.nextInt(mhuValues.size()));
+            if (randomIndex == -1 || randomIndex + 1 > mhuValues.size()) {
+                randomIndex = rand.nextInt(mhuValues.size());
+                this.chosenRandomIndex = randomIndex;
+            }
+
+            String uuid = mhuValues.get(randomIndex);
             itemRandom = true;
 
             try {
@@ -477,5 +517,9 @@ public class ItemFactory {
 
     public Material getMaterial() {
         return product.getType();
+    }
+
+    public int getChosenRandomIndex() {
+        return chosenRandomIndex;
     }
 }

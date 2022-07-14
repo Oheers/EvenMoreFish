@@ -72,9 +72,17 @@ public class Fish implements Cloneable {
         checkFishEvent();
     }
 
-    public ItemStack give() {
+    /**
+     * Returns the item stack version of the fish to be given to the player.
+     *
+     * @param randomIndex If the value isn't -1 then a specific index of the random results of the fish will be chosen,
+     *                    relying on the fact that it's a fish doing random choices. If it is -1 then a random one will
+     *                    be rolled.
+     * @return An ItemStack version of the fish.
+     */
+    public ItemStack give(int randomIndex) {
 
-        ItemStack fish = factory.createItem(Bukkit.getOfflinePlayer(fisherman));
+        ItemStack fish = factory.createItem(Bukkit.getOfflinePlayer(fisherman), randomIndex);
         ItemMeta fishMeta;
 
         if ((fishMeta = fish.getItemMeta()) != null) {
@@ -88,7 +96,7 @@ public class Fish implements Cloneable {
 
             fish.setItemMeta(fishMeta);
 
-            fish = WorthNBT.setNBT(fish, this.length, this.fisherman, this.getRarity().getValue(), this.getName());
+            fish = WorthNBT.setNBT(fish, this);
         }
 
         return fish;

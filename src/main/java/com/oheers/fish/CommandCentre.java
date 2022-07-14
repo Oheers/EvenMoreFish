@@ -378,10 +378,10 @@ class Controls{
                                         f.init();
 
                                         if (f.getFactory().getMaterial() != Material.AIR) {
-                                            ItemStack fish = f.give();
+                                            ItemStack fish = f.give(-1);
                                             fish.setAmount(quantity);
                                             if (player == null) FishUtils.giveItems(Collections.singletonList(fish), (Player) sender);
-                                            else FishUtils.giveItems(Collections.singletonList(f.give()), player);
+                                            else FishUtils.giveItems(Collections.singletonList(f.give(-1)), player);
                                         }
 
                                         if (player != null) {

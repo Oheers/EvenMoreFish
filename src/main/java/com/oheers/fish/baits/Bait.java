@@ -82,7 +82,7 @@ public class Bait {
 	 * @return An item stack representing the bait object, with nbt.
 	 */
 	public ItemStack create(OfflinePlayer player) {
-		ItemStack baitItem = itemFactory.createItem(player);
+		ItemStack baitItem = itemFactory.createItem(player, -1);
 		baitItem.setAmount(dropQuantity);
 
 		ItemMeta meta = baitItem.getItemMeta();

@@ -64,6 +64,7 @@ public class FishUtils {
         String playerString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_PLAYER);
         String rarityString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
         Float lengthFloat = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
+        Integer randomIndex = NbtUtils.getInteger(nbtItem, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
 
         if (nameString == null || rarityString == null || lengthFloat == null)
             return null; //throw new InvalidFishException("NBT Error");
@@ -81,6 +82,7 @@ public class FishUtils {
         // setting the correct length so it's an exact replica.
         try {
             Fish fish = new Fish(rarity, nameString);
+            if (randomIndex != null) fish.getFactory().setType(randomIndex);
             fish.setLength(lengthFloat);
             if (playerString != null) fish.setFisherman(UUID.fromString(playerString));
 
@@ -101,6 +103,7 @@ public class FishUtils {
         String playerString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_PLAYER);
         String rarityString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_RARITY);
         Float lengthFloat = NbtUtils.getFloat(nbtSkull, NbtUtils.Keys.EMF_FISH_LENGTH);
+        Integer randomIndex = NbtUtils.getInteger(nbtSkull, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
 
         if (nameString == null || rarityString == null || lengthFloat == null)
             throw new InvalidFishException("NBT Error");
@@ -114,9 +117,12 @@ public class FishUtils {
             }
         }
 
-        // setting the correct length so it's an exact replica.
+        // setting the correct length and randomIndex, so it's an exact replica.
         Fish fish = new Fish(rarity, nameString);
         fish.setLength(lengthFloat);
+        if (randomIndex != null) {
+            fish.getFactory().setType(randomIndex);
+        }
         if (playerString != null) {
             fish.setFisherman(UUID.fromString(playerString));
         } else {
