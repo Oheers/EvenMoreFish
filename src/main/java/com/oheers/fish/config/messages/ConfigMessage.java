@@ -86,7 +86,7 @@ public enum ConfigMessage {
 
 	NEW_FIRST_PLACE_NOTIFICATION("new-first", "&r{player} is now #1", PrefixType.DEFAULT, true, true),
 
-	NO_BAITS("admin.no-baits-on-rod", "&rThe fishing rod does not have any baits applied.", PrefixType.ERROR, false, false),
+	NO_BAITS("admin.no-baits-on-rod", "&rThe fishing rod does not have any baits applied.", PrefixType.ERROR, true, true),
 	NO_COMPETITION_RUNNING("no-competition-running", "&rNo competition running right now.", PrefixType.ERROR, false, false),
 	NO_FISH_CAUGHT("no-record", "&rYou didn't catch any fish.", PrefixType.DEFAULT, true, true),
 	NO_PERMISSION_FISHING("no-permission-fishing", "&cYou don't have permission to fish using this rod, you will catch vanilla fish.", PrefixType.DEFAULT, false, true),
