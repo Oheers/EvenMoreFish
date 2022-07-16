@@ -301,9 +301,10 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void saveUserData() {
         if (mainConfig.isDatabaseOnline()) {
-            for (UUID uuid : fishReports.keySet()) {
+            for (Map.Entry<UUID, List<FishReport>> entry : fishReports.entrySet()) {
+                UUID uuid = entry.getKey();
                 try {
-                    databaseV3.writeFishReports(uuid, fishReports.get(uuid));
+                    databaseV3.writeFishReports(uuid, entry.getValue());
                 } catch (SQLException e) {
                     logger.log(Level.SEVERE, "Fatal error when saving data during shutdown for: " + uuid);
                 }
@@ -317,9 +318,10 @@ public class EvenMoreFish extends JavaPlugin {
                 }
             }
 
-            for (UUID uuid : userReports.keySet()) {
+            for (Map.Entry<UUID, UserReport> entry : userReports.entrySet()) {
+                UUID uuid = entry.getKey();
                 try {
-                    databaseV3.writeUserReport(uuid, userReports.get(uuid));
+                    databaseV3.writeUserReport(uuid, entry.getValue());
                 } catch (SQLException e) {
                     logger.log(Level.SEVERE, "Fatal error when saving data during shutdown for: " + uuid);
                 }
