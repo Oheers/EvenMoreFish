@@ -359,16 +359,17 @@ public class DatabaseV3 {
 	public int getUserID(@NotNull final UUID uuid) throws SQLException {
 		getConnection();
 
-		ResultSet resultSet;
 		try (PreparedStatement statement = connection.prepareStatement("SELECT id FROM emf_users WHERE uuid = ?;")) {
 			statement.setString(1, uuid.toString());
-			resultSet = statement.executeQuery();
-		}
-
-		if (resultSet.next()) {
-			return resultSet.getInt("id");
-		} else {
-			return 0;
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getInt("id");
+				} else {
+					return 0;
+				}
+			}
+		} finally {
+			closeConnection();
 		}
 	}
 
@@ -498,25 +499,21 @@ public class DatabaseV3 {
 		getConnection();
 
 		int userID = getUserID(uuid);
-		ResultSet resultSet;
 		try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?")) {
 			statement.setInt(1, userID);
-			resultSet = statement.executeQuery();
-		}
-
-		List<FishReport> reports = new ArrayList<>();
-		while (resultSet.next()) {
-			FishReport report = new FishReport(
-					resultSet.getString("rarity"),
-					resultSet.getString("fish"),
-					resultSet.getFloat("largest_length"),
-					resultSet.getInt("quantity")
-			);
-			reports.add(report);
-		}
-
-		try {
-			return reports;
+			try (ResultSet resultSet = statement.executeQuery()) {
+				List<FishReport> reports = new ArrayList<>();
+				while (resultSet.next()) {
+					FishReport report = new FishReport(
+							resultSet.getString("rarity"),
+							resultSet.getString("fish"),
+							resultSet.getFloat("largest_length"),
+							resultSet.getInt("quantity")
+					);
+					reports.add(report);
+				}
+				return reports;
+			}
 		} finally {
 			closeConnection();
 
@@ -634,7 +631,6 @@ public class DatabaseV3 {
 	 */
 	public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) throws SQLException {
 		getConnection();
-		//todo sometimes UserReport is null
 		try(PreparedStatement statement = this.connection.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
 				"largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
 				"WHERE uuid = ?;")) {
@@ -657,7 +653,6 @@ public class DatabaseV3 {
 				EvenMoreFish.logger.log(Level.INFO, "Written user report for (" + uuid + ") to the database.");
 			}
 
-			statement.execute(); //todo error here
 		}
 		closeConnection();
 	}
@@ -674,36 +669,32 @@ public class DatabaseV3 {
 	public UserReport readUserReport(@NotNull final UUID uuid) throws SQLException {
 		getConnection();
 
-		ResultSet resultSet;
-
 		try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_users WHERE uuid = ?")) {
 			statement.setString(1, uuid.toString());
-			resultSet = statement.executeQuery();
-		}
-
-		try {
-			if (resultSet.next()) {
-				return new UserReport(
-						resultSet.getInt("id"),
-						resultSet.getInt("num_fish_caught"),
-						resultSet.getInt("competitions_won"),
-						resultSet.getInt("competitions_joined"),
-						resultSet.getString("first_fish"),
-						resultSet.getString("last_fish"),
-						resultSet.getString("largest_fish"),
-						resultSet.getFloat("total_fish_length"),
-						resultSet.getFloat("largest_length")
-				);
-			} else {
-				return null;
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					return new UserReport(
+							resultSet.getInt("id"),
+							resultSet.getInt("num_fish_caught"),
+							resultSet.getInt("competitions_won"),
+							resultSet.getInt("competitions_joined"),
+							resultSet.getString("first_fish"),
+							resultSet.getString("last_fish"),
+							resultSet.getString("largest_fish"),
+							resultSet.getFloat("total_fish_length"),
+							resultSet.getFloat("largest_length")
+					);
+				} else {
+					return null;
+				}
 			}
 		} finally {
 			closeConnection();
-
 			if (EvenMoreFish.mainConfig.doDBVerbose()) {
 				EvenMoreFish.logger.log(Level.INFO, "Read user report for (" + uuid + ") from the database.");
 			}
 		}
+
 	}
 
 	/**
