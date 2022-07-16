@@ -14,7 +14,7 @@ fish-only-in-competition: false
 # ATTENTION: Toggling this requires a full server restart.
 database: true
 # Prevents verbose output when the plugin interacts with the database.
-disable-db-verbose: false
+disable-db-verbose: true
 # Info for connecting to a mysql database:
 mysql:
   # Set to false if you're using a standard SQLITE .db file
