@@ -2,8 +2,11 @@ competitions:
 
   mainCompetition:
     # What type of competition it is,
-    # LARGEST-FISH: The standard, whoever has the largest fish wins
+    # LARGEST_FISH: The standard, whoever has the largest fish wins
+    # RANDOM: Selects a random competition type
     # MOST_FISH: Whoever catches the most fish wins
+    # SPECIFIC_RARITY: Whoever is the first to catch a specific rarity wins
+    # LARGEST_TOTAL: Whoever is has the highest total fish size at the end wins
     # SPECIFIC_FISH: Whoever is the first to catch a specific fish wins
     type: LARGEST_FISH
     # How long (minutes) the competition should last for
