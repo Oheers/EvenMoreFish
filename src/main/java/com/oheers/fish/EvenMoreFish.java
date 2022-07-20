@@ -326,6 +326,7 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void saveUserData() {
         if (mainConfig.isDatabaseOnline()) {
+<<<<<<< HEAD
             new BukkitRunnable() {
 
                 @Override
@@ -357,9 +358,35 @@ public class EvenMoreFish extends JavaPlugin {
                     } catch (InterruptedException exception) {
                         logger.log(Level.SEVERE, "Data saving interrupted. Data not saved from previous session.");
                         exception.printStackTrace();
+=======
+            for (Map.Entry<UUID, List<FishReport>> entry : fishReports.entrySet()) {
+                UUID uuid = entry.getKey();
+                try {
+                    databaseV3.writeFishReports(uuid, entry.getValue());
+                } catch (SQLException e) {
+                    logger.log(Level.SEVERE, "Fatal error when saving data during shutdown for: " + uuid);
+                }
+
+                try {
+                    if (!databaseV3.hasUser(uuid, Table.EMF_USERS, true)) {
+                        databaseV3.createUser(uuid);
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
                     }
                 }
+<<<<<<< HEAD
             }.runTaskAsynchronously(this);
+=======
+            }
+
+            for (Map.Entry<UUID, UserReport> entry : userReports.entrySet()) {
+                UUID uuid = entry.getKey();
+                try {
+                    databaseV3.writeUserReport(uuid, entry.getValue());
+                } catch (SQLException e) {
+                    logger.log(Level.SEVERE, "Fatal error when saving data during shutdown for: " + uuid);
+                }
+            }
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
         }
         EvenMoreFish.userReports.clear();
     }

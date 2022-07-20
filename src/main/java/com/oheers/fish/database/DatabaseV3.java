@@ -309,9 +309,9 @@ public class DatabaseV3 {
 						report.getNumCaught() + ", " +
 						report.getTimeEpoch() + ", " +
 						report.getLargestLength() + ");";
-				PreparedStatement prep = connection.prepareStatement(emfFishLogSQL);
-
-				prep.execute();
+				try (PreparedStatement prep = connection.prepareStatement(emfFishLogSQL)) {
+					prep.execute();
+				}
 			} catch (SQLException exception) {
 				EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
 				exception.printStackTrace();
@@ -322,14 +322,20 @@ public class DatabaseV3 {
 
 		// starts a field for the new fish that's been fished for the first time
 		try {
-			PreparedStatement prep = connection.prepareStatement(emfUsersSQL);
-			prep.setString(1, firstFishID);
-			prep.setString(2, largestFishID);
-			prep.setInt(3, totalFish);
-			prep.setFloat(4, largestSize);
-			prep.setString(5, uuid.toString());
+			try (PreparedStatement prep = connection.prepareStatement(emfUsersSQL)) {
+				prep.setString(1, firstFishID);
+				prep.setString(2, largestFishID);
+				prep.setInt(3, totalFish);
+				prep.setFloat(4, largestSize);
+				prep.setString(5, uuid.toString());
 
+<<<<<<< HEAD
 			prep.execute();
+=======
+				prep.execute();
+			}
+			closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		} catch (SQLException exception) {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: emf_users.");
 			exception.printStackTrace();
@@ -346,6 +352,7 @@ public class DatabaseV3 {
 	 * @return The ID of the user for the database, 0 if there is no user present matching the UUID.
 	 */
 	public int getUserID(@NotNull final UUID uuid) throws SQLException {
+<<<<<<< HEAD
 		PreparedStatement statement = connection.prepareStatement("SELECT id FROM emf_users WHERE uuid = ?;");
 		statement.setString(1, uuid.toString());
 		ResultSet resultSet = statement.executeQuery();
@@ -354,6 +361,21 @@ public class DatabaseV3 {
 			return resultSet.getInt("id");
 		} else {
 			return 0;
+=======
+		getConnection();
+
+		try (PreparedStatement statement = connection.prepareStatement("SELECT id FROM emf_users WHERE uuid = ?;")) {
+			statement.setString(1, uuid.toString());
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getInt("id");
+				} else {
+					return 0;
+				}
+			}
+		} finally {
+			closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		}
 	}
 
@@ -371,27 +393,33 @@ public class DatabaseV3 {
 		// starts a field for the new fish that's been fished for the first time
 		try {
 			Leaderboard leaderboard = competition.getLeaderboard();
-			PreparedStatement prep = connection.prepareStatement(sql);
-			prep.setString(1, competition.getCompetitionName());
-			if (leaderboard.getSize() > 0) {
-				prep.setString(2, leaderboard.getTopEntry().getPlayer().toString());
-				Fish topFish = leaderboard.getPlaceFish(1);
-				prep.setString(3, topFish.getRarity().getValue() + ":" + topFish.getName());
-				prep.setFloat(4, leaderboard.getTopEntry().getValue());
-				StringBuilder contestants = new StringBuilder();
-				for (CompetitionEntry entry : leaderboard.getEntries()) {
-					contestants.append(entry.getPlayer()).append(",");
+			try (PreparedStatement prep = connection.prepareStatement(sql)) {
+				prep.setString(1, competition.getCompetitionName());
+				if (leaderboard.getSize() > 0) {
+					prep.setString(2, leaderboard.getTopEntry().getPlayer().toString());
+					Fish topFish = leaderboard.getPlaceFish(1);
+					prep.setString(3, topFish.getRarity().getValue() + ":" + topFish.getName());
+					prep.setFloat(4, leaderboard.getTopEntry().getValue());
+					StringBuilder contestants = new StringBuilder();
+					for (CompetitionEntry entry : leaderboard.getEntries()) {
+						contestants.append(entry.getPlayer()).append(",");
+					}
+					// Removes the last ,
+					prep.setString(5, contestants.substring(0, contestants.length() - 1));
+				} else {
+					prep.setString(2, "\"None\"");
+					prep.setString(3, "\"None\"");
+					prep.setFloat(4, 0);
+					prep.setString(5, "\"None\"");
 				}
-				// Removes the last ,
-				prep.setString(5, contestants.substring(0, contestants.length() - 1));
-			} else {
-				prep.setString(2, "\"None\"");
-				prep.setString(3, "\"None\"");
-				prep.setFloat(4, 0);
-				prep.setString(5, "\"None\"");
-			}
 
+<<<<<<< HEAD
 			prep.execute();
+=======
+				prep.execute();
+			}
+			closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		} catch (SQLException exception) {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not add the current competition in the table: emf_competitions.");
 			exception.printStackTrace();
@@ -414,9 +442,18 @@ public class DatabaseV3 {
 
 		// starts a field for the new fish that's been fished for the first time
 		try {
+<<<<<<< HEAD
 			PreparedStatement prep = connection.prepareStatement(sql);
 			prep.setString(1, uuid.toString());
 			prep.execute();
+=======
+			getConnection();
+			try (PreparedStatement prep = connection.prepareStatement(sql)) {
+				prep.setString(1, uuid.toString());
+				prep.execute();
+			}
+			closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		} catch (SQLException exception) {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
 			exception.printStackTrace();
@@ -445,6 +482,7 @@ public class DatabaseV3 {
 			PreparedStatement prep = connection.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?;");
 			prep.setInt(1, userID);
 
+<<<<<<< HEAD
 			return prep.executeQuery().next();
 		} else if (table == Table.EMF_USERS) {
 			PreparedStatement prep = connection.prepareStatement("SELECT * FROM emf_users WHERE uuid = ?;");
@@ -453,6 +491,25 @@ public class DatabaseV3 {
 			return prep.executeQuery().next();
 		} else {
 			throw new InvalidTableException(table.tableID + " is not an allowed table type to query user existence.");
+=======
+				int userID = getUserID(uuid);
+				try (PreparedStatement prep = connection.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?;")) {
+					prep.setInt(1, userID);
+
+					return prep.executeQuery().next();
+				}
+			} else if (table == Table.EMF_USERS) {
+				try(PreparedStatement prep = connection.prepareStatement("SELECT * FROM emf_users WHERE uuid = ?;")) {
+					prep.setString(1, uuid.toString());
+
+					return prep.executeQuery().next();
+				}
+			} else {
+				throw new InvalidTableException(table.tableID + " is not an allowed table type to query user existence.");
+			}
+		} finally {
+			if (closeConnection) closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		}
 	}
 
@@ -466,6 +523,7 @@ public class DatabaseV3 {
 	 */
 	public List<FishReport> getFishReports(@NotNull final UUID uuid) throws SQLException {
 		int userID = getUserID(uuid);
+<<<<<<< HEAD
 		PreparedStatement statement = connection.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?");
 		statement.setInt(1, userID);
 
@@ -483,6 +541,29 @@ public class DatabaseV3 {
 
 		if (EvenMoreFish.mainConfig.doDBVerbose()) {
 			EvenMoreFish.logger.log(Level.INFO, "Read fish reports for (" + uuid + ") from the database.");
+=======
+		try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?")) {
+			statement.setInt(1, userID);
+			try (ResultSet resultSet = statement.executeQuery()) {
+				List<FishReport> reports = new ArrayList<>();
+				while (resultSet.next()) {
+					FishReport report = new FishReport(
+							resultSet.getString("rarity"),
+							resultSet.getString("fish"),
+							resultSet.getFloat("largest_length"),
+							resultSet.getInt("quantity")
+					);
+					reports.add(report);
+				}
+				return reports;
+			}
+		} finally {
+			closeConnection();
+
+			if (EvenMoreFish.mainConfig.doDBVerbose()) {
+				EvenMoreFish.logger.log(Level.INFO, "Read fish reports for (" + uuid + ") from the database.");
+			}
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		}
 		return reports;
 	}
@@ -497,13 +578,22 @@ public class DatabaseV3 {
 	 * @throws SQLException Something went wrong when carrying out SQL instructions.
 	 * @return If the user has already caught this fish, registering it into the database.
 	 */
+<<<<<<< HEAD
 	public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id) throws SQLException {
 		PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ? AND rarity = ? AND fish = ?");
 		statement.setInt(1, id);
 		statement.setString(2, rarity);
 		statement.setString(3, fish);
+=======
+	public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id, final Connection conn) throws SQLException {
+		try (PreparedStatement statement = conn.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ? AND rarity = ? AND fish = ?")) {
+			statement.setInt(1, id);
+			statement.setString(2, rarity);
+			statement.setString(3, fish);
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 
-		return statement.executeQuery().next();
+			return statement.executeQuery().next();
+		}
 	}
 
 	/**
@@ -515,6 +605,7 @@ public class DatabaseV3 {
 	 * @param userID The id of the user found in the emf_users table.
 	 * @throws SQLException Something went wrong when carrying out SQL instructions.
 	 */
+<<<<<<< HEAD
 	public void addUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
 		PreparedStatement statement = this.connection.prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
 				"first_catch_time, largest_length) VALUES (?,?,?,?,?,?);");
@@ -526,7 +617,20 @@ public class DatabaseV3 {
 		statement.setFloat(6, report.getLargestLength());
 
 		statement.execute();
+=======
+	public void addUserFish(@NotNull final FishReport report, @NotNull final Connection conn, final int userID) throws SQLException {
+		try (PreparedStatement statement = conn.prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
+				"first_catch_time, largest_length) VALUES (?,?,?,?,?,?);")) {
+			statement.setInt(1, userID);
+			statement.setString(2, report.getRarity());
+			statement.setString(3, report.getName());
+			statement.setInt(4, report.getNumCaught());
+			statement.setLong(5, report.getTimeEpoch());
+			statement.setFloat(6, report.getLargestLength());
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 
+			statement.execute();
+		}
 		if (EvenMoreFish.mainConfig.doDBVerbose()) {
 			EvenMoreFish.logger.log(Level.INFO, "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
 		}
@@ -540,6 +644,7 @@ public class DatabaseV3 {
 	 * @param userID The id of the user found in the emf_users table.
 	 * @throws SQLException Something went wrong when carrying out SQL instructions.
 	 */
+<<<<<<< HEAD
 	public void updateUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
 		PreparedStatement statement = this.connection.prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
 				"WHERE id = ? AND rarity = ? AND fish = ?;");
@@ -550,6 +655,19 @@ public class DatabaseV3 {
 		statement.setString(5, report.getName());
 
 		statement.execute();
+=======
+	public void updateUserFish(@NotNull final FishReport report, @NotNull final Connection conn, final int userID) throws SQLException {
+		try (PreparedStatement statement = conn.prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
+				"WHERE id = ? AND rarity = ? AND fish = ?;")) {
+			statement.setInt(1, report.getNumCaught());
+			statement.setFloat(2, report.getLargestLength());
+			statement.setInt(3, userID);
+			statement.setString(4, report.getRarity());
+			statement.setString(5, report.getName());
+
+			statement.execute();
+		}
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 	}
 
 	/**
@@ -586,29 +704,39 @@ public class DatabaseV3 {
 	 * @throws SQLException Something went wrong when carrying out SQL instructions.
 	 */
 	public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) throws SQLException {
+<<<<<<< HEAD
 		PreparedStatement statement = this.connection.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
+=======
+		getConnection();
+		try(PreparedStatement statement = this.connection.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 				"largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
-				"WHERE uuid = ?;");
-		try {
-			statement.setString(1, report.getFirstFish());
-			statement.setString(2, report.getRecentFish());
-			statement.setString(3, report.getLargestFish());
-			statement.setFloat(4, report.getLargestLength());
-			statement.setInt(5, report.getNumFishCaught());
-			statement.setFloat(6, report.getTotalFishLength());
-			statement.setInt(7, report.getCompetitionsWon());
-			statement.setInt(8, report.getCompetitionsJoined());
-			statement.setString(9, uuid.toString());
-		} catch (NullPointerException exception) {
-			EvenMoreFish.logger.log(Level.SEVERE, "Could not write user data for " + uuid + ", stored users (" + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size() + ")");
-			exception.printStackTrace();
-		}
+				"WHERE uuid = ?;")) {
+			try {
+				statement.setString(1, report.getFirstFish());
+				statement.setString(2, report.getRecentFish());
+				statement.setString(3, report.getLargestFish());
+				statement.setFloat(4, report.getLargestLength());
+				statement.setInt(5, report.getNumFishCaught());
+				statement.setFloat(6, report.getTotalFishLength());
+				statement.setInt(7, report.getCompetitionsWon());
+				statement.setInt(8, report.getCompetitionsJoined());
+				statement.setString(9, uuid.toString());
+			} catch (NullPointerException exception) {
+				EvenMoreFish.logger.log(Level.SEVERE, "Could not write user data for " + uuid + ", stored users (" + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size() + ")");
+				exception.printStackTrace();
+			}
 
-		if (EvenMoreFish.mainConfig.doDBVerbose()) {
-			EvenMoreFish.logger.log(Level.INFO, "Written user report for (" + uuid + ") to the database.");
-		}
-
+<<<<<<< HEAD
 		statement.execute();
+=======
+			if (EvenMoreFish.mainConfig.doDBVerbose()) {
+				EvenMoreFish.logger.log(Level.INFO, "Written user report for (" + uuid + ") to the database.");
+			}
+
+		}
+		closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 	}
 
 	/**
@@ -621,11 +749,37 @@ public class DatabaseV3 {
 	 * @return A user report detailing their fishing history on this server. If the user is not present, null is returned.
 	 */
 	public UserReport readUserReport(@NotNull final UUID uuid) throws SQLException {
+<<<<<<< HEAD
 		PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_users WHERE uuid = ?");
 		statement.setString(1, uuid.toString());
 
 		ResultSet resultSet = statement.executeQuery();
 		if (resultSet.next()) {
+=======
+		getConnection();
+
+		try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_users WHERE uuid = ?")) {
+			statement.setString(1, uuid.toString());
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					return new UserReport(
+							resultSet.getInt("id"),
+							resultSet.getInt("num_fish_caught"),
+							resultSet.getInt("competitions_won"),
+							resultSet.getInt("competitions_joined"),
+							resultSet.getString("first_fish"),
+							resultSet.getString("last_fish"),
+							resultSet.getString("largest_fish"),
+							resultSet.getFloat("total_fish_length"),
+							resultSet.getFloat("largest_length")
+					);
+				} else {
+					return null;
+				}
+			}
+		} finally {
+			closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 			if (EvenMoreFish.mainConfig.doDBVerbose()) {
 				EvenMoreFish.logger.log(Level.INFO, "Read user report for (" + uuid + ") from the database.");
 			}
@@ -646,6 +800,7 @@ public class DatabaseV3 {
 			}
 			return null;
 		}
+
 	}
 
 	/**
@@ -688,11 +843,26 @@ public class DatabaseV3 {
 	 */
 	public boolean hasFishData(@NotNull final Fish fish) {
 		try {
+<<<<<<< HEAD
 			PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_fish WHERE fish_name = ? AND fish_rarity = ?");
 			statement.setString(1, fish.getName());
 			statement.setString(2, fish.getRarity().getValue());
 
 			return statement.executeQuery().next();
+=======
+			getConnection();
+
+			try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_fish WHERE fish_name = ? AND fish_rarity = ?")) {
+				statement.setString(1, fish.getName());
+				statement.setString(2, fish.getRarity().getValue());
+
+				try {
+					return statement.executeQuery().next();
+				} finally {
+					closeConnection();
+				}
+			}
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		} catch (SQLException exception) {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not check if " + fish.getName() + " is present in the database.");
 			exception.printStackTrace();
@@ -710,11 +880,20 @@ public class DatabaseV3 {
 		try {
 			String sql = "UPDATE emf_fish SET total_caught = total_caught + 1 WHERE fish_rarity = ? AND fish_name = ?;";
 
+<<<<<<< HEAD
 			PreparedStatement prep = connection.prepareStatement(sql);
 			prep.setString(1, fish.getRarity().getValue());
 			prep.setString(2, fish.getName());
 			prep.execute();
 
+=======
+			try(PreparedStatement prep = connection.prepareStatement(sql)) {
+				prep.setString(1, fish.getRarity().getValue());
+				prep.setString(2, fish.getName());
+				prep.execute();
+			}
+			closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		} catch (SQLException exception) {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not check if " + fish.getName() + " is present in the database.");
 			exception.printStackTrace();
@@ -733,12 +912,26 @@ public class DatabaseV3 {
 		try {
 			String sql = "SELECT largest_fish FROM emf_fish WHERE fish_rarity = ? AND fish_name = ?;";
 
+<<<<<<< HEAD
 			PreparedStatement prep = connection.prepareStatement(sql);
 			prep.setString(1, fish.getRarity().getValue());
 			prep.setString(2, fish.getName());
 			ResultSet resultSet = prep.executeQuery();
 			if (resultSet.next()) {
 				return resultSet.getFloat("largest_fish");
+=======
+			try (PreparedStatement prep = connection.prepareStatement(sql)) {
+				prep.setString(1, fish.getRarity().getValue());
+				prep.setString(2, fish.getName());
+				ResultSet resultSet = prep.executeQuery();
+				try {
+					if (resultSet.next()) {
+						return resultSet.getFloat("largest_fish");
+					}
+				} finally {
+					closeConnection();
+				}
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 			}
 		} catch (SQLException exception) {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not check for " + fish.getName() + "'s largest fish size.");
@@ -760,12 +953,23 @@ public class DatabaseV3 {
 			String sql = "UPDATE emf_fish SET largest_fish = ?, largest_fisher = ? WHERE fish_rarity = ? AND fish_name = ?;";
 
 			float roundedFloatLength = Math.round(fish.getLength() * 10f) / 10f;
+<<<<<<< HEAD
 			PreparedStatement prep = connection.prepareStatement(sql);
 			prep.setFloat(1, roundedFloatLength);
 			prep.setString(2, uuid.toString());
 			prep.setString(3, fish.getRarity().getValue());
 			prep.setString(4, fish.getName());
 			prep.execute();
+=======
+			try (PreparedStatement prep = connection.prepareStatement(sql)) {
+				prep.setFloat(1, roundedFloatLength);
+				prep.setString(2, uuid.toString());
+				prep.setString(3, fish.getRarity().getValue());
+				prep.setString(4, fish.getName());
+				prep.execute();
+			}
+			closeConnection();
+>>>>>>> e101264c68dd31a282dcec08ef305bb3e471ab08
 		} catch (SQLException exception) {
 			EvenMoreFish.logger.log(Level.SEVERE, "Could not update for " + fish.getName() + "'s largest fish size.");
 			exception.printStackTrace();
