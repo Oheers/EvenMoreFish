@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
@@ -106,9 +107,32 @@ public class Competition {
         active = false;
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
         if (EvenMoreFish.mainConfig.databaseEnabled()) {
-            EvenMoreFish.databaseV3.createCompetitionReport(this);
+            Competition competitionRef = this;
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        EvenMoreFish.v3Semaphore.acquire();
+                        EvenMoreFish.databaseV3.getConnection();
+                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
+                        EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
+                        EvenMoreFish.databaseV3.closeConnection();
+                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
+                        EvenMoreFish.v3Semaphore.release();
+                        leaderboard.clear();
+                    } catch (SQLException exception) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing competition data for " + competitionRef.getCompetitionName() + ". Try restarting or contacting support.");
+                        exception.printStackTrace();
+                    } catch (InterruptedException exception) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Severe interruption whilst writing competition: " + competitionRef.getCompetitionName());
+                        exception.printStackTrace();
+                    }
+                }
+            }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(Competition.class));
+        } else {
+            leaderboard.clear();
         }
-        leaderboard.clear();
     }
 
     // Starts a runnable to decrease the time left by 1s each second

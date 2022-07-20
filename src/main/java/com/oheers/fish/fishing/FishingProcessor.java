@@ -31,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -248,20 +249,33 @@ public class FishingProcessor implements Listener {
                 @Override
                 public void run() {
 
-                    // increases the fish fished count if the fish is already in the db
-                    if (EvenMoreFish.databaseV3.hasFishData(finalFish)) {
-                        EvenMoreFish.databaseV3.incrementFish(finalFish);
+                    try {
+                        EvenMoreFish.v3Semaphore.acquire();
+                        EvenMoreFish.databaseV3.getConnection();
+                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
+                        // increases the fish fished count if the fish is already in the db
+                        if (EvenMoreFish.databaseV3.hasFishData(finalFish)) {
+                            EvenMoreFish.databaseV3.incrementFish(finalFish);
 
-                        // sets the new leader in top fish, if the player has fished a record fish
-                        if (EvenMoreFish.databaseV3.getLargestFishSize(finalFish) < finalFish.getLength()) {
-                            EvenMoreFish.databaseV3.updateLargestFish(finalFish, player.getUniqueId());
+                            // sets the new leader in top fish, if the player has fished a record fish
+                            if (EvenMoreFish.databaseV3.getLargestFishSize(finalFish) < finalFish.getLength()) {
+                                EvenMoreFish.databaseV3.updateLargestFish(finalFish, player.getUniqueId());
+                            }
+                        } else {
+                            EvenMoreFish.databaseV3.createFishData(finalFish, player.getUniqueId());
                         }
-                    } else {
-                        EvenMoreFish.databaseV3.createFishData(finalFish, player.getUniqueId());
+
+                        EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
+                        EvenMoreFish.databaseV3.closeConnection();
+                        EvenMoreFish.v3Semaphore.release();
+                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
+                    } catch (SQLException exception) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.");
+                        exception.printStackTrace();
+                    } catch (InterruptedException exception) {
+                        EvenMoreFish.logger.log(Level.SEVERE, "Severe interruption when writing fish catch data for " + player.getUniqueId());
+                        exception.printStackTrace();
                     }
-
-                    EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
-
                 }
             }.runTaskAsynchronously(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class));
         }

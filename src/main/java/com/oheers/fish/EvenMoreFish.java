@@ -8,7 +8,10 @@ import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
-import com.oheers.fish.database.*;
+import com.oheers.fish.database.DatabaseV3;
+import com.oheers.fish.database.FishReport;
+import com.oheers.fish.database.Table;
+import com.oheers.fish.database.UserReport;
 import com.oheers.fish.events.*;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.FishingProcessor;
@@ -29,10 +32,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -91,6 +96,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean papi;
 
     public static DatabaseV3 databaseV3;
+    public final static Semaphore v3Semaphore = new Semaphore(1);
 
     public static final int METRIC_ID = 11054;
 
@@ -176,22 +182,44 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (EvenMoreFish.mainConfig.databaseEnabled()) {
 
-           databaseV3 = new DatabaseV3();
-
-           for (Player player : getServer().getOnlinePlayers()) {
-               try {
-                   userReports.put(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
-               } catch (SQLException e) {
-                   logger.log(Level.SEVERE, "Could not load data for " + player.getName());
-                   e.printStackTrace();
-               }
-           }
+            databaseV3 = new DatabaseV3(this);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try {
+                        v3Semaphore.acquire();
+                        databaseV3.getConnection();
+                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
+                        try {
+                            EvenMoreFish.databaseV3.createTables(false);
+                        } catch (SQLException exception) {
+                            EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new tables or check for present tables.");
+                            exception.printStackTrace();
+                        }
+                        for (Player player : getServer().getOnlinePlayers()) {
+                            try {
+                                userReports.put(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
+                            } catch (SQLException e) {
+                                logger.log(Level.SEVERE, "Could not fetch User Reports for " + player.getName() + ". If you are using PlugMan, you should restart the plugin completely.");
+                                e.printStackTrace();
+                            }
+                        }
+                        databaseV3.closeConnection();
+                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
+                        v3Semaphore.release();
+                    } catch (SQLException exception) {
+                        logger.log(Level.SEVERE, "Failed SQL operations whilst enabling plugin. Try restarting or contacting support.");
+                        exception.printStackTrace();
+                    } catch (InterruptedException exception) {
+                        logger.log(Level.SEVERE, "Severe interruption when fetching user reports for online users. If you are using PlugMan, you should restart the plugin completely.");
+                        exception.printStackTrace();
+                    }
+                }
+            }.runTaskAsynchronously(this);
 
         }
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
-
-        logger.log(Level.INFO, "ON: " + userReports.size());
     }
 
     @Override
@@ -206,7 +234,6 @@ public class EvenMoreFish extends JavaPlugin {
         }
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
-        logger.log(Level.INFO, "OFF: " + userReports.size());
 
     }
 
@@ -301,29 +328,42 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void saveUserData() {
         if (mainConfig.isDatabaseOnline()) {
-            for (UUID uuid : fishReports.keySet()) {
-                try {
-                    databaseV3.writeFishReports(uuid, fishReports.get(uuid));
-                } catch (SQLException e) {
-                    logger.log(Level.SEVERE, "Fatal error when saving data during shutdown for: " + uuid);
-                }
+            new BukkitRunnable() {
 
-                try {
-                    if (!databaseV3.hasUser(uuid, Table.EMF_USERS, true)) {
-                        databaseV3.createUser(uuid);
+                @Override
+                public void run() {
+                    try {
+                        v3Semaphore.acquire();
+                        databaseV3.getConnection();
+                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
+                        for (UUID uuid : fishReports.keySet()) {
+                            databaseV3.writeFishReports(uuid, fishReports.get(uuid));
+
+                            try {
+                                if (!databaseV3.hasUser(uuid, Table.EMF_USERS)) {
+                                    databaseV3.createUser(uuid);
+                                }
+                            } catch (InvalidTableException exception) {
+                                logger.log(Level.SEVERE, "Fatal error when storing data for " + uuid + ", their data in primary storage has been deleted.");
+                            }
+                        }
+
+                        for (UUID uuid : userReports.keySet()) {
+                            databaseV3.writeUserReport(uuid, userReports.get(uuid));
+                        }
+                        databaseV3.closeConnection();
+                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
+                        v3Semaphore.release();
+
+                    } catch (SQLException exception) {
+                        logger.log(Level.SEVERE, "Failed to save all user data.");
+                        exception.printStackTrace();
+                    } catch (InterruptedException exception) {
+                        logger.log(Level.SEVERE, "Data saving interrupted. Data not saved from previous session.");
+                        exception.printStackTrace();
                     }
-                } catch (SQLException | InvalidTableException exception) {
-                    logger.log(Level.SEVERE, "Fatal error when storing data for " + uuid + ", their data in primary storage has been deleted.");
                 }
-            }
-
-            for (UUID uuid : userReports.keySet()) {
-                try {
-                    databaseV3.writeUserReport(uuid, userReports.get(uuid));
-                } catch (SQLException e) {
-                    logger.log(Level.SEVERE, "Fatal error when saving data during shutdown for: " + uuid);
-                }
-            }
+            }.runTaskAsynchronously(this);
         }
         EvenMoreFish.userReports.clear();
     }
