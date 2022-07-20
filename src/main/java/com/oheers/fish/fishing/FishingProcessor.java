@@ -252,7 +252,6 @@ public class FishingProcessor implements Listener {
                     try {
                         EvenMoreFish.v3Semaphore.acquire();
                         EvenMoreFish.databaseV3.getConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         // increases the fish fished count if the fish is already in the db
                         if (EvenMoreFish.databaseV3.hasFishData(finalFish)) {
                             EvenMoreFish.databaseV3.incrementFish(finalFish);
@@ -268,7 +267,6 @@ public class FishingProcessor implements Listener {
                         EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
                         EvenMoreFish.databaseV3.closeConnection();
                         EvenMoreFish.v3Semaphore.release();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.");
                         exception.printStackTrace();

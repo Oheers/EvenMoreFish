@@ -36,7 +36,6 @@ public class JoinChecker implements Listener {
                     try {
                         EvenMoreFish.v3Semaphore.acquire();
                         EvenMoreFish.databaseV3.getConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         List<FishReport> reports = new ArrayList<>();
 
                         try {
@@ -75,7 +74,6 @@ public class JoinChecker implements Listener {
                         }
                         EvenMoreFish.databaseV3.closeConnection();
                         EvenMoreFish.v3Semaphore.release();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst fetching user data for " + userName + ". Try restarting or contacting support.");
                         exception.printStackTrace();
@@ -123,7 +121,6 @@ public class JoinChecker implements Listener {
                     try {
                         EvenMoreFish.v3Semaphore.acquire();
                         EvenMoreFish.databaseV3.getConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         UUID userUUID = event.getPlayer().getUniqueId();
                         try {
                             if (!EvenMoreFish.databaseV3.hasUser(userUUID, Table.EMF_USERS)) {
@@ -154,7 +151,6 @@ public class JoinChecker implements Listener {
                         EvenMoreFish.userReports.remove(userUUID);
                         EvenMoreFish.databaseV3.closeConnection();
                         EvenMoreFish.v3Semaphore.release();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing data for user " + event.getPlayer().getName() + ". Try restarting or contacting support.");
                         exception.printStackTrace();

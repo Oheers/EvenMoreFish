@@ -115,10 +115,8 @@ public class Competition {
                     try {
                         EvenMoreFish.v3Semaphore.acquire();
                         EvenMoreFish.databaseV3.getConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
                         EvenMoreFish.databaseV3.closeConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         EvenMoreFish.v3Semaphore.release();
                         leaderboard.clear();
                     } catch (SQLException exception) {

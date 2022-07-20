@@ -189,7 +189,6 @@ public class EvenMoreFish extends JavaPlugin {
                     try {
                         v3Semaphore.acquire();
                         databaseV3.getConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         try {
                             EvenMoreFish.databaseV3.createTables(false);
                         } catch (SQLException exception) {
@@ -205,7 +204,6 @@ public class EvenMoreFish extends JavaPlugin {
                             }
                         }
                         databaseV3.closeConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         v3Semaphore.release();
                     } catch (SQLException exception) {
                         logger.log(Level.SEVERE, "Failed SQL operations whilst enabling plugin. Try restarting or contacting support.");
@@ -335,7 +333,6 @@ public class EvenMoreFish extends JavaPlugin {
                     try {
                         v3Semaphore.acquire();
                         databaseV3.getConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         for (UUID uuid : fishReports.keySet()) {
                             databaseV3.writeFishReports(uuid, fishReports.get(uuid));
 
@@ -352,7 +349,6 @@ public class EvenMoreFish extends JavaPlugin {
                             databaseV3.writeUserReport(uuid, userReports.get(uuid));
                         }
                         databaseV3.closeConnection();
-                        EvenMoreFish.logger.log(Level.INFO, "Connection closed: " + EvenMoreFish.databaseV3.getCurrent().isClosed());
                         v3Semaphore.release();
 
                     } catch (SQLException exception) {
