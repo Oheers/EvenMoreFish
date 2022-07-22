@@ -83,6 +83,7 @@ public class Fish implements Cloneable {
     public ItemStack give(int randomIndex) {
 
         ItemStack fish = factory.createItem(Bukkit.getOfflinePlayer(fisherman), randomIndex);
+        if (factory.isRawMaterial()) return fish;
         ItemMeta fishMeta;
 
         if ((fishMeta = fish.getItemMeta()) != null) {

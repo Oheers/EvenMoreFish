@@ -29,7 +29,7 @@ public class ItemFactory {
 
     private int chosenRandomIndex = -1;
 
-    private boolean itemRandom,
+    private boolean itemRandom, rawMaterial,
             itemModelDataCheck, itemDamageCheck, itemDisplayNameCheck, itemDyeCheck, itemGlowCheck, itemPotionMetaCheck;
 
     private String displayName;
@@ -39,6 +39,7 @@ public class ItemFactory {
     public ItemFactory(String configLocation) {
         this.configLocation = configLocation;
         this.configurationFile = getConfiguration();
+        this.rawMaterial = false;
         this.product = getType(null);
     }
 
@@ -49,6 +50,7 @@ public class ItemFactory {
      * @throws NullPointerException The type has not been enabled, therefore the ItemStack was never set in the first place.
      */
     public ItemStack createItem(OfflinePlayer player, int randomIndex) {
+        if (rawMaterial) return this.product;
         if (itemRandom) {
             if (randomIndex == -1) this.product = getType(player);
             else this.product = setType(randomIndex);
@@ -94,6 +96,9 @@ public class ItemFactory {
 
         ItemStack headUUID = checkHeadUUID();
         if (headUUID != null) return headUUID;
+
+        ItemStack rawMaterial = checkRawMaterial();
+        if (rawMaterial != null) return rawMaterial;
 
         // The fish has no item type specified
         return new ItemStack(Material.COD);
@@ -332,6 +337,23 @@ public class ItemFactory {
     }
 
     /**
+     * Checks for the raw-material type, returning the same as "material" but setting the rawMaterial boolean to true.
+     * This causes the item to not be given NBT data.
+     *
+     * @return A raw itemstack with the material provided after setting rawMaterial to true.
+     */
+    private ItemStack checkRawMaterial() {
+        String materialID = this.configurationFile.getString(configLocation + ".item.raw-material");
+        Material material;
+        if (materialID == null || (material  = Material.getMaterial(materialID)) == null) {
+            return null;
+        } else {
+            rawMaterial = true;
+            return new ItemStack(material);
+        }
+    }
+
+    /**
      * Adds an unsafe enchant of "Unbreaking I" to the object: the item flag to remove enchantments is not automatically
      * added and needs to be the last part of the metadata added (if I'm correct in what I think).
      * This requires that the item has been set using the setType() method.
@@ -521,5 +543,9 @@ public class ItemFactory {
 
     public int getChosenRandomIndex() {
         return chosenRandomIndex;
+    }
+
+    public boolean isRawMaterial() {
+        return rawMaterial;
     }
 }
