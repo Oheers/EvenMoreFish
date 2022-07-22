@@ -142,7 +142,9 @@ public class BaitNBTManager {
 				if (getNumBaitsApplied(item) >= EvenMoreFish.baitFile.getMaxBaits()) {
 					// the lore's been taken out, we're not going to be doing anymore here, so we're just re-adding it now.
 					if (doingLoreStuff) {
-						item.getItemMeta().setLore(newApplyLore(item));
+						ItemMeta rodMeta = item.getItemMeta();
+						rodMeta.setLore(newApplyLore(item));
+						item.setItemMeta(rodMeta);
 					}
 					throw new MaxBaitsReachedException("Max baits reached.", new ApplicationResult(item, cursorModifier));
 				}
