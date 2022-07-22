@@ -593,20 +593,20 @@ public class Competition {
             while (iterator.hasNext()) {
                 if (i <= rewards.size()) {
                     CompetitionEntry entry = iterator.next();
-                    EvenMoreFish.userReports.get(entry.getPlayer()).incrementCompetitionsJoined(1);
                     for (Reward reward : rewards.get(i)) {
                         reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null);
                     }
                     i++;
+                    if (EvenMoreFish.mainConfig.databaseEnabled()) EvenMoreFish.userReports.get(entry.getPlayer()).incrementCompetitionsJoined(1);
                 } else {
                     if (participationRewards != null) {
                         iterator.forEachRemaining(competitionEntry -> {
-                            EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1);
                             for (Reward reward : participationRewards) {
                                 reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()), null);
                             }
+                            if (EvenMoreFish.mainConfig.databaseEnabled()) EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1);
                         });
-                    } else {
+                    } else if (EvenMoreFish.mainConfig.databaseEnabled()) {
                         iterator.forEachRemaining(competitionEntry -> {
                             EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1);
                         });
