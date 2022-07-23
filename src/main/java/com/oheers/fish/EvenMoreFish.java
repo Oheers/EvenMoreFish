@@ -326,40 +326,34 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void saveUserData() {
         if (mainConfig.isDatabaseOnline()) {
-            new BukkitRunnable() {
+            try {
+                v3Semaphore.acquire();
+                databaseV3.getConnection();
+                for (UUID uuid : fishReports.keySet()) {
+                    databaseV3.writeFishReports(uuid, fishReports.get(uuid));
 
-                @Override
-                public void run() {
                     try {
-                        v3Semaphore.acquire();
-                        databaseV3.getConnection();
-                        for (UUID uuid : fishReports.keySet()) {
-                            databaseV3.writeFishReports(uuid, fishReports.get(uuid));
-
-                            try {
-                                if (!databaseV3.hasUser(uuid, Table.EMF_USERS)) {
-                                    databaseV3.createUser(uuid);
-                                }
-                            } catch (InvalidTableException exception) {
-                                logger.log(Level.SEVERE, "Fatal error when storing data for " + uuid + ", their data in primary storage has been deleted.");
-                            }
+                        if (!databaseV3.hasUser(uuid, Table.EMF_USERS)) {
+                            databaseV3.createUser(uuid);
                         }
-
-                        for (UUID uuid : userReports.keySet()) {
-                            databaseV3.writeUserReport(uuid, userReports.get(uuid));
-                        }
-                        databaseV3.closeConnection();
-                        v3Semaphore.release();
-
-                    } catch (SQLException exception) {
-                        logger.log(Level.SEVERE, "Failed to save all user data.");
-                        exception.printStackTrace();
-                    } catch (InterruptedException exception) {
-                        logger.log(Level.SEVERE, "Data saving interrupted. Data not saved from previous session.");
-                        exception.printStackTrace();
+                    } catch (InvalidTableException exception) {
+                        logger.log(Level.SEVERE, "Fatal error when storing data for " + uuid + ", their data in primary storage has been deleted.");
                     }
                 }
-            }.runTaskAsynchronously(this);
+
+                for (UUID uuid : userReports.keySet()) {
+                    databaseV3.writeUserReport(uuid, userReports.get(uuid));
+                }
+                databaseV3.closeConnection();
+                v3Semaphore.release();
+
+            } catch (SQLException exception) {
+                logger.log(Level.SEVERE, "Failed to save all user data.");
+                exception.printStackTrace();
+            } catch (InterruptedException exception) {
+                logger.log(Level.SEVERE, "Data saving interrupted. Data not saved from previous session.");
+                exception.printStackTrace();
+            }
         }
         EvenMoreFish.userReports.clear();
     }
