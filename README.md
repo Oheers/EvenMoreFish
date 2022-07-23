@@ -1,8 +1,8 @@
 # 🐠 EvenMoreFish Spigot Plugin 🐟
 
-Improve your server's fishing experience with a jaw-dropping, awe-inspiring, mesmerising **fishing plugin** based on elsiff's MoreFish plugin
+Improve your server's fishing experience with an incredible **fishing competition plugin** based on elsiff's MoreFish plugin
 
-With over 40 custom fish straight out the box, and the ability to add your own, why go anywhere else?
+With over 40 custom fish in the default configurations, and the ability to add your own, this is the best competition plugin for your server.
 
 ---
 
@@ -13,6 +13,9 @@ Use any in-game item, or even a base-64 head in place of a fish and with the opt
 
 * ### Rarities
 There's 4 rarities in the default config, but it's possible to add your own in the `rarities.yml` file, with its own colour, drop frequency, standard fish length. It's also possible to set per-fish lengths.
+
+* ### Baits
+Boost the chances players have of catching certain fish or rarities with "baits", you can choose these to be disabled during competitions to give equal fairness to new players and existing players. With the /emf admin bait command you can give baits to players using the **-p:** variable.
 
 * ### Competitions
 Competitions are scheduled, or staff-triggered events where players compete to get the biggest, fattest fish. It's recommended to change the rewards to your liking, and multiple reward types can be given (Command, Message, Money, Effect & Item). A customizable bossbar also exists, and kindly vanishes once the competition is up. The permission node for being able to start competitions via /emf admin competition start is: `emf.admin` (defaulting to op)
