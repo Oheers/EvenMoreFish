@@ -19,11 +19,15 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
@@ -124,7 +128,22 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (!EvenMoreFish.permission.has(sender, "emf.admin")) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
-                    EvenMoreFish.databaseV3.migrate(sender);
+                    new BukkitRunnable() {
+
+                        @Override
+                        public void run() {
+                            try {
+                                EvenMoreFish.v3Semaphore.acquire();
+                                EvenMoreFish.databaseV3.getConnection();
+                                EvenMoreFish.databaseV3.migrate(sender);
+                                EvenMoreFish.databaseV3.closeConnection();
+                                EvenMoreFish.v3Semaphore.release();
+                            } catch (SQLException | InterruptedException exception) {
+                                EvenMoreFish.logger.log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.");
+                                exception.printStackTrace();
+                            }
+                        }
+                    }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(CommandCentre.class));
                 }
                 break;
             default:
