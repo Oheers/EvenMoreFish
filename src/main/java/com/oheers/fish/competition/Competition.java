@@ -5,6 +5,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.database.UserReport;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -604,7 +605,15 @@ public class Competition {
                             for (Reward reward : participationRewards) {
                                 reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()), null);
                             }
-                            if (EvenMoreFish.mainConfig.databaseEnabled()) EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1);
+
+                            if (EvenMoreFish.mainConfig.databaseEnabled()) {
+                                UserReport report = EvenMoreFish.userReports.get(competitionEntry.getPlayer());
+                                if (report != null) {
+                                    report.incrementCompetitionsJoined(1);
+                                } else {
+                                    EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. " + EvenMoreFish.userReports.size() + "/" + Bukkit.getOnlinePlayers().size());
+                                }
+                            }
                         });
                     } else if (EvenMoreFish.mainConfig.databaseEnabled()) {
                         iterator.forEachRemaining(competitionEntry -> {
