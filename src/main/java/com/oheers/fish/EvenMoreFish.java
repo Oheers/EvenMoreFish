@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
 import com.oheers.fish.competition.AutoRunner;
@@ -104,8 +105,13 @@ public class EvenMoreFish extends JavaPlugin {
     public static final int MAIN_CONFIG_VERSION = 11;
     public static final int COMP_CONFIG_VERSION = 1;
 
+    private static EvenMoreFish instance;
+    private EMFAPI api;
+
     @Override
     public void onEnable() {
+        instance = this;
+        this.api = new EMFAPI(this);
 
         guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
@@ -458,5 +464,13 @@ public class EvenMoreFish extends JavaPlugin {
     private boolean checkWG(){
         Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
         return (pWG != null);
+    }
+
+    public static EvenMoreFish getInstance() {
+        return instance;
+    }
+
+    public EMFAPI getAPI() {
+        return this.api;
     }
 }
