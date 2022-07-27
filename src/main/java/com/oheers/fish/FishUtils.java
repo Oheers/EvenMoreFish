@@ -292,7 +292,7 @@ public class FishUtils {
      * @param item The item being considered.
      * @return Whether this ItemStack is a bait.
      */
-    public boolean isBaitObject(ItemStack item) {
+    public static boolean isBaitObject(ItemStack item) {
         if (item.getItemMeta() != null) {
             return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_BAIT);
         }
