@@ -103,7 +103,7 @@ public class ConfigUpdater {
 
 	private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
-	private static String MSG_UPDATE_12 = "admin:\n" +
+	private static String MSG_UPDATE_12 = "\nadmin:\n" +
 			"  # /emf admin clearbaits is run, but there are no baits on the rod.\n" +
 			"  no-baits-on-rod: \"&rThe fishing rod does not have any baits applied.\"";
 	private static String CONFIG_UPDATE_11 = "# Requires that the fishing rod to have the \"emf-rod-nbt\" value in order to catch custom fish defined in fish.yml.\n" +

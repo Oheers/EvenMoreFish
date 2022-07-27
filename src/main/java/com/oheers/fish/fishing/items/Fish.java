@@ -94,6 +94,7 @@ public class Fish implements Cloneable {
 
             fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
             fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            fishMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
             fish.setItemMeta(fishMeta);
 
