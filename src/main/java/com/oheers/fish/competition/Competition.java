@@ -66,34 +66,36 @@ public class Competition {
     }
 
     public void begin(boolean adminStart) {
-        if (competitionType == CompetitionType.RANDOM) {
-            competitionType = getRandomType();
-            originallyRandom = true;
-        }
-
-        if (competitionType == CompetitionType.SPECIFIC_FISH) {
-            if (!chooseFish(competitionName, adminStart)) return;
-        }
-
-        if (competitionType == CompetitionType.SPECIFIC_RARITY) {
-            if (!chooseRarity(competitionName, adminStart)) return;
-        }
-
-        this.timeLeft = this.maxDuration;
         if (Bukkit.getOnlinePlayers().size() >= playersNeeded || adminStart) {
             active = true;
+
+            if (competitionType == CompetitionType.RANDOM) {
+                competitionType = getRandomType();
+                originallyRandom = true;
+            }
+
+            if (competitionType == CompetitionType.SPECIFIC_FISH) {
+                if (!chooseFish(competitionName, adminStart)) return;
+            }
+
+            if (competitionType == CompetitionType.SPECIFIC_RARITY) {
+                if (!chooseRarity(competitionName, adminStart)) return;
+            }
+
+            this.timeLeft = this.maxDuration;
+
             leaderboard = new Leaderboard(competitionType);
             statusBar.show();
             initTimer();
             announceBegin();
+
+            epochStartTime = Instant.now().getEpochSecond();
+
+            // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
+            EvenMoreFish.decidedRarities.clear();
         } else {
             new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast(true, true);
         }
-
-        epochStartTime = Instant.now().getEpochSecond();
-
-        // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
-        EvenMoreFish.decidedRarities.clear();
     }
 
     public void end() {
