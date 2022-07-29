@@ -380,6 +380,7 @@ public class Message {
 	 */
 	public void setCompetitionType(@NotNull final CompetitionType type) {
 		switch (type) {
+			case LARGEST_TOTAL: setVariable("{type", new Message(ConfigMessage.LEADERBOARD_LARGEST_TOTAL).getRawMessage(false, false)); break;
 			case MOST_FISH: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage(false, false)); break;
 			case SPECIFIC_FISH: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false, false)); break;
 			case SPECIFIC_RARITY: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false, false)); break;
