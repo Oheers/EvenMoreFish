@@ -589,7 +589,7 @@ public class Competition {
             if (topEntry == null) {
                 EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user report for " + leaderboard.getTopEntry().getPlayer());
                 for (UUID uuid : EvenMoreFish.userReports.keySet()) {
-                    EvenMoreFish.logger.log(Level.INFO, "User: " + uuid);
+                    EvenMoreFish.logger.log(Level.SEVERE, "User: " + uuid);
                 }
                 EvenMoreFish.logger.log(Level.SEVERE, "Recorded " + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size());
             } else {
@@ -603,7 +603,16 @@ public class Competition {
                         reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null);
                     }
                     i++;
-                    if (EvenMoreFish.mainConfig.databaseEnabled()) EvenMoreFish.userReports.get(entry.getPlayer()).incrementCompetitionsJoined(1);
+                    if (EvenMoreFish.mainConfig.databaseEnabled() && entry != null) {
+                        UserReport report = EvenMoreFish.userReports.get(entry.getPlayer());
+                        if (report != null) report.incrementCompetitionsJoined(1);
+                        else {
+                            EvenMoreFish.logger.log(Level.SEVERE, "Could not increment competitions won for " + entry.getPlayer());
+                            for (UUID uuid : EvenMoreFish.userReports.keySet()) {
+                                EvenMoreFish.logger.log(Level.SEVERE, "User: " + uuid);
+                            }
+                        }
+                    }
                 } else {
                     if (participationRewards != null) {
                         iterator.forEachRemaining(competitionEntry -> {
