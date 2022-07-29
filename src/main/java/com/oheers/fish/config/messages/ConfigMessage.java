@@ -35,7 +35,7 @@ public enum ConfigMessage {
 	COMPETITION_START("contest-start", "&rA fishing contest for {type} has started.", PrefixType.DEFAULT, false, false),
 
 	COMPETITION_TYPE_LARGEST("competition-types.largest", "the largest fish", PrefixType.NONE, true, false),
-	COMPETITION_TYPE_LARGEST_TOTAL("competition-types.largest", "the largest total fish length", PrefixType.NONE, true, false),
+	COMPETITION_TYPE_LARGEST_TOTAL("competition-types.largest-total", "the largest total fish length", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_MOST("competition-types.most", "the most fish", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_SPECIFIC("competition-types.specific", "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r", PrefixType.NONE, true, false),
 	COMPETITION_TYPE_SPECIFIC_RARITY("competition-types.specific-rarity", "{amount} {rarity_colour}&l{rarity}&r fish", PrefixType.NONE, true, false),
