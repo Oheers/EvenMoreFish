@@ -49,9 +49,7 @@ fish:
     Grass Carp: ""
     Koi Carp: ""
     Black Carp: ""
-    Shrimp:
-      item:
-        material: NAUTILUS_SHELL
+    Lemon Shark: ""
     Sea Snail:
       item:
         material: NAUTILUS_SHELL

@@ -6,8 +6,8 @@
 rarities:
   # ▼ All rarity names should start on the same column as this down arrow.
   Common:
-    # How likely is the rarity to be chosen? Having a greater weight means the rarity is more likely to be chosen
-    weight: 50
+    # How likely is the rarity to be chosen? Having a greater weight means the rarity is more likely to be chosen (the total weights don't have to add to 100)
+    weight: 100
     # What colour should the fish's name be?
     colour: '&7'
     # Prices in /emf shop are calculated by using the calculation "length * worth-multiplier". You can change the worth-multiplier here.
@@ -21,7 +21,7 @@ rarities:
       # Absolute maximum size the fish can be, this must be an integer
       maxSize: 30
   Junk:
-    weight: 12
+    weight: 5
     colour: '&#888888'
     worth-multiplier: 0.2
     broadcast: false
@@ -29,7 +29,7 @@ rarities:
       minSize: 15
       maxSize: 45
   Rare:
-    weight: 120
+    weight: 10
     colour: '&b'
     worth-multiplier: 0.2
     broadcast: false
@@ -37,7 +37,7 @@ rarities:
       minSize: 20
       maxSize: 150
   Epic:
-    weight: 50000
+    weight: 3
     colour: '&d'
     worth-multiplier: 0.15
     broadcast: true
@@ -45,11 +45,12 @@ rarities:
       minSize: 125
       maxSize: 800
   Legendary:
-    weight: 10
+    weight: 1
     colour: '&6'
     worth-multiplier: 0.2
     broadcast: true
     size:
       minSize: 800
       maxSize: 4000
-# You can add/rename as many rarities as you want, one use case might be for special events.
+
+# You can add/rename/remove as many rarities as you want.
