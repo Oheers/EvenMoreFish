@@ -172,21 +172,21 @@ public class Bait {
 			// The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
 			// the method isn't given an empty list.
 			if (!fishListRarities.contains(fishRarity)) {
-				fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), EvenMoreFish.fishCollection.get(fishRarity));
+				fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), EvenMoreFish.fishCollection.get(fishRarity), true);
 			} else {
-				fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), getFishList());
+				fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), getFishList(), true);
 			}
 			if (fish != null) fish.setWasBaited(true);
 
 			if (!getRarityList().contains(fishRarity) && (fish == null || !getFishList().contains(fish))) {
 				// boost effect chose a fish but the randomizer didn't pick out the right fish - they've been incorrectly boosted.
-				fish = FishingProcessor.getFish(fishRarity, location, player, 1, null);
+				fish = FishingProcessor.getFish(fishRarity, location, player, 1, null, true);
 				if (fish != null) fish.setWasBaited(false);
 			} else {
 				alertUsage(player);
 			}
 		} else {
-			fish = FishingProcessor.getFish(fishRarity, location, player, 1, null);
+			fish = FishingProcessor.getFish(fishRarity, location, player, 1, null, true);
 			if (getRarityList().contains(fishRarity)) {
 				alertUsage(player);
 				if (fish != null) fish.setWasBaited(true);
