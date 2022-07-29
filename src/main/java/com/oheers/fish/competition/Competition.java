@@ -495,7 +495,7 @@ public class Competition {
         setNumberNeeded(EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart));
 
         try {
-            this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null);
+            this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");

@@ -126,7 +126,7 @@ public class FishingProcessor implements Listener {
             return null;
         }
 
-        Fish fish = getFish(fishRarity, location, player, 1, null);
+        Fish fish = getFish(fishRarity, location, player, 1, null, true);
         if (fish == null) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not determine a fish for " + player.getName());
             return null;
@@ -381,7 +381,7 @@ public class FishingProcessor implements Listener {
         return fishList.get(idx);
     }
 
-    public static Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish) {
+    public static Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish, boolean doRequirementChecks) {
         if (r == null) return null;
         // will store all the fish that match the player's biome or don't discriminate biomes
 
@@ -390,25 +390,35 @@ public class FishingProcessor implements Listener {
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
         if (EvenMoreFish.fishCollection.get(r) == null) r = randomWeightedRarity(p, 1, null, EvenMoreFish.fishCollection.keySet());
 
-        RequirementContext context = new RequirementContext();
-        context.setLocation(l);
-        context.setPlayer(p);
+        if (doRequirementChecks) {
+            RequirementContext context = new RequirementContext();
+            context.setLocation(l);
+            context.setPlayer(p);
 
-        fishLoop:
-        for (Fish f : EvenMoreFish.fishCollection.get(r)) {
+            fishLoop:
+            for (Fish f : EvenMoreFish.fishCollection.get(r)) {
 
-            if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
-                continue;
+                if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
+                    continue;
+                }
+
+                List<Requirement> requirements;
+                if ((requirements = f.getRequirements()) == null) {
+                    available.add(f);
+                } else {
+                    for (Requirement requirement : requirements) {
+                        if (!requirement.requirementMet(context)) continue fishLoop;
+                    } available.add(f);
+                }
             }
+        } else {
+            for (Fish f : EvenMoreFish.fishCollection.get(r)) {
 
-            List<Requirement> requirements;
-            if ((requirements = f.getRequirements()) == null) {
+                if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
+                    continue;
+                }
+
                 available.add(f);
-            } else {
-                for (Requirement requirement : requirements) {
-                    if (!requirement.requirementMet(context)) continue fishLoop;
-                    else available.add(f);
-                } available.add(f);
             }
         }
 
