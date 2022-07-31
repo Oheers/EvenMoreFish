@@ -23,7 +23,6 @@ import org.bukkit.*;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -41,10 +40,13 @@ public class FishUtils {
     /* checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
      * we only need to check for the length since they're all added in a batch if it's an EMF fish */
     public static boolean isFish(ItemStack item) {
-        if (item != null && item.hasItemMeta()) {
-            return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_LENGTH);
+        if (item != null) {
+            if (item.getType() != Material.AIR) {
+                if (item.hasItemMeta()) {
+                    return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_LENGTH);
+                }
+            }
         }
-
         return false;
     }
 
