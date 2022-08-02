@@ -29,6 +29,7 @@ public class Reward {
     String action;
 
     Vector fishVelocity;
+    Plugin plugin = JavaPlugin.getProvidingPlugin(getClass());
 
     public Reward(String value) {
         String[] split = value.split(":");
@@ -56,8 +57,6 @@ public class Reward {
         return action;
     }
 
-    Plugin plugin = JavaPlugin.getProvidingPlugin(getClass());
-
     public void run(OfflinePlayer player, Location hookLocation) {
         Player p = null;
 
@@ -78,7 +77,7 @@ public class Reward {
 
                 // running the command
                 String finalCommand = inputCommand;
-                Bukkit.getScheduler().callSyncMethod( plugin, () ->
+                Bukkit.getScheduler().callSyncMethod(plugin, () ->
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand));
                 break;
             case EFFECT:

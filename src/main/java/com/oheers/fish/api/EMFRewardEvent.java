@@ -10,13 +10,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class EMFRewardEvent extends Event {
 
+    private static final HandlerList handlers = new HandlerList();
     Reward reward;
     Player player;
-
     Vector fishVelocity;
     Location hookLocation;
-
-    private static final HandlerList handlers = new HandlerList();
 
     public EMFRewardEvent(Reward reward, Player player, Vector fishVelocity, Location hookLocation) {
         this.reward = reward;
@@ -25,25 +23,24 @@ public class EMFRewardEvent extends Event {
         this.hookLocation = hookLocation;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
     /**
-     * @returns A list of Reward objects that will be run on the player.
+     * @return A list of Reward objects that will be run on the player.
      */
     public Reward getReward() {
         return this.reward;
     }
 
     /**
-     * @returns The player that each Reward object will be run on
+     * @return The player that each Reward object will be run on
      */
     public Player getPlayer() {
         return this.player;

@@ -21,7 +21,7 @@ public class Messages {
         reload();
     }
 
-	public void reload() {
+    public void reload() {
         File messageFile = new File(this.plugin.getDataFolder(), "messages.yml");
 
         if (!messageFile.exists()) {

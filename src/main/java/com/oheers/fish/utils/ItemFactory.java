@@ -24,17 +24,12 @@ import java.util.logging.Level;
 public class ItemFactory {
 
     private final String configLocation;
-
+    private final FileConfiguration configurationFile;
     private ItemStack product;
-
     private int chosenRandomIndex = -1;
-
     private boolean itemRandom, rawMaterial,
             itemModelDataCheck, itemDamageCheck, itemDisplayNameCheck, itemDyeCheck, itemGlowCheck, itemPotionMetaCheck;
-
     private String displayName;
-
-    private final FileConfiguration configurationFile;
 
     public ItemFactory(String configLocation) {
         this.configLocation = configLocation;
@@ -187,8 +182,8 @@ public class ItemFactory {
 
             final String namespaceId = splitMaterialValue[1] + ":" + splitMaterialValue[2];
             final CustomStack customStack = CustomStack.getInstance(namespaceId);
-            if(customStack == null) {
-                EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s",namespaceId));
+            if (customStack == null) {
+                EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
                 return new ItemStack(Material.COD);
             }
             return CustomStack.getInstance(namespaceId).getItemStack();
@@ -313,8 +308,8 @@ public class ItemFactory {
      * Each time this is run, the fisher's head is loaded as the skull and set into meta. This must be done each time otherwise
      * it just creates a null head. By default, when the plugin first loads it's given a null player so it'll need to given
      * a head before any giving is done.
-     *
-     * @returns A skull with the player's head.
+     * <p>
+     * {@code @returns} A skull with the player's head.
      */
     private ItemStack checkOwnHead(OfflinePlayer player) {
         boolean ownHead = this.configurationFile.getBoolean(configLocation + ".item.own-head");
@@ -345,7 +340,7 @@ public class ItemFactory {
     private ItemStack checkRawMaterial() {
         String materialID = this.configurationFile.getString(configLocation + ".item.raw-material");
         Material material;
-        if (materialID == null || (material  = Material.getMaterial(materialID)) == null) {
+        if (materialID == null || (material = Material.getMaterial(materialID)) == null) {
             return null;
         } else {
             rawMaterial = true;

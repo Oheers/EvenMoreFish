@@ -3,14 +3,14 @@ author: Oheers
 version: ${project.version}
 main: com.oheers.fish.EvenMoreFish
 api-version: 1.16
-depend: [Vault]
-softdepend: [WorldGuard, PlaceholderAPI, RedProtect, mcMMO, AureliumSkills, ItemsAdder]
-loadbefore: [AntiAC]
+depend: [ Vault ]
+softdepend: [ WorldGuard, PlaceholderAPI, RedProtect, mcMMO, AureliumSkills, ItemsAdder ]
+loadbefore: [ AntiAC ]
 
 commands:
   evenmorefish:
     usage: /<command> [name]
-    aliases: [emf]
+    aliases: [ emf ]
 
 
 

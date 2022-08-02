@@ -9,23 +9,22 @@ import org.jetbrains.annotations.NotNull;
 
 public class EMFFishEvent extends Event implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     Fish fish;
     Player player;
     boolean cancel;
-
-    private static final HandlerList handlers = new HandlerList();
 
     public EMFFishEvent(Fish fish, Player player) {
         this.fish = fish;
         this.player = player;
     }
 
-    @Override
-    public @NotNull HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    @Override
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
