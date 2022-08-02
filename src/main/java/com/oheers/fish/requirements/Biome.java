@@ -15,7 +15,7 @@ public class Biome implements Requirement {
 	@Override
 	public boolean requirementMet(RequirementContext context) {
 		if (context.getWorld() != null) {
-			return biomes.contains(context.getWorld().getBiome(context.getLocation()));
+			return biomes.contains(context.getWorld().getBiome(context.getLocation().getBlockX(), context.getLocation().getBlockY(), context.getLocation().getBlockZ()));
 		}
 		EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + configLocation + ", returning false by " +
 				"default. The player may not have been given a fish if you see this message multiple times.");

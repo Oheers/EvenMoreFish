@@ -408,7 +408,7 @@ public class ItemFactory {
                 }
             }
 
-            product.setItemMeta(nonDamaged);
+            product.setItemMeta((ItemMeta) nonDamaged);
         }
     }
 
