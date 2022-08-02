@@ -24,6 +24,7 @@ public class JoinChecker implements Listener {
 
     /**
      * Reads all the database information for the user specified.
+     *
      * @param userUUID The user UUID having their data read.
      * @param userName the in-game username of the user having their data read.
      */
@@ -43,7 +44,8 @@ public class JoinChecker implements Listener {
                                 reports = EvenMoreFish.databaseV3.getFishReports(userUUID);
                             } else {
                                 reports = new ArrayList<>();
-                                if (EvenMoreFish.mainConfig.doDBVerbose()) EvenMoreFish.logger.log(Level.INFO, userName + " has joined for the first time, creating new data handle for them.");
+                                if (EvenMoreFish.mainConfig.doDBVerbose())
+                                    EvenMoreFish.logger.log(Level.INFO, userName + " has joined for the first time, creating new data handle for them.");
                             }
                         } catch (SQLException | InvalidTableException exception) {
                             EvenMoreFish.logger.log(Level.SEVERE, "Failed to check database existence of user " + userUUID);
@@ -93,7 +95,7 @@ public class JoinChecker implements Listener {
             EvenMoreFish.active.getStatusBar().addPlayer(event.getPlayer());
             EvenMoreFish.active.getStartMessage().setMessage(ConfigMessage.COMPETITION_JOIN);
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(EvenMoreFish.getPlugin(EvenMoreFish.class),
-                    () -> EvenMoreFish.active.getStartMessage().broadcast(event.getPlayer(), true, true), 20*3);
+                    () -> EvenMoreFish.active.getStartMessage().broadcast(event.getPlayer(), true, true), 20 * 3);
         }
 
         new BukkitRunnable() {

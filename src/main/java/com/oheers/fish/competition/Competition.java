@@ -24,45 +24,40 @@ import java.util.logging.Level;
 
 public class Competition {
 
-    long maxDuration, timeLeft;
+    public static Leaderboard leaderboard;
+    static boolean active;
+    static boolean originallyRandom;
     public CompetitionType competitionType;
-    Bar statusBar;
-
-    long epochStartTime;
-
     public Fish selectedFish;
     public Rarity selectedRarity;
     public int numberNeeded;
-
-    List<Long> alertTimes;
-
-    Map<Integer, List<Reward>> rewards;
-    List<Reward> participationRewards;
-
-    int playersNeeded;
-
-    Sound startSound;
-
-    BukkitTask timingSystem;
-
-    static boolean active;
-
-    static boolean originallyRandom;
-
     public String competitionName;
     public boolean adminStarted;
-
-    public static Leaderboard leaderboard;
-
     public String competitionID;
-
     public Message startMessage;
+    long maxDuration, timeLeft;
+    Bar statusBar;
+    long epochStartTime;
+    List<Long> alertTimes;
+    Map<Integer, List<Reward>> rewards;
+    List<Reward> participationRewards;
+    int playersNeeded;
+    Sound startSound;
+    BukkitTask timingSystem;
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
         this.alertTimes = new ArrayList<>();
         this.rewards = new HashMap<>();
         this.competitionType = type;
+    }
+
+    public static boolean isActive() {
+        return active;
+    }
+
+    public static void setOriginallyRandom(boolean originallyRandom) {
+        Competition.originallyRandom = originallyRandom;
     }
 
     public void begin(boolean adminStart) {
@@ -185,7 +180,8 @@ public class Competition {
             message.setAmount(Integer.toString(numberNeeded));
             message.setRarityColour(selectedFish.getRarity().getColour());
 
-            if (selectedFish.getRarity().getDisplayName() != null) message.setRarity(selectedFish.getRarity().getDisplayName());
+            if (selectedFish.getRarity().getDisplayName() != null)
+                message.setRarity(selectedFish.getRarity().getDisplayName());
             else message.setRarity(selectedFish.getRarity().getValue());
 
             if (selectedFish.getDisplayName() != null) message.setFishCaught(selectedFish.getDisplayName());
@@ -223,6 +219,7 @@ public class Competition {
 
     /**
      * Calculates whether to send the "new first place" notification as an actionbar message or directly into chat.
+     *
      * @return A boolean, true = do it in actionbar.
      */
     public boolean isDoingFirstPlaceActionBar() {
@@ -235,9 +232,9 @@ public class Competition {
 
         if (
                 competitionType == CompetitionType.SPECIFIC_FISH ||
-                competitionType == CompetitionType.SPECIFIC_RARITY ||
-                competitionType == CompetitionType.MOST_FISH ||
-                competitionType == CompetitionType.LARGEST_TOTAL
+                        competitionType == CompetitionType.SPECIFIC_RARITY ||
+                        competitionType == CompetitionType.MOST_FISH ||
+                        competitionType == CompetitionType.LARGEST_TOTAL
         ) {
             // is the fish the specific fish or rarity?
             if (competitionType == CompetitionType.SPECIFIC_FISH) {
@@ -261,7 +258,7 @@ public class Competition {
                 else increaseAmount = 1.0f;
 
                 if (entry != null) {
-                    if (entry.getValue()+increaseAmount >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
+                    if (entry.getValue() + increaseAmount >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
                         Message message = new Message(ConfigMessage.NEW_FIRST_PLACE_NOTIFICATION);
                         message.setLength(Float.toString(fish.getLength()));
                         message.setRarityColour(fish.getRarity().getColour());
@@ -287,7 +284,8 @@ public class Competition {
 
                 } else {
                     CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
-                    if (this.competitionType == CompetitionType.LARGEST_TOTAL) newEntry.incrementValue(fish.getLength()-1);
+                    if (this.competitionType == CompetitionType.LARGEST_TOTAL)
+                        newEntry.incrementValue(fish.getLength() - 1);
                     leaderboard.addEntry(newEntry);
                 }
             }
@@ -398,7 +396,8 @@ public class Competition {
                             message.setRarityColour(fish.getRarity().getColour());
                             message.setLength(Float.toString(entry.getValue()));
 
-                            if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                            if (fish.getRarity().getDisplayName() != null)
+                                message.setRarity(fish.getRarity().getDisplayName());
                             else message.setRarity(fish.getRarity().getValue());
 
                             if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
@@ -407,9 +406,8 @@ public class Competition {
                             if (competitionType == CompetitionType.LARGEST_TOTAL) {
                                 message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
                                 // Clearing floating point .00000003 error not-cool stuff.
-                                message.setAmount(Double.toString(Math.floor(entry.getValue()*10)/10));
-                            }
-                            else {
+                                message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+                            } else {
                                 message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
                                 message.setAmount(Integer.toString((int) entry.getValue()));
                             }
@@ -439,14 +437,16 @@ public class Competition {
                                 message.setRarityColour(fish.getRarity().getColour());
                                 message.setLength(Float.toString(entry.getValue()));
 
-                                if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                                if (fish.getRarity().getDisplayName() != null)
+                                    message.setRarity(fish.getRarity().getDisplayName());
                                 else message.setRarity(fish.getRarity().getValue());
 
                                 if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
                                 else message.setFishCaught(fish.getName());
                             } else {
                                 message.setAmount(Integer.toString((int) entry.getValue()));
-                                if (competitionType == CompetitionType.LARGEST_TOTAL) message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                                if (competitionType == CompetitionType.LARGEST_TOTAL)
+                                    message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
                                 else message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
                             }
 
@@ -541,7 +541,7 @@ public class Competition {
             String[] split = s.split(":");
             if (split.length == 2) {
                 try {
-                    alertTimes.add((long) Integer.parseInt(split[0])*60 + Integer.parseInt(split[1]));
+                    alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
                 } catch (NumberFormatException nfe) {
                     EvenMoreFish.logger.log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
                 }
@@ -687,16 +687,12 @@ public class Competition {
 
     private CompetitionType getRandomType() {
         // -1 from the length so that the RANDOM isn't chosen as the random value.
-        int type = new Random().nextInt(CompetitionType.values().length-1);
+        int type = new Random().nextInt(CompetitionType.values().length - 1);
         return CompetitionType.values()[type];
     }
 
     public Bar getStatusBar() {
         return this.statusBar;
-    }
-
-    public static boolean isActive() {
-        return active;
     }
 
     public CompetitionType getCompetitionType() {
@@ -715,10 +711,6 @@ public class Competition {
         return leaderboard;
     }
 
-    public void setCompetitionName(String competitionName) {
-        this.competitionName = competitionName;
-    }
-
     public void setAdminStarted(boolean adminStarted) {
         this.adminStarted = adminStarted;
     }
@@ -727,11 +719,11 @@ public class Competition {
         return startMessage;
     }
 
-    public static void setOriginallyRandom(boolean originallyRandom) {
-        Competition.originallyRandom = originallyRandom;
-    }
-
     public String getCompetitionName() {
         return competitionName;
+    }
+
+    public void setCompetitionName(String competitionName) {
+        this.competitionName = competitionName;
     }
 }

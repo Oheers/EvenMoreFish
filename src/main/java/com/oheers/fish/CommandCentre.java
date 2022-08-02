@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,15 +33,47 @@ import java.util.logging.Level;
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
     private static final List<String> empty = new ArrayList<>();
-
+    private static List<String> emfTabs, adminTabs, compTabs, compTypes;
     public EvenMoreFish plugin;
 
     public CommandCentre(EvenMoreFish plugin) {
         this.plugin = plugin;
     }
 
+    public static void loadTabCompletes() {
+        adminTabs = Arrays.asList(
+                "bait",
+                "clearbaits",
+                "competition",
+                "fish",
+                "reload",
+                "version"
+        );
+
+        compTabs = Arrays.asList(
+                "start",
+                "end"
+        );
+
+        emfTabs = Arrays.asList(
+                "help",
+                "shop",
+                "toggle",
+                "top"
+        );
+
+        compTypes = Arrays.asList(
+                "largest_fish",
+                "largest_total",
+                "most_fish",
+                "random",
+                "specific_fish",
+                "specific_rarity"
+        );
+    }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
 
         // Aliases are set in the plugin.yml
         if (cmd.getName().equalsIgnoreCase("evenmorefish")) {
@@ -82,11 +115,13 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                                     message.broadcast(sender, true, true);
                                 } else {
                                     Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
-                                    message.setPlayer(p.getName());
+                                    message.setPlayer(args[1]);
                                     message.broadcast(sender, true, true);
                                 }
                             } else {
-                                new SellGUI((Player) sender);
+                                if (sender instanceof Player) {
+                                    new SellGUI((Player) sender);
+                                }
                             }
                         } else {
                             new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
@@ -151,42 +186,8 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         }
     }
 
-    private static List<String> emfTabs, adminTabs, compTabs, compTypes;
-
-    public static void loadTabCompletes() {
-        adminTabs = Arrays.asList(
-                "bait",
-                "clearbaits",
-                "competition",
-                "fish",
-                "reload",
-                "version"
-        );
-
-        compTabs = Arrays.asList(
-                "start",
-                "end"
-        );
-
-        emfTabs = Arrays.asList(
-                "help",
-                "shop",
-                "toggle",
-                "top"
-        );
-
-        compTypes = Arrays.asList(
-                "largest_fish",
-                "largest_total",
-                "most_fish",
-                "random",
-                "specific_fish",
-                "specific_rarity"
-        );
-    }
-
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (sender instanceof Player) {
 
             if (args.length > 2 && args[args.length - 1].startsWith("-p:")) {
@@ -256,14 +257,13 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         return l(args[args.length - 1], compTypes);
                     } else {
                         return empty;
-                }
+                    }
             }
 
-            return empty;
         } else {
             // it's a console sending the command
-            return empty;
         }
+        return empty;
     }
 
     // works out how far the player is into the tab and reduces the returned list accordingly
@@ -279,7 +279,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
     }
 }
 
-class Controls{
+class Controls {
 
     protected static void adminControl(EvenMoreFish plugin, String[] args, CommandSender sender) {
 
@@ -304,16 +304,20 @@ class Controls{
                         args2.append(word).append(" ");
                     }
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        String rarityName = args2.substring(0, args2.length()-1);
+                        String rarityName = args2.substring(0, args2.length() - 1);
                         if (rarityName.equalsIgnoreCase(r.getValue())) {
                             ComponentBuilder builder = new ComponentBuilder();
 
-                            if (r.getDisplayName() != null) builder.append(FishUtils.translateHexColorCodes(r.getDisplayName()), ComponentBuilder.FormatRetention.NONE);
-                            else builder.append(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": "), ComponentBuilder.FormatRetention.NONE);
+                            if (r.getDisplayName() != null)
+                                builder.append(FishUtils.translateHexColorCodes(r.getDisplayName()), ComponentBuilder.FormatRetention.NONE);
+                            else
+                                builder.append(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": "), ComponentBuilder.FormatRetention.NONE);
 
                             for (Fish fish : EvenMoreFish.fishCollection.get(r)) {
-                                if (fish.getDisplayName() != null) builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
-                                else builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
+                                if (fish.getDisplayName() != null)
+                                    builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
+                                else
+                                    builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getName() + "] "));
 
                                 builder.event(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
                                 builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + fish.getRarity().getValue() + " " + fish.getName()));
@@ -375,13 +379,13 @@ class Controls{
                         for (String word : args[2].split("_")) {
                             args2.append(word).append(" ");
                         }
-                        String rarityName = args2.substring(0, args2.length()-1);
+                        String rarityName = args2.substring(0, args2.length() - 1);
 
                         StringBuilder args3 = new StringBuilder();
                         for (String word : args[3].split("_")) {
                             args3.append(word).append(" ");
                         }
-                        String fishName = args3.substring(0, args3.length()-1);
+                        String fishName = args3.substring(0, args3.length() - 1);
 
                         for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                             if (rarityName.equalsIgnoreCase(r.getValue())) {
@@ -399,7 +403,8 @@ class Controls{
                                         if (f.getFactory().getMaterial() != Material.AIR) {
                                             ItemStack fish = f.give(-1);
                                             fish.setAmount(quantity);
-                                            if (player == null) FishUtils.giveItems(Collections.singletonList(fish), (Player) sender);
+                                            if (player == null)
+                                                FishUtils.giveItems(Collections.singletonList(fish), (Player) sender);
                                             else FishUtils.giveItems(Collections.singletonList(f.give(-1)), player);
                                         }
 
@@ -473,7 +478,8 @@ class Controls{
                             }
                         } else {
                             builtName.append(args[i]);
-                            if (i != args.length - 1 && !(args[i+1].startsWith("-p:")) && !(args[i+1].startsWith("-q:"))) builtName.append(" ");
+                            if (i != args.length - 1 && !(args[i + 1].startsWith("-p:")) && !(args[i + 1].startsWith("-q:")))
+                                builtName.append(" ");
                         }
                     }
 
@@ -489,8 +495,7 @@ class Controls{
                                 } else {
                                     new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                                 }
-                            }
-                            else {
+                            } else {
                                 ItemStack baitItem = bait.create(player);
                                 baitItem.setAmount(quantity);
                                 FishUtils.giveItems(Collections.singletonList(baitItem), player);
@@ -597,7 +602,7 @@ class Controls{
                 if (args[2].equalsIgnoreCase("start")) {
                     // if the admin has only done /emf admin competition start
                     if (args.length < 4) {
-                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration()*60), player, CompetitionType.LARGEST_FISH);
+                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration() * 60), player, CompetitionType.LARGEST_FISH);
                     } else {
                         if (args.length < 5) {
                             startComp(args[3], player, CompetitionType.LARGEST_FISH);
@@ -609,9 +614,7 @@ class Controls{
                             }
                         }
                     }
-                }
-
-                else if (args[2].equalsIgnoreCase("end")) {
+                } else if (args[2].equalsIgnoreCase("end")) {
                     if (Competition.isActive()) {
                         EvenMoreFish.active.end();
                     } else {
@@ -670,8 +673,8 @@ class Help {
 
         String escape = "\n";
         if (EvenMoreFish.permission != null && user != null) {
-            for (int i=0; i<commands.size(); i++) {
-                if (i == commands.size()-1) escape = "";
+            for (int i = 0; i < commands.size(); i++) {
+                if (i == commands.size() - 1) escape = "";
                 if (commands.get(i).contains("/emf admin")) {
                     if (EvenMoreFish.permission.has(user, "emf.admin")) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf top")) {
@@ -683,8 +686,8 @@ class Help {
                 } else out.append(commands.get(i)).append(escape);
             }
         } else {
-            for (int i=0; i<commands.size(); i++) {
-                if (i == commands.size()-1) escape = "";
+            for (int i = 0; i < commands.size(); i++) {
+                if (i == commands.size() - 1) escape = "";
                 out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
             }
         }

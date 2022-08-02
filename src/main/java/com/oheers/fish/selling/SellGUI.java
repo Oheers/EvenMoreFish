@@ -38,7 +38,7 @@ public class SellGUI implements InventoryHolder {
     private ItemStack sellIcon, sellAllIcon, filler, errorFiller, confirmIcon, confirmSellAllIcon, noValueIcon, sellAllErrorIcon;
 
     public SellGUI(Player p) {
-        this.guiSize = (EvenMoreFish.mainConfig.getGUISize()+1)*9;
+        this.guiSize = (EvenMoreFish.mainConfig.getGUISize() + 1) * 9;
         this.player = p;
         this.modified = false;
         this.menu = Bukkit.createInventory(this, guiSize, new Message(ConfigMessage.WORTH_GUI_NAME).getRawMessage(true, true));
@@ -70,7 +70,7 @@ public class SellGUI implements InventoryHolder {
     }
 
     public void addFiller(ItemStack fill) {
-        for (int i = guiSize-9; i < guiSize; i++) {
+        for (int i = guiSize - 9; i < guiSize; i++) {
             ItemStack item = menu.getItem(i);
             if (item == null || item.isSimilar(filler) || item.isSimilar(errorFiller)) {
                 menu.setItem(i, fill);
@@ -178,8 +178,10 @@ public class SellGUI implements InventoryHolder {
 
             ItemMeta errorMeta = error.getItemMeta();
 
-            if (sellAll) errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_ALL_BUTTON_NAME).getRawMessage(true, false));
-            else errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_NAME).getRawMessage(true, false));
+            if (sellAll)
+                errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_ALL_BUTTON_NAME).getRawMessage(true, false));
+            else
+                errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_NAME).getRawMessage(true, false));
 
             if (sellAll) {
                 errorMeta.setLore(new ArrayList<>(Arrays.asList(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_LORE).getRawMessage(true, false).split("\n"))));
@@ -199,8 +201,10 @@ public class SellGUI implements InventoryHolder {
             else confirm = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemConfirm()));
 
             ItemMeta cMeta = confirm.getItemMeta();
-            if (sellAll) cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_ALL_BUTTON_NAME).getRawMessage(true, false));
-            else cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_BUTTON_NAME).getRawMessage(true, false));
+            if (sellAll)
+                cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_ALL_BUTTON_NAME).getRawMessage(true, false));
+            else
+                cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_BUTTON_NAME).getRawMessage(true, false));
             // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
             List<String> lore = new ArrayList<>();
 
@@ -277,7 +281,7 @@ public class SellGUI implements InventoryHolder {
 
         this.value = totalValue;
         this.fishCount = count;
-        return Double.toString(Math.floor(totalValue*10)/10);
+        return Double.toString(Math.floor(totalValue * 10) / 10);
     }
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
@@ -306,12 +310,12 @@ public class SellGUI implements InventoryHolder {
         return this.errorFiller;
     }
 
-    public void setModified(boolean mod) {
-        this.modified = mod;
-    }
-
     public boolean getModified() {
         return this.modified;
+    }
+
+    public void setModified(boolean mod) {
+        this.modified = mod;
     }
 
     private void glowify(ItemStack i) {
@@ -331,7 +335,7 @@ public class SellGUI implements InventoryHolder {
 
         // sending the sell message to the player
         Message message = new Message(ConfigMessage.FISH_SALE);
-        message.setSellPrice(Double.toString(Math.floor(value*10)/10));
+        message.setSellPrice(Double.toString(Math.floor(value * 10) / 10));
         message.setAmount(Integer.toString(fishCount));
         message.setPlayer(this.player.toString());
         message.broadcast(player, true, true);

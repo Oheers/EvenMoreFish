@@ -16,8 +16,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.logging.Level;
-
 public class BaitApplicationListener implements Listener {
 
     @EventHandler
@@ -92,17 +90,17 @@ public class BaitApplicationListener implements Listener {
         final String appliedBaitString = NbtUtils.getString(nbtFishingRod, NbtUtils.Keys.EMF_APPLIED_BAIT);
 
         if (nbtVersion == NbtUtils.NbtVersion.LEGACY) {
-            final String namespacedKey = NbtUtils.Keys.EMF_COMPOUND+":"+NbtUtils.Keys.EMF_APPLIED_BAIT;
+            final String namespacedKey = NbtUtils.Keys.EMF_COMPOUND + ":" + NbtUtils.Keys.EMF_APPLIED_BAIT;
             nbtFishingRod.getCompound(NbtUtils.Keys.PUBLIC_BUKKIT_VALUES).removeKey(namespacedKey);
 
-            if(Boolean.TRUE.equals(nbtFishingRod.hasKey(namespacedKey))) { //bugged version
+            if (Boolean.TRUE.equals(nbtFishingRod.hasKey(namespacedKey))) { //bugged version
                 nbtFishingRod.removeKey(namespacedKey);
-                nbtFishingRod.getCompound("display").setObject("Lore",null);
+                nbtFishingRod.getCompound("display").setObject("Lore", null);
             }
         }
 
         if (nbtVersion == NbtUtils.NbtVersion.NBTAPI) {
-            nbtFishingRod.removeKey(NbtUtils.Keys.EMF_COMPOUND+":"+NbtUtils.Keys.EMF_APPLIED_BAIT);
+            nbtFishingRod.removeKey(NbtUtils.Keys.EMF_COMPOUND + ":" + NbtUtils.Keys.EMF_APPLIED_BAIT);
         }
 
         NBTCompound emfCompound = nbtFishingRod.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);

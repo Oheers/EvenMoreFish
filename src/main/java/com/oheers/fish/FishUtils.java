@@ -193,8 +193,11 @@ public class FishUtils {
 
         // Gets a list of user defined regions
         List<String> whitelistedWorlds = EvenMoreFish.mainConfig.getAllowedWorlds();
-
-        return whitelistedWorlds.contains(l.getWorld().getName());
+        if (l.getWorld() == null) {
+            return false;
+        } else {
+            return whitelistedWorlds.contains(l.getWorld().getName());
+        }
     }
 
     // credit to https://www.spigotmc.org/members/elementeral.717560/

@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public class CompetitionEntry implements Comparable<CompetitionEntry> {
 
-    private long time;
     private final UUID player;
     private final Fish fish;
+    private long time;
     private float value;
 
     CompetitionEntry(UUID player, Fish fish, CompetitionType type) {
@@ -33,10 +33,6 @@ public class CompetitionEntry implements Comparable<CompetitionEntry> {
         this.time = Instant.now().toEpochMilli();
     }
 
-    public void setValue(float value) {
-        this.value = value;
-    }
-
     public Fish getFish() {
         return fish;
     }
@@ -51,6 +47,10 @@ public class CompetitionEntry implements Comparable<CompetitionEntry> {
 
     public float getValue() {
         return value;
+    }
+
+    public void setValue(float value) {
+        this.value = value;
     }
 
     public UUID getPlayer() {
