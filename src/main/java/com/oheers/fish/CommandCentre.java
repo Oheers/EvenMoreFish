@@ -12,10 +12,7 @@ import com.oheers.fish.selling.SellGUI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -96,7 +93,11 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     if (!Competition.isActive()) {
                         new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
                     } else {
-                        EvenMoreFish.active.sendLeaderboard((Player) sender);
+                        if (sender instanceof Player) {
+                            EvenMoreFish.active.sendPlayerLeaderboard((Player) sender);
+                        } else if (sender instanceof ConsoleCommandSender) {
+                            EvenMoreFish.active.sendConsoleLeaderboard((ConsoleCommandSender) sender);
+                        }
                     }
                 } else {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
@@ -129,8 +130,15 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     } else {
                         new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
                     }
-                } else {
-                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                }
+                if (sender instanceof ConsoleCommandSender) {
+                    /*new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);*/
+                    if (args.length == 2) {
+                        Player p = Bukkit.getPlayer(args[1]);
+                        if (p != null) {
+                            new SellGUI(p);
+                        }
+                    }
                 }
                 break;
             case "toggle":
@@ -188,81 +196,77 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-        if (sender instanceof Player) {
 
-            if (args.length > 2 && args[args.length - 1].startsWith("-p:")) {
-                if (args[1].equalsIgnoreCase("fish") || args[1].equalsIgnoreCase("bait")) {
-                    if (EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        List<String> playerNames = new ArrayList<>();
-                        for (Player p : Bukkit.getOnlinePlayers()) {
-                            playerNames.add("-p:" + p.getName());
-                        }
-                        return l(args[args.length - 1], playerNames);
+        if (args.length > 2 && args[args.length - 1].startsWith("-p:")) {
+            if (args[1].equalsIgnoreCase("fish") || args[1].equalsIgnoreCase("bait")) {
+                if (EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    List<String> playerNames = new ArrayList<>();
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        playerNames.add("-p:" + p.getName());
                     }
+                    return l(args[args.length - 1], playerNames);
                 }
             }
+        }
 
-            switch (args.length) {
-                case 1:
-                    if (EvenMoreFish.permission.has(sender, "emf.admin")) {
+        switch (args.length) {
+            case 1:
+                if (EvenMoreFish.permission.has(sender, "emf.admin")) {
 
-                        // creates a temp version of tablist where only the qualified completes go through
-                        List<String> TEMP_townTabCompletes = l(args[args.length - 1], emfTabs);
-                        // if the player is writing "admin" it adds it to the temporary tabcomplete list
-                        if ("admin".startsWith(args[args.length - 1].toLowerCase())) {
-                            TEMP_townTabCompletes.add("admin");
-                        }
-                        return TEMP_townTabCompletes;
-                    } else {
-                        return l(args[args.length - 1], emfTabs);
+                    // creates a temp version of tablist where only the qualified completes go through
+                    List<String> TEMP_townTabCompletes = l(args[args.length - 1], emfTabs);
+                    // if the player is writing "admin" it adds it to the temporary tabcomplete list
+                    if ("admin".startsWith(args[args.length - 1].toLowerCase())) {
+                        TEMP_townTabCompletes.add("admin");
                     }
-                case 2:
-                    // checks player has admin perms and has actually used "/emf admin" prior to the 2nd arg
-                    if (args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        return l(args[args.length - 1], adminTabs);
-                    } else {
-                        return empty;
+                    return TEMP_townTabCompletes;
+                } else {
+                    return l(args[args.length - 1], emfTabs);
+                }
+            case 2:
+                // checks player has admin perms and has actually used "/emf admin" prior to the 2nd arg
+                if (args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    return l(args[args.length - 1], adminTabs);
+                } else {
+                    return empty;
+                }
+            case 3:
+                if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    return l(args[args.length - 1], compTabs);
+                } else if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    List<String> returning = new ArrayList<>();
+                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        returning.add(r.getValue().replace(" ", "_"));
                     }
-                case 3:
-                    if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        return l(args[args.length - 1], compTabs);
-                    } else if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        List<String> returning = new ArrayList<>();
-                        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                            returning.add(r.getValue().replace(" ", "_"));
-                        }
 
-                        return l(args[args.length - 1], returning);
-                    } else if (args[1].equalsIgnoreCase("bait") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        return l(args[args.length - 1], new ArrayList<>(EvenMoreFish.baits.keySet()));
-                    } else {
-                        return empty;
-                    }
-                case 4:
-                    if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
-                        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                            if (r.getValue().equalsIgnoreCase(args[2])) {
-                                List<String> fish = new ArrayList<>();
-                                for (Fish f : EvenMoreFish.fishCollection.get(r)) {
-                                    fish.add(f.getName().replace(" ", "_"));
-                                }
-                                return l(args[args.length - 1], fish);
+                    return l(args[args.length - 1], returning);
+                } else if (args[1].equalsIgnoreCase("bait") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    return l(args[args.length - 1], new ArrayList<>(EvenMoreFish.baits.keySet()));
+                } else {
+                    return empty;
+                }
+            case 4:
+                if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        if (r.getValue().equalsIgnoreCase(args[2])) {
+                            List<String> fish = new ArrayList<>();
+                            for (Fish f : EvenMoreFish.fishCollection.get(r)) {
+                                fish.add(f.getName().replace(" ", "_"));
                             }
+                            return l(args[args.length - 1], fish);
                         }
-                        return empty;
                     }
                     return empty;
-                case 5:
-                    if (EvenMoreFish.permission.has(sender, "emf.admin") && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
-                        return l(args[args.length - 1], compTypes);
-                    } else {
-                        return empty;
-                    }
-            }
-
-        } else {
-            // it's a console sending the command
+                }
+                return empty;
+            case 5:
+                if (EvenMoreFish.permission.has(sender, "emf.admin") && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
+                    return l(args[args.length - 1], compTypes);
+                } else {
+                    return empty;
+                }
         }
+
         return empty;
     }
 

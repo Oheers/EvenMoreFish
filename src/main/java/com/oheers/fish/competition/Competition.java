@@ -14,6 +14,7 @@ import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -46,6 +47,7 @@ public class Competition {
     int playersNeeded;
     Sound startSound;
     BukkitTask timingSystem;
+    List<UUID> leaderboardMembers = new ArrayList<>();
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
@@ -104,7 +106,7 @@ public class Competition {
         Bukkit.getServer().getPluginManager().callEvent(endEvent);
         for (Player player : Bukkit.getOnlinePlayers()) {
             new Message(ConfigMessage.COMPETITION_END).broadcast(player, true, true);
-            sendLeaderboard(player);
+            sendPlayerLeaderboard(player);
         }
         handleRewards();
         active = false;
@@ -153,7 +155,7 @@ public class Competition {
      * by the competition ticker every 20 ticks.
      *
      * @param timeLeft How many seconds are left for the competition.
-     * @returns true if the competition is ending, false if not.
+     * @return true if the competition is ending, false if not.
      */
     private boolean processCompetitionSecond(long timeLeft) {
         if (alertTimes.contains(timeLeft)) {
@@ -361,12 +363,10 @@ public class Competition {
         }
     }
 
-    public void sendLeaderboard(Player player) {
+    public void sendPlayerLeaderboard(Player player) {
         boolean reachingCount = true;
         if (active) {
             if (leaderboard.getSize() != 0) {
-
-                List<UUID> leaderboardMembers = new ArrayList<>();
 
                 List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
                 StringBuilder builder = new StringBuilder();
@@ -468,6 +468,75 @@ public class Competition {
             }
         } else {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true, true);
+        }
+    }
+
+    public void sendConsoleLeaderboard(ConsoleCommandSender console) {
+        boolean reachingCount = true;
+        if (active) {
+            if (leaderboard.getSize() != 0) {
+
+                List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
+                StringBuilder builder = new StringBuilder();
+                int pos = 0;
+
+                for (CompetitionEntry entry : leaderboard.getEntries()) {
+                    pos++;
+                    leaderboardMembers.add(entry.getPlayer());
+                    Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
+                    message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+                    message.setPosition(Integer.toString(pos));
+                    if (pos > competitionColours.size()) {
+                        Random r = new Random();
+                        int s = r.nextInt(3);
+                        switch (s) {
+                            case 0:
+                                message.setPositionColour("&c\u00bb &r");
+                                break;
+                            case 1:
+                                message.setPositionColour("&c_ &r");
+                                break;
+                            case 2:
+                                message.setPositionColour("&c&ko &r");
+                                break;
+                        }
+
+                    } else message.setPositionColour(competitionColours.get(pos - 1));
+
+                    if (competitionType == CompetitionType.LARGEST_FISH) {
+                        Fish fish = entry.getFish();
+                        message.setRarityColour(fish.getRarity().getColour());
+                        message.setLength(Float.toString(entry.getValue()));
+
+                        if (fish.getRarity().getDisplayName() != null)
+                            message.setRarity(fish.getRarity().getDisplayName());
+                        else message.setRarity(fish.getRarity().getValue());
+
+                        if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
+                        else message.setFishCaught(fish.getName());
+                    } else {
+                        if (competitionType == CompetitionType.LARGEST_TOTAL) {
+                            message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                            // Clearing floating point .00000003 error not-cool stuff.
+                            message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+                        } else {
+                            message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                            message.setAmount(Integer.toString((int) entry.getValue()));
+                        }
+
+                    }
+                    builder.append(message.getRawMessage(true, true));
+
+                }
+                console.sendMessage(builder.toString());
+                Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+                message.setAmount(Integer.toString(leaderboard.getSize()));
+                message.broadcast(console, true, true);
+            } else {
+                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console, true, false);
+            }
+        } else {
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console, true, true);
         }
     }
 
@@ -637,9 +706,7 @@ public class Competition {
                             }
                         });
                     } else if (EvenMoreFish.mainConfig.databaseEnabled()) {
-                        iterator.forEachRemaining(competitionEntry -> {
-                            EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1);
-                        });
+                        iterator.forEachRemaining(competitionEntry -> EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1));
                     }
                 }
             }
