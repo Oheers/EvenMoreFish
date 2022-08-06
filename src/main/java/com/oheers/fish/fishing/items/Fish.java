@@ -54,6 +54,7 @@ public class Fish implements Cloneable {
         this.rarity = rarity;
         this.name = name;
         this.weight = 0;
+        this.length = -1F;
         this.disableFisherman = EvenMoreFish.fishFile.getConfig().getBoolean(
                 "fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman",
                 EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false)
