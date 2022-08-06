@@ -22,7 +22,7 @@ public class WorthNBT {
         NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
         if (fish.getLength() > 0)
             emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, fish.getLength());
-        if (!fish.hasFishermanDisabled())
+        if (!fish.hasFishermanDisabled() && fish.getFisherman() != null)
             emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, fish.getFisherman().toString());
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, fish.getName());
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, fish.getRarity().getValue());
