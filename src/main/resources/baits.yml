@@ -11,9 +11,12 @@ baits:
     fish:
       Common:
         - "Carp"
-        - "Sea Bass"
-      Uncommon:
-        - "Silver Carp"
+        - "Blue Fish"
+        - "Haddock"
+      Rare:
+        - "Sunfish"
+        - "Goldfish"
+        - "Nemo"
     # How likely should it be to find this bait when they're caught.
     catch-weight: 100
     # When more than 1 types of baits are applied, how likely is it that this one should be used?
@@ -41,6 +44,8 @@ baits:
       material: HONEY_BOTTLE
     glowing: true
     application-weight: 7
+    rarities:
+      - "Epic"
     max-baits: 64
 
   Stringy Worms:
