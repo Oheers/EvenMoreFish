@@ -126,8 +126,8 @@ public class Fish implements Cloneable {
             this.length = -1f;
         } else {
             // Random logic that returns a float to 1dp
-            int len = (int) (Math.random() * (maxSize*10 - minSize*10 + 1) + minSize*10);
-            this.length = (float) len/10;
+            int len = (int) (Math.random() * (maxSize * 10 - minSize * 10 + 1) + minSize * 10);
+            this.length = (float) len / 10;
         }
     }
 
@@ -195,7 +195,7 @@ public class Fish implements Cloneable {
     /**
      * From the new method of fetching the lore, where the admin specifies exactly how they want the lore to be set up,
      * letting them modify the order, add a twist to how they want extra details and so on.
-     *
+     * <p>
      * It goes through each line of the Messages' getFishLoreFormat, if the line is just {fish_lore} then it gets replaced
      * with a fish's lore value, if not then nothing is done.
      *
@@ -269,6 +269,10 @@ public class Fish implements Cloneable {
         return fisherman;
     }
 
+    public void setFisherman(UUID fisherman) {
+        this.fisherman = fisherman;
+    }
+
     public boolean isCompExemptFish() {
         return isCompExemptFish;
     }
@@ -285,16 +289,12 @@ public class Fish implements Cloneable {
         return rarity;
     }
 
-    public void setFisherman(UUID fisherman) {
-        this.fisherman = fisherman;
+    public Float getLength() {
+        return length;
     }
 
     public void setLength(Float length) {
         this.length = length;
-    }
-
-    public Float getLength() {
-        return length;
     }
 
     public List<Reward> getActionRewards() {
@@ -305,12 +305,12 @@ public class Fish implements Cloneable {
         return fishRewards;
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
     public double getWeight() {
         return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
     public String getDisplayName() {
@@ -321,12 +321,12 @@ public class Fish implements Cloneable {
         return factory;
     }
 
-    public void setRequirements(List<Requirement> requirements) {
-        this.requirements = requirements;
-    }
-
     public List<Requirement> getRequirements() {
         return this.requirements;
+    }
+
+    public void setRequirements(List<Requirement> requirements) {
+        this.requirements = requirements;
     }
 
     public boolean isWasBaited() {

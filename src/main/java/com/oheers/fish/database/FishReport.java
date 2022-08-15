@@ -6,56 +6,56 @@ import java.time.Instant;
 
 public class FishReport {
 
-	String r, n;
-	int c;
-	long t;
-	float l;
+    String r, n;
+    int c;
+    long t;
+    float l;
 
-	public FishReport(String rarity, String name, float size, int numCaught) {
-		this.r = rarity;
-		this.n = name;
-		this.c = numCaught;
-		this.l = size;
-		this.t = Instant.now().getEpochSecond();
-	}
+    public FishReport(String rarity, String name, float size, int numCaught) {
+        this.r = rarity;
+        this.n = name;
+        this.c = numCaught;
+        this.l = size;
+        this.t = Instant.now().getEpochSecond();
+    }
 
-	public int getNumCaught() {
-		return c;
-	}
+    public int getNumCaught() {
+        return c;
+    }
 
-	public void setNumCaught(int numCaught) {
-		this.c = numCaught;
-	}
+    public void setNumCaught(int numCaught) {
+        this.c = numCaught;
+    }
 
-	public String getRarity() {
-		return r;
-	}
+    public String getRarity() {
+        return r;
+    }
 
-	public String getName() {
-		return n;
-	}
+    public String getName() {
+        return n;
+    }
 
-	public float getLargestLength() {
-		return l;
-	}
+    public float getLargestLength() {
+        return l;
+    }
 
-	public void setLargestLength(float largestLength) {
-		this.l = largestLength;
-	}
+    public void setLargestLength(float largestLength) {
+        this.l = largestLength;
+    }
 
-	public long getTimeEpoch() {
-		return t;
-	}
+    public long getTimeEpoch() {
+        return t;
+    }
 
-	public void addFish(Fish f) {
-		if (f.getLength() > this.l) {
-			this.l = f.getLength();
-		}
-		c++;
-	}
+    public void addFish(Fish f) {
+        if (f.getLength() > this.l) {
+            this.l = f.getLength();
+        }
+        c++;
+    }
 
-	@Override
-	public String toString() {
-		return "FishReport=[name:" + n + ", rarity:" + r + ", largestLength:" + l + ", numCaught:" + c;
-	}
+    @Override
+    public String toString() {
+        return "FishReport=[name:" + n + ", rarity:" + r + ", largestLength:" + l + ", numCaught:" + c;
+    }
 }

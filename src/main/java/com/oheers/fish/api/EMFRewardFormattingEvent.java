@@ -6,22 +6,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class EMFRewardFormattingEvent extends Event {
 
+    private static final HandlerList handlers = new HandlerList();
     private String guiText;
     private boolean changing;
-    private static final HandlerList handlers = new HandlerList();
 
     public EMFRewardFormattingEvent(String reward) {
         this.guiText = reward;
         this.changing = false;
     }
 
-    @Override
-    public @NotNull HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-
-    public static HandlerList getHandlerList() {
+    @Override
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 

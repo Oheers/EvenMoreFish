@@ -4,16 +4,14 @@ import com.oheers.fish.FishUtils;
 
 public class Rarity {
 
+    public String overridenLore;
+    public String permission;
     String value, colour;
     double weight;
     boolean announce;
     boolean fishWeighted;
     boolean hasCompExemptFish;
-    public String overridenLore;
-
     String displayName;
-
-    public String permission;
 
     public Rarity(String value, String colour, double weight, boolean announce, String overridenLore) {
         this.value = value;

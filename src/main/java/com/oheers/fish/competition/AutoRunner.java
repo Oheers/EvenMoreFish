@@ -13,8 +13,8 @@ public class AutoRunner {
     static int lastMinute;
 
     public static void init() {
-        new BukkitRunnable(){
-            public void run(){
+        new BukkitRunnable() {
+            public void run() {
                 // If the minute hasn't been checked against the competition queue.
                 if (!wasMinuteChecked()) {
                     int weekMinute = getCurrentTimeCode();
@@ -30,7 +30,7 @@ public class AutoRunner {
             }
 
             // delay is set to start at bang on :00 of every minute (assuming the tps to be 20), period is set to run once a minute
-        }.runTaskTimer(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class), (60-LocalTime.now().getSecond())*20, 20);
+        }.runTaskTimer(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class), (60 - LocalTime.now().getSecond()) * 20, 20);
     }
 
     /**

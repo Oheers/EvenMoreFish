@@ -9,23 +9,23 @@ import com.oheers.fish.fishing.items.Fish;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.UUID;
 
 public class PlaceholderReceiver extends PlaceholderExpansion {
 
-    private EvenMoreFish plugin;
+    private final EvenMoreFish plugin;
 
     /**
      * Since we register the expansion inside our own plugin, we
      * can simply use this method here to get an instance of our
      * plugin.
      *
-     * @param plugin
-     *        The instance of our plugin.
+     * @param plugin The instance of our plugin.
      */
-    public PlaceholderReceiver(EvenMoreFish plugin){
+    public PlaceholderReceiver(EvenMoreFish plugin) {
         this.plugin = plugin;
     }
 
@@ -37,7 +37,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
      * @return true to persist through reloads
      */
     @Override
-    public boolean persist(){
+    public boolean persist() {
         return true;
     }
 
@@ -48,7 +48,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
      * @return Always true since it's an internal class.
      */
     @Override
-    public boolean canRegister(){
+    public boolean canRegister() {
         return true;
     }
 
@@ -59,7 +59,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
      * @return The name of the author as a String.
      */
     @Override
-    public String getAuthor(){
+    public @NotNull String getAuthor() {
         return plugin.getDescription().getAuthors().toString();
     }
 
@@ -73,20 +73,20 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
      * @return The identifier in {@code %<identifier>_<value>%} as String.
      */
     @Override
-    public String getIdentifier(){
+    public @NotNull String getIdentifier() {
         return "emf";
     }
 
     /**
      * This is the version of the expansion.
      * <br>You don't have to use numbers, since it is set as a String.
-     *
+     * <p>
      * For convienience do we return the version from the plugin.yml
      *
      * @return The version as a String.
      */
     @Override
-    public String getVersion(){
+    public @NotNull String getVersion() {
         return plugin.getDescription().getVersion();
     }
 
@@ -96,15 +96,12 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
      * <br>We specify the value identifier in this method.
      * <br>Since version 2.9.1 can you use OfflinePlayers in your requests.
      *
-     * @param  player
-     *         A {@link org.bukkit.entity.Player Player}.
-     * @param  identifier
-     *         A String containing the identifier/value.
-     *
+     * @param player     A {@link org.bukkit.entity.Player Player}.
+     * @param identifier A String containing the identifier/value.
      * @return possibly-null String of the requested identifier.
      */
     @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
+    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
         if (player == null) {
             return "";
         }
@@ -157,7 +154,8 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                         Fish fish = EvenMoreFish.active.getLeaderboard().getPlaceFish(place);
                         if (fish != null) {
                             Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
-                            if (fish.getLength() == -1) message.setMessage(ConfigMessage.PLACEHOLDER_FISH_LENGTHLESS_FORMAT);
+                            if (fish.getLength() == -1)
+                                message.setMessage(ConfigMessage.PLACEHOLDER_FISH_LENGTHLESS_FORMAT);
                             else message.setLength(Float.toString(fish.getLength()));
 
                             message.setRarityColour(fish.getRarity().getColour());
@@ -165,7 +163,8 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                             if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
                             else message.setFishCaught(fish.getName());
 
-                            if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                            if (fish.getRarity().getDisplayName() != null)
+                                message.setRarity(fish.getRarity().getDisplayName());
                             else message.setRarity(fish.getRarity().getValue());
 
                             return message.getRawMessage(true, true);
@@ -176,7 +175,8 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 } else {
                     // checking the leaderboard actually contains the value of place
                     float value = Competition.leaderboard.getPlaceValue(Integer.parseInt(identifier.substring(23)));
-                    if (value == -1) return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
+                    if (value == -1)
+                        return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
 
                     Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_MOST_FORMAT);
                     message.setAmount(Integer.toString((int) value));

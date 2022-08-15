@@ -44,74 +44,59 @@ import java.util.logging.Logger;
 
 public class EvenMoreFish extends JavaPlugin {
 
+    public final static Semaphore v3Semaphore = new Semaphore(1);
+    public static final int METRIC_ID = 11054;
+    public static final int MSG_CONFIG_VERSION = 12;
+    public static final int MAIN_CONFIG_VERSION = 11;
+    public static final int COMP_CONFIG_VERSION = 1;
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
     public static BaitFile baitFile;
-
     public static Messages msgs;
     public static MainConfig mainConfig;
     public static CompetitionConfig competitionConfig;
-
     public static List<String> competitionWorlds = new ArrayList<>();
-
     public static Permission permission = null;
     public static Economy econ = null;
-
     public static Map<Integer, Set<String>> fish = new HashMap<>();
     public static Map<String, Bait> baits = new HashMap<>();
-
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
-
     public static Map<UUID, List<FishReport>> fishReports = new HashMap<>();
     public static Map<UUID, UserReport> userReports = new HashMap<>();
-
     public static List<UUID> disabledPlayers = new ArrayList<>();
-
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
-
     // Do some fish in some rarities have the comp-check-exempt: true.
     public static boolean raritiesCompCheckExempt = false;
-
     public static Competition active;
     public static CompetitionQueue competitionQueue;
-
     public static Logger logger;
     public static PluginManager pluginManager;
-
     public static ArrayList<SellGUI> guis;
-
     public static int metric_fishCaught = 0;
     public static int metric_baitsUsed = 0;
     public static int metric_baitsApplied = 0;
-
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
     public static Map<UUID, Rarity> decidedRarities;
     public static boolean isUpdateAvailable;
     public static boolean usingPAPI;
     public static boolean usingMcMMO;
-
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
-
     public static DatabaseV3 databaseV3;
-    public final static Semaphore v3Semaphore = new Semaphore(1);
-
-    public static final int METRIC_ID = 11054;
-
-    public static final int MSG_CONFIG_VERSION = 12;
-    public static final int MAIN_CONFIG_VERSION = 11;
-    public static final int COMP_CONFIG_VERSION = 1;
-
     private static EvenMoreFish instance;
     private EMFAPI api;
+
+    public static EvenMoreFish getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
         instance = this;
-        this.api = new EMFAPI(this);
+        this.api = new EMFAPI();
 
         guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
@@ -401,7 +386,7 @@ public class EvenMoreFish extends JavaPlugin {
         String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
         String[] serverVersion = getDescription().getVersion().split("\\.");
 
-        for (int i=0; i<serverVersion.length; i++) {
+        for (int i = 0; i < serverVersion.length; i++) {
             if (i < spigotVersion.length) {
                 if (Integer.parseInt(spigotVersion[i]) > Integer.parseInt(serverVersion[i])) {
                     return true;
@@ -456,18 +441,14 @@ public class EvenMoreFish extends JavaPlugin {
 
     }
 
-    private boolean checkRP(){
+    private boolean checkRP() {
         Plugin pRP = Bukkit.getPluginManager().getPlugin("RedProtect");
         return (pRP != null);
     }
 
-    private boolean checkWG(){
+    private boolean checkWG() {
         Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
         return (pWG != null);
-    }
-
-    public static EvenMoreFish getInstance() {
-        return instance;
     }
 
     public EMFAPI getAPI() {

@@ -25,10 +25,12 @@ public class FishEatEvent implements Listener {
         if (FishUtils.isFish(event.getItem())) {
             // Creates a replica of the fish we can use
             Fish fish = FishUtils.getFish(event.getItem());
-            if (fish.hasEatRewards()) {
-                // Runs through each eat-event
-                for (Reward r : fish.getActionRewards()) {
-                    r.run(event.getPlayer(), null);
+            if (fish != null) {
+                if (fish.hasEatRewards()) {
+                    // Runs through each eat-event
+                    for (Reward r : fish.getActionRewards()) {
+                        r.run(event.getPlayer(), null);
+                    }
                 }
             }
         }

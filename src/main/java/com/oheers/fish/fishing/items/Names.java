@@ -15,11 +15,9 @@ import java.util.logging.Level;
 
 public class Names {
 
+    public boolean regionCheck;
     // Gets all the fish names.
     Set<String> rarities, fishSet, fishList;
-
-    public boolean regionCheck;
-
     FileConfiguration fishConfiguration, rarityConfiguration;
 
     /*
@@ -99,7 +97,8 @@ public class Names {
                             break;
                         }
                     }
-                    if (!foundRarity) EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is nots a loaded rarity value. It was not added to the " + s + " bait.");
+                    if (!foundRarity)
+                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is nots a loaded rarity value. It was not added to the " + s + " bait.");
                 }
             }
 
@@ -125,7 +124,8 @@ public class Names {
                                     break;
                                 }
                             }
-                            if (!foundFish) EvenMoreFish.logger.log(Level.SEVERE, fishString + " could not be found in the " + rarity.getValue() + " config. It was not added to the " + s + " bait.");
+                            if (!foundFish)
+                                EvenMoreFish.logger.log(Level.SEVERE, fishString + " could not be found in the " + rarity.getValue() + " config. It was not added to the " + s + " bait.");
                         }
                     }
                 }
@@ -168,13 +168,28 @@ public class Names {
         List<Requirement> currentRequirements = new ArrayList<>();
         for (String s : requirementSection.getKeys(false)) {
             switch (s.toLowerCase()) {
-                case "biome": currentRequirements.add(new com.oheers.fish.requirements.Biome("fish." + rarity + "." + name + ".requirements.biome")); break;
-                case "irl-time": currentRequirements.add(new IRLTime("fish." + rarity + "." + name + ".requirements.irl-time")); break;
-                case "ingame-time": currentRequirements.add(new InGameTime("fish." + rarity + "." + name + ".requirements.ingame-time")); break;
-                case "permission": currentRequirements.add(new Permission("fish." + rarity + "." + name + ".requirements.permission")); break;
-                case "region": currentRequirements.add(new Region("fish." + rarity + "." + name + ".requirements.region")); regionCheck = true; break;
-                case "weather": currentRequirements.add(new Weather("fish." + rarity + "." + name + ".requirements.weather")); break;
-                case "world": currentRequirements.add(new World("fish." + rarity + "." + name + ".requirements.world")); break;
+                case "biome":
+                    currentRequirements.add(new com.oheers.fish.requirements.Biome("fish." + rarity + "." + name + ".requirements.biome"));
+                    break;
+                case "irl-time":
+                    currentRequirements.add(new IRLTime("fish." + rarity + "." + name + ".requirements.irl-time"));
+                    break;
+                case "ingame-time":
+                    currentRequirements.add(new InGameTime("fish." + rarity + "." + name + ".requirements.ingame-time"));
+                    break;
+                case "permission":
+                    currentRequirements.add(new Permission("fish." + rarity + "." + name + ".requirements.permission"));
+                    break;
+                case "region":
+                    currentRequirements.add(new Region("fish." + rarity + "." + name + ".requirements.region"));
+                    regionCheck = true;
+                    break;
+                case "weather":
+                    currentRequirements.add(new Weather("fish." + rarity + "." + name + ".requirements.weather"));
+                    break;
+                case "world":
+                    currentRequirements.add(new World("fish." + rarity + "." + name + ".requirements.world"));
+                    break;
             }
         }
 

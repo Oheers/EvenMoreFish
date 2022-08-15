@@ -16,11 +16,11 @@ import java.util.logging.Level;
 
 public class Database {
 
+    private final static String username = EvenMoreFish.mainConfig.getUsername();
+    private final static String password = EvenMoreFish.mainConfig.getPassword();
     static String url; // = "jdbc:sqlite:plugins/EvenMoreFish/database.db";
     static boolean isMysql = EvenMoreFish.mainConfig.isMysql();
     private static Connection connection;
-    private final static String username = EvenMoreFish.mainConfig.getUsername();
-    private final static String password = EvenMoreFish.mainConfig.getPassword();
     private static FileReader reader;
 
     public static void getUrl() {
@@ -214,11 +214,11 @@ public class Database {
             PreparedStatement prep = connection.prepareStatement(sql);
             prep.setString(1, uuid);
             ResultSet rs = prep.executeQuery();
-			if (rs.next()) {
-				rs.close();
+            if (rs.next()) {
+                rs.close();
                 closeConnections();
-				return true;
-			} else {
+                return true;
+            } else {
                 closeConnections();
                 return false;
             }
@@ -229,43 +229,45 @@ public class Database {
         return false;
     }
 
-	public static void addUser(String uuid) {
+    public static void addUser(String uuid) {
 
-		try { getConnection(); }
-		catch (SQLException exception) {
-			EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
-			exception.printStackTrace();
-			return;
-		}
+        try {
+            getConnection();
+        } catch (SQLException exception) {
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
+            exception.printStackTrace();
+            return;
+        }
 
-		String sql = "INSERT INTO Users (uuid, competitions_won, fish_sold) VALUES (?,?,?);";
+        String sql = "INSERT INTO Users (uuid, competitions_won, fish_sold) VALUES (?,?,?);";
 
-		// starts a field for the new fish that's been fished for the first time
-		try (PreparedStatement prep = connection.prepareStatement(sql)) {
+        // starts a field for the new fish that's been fished for the first time
+        try (PreparedStatement prep = connection.prepareStatement(sql)) {
 
-			prep.setString(1, uuid);
-			prep.setInt(2, 0);
-			prep.setInt(3, 0);
-			prep.execute();
+            prep.setString(1, uuid);
+            prep.setInt(2, 0);
+            prep.setInt(3, 0);
+            prep.execute();
 
-		} catch (SQLException exception) {
-			EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
-			exception.printStackTrace();
-		}
-	}
+        } catch (SQLException exception) {
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
+            exception.printStackTrace();
+        }
+    }
 
     /**
      * Adds the user data found in flat-file format from /data/ directory and returns it. Checks must first be done to
      * ensure the file exists.
      *
      * @param uuid The UUID of the user being checked.
-     * @throws FileNotFoundException If the user file does not exist.
      * @return The list of fish reports fetched from the user.
+     * @throws FileNotFoundException If the user file does not exist.
      */
-    public static List<FishReport> readUserData(String uuid) throws FileNotFoundException{
+    public static List<FishReport> readUserData(String uuid) throws FileNotFoundException {
 
         FileReader reader = new FileReader(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder() + "/data/" + uuid + ".json");
-        Type fishReportList = new TypeToken<List<FishReport>>(){}.getType();
+        Type fishReportList = new TypeToken<List<FishReport>>() {
+        }.getType();
 
         Gson gson = new Gson();
 

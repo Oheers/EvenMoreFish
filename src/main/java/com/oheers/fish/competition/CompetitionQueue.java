@@ -16,7 +16,7 @@ public class CompetitionQueue {
             for (String comp : EvenMoreFish.competitionConfig.getCompetitions()) {
 
                 CompetitionType type = EvenMoreFish.competitionConfig.getCompetitionType(comp);
-                Competition competition = new Competition(EvenMoreFish.competitionConfig.getCompetitionDuration(comp)*60, type);
+                Competition competition = new Competition(EvenMoreFish.competitionConfig.getCompetitionDuration(comp) * 60, type);
 
                 competition.setCompetitionName(comp);
                 competition.setAdminStarted(false);
@@ -45,7 +45,7 @@ public class CompetitionQueue {
                     } else {
                         for (String time : EvenMoreFish.competitionConfig.getRepeatedTiming(comp)) {
                             for (String day : days) {
-                                    competitions.put(generateTimeCode(day, time), competition);
+                                competitions.put(generateTimeCode(day, time), competition);
                             }
                         }
                     }

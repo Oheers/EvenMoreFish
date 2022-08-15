@@ -2,6 +2,8 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.EMFCompetitionEndEvent;
+import com.oheers.fish.api.EMFCompetitionStartEvent;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -12,6 +14,7 @@ import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,45 +27,41 @@ import java.util.logging.Level;
 
 public class Competition {
 
-    long maxDuration, timeLeft;
+    public static Leaderboard leaderboard;
+    static boolean active;
+    static boolean originallyRandom;
     public CompetitionType competitionType;
-    Bar statusBar;
-
-    long epochStartTime;
-
     public Fish selectedFish;
     public Rarity selectedRarity;
     public int numberNeeded;
-
-    List<Long> alertTimes;
-
-    Map<Integer, List<Reward>> rewards;
-    List<Reward> participationRewards;
-
-    int playersNeeded;
-
-    Sound startSound;
-
-    BukkitTask timingSystem;
-
-    static boolean active;
-
-    static boolean originallyRandom;
-
     public String competitionName;
     public boolean adminStarted;
-
-    public static Leaderboard leaderboard;
-
     public String competitionID;
-
     public Message startMessage;
+    long maxDuration, timeLeft;
+    Bar statusBar;
+    long epochStartTime;
+    List<Long> alertTimes;
+    Map<Integer, List<Reward>> rewards;
+    List<Reward> participationRewards;
+    int playersNeeded;
+    Sound startSound;
+    BukkitTask timingSystem;
+    List<UUID> leaderboardMembers = new ArrayList<>();
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
         this.alertTimes = new ArrayList<>();
         this.rewards = new HashMap<>();
         this.competitionType = type;
+    }
+
+    public static boolean isActive() {
+        return active;
+    }
+
+    public static void setOriginallyRandom(boolean originallyRandom) {
+        Competition.originallyRandom = originallyRandom;
     }
 
     public void begin(boolean adminStart) {
@@ -88,7 +87,8 @@ public class Competition {
             statusBar.show();
             initTimer();
             announceBegin();
-
+            EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(new Competition(Long.valueOf(this.maxDuration).intValue(), this.competitionType));
+            Bukkit.getServer().getPluginManager().callEvent(startEvent);
             epochStartTime = Instant.now().getEpochSecond();
 
             // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
@@ -102,9 +102,11 @@ public class Competition {
         // print leaderboard
         this.timingSystem.cancel();
         statusBar.hide();
+        EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(new Competition(Long.valueOf(this.maxDuration).intValue(), this.competitionType));
+        Bukkit.getServer().getPluginManager().callEvent(endEvent);
         for (Player player : Bukkit.getOnlinePlayers()) {
             new Message(ConfigMessage.COMPETITION_END).broadcast(player, true, true);
-            sendLeaderboard(player);
+            sendPlayerLeaderboard(player);
         }
         handleRewards();
         active = false;
@@ -153,7 +155,7 @@ public class Competition {
      * by the competition ticker every 20 ticks.
      *
      * @param timeLeft How many seconds are left for the competition.
-     * @returns true if the competition is ending, false if not.
+     * @return true if the competition is ending, false if not.
      */
     private boolean processCompetitionSecond(long timeLeft) {
         if (alertTimes.contains(timeLeft)) {
@@ -185,7 +187,8 @@ public class Competition {
             message.setAmount(Integer.toString(numberNeeded));
             message.setRarityColour(selectedFish.getRarity().getColour());
 
-            if (selectedFish.getRarity().getDisplayName() != null) message.setRarity(selectedFish.getRarity().getDisplayName());
+            if (selectedFish.getRarity().getDisplayName() != null)
+                message.setRarity(selectedFish.getRarity().getDisplayName());
             else message.setRarity(selectedFish.getRarity().getValue());
 
             if (selectedFish.getDisplayName() != null) message.setFishCaught(selectedFish.getDisplayName());
@@ -223,6 +226,7 @@ public class Competition {
 
     /**
      * Calculates whether to send the "new first place" notification as an actionbar message or directly into chat.
+     *
      * @return A boolean, true = do it in actionbar.
      */
     public boolean isDoingFirstPlaceActionBar() {
@@ -235,9 +239,9 @@ public class Competition {
 
         if (
                 competitionType == CompetitionType.SPECIFIC_FISH ||
-                competitionType == CompetitionType.SPECIFIC_RARITY ||
-                competitionType == CompetitionType.MOST_FISH ||
-                competitionType == CompetitionType.LARGEST_TOTAL
+                        competitionType == CompetitionType.SPECIFIC_RARITY ||
+                        competitionType == CompetitionType.MOST_FISH ||
+                        competitionType == CompetitionType.LARGEST_TOTAL
         ) {
             // is the fish the specific fish or rarity?
             if (competitionType == CompetitionType.SPECIFIC_FISH) {
@@ -261,7 +265,7 @@ public class Competition {
                 else increaseAmount = 1.0f;
 
                 if (entry != null) {
-                    if (entry.getValue()+increaseAmount >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
+                    if (entry.getValue() + increaseAmount >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
                         Message message = new Message(ConfigMessage.NEW_FIRST_PLACE_NOTIFICATION);
                         message.setLength(Float.toString(fish.getLength()));
                         message.setRarityColour(fish.getRarity().getColour());
@@ -287,7 +291,8 @@ public class Competition {
 
                 } else {
                     CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
-                    if (this.competitionType == CompetitionType.LARGEST_TOTAL) newEntry.incrementValue(fish.getLength()-1);
+                    if (this.competitionType == CompetitionType.LARGEST_TOTAL)
+                        newEntry.incrementValue(fish.getLength() - 1);
                     leaderboard.addEntry(newEntry);
                 }
             }
@@ -358,12 +363,10 @@ public class Competition {
         }
     }
 
-    public void sendLeaderboard(Player player) {
+    public void sendPlayerLeaderboard(Player player) {
         boolean reachingCount = true;
         if (active) {
             if (leaderboard.getSize() != 0) {
-
-                List<UUID> leaderboardMembers = new ArrayList<>();
 
                 List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
                 StringBuilder builder = new StringBuilder();
@@ -398,7 +401,8 @@ public class Competition {
                             message.setRarityColour(fish.getRarity().getColour());
                             message.setLength(Float.toString(entry.getValue()));
 
-                            if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                            if (fish.getRarity().getDisplayName() != null)
+                                message.setRarity(fish.getRarity().getDisplayName());
                             else message.setRarity(fish.getRarity().getValue());
 
                             if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
@@ -407,9 +411,8 @@ public class Competition {
                             if (competitionType == CompetitionType.LARGEST_TOTAL) {
                                 message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
                                 // Clearing floating point .00000003 error not-cool stuff.
-                                message.setAmount(Double.toString(Math.floor(entry.getValue()*10)/10));
-                            }
-                            else {
+                                message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+                            } else {
                                 message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
                                 message.setAmount(Integer.toString((int) entry.getValue()));
                             }
@@ -439,14 +442,16 @@ public class Competition {
                                 message.setRarityColour(fish.getRarity().getColour());
                                 message.setLength(Float.toString(entry.getValue()));
 
-                                if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
+                                if (fish.getRarity().getDisplayName() != null)
+                                    message.setRarity(fish.getRarity().getDisplayName());
                                 else message.setRarity(fish.getRarity().getValue());
 
                                 if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
                                 else message.setFishCaught(fish.getName());
                             } else {
                                 message.setAmount(Integer.toString((int) entry.getValue()));
-                                if (competitionType == CompetitionType.LARGEST_TOTAL) message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                                if (competitionType == CompetitionType.LARGEST_TOTAL)
+                                    message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
                                 else message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
                             }
 
@@ -463,6 +468,75 @@ public class Competition {
             }
         } else {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true, true);
+        }
+    }
+
+    public void sendConsoleLeaderboard(ConsoleCommandSender console) {
+        boolean reachingCount = true;
+        if (active) {
+            if (leaderboard.getSize() != 0) {
+
+                List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
+                StringBuilder builder = new StringBuilder();
+                int pos = 0;
+
+                for (CompetitionEntry entry : leaderboard.getEntries()) {
+                    pos++;
+                    leaderboardMembers.add(entry.getPlayer());
+                    Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
+                    message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+                    message.setPosition(Integer.toString(pos));
+                    if (pos > competitionColours.size()) {
+                        Random r = new Random();
+                        int s = r.nextInt(3);
+                        switch (s) {
+                            case 0:
+                                message.setPositionColour("&c\u00bb &r");
+                                break;
+                            case 1:
+                                message.setPositionColour("&c_ &r");
+                                break;
+                            case 2:
+                                message.setPositionColour("&c&ko &r");
+                                break;
+                        }
+
+                    } else message.setPositionColour(competitionColours.get(pos - 1));
+
+                    if (competitionType == CompetitionType.LARGEST_FISH) {
+                        Fish fish = entry.getFish();
+                        message.setRarityColour(fish.getRarity().getColour());
+                        message.setLength(Float.toString(entry.getValue()));
+
+                        if (fish.getRarity().getDisplayName() != null)
+                            message.setRarity(fish.getRarity().getDisplayName());
+                        else message.setRarity(fish.getRarity().getValue());
+
+                        if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
+                        else message.setFishCaught(fish.getName());
+                    } else {
+                        if (competitionType == CompetitionType.LARGEST_TOTAL) {
+                            message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                            // Clearing floating point .00000003 error not-cool stuff.
+                            message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+                        } else {
+                            message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                            message.setAmount(Integer.toString((int) entry.getValue()));
+                        }
+
+                    }
+                    builder.append(message.getRawMessage(true, true));
+
+                }
+                console.sendMessage(builder.toString());
+                Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+                message.setAmount(Integer.toString(leaderboard.getSize()));
+                message.broadcast(console, true, true);
+            } else {
+                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console, true, false);
+            }
+        } else {
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console, true, true);
         }
     }
 
@@ -541,7 +615,7 @@ public class Competition {
             String[] split = s.split(":");
             if (split.length == 2) {
                 try {
-                    alertTimes.add((long) Integer.parseInt(split[0])*60 + Integer.parseInt(split[1]));
+                    alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
                 } catch (NumberFormatException nfe) {
                     EvenMoreFish.logger.log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
                 }
@@ -632,9 +706,7 @@ public class Competition {
                             }
                         });
                     } else if (EvenMoreFish.mainConfig.databaseEnabled()) {
-                        iterator.forEachRemaining(competitionEntry -> {
-                            EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1);
-                        });
+                        iterator.forEachRemaining(competitionEntry -> EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1));
                     }
                 }
             }
@@ -687,16 +759,12 @@ public class Competition {
 
     private CompetitionType getRandomType() {
         // -1 from the length so that the RANDOM isn't chosen as the random value.
-        int type = new Random().nextInt(CompetitionType.values().length-1);
+        int type = new Random().nextInt(CompetitionType.values().length - 1);
         return CompetitionType.values()[type];
     }
 
     public Bar getStatusBar() {
         return this.statusBar;
-    }
-
-    public static boolean isActive() {
-        return active;
     }
 
     public CompetitionType getCompetitionType() {
@@ -715,10 +783,6 @@ public class Competition {
         return leaderboard;
     }
 
-    public void setCompetitionName(String competitionName) {
-        this.competitionName = competitionName;
-    }
-
     public void setAdminStarted(boolean adminStarted) {
         this.adminStarted = adminStarted;
     }
@@ -727,11 +791,11 @@ public class Competition {
         return startMessage;
     }
 
-    public static void setOriginallyRandom(boolean originallyRandom) {
-        Competition.originallyRandom = originallyRandom;
-    }
-
     public String getCompetitionName() {
         return competitionName;
+    }
+
+    public void setCompetitionName(String competitionName) {
+        this.competitionName = competitionName;
     }
 }

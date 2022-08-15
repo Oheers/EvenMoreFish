@@ -39,7 +39,8 @@ public class WorthNBT {
         PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
 
         itemMeta.set(nbtlength, PersistentDataType.FLOAT, fish.getLength());
-        if (fish.getFisherman() != null) itemMeta.set(nbtplayer, PersistentDataType.STRING, fish.getFisherman().toString());
+        if (fish.getFisherman() != null)
+            itemMeta.set(nbtplayer, PersistentDataType.STRING, fish.getFisherman().toString());
         itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getChosenRandomIndex());
         itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getValue());
         itemMeta.set(nbtname, PersistentDataType.STRING, fish.getName());
@@ -83,11 +84,12 @@ public class WorthNBT {
     }
 
     private static double getMultipliedValue(Float length, String rarity, String name) {
-        double worthMultiplier = getWorthMultiplier(rarity,name);
-        double value = multipleWorthByLength(worthMultiplier,length);
+        double worthMultiplier = getWorthMultiplier(rarity, name);
+        double value = multipleWorthByLength(worthMultiplier, length);
         return sortFunkyDecimals(value);
     }
-    private static double getWorthMultiplier(final String rarity,final String name) {
+
+    private static double getWorthMultiplier(final String rarity, final String name) {
         double value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
         // Is there a value set for the specific fish?
         if (value == 0.0) {
