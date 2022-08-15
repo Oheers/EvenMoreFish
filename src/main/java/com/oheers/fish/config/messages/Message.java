@@ -411,9 +411,7 @@ public class Message {
             case SPECIFIC_RARITY:
                 setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false, false));
                 break;
-            default:
-            case LARGEST_FISH:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false, false));
+            default: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false, false));
         }
     }
 
