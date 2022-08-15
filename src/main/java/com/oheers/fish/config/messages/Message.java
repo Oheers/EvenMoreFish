@@ -408,6 +408,9 @@ public class Message {
             case SPECIFIC_RARITY:
                 setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false, false));
                 break;
+            case LARGEST_TOTAL:
+                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage(false, false));
+                break;
             default: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false, false));
         }
     }
