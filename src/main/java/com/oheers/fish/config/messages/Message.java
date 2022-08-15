@@ -242,7 +242,7 @@ public class Message {
      * @param code  The {variable} form of the variable.
      * @param value What the variable should be replaced with.
      */
-    private void setVariable(@NotNull final String code, @NotNull final String value) {
+    public void setVariable(@NotNull final String code, @NotNull final String value) {
         liveVariables.put(code, value);
     }
 

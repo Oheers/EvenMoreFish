@@ -224,20 +224,18 @@ public class Fish implements Cloneable {
             EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore")
         );
 
-        newLoreLine.addLore(
-            "{fisherman_lore}",
-                !disableFisherman && getFishermanPlayer() != null ?
-                EvenMoreFish.msgs.config.getStringList("fisherman-lore")
-                : null
+        newLoreLine.setVariable("{fisherman_lore}",
+            !disableFisherman && getFishermanPlayer() != null ?
+                (new Message(ConfigMessage.FISHERMAN_LORE)).message
+                : ""
         );
 
         if (!disableFisherman && getFishermanPlayer() != null) newLoreLine.setPlayer(getFishermanPlayer().getName());
 
-        newLoreLine.addLore(
-            "{length_lore}",
+        newLoreLine.setVariable("{length_lore}",
             length > 0 ?
-                EvenMoreFish.msgs.config.getStringList("length-lore")
-                : null
+                (new Message(ConfigMessage.LENGTH_LORE)).message
+                : ""
         );
 
         if (length > 0) newLoreLine.setLength(Float.toString(length));

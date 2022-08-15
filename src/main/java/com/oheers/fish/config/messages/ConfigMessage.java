@@ -57,7 +57,7 @@ public enum ConfigMessage {
     FISHERMAN_LORE("fisherman-lore", Arrays.asList(
             "&fCaught by {player}"
     ), PrefixType.NONE, false, false),
-    LENGTH_LORE("fisherman-lore", Arrays.asList(
+    LENGTH_LORE("length-lore", Arrays.asList(
             "&fMeasures {length}cm"
     ), PrefixType.NONE, false, false),
     FISH_SALE("fish-sale", "&rYou've sold &a{amount} &ffish for &a${sell-price}&f.", PrefixType.DEFAULT, true, true),
