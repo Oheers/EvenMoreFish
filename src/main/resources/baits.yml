@@ -11,7 +11,7 @@ baits:
     fish:
       Common:
         - "Carp"
-        - "Blue Fish"
+        - "Bluefish"
         - "Haddock"
       Rare:
         - "Sunfish"
