@@ -20,8 +20,10 @@ public class WorthNBT {
         NBTItem nbtItem = new NBTItem(fishItem);
 
         NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
-        emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, fish.getLength());
-        emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, fish.getFisherman().toString());
+        if (fish.getLength() > 0)
+            emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, fish.getLength());
+        if (!fish.hasFishermanDisabled() && fish.getFisherman() != null)
+            emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, fish.getFisherman().toString());
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, fish.getName());
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, fish.getRarity().getValue());
         emfCompound.setInteger(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX, fish.getFactory().getChosenRandomIndex());
@@ -38,8 +40,9 @@ public class WorthNBT {
 
         PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
 
-        itemMeta.set(nbtlength, PersistentDataType.FLOAT, fish.getLength());
-        if (fish.getFisherman() != null)
+        if (fish.getLength() > 0)
+            itemMeta.set(nbtlength, PersistentDataType.FLOAT, fish.getLength());
+        if (fish.getFisherman() != null && !fish.hasFishermanDisabled())
             itemMeta.set(nbtplayer, PersistentDataType.STRING, fish.getFisherman().toString());
         itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getChosenRandomIndex());
         itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getValue());
@@ -63,12 +66,13 @@ public class WorthNBT {
         // gets a possible set-worth in the fish.yml
         try {
             int configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            EvenMoreFish.getInstance().getLogger().info("Config value is " + configValue);
             if (configValue == 0)
                 throw new NullPointerException();
             return configValue;
         } catch (NullPointerException npe) {
             // there's no set-worth so we're calculating the worth ourselves
-            return getMultipliedValue(length, rarity, name);
+            return length != null && length > 0 ? getMultipliedValue(length, rarity, name) : 0;
         }
     }
 

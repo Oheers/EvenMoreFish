@@ -37,13 +37,12 @@ public class FishUtils {
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
     private static final char COLOR_CHAR = '\u00A7';
 
-    /* checks for the "emf-fish-length" nbt tag, to determine if this itemstack is a fish or not.
-     * we only need to check for the length since they're all added in a batch if it's an EMF fish */
+    // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
         if (item != null) {
             if (item.getType() != Material.AIR) {
                 if (item.hasItemMeta()) {
-                    return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_LENGTH);
+                    return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_NAME);
                 }
             }
         }
@@ -52,7 +51,7 @@ public class FishUtils {
 
     public static boolean isFish(Skull skull) {
         if (skull != null) {
-            return NbtUtils.hasKey(new NBTTileEntity(skull), NbtUtils.Keys.EMF_FISH_LENGTH);
+            return NbtUtils.hasKey(new NBTTileEntity(skull), NbtUtils.Keys.EMF_FISH_NAME);
         }
 
         return false;
@@ -68,7 +67,7 @@ public class FishUtils {
         Float lengthFloat = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
         Integer randomIndex = NbtUtils.getInteger(nbtItem, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
 
-        if (nameString == null || rarityString == null || lengthFloat == null)
+        if (nameString == null || rarityString == null)
             return null; //throw new InvalidFishException("NBT Error");
 
 
@@ -107,7 +106,7 @@ public class FishUtils {
         Float lengthFloat = NbtUtils.getFloat(nbtSkull, NbtUtils.Keys.EMF_FISH_LENGTH);
         Integer randomIndex = NbtUtils.getInteger(nbtSkull, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
 
-        if (nameString == null || rarityString == null || lengthFloat == null)
+        if (nameString == null || rarityString == null)
             throw new InvalidFishException("NBT Error");
 
         // Generating an empty rarity

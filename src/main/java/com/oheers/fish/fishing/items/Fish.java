@@ -9,7 +9,9 @@ import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,6 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Fish implements Cloneable {
 
@@ -45,10 +48,17 @@ public class Fish implements Cloneable {
 
     boolean isCompExemptFish;
 
+    boolean disableFisherman;
+
     public Fish(Rarity rarity, String name) throws InvalidFishException {
         this.rarity = rarity;
         this.name = name;
         this.weight = 0;
+        this.length = -1F;
+        this.disableFisherman = EvenMoreFish.fishFile.getConfig().getBoolean(
+                "fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman",
+                EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false)
+        );
 
         if (rarity == null) throw new InvalidFishException(name + " could not be fetched from the config.");
 
@@ -82,7 +92,7 @@ public class Fish implements Cloneable {
      */
     public ItemStack give(int randomIndex) {
 
-        ItemStack fish = factory.createItem(Bukkit.getOfflinePlayer(fisherman), randomIndex);
+        ItemStack fish = factory.createItem(getFishermanPlayer(), randomIndex);
         if (factory.isRawMaterial()) return fish;
         ItemMeta fishMeta;
 
@@ -102,6 +112,10 @@ public class Fish implements Cloneable {
         }
 
         return fish;
+    }
+
+    private OfflinePlayer getFishermanPlayer() {
+        return fisherman == null ? null : Bukkit.getOfflinePlayer(fisherman);
     }
 
     private void setSize() {
@@ -203,15 +217,38 @@ public class Fish implements Cloneable {
      */
     private List<String> getFishLore() {
         Message newLoreLine = new Message(ConfigMessage.FISH_LORE);
-        newLoreLine.setCustomFishLore("fish." + this.rarity.getValue() + "." + this.name + ".lore");
         newLoreLine.setRarityColour(rarity.getColour());
-        newLoreLine.setPlayer(Bukkit.getOfflinePlayer(fisherman).getName());
-        newLoreLine.setLength(Float.toString(length));
+
+        newLoreLine.addLore(
+            "{fish_lore}",
+            EvenMoreFish.fishFile.getConfig().getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore")
+        );
+
+        newLoreLine.setVariable("{fisherman_lore}",
+            !disableFisherman && getFishermanPlayer() != null ?
+                (new Message(ConfigMessage.FISHERMAN_LORE)).message
+                : ""
+        );
+
+        if (!disableFisherman && getFishermanPlayer() != null) newLoreLine.setPlayer(getFishermanPlayer().getName());
+
+        newLoreLine.setVariable("{length_lore}",
+            length > 0 ?
+                (new Message(ConfigMessage.LENGTH_LORE)).message
+                : ""
+        );
+
+        if (length > 0) newLoreLine.setLength(Float.toString(length));
 
         if (rarity.getDisplayName() != null) newLoreLine.setRarity(rarity.getDisplayName());
         else newLoreLine.setRarity(this.rarity.getLorePrep());
 
-        return new ArrayList<>(Arrays.asList(newLoreLine.getRawMessage(true, true).split("\n")));
+        List<String> newLore = Arrays.asList(newLoreLine.getRawMessage(true, true).split("\n"));
+        if (getFishermanPlayer() != null && EvenMoreFish.usingPAPI) {
+            return newLore.stream().map(l -> PlaceholderAPI.setPlaceholders(getFishermanPlayer(), l)).collect(Collectors.toList());
+        }
+
+        return newLore;
     }
 
     public void checkDisplayName() {
@@ -265,6 +302,10 @@ public class Fish implements Cloneable {
         return (Fish) super.clone();
     }
 
+    public boolean hasFishermanDisabled() {
+        return disableFisherman;
+    }
+
     public UUID getFisherman() {
         return fisherman;
     }
@@ -294,7 +335,7 @@ public class Fish implements Cloneable {
     }
 
     public void setLength(Float length) {
-        this.length = length;
+        this.length = length == null ? -1 : length;
     }
 
     public List<Reward> getActionRewards() {

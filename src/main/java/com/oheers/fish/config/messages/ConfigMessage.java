@@ -48,11 +48,17 @@ public enum ConfigMessage {
     FISH_CAUGHT("fish-caught", "&r&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, false),
     FISH_LENGTHLESS_CAUGHT("lengthless-fish-caught", "&r&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, false),
     FISH_LORE("fish-lore", Arrays.asList(
-            "&fCaught by {player}",
-            "&fMeasures {length}cm",
+            "{fisherman_lore}",
+            "{length_lore}",
             "",
             "{fish_lore}",
             "{rarity_colour}&l{rarity}"
+    ), PrefixType.NONE, false, false),
+    FISHERMAN_LORE("fisherman-lore", Arrays.asList(
+            "&fCaught by {player}"
+    ), PrefixType.NONE, false, false),
+    LENGTH_LORE("length-lore", Arrays.asList(
+            "&fMeasures {length}cm"
     ), PrefixType.NONE, false, false),
     FISH_SALE("fish-sale", "&rYou've sold &a{amount} &ffish for &a${sell-price}&f.", PrefixType.DEFAULT, true, true),
 

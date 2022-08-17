@@ -242,7 +242,7 @@ public class Message {
      * @param code  The {variable} form of the variable.
      * @param value What the variable should be replaced with.
      */
-    private void setVariable(@NotNull final String code, @NotNull final String value) {
+    public void setVariable(@NotNull final String code, @NotNull final String value) {
         liveVariables.put(code, value);
     }
 
@@ -416,27 +416,27 @@ public class Message {
     }
 
     /**
-     * Goes through any custom lore stored in the fish's config, then creates a long string with line breaks to add to
-     * the message instead of the {fish_lore} variable.
+     * Will replace the variable in the lore with
+     * a new lore with multiple lines if wanted
      *
-     * @param id The fish's config section that would contain the custom lore.
+     * @param variable the variable name to replace
+     * @param lore the lore to replace with
      */
-    public void setCustomFishLore(@NotNull final String id) {
-        // custom lore in fish.yml
-        List<String> potentialLore = EvenMoreFish.fishFile.getConfig().getStringList(id);
-
+    public void addLore(String variable, List<String> lore) {
         // checks that the custom lore exists, then adds it on to the lore
-        if (potentialLore.size() > 0) {
+        if (lore != null && lore.size() > 0) {
+
             StringBuilder customLore = new StringBuilder();
             // does colour coding, hence why .addAll() isn't used
-            for (String line : potentialLore) {
-                if (line.equals(potentialLore.get(potentialLore.size() - 1)))
+            for (String line : lore) {
+                if (line.equals(lore.get(lore.size() - 1))) {
                     customLore.append(FishUtils.translateHexColorCodes(line));
+                }
                 else customLore.append(FishUtils.translateHexColorCodes(line)).append("\n");
             }
             // Replaces the fish lore with the value
-            setVariable("{fish_lore}", customLore.toString());
-        } else this.message = this.message.replace("\n{fish_lore}", "");
+            setVariable(variable, customLore.toString());
+        } else this.message = this.message.replace("\n"+variable, "");
     }
 }
 
