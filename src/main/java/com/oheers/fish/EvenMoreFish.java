@@ -173,6 +173,8 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (EvenMoreFish.mainConfig.databaseEnabled()) {
 
+            Map<UUID, UserReport> newReports = new HashMap<>();
+
             databaseV3 = new DatabaseV3(this);
             new BukkitRunnable() {
                 @Override
@@ -186,14 +188,11 @@ public class EvenMoreFish extends JavaPlugin {
                             EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new tables or check for present tables.");
                             exception.printStackTrace();
                         }
+
                         for (Player player : getServer().getOnlinePlayers()) {
-                            try {
-                                userReports.put(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
-                            } catch (SQLException e) {
-                                logger.log(Level.SEVERE, "Could not fetch User Reports for " + player.getName() + ". If you are using PlugMan, you should restart the plugin completely.");
-                                e.printStackTrace();
-                            }
+                            newReports.put(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
                         }
+
                         databaseV3.closeConnection();
                         v3Semaphore.release();
                     } catch (SQLException exception) {
@@ -205,6 +204,8 @@ public class EvenMoreFish extends JavaPlugin {
                     }
                 }
             }.runTaskAsynchronously(this);
+
+            userReports.putAll(newReports);
 
         }
 

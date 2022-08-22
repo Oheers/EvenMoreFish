@@ -66,10 +66,22 @@ public class JoinChecker implements Listener {
                                 if (report == null) {
                                     EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new empty user report for " + userName);
                                 } else {
-                                    EvenMoreFish.userReports.put(userUUID, report);
+                                    UserReport finalReport = report;
+                                    new BukkitRunnable() {
+                                        @Override
+                                        public void run() {
+                                            EvenMoreFish.userReports.put(userUUID, finalReport);
+                                        }
+                                    }.runTask(JavaPlugin.getProvidingPlugin(JoinChecker.class));
                                 }
                             } else {
-                                EvenMoreFish.userReports.put(userUUID, report);
+                                UserReport finalReport = report;
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        EvenMoreFish.userReports.put(userUUID, finalReport);
+                                    }
+                                }.runTask(JavaPlugin.getProvidingPlugin(JoinChecker.class));
                             }
                         } catch (SQLException exception) {
                             EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user reports for: " + userUUID);
@@ -142,17 +154,28 @@ public class JoinChecker implements Listener {
                             }
                         }
 
-                        try {
-                            EvenMoreFish.databaseV3.writeUserReport(userUUID, EvenMoreFish.userReports.get(userUUID));
-                        } catch (SQLException exception) {
-                            EvenMoreFish.logger.log(Level.SEVERE, "Fatal error writing " + event.getPlayer().getName() + "'s data to the SQL database.");
-                            exception.printStackTrace();
-                        }
+                        new BukkitRunnable() {
 
-                        EvenMoreFish.fishReports.remove(userUUID);
-                        EvenMoreFish.userReports.remove(userUUID);
-                        EvenMoreFish.databaseV3.closeConnection();
-                        EvenMoreFish.v3Semaphore.release();
+                            @Override
+                            public void run() {
+                                try {
+                                    EvenMoreFish.databaseV3.writeUserReport(userUUID, EvenMoreFish.userReports.get(userUUID));
+                                } catch (SQLException exception) {
+                                    EvenMoreFish.logger.log(Level.SEVERE, "Fatal error writing " + event.getPlayer().getName() + "'s data to the SQL database.");
+                                    exception.printStackTrace();
+                                }
+
+                                EvenMoreFish.fishReports.remove(userUUID);
+                                EvenMoreFish.userReports.remove(userUUID);
+                                try {
+                                    EvenMoreFish.databaseV3.closeConnection();
+                                } catch (SQLException exception) {
+                                    EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing data for user " + event.getPlayer().getName() + ". Try restarting or contacting support.");
+                                    exception.printStackTrace();
+                                }
+                                EvenMoreFish.v3Semaphore.release();
+                            }
+                        }.runTask(JavaPlugin.getProvidingPlugin(JoinChecker.class));
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing data for user " + event.getPlayer().getName() + ". Try restarting or contacting support.");
                         exception.printStackTrace();
