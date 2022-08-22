@@ -66,7 +66,6 @@ public class WorthNBT {
         // gets a possible set-worth in the fish.yml
         try {
             int configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
-            EvenMoreFish.getInstance().getLogger().info("Config value is " + configValue);
             if (configValue == 0)
                 throw new NullPointerException();
             return configValue;
