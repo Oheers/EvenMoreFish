@@ -8,6 +8,7 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.gui.FishingGUI;
 import com.oheers.fish.selling.SellGUI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
@@ -75,7 +76,15 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         // Aliases are set in the plugin.yml
         if (cmd.getName().equalsIgnoreCase("evenmorefish")) {
             if (args.length == 0) {
-                sender.sendMessage(Help.formGeneralHelp(sender));
+                if (!EvenMoreFish.mainConfig.debugSession()) {
+                    sender.sendMessage(Help.formGeneralHelp(sender));
+                    return true;
+                }
+                if (sender instanceof Player) {
+                    new FishingGUI().display((Player) sender);
+                } else {
+                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                }
             } else {
                 control(sender, args);
             }

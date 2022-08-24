@@ -392,6 +392,15 @@ public class Message {
     }
 
     /**
+     * Defines the result for the toggle MSG to replace the {toggle_msg} variable.
+     *
+     * @param toggleMSG The applicable toggle msg.
+     */
+    public void setToggleMSG(@NotNull final String toggleMSG) {
+        setVariable("{toggle_msg}", toggleMSG);
+    }
+
+    /**
      * Sets the competition type, checking against the values for each type stored in messages.yml to replace the {type}
      * variable.
      *

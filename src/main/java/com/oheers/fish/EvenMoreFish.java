@@ -55,6 +55,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Messages msgs;
     public static MainConfig mainConfig;
     public static CompetitionConfig competitionConfig;
+    public static GUIConfig guiConfig;
     public static List<String> competitionWorlds = new ArrayList<>();
     public static Permission permission = null;
     public static Economy econ = null;
@@ -93,6 +94,10 @@ public class EvenMoreFish extends JavaPlugin {
         return instance;
     }
 
+    // "/rename &6» &6 &6 &6 &6 &6 &6 &6 &6 &6 &6 Help"
+    // "/itemlore 1 &f&m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m"
+    // "/rename &6» &6 &6 &6 &6 Custom Fish: &a&l✔✘"
+
     @Override
     public void onEnable() {
         instance = this;
@@ -114,6 +119,7 @@ public class EvenMoreFish extends JavaPlugin {
         raritiesFile = new RaritiesFile(this);
         baitFile = new BaitFile(this);
         competitionConfig = new CompetitionConfig(this);
+        if (mainConfig.debugSession()) guiConfig = new GUIConfig(this);
 
         usingPAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
 
@@ -374,6 +380,7 @@ public class EvenMoreFish extends JavaPlugin {
         mainConfig.reload();
         msgs.reload();
         competitionConfig.reload();
+        if (mainConfig.debugSession()) guiConfig.reload();
 
         competitionWorlds = competitionConfig.getRequiredWorlds();
 

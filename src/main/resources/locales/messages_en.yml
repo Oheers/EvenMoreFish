@@ -56,11 +56,17 @@ prefix-error: "&c"
 # replace the {fish_lore}, however if it's empty the line will be removed. DO NOT ADD ANYTHING OTHER THAN THIS VARIABLE
 # TO THAT LINE.
 fish-lore:
-  - "&fCaught by {player}"
-  - "&fMeasures {length}cm"
+  - "{fisherman_lore}"
+  - "{length_lore}"
   - ""
   - "{fish_lore}"
   - "{rarity_colour}&l{rarity}"
+
+# Sets what to replace with the {fisherman_lore} or {length_lore} with above ^
+fisherman-lore:
+  - "&fCaught by {player}"
+length-lore:
+  - "&fMeasures {length}cm."
 
 # The format of commands in /emf help (this message doesn't support papi placeholders)
 help: "/{command} - {description}"
