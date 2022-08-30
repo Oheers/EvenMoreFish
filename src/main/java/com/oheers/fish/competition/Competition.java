@@ -663,13 +663,14 @@ public class Competition {
             int i = 1;
             CompetitionEntry topEntry = leaderboard.getTopEntry();
             if (topEntry == null) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user report for " + leaderboard.getTopEntry().getPlayer());
-                for (UUID uuid : EvenMoreFish.userReports.keySet()) {
-                    EvenMoreFish.logger.log(Level.SEVERE, "User: " + uuid);
-                }
-                EvenMoreFish.logger.log(Level.SEVERE, "Recorded " + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size());
+                failedUserReportFetch();
             } else {
-                EvenMoreFish.userReports.get(topEntry.getPlayer()).incrementCompetitionsWon(1);
+                UserReport report = EvenMoreFish.userReports.get(topEntry.getPlayer());
+                if (report == null) {
+                    failedUserReportFetch();
+                } else {
+                    report.incrementCompetitionsWon(1);
+                }
             }
 
             while (iterator.hasNext()) {
@@ -716,6 +717,14 @@ public class Competition {
                 new Message(ConfigMessage.NO_WINNERS).broadcast(true, false);
             }
         }
+    }
+
+    private void failedUserReportFetch() {
+        EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user report for " + leaderboard.getTopEntry().getPlayer());
+        for (UUID uuid : EvenMoreFish.userReports.keySet()) {
+            EvenMoreFish.logger.log(Level.SEVERE, "User: " + uuid);
+        }
+        EvenMoreFish.logger.log(Level.SEVERE, "Recorded " + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size());
     }
 
     public void singleReward(Player player) {
