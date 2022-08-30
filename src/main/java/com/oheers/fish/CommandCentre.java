@@ -81,7 +81,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     return true;
                 }
                 if (sender instanceof Player) {
-                    new FishingGUI().display((Player) sender);
+                    new FishingGUI(((Player) sender).getUniqueId()).display((Player) sender);
                 } else {
                     new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                 }

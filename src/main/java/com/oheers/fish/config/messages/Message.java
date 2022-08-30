@@ -9,10 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +46,25 @@ public class Message {
         this.canSilent = message.isCanSilent();
         this.canHidePrefix = message.isCanHidePrefix();
         configMessageToString(message);
+    }
+
+    /**
+     * Converts an array list into a single string separated by \n characters. By using the getRawList() method, it's possible
+     * to convert it back to an array list, this can be used for lores for example.
+     * @param listMessage The list of messages to be inputted.
+     */
+    public Message(@NotNull final List<String> listMessage) {
+        StringBuilder message = new StringBuilder();
+        for (int i=0; i < listMessage.size(); i++) {
+            if (i+1 == listMessage.size()) {
+                message.append(listMessage.get(i));
+            } else {
+                message.append(listMessage.get(i)).append("\n");
+            }
+        }
+        this.message = message.toString();
+        this.canHidePrefix = false;
+        this.canSilent = false;
     }
 
     /**
@@ -201,6 +217,23 @@ public class Message {
 
         if (this.canSilent && this.message.endsWith(" -s")) return "";
         else return this.message;
+    }
+
+    /**
+     * If the message was inputted as a list, this is needed to have it formatted with colour and/or variables. It splits
+     * the existing "message" string by \n characters to make a list which is then returned as a colour/variable formatted
+     * list of strings (if requested to be formatted).
+     *
+     * @param doColour    If the method should format for colours or not.
+     * @param doVariables If variables should be formatted or not.
+     * @return A list of formatted strings in the form of an ArrayList.
+     */
+    public List<String> getRawListMessage(final boolean doColour, final boolean doVariables) {
+        if (doVariables) variableFormat();
+        if (doColour) colourFormat();
+
+        String[] list = this.message.split("\n");
+        return Arrays.asList(list);
     }
 
     /**
@@ -398,6 +431,15 @@ public class Message {
      */
     public void setToggleMSG(@NotNull final String toggleMSG) {
         setVariable("{toggle_msg}", toggleMSG);
+    }
+
+    /**
+     * Defines the result for the toggle material to replace the {toggle_icon} variable.
+     *
+     * @param toggleIcon The applicable toggle material.
+     */
+    public void setToggleIcon(@NotNull final String toggleIcon) {
+        setVariable("{toggle_icon}", toggleIcon);
     }
 
     /**

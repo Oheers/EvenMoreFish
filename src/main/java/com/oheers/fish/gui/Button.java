@@ -2,7 +2,10 @@ package com.oheers.fish.gui;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -24,7 +27,7 @@ public class Button {
      * @param identifier The name of the button, recognized in the gui.yml file.
      * @param materialString A string version of the material, this will check if it's an ok string.
      */
-    public Button(@NotNull final String identifier, @NotNull final UUID viewer, @NotNull final String materialString, @NotNull final String name,
+    public Button(@NotNull final String identifier, @NotNull final UUID viewer, @NotNull final String materialString, final String name,
                   @NotNull final List<String> unformattedLore, final int slot) {
         this.identifier = identifier;
 
@@ -35,16 +38,51 @@ public class Button {
             this.material = Material.BARRIER;
         }
 
-        Message toggleVAR = new Message(name);
-        toggleVAR.setToggleMSG(EvenMoreFish.guiConfig.getToggle(EvenMoreFish.disabledPlayers.contains(viewer)));
-        this.name = toggleVAR.getRawMessage(true, true);
+        if (name != null) {
+            Message toggleVAR = new Message(name);
+            toggleVAR.setToggleMSG(EvenMoreFish.guiConfig.getToggle(!EvenMoreFish.disabledPlayers.contains(viewer)));
+            this.name = toggleVAR.getRawMessage(true, true);
+        }
 
-        this.lore = unformattedLore;
-        for (int i = 0; i < unformattedLore.size(); i++) {
-            this.lore.set(i, new Message(unformattedLore.get(i)).getRawMessage(true, false));
+        if (unformattedLore.size() != 0) {
+            this.lore = unformattedLore;
+            for (int i = 0; i < unformattedLore.size(); i++) {
+                this.lore.set(i, new Message(unformattedLore.get(i)).getRawMessage(true, false));
+            }
         }
 
         this.slot = slot;
     }
 
+    public ItemStack getItem() {
+        ItemStack item = new ItemStack(this.material);
+        if (item.getItemMeta() != null) {
+            ItemMeta itemMeta = item.getItemMeta();
+            if (this.name != null) itemMeta.setDisplayName(new Message(this.name).getRawMessage(true, false));
+            if (this.lore.size() != 0) itemMeta.setLore(new Message(this.lore).getRawListMessage(true, false));
+            item.setItemMeta(itemMeta);
+            return WorthNBT.attributeDefault(item);
+        }
+        return item;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<String> getLore() {
+        return lore;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
 }
