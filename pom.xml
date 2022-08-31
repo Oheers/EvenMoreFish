@@ -6,7 +6,7 @@
 
     <groupId>com.oheers.evenmorefish</groupId>
     <artifactId>even-more-fish</artifactId>
-    <version>1.6.3.2</version>
+    <version>1.6.3.3</version>
 
 
     <properties>
@@ -157,7 +157,7 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.36.0.3</version>
+            <version>3.39.2.1</version>
             <scope>test</scope>
         </dependency>
 
