@@ -47,6 +47,10 @@ require-nbt-rod: false
 # Vault and a permission manager such as LuckPerms.
 requires-fishing-permission: false
 
+# Should fish and baits be blocked from being crafted into other items. For example, when the player tries to craft
+# the starfish into a beacon.
+block-crafting: true
+
 # For customizing the /emf shop GUI
 gui:
   # Fills the empty slots of a normal /emf shop
@@ -92,4 +96,4 @@ disable-aureliumskills-loot: true
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 11
+config-version: 12

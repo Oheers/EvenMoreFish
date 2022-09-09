@@ -231,6 +231,9 @@ public class MainConfig {
         return config.getBoolean("requires-fishing-permission", false);
     }
 
+    public boolean blockCrafting() {
+        return config.getBoolean("block-crafting", false);
+    }
     public boolean debugSession() {
         return config.getBoolean("debug-session", false);
     }

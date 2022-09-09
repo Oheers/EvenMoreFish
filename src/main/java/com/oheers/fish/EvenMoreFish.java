@@ -21,6 +21,7 @@ import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.utils.AntiCraft;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -252,6 +253,10 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (checkingIntEvent) {
             getServer().getPluginManager().registerEvents(FishInteractEvent.getInstance(), this);
+        }
+
+        if (mainConfig.blockCrafting()) {
+            getServer().getPluginManager().registerEvents(new AntiCraft(), this);
         }
 
         if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
