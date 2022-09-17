@@ -707,7 +707,14 @@ public class Competition {
                             }
                         });
                     } else if (EvenMoreFish.mainConfig.databaseEnabled()) {
-                        iterator.forEachRemaining(competitionEntry -> EvenMoreFish.userReports.get(competitionEntry.getPlayer()).incrementCompetitionsJoined(1));
+                        iterator.forEachRemaining(competitionEntry -> {
+                            UserReport report = EvenMoreFish.userReports.get(competitionEntry.getPlayer());
+                            if (report != null) {
+                                report.incrementCompetitionsJoined(1);
+                            } else {
+                                EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. " + EvenMoreFish.userReports.size() + "/" + Bukkit.getOnlinePlayers().size());
+                            }
+                        });
                     }
                 }
             }
