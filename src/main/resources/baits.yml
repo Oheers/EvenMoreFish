@@ -110,6 +110,7 @@ format:
     - "&f"
     - "{bait_theme}Increases the catch rates for:"
     - "{boosts}"
+    - "{lore}"
     - "&f"
     - "&#dadadaDrop onto a fishing rod to apply,"
     - "&#dadadaor hold &nSHIFT&#dadada to apply all."

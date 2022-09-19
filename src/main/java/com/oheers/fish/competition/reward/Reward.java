@@ -93,15 +93,9 @@ public class Reward {
                 // checking the player doesn't have a special effect thingy on
 
                 if (p != null) {
-                    if (!(p.getHealth() > 20)) {
-                        double newhealth = p.getHealth() + Integer.parseInt(action);
-                        // checking the new health won't go above 20
-                        if (newhealth > 20) {
-                            p.setHealth(20);
-                        } else {
-                            p.setHealth(newhealth);
-                        }
-                    }
+                    double newhealth = p.getHealth() + Integer.parseInt(action);
+                    // checking the new health won't go above 20
+                    p.setHealth(newhealth > 20 ? 20 : newhealth < 0 ? 0 : newhealth);
                 }
 
                 break;
