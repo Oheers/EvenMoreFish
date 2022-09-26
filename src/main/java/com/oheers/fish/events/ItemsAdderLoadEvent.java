@@ -16,6 +16,7 @@ public class ItemsAdderLoadEvent implements Listener {
     public void onItemsLoad(ItemsAdderLoadDataEvent event) {
         plugin.getLogger().info("Detected that itemsadder has finished loading all items...");
         plugin.getLogger().info("Reloading EMF.");
+        EvenMoreFish.itemsAdderLoaded = true;
         plugin.reload();
     }
 
