@@ -84,6 +84,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean isUpdateAvailable;
     public static boolean usingPAPI;
     public static boolean usingMcMMO;
+
+    public static boolean itemsAdderLoaded = false;
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
