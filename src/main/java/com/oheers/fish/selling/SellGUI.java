@@ -60,16 +60,14 @@ public class SellGUI implements InventoryHolder {
         if (fillMeta != null) {
             fillMeta.setDisplayName(ChatColor.RESET + "");
             fill.setItemMeta(fillMeta);
+            this.filler = WorthNBT.attributeDefault(fill);
         }
 
         if (errMeta != null) {
             errMeta.setDisplayName(ChatColor.RESET + "");
             error.setItemMeta(errMeta);
+            this.errorFiller = WorthNBT.attributeDefault(error);
         }
-
-        // sets it as a default menu item that won't be dropped in a .close() request
-        this.filler = WorthNBT.attributeDefault(fill);
-        this.errorFiller = WorthNBT.attributeDefault(error);
     }
 
     public void addFiller(ItemStack fill) {
