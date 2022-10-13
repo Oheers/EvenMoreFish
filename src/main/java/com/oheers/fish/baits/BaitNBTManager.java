@@ -101,8 +101,11 @@ public class BaitNBTManager {
         NBTItem nbtItem;
         if (isBaitedRod(item)) {
 
+            EvenMoreFish.logger.log(Level.INFO, "The rod has baits attached. Making a modification to rod of " + quantity + " " + bait.getName());
+
             try {
                 if (doingLoreStuff) {
+                    EvenMoreFish.logger.log(Level.INFO, "Removing all lore related to baits from the fishing rod (this will be re-added later)");
                     ItemMeta meta = item.getItemMeta();
                     meta.setLore(deleteOldLore(item));
                     item.setItemMeta(meta);
@@ -114,25 +117,39 @@ public class BaitNBTManager {
 
             nbtItem = new NBTItem(item);
             String[] baitList = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+            EvenMoreFish.logger.log(Level.INFO, "Current amount of different baits applied to the rod: " + baitList.length);
 
             boolean foundBait = false;
 
+            EvenMoreFish.logger.log(Level.INFO, "Now searching through the fishing rod to find what to modify to carry out the change of " + quantity + " " + bait.getName());
             for (String baitName : baitList) {
+                EvenMoreFish.logger.log(Level.INFO, "Querying if " + baitName + " is the right bait.");
                 if (baitName.split(":")[0].equals(bait.getName())) {
+                    EvenMoreFish.logger.log(Level.INFO, "This is the correct bait, proceeding with modification here.");
                     int newQuantity = Integer.parseInt(baitName.split(":")[1]) + quantity;
+                    EvenMoreFish.logger.log(Level.INFO, "Modified quantity of baits will move from: " + baitName.split(":")[1] + " to: " + newQuantity);
 
                     if (newQuantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
+                        EvenMoreFish.logger.log(Level.INFO, "The user has tried to add too many baits to the rod, some will remain on the cursor");
                         combined.append(baitName.split(":")[0]).append(":").append(bait.getMaxApplications()).append(",");
+                        EvenMoreFish.logger.log(Level.INFO, "The data store for the bait namespace has just been modified. It is now: " + combined);
                         // new cursor amt = -(max app - old app)
                         cursorModifier = -bait.getMaxApplications() + (newQuantity - quantity);
+                        EvenMoreFish.logger.log(Level.INFO, "New amount of baits stored in the cursor changed to " + cursorModifier);
                         maxBait = true;
                     } else if (newQuantity != 0) {
+                        EvenMoreFish.logger.log(Level.INFO, "The new quantity of baits has not removed the bait entirely from the rod.");
                         combined.append(baitName.split(":")[0]).append(":").append(Integer.parseInt(baitName.split(":")[1]) + quantity).append(",");
+                        EvenMoreFish.logger.log(Level.INFO, "The data store for the bait namespace has just been modified. It is now: " + combined);
                         cursorModifier = -quantity;
+                        EvenMoreFish.logger.log(Level.INFO, "New amount of baits stored in the cursor changed to " + cursorModifier);
+                    } else {
+                        EvenMoreFish.logger.log(Level.INFO, "The amount of baits stored on the rod has been set 0: to handle this, EvenMoreFish has ignored the bait and not re-added it to the stored value at the bait namespace.");
                     }
                     foundBait = true;
                 } else {
                     combined.append(baitName).append(",");
+                    EvenMoreFish.logger.log(Level.INFO, "The data store for the bait namespace has just been modified. It is now: " + combined);
                 }
             }
 
@@ -154,11 +171,13 @@ public class BaitNBTManager {
                     maxBait = true;
                 } else {
                     combined.append(bait.getName()).append(":").append(quantity);
+                    EvenMoreFish.logger.log(Level.INFO, "The data store for the bait namespace has just been modified. It is now: " + combined);
                     cursorModifier = -quantity;
                 }
             } else {
                 if (combined.length() > 0) {
                     combined.deleteCharAt(combined.length() - 1);
+                    EvenMoreFish.logger.log(Level.INFO, "The data store for the bait namespace has just been modified. It is now: " + combined);
                 }
             }
             NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
@@ -172,11 +191,13 @@ public class BaitNBTManager {
             NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
             if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
                 combined.append(bait.getName()).append(":").append(bait.getMaxApplications());
+                EvenMoreFish.logger.log(Level.INFO, "The data store for the bait namespace has just been modified. It is now: " + combined);
                 emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, combined.toString());
                 cursorModifier = -bait.getMaxApplications();
                 maxBait = true;
             } else {
                 combined.append(bait.getName()).append(":").append(quantity);
+                EvenMoreFish.logger.log(Level.INFO, "The data store for the bait namespace has just been modified. It is now: " + combined);
                 emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, combined.toString());
                 cursorModifier = -quantity;
             }
@@ -215,6 +236,7 @@ public class BaitNBTManager {
 
             Bait bait;
             if ((bait = EvenMoreFish.baits.get(baitName.split(":")[0])) != null) {
+                EvenMoreFish.logger.log(Level.INFO, "Searching rod for baits, found: " + bait.getName());
                 baitList.add(bait);
             }
 
@@ -233,6 +255,7 @@ public class BaitNBTManager {
             if (r <= 0.0) break;
         }
 
+        EvenMoreFish.logger.log(Level.INFO, "Choosing bait " + baitList.get(idx).getName());
         return baitList.get(idx);
     }
 

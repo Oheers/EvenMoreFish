@@ -172,19 +172,23 @@ public class FishingProcessor implements Listener {
         Fish fish;
 
         if (BaitNBTManager.isBaitedRod(fishingRod) && (!EvenMoreFish.baitFile.competitionsBlockBaits() || !Competition.isActive())) {
-
+            EvenMoreFish.logger.log(Level.INFO, "Player has used a baited rod and baits are not blocked currently.");
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
             fish = applyingBait.chooseFish(player, location);
+            EvenMoreFish.logger.log(Level.INFO, "Bait MAY have chosen the following fish: " + fish.getName());
             if (fish.isWasBaited()) {
+                EvenMoreFish.logger.log(Level.INFO, "Fish was influenced by bait. Proceed to follow this verbose output.");
                 fish.setFisherman(player.getUniqueId());
                 try {
                     ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
+                    EvenMoreFish.logger.log(Level.INFO, "Fishing rod meta updated to contain new bait removals");
                     fishingRod.setItemMeta(newMeta);
                     EvenMoreFish.metric_baitsUsed++;
                 } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
                     exception.printStackTrace();
                 }
             } else {
+                EvenMoreFish.logger.log(Level.INFO, "Fish was not influenced by baits on rod. Ignore this verbose output.");
                 fish = chooseNonBaitFish(player, location);
             }
         } else {
