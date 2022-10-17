@@ -126,7 +126,9 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
         } else if (identifier.startsWith("competition_place_size_")) {
             if (Competition.isActive()) {
-                if (EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH) {
+                if (EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH ||
+                        EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_TOTAL)
+                {
                     // checking the leaderboard actually contains the value of place
                     int place = Integer.parseInt(identifier.substring(23));
                     if (EvenMoreFish.active.getLeaderboardSize() >= place) {
