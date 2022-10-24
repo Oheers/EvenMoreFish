@@ -135,7 +135,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                         // getting "place" place in the competition
                         float value = EvenMoreFish.active.getLeaderboard().getPlaceValue(place);
 
-                        if (value != -1.0f) return Float.toString(value);
+                        if (value != -1.0f) return Float.toString(Math.round(value*10f)/10f);
                         else return "";
                     } else {
                         return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
