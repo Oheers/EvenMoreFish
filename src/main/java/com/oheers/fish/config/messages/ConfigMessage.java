@@ -95,7 +95,7 @@ public enum ConfigMessage {
     NO_BAITS("admin.no-baits-on-rod", "&rThe fishing rod does not have any baits applied.", PrefixType.ERROR, true, true),
     NO_COMPETITION_RUNNING("no-competition-running", "&rNo competition running right now.", PrefixType.ERROR, false, false),
     NO_FISH_CAUGHT("no-record", "&rYou didn't catch any fish.", PrefixType.DEFAULT, true, true),
-    NO_PERMISSION_FISHING("no-permission-fishing", "&cYou don't have permission to fish using this rod, you will catch vanilla fish.", PrefixType.DEFAULT, false, true),
+    NO_PERMISSION_FISHING("no-permission-fishing", "&cYou don't have permission to fish using this rod, you will catch vanilla fish.", PrefixType.DEFAULT, true, true),
     NO_PERMISSION("no-permission", "&cYou don't have permission to run that command.", PrefixType.ERROR, false, true),
     NO_WINNERS("no-winners", "&rThere were no fishing records.", PrefixType.DEFAULT, true, true),
     NOT_ENOUGH_PLAYERS("not-enough-players", "&rThere's not enough players online to start the scheduled fishing competition.", PrefixType.ERROR, true, false),
