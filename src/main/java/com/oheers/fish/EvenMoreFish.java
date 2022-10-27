@@ -19,6 +19,7 @@ import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.gui.FillerStyle;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
@@ -91,15 +92,12 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean papi;
     public static DatabaseV3 databaseV3;
     private static EvenMoreFish instance;
+    public static FillerStyle guiFillerStyle;
     private EMFAPI api;
 
     public static EvenMoreFish getInstance() {
         return instance;
     }
-
-    // "/rename &6» &6 &6 &6 &6 &6 &6 &6 &6 &6 &6 Help"
-    // "/itemlore 1 &f&m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m &m"
-    // "/rename &6» &6 &6 &6 &6 Custom Fish: &a&l✔✘"
 
     @Override
     public void onEnable() {
@@ -123,6 +121,7 @@ public class EvenMoreFish extends JavaPlugin {
         baitFile = new BaitFile(this);
         competitionConfig = new CompetitionConfig(this);
         if (mainConfig.debugSession()) guiConfig = new GUIConfig(this);
+        if (guiConfig != null) guiFillerStyle = guiConfig.getFillerStyle("main-menu");
 
         usingPAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
 

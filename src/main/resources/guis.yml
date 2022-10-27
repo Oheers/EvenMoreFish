@@ -4,10 +4,20 @@
 main-menu:
   title: "&1EvenMoreFish"
 
-  filler-item:
-    item: GRAY_STAINED_GLASS_PANE
-    name: ""
-#   custom-model-data: 1234567
+  # Which layout should the filler background for the GUI show? View this link to see examples of the available layouts: https://www.bbc.co.uk/
+  filler-layout: "default"
+
+  info-icon:
+    item: PUFFERFISH
+    name: "&#55aaff»      &#55aaffEvenMoreFish"
+    lore:
+      - "&f&m                                 "
+      - "&7View information about"
+      - "&7recently caught fish,"
+      - "&7available baits and past"
+      - "&7competitions."
+      - "&f&m                                 "
+    glowing: true
 
   help-button:
     item: COMPASS
@@ -83,5 +93,5 @@ main-menu:
 enabled-msg: "&a&l✔"
 disabled-msg: "&c&l✘"
 
-enabled-icon: CLOWNFISH
-disabled-icon: SALMON
+enabled-icon: TROPICAL_FISH_BUCKET
+disabled-icon: WATER_BUCKET

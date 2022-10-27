@@ -15,9 +15,10 @@ import java.util.UUID;
 public class FishingGUI implements InventoryHolder {
 
     final Inventory inventory;
-    final int INV_SIZE = 45;
+    final int INV_SIZE = 54;
     List<Button> guiButtons = new ArrayList<>();
     final UUID viewer;
+    private FillerStyle fillerStyle = FillerStyle.DEFAULT;
 
     /**
      * Creates a fishing GUI object to render the "/emf" gui. A new one needs to be made for each user otherwise it can
@@ -26,8 +27,9 @@ public class FishingGUI implements InventoryHolder {
      *
      * @param viewer The UUID of the player who will open the GUI.
      */
-    public FishingGUI(@NotNull final UUID viewer) {
-        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message("&1&lEvenMoreFish").getRawMessage(true, false));
+    public FishingGUI(@NotNull final UUID viewer, @NotNull final FillerStyle fillerStyle) {
+        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(EvenMoreFish.guiConfig.getGUIName("main-menu")).getRawMessage(true, false));
+        loadFiller();
         this.viewer = viewer;
         loadButtons();
     }
@@ -54,5 +56,9 @@ public class FishingGUI implements InventoryHolder {
 
     public void loadButtons() {
         this.guiButtons = EvenMoreFish.guiConfig.getButtons(viewer);
+    }
+
+    public void loadFiller() {
+        EvenMoreFish.guiConfig.fillerDefault.forEach(this.inventory::setItem);
     }
 }
