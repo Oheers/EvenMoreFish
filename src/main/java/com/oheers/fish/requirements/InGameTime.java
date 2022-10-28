@@ -14,7 +14,7 @@ public class InGameTime implements Requirement {
      * Similar to IRLTime but it uses the in-game time, using the hour * 1000 tick time. If the time is between minTime (inclusively)
      * and maxTime (inclusively) the fish can be caught.
      *
-     * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:
+     * @param configLocation The location that data regarding this should be found. It should cut off after "ingame-time:"
      *                       for example, "fish.Common.Herring.requirements.ingame-time".
      */
     public InGameTime(@NotNull final String configLocation) {

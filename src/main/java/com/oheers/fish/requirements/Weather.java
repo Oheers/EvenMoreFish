@@ -17,7 +17,7 @@ public class Weather implements Requirement {
      * returns allowedWeather == WeatherType.CLEAR, then it does the opposite too to check for "downpour", if the world
      * in the context is null then the requirement will always be false and an error will be sent to console.
      *
-     * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:
+     * @param configLocation The location that data regarding this should be found. It should cut off after "weather:"
      *                       for example, "fish.Common.Herring.requirements.weather".
      */
     public Weather(@NotNull final String configLocation) {

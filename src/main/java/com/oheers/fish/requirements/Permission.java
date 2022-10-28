@@ -12,7 +12,7 @@ public class Permission implements Requirement {
      * Just like the old permission checker, if the user doesn't have the correct permission node or isn't op then the
      * fish won't be given. This requires a permission plugin to exist though such as LuckPerms, as well as Vault.
      *
-     * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:
+     * @param configLocation The location that data regarding this should be found. It should cut off after "permission:"
      *                       for example, "fish.Common.Herring.requirements.permission".
      */
     public Permission(@NotNull final String configLocation) {

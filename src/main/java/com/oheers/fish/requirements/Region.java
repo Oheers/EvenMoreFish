@@ -17,7 +17,7 @@ public class Region implements Requirement {
      * WorldGuard and RedProtect are supported. The location variable must not be null in order to carry out this check,
      * as well as one of the two aforementioned plugins being installed on the server.
      *
-     * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:
+     * @param configLocation The location that data regarding this should be found. It should cut off after "region:"
      *                       for example, "fish.Common.Herring.requirements.region".
      */
     public Region(@NotNull final String configLocation) {

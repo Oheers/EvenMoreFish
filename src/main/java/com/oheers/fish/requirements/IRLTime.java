@@ -17,7 +17,7 @@ public class IRLTime implements Requirement {
      * The time must be formatted in HH:MM format and will represent each day. The minTime and maxTime will be
      * converted to integer format to show the current minute of the day: for example, 02:30 would be 2(60) + 30.
      *
-     * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:
+     * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:"
      *                       for example, "fish.Common.Herring.requirements.irl-time".
      */
     public IRLTime(@NotNull final String configLocation) {
