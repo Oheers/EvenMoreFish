@@ -3,6 +3,7 @@ package com.oheers.fish.config.messages;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +22,7 @@ public class Message {
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     public String message;
     private boolean canSilent, canHidePrefix;
+    private Player relevantPlayer;
 
     /**
      * EMF system of sending messages. A raw message with variables is passed through the "message" parameter. Variables
@@ -136,6 +138,8 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
+        if (relevantPlayer != null) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendMessage(this.message);
         }
@@ -153,6 +157,8 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
+        if (relevantPlayer != null) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+
         player.sendMessage(this.message);
     }
 
@@ -168,6 +174,8 @@ public class Message {
         if (doVariables) variableFormat();
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
+
+        if (relevantPlayer != null) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         sender.sendMessage(this.message);
     }
@@ -214,6 +222,8 @@ public class Message {
     public String getRawMessage(final boolean doColour, final boolean doVariables) {
         if (doVariables) variableFormat();
         if (doColour) colourFormat();
+
+        if (relevantPlayer != null) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         if (this.canSilent && this.message.endsWith(" -s")) return "";
         else return this.message;
@@ -294,6 +304,7 @@ public class Message {
      * @param playerName The name of the player.
      */
     public void setPlayer(@NotNull final String playerName) {
+        relevantPlayer = Bukkit.getPlayer(playerName);
         setVariable("{player}", playerName);
     }
 

@@ -55,18 +55,19 @@ public class SellGUI implements InventoryHolder {
 
     public void setFiller() {
         // the gray glass panes at the bottom
-        ItemStack fill = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFiller()));
-        ItemStack error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFillerError()));
-        ItemMeta fillMeta = fill.getItemMeta();
-        ItemMeta errMeta = error.getItemMeta();
-        fillMeta.setDisplayName(ChatColor.RESET + "");
-        errMeta.setDisplayName(ChatColor.RESET + "");
-        fill.setItemMeta(fillMeta);
-        error.setItemMeta(errMeta);
+        ItemStack fill = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFiller())), error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFillerError()));
+        ItemMeta fillMeta = fill.getItemMeta(), errMeta = error.getItemMeta();
+        if (fillMeta != null) {
+            fillMeta.setDisplayName(ChatColor.RESET + "");
+            fill.setItemMeta(fillMeta);
+            this.filler = WorthNBT.attributeDefault(fill);
+        }
 
-        // sets it as a default menu item that won't be dropped in a .close() request
-        this.filler = WorthNBT.attributeDefault(fill);
-        this.errorFiller = WorthNBT.attributeDefault(error);
+        if (errMeta != null) {
+            errMeta.setDisplayName(ChatColor.RESET + "");
+            error.setItemMeta(errMeta);
+            this.errorFiller = WorthNBT.attributeDefault(error);
+        }
     }
 
     public void addFiller(ItemStack fill) {

@@ -14,10 +14,10 @@ public class Biome implements Requirement {
 
     /**
      * Checks the world for the current biome the player is stood in to figure out whether to give the player the fish
-     * or not. Will not work if the world is null. It also takes the biomes in as a list so you can have multiple be
+     * or not. Will not work if the world is null. It also takes the biomes in as a list, so you can have multiple be
      * whitelisted for the user.
      *
-     * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:
+     * @param configLocation The location that data regarding this should be found. It should cut off after "biome:"
      *                       for example, "fish.Common.Herring.requirements.biome".
      */
     public Biome(@NotNull final String configLocation) {

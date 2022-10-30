@@ -16,8 +16,8 @@ public class World implements Requirement {
      * Lets the fish only be sent if the hook is in one of the allowed worlds. If the world in the context is null then
      * false will be returned by default.
      *
-     * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:
-     *                       for example, "fish.Common.Herring.requirements.weather".
+     * @param configLocation The location that data regarding this should be found. It should cut off after "world:"
+     *                       for example, "fish.Common.Herring.requirements.world".
      */
     public World(@NotNull final String configLocation) {
         this.configLocation = configLocation;

@@ -98,7 +98,7 @@ public class Names {
                         }
                     }
                     if (!foundRarity)
-                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is nots a loaded rarity value. It was not added to the " + s + " bait.");
+                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
                 }
             }
 
@@ -176,6 +176,9 @@ public class Names {
                     break;
                 case "ingame-time":
                     currentRequirements.add(new InGameTime("fish." + rarity + "." + name + ".requirements.ingame-time"));
+                    break;
+                case "moon-phase":
+                    currentRequirements.add(new MoonPhase("fish." + rarity + "." + name + ".requirements.moon-phase"));
                     break;
                 case "permission":
                     currentRequirements.add(new Permission("fish." + rarity + "." + name + ".requirements.permission"));

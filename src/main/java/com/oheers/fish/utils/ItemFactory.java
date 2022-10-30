@@ -10,7 +10,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.*;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -183,7 +187,9 @@ public class ItemFactory {
             final String namespaceId = splitMaterialValue[1] + ":" + splitMaterialValue[2];
             final CustomStack customStack = CustomStack.getInstance(namespaceId);
             if (customStack == null) {
-                EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
+                if(EvenMoreFish.itemsAdderLoaded) {
+                    EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
+                }
                 return new ItemStack(Material.COD);
             }
             return CustomStack.getInstance(namespaceId).getItemStack();

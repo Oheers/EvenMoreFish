@@ -103,7 +103,7 @@ public class CompetitionConfig {
         int returning;
 
         if (adminStart) returning = config.getInt("general.number-needed");
-        else returning = config.getInt("competitions." + competitionName + ".number-needed");
+        else returning = config.getInt("competitions." + competitionName + ".number-needed", config.getInt("general.number-needed"));
 
         if (returning != 0) return returning;
         else return 1;
