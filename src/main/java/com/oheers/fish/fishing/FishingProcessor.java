@@ -352,10 +352,11 @@ public class FishingProcessor implements Listener {
             // boosted fish. The other 2 check that the plugin wants the bait calculations too.
             if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
 
-                if (fish.getWeight() == 0.0d) totalWeight += (5 * boostRate);
-                else totalWeight += fish.getWeight() * boostRate;
+                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
+                else
+                    totalWeight += fish.getWeight() * boostRate;
             } else {
-                if (fish.getWeight() == 0.0d) totalWeight += 5;
+                if (fish.getWeight() == 0.0d) totalWeight += 1;
                 else totalWeight += fish.getWeight();
             }
         }
@@ -365,9 +366,9 @@ public class FishingProcessor implements Listener {
 
             if (fishList.get(idx).getWeight() == 0.0d) {
                 if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
-                    r -= 5 * boostRate;
+                    r -= 1 * boostRate;
                 } else {
-                    r -= 5;
+                    r -= 1;
                 }
             } else {
                 if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
