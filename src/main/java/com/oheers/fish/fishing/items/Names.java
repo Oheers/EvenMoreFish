@@ -196,6 +196,10 @@ public class Names {
             }
         }
 
+        if (this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".disabled", false)) {
+            currentRequirements.add(new Disabled("fish." + rarity + "." + name + ".disabled"));
+        }
+
         return currentRequirements;
     }
 
