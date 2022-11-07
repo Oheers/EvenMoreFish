@@ -57,6 +57,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Messages msgs;
     public static MainConfig mainConfig;
     public static CompetitionConfig competitionConfig;
+    public static Xmas2022Config xmas2022Config;
     public static GUIConfig guiConfig;
     public static List<String> competitionWorlds = new ArrayList<>();
     public static Permission permission = null;
@@ -120,6 +121,7 @@ public class EvenMoreFish extends JavaPlugin {
         raritiesFile = new RaritiesFile(this);
         baitFile = new BaitFile(this);
         competitionConfig = new CompetitionConfig(this);
+        xmas2022Config = new Xmas2022Config(this);
         if (mainConfig.debugSession()) guiConfig = new GUIConfig(this);
         if (guiConfig != null) guiFillerStyle = guiConfig.getFillerStyle("main-menu");
 
@@ -386,6 +388,7 @@ public class EvenMoreFish extends JavaPlugin {
         mainConfig.reload();
         msgs.reload();
         competitionConfig.reload();
+        xmas2022Config.reload();
         if (mainConfig.debugSession()) guiConfig.reload();
 
         competitionWorlds = competitionConfig.getRequiredWorlds();

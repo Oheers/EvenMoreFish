@@ -8,8 +8,8 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.gui.FishingGUI;
 import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.xmas2022.XmasGUI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -81,7 +81,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     return true;
                 }
                 if (sender instanceof Player) {
-                    new FishingGUI(((Player) sender).getUniqueId(), EvenMoreFish.guiFillerStyle).display((Player) sender);
+                    new XmasGUI(((Player) sender).getUniqueId()).display((Player) sender);
                 } else {
                     new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                 }
