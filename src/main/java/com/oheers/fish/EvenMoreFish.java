@@ -65,6 +65,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<Integer, Set<String>> fish = new HashMap<>();
     public static Map<String, Bait> baits = new HashMap<>();
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
+    public static Rarity xmasRarity;
     public static Map<UUID, List<FishReport>> fishReports = new HashMap<>();
     public static Map<UUID, UserReport> userReports = new HashMap<>();
     public static List<UUID> disabledPlayers = new ArrayList<>();

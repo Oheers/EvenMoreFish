@@ -50,6 +50,8 @@ public class Fish implements Cloneable {
 
     boolean disableFisherman;
 
+    int day = -1;
+
     public Fish(Rarity rarity, String name) throws InvalidFishException {
         this.rarity = rarity;
         this.name = name;
@@ -376,5 +378,9 @@ public class Fish implements Cloneable {
 
     public void setWasBaited(boolean wasBaited) {
         this.wasBaited = wasBaited;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
     }
 }

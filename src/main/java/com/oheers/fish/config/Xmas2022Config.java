@@ -59,4 +59,8 @@ public class Xmas2022Config {
     public String getGUIName() {
         return this.config.getString("gui.advent-calendar.title");
     }
+
+    public FileConfiguration getConfig() {
+        return this.config;
+    }
 }

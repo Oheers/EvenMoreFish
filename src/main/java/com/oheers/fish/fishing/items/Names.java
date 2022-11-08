@@ -33,8 +33,17 @@ public class Names {
 
         // gets all the rarities - just their names, nothing else
         rarities = this.fishConfiguration.getConfigurationSection("fish").getKeys(false);
+        rarities.add("Christmas 2022");
 
         for (String rarity : rarities) {
+
+            boolean xmasRarity = false;
+
+            if (rarity.equals("Christmas 2022")) {
+                this.rarityConfiguration = EvenMoreFish.xmas2022Config.getConfig();
+                this.fishConfiguration = EvenMoreFish.xmas2022Config.getConfig();
+                xmasRarity = true;
+            }
 
             // gets all the fish in said rarity, again - just their names
             fishSet = this.fishConfiguration.getConfigurationSection("fish." + rarity).getKeys(false);
@@ -42,6 +51,7 @@ public class Names {
 
             // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
+            if (xmasRarity) EvenMoreFish.xmasRarity = r;
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
 
@@ -61,6 +71,8 @@ public class Names {
                 canvas.setRequirements(getRequirements(fish, rarity));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
+
+                if (xmasRarity) canvas.setDay(getDay(fish));
 
                 if (compCheckExempt(fish, rarity)) {
                     r.setHasCompExemptFish(true);
@@ -212,6 +224,10 @@ public class Names {
 
     private boolean compCheckExempt(String name, String rarity) {
         return this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".comp-check-exempt");
+    }
+
+    private int getDay(String name) {
+        return this.fishConfiguration.getInt("fish.Christmas." + name + ".day");
     }
 
 }
