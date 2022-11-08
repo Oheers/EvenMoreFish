@@ -4,7 +4,6 @@ import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +14,7 @@ public class Xmas2022Config {
 
     private final EvenMoreFish plugin;
     private FileConfiguration config;
-    public HashMap<Integer, ItemStack> fillerDefault = new HashMap<>();
+    public HashMap<Integer, Material> fillerDefault = new HashMap<>();
 
     public Xmas2022Config (EvenMoreFish plugin) {
         this.plugin = plugin;
@@ -51,7 +50,7 @@ public class Xmas2022Config {
             for (int j = 0; j < layoutArray.get(i).length(); j++) {
                 char materialID = line.charAt(j);
                 if (materialID != 'X') {
-                    fillerDefault.put(((i * 9) + j), new ItemStack(Material.valueOf(planArray.get(Integer.parseInt(String.valueOf(materialID))))));
+                    fillerDefault.put(((i * 9) + j), Material.valueOf(planArray.get(Integer.parseInt(String.valueOf(materialID)))));
                 }
             }
         }

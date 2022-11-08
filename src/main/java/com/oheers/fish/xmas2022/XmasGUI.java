@@ -2,10 +2,15 @@ package com.oheers.fish.xmas2022;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -44,6 +49,24 @@ public class XmasGUI implements InventoryHolder {
     }
 
     public void loadFiller() {
-        EvenMoreFish.xmas2022Config.fillerDefault.forEach(this.inventory::setItem);
+        EvenMoreFish.xmas2022Config.fillerDefault.forEach(this::setFillerItem);
+    }
+
+    /**
+     * Takes the initial filler ItemStack object and applies NBT tags to prevent them from being taken out, as well
+     * as display tags that modify the displayname to set them to ""
+     *
+     * @param slot The slot number within the GUI
+     * @param itemMaterial The material which will be given
+     */
+    private void setFillerItem(int slot, Material itemMaterial) {
+        ItemStack fillerStack = new ItemStack(itemMaterial);
+        ItemMeta fillerMeta = fillerStack.getItemMeta();
+        if (fillerMeta != null) {
+            fillerMeta.setDisplayName(ChatColor.RESET + "");
+            fillerStack.setItemMeta(fillerMeta);
+            WorthNBT.attributeDefault(fillerStack);
+        }
+        this.inventory.setItem(slot, fillerStack);
     }
 }
