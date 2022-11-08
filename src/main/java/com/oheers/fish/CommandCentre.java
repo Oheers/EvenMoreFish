@@ -257,7 +257,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
             case 4:
                 if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        if (r.getValue().equalsIgnoreCase(args[2])) {
+                        if (r.getValue().equalsIgnoreCase(args[2].replace("_", " "))) {
                             List<String> fish = new ArrayList<>();
                             for (Fish f : EvenMoreFish.fishCollection.get(r)) {
                                 fish.add(f.getName().replace(" ", "_"));
