@@ -66,6 +66,12 @@ public class FishUtils {
         String rarityString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
         Float lengthFloat = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
         Integer randomIndex = NbtUtils.getInteger(nbtItem, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
+        Integer xmasINT = NbtUtils.getInteger(nbtItem, NbtUtils.Keys.EMF_XMAS_FISH);
+        boolean isXmasFish = false;
+
+        if (xmasINT != null) {
+            isXmasFish = xmasINT == 1;
+        }
 
         if (nameString == null || rarityString == null)
             return null; //throw new InvalidFishException("NBT Error");
@@ -82,7 +88,7 @@ public class FishUtils {
 
         // setting the correct length so it's an exact replica.
         try {
-            Fish fish = new Fish(rarity, nameString);
+            Fish fish = new Fish(rarity, nameString, isXmasFish);
             if (randomIndex != null) fish.getFactory().setType(randomIndex);
             fish.setLength(lengthFloat);
             if (playerString != null) fish.setFisherman(UUID.fromString(playerString));
@@ -105,6 +111,12 @@ public class FishUtils {
         String rarityString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_RARITY);
         Float lengthFloat = NbtUtils.getFloat(nbtSkull, NbtUtils.Keys.EMF_FISH_LENGTH);
         Integer randomIndex = NbtUtils.getInteger(nbtSkull, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
+        Integer xmasINT = NbtUtils.getInteger(nbtSkull, NbtUtils.Keys.EMF_XMAS_FISH);
+        boolean isXmasFish = false;
+
+        if (xmasINT != null) {
+            isXmasFish = xmasINT == 1;
+        }
 
         if (nameString == null || rarityString == null)
             throw new InvalidFishException("NBT Error");
@@ -119,7 +131,7 @@ public class FishUtils {
         }
 
         // setting the correct length and randomIndex, so it's an exact replica.
-        Fish fish = new Fish(rarity, nameString);
+        Fish fish = new Fish(rarity, nameString, isXmasFish);
         fish.setLength(lengthFloat);
         if (randomIndex != null) {
             fish.getFactory().setType(randomIndex);

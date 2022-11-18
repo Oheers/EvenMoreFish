@@ -62,7 +62,7 @@ public class Names {
 
                 // for each fish name, a fish object is made that contains the information gathered from that name
                 try {
-                    canvas = new Fish(r, fish);
+                    canvas = new Fish(r, fish, xmasRarity);
                 } catch (InvalidFishException ignored) {
                     // We're looping through the config, this isn't be an issue.
                 }
