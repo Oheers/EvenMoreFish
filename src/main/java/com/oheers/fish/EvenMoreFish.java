@@ -9,10 +9,7 @@ import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
-import com.oheers.fish.database.DatabaseV3;
-import com.oheers.fish.database.FishReport;
-import com.oheers.fish.database.Table;
-import com.oheers.fish.database.UserReport;
+import com.oheers.fish.database.*;
 import com.oheers.fish.events.*;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.FishingProcessor;
@@ -68,6 +65,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Rarity xmasRarity;
     public static Map<UUID, List<FishReport>> fishReports = new HashMap<>();
     public static Map<UUID, UserReport> userReports = new HashMap<>();
+    public final static Map<Integer, Fish> xmasFish = new HashMap<>();
     public static List<UUID> disabledPlayers = new ArrayList<>();
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
@@ -183,6 +181,8 @@ public class EvenMoreFish extends JavaPlugin {
         checkPapi();
 
         if (EvenMoreFish.mainConfig.databaseEnabled()) {
+
+            DataManager.init();
 
             Map<UUID, UserReport> newReports = new HashMap<>();
 

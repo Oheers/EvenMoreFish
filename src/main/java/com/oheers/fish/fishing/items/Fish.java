@@ -54,7 +54,7 @@ public class Fish implements Cloneable {
     boolean xmasFish;
     FileConfiguration fishConfig, rarityConfig;
 
-    int day = -1;
+    private int day = -1;
 
     public Fish(Rarity rarity, String name, boolean isXmas2022Fish) throws InvalidFishException {
         this.rarity = rarity;
@@ -384,6 +384,10 @@ public class Fish implements Cloneable {
         this.requirements = requirements;
     }
 
+    public void addRequirement(Requirement requirement) {
+        this.requirements.add(requirement);
+    }
+
     public boolean isWasBaited() {
         return wasBaited;
     }
@@ -394,6 +398,10 @@ public class Fish implements Cloneable {
 
     public void setDay(int day) {
         this.day = day;
+    }
+
+    public int getDay() {
+        return day;
     }
 
     public boolean isXmasFish() {

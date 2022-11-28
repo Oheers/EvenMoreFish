@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class XmasGUI implements InventoryHolder {
 
@@ -30,6 +31,7 @@ public class XmasGUI implements InventoryHolder {
     public XmasGUI(@NotNull final UUID viewer) {
         this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(EvenMoreFish.xmas2022Config.getGUIName()).getRawMessage(true, false));
         loadFiller();
+        setFish();
         this.viewer = viewer;
     }
 
@@ -40,16 +42,6 @@ public class XmasGUI implements InventoryHolder {
      */
     public void display(Player player) {
         player.openInventory(this.inventory);
-    }
-
-    @NotNull
-    @Override
-    public Inventory getInventory() {
-        return inventory;
-    }
-
-    public void loadFiller() {
-        EvenMoreFish.xmas2022Config.fillerDefault.forEach(this::setFillerItem);
     }
 
     /**
@@ -68,5 +60,36 @@ public class XmasGUI implements InventoryHolder {
             WorthNBT.attributeDefault(fillerStack);
         }
         this.inventory.setItem(slot, fillerStack);
+    }
+
+    /**
+     * Loops through all empty slots left within the GUI and will fill them in with fish in order of the day they are
+     * set to appear in. Lore, display-name and NBT data will all be applied in this method too.
+     */
+    public void setFish() {
+        int day = 0;
+        for (int i = 0; i < 54; i++) {
+            if (this.inventory.getItem(i) != null) {
+                continue;
+            }
+
+            day++;
+
+            try {
+                this.inventory.setItem(i, EvenMoreFish.xmasFish.get(day).give(-1));
+            } catch (NullPointerException exception) {
+                EvenMoreFish.logger.log(Level.SEVERE, "No fish found for day (" + day + ") in xmas2022.yml config file.");
+            }
+        }
+    }
+
+    public void loadFiller() {
+        EvenMoreFish.xmas2022Config.fillerDefault.forEach(this::setFillerItem);
+    }
+
+    @NotNull
+    @Override
+    public Inventory getInventory() {
+        return inventory;
     }
 }

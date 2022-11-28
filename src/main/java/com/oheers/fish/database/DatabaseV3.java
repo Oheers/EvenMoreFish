@@ -658,7 +658,8 @@ public class DatabaseV3 {
                     resultSet.getString("last_fish"),
                     resultSet.getString("largest_fish"),
                     resultSet.getFloat("total_fish_length"),
-                    resultSet.getFloat("largest_length")
+                    resultSet.getFloat("largest_length"),
+                    resultSet.getString("uuid")
             );
         } else {
             if (EvenMoreFish.mainConfig.doDBVerbose()) {
