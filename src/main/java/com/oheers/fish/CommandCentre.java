@@ -8,8 +8,8 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.gui.FishingGUI;
 import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.xmas2022.XmasGUI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -81,7 +81,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     return true;
                 }
                 if (sender instanceof Player) {
-                    new FishingGUI(((Player) sender).getUniqueId(), EvenMoreFish.guiFillerStyle).display((Player) sender);
+                    new XmasGUI(((Player) sender).getUniqueId()).display((Player) sender);
                 } else {
                     new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
                 }
@@ -185,12 +185,10 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         @Override
                         public void run() {
                             try {
-                                EvenMoreFish.v3Semaphore.acquire();
                                 EvenMoreFish.databaseV3.getConnection();
                                 EvenMoreFish.databaseV3.migrate(sender);
                                 EvenMoreFish.databaseV3.closeConnection();
-                                EvenMoreFish.v3Semaphore.release();
-                            } catch (SQLException | InterruptedException exception) {
+                            } catch (SQLException exception) {
                                 EvenMoreFish.logger.log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.");
                                 exception.printStackTrace();
                             }
@@ -257,7 +255,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
             case 4:
                 if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                        if (r.getValue().equalsIgnoreCase(args[2])) {
+                        if (r.getValue().equalsIgnoreCase(args[2].replace("_", " "))) {
                             List<String> fish = new ArrayList<>();
                             for (Fish f : EvenMoreFish.fishCollection.get(r)) {
                                 fish.add(f.getName().replace(" ", "_"));

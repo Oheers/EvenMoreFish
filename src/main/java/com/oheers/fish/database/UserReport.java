@@ -1,16 +1,19 @@
 package com.oheers.fish.database;
 
+import java.util.UUID;
+
 public class UserReport {
 
     private final int id;
     private String firstFish, recentFish, largestFish;
+    private UUID uuid;
     private int numFishCaught, competitionsWon, competitionsJoined;
 
     private float largestLength, totalFishLength;
 
     public UserReport(final int id, final int numFishCaught, final int competitionsWon, final int competitionsJoined,
                       final String firstFish, final String recentFish, final String largestFish, final float totalFishLength,
-                      final float largestLength) {
+                      final float largestLength, final String uuid) {
         this.id = id;
         this.numFishCaught = numFishCaught;
         this.competitionsWon = competitionsWon;
@@ -20,6 +23,7 @@ public class UserReport {
         this.largestFish = largestFish;
         this.totalFishLength = totalFishLength;
         this.largestLength = largestLength;
+        this.uuid = UUID.fromString(uuid);
     }
 
     public String getFirstFish() {
@@ -124,5 +128,9 @@ public class UserReport {
 
     public int getId() {
         return id;
+    }
+
+    public UUID getUUID() {
+        return uuid;
     }
 }

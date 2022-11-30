@@ -9,10 +9,7 @@ import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
-import com.oheers.fish.database.DatabaseV3;
-import com.oheers.fish.database.FishReport;
-import com.oheers.fish.database.Table;
-import com.oheers.fish.database.UserReport;
+import com.oheers.fish.database.*;
 import com.oheers.fish.events.*;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.FishingProcessor;
@@ -40,13 +37,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EvenMoreFish extends JavaPlugin {
 
-    public final static Semaphore v3Semaphore = new Semaphore(1);
     public static final int METRIC_ID = 11054;
     public static final int MSG_CONFIG_VERSION = 12;
     public static final int MAIN_CONFIG_VERSION = 11;
@@ -57,6 +53,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Messages msgs;
     public static MainConfig mainConfig;
     public static CompetitionConfig competitionConfig;
+    public static Xmas2022Config xmas2022Config;
     public static GUIConfig guiConfig;
     public static List<String> competitionWorlds = new ArrayList<>();
     public static Permission permission = null;
@@ -64,8 +61,8 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<Integer, Set<String>> fish = new HashMap<>();
     public static Map<String, Bait> baits = new HashMap<>();
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
-    public static Map<UUID, List<FishReport>> fishReports = new HashMap<>();
-    public static Map<UUID, UserReport> userReports = new HashMap<>();
+    public static Rarity xmasRarity;
+    public final static Map<Integer, Fish> xmasFish = new HashMap<>();
     public static List<UUID> disabledPlayers = new ArrayList<>();
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
@@ -120,6 +117,7 @@ public class EvenMoreFish extends JavaPlugin {
         raritiesFile = new RaritiesFile(this);
         baitFile = new BaitFile(this);
         competitionConfig = new CompetitionConfig(this);
+        xmas2022Config = new Xmas2022Config(this);
         if (mainConfig.debugSession()) guiConfig = new GUIConfig(this);
         if (guiConfig != null) guiFillerStyle = guiConfig.getFillerStyle("main-menu");
 
@@ -181,14 +179,13 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (EvenMoreFish.mainConfig.databaseEnabled()) {
 
-            Map<UUID, UserReport> newReports = new HashMap<>();
+            DataManager.init();
 
             databaseV3 = new DatabaseV3(this);
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     try {
-                        v3Semaphore.acquire();
                         databaseV3.getConnection();
                         try {
                             EvenMoreFish.databaseV3.createTables(false);
@@ -198,22 +195,16 @@ public class EvenMoreFish extends JavaPlugin {
                         }
 
                         for (Player player : getServer().getOnlinePlayers()) {
-                            newReports.put(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
+                            DataManager.getInstance().putUserReportCache(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
                         }
 
                         databaseV3.closeConnection();
-                        v3Semaphore.release();
                     } catch (SQLException exception) {
                         logger.log(Level.SEVERE, "Failed SQL operations whilst enabling plugin. Try restarting or contacting support.");
-                        exception.printStackTrace();
-                    } catch (InterruptedException exception) {
-                        logger.log(Level.SEVERE, "Severe interruption when fetching user reports for online users. If you are using PlugMan, you should restart the plugin completely.");
                         exception.printStackTrace();
                     }
                 }
             }.runTaskAsynchronously(this);
-
-            userReports.putAll(newReports);
 
         }
 
@@ -331,10 +322,10 @@ public class EvenMoreFish extends JavaPlugin {
     private void saveUserData() {
         if (mainConfig.isDatabaseOnline()) {
             try {
-                v3Semaphore.acquire();
                 databaseV3.getConnection();
-                for (UUID uuid : fishReports.keySet()) {
-                    databaseV3.writeFishReports(uuid, fishReports.get(uuid));
+                ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
+                for (UUID uuid : allReports.keySet()) {
+                    databaseV3.writeFishReports(uuid, allReports.get(uuid));
 
                     try {
                         if (!databaseV3.hasUser(uuid, Table.EMF_USERS)) {
@@ -345,21 +336,17 @@ public class EvenMoreFish extends JavaPlugin {
                     }
                 }
 
-                for (UUID uuid : userReports.keySet()) {
-                    databaseV3.writeUserReport(uuid, userReports.get(uuid));
+                for (UserReport report : DataManager.getInstance().getAllUserReports()) {
+                    databaseV3.writeUserReport(report.getUUID(), report);
                 }
                 databaseV3.closeConnection();
-                v3Semaphore.release();
 
             } catch (SQLException exception) {
                 logger.log(Level.SEVERE, "Failed to save all user data.");
                 exception.printStackTrace();
-            } catch (InterruptedException exception) {
-                logger.log(Level.SEVERE, "Data saving interrupted. Data not saved from previous session.");
-                exception.printStackTrace();
             }
         }
-        EvenMoreFish.userReports.clear();
+        DataManager.getInstance().uncacheAll();
     }
 
     public void reload() {
@@ -386,6 +373,7 @@ public class EvenMoreFish extends JavaPlugin {
         mainConfig.reload();
         msgs.reload();
         competitionConfig.reload();
+        xmas2022Config.reload();
         if (mainConfig.debugSession()) guiConfig.reload();
 
         competitionWorlds = competitionConfig.getRequiredWorlds();

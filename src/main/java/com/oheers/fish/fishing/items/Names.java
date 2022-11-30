@@ -7,10 +7,7 @@ import com.oheers.fish.requirements.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Names {
@@ -26,15 +23,23 @@ public class Names {
      *  main fish map. Badabing badaboom we've now populated our fish map.
      */
     public void loadRarities(FileConfiguration fishConfiguration, FileConfiguration rarityConfiguration) {
-        this.fishConfiguration = fishConfiguration;
-        this.rarityConfiguration = rarityConfiguration;
-
         fishList = new HashSet<>();
 
         // gets all the rarities - just their names, nothing else
-        rarities = this.fishConfiguration.getConfigurationSection("fish").getKeys(false);
+        rarities = fishConfiguration.getConfigurationSection("fish").getKeys(false);
+        rarities.add("Christmas 2022");
 
         for (String rarity : rarities) {
+
+            boolean xmasRarity = rarity.equals("Christmas 2022");
+
+            if (xmasRarity) {
+                this.rarityConfiguration = EvenMoreFish.xmas2022Config.getConfig();
+                this.fishConfiguration = EvenMoreFish.xmas2022Config.getConfig();
+            } else {
+                this.fishConfiguration = fishConfiguration;
+                this.rarityConfiguration = rarityConfiguration;
+            }
 
             // gets all the fish in said rarity, again - just their names
             fishSet = this.fishConfiguration.getConfigurationSection("fish." + rarity).getKeys(false);
@@ -42,6 +47,7 @@ public class Names {
 
             // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
+            if (xmasRarity) EvenMoreFish.xmasRarity = r;
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
 
@@ -52,7 +58,7 @@ public class Names {
 
                 // for each fish name, a fish object is made that contains the information gathered from that name
                 try {
-                    canvas = new Fish(r, fish);
+                    canvas = new Fish(r, fish, xmasRarity);
                 } catch (InvalidFishException ignored) {
                     // We're looping through the config, this isn't be an issue.
                 }
@@ -61,6 +67,11 @@ public class Names {
                 canvas.setRequirements(getRequirements(fish, rarity));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
+
+                if (xmasRarity) {
+                    canvas.setDay(getDay(fish));
+                    EvenMoreFish.xmasFish.put(canvas.getDay(), canvas);
+                }
 
                 if (compCheckExempt(fish, rarity)) {
                     r.setHasCompExemptFish(true);
@@ -163,38 +174,48 @@ public class Names {
 
     private List<Requirement> getRequirements(String name, String rarity) {
         ConfigurationSection requirementSection = this.fishConfiguration.getConfigurationSection("fish." + rarity + "." + name + ".requirements");
-        if (requirementSection == null) return null;
-
         List<Requirement> currentRequirements = new ArrayList<>();
-        for (String s : requirementSection.getKeys(false)) {
-            switch (s.toLowerCase()) {
-                case "biome":
-                    currentRequirements.add(new com.oheers.fish.requirements.Biome("fish." + rarity + "." + name + ".requirements.biome"));
-                    break;
-                case "irl-time":
-                    currentRequirements.add(new IRLTime("fish." + rarity + "." + name + ".requirements.irl-time"));
-                    break;
-                case "ingame-time":
-                    currentRequirements.add(new InGameTime("fish." + rarity + "." + name + ".requirements.ingame-time"));
-                    break;
-                case "moon-phase":
-                    currentRequirements.add(new MoonPhase("fish." + rarity + "." + name + ".requirements.moon-phase"));
-                    break;
-                case "permission":
-                    currentRequirements.add(new Permission("fish." + rarity + "." + name + ".requirements.permission"));
-                    break;
-                case "region":
-                    currentRequirements.add(new Region("fish." + rarity + "." + name + ".requirements.region"));
-                    regionCheck = true;
-                    break;
-                case "weather":
-                    currentRequirements.add(new Weather("fish." + rarity + "." + name + ".requirements.weather"));
-                    break;
-                case "world":
-                    currentRequirements.add(new World("fish." + rarity + "." + name + ".requirements.world"));
-                    break;
+        boolean xmas2022 = false;
+        if (requirementSection == null) {
+            if (rarity.equals("Christmas 2022")) xmas2022 = true;
+            else return null;
+        } else {
+            for (String s : requirementSection.getKeys(false)) {
+                switch (s.toLowerCase()) {
+                    case "biome":
+                        currentRequirements.add(new com.oheers.fish.requirements.Biome("fish." + rarity + "." + name + ".requirements.biome"));
+                        break;
+                    case "irl-time":
+                        currentRequirements.add(new IRLTime("fish." + rarity + "." + name + ".requirements.irl-time"));
+                        break;
+                    case "ingame-time":
+                        currentRequirements.add(new InGameTime("fish." + rarity + "." + name + ".requirements.ingame-time"));
+                        break;
+                    case "moon-phase":
+                        currentRequirements.add(new MoonPhase("fish." + rarity + "." + name + ".requirements.moon-phase"));
+                        break;
+                    case "permission":
+                        currentRequirements.add(new Permission("fish." + rarity + "." + name + ".requirements.permission"));
+                        break;
+                    case "region":
+                        currentRequirements.add(new Region("fish." + rarity + "." + name + ".requirements.region"));
+                        regionCheck = true;
+                        break;
+                    case "weather":
+                        currentRequirements.add(new Weather("fish." + rarity + "." + name + ".requirements.weather"));
+                        break;
+                    case "world":
+                        currentRequirements.add(new World("fish." + rarity + "." + name + ".requirements.world"));
+                        break;
+                }
             }
         }
+
+        if (this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".disabled", false)) {
+            currentRequirements.add(new Disabled("fish." + rarity + "." + name + ".disabled"));
+        }
+
+        if (xmas2022) currentRequirements.add(new Day("fish." + rarity + "." + name + ".day"));
 
         return currentRequirements;
     }
@@ -208,6 +229,10 @@ public class Names {
 
     private boolean compCheckExempt(String name, String rarity) {
         return this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".comp-check-exempt");
+    }
+
+    private int getDay(String name) {
+        return this.fishConfiguration.getInt("fish.Christmas 2022." + name + ".day");
     }
 
 }

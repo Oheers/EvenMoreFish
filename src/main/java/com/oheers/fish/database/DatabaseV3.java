@@ -10,7 +10,6 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -143,35 +142,43 @@ public class DatabaseV3 {
      * @param fish The fish object.
      */
     public void handleFishCatch(@NotNull final UUID uuid, @NotNull final Fish fish) {
-        if (EvenMoreFish.fishReports.containsKey(uuid)) {
-            for (FishReport report : EvenMoreFish.fishReports.get(uuid)) {
-                if (report.getRarity().equals(fish.getRarity().getValue()) && report.getName().equals(fish.getName())) {
-                    report.addFish(fish);
-                    return;
+        List<FishReport> cachedReports = DataManager.getInstance().getFishReportsIfExists(uuid);
+        checkingReports:
+        {
+            if (cachedReports != null) {
+                for (FishReport report : cachedReports) {
+                    if (report.getRarity().equals(fish.getRarity().getValue()) && report.getName().equals(fish.getName())) {
+                        report.addFish(fish);
+                        DataManager.getInstance().putFishReportsCache(uuid, cachedReports);
+                        break checkingReports;
+                    }
                 }
+
+                cachedReports.add(
+                        new FishReport(
+                                fish.getRarity().getValue(),
+                                fish.getName(),
+                                fish.getLength(),
+                                1
+                        )
+                );
+                DataManager.getInstance().putFishReportsCache(uuid, cachedReports);
+            } else {
+                List<FishReport> reports = new ArrayList<>(Collections.singletonList(
+                        new FishReport(
+                                fish.getRarity().getValue(),
+                                fish.getName(),
+                                fish.getLength(),
+                                1
+                        )
+                ));
+                DataManager.getInstance().putFishReportsCache(uuid, reports);
             }
-            EvenMoreFish.fishReports.get(uuid).add(
-                    new FishReport(
-                            fish.getRarity().getValue(),
-                            fish.getName(),
-                            fish.getLength(),
-                            1
-                    )
-            );
-        } else {
-            List<FishReport> reports = new ArrayList<>(Collections.singletonList(
-                    new FishReport(
-                            fish.getRarity().getValue(),
-                            fish.getName(),
-                            fish.getLength(),
-                            1
-                    )
-            ));
-            EvenMoreFish.fishReports.put(uuid, reports);
         }
 
-        if (EvenMoreFish.userReports.containsKey(uuid)) {
-            UserReport report = EvenMoreFish.userReports.get(uuid);
+        UserReport report = DataManager.getInstance().getUserReportIfExists(uuid);
+
+        if (report != null) {
             String fishID = fish.getRarity().getValue() + ":" + fish.getName();
 
             report.setRecentFish(fishID);
@@ -184,6 +191,8 @@ public class DatabaseV3 {
                 report.setLargestFish(fishID);
                 report.setLargestLength(fish.getLength());
             }
+
+            DataManager.getInstance().putUserReportCache(uuid, report);
         }
     }
 
@@ -620,7 +629,7 @@ public class DatabaseV3 {
             statement.setInt(8, report.getCompetitionsJoined());
             statement.setString(9, uuid.toString());
         } catch (NullPointerException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not write user data for " + uuid + ", stored users (" + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size() + ")");
+            EvenMoreFish.logger.log(Level.SEVERE, "Could not write user report data for " + uuid);
             exception.printStackTrace();
         }
 
@@ -658,7 +667,8 @@ public class DatabaseV3 {
                     resultSet.getString("last_fish"),
                     resultSet.getString("largest_fish"),
                     resultSet.getFloat("total_fish_length"),
-                    resultSet.getFloat("largest_length")
+                    resultSet.getFloat("largest_length"),
+                    resultSet.getString("uuid")
             );
         } else {
             if (EvenMoreFish.mainConfig.doDBVerbose()) {

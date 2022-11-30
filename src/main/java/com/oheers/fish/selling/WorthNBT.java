@@ -27,6 +27,7 @@ public class WorthNBT {
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, fish.getName());
         emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, fish.getRarity().getValue());
         emfCompound.setInteger(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX, fish.getFactory().getChosenRandomIndex());
+        emfCompound.setBoolean(NbtUtils.Keys.EMF_XMAS_FISH, fish.isXmasFish());
 
         return nbtItem.getItem();
     }
@@ -37,6 +38,7 @@ public class WorthNBT {
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RARITY);
         NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_NAME);
         NamespacedKey nbtrandomIndex = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
+        NamespacedKey nbtxmasfish = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_XMAS_FISH);
 
         PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
 
@@ -47,6 +49,8 @@ public class WorthNBT {
         itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getChosenRandomIndex());
         itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getValue());
         itemMeta.set(nbtname, PersistentDataType.STRING, fish.getName());
+        itemMeta.set(nbtxmasfish, PersistentDataType.INTEGER, (fish.isXmasFish()) ? 0 : 1);
+
     }
 
     public static double getValue(ItemStack item) {
