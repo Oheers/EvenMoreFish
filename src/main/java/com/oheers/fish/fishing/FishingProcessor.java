@@ -253,7 +253,6 @@ public class FishingProcessor implements Listener {
                 public void run() {
 
                     try {
-                        EvenMoreFish.v3Semaphore.acquire();
                         EvenMoreFish.databaseV3.getConnection();
                         // increases the fish fished count if the fish is already in the db
                         if (EvenMoreFish.databaseV3.hasFishData(finalFish)) {
@@ -269,12 +268,8 @@ public class FishingProcessor implements Listener {
 
                         EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
                         EvenMoreFish.databaseV3.closeConnection();
-                        EvenMoreFish.v3Semaphore.release();
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.");
-                        exception.printStackTrace();
-                    } catch (InterruptedException exception) {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Severe interruption when writing fish catch data for " + player.getUniqueId());
                         exception.printStackTrace();
                     }
                 }

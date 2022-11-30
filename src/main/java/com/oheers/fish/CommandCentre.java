@@ -185,12 +185,10 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         @Override
                         public void run() {
                             try {
-                                EvenMoreFish.v3Semaphore.acquire();
                                 EvenMoreFish.databaseV3.getConnection();
                                 EvenMoreFish.databaseV3.migrate(sender);
                                 EvenMoreFish.databaseV3.closeConnection();
-                                EvenMoreFish.v3Semaphore.release();
-                            } catch (SQLException | InterruptedException exception) {
+                            } catch (SQLException exception) {
                                 EvenMoreFish.logger.log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.");
                                 exception.printStackTrace();
                             }

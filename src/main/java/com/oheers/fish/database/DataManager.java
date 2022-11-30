@@ -83,6 +83,14 @@ public class DataManager {
     }
 
     /**
+     * Removes all cached user entries, only use this once data has been saved locally otherwise data loss will occur.
+     */
+    public void uncacheAll() {
+        userReportCache.invalidateAll();
+        fishReportCache.invalidateAll();
+    }
+
+    /**
      * Adds a user to the cache storage with the uuid of the user as they key. This will be saved until the user logs out
      * from the server.
      *
@@ -93,6 +101,39 @@ public class DataManager {
     public void cacheUser(UUID uuid, UserReport userReport, List<FishReport> fishReports) {
         userReportCache.put(uuid, userReport);
         fishReportCache.put(uuid, fishReports);
+    }
+
+    /**
+     * Gets a list of fish reports from the cache, if the returned value is null then a false is returned. If they are
+     * present, true is returned.
+     *
+     * @param uuid The UUID of the user in question.
+     * @return True if the user is present in cache, false if not.
+     */
+    public boolean containsUser(UUID uuid) {
+        return fishReportCache.getIfPresent(uuid) != null;
+    }
+
+    /**
+     * Sets the cached list of fish reports related to the user to be accessed going forward. This should be a modified
+     * version of a previously fetched list of FishReports, otherwise data loss may occur.
+     *
+     * @param uuid The UUID of the user to have this list set to them in the cache.
+     * @param reports An arraylist of fish reports to be set to the user.
+     */
+    public void putFishReportsCache(@NotNull final UUID uuid, @NotNull final List<FishReport> reports) {
+        fishReportCache.put(uuid, reports);
+    }
+
+    /**
+     * Setting a user report for the user. This will be used to save data to the database so make sure it is kept up
+     * to date to prevent data loss.
+     *
+     * @param uuid The UUID of the user owning the UserReport.
+     * @param report The report to be set to the user.
+     */
+    public void putUserReportCache(@NotNull final UUID uuid, @NotNull final UserReport report) {
+        userReportCache.put(uuid, report);
     }
 
     /**
