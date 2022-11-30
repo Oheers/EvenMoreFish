@@ -25,7 +25,7 @@ public class Day implements Requirement {
 
     @Override
     public boolean requirementMet(RequirementContext context) {
-        return (calendar.get(Calendar.DATE) == this.day) && (calendar.get(Calendar.MONTH) == Calendar.NOVEMBER);
+        return (calendar.get(Calendar.DATE) == this.day) && (calendar.get(Calendar.MONTH) == Calendar.DECEMBER);
     }
 
     @Override

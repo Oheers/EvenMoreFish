@@ -4,10 +4,10 @@ gui:
       # This represents how the filler for the GUI should look, X represents the fish and the numbers are shown below.
       layout:
         - "010101010"
-        - "20XXXXX03"
+        - "23XXXXX33"
         - "3XXXXXXX2"
         - "2XXXXXXX3"
-        - "30XXXXX02"
+        - "32XXXXX22"
         - "010101010"
       plan:
         - "SNOWBALL" # This replaces instances of the number "0"
@@ -44,185 +44,189 @@ gui:
 
 fish:
   Christmas 2022:
-    Holly:
+    Snowball:
       day: 1
       item:
-        material: SWEET_BERRIES
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Red Present:
+        head-64: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTExNWM3OTY4ZWMzNzcxZWU5ZmY2YWU2YmNhMmQ1YmEzOTYyYWE3MjdhNGZhOGQzNzYwOGU0YzliZjE1MTJiYiJ9fX0=
+      lore:
+        - "&7&oThe first sign of winter…"
+        - "&7&ohuge snowball fights!!!"
+    Holly:
       day: 2
       item:
-        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzViNzkyOTU0NGY5NTU2MmJjZmZkNTgyYWFjNzllYTQ1ZWQzYWU0Y2YyZTM0OTJmMzcwZmY4YWYxMWRjNmYifX19"
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Coal:
+        material: SWEET_BERRIES
+      lore:
+        - "&7&oRemaining green and full of berries,"
+        - "&7&oeven through the dead of winter;"
+        - "&7&oHolly gives us hope for the spring bloom!"
+    Opened Present (Red):
       day: 3
       item:
-        material: COAL
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
+        head-64: "ewogICJ0aW1lc3RhbXAiIDogMTY2OTgwODcxMDAwMCwKICAicHJvZmlsZUlkIiA6ICJlZDUzZGQ4MTRmOWQ0YTNjYjRlYjY1MWRjYmE3N2U2NiIsCiAgInByb2ZpbGVOYW1lIiA6ICI0MTQxNDE0MWgiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2MTEyOTBlZTgyMDc2ZmJhNWNhMWIwYjQxNjNlNGM4MjczNTNiMjIyMzRlMTU1YTc2ZmZmNzk5ODI0ZTg3MSIKICAgIH0KICB9Cn0="
       lore:
-        - "&7&oFound in the stocking of a naughty child."
-    Turkey Dinner:
+        - "&7&oAww, someone opened it already!"
+    Coal:
       day: 4
       item:
-        material: COOKED_CHICKEN
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Christmas Tree:
+        material: COAL
+      lore:
+        - "&7&oOh dear, have you been… naughty?"
+    Roast Beast:
       day: 5
       item:
-        material: SPRUCE_SAPLING
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Elf Shoes:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjA2NTU1NzA2YjY0MWZkYWY0MzZjMDc2NjNmOTIzYWZjNWVlNzIxNDZmOTAxOTVmYjMzN2I5ZGU3NjY1ODhkIn19fQ=="
+      lore:
+        - "&7&oRoast Beast is a feast"
+        - "&7&oI can’t stand in the least!"
+    Christmas Tree:
       day: 6
       item:
-        material: LEATHER_BOOTS
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-      dye-colour: "#55ff55"
-    Christmas Card:
+        material: SPRUCE_SAPLING
+      lore:
+        - "&7&oDid you know there are around 350 million"
+        - "&7&o\"Christmas Trees\" growing in the USA right now?"
+        - "&7&oThat’s a lot of trees!"
+    Elf Shoes:
       day: 7
       item:
-        material: PAPER
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-      glowing: true
-    Blue Christmas Tree Decoration:
+        material: LEATHER_BOOTS
+      dye-colour: "#55ff55"
+      lore:
+        - "&7&oWow! So tiny! Just like the"
+        - "&7&oones in Die Wichtelmänner!"
+    Christmas Card:
       day: 8
       item:
-        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGM4YTgyNGI5Yjk0OTM5YWYyZThjZTE4ODQ4MjYxOGRhZDkzM2FlNWRkNjcxYTdiOWFjOTk5ZDNhM2I2MWE1In19fQ=="
-      glowing: true
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Roast Potatoes:
+        material: PAPER
+      lore:
+        - "&7&oThis card has a message in it!"
+        - "&7&oIt says \"&fH&ca&fp&cp&fy &cH&fo&cl&fi&cd&fa&cy&fs\","
+        - "&7&oand it's from &2Oheers!"
+    Metallic Blue Ornament:
       day: 9
       item:
-        material: BAKED_POTATO
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Purple Present:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGM4YTgyNGI5Yjk0OTM5YWYyZThjZTE4ODQ4MjYxOGRhZDkzM2FlNWRkNjcxYTdiOWFjOTk5ZDNhM2I2MWE1In19fQ=="
+      lore:
+        - "&7&oThe perfect color for a Hanukkah Bush!"
+    Roast Potatoes:
       day: 10
       item:
-        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWM4NTVlNjM4NDE3Yjg2N2YwMjhhOTI0N2FmOWUwOGI3N2MzNTJlNTc2NjM2MzQwZjg2Yjc4OTAzYjgyMzhlZiJ9fX0="
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Christmas Songs:
+        material: BAKED_POTATO
+      lore:
+        - "&7&oPotatoes, roasting over the open fire!"
+    Opened Present (Purple):
       day: 11
       item:
-        material: MUSIC_DISC_BLOCKS
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Christmas Pudding Recipe:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjk0MjViZDM1ZmQyMzRlMTI0NjEyN2Y0YmExNGMzYWY0ZGQ0Y2E4MDY1ZThiOWEzNDE0NjllM2U0MTg0OTQwYyJ9fX0="
+      lore:
+        - "&7&oOh no! Who keeps beating"
+        - "&7&oyou to these gifts?"
+    The Christmas Album:
       day: 12
       item:
-        material: BOOK
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-      glowing: true
-    Green Christmas Tree Decoration:
+        material: MUSIC_DISC_PIGSTEP
+      lore:
+        - "&7&oYou’ve gotta have a Christmas"
+        - "&7&oAlbum! &7&lIt’s a rule!"
+    Christmas Pudding Recipe:
       day: 13
       item:
-        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODNhMjc2OGRlMmFmNTJiMjdjN2JjMTQxNmRkNTM1MTk3YjY1MTU4NDIyNjczZGE5ZDNiMGU2MWQ0OWYzMzY2MiJ9fX0="
+        material: BOOK
       glowing: true
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Christmas Bells:
+      lore:
+        - "&7&oThis book contains a recipe for"
+        - "&7&oa classic Christmas Pudding!"
+        - "&7&oBetter get baking!"
+    Metallic Green Ornament:
       day: 14
       item:
-        material: BELL
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Christmas Candle:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU0ODYxNWRmNmI3ZGRmM2FkNDk1MDQxODc2ZDkxNjliZGM5ODNhM2ZhNjlhMmFjYTEwN2U4ZjI1MWY3Njg3In19fQ=="
+      lore:
+        - "&7&oThis lovely ornament is so shiny,"
+        - "&7&oyou can almost see yourself in it!"
+    Sleigh Bell:
       day: 15
       item:
-        material: CANDLE
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Beer:
+        material: BELL
+      lore:
+        - "&7&oSleigh bells ring, are you listening?"
+    Reindeer's Antler:
       day: 16
       item:
-        material: HONEY_BOTTLE
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Ice Skates:
+        material: DEAD_BUSH
+      lore:
+        - "&7&oMale Reindeer, also known as Caribou,"
+        - "&7&oshed their antlers just before December,"
+        - "&7&oto regrow in spring."
+        - "&7&oLooks like you’ve found one!"
+    Christmas Candle:
       day: 17
       item:
-        material: IRON_BOOTS
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Gingerbread:
+        material: CANDLE
+      lore:
+        - "&7&oThese were used to decorate trees before"
+        - "&7&ostring-lights were invented! …Christmas"
+        - "&7&oalso had a lot of house fires."
+    Honeyed Mead:
       day: 18
       item:
-        material: COOKIE
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Carrot for Rudolph:
+        material: HONEY_BOTTLE
+      lore:
+        - "&7&oBest consumed in combination"
+        - "&7&owith enthusiastic wassailing!"
+        - "&7&lSKÅL!"
+    Ice Skates:
       day: 19
       item:
-        material: CARROT
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Snowball:
+        material: IRON_BOOTS
+      lore:
+        - "&7&oMake figure eights on your skates,"
+        - "&7&oit’s great!"
+    Carrot for Rudolph:
       day: 20
       item:
-        material: SNOWBALL
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Snowman:
+        material: CARROT
+      lore:
+        - "&7&oCarrots are a great snack for"
+        - "&7&oSantas Reindeer, especially since"
+        - "&7&othey help them see at night, as they fly!"
+    Christmas Pudding:
       day: 21
       item:
-        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2Y5YmE2OWFhMjQ2N2RlZGFlNjljZWFmNzhlZDhjNzM0YTcwNWQzN2NmZTUxYWZiZTAyYTc1YjZmYjk4YmNlNyJ9fX0="
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Christmas Stocking:
+        material: CAKE
+      lore:
+        - "&7&oLooks like someone learned"
+        - "&7&ohow to make that recipe!"
+    Loaded Snowball:
       day: 22
       item:
-        material: LEATHER_BOOTS
-      dye-colour: "#ff5555"
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Christmas Pudding:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2JlNmRkOGQ0NTY4YjVjZGY4ZjA1YzM1ODE0OTFkNDFiNDA5OWI4ZjBkNGIxZjUyYzUxNzkwOGE4MzA0YzY2MyJ9fX0="
+      lore:
+        - "&7&oNow this is playing dirty…"
+    Metallic Red Ornament:
       day: 23
       item:
-        material: CAKE
-      catch-event:
-        - "MONEY:5000"
-        - "MESSAGE:&a+ $5,000"
-    Santa Claus:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODg0ZTkyNDg3YzY3NDk5OTViNzk3MzdiOGE5ZWI0YzQzOTU0Nzk3YTZkZDZjZDliNGVmY2UxN2NmNDc1ODQ2In19fQ=="
+      lore:
+        - "&7&oThis ornament resembles Rudolph’s"
+        - "&7&oshiny red nose! How cute!"
+    The Grinch:
       day: 24
       item:
-        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTRlNDI0YjE2NzZmZWVjM2EzZjhlYmFkZTllN2Q2YTZmNzFmNzc1NmE4NjlmMzZmN2RmMGZjMTgyZDQzNmUifX19"
-      catch-event:
-        - "MONEY:5001"
-        - "MESSAGE:&a+ $5,001"
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGRiNWY3ZWNjNDA1NzYzOTcxNzVkYTA3YjJkYzAzYTY5N2I2MDIzMzZmNDJiMGFmZWQ5MTkzYjliYzYzNjdlNSJ9fX0="
+      lore:
+        - "&7&oBah, humbug!"
+    Mini Decorated Christmas Tree:
+      day: 25
+      item:
+        head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjE1YmEzMWNkZTI2NzFiOGYxNzZkZTZhOWZmZDAwODAzNWYwNTkwZDYzZWUyNDBiZTZlODkyMWNkMjAzN2E0NSJ9fX0="
+      lore:
+        - "&7&oDeck your halls, with"
+        - "&7&oentire trees! Little ones."
+        - "&f❆ &#fb0000M&#de0000e&#c10000r&#a30000r&#860000y &#00fb0aC&#00ec09h&#01de08r&#01cf06i&#02c105s&#02b204t&#02a303m&#039501a&#038600s&f! ❆"
 
 rarities:
-  Christmas:
+  Christmas 2022:
     weight: 1
     colour: '&#74d680'
     worth-multiplier: 10
