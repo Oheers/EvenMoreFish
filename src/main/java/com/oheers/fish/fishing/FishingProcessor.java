@@ -378,13 +378,13 @@ public class FishingProcessor implements Listener {
         List<FishReport> fishReports = DataManager.getInstance().getFishReportsIfExists(uuid);
         if (fishReports == null) return false;
 
-        /*for (FishReport report : fishReports) {
+        for (FishReport report : fishReports) {
             if (report.getRarity().equals("Christmas 2022")) {
                 if (report.getName().equals(EvenMoreFish.xmasFish.get(Calendar.getInstance().get(Calendar.DATE)).getName())) {
                     return true;
                 }
             }
-        }*/
+        }
         return false;
     }
 
