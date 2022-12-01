@@ -65,17 +65,25 @@ public class WorthNBT {
         Float length = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
         String rarity = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
         String name = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
+        Integer xmasINT = NbtUtils.getInteger(nbtItem, NbtUtils.Keys.EMF_XMAS_FISH);
+        boolean isXmasFish = false;
 
+        if (xmasINT != null) {
+            isXmasFish = xmasINT == 1;
+        }
 
         // gets a possible set-worth in the fish.yml
         try {
-            int configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            int configValue = 0;
+            if (!isXmasFish) configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            else configValue = EvenMoreFish.xmas2022Config.getConfig().getInt("fish.Christmas 2022." + name + ".set-worth");
+
             if (configValue == 0)
                 throw new NullPointerException();
             return configValue;
         } catch (NullPointerException npe) {
             // there's no set-worth so we're calculating the worth ourselves
-            return length != null && length > 0 ? getMultipliedValue(length, rarity, name) : 0;
+            return length != null && length > 0 ? getMultipliedValue(length, rarity, name, isXmasFish) : 0;
         }
     }
 
@@ -90,17 +98,20 @@ public class WorthNBT {
         return NbtUtils.hasKey(new NBTItem(is), NbtUtils.Keys.DEFAULT_GUI_ITEM);
     }
 
-    private static double getMultipliedValue(Float length, String rarity, String name) {
-        double worthMultiplier = getWorthMultiplier(rarity, name);
+    private static double getMultipliedValue(Float length, String rarity, String name, boolean isXmasFish) {
+        double worthMultiplier = getWorthMultiplier(rarity, name, isXmasFish);
         double value = multipleWorthByLength(worthMultiplier, length);
         return sortFunkyDecimals(value);
     }
 
-    private static double getWorthMultiplier(final String rarity, final String name) {
-        double value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
+    private static double getWorthMultiplier(final String rarity, final String name, boolean isXmasFish) {
+        double value;
+        if (isXmasFish) value = EvenMoreFish.xmas2022Config.getConfig().getDouble("fish.Christmas 2022." + name + ".worth-multiplier");
+        else value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            return EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+            if (isXmasFish) return EvenMoreFish.xmas2022Config.getConfig().getDouble("rarities.Christmas 2022.worth-multiplier");
+            else return EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
         }
 
         return value;

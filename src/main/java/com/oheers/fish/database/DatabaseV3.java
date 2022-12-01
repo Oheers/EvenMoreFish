@@ -770,6 +770,7 @@ public class DatabaseV3 {
             if (resultSet.next()) {
                 return resultSet.getFloat("largest_fish");
             }
+            resultSet.close();
         } catch (SQLException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not check for " + fish.getName() + "'s largest fish size.");
             exception.printStackTrace();
