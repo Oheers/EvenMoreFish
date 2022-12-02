@@ -94,8 +94,8 @@ public class DatabaseV3 {
      */
     private boolean queryTableExistence(@NotNull final String tableID) throws SQLException {
         DatabaseMetaData dbMetaData = this.connection.getMetaData();
-        try (ResultSet tables = dbMetaData.getTables(null, null, tableID, null)) {
-            return tables.next();
+        try (ResultSet resultSet = dbMetaData.getTables(null, null, tableID, null)) {
+            return resultSet.next();
         }
     }
 
@@ -380,8 +380,13 @@ public class DatabaseV3 {
         ResultSet resultSet = statement.executeQuery();
 
         if (resultSet.next()) {
-            return resultSet.getInt("id");
+            try {
+                return resultSet.getInt("id");
+            } finally {
+                resultSet.close();
+            }
         } else {
+            resultSet.close();
             return 0;
         }
     }
@@ -509,6 +514,8 @@ public class DatabaseV3 {
             );
             reports.add(report);
         }
+
+        resultSet.close();
 
         if (EvenMoreFish.mainConfig.doDBVerbose()) {
             EvenMoreFish.logger.log(Level.INFO, "Read fish reports for (" + uuid + ") from the database.");
@@ -658,22 +665,27 @@ public class DatabaseV3 {
             if (EvenMoreFish.mainConfig.doDBVerbose()) {
                 EvenMoreFish.logger.log(Level.INFO, "Read user report for (" + uuid + ") from the database.");
             }
-            return new UserReport(
-                    resultSet.getInt("id"),
-                    resultSet.getInt("num_fish_caught"),
-                    resultSet.getInt("competitions_won"),
-                    resultSet.getInt("competitions_joined"),
-                    resultSet.getString("first_fish"),
-                    resultSet.getString("last_fish"),
-                    resultSet.getString("largest_fish"),
-                    resultSet.getFloat("total_fish_length"),
-                    resultSet.getFloat("largest_length"),
-                    resultSet.getString("uuid")
-            );
+            try {
+                return new UserReport(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("num_fish_caught"),
+                        resultSet.getInt("competitions_won"),
+                        resultSet.getInt("competitions_joined"),
+                        resultSet.getString("first_fish"),
+                        resultSet.getString("last_fish"),
+                        resultSet.getString("largest_fish"),
+                        resultSet.getFloat("total_fish_length"),
+                        resultSet.getFloat("largest_length"),
+                        resultSet.getString("uuid")
+                );
+            } finally {
+                resultSet.close();
+            }
         } else {
             if (EvenMoreFish.mainConfig.doDBVerbose()) {
                 EvenMoreFish.logger.log(Level.INFO, "User report for (" + uuid + ") does not exist in the database.");
             }
+            resultSet.close();
             return null;
         }
     }
@@ -768,9 +780,12 @@ public class DatabaseV3 {
             prep.setString(2, fish.getName());
             ResultSet resultSet = prep.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getFloat("largest_fish");
-            }
-            resultSet.close();
+                try {
+                    return resultSet.getFloat("largest_fish");
+                } finally {
+                    resultSet.close();
+                }
+            } else resultSet.close();
         } catch (SQLException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not check for " + fish.getName() + "'s largest fish size.");
             exception.printStackTrace();
