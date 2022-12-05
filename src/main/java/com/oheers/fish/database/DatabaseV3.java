@@ -93,6 +93,7 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     private boolean queryTableExistence(@NotNull final String tableID) throws SQLException {
+        getConnection();
         DatabaseMetaData dbMetaData = this.connection.getMetaData();
         try (ResultSet resultSet = dbMetaData.getTables(null, null, tableID, null)) {
             return resultSet.next();
@@ -129,6 +130,7 @@ public class DatabaseV3 {
             if (table.getCreationCode() == null) continue;
             if (isMySQL && !table.isMySQLCompatible) continue;
 
+            getConnection();
             sendStatement(table.getCreationCode(), this.connection);
         }
     }
@@ -290,6 +292,7 @@ public class DatabaseV3 {
                 closeConnection();
             }
         }
+        getConnection();
         if (queryTableExistence("Fish2")) {
             sendStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";", this.connection);
         } else {
@@ -338,6 +341,7 @@ public class DatabaseV3 {
                         report.getNumCaught() + ", " +
                         report.getTimeEpoch() + ", " +
                         report.getLargestLength() + ");";
+                getConnection();
                 PreparedStatement prep = connection.prepareStatement(emfFishLogSQL);
 
                 prep.execute();
@@ -352,6 +356,7 @@ public class DatabaseV3 {
 
         // starts a field for the new fish that's been fished for the first time
         try {
+            getConnection();
             PreparedStatement prep = connection.prepareStatement(emfUsersSQL);
             prep.setString(1, firstFishID);
             prep.setString(2, largestFishID);
@@ -377,6 +382,7 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public int getUserID(@NotNull final UUID uuid) throws SQLException {
+        getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT id FROM emf_users WHERE uuid = ?;");
         statement.setString(1, uuid.toString());
         ResultSet resultSet = statement.executeQuery();
@@ -409,6 +415,7 @@ public class DatabaseV3 {
         // starts a field for the new fish that's been fished for the first time
         try {
             Leaderboard leaderboard = competition.getLeaderboard();
+            getConnection();
             PreparedStatement prep = connection.prepareStatement(sql);
             prep.setString(1, competition.getCompetitionName());
             if (leaderboard.getSize() > 0) {
@@ -453,6 +460,7 @@ public class DatabaseV3 {
 
         // starts a field for the new fish that's been fished for the first time
         try {
+            getConnection();
             PreparedStatement prep = connection.prepareStatement(sql);
             prep.setString(1, uuid.toString());
             prep.execute();
@@ -478,6 +486,7 @@ public class DatabaseV3 {
      * @throws InvalidTableException The table specified is not emf_users or emf_fish_log
      */
     public boolean hasUser(@NotNull final UUID uuid, @NotNull final Table table) throws SQLException, InvalidTableException {
+        getConnection();
         if (table == Table.EMF_FISH_LOG) {
             if (!hasUser(uuid, Table.EMF_USERS)) return false;
 
@@ -514,6 +523,7 @@ public class DatabaseV3 {
      */
     public List<FishReport> getFishReports(@NotNull final UUID uuid) throws SQLException {
         int userID = getUserID(uuid);
+        getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?");
         statement.setInt(1, userID);
 
@@ -549,6 +559,7 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id) throws SQLException {
+        getConnection();
         PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ? AND rarity = ? AND fish = ?");
         statement.setInt(1, id);
         statement.setString(2, rarity);
@@ -571,6 +582,7 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void addUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
+        getConnection();
         PreparedStatement statement = this.connection.prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
                 "first_catch_time, largest_length) VALUES (?,?,?,?,?,?);");
         statement.setInt(1, userID);
@@ -597,6 +609,7 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void updateUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
+        getConnection();
         PreparedStatement statement = this.connection.prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
                 "WHERE id = ? AND rarity = ? AND fish = ?;");
         statement.setInt(1, report.getNumCaught());
@@ -643,6 +656,7 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) throws SQLException {
+        getConnection();
         PreparedStatement statement = this.connection.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
                 "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
                 "WHERE uuid = ?;");
@@ -679,6 +693,7 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public UserReport readUserReport(@NotNull final UUID uuid) throws SQLException {
+        getConnection();
         PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_users WHERE uuid = ?");
         statement.setString(1, uuid.toString());
 
@@ -727,6 +742,7 @@ public class DatabaseV3 {
             String sql = "INSERT INTO emf_fish (fish_name, fish_rarity, first_fisher, total_caught, largest_fish, largest_fisher, first_catch_time) VALUES (?,?,?,?,?,?,?);";
 
             // starts a field for the new fish that's been fished for the first time
+            getConnection();
             try (PreparedStatement prep = connection.prepareStatement(sql)) {
                 prep.setString(1, fish.getName());
                 prep.setString(2, fish.getRarity().getValue());
@@ -754,6 +770,7 @@ public class DatabaseV3 {
      */
     public boolean hasFishData(@NotNull final Fish fish) {
         try {
+            getConnection();
             PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM emf_fish WHERE fish_name = ? AND fish_rarity = ?");
             statement.setString(1, fish.getName());
             statement.setString(2, fish.getRarity().getValue());
@@ -780,6 +797,7 @@ public class DatabaseV3 {
         try {
             String sql = "UPDATE emf_fish SET total_caught = total_caught + 1 WHERE fish_rarity = ? AND fish_name = ?;";
 
+            getConnection();
             PreparedStatement prep = connection.prepareStatement(sql);
             prep.setString(1, fish.getRarity().getValue());
             prep.setString(2, fish.getName());
@@ -804,6 +822,7 @@ public class DatabaseV3 {
         try {
             String sql = "SELECT largest_fish FROM emf_fish WHERE fish_rarity = ? AND fish_name = ?;";
 
+            getConnection();
             PreparedStatement prep = connection.prepareStatement(sql);
             prep.setString(1, fish.getRarity().getValue());
             prep.setString(2, fish.getName());
@@ -839,6 +858,7 @@ public class DatabaseV3 {
             String sql = "UPDATE emf_fish SET largest_fish = ?, largest_fisher = ? WHERE fish_rarity = ? AND fish_name = ?;";
 
             float roundedFloatLength = Math.round(fish.getLength() * 10f) / 10f;
+            getConnection();
             PreparedStatement prep = connection.prepareStatement(sql);
             prep.setFloat(1, roundedFloatLength);
             prep.setString(2, uuid.toString());
