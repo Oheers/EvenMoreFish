@@ -1,6 +1,7 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.xmas2022.XmasGUI;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
@@ -24,6 +25,12 @@ public class InteractHandler implements Listener {
     public void interact(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
         InventoryHolder holder = inventory.getHolder();
+
+        if (holder instanceof XmasGUI) {
+            // Letting users still move items in their inventory around, because why not.
+            if (event.getRawSlot() <= 53) event.setCancelled(true);
+        }
+
         // is the player viewing a SellGUI gui?
         if (!(holder instanceof SellGUI)) {
             return;

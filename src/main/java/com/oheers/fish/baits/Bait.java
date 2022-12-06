@@ -58,7 +58,7 @@ public class Bait {
         this.displayName = EvenMoreFish.baitFile.getDisplayName(this.name);
         this.dropQuantity = EvenMoreFish.baitFile.getDropQuantity(this.name);
 
-        this.itemFactory = new ItemFactory("baits." + name);
+        this.itemFactory = new ItemFactory("baits." + name, false);
 
         this.itemFactory.setItemGlowCheck(true);
         this.itemFactory.setItemDisplayNameCheck(true);
