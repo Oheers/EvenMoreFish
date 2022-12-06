@@ -57,6 +57,14 @@ public class DatabaseV3 {
         this.plugin = plugin;
         this.isMySQL = EvenMoreFish.mainConfig.isMysql();
         this.URL = fetchURL();
+
+        if (!this.isMySQL) {
+            try {
+                this.connection = DriverManager.getConnection(URL);
+            } catch (SQLException exception) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Failed to initiate database connection for SQL database type.");
+            }
+        }
     }
 
     public Connection getCurrent() {
@@ -72,7 +80,6 @@ public class DatabaseV3 {
     public void getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             if (isMySQL) connection = DriverManager.getConnection(URL, username, password);
-            else connection = DriverManager.getConnection(URL);
         }
     }
 
@@ -82,6 +89,7 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void closeConnection() throws SQLException {
+        if (!this.isMySQL) return;
         if (connection != null) connection.close();
     }
 
