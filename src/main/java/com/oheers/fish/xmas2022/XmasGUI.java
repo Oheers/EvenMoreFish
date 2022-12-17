@@ -2,6 +2,9 @@ package com.oheers.fish.xmas2022;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.database.DataManager;
+import com.oheers.fish.database.FishReport;
+import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -30,9 +34,9 @@ public class XmasGUI implements InventoryHolder {
      */
     public XmasGUI(@NotNull final UUID viewer) {
         this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(EvenMoreFish.xmas2022Config.getGUIName()).getRawMessage(true, false));
+        this.viewer = viewer;
         loadFiller();
         setFish();
-        this.viewer = viewer;
     }
 
     /**
@@ -68,19 +72,31 @@ public class XmasGUI implements InventoryHolder {
      */
     public void setFish() {
         int day = 0;
-        for (int i = 0; i < 54; i++) {
-            if (this.inventory.getItem(i) != null) {
-                continue;
-            }
+        List<FishReport> fishReportList = DataManager.getInstance().getFishReportsIfExists(viewer);
+        dayLoop:
+            for (int i = 0; i < 54; i++) {
+                if (this.inventory.getItem(i) != null) {
+                    continue;
+                }
 
-            day++;
+                day++;
 
-            try {
-                this.inventory.setItem(i, EvenMoreFish.xmasFish.get(day).give(-1));
-            } catch (NullPointerException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "No fish found for day (" + day + ") in xmas2022.yml config file.");
+                try {
+                    if (fishReportList == null) this.inventory.setItem(i, new ItemStack(Material.COD));
+
+                    Fish currentDay = EvenMoreFish.xmasFish.get(day);
+                    for (FishReport fishReport : fishReportList) {
+                        if (fishReport.getName().equals(currentDay.getName()) && fishReport.getRarity().equals("Christmas 2022")) {
+                            this.inventory.setItem(i, currentDay.give(-1));
+                            continue dayLoop;
+                        }
+                    }
+                    this.inventory.setItem(i, new ItemStack(Material.COD));
+
+                } catch (NullPointerException exception) {
+                    EvenMoreFish.logger.log(Level.SEVERE, "No fish found for day (" + day + ") in xmas2022.yml config file.");
+                }
             }
-        }
     }
 
     public void loadFiller() {
