@@ -76,10 +76,10 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         // Aliases are set in the plugin.yml
         if (cmd.getName().equalsIgnoreCase("evenmorefish")) {
             if (args.length == 0) {
-                if (!EvenMoreFish.mainConfig.debugSession()) {
-                    sender.sendMessage(Help.formGeneralHelp(sender));
-                    return true;
-                }
+            //    if (!EvenMoreFish.mainConfig.debugSession()) {
+            //        sender.sendMessage(Help.formGeneralHelp(sender));
+            //        return true;
+            //    }
                 if (sender instanceof Player) {
                     new XmasGUI(((Player) sender).getUniqueId()).display((Player) sender);
                 } else {
