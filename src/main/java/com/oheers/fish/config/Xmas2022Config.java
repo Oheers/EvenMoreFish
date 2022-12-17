@@ -63,4 +63,20 @@ public class Xmas2022Config {
     public FileConfiguration getConfig() {
         return this.config;
     }
+
+    public String getFoundFishName() {
+        return this.config.getString("gui.advent-calendar.filler-settings.fish-name", "&#74d680Day {day} - {name}");
+    }
+
+    public String getLockedFishName() {
+        return this.config.getString("gui.advent-calendar.filler-settings.locked-fish-name", "&cDay {day} - ???");
+    }
+
+    public List<String> getFoundFishLore() {
+        return this.config.getStringList("gui.advent-calendar.fish-lore");
+    }
+
+    public Material getLockedFishMaterial() {
+        return Material.valueOf(this.config.getString("gui.advent-calendar.filler-settings.fish-material", "COD"));
+    }
 }

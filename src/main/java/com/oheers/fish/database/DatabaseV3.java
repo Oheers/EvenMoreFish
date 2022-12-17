@@ -167,7 +167,8 @@ public class DatabaseV3 {
                                 fish.getRarity().getValue(),
                                 fish.getName(),
                                 fish.getLength(),
-                                1
+                                1,
+                                -1
                         )
                 );
                 DataManager.getInstance().putFishReportsCache(uuid, cachedReports);
@@ -177,7 +178,8 @@ public class DatabaseV3 {
                                 fish.getRarity().getValue(),
                                 fish.getName(),
                                 fish.getLength(),
-                                1
+                                1,
+                                -1
                         )
                 ));
                 DataManager.getInstance().putFishReportsCache(uuid, reports);
@@ -532,7 +534,8 @@ public class DatabaseV3 {
                     resultSet.getString("rarity"),
                     resultSet.getString("fish"),
                     resultSet.getFloat("largest_length"),
-                    resultSet.getInt("quantity")
+                    resultSet.getInt("quantity"),
+                    resultSet.getLong("first_catch_time")
             );
             reports.add(report);
         }

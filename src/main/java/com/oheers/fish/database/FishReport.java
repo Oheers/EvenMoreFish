@@ -11,12 +11,13 @@ public class FishReport {
     long t;
     float l;
 
-    public FishReport(String rarity, String name, float size, int numCaught) {
+    public FishReport(String rarity, String name, float size, int numCaught, long timeEpoch) {
         this.r = rarity;
         this.n = name;
         this.c = numCaught;
         this.l = size;
-        this.t = Instant.now().getEpochSecond();
+        if (timeEpoch == -1) this.t = Instant.now().getEpochSecond();
+        else this.t = timeEpoch;
     }
 
     public int getNumCaught() {
