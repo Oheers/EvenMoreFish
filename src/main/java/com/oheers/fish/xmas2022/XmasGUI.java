@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -95,7 +96,7 @@ public class XmasGUI implements InventoryHolder {
                             continue dayLoop;
                         }
                     }
-                    this.inventory.setItem(i, new ItemStack(EvenMoreFish.xmas2022Config.getLockedFishMaterial()));
+                    this.inventory.setItem(i, createItem(false, day, currentDay, null));
 
                 } catch (NullPointerException exception) {
                     EvenMoreFish.logger.log(Level.SEVERE, "No fish found for day (" + day + ") in xmas2022.yml config file.");
@@ -131,6 +132,19 @@ public class XmasGUI implements InventoryHolder {
             meta.setLore(fishLore.getRawListMessage(true, true));
             itemStack.setItemMeta(meta);
             return itemStack;
-        } else return new ItemStack(Material.COD);
+        } else {
+            ItemStack itemStack = new ItemStack(EvenMoreFish.xmas2022Config.getLockedFishMaterial());
+            ItemMeta meta = itemStack.getItemMeta();
+            Message lockedName = new Message(EvenMoreFish.xmas2022Config.getLockedFishName());
+            lockedName.setDay(Integer.toString(day));
+            meta.setDisplayName(lockedName.getRawMessage(true, true));
+            Message lockedLore = new Message(EvenMoreFish.xmas2022Config.getLockedFishLore());
+            int dayDifference = day - Calendar.getInstance().get(Calendar.DATE);
+            if (dayDifference > 0) lockedLore.setTimeRemaining(dayDifference + " days");
+            else lockedLore.setTimeRemaining("(never)");
+            meta.setLore(lockedLore.getRawListMessage(true, true));
+            itemStack.setItemMeta(meta);
+            return itemStack;
+        }
     }
 }

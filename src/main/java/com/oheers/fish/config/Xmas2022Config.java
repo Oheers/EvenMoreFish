@@ -77,6 +77,10 @@ public class Xmas2022Config {
     }
 
     public Material getLockedFishMaterial() {
-        return Material.valueOf(this.config.getString("gui.advent-calendar.filler-settings.fish-material", "COD"));
+        return Material.valueOf(this.config.getString("gui.advent-calendar.fish-material", "BARRIER"));
+    }
+
+    public List<String> getLockedFishLore() {
+        return this.config.getStringList("gui.advent-calendar.locked-fish-lore");
     }
 }

@@ -499,6 +499,15 @@ public class Message {
     }
 
     /**
+     * The time remaining for the fish to be unlocked.
+     *
+     * @param timeRemaining The time remaining.
+     */
+    public void setTimeRemaining(@NotNull final String timeRemaining) {
+        setVariable("{time_remaining}", timeRemaining);
+    }
+
+    /**
      * Sets the competition type, checking against the values for each type stored in messages.yml to replace the {type}
      * variable.
      *

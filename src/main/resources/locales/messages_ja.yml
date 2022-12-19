@@ -1,0 +1,261 @@
+# Japanese translation, provided by: d3fqult
+# If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
+
+# Sent to players when they fish an EvenMoreFish fish
+fish-caught: "&l{player} &rは {rarity_colour}{length}cm &rの {rarity_colour}&l{rarity} &r{rarity_colour}{fish} &rを釣り上げた！"
+# By setting a fish's minimum-length to less than 0, you can create a lengthless fish. This is used when a player fishes a lengthless fish.
+lengthless-fish-caught: "&l{player} &rは {rarity_colour}&l{rarity} {rarity_colour}{fish} を釣り上げた！"
+# Sent to a player when they don't have permission to execute a command.
+no-permission: "&cこのコマンドを実行する権限がありません。"
+
+# The message to be sent when a competition starts and ends
+contest-start: "&r釣り大会（{type}）が開催されました。"
+contest-end: "&r釣り大会が終了しました。"
+# The message to be sent when a player joins whilst a competition is going on
+contest-join: "&r釣り大会（{type}）に参加しました。"
+
+# Shown to players when a new player takes #1 spot, remove this value or set it to "" to disable this message
+new-first: "&r{player} が１位になりました。"
+# Should this message appear in chat (false) or above the exp bar (true)
+action-bar-message: true
+# What competition types should the action bar be used for? (recommended: MOST_FISH)
+action-bar-types:
+  - MOST_FISH
+
+# What should replace the {type} variable for each competition type?
+competition-types:
+  # MOST_FISH
+  most: "魚の数"
+  # LARGEST_FISH
+  largest: "魚の大きさ"
+  # LARGEST_TOTAL_FISH
+  largest-total: "魚の大きさの合計"
+  # SPECIFIC_FISH
+  specific: "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r"
+  # SPECIFIC_RARITY
+  specific-rarity: "{amount} {rarity_colour}&l{rarity}&r の魚"
+# Segments shown in the bossbar when competitions run
+bossbar:
+  # The abbreviations used for different units of time
+  hour: "時間"
+  minute: "分"
+  second: "秒"
+  # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
+  remaining: " で終了"
+
+# The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
+prefix: "[EvenMoreFish] "
+# The colour of the [EvenMoreFish] prefix in commands (for when your prefix doesn't have colours)
+prefix-regular: "&a"
+# The colour of the [EvenMoreFish] prefix in admin commands (for when your prefix doesn't have colours)
+prefix-admin: "&c"
+# The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command (for when your prefix doesn't have colours)
+prefix-error: "&c"
+
+# This is the format of the lore given to fish when they're caught.
+# {custom-lore} is specified in the fish.yml under the lore: section, if the fish has a lore, the lore's lines will
+# replace the {fish_lore}, however if it's empty the line will be removed. DO NOT ADD ANYTHING OTHER THAN THIS VARIABLE
+# TO THAT LINE.
+fish-lore:
+  - "{fisherman_lore}"
+  - "{length_lore}"
+  - ""
+  - "{fish_lore}"
+  - "{rarity_colour}&l{rarity}"
+
+# Sets what to replace with the {fisherman_lore} or {length_lore} with above ^
+fisherman-lore:
+  - "&f{player} によって釣られた"
+length-lore:
+  - "&f長さ {length}cm"
+
+# The format of commands in /emf help (this message doesn't support papi placeholders)
+help: "/{command} - {description}"
+
+# The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
+leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
+leaderboard-largest-total: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)"
+leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
+# If you're running a competition where there's no leaderboard, this message is sent when there's a winner
+single-winner: "&r{player} は {type} の釣り大会で優勝しました！ おめでとう！"
+# This shows the number of players currently in the competition, set to "" to disable.
+total-players: "&r合計で {amount} のプレイヤーが参加しています。"
+# The number of positions shown in the leaderboard - can't be less than 1.
+leaderboard-count: 5
+# If the player doesn't appear on /emf top, should their position be displayed at the bottom?
+always-show-pos: true
+# Sent to players when nobody got a record during a competition
+no-winners: "&r釣りの記録がありません。"
+# When an individual player didn't get a record
+no-record: "&rあなたは魚を釣り上げていません。"
+# Sent when an admin tries to start a competition where the type doesn't exist e.g. /emf admin competition start 600 ABCDEFGH
+invalid-type: "&rそれは釣り大会の種類ではありません。 有効な種類： MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+# Sent to all online players when not enough players are on to start a competition
+not-enough-players: "&r必要なプレイヤー数が不足しているため、釣り大会を開始できません。"
+# Sent to all players at specific times to show the remaining time left
+# {time_formatted} shows the time (e.g. 5m left, 10m 30s left)
+# {time_raw} is what you input in competitions.yml
+time-alert: "&r釣り大会（{type}）終了まで残りあと {time_formatted}"
+
+# The GUI title for /emf shop
+worth-gui-name: "&1&l魚を売る"
+# The name found on the selling item in /emf shop
+sell-gui-name: "&6&l売る"
+# The name found on the item to sell all fish in inventory in /emf shop
+sell-all-name: "&6&lすべて売る"
+# The name found on the confirming item in /emf shop
+confirm-gui-name: "&6&l確認"
+# The name found on the confirming sell all item in /emf shop
+confirm-sell-all-gui-name: "&6&l確認"
+# The name found on the error item in /emf shop when the gui contains no items of value.
+error-gui-name: "&c&l売ることができません"
+# The name found on the error item in /emf shop when the player's inventory contains no items of value.
+error-sell-all-gui-name: "&c&l売ることができません"
+# The lore found on the selling/confirmation item in /emf shop
+sell-gui-lore:
+  - "&8魚ショップ"
+  - ""
+  - "&7合計金額 » &e${sell-price}"
+  - ""
+  - "&7魚を売って"
+  - "&7お金を手に入れよう。"
+  - ""
+  - "&e» 左クリック で 魚を売る"
+  - "&7» 右クリック で キャンセル"
+
+sell-all-lore:
+  - "&8イベントリ"
+  - ""
+  - "&7合計金額 » &e${sell-price}"
+  - ""
+  - "&7ボタンをクリックして"
+  - "&7イベントリの魚を売って"
+  - "&7お金を手に入れよう。"
+  - ""
+  - "&e» 左クリック で 魚を売る"
+# The lore below the error item in /emf shop when the gui contains no items of value.
+error-gui-lore:
+  - "&8魚ショップ"
+  - ""
+  - "&7合計金額 » &c$0"
+  - ""
+  - "&7魚を売って"
+  - "&7お金を手に入れよう。"
+  - ""
+  - "&c» 左クリック で 魚を売る"
+  - "&7» 右クリック で キャンセル"
+
+error-sell-all-gui-lore:
+  - "&8イベントリ"
+  - ""
+  - "&7合計金額 » &c$0"
+  - ""
+  - "&7ボタンをクリックして"
+  - "&7イベントリの魚を売って"
+  - "&7お金を手に入れよう。"
+  - ""
+  - "&c» 左クリック で 魚を売る"
+# The message sent to players when they've sold their fish in the /emf shop
+fish-sale: "&a${sell-price} &rで &a{amount} &r匹の魚を売りました。"
+
+# Help messages
+# General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
+help-general:
+  - "&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f"
+  - "&f/emf top - 開催されている釣り大会のリーダーボードを表示します。"
+  - "&f/emf help - このヘルプページを表示します。"
+  - "&f/emf shop - 魚を売ることができるショップを開く。"
+  - "&f/emf toggle - カスタムな魚を釣れるかどうかの切替。"
+  - "&f/emf admin - 権限者用コマンドのヘルプページ。"
+
+# Competition help (/emf admin competition help)
+help-competition:
+  - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
+  - "&f/emf admin competition start <duration> <type> - 期限を指定した釣り大会をスタートする。"
+  - "&f/emf admin competition end - 現在開催されている釣り大会を強制終了する。"
+
+# Admin help (/emf admin help)
+help-admin:
+  - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
+  - "&f/emf admin competition <start/end> <duration> <type> - 釣り大会を開始するか、終了させるか。"
+  - "&f/emf admin clearbait - 釣り竿に適用させた餌を全て外す。"
+  - "&f/emf admin reload - Configファイルを再読み込みする。"
+  - "&f/emf admin version - プラグインの情報を表示する。"
+
+# Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
+no-player-in-place: "順位をつけるために魚釣りを開始する。"
+# Shown when the emf competition placeholders are used when there's no competition running
+no-competition-running: "現在釣り大会は開かれていません。"
+
+# How should the %emf_competition_place_fish_*% be formatted?
+emf-competition-fish-format: "{rarity_colour}{length}cm &l{rarity} {fish}"
+# How should the %emf_competition_place_fish_*% be formatted when there's no length on the fish?
+emf-lengthless-fish-format: "{rarity_colour}&l{rarity} {fish}"
+# How should %emf_competition_place_fish_*% be formatted during MOST/SPECIFIC_FISH competitions?
+emf-most-fish-format: "{amount} fish"
+# What should be displayed for %emf_competition_place_size_*% during the MOST_FISH competition?
+emf-size-during-most-fish: "N/A"
+# How the %emf_competition_time_left% variable should be formatted.
+emf-time-remaining: "次の釣り大会まで {days}日、{hours}時間、{minutes}分 です。"
+# Replaces the %emf_competition_time_left% variable when there's a competition already running.
+emf-time-remaining-during-comp: "現在釣り大会が開かれています。"
+
+# Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
+max-baits-reached: "&rこの釣り竿に付けられる、餌の種類の最大数に達しました。"
+# Not to be confused with the above, this is sent when the maximum of a specific bait is reached. Define this in baits.yml using "max-baits".
+max-bait-reached: "&r&r釣り竿１本に適用できる {bait_theme}{bait} 餌の最大数に達しました。"
+# Sent when a player catches a bait from fishing (this can be disabled by setting catch-percentage to 0 in baits.yml
+bait-catch: "&r&l{player} &rは [餌] {bait_theme}&l{bait} &rを釣り上げました！"
+# Sent when a bait is applied and a fish is caught.
+bait-use: "&r釣り竿の [餌] {bait_theme}&l{bait} &rの１つを使用しました。"
+# Sent when someone tries to use a bait in creative
+bait-survival-limited: "&r釣り竿に餌を適用するには、&nサバイバルモード &rである必要があります。"
+
+# Shown when /emf toggle is run, to turn off and on respectively.
+toggle-off: "&rカスタムされた魚が釣れなくなりました。"
+toggle-on: "&rカスタムされた魚を釣れるようになりました。"
+
+# When trying to place a skull-fish when this is blocked in config.yml
+place-fish-blocked: "&rこの魚を置くことはできません。"
+
+admin:
+  # Opens an /emf shop for another player
+  open-fish-shop: "&r{player} のショップイベントリを開きました。"
+  # When a fish is given to a player
+  given-player-fish: "&r{player} に {fish} を与えました。"
+  # When a bait is given to a player
+  given-player-bait: "&r{player} に {bait} を与えました。"
+  # When an admin runs /emf admin bait without a bait name.
+  no-bait-specified: "&r特定の餌の名前を入力してください。"
+  # When the admin tries the command /emf admin clearbaits whe not holding a fishing rod.
+  must-be-holding-rod: "&rこのコマンドを実行するには、釣り竿を持っている必要があります。"
+  # When /emf admin clearbaits command is run.
+  all-baits-cleared: "&r{amount}個 の餌を、釣り竿から全て削除しました。"
+  # /emf admin clearbaits is run, but there are no baits on the rod.
+  no-baits-on-rod: "&rこの釣り竿には餌が適用されていません。"
+
+  # When economy is disabled for the plugin
+  economy-disabled: "&rEvenMoreFish の経済機能が無効化されました。"
+
+  # When the specified player can't be found when using -p: parameter.
+  player-not-found: "&rプレイヤー {player} が見つかりませんでした。"
+  # When the specified number in -q: is not a number.
+  number-format-error: "&r{amount} は無効な数値です。"
+  # When the specified number in -q: is not within the minecraft stack range (1-64)
+  number-range-error: "&r{amount} は１～６４の数値ではありません。"
+  # When a command cannot be run from the console
+  cannot-run-on-console: "&rコマンドはコンソールから実行できません。"
+
+  # Sent when a competition is already running when using /emf admin competition start
+  competition-already-running: "&rすでに釣り大会が開催されています。"
+  # When an invalid competition type is tried to be started
+  competition-type-invalid: "&rそれは釣り大会の種類ではありません。 有効な種類： MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+
+  # When there's a spigot update available, don't translate the URL otherwise it won't direct to the correct page.
+  update-available: "&r利用可能なアップデートがあります: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
+  # When the plugin is reloaded
+  reload: "&rプラグインのリロードが完了しました。"
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
+config-version: 12
