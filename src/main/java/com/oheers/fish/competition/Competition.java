@@ -158,7 +158,7 @@ public class Competition {
             Message message = getTypeFormat(ConfigMessage.TIME_ALERT);
             message.broadcast(true, true);
 
-        } else if (timeLeft == 0) {
+        } else if (timeLeft <= 0) {
             end();
             return true;
         }
