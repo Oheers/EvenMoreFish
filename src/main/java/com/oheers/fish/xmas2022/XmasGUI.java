@@ -146,5 +146,7 @@ public class XmasGUI implements InventoryHolder {
             itemStack.setItemMeta(meta);
             return itemStack;
         }
+        
+        Enchantment.SWEE
     }
 }

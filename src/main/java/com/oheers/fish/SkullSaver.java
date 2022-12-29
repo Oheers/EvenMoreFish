@@ -62,12 +62,6 @@ public class SkullSaver implements Listener {
             return;
         }
 
-        if (EvenMoreFish.mainConfig.blockPlacingHeads()) {
-            event.setCancelled(true);
-            new Message(ConfigMessage.FISH_CANT_BE_PLACED).broadcast(event.getPlayer(), true, false);
-            return;
-        }
-
         Block block = event.getBlock();
         ItemStack stack = event.getItemInHand();
 
@@ -76,6 +70,13 @@ public class SkullSaver implements Listener {
         }
 
         if (FishUtils.isFish(stack)) {
+
+            if (EvenMoreFish.mainConfig.blockPlacingHeads()) {
+                event.setCancelled(true);
+                new Message(ConfigMessage.FISH_CANT_BE_PLACED).broadcast(event.getPlayer(), true, false);
+                return;
+            }
+
             if (block.getState() instanceof Skull) {
                 Fish f = FishUtils.getFish(stack);
                 if (f != null) {
