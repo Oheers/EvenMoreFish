@@ -57,7 +57,8 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "help",
                 "shop",
                 "toggle",
-                "top"
+                "top",
+                "xmas"
         );
 
         compTypes = Arrays.asList(
@@ -76,15 +77,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         // Aliases are set in the plugin.yml
         if (cmd.getName().equalsIgnoreCase("evenmorefish")) {
             if (args.length == 0) {
-            //    if (!EvenMoreFish.mainConfig.debugSession()) {
-            //        sender.sendMessage(Help.formGeneralHelp(sender));
-            //        return true;
-            //    }
-                if (sender instanceof Player) {
-                    new XmasGUI(((Player) sender).getUniqueId()).display((Player) sender);
-                } else {
-                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
-                }
+                sender.sendMessage(Help.formGeneralHelp(sender));
             } else {
                 control(sender, args);
             }
@@ -194,6 +187,13 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                             }
                         }
                     }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(CommandCentre.class));
+                }
+                break;
+            case "xmas":
+                if (!EvenMoreFish.permission.has(sender, "emf.xmas")) {
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                } else {
+                    new XmasGUI(((Player) sender).getUniqueId()).display((Player) sender);
                 }
                 break;
             default:
