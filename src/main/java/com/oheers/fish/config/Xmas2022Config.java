@@ -14,6 +14,7 @@ public class Xmas2022Config {
 
     private final EvenMoreFish plugin;
     private FileConfiguration config;
+    private boolean isAvailable = true;
     public HashMap<Integer, Material> fillerDefault = new HashMap<>();
 
     public Xmas2022Config (EvenMoreFish plugin) {
@@ -25,8 +26,8 @@ public class Xmas2022Config {
         File xmas2022File = new File(this.plugin.getDataFolder(), "xmas2022.yml");
 
         if (!xmas2022File.exists()) {
-            xmas2022File.getParentFile().mkdirs();
-            this.plugin.saveResource("xmas2022.yml", false);
+            this.isAvailable = false;
+            return;
         }
 
         this.config = new YamlConfiguration();
@@ -82,5 +83,9 @@ public class Xmas2022Config {
 
     public List<String> getLockedFishLore() {
         return this.config.getStringList("gui.advent-calendar.locked-fish-lore");
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
     }
 }

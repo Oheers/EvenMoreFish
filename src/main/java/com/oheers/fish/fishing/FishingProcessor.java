@@ -12,8 +12,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.database.DataManager;
-import com.oheers.fish.database.FishReport;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
@@ -33,7 +31,6 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -294,63 +291,45 @@ public class FishingProcessor implements Listener {
             return chosenRarity;
         }
 
-        /* This random choice is redone if the choice is Christmas and the user's already caught a Christmas fish today.
-         * By running the check once the rarity got chosen and instead of when putting in allowedRarites, we save time
-         * checking cache.
-         */
-        boolean repeatRandom = true;
         List<Rarity> allowedRarities = new ArrayList<>();
+
         int idx = 0;
 
-        while (repeatRandom) {
-
-            idx = 0;
-
-            /* If allowed rarities has objects, it means we've run through and removed the Christmas rarity. Don't run
-             through again */
-            if (allowedRarities.size() == 0) {
-                if (fisher != null && EvenMoreFish.permission != null) {
-                    for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
-                        if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
-                            continue;
-                        }
-
-                        if (rarity.getPermission() == null || EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
-                            allowedRarities.add(rarity);
-                        }
+        /* If allowed rarities has objects, it means we've run through and removed the Christmas rarity. Don't run
+           through again */
+        if (allowedRarities.size() == 0) {
+            if (fisher != null && EvenMoreFish.permission != null) {
+                for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
+                    if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
+                        continue;
                     }
-                } else {
-                    allowedRarities.addAll(totalRarities);
+
+                    if (rarity.getPermission() == null || EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
+                        allowedRarities.add(rarity);
+                    }
                 }
-            }
-
-            double totalWeight = 0;
-
-            for (Rarity r : allowedRarities) {
-                if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(r)) {
-                    totalWeight += (r.getWeight() * boostRate);
-                } else {
-                    totalWeight += r.getWeight();
-                }
-            }
-
-            for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
-                if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
-                    r -= allowedRarities.get(idx).getWeight() * boostRate;
-                } else {
-                    r -= allowedRarities.get(idx).getWeight();
-                }
-                if (r <= 0.0) break;
-            }
-
-            if (allowedRarities.get(idx).getValue().equals("Christmas 2022")) {
-                Calendar calendar = Calendar.getInstance();
-                repeatRandom = hasCaughtTodaysXmas(fisher.getUniqueId()) || (calendar.get(Calendar.DATE) > 25) || calendar.get(Calendar.YEAR) > 2022;
-                if (repeatRandom) allowedRarities.remove(idx);
             } else {
-                repeatRandom = false;
+                allowedRarities.addAll(totalRarities);
             }
+        }
 
+        double totalWeight = 0;
+
+        for (Rarity r : allowedRarities) {
+            if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(r)) {
+                totalWeight += (r.getWeight() * boostRate);
+            } else {
+                totalWeight += r.getWeight();
+            }
+        }
+
+        for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
+            if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
+                r -= allowedRarities.get(idx).getWeight() * boostRate;
+            } else {
+                r -= allowedRarities.get(idx).getWeight();
+            }
+            if (r <= 0.0) break;
         }
 
         if (allowedRarities.isEmpty()) {
@@ -365,27 +344,6 @@ public class FishingProcessor implements Listener {
         }
 
         return null;
-    }
-
-    /**
-     * Loops through the cached fish reports for the user, if they've already caught a fish this year of the then this
-     * method returns true which blocks them from being able to get a Christmas rarity fish.
-     *
-     * @param uuid The UUID of the user to be checked.
-     * @return False if they haven't yet caught a Christmas fish today, true if they have.
-     */
-    private static boolean hasCaughtTodaysXmas(@NotNull final UUID uuid) {
-        List<FishReport> fishReports = DataManager.getInstance().getFishReportsIfExists(uuid);
-        if (fishReports == null) return false;
-
-        for (FishReport report : fishReports) {
-            if (report.getRarity().equals("Christmas 2022")) {
-                if (report.getName().equals(EvenMoreFish.xmasFish.get(Calendar.getInstance().get(Calendar.DATE)).getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private static Fish randomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {

@@ -7,7 +7,10 @@ import com.oheers.fish.requirements.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class Names {
@@ -34,8 +37,12 @@ public class Names {
             boolean xmasRarity = rarity.equals("Christmas 2022");
 
             if (xmasRarity) {
-                this.rarityConfiguration = EvenMoreFish.xmas2022Config.getConfig();
-                this.fishConfiguration = EvenMoreFish.xmas2022Config.getConfig();
+                if (EvenMoreFish.xmas2022Config.isAvailable()) {
+                    this.rarityConfiguration = EvenMoreFish.xmas2022Config.getConfig();
+                    this.fishConfiguration = EvenMoreFish.xmas2022Config.getConfig();
+                } else {
+                    continue;
+                }
             } else {
                 this.fishConfiguration = fishConfiguration;
                 this.rarityConfiguration = rarityConfiguration;
