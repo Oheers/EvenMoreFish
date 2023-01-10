@@ -44,14 +44,14 @@ public class NbtUtils {
         }
 
         //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.toString()))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString()))) {
             return nbtCompound.getString(namespacedKey.toString());
         }
 
         //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.getNamespace()))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.getNamespace()))) {
             NBTCompound emfCompound = nbtCompound.getCompound(namespacedKey.getNamespace());
-            if (Boolean.TRUE.equals(emfCompound.hasKey(namespacedKey.getKey()))) {
+            if (Boolean.TRUE.equals(emfCompound.hasTag(namespacedKey.getKey()))) {
                 return emfCompound.getString(namespacedKey.getKey());
             }
         }
