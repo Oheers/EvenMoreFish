@@ -41,7 +41,7 @@ public class SkullSaver implements Listener {
         event.setCancelled(true);
         
         try {
-            Fish f = FishUtils.getFish(skullMeta, event.getPlayer()); //issue 173
+            Fish f = FishUtils.getFish(skullMeta, event.getPlayer());
             
             stack.setItemMeta(f.give(f.getFactory().getChosenRandomIndex()).getItemMeta());
             block.setType(Material.AIR);
