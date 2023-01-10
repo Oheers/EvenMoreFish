@@ -33,26 +33,30 @@ public class SkullSaver implements Listener {
         if (block.getDrops().isEmpty()) return;
         
         BlockState state = event.getBlock().getState();
-        Skull sm = (Skull) state;
-        if (FishUtils.isFish(sm)) {
-            ItemStack stack = block.getDrops().iterator().next().clone();
-            event.setCancelled(true);
+        Skull skullMeta = (Skull) state;
+        if (!FishUtils.isFish(skullMeta)) return;
+        
+        
+        ItemStack stack = block.getDrops().iterator().next().clone();
+        event.setCancelled(true);
+        
+        try {
+            Fish f = FishUtils.getFish(skullMeta, event.getPlayer()); //issue 173
             
-            try {
-                Fish f = FishUtils.getFish(sm, event.getPlayer());
-                
-                stack.setItemMeta(f.give(f.getFactory().getChosenRandomIndex()).getItemMeta());
-                block.setType(Material.AIR);
-                block.getWorld().dropItem(block.getLocation(), stack);
-                block.getWorld().playSound(block.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 1);
-            } catch (InvalidFishException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Error fetching fish from config at location:" +
-                    " x:" + event.getBlock().getLocation().getBlockX() +
-                    " y:" + event.getBlock().getLocation().getBlockY() +
-                    " z:" + event.getBlock().getLocation().getBlockZ() +
-                    " world:" + event.getBlock().getLocation().getBlock().getWorld().getName());
-            }
+            stack.setItemMeta(f.give(f.getFactory().getChosenRandomIndex()).getItemMeta());
+            block.setType(Material.AIR);
+            block.getWorld().dropItem(block.getLocation(), stack);
+            block.getWorld().playSound(block.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 1);
+        } catch (InvalidFishException exception) {
+            EvenMoreFish.logger.severe(() -> String.format("Error fetching fish from config at location: " +
+                "x:%d y:%d z:%d world:%s",
+                block.getLocation().getBlockX(),
+                block.getLocation().getBlockY(),
+                block.getLocation().getBlockZ(),
+                block.getLocation().getBlock().getWorld().getName()
+                ));
         }
+        
         
     }
     
