@@ -45,14 +45,16 @@ public class Fish implements Cloneable {
 
     double weight;
 
-    double minSize, maxSize;
+    double minSize;
+    double maxSize;
 
     boolean isCompExemptFish;
 
     boolean disableFisherman;
 
     boolean xmasFish;
-    FileConfiguration fishConfig, rarityConfig;
+    FileConfiguration fishConfig;
+    FileConfiguration rarityConfig;
 
     private int day = -1;
 
@@ -62,21 +64,14 @@ public class Fish implements Cloneable {
         this.weight = 0;
         this.length = -1F;
         this.xmasFish = isXmas2022Fish;
-        if (this.xmasFish) {
-            this.fishConfig = EvenMoreFish.xmas2022Config.getConfig();
-            this.rarityConfig = EvenMoreFish.xmas2022Config.getConfig();
-        } else {
-            this.fishConfig = EvenMoreFish.fishFile.getConfig();
-            this.rarityConfig = EvenMoreFish.raritiesFile.getConfig();
-        }
-        this.disableFisherman = this.fishConfig.getBoolean(
-                "fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman",
-                EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false)
-        );
+        this.setFishAndRarityConfig();
+        final boolean defaultRarityDisableFisherman = EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false);
+        this.disableFisherman = this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman", defaultRarityDisableFisherman);
 
-        if (rarity == null) throw new InvalidFishException(name + " could not be fetched from the config.");
+        if (rarity == null)
+            throw new InvalidFishException(name + " could not be fetched from the config.");
 
-        this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name, isXmas2022Fish);
+        this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name, this.xmasFish);
         checkDisplayName();
 
         // These settings don't mean these will be applied, but they will be considered if the settings exist.
@@ -94,6 +89,21 @@ public class Fish implements Cloneable {
 
         fishRewards = new ArrayList<>();
         checkFishEvent();
+    }
+    
+    /*
+      Accounts for bug https://github.com/Oheers/EvenMoreFish/issues/173
+      This will allow breaking heads that have already been placed with the wrong nbt data.
+     */
+    private void setFishAndRarityConfig() {
+        if (this.xmasFish && EvenMoreFish.xmas2022Config.getConfig() != null) {
+            this.fishConfig = EvenMoreFish.xmas2022Config.getConfig();
+            this.rarityConfig = EvenMoreFish.xmas2022Config.getConfig();
+        } else {
+            this.xmasFish = false;
+            this.fishConfig = EvenMoreFish.fishFile.getConfig();
+            this.rarityConfig = EvenMoreFish.raritiesFile.getConfig();
+        }
     }
 
     /**

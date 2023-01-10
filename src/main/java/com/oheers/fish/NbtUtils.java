@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.NamespacedKey;
@@ -15,43 +16,43 @@ public class NbtUtils {
     public static boolean hasKey(final @NotNull NBTCompound nbtCompound, final String key) {
         NamespacedKey namespacedKey = getNamespacedKey(key);
         //Pre NBT-API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
             NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if (Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString())))
+            if (Boolean.TRUE.equals(publicBukkitValues.hasTag(namespacedKey.toString())))
                 return true;
         }
 
         //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.toString())))
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString())))
             return true;
 
         //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.getNamespace()))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.getNamespace()))) {
             NBTCompound emfCompound = nbtCompound.getCompound(namespacedKey.getNamespace());
-            return Boolean.TRUE.equals(emfCompound.hasKey(namespacedKey.getKey()));
+            return Boolean.TRUE.equals(emfCompound.hasTag(namespacedKey.getKey()));
         }
 
         return false;
     }
-
+    
     public static @Nullable String getString(final @NotNull NBTCompound nbtCompound, final String key) {
         NamespacedKey namespacedKey = getNamespacedKey(key);
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
             NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if (Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString()))) {
+            if (Boolean.TRUE.equals(publicBukkitValues.hasTag(namespacedKey.toString()))) {
                 return publicBukkitValues.getString(namespacedKey.toString());
             }
         }
 
         //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.toString()))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString()))) {
             return nbtCompound.getString(namespacedKey.toString());
         }
 
         //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.getNamespace()))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.getNamespace()))) {
             NBTCompound emfCompound = nbtCompound.getCompound(namespacedKey.getNamespace());
-            if (Boolean.TRUE.equals(emfCompound.hasKey(namespacedKey.getKey()))) {
+            if (Boolean.TRUE.equals(emfCompound.hasTag(namespacedKey.getKey()))) {
                 return emfCompound.getString(namespacedKey.getKey());
             }
         }
@@ -61,20 +62,20 @@ public class NbtUtils {
 
     public static @Nullable Float getFloat(final @NotNull NBTCompound nbtCompound, final String key) {
         NamespacedKey namespacedKey = getNamespacedKey(key);
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
             NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if (Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString())))
+            if (Boolean.TRUE.equals(publicBukkitValues.hasTag(namespacedKey.toString())))
                 return publicBukkitValues.getFloat(namespacedKey.toString());
         }
 
         //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.toString())))
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString())))
             return nbtCompound.getFloat(namespacedKey.toString());
 
         //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(Keys.EMF_COMPOUND))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.EMF_COMPOUND))) {
             NBTCompound emfCompound = nbtCompound.getCompound(Keys.EMF_COMPOUND);
-            if (Boolean.TRUE.equals(emfCompound.hasKey(key)))
+            if (Boolean.TRUE.equals(emfCompound.hasTag(key)))
                 return emfCompound.getFloat(key);
         }
 
@@ -83,20 +84,20 @@ public class NbtUtils {
 
     public static @Nullable Integer getInteger(final @NotNull NBTCompound nbtCompound, final String key) {
         NamespacedKey namespacedKey = getNamespacedKey(key);
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(Keys.PUBLIC_BUKKIT_VALUES))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
             NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if (Boolean.TRUE.equals(publicBukkitValues.hasKey(namespacedKey.toString())))
+            if (Boolean.TRUE.equals(publicBukkitValues.hasTag(namespacedKey.toString())))
                 return publicBukkitValues.getInteger(namespacedKey.toString());
         }
 
         //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(namespacedKey.toString())))
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString())))
             return nbtCompound.getInteger(namespacedKey.toString());
 
         //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasKey(Keys.EMF_COMPOUND))) {
+        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.EMF_COMPOUND))) {
             NBTCompound emfCompound = nbtCompound.getCompound(Keys.EMF_COMPOUND);
-            if (Boolean.TRUE.equals(emfCompound.hasKey(key)))
+            if (Boolean.TRUE.equals(emfCompound.hasTag(key)))
                 return emfCompound.getInteger(key);
         }
 
@@ -111,9 +112,9 @@ public class NbtUtils {
      * @return nbt version
      */
     public static NbtVersion getNbtVersion(final NBTCompound compound) {
-        if (Boolean.TRUE.equals(compound.hasKey(Keys.EMF_COMPOUND)))
+        if (Boolean.TRUE.equals(compound.hasTag(Keys.EMF_COMPOUND)))
             return NbtVersion.COMPAT; //def an emf item
-        if (Boolean.TRUE.equals(compound.hasKey(Keys.PUBLIC_BUKKIT_VALUES)))
+        if (Boolean.TRUE.equals(compound.hasTag(Keys.PUBLIC_BUKKIT_VALUES)))
             return NbtVersion.LEGACY;
         return NbtVersion.NBTAPI;
     }
@@ -123,7 +124,7 @@ public class NbtUtils {
     }
 
     @Contract("_ -> new")
-    private static @NotNull NamespacedKey getNamespacedKey(final String key) {
+    public static @NotNull NamespacedKey getNamespacedKey(final String key) {
         return new NamespacedKey(JavaPlugin.getProvidingPlugin(NbtUtils.class), key);
     }
 

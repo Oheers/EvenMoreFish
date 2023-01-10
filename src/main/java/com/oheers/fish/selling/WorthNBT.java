@@ -32,13 +32,13 @@ public class WorthNBT {
         return nbtItem.getItem();
     }
 
-    public static void setNBT(Skull fishSkull, Fish fish) {
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_LENGTH);
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_PLAYER);
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RARITY);
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_NAME);
-        NamespacedKey nbtrandomIndex = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
-        NamespacedKey nbtxmasfish = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_XMAS_FISH);
+    public static void setNBT(Skull fishSkull, Fish fish) { //todo issue 173
+        NamespacedKey nbtlength = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_LENGTH);
+        NamespacedKey nbtplayer = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_PLAYER);
+        NamespacedKey nbtrarity = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RARITY);
+        NamespacedKey nbtname = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_NAME);
+        NamespacedKey nbtrandomIndex = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
+        NamespacedKey nbtxmasfish = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_XMAS_FISH);
 
         PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
 
@@ -49,8 +49,7 @@ public class WorthNBT {
         itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getChosenRandomIndex());
         itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getValue());
         itemMeta.set(nbtname, PersistentDataType.STRING, fish.getName());
-        itemMeta.set(nbtxmasfish, PersistentDataType.INTEGER, (fish.isXmasFish()) ? 0 : 1);
-
+        itemMeta.set(nbtxmasfish, PersistentDataType.INTEGER, (fish.isXmasFish()) ? 1 : 0);
     }
 
     public static double getValue(ItemStack item) {
