@@ -33,12 +33,12 @@ public class WorthNBT {
     }
 
     public static void setNBT(Skull fishSkull, Fish fish) { //todo issue 173
-        NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_LENGTH);
-        NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_PLAYER);
-        NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RARITY);
-        NamespacedKey nbtname = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_NAME);
-        NamespacedKey nbtrandomIndex = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
-        NamespacedKey nbtxmasfish = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_XMAS_FISH);
+        NamespacedKey nbtlength = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_LENGTH);
+        NamespacedKey nbtplayer = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_PLAYER);
+        NamespacedKey nbtrarity = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RARITY);
+        NamespacedKey nbtname = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_NAME);
+        NamespacedKey nbtrandomIndex = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
+        NamespacedKey nbtxmasfish = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_XMAS_FISH);
 
         PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
 
