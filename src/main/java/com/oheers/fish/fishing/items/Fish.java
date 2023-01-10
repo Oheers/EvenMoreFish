@@ -45,14 +45,16 @@ public class Fish implements Cloneable {
 
     double weight;
 
-    double minSize, maxSize;
+    double minSize;
+    double maxSize;
 
     boolean isCompExemptFish;
 
     boolean disableFisherman;
 
     boolean xmasFish;
-    FileConfiguration fishConfig, rarityConfig;
+    FileConfiguration fishConfig;
+    FileConfiguration rarityConfig;
 
     private int day = -1;
 
@@ -69,10 +71,8 @@ public class Fish implements Cloneable {
             this.fishConfig = EvenMoreFish.fishFile.getConfig();
             this.rarityConfig = EvenMoreFish.raritiesFile.getConfig();
         }
-        this.disableFisherman = this.fishConfig.getBoolean(
-                "fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman",
-                EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false)
-        );
+        final boolean defaultRarityDisableFisherman = EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false);
+        this.disableFisherman = this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman", defaultRarityDisableFisherman);
 
         if (rarity == null)
             throw new InvalidFishException(name + " could not be fetched from the config.");
