@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.NamespacedKey;
@@ -33,7 +34,7 @@ public class NbtUtils {
 
         return false;
     }
-
+    
     public static @Nullable String getString(final @NotNull NBTCompound nbtCompound, final String key) {
         NamespacedKey namespacedKey = getNamespacedKey(key);
         if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
@@ -123,7 +124,7 @@ public class NbtUtils {
     }
 
     @Contract("_ -> new")
-    private static @NotNull NamespacedKey getNamespacedKey(final String key) {
+    public static @NotNull NamespacedKey getNamespacedKey(final String key) {
         return new NamespacedKey(JavaPlugin.getProvidingPlugin(NbtUtils.class), key);
     }
 
