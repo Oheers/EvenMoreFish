@@ -32,7 +32,7 @@ public class WorthNBT {
         return nbtItem.getItem();
     }
 
-    public static void setNBT(Skull fishSkull, Fish fish) {
+    public static void setNBT(Skull fishSkull, Fish fish) { //todo issue 173
         NamespacedKey nbtlength = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_LENGTH);
         NamespacedKey nbtplayer = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_PLAYER);
         NamespacedKey nbtrarity = new NamespacedKey(JavaPlugin.getProvidingPlugin(WorthNBT.class), NbtUtils.Keys.EMF_FISH_RARITY);
@@ -49,8 +49,7 @@ public class WorthNBT {
         itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getChosenRandomIndex());
         itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getValue());
         itemMeta.set(nbtname, PersistentDataType.STRING, fish.getName());
-        itemMeta.set(nbtxmasfish, PersistentDataType.INTEGER, (fish.isXmasFish()) ? 0 : 1);
-
+        itemMeta.set(nbtxmasfish, PersistentDataType.INTEGER, (fish.isXmasFish()) ? 1 : 0);
     }
 
     public static double getValue(ItemStack item) {
