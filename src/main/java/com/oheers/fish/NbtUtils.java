@@ -140,6 +140,7 @@ public class NbtUtils {
         public static final String EMF_FISH_RARITY = "emf-fish-rarity";
         public static final String EMF_FISH_LENGTH = "emf-fish-length";
         public static final String EMF_FISH_NAME = "emf-fish-name";
+        public static final String EMF_XMAS_FISH = "emf-xmas-fish";
         public static final String EMF_FISH_RANDOM_INDEX = "emf-fish-random-index";
         public static final String EMF_BAIT = "emf-bait";
         public static final String EMF_APPLIED_BAIT = "emf-applied-bait";

@@ -127,6 +127,10 @@ public class FishingProcessor implements Listener {
         if (fishRarity == null) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not determine a rarity for fish for " + player.getName());
             return null;
+        } else if (fishRarity == EvenMoreFish.xmasRarity) {
+            Fish fish = EvenMoreFish.xmasFish.get(Calendar.getInstance().get(Calendar.DATE));
+            fish.setFisherman(player.getUniqueId());
+            return fish;
         }
 
         Fish fish = getFish(fishRarity, location, player, 1, null, true);
@@ -253,7 +257,6 @@ public class FishingProcessor implements Listener {
                 public void run() {
 
                     try {
-                        EvenMoreFish.v3Semaphore.acquire();
                         EvenMoreFish.databaseV3.getConnection();
                         // increases the fish fished count if the fish is already in the db
                         if (EvenMoreFish.databaseV3.hasFishData(finalFish)) {
@@ -269,12 +272,8 @@ public class FishingProcessor implements Listener {
 
                         EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
                         EvenMoreFish.databaseV3.closeConnection();
-                        EvenMoreFish.v3Semaphore.release();
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.");
-                        exception.printStackTrace();
-                    } catch (InterruptedException exception) {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Severe interruption when writing fish catch data for " + player.getUniqueId());
                         exception.printStackTrace();
                     }
                 }
@@ -292,21 +291,26 @@ public class FishingProcessor implements Listener {
             return chosenRarity;
         }
 
-        // Loads all the rarities
         List<Rarity> allowedRarities = new ArrayList<>();
 
-        if (fisher != null && EvenMoreFish.permission != null) {
-            for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
-                if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
-                    continue;
-                }
+        int idx = 0;
 
-                if (rarity.getPermission() == null || EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
-                    allowedRarities.add(rarity);
+        /* If allowed rarities has objects, it means we've run through and removed the Christmas rarity. Don't run
+           through again */
+        if (allowedRarities.size() == 0) {
+            if (fisher != null && EvenMoreFish.permission != null) {
+                for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
+                    if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
+                        continue;
+                    }
+
+                    if (rarity.getPermission() == null || EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
+                        allowedRarities.add(rarity);
+                    }
                 }
+            } else {
+                allowedRarities.addAll(totalRarities);
             }
-        } else {
-            allowedRarities.addAll(totalRarities);
         }
 
         double totalWeight = 0;
@@ -319,7 +323,6 @@ public class FishingProcessor implements Listener {
             }
         }
 
-        int idx = 0;
         for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
             if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
                 r -= allowedRarities.get(idx).getWeight() * boostRate;
@@ -328,7 +331,6 @@ public class FishingProcessor implements Listener {
             }
             if (r <= 0.0) break;
         }
-
 
         if (allowedRarities.isEmpty()) {
             EvenMoreFish.logger.log(Level.SEVERE, "There are no rarities for the user " + fisher.getName() + " to fish. They have received no fish.");
@@ -352,10 +354,11 @@ public class FishingProcessor implements Listener {
             // boosted fish. The other 2 check that the plugin wants the bait calculations too.
             if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
 
-                if (fish.getWeight() == 0.0d) totalWeight += (5 * boostRate);
-                else totalWeight += fish.getWeight() * boostRate;
+                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
+                else
+                    totalWeight += fish.getWeight() * boostRate;
             } else {
-                if (fish.getWeight() == 0.0d) totalWeight += 5;
+                if (fish.getWeight() == 0.0d) totalWeight += 1;
                 else totalWeight += fish.getWeight();
             }
         }
@@ -365,9 +368,9 @@ public class FishingProcessor implements Listener {
 
             if (fishList.get(idx).getWeight() == 0.0d) {
                 if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
-                    r -= 5 * boostRate;
+                    r -= 1 * boostRate;
                 } else {
-                    r -= 5;
+                    r -= 1;
                 }
             } else {
                 if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {

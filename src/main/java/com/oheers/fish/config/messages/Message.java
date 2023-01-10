@@ -454,6 +454,60 @@ public class Message {
     }
 
     /**
+     * Defines which day should replace the {day} variable.
+     *
+     * @param day The day number.
+     */
+    public void setDay(@NotNull final String day) {
+        setVariable("{day}", day);
+    }
+
+    /**
+     * Defines the name of the fish to be used, alternate to {fish}.
+     *
+     * @param name The name of the fish or user
+     */
+    public void setName(@NotNull final String name) {
+        setVariable("{name}", name);
+    }
+
+    /**
+     * Defines the number of fish caught in the user's fish reports.
+     *
+     * @param numCaught The number of fish caught.
+     */
+    public void setNumCaught(@NotNull final String numCaught) {
+        setVariable("{num_caught}", numCaught);
+    }
+
+    /**
+     * Defines the largest fish caught by the user in their fish reports.
+     *
+     * @param largestSize The largest size of the fish.
+     */
+    public void setLargestSize(@NotNull final String largestSize) {
+        setVariable("{largest_size}", largestSize);
+    }
+
+    /**
+     * The first fish to be caught by the user in their fish reports.
+     *
+     * @param firstCaught The first fish caught.
+     */
+    public void setFirstCaught(@NotNull final String firstCaught) {
+        setVariable("{first_caught}", firstCaught);
+    }
+
+    /**
+     * The time remaining for the fish to be unlocked.
+     *
+     * @param timeRemaining The time remaining.
+     */
+    public void setTimeRemaining(@NotNull final String timeRemaining) {
+        setVariable("{time_remaining}", timeRemaining);
+    }
+
+    /**
      * Sets the competition type, checking against the values for each type stored in messages.yml to replace the {type}
      * variable.
      *

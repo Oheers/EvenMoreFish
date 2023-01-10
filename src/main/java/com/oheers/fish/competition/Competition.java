@@ -7,6 +7,7 @@ import com.oheers.fish.api.EMFCompetitionStartEvent;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.UserReport;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
@@ -118,17 +119,12 @@ public class Competition {
                 @Override
                 public void run() {
                     try {
-                        EvenMoreFish.v3Semaphore.acquire();
                         EvenMoreFish.databaseV3.getConnection();
                         EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
                         EvenMoreFish.databaseV3.closeConnection();
-                        EvenMoreFish.v3Semaphore.release();
                         leaderboard.clear();
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing competition data for " + competitionRef.getCompetitionName() + ". Try restarting or contacting support.");
-                        exception.printStackTrace();
-                    } catch (InterruptedException exception) {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Severe interruption whilst writing competition: " + competitionRef.getCompetitionName());
                         exception.printStackTrace();
                     }
                 }
@@ -162,7 +158,7 @@ public class Competition {
             Message message = getTypeFormat(ConfigMessage.TIME_ALERT);
             message.broadcast(true, true);
 
-        } else if (timeLeft == 0) {
+        } else if (timeLeft <= 0) {
             end();
             return true;
         }
@@ -662,14 +658,12 @@ public class Competition {
             Iterator<CompetitionEntry> iterator = leaderboard.getIterator();
             int i = 1;
             CompetitionEntry topEntry = leaderboard.getTopEntry();
-            if (topEntry == null) {
-                failedUserReportFetch();
-            } else {
-                UserReport report = EvenMoreFish.userReports.get(topEntry.getPlayer());
-                if (report == null) {
-                    failedUserReportFetch();
-                } else {
+            if (topEntry != null) {
+                UserReport report = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
+                if (report != null) {
                     report.incrementCompetitionsWon(1);
+                } else {
+                    EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
                 }
             }
 
@@ -681,13 +675,13 @@ public class Competition {
                     }
                     i++;
                     if (EvenMoreFish.mainConfig.databaseEnabled() && entry != null) {
-                        UserReport report = EvenMoreFish.userReports.get(entry.getPlayer());
-                        if (report != null) report.incrementCompetitionsJoined(1);
+                        UserReport report = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
+                        if (report != null) {
+                            report.incrementCompetitionsJoined(1);
+                            DataManager.getInstance().putUserReportCache(entry.getPlayer(), report);
+                        }
                         else {
                             EvenMoreFish.logger.log(Level.SEVERE, "Could not increment competitions won for " + entry.getPlayer());
-                            for (UUID uuid : EvenMoreFish.userReports.keySet()) {
-                                EvenMoreFish.logger.log(Level.SEVERE, "User: " + uuid);
-                            }
                         }
                     }
                 } else {
@@ -698,21 +692,23 @@ public class Competition {
                             }
 
                             if (EvenMoreFish.mainConfig.databaseEnabled()) {
-                                UserReport report = EvenMoreFish.userReports.get(competitionEntry.getPlayer());
+                                UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
                                 if (report != null) {
                                     report.incrementCompetitionsJoined(1);
+                                    DataManager.getInstance().putUserReportCache(competitionEntry.getPlayer(), report);
                                 } else {
-                                    EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. " + EvenMoreFish.userReports.size() + "/" + Bukkit.getOnlinePlayers().size());
+                                    EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. ");
                                 }
                             }
                         });
                     } else if (EvenMoreFish.mainConfig.databaseEnabled()) {
                         iterator.forEachRemaining(competitionEntry -> {
-                            UserReport report = EvenMoreFish.userReports.get(competitionEntry.getPlayer());
+                            UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
                             if (report != null) {
                                 report.incrementCompetitionsJoined(1);
+                                DataManager.getInstance().putUserReportCache(competitionEntry.getPlayer(), report);
                             } else {
-                                EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. " + EvenMoreFish.userReports.size() + "/" + Bukkit.getOnlinePlayers().size());
+                                EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. ");
                             }
                         });
                     }
@@ -724,14 +720,6 @@ public class Competition {
                 new Message(ConfigMessage.NO_WINNERS).broadcast(true, false);
             }
         }
-    }
-
-    private void failedUserReportFetch() {
-        EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user report for " + leaderboard.getTopEntry().getPlayer());
-        for (UUID uuid : EvenMoreFish.userReports.keySet()) {
-            EvenMoreFish.logger.log(Level.SEVERE, "User: " + uuid);
-        }
-        EvenMoreFish.logger.log(Level.SEVERE, "Recorded " + EvenMoreFish.userReports.size() + "/" + Bukkit.getServer().getOnlinePlayers().size());
     }
 
     public void singleReward(Player player) {
