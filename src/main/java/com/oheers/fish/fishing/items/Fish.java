@@ -74,7 +74,8 @@ public class Fish implements Cloneable {
                 EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false)
         );
 
-        if (rarity == null) throw new InvalidFishException(name + " could not be fetched from the config.");
+        if (rarity == null)
+            throw new InvalidFishException(name + " could not be fetched from the config.");
 
         this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name, isXmas2022Fish);
         checkDisplayName();
