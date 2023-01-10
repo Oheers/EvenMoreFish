@@ -29,7 +29,7 @@ public class SkullSaver implements Listener {
         if (event.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
         Block block = event.getBlock();
         if (block.getType() == Material.PLAYER_HEAD || block.getType() == Material.PLAYER_WALL_HEAD) {
-            if (block.getDrops().size() == 0) return;
+            if (block.getDrops().isEmpty()) return;
 
             BlockState state = event.getBlock().getState();
             Skull sm = (Skull) state;
@@ -70,7 +70,6 @@ public class SkullSaver implements Listener {
         }
 
         if (FishUtils.isFish(stack)) {
-
             if (EvenMoreFish.mainConfig.blockPlacingHeads()) {
                 event.setCancelled(true);
                 new Message(ConfigMessage.FISH_CANT_BE_PLACED).broadcast(event.getPlayer(), true, false);
