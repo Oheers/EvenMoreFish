@@ -13,10 +13,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTItem;
-import de.tr7zw.changeme.nbtapi.NBTListCompound;
-import de.tr7zw.changeme.nbtapi.NBTTileEntity;
+import de.tr7zw.changeme.nbtapi.*;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -104,18 +101,17 @@ public class FishUtils {
 
     public static Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
-        NBTTileEntity nbtSkull = new NBTTileEntity(skull);
-
-        String nameString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_NAME);
-        String playerString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_PLAYER);
-        String rarityString = NbtUtils.getString(nbtSkull, NbtUtils.Keys.EMF_FISH_RARITY);
-        Float lengthFloat = NbtUtils.getFloat(nbtSkull, NbtUtils.Keys.EMF_FISH_LENGTH);
-        Integer randomIndex = NbtUtils.getInteger(nbtSkull, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
-        Integer xmasINT = NbtUtils.getInteger(nbtSkull, NbtUtils.Keys.EMF_XMAS_FISH);
+        final String nameString = NBT.getPersistentData(skull,nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_NAME).toString()));
+        final String playerString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_PLAYER).toString()));
+        final String rarityString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RARITY).toString()));
+        final Float lengthFloat = NBT.getPersistentData(skull,nbt -> nbt.getFloat(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_LENGTH).toString()));
+        final Integer randomIndex = NBT.getPersistentData(skull,nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX).toString()));
+        final Integer xmasInteger = NBT.getPersistentData(skull, nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_XMAS_FISH).toString()));
+        
         boolean isXmasFish = false;
 
-        if (xmasINT != null) {
-            isXmasFish = xmasINT == 1;
+        if (xmasInteger != null) {
+            isXmasFish = xmasInteger == 1;
         }
 
         if (nameString == null || rarityString == null)
