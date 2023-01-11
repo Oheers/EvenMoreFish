@@ -106,6 +106,13 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             return "";
         }
         
+        if(identifier.equalsIgnoreCase("competition_type")) {
+            if (!Competition.isActive()) {
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
+            }
+            
+            return EvenMoreFish.active.getCompetitionType().name();
+        }
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
             if (!Competition.isActive()) {
