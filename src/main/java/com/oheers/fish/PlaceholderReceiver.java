@@ -198,14 +198,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             
             int competitionStartTime = EvenMoreFish.competitionQueue.getNextCompetition();
             int currentTime = AutoRunner.getCurrentTimeCode();
-            int remainingTime;
-            
-            if (competitionStartTime > currentTime) {
-                remainingTime = competitionStartTime - currentTime;
-            } else {
-                // time left of the current week + the time next week until next competition
-                remainingTime = (10080 - currentTime) + competitionStartTime;
-            }
+            int remainingTime = getRemainingTime(competitionStartTime,currentTime);
             
             Message message = new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING);
             message.setDays(Integer.toString(remainingTime / 1440));
@@ -218,6 +211,19 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
         // was provided
         return null;
+    }
+    
+    private int getRemainingTime(int competitionStartTime, int currentTime) {
+        if (competitionStartTime > currentTime) {
+            return competitionStartTime - currentTime;
+        }
+
+        return getRemainingTimeOverWeek(competitionStartTime,currentTime);
+    }
+    
+    // time left of the current week + the time next week until next competition
+    private int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
+        return (10080 - currentTime) + competitionStartTime;
     }
     
     private boolean leaderboardContainsPlace(int place) {
