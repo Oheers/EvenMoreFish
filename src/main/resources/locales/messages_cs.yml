@@ -189,7 +189,7 @@ emf-size-during-most-fish: "N/A"
 # How the %emf_competition_time_left% variable should be formatted.
 emf-time-remaining: "Zbyvajicí čas, do další rybářské soutěže: {days}d, {hours}h, {minutes}m."
 # Replaces the %emf_competition_time_left% variable when there's a competition already running.
-emf-time-remaining-during-comp: "Momentálně neprobíhá žadná rybářská soutěž."
+emf-time-remaining-during-comp: "Aktuálně probíhá rybářská soutěž."
 
 # Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
 max-baits-reached: "&rDosáhl jsi maximálního počtu typu návnad pro tento prut."
