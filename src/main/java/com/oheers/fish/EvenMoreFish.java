@@ -24,6 +24,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -177,7 +178,7 @@ public class EvenMoreFish extends JavaPlugin {
         wgPlugin = getWorldGuard();
         checkPapi();
 
-        if (EvenMoreFish.mainConfig.databaseEnabled()) {
+        if (mainConfig.databaseEnabled() && mainConfig.doingExperimentalFeatures()) {
 
             DataManager.init();
 
@@ -285,6 +286,8 @@ public class EvenMoreFish extends JavaPlugin {
             metric_baitsUsed = 0;
             return returning;
         }));
+
+        metrics.addCustomChart(new SimplePie("experimental_features", () -> mainConfig.doingExperimentalFeatures() ? "true" : "false"));
     }
 
     private void commands() {
@@ -320,7 +323,7 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void saveUserData() {
-        if (mainConfig.isDatabaseOnline()) {
+        if (mainConfig.isDatabaseOnline() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
             try {
                 databaseV3.getConnection();
                 ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();

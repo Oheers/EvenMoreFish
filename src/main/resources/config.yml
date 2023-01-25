@@ -9,6 +9,10 @@ locale: en
 # Should EMF fish only be given during a competition?
 fish-only-in-competition: false
 
+# Would you like to test out new experimental features? These are partially working features such as the database that
+# may not work on all servers.
+experimental-features: false
+
 # The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
 # of this feature.
 # ATTENTION: Toggling this requires a full server restart.
@@ -96,4 +100,4 @@ disable-aureliumskills-loot: true
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 12
+config-version: 13

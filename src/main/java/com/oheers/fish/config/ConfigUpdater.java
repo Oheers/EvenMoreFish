@@ -8,6 +8,10 @@ public class ConfigUpdater {
 
     private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
+    private static String CONFIG_UPDATE_13 = "\n" +
+            "# Would you like to test out new experimental features? These are partially working features such as the database that\n" +
+            "# may not work on all servers.\n" +
+            "experimental-features: false";
     private static String CONFIG_UPDATE_12 = "\n# Should fish and baits be blocked from being crafted into other items. For example, when the player tries to craft\n" +
             "# the starfish into a beacon.\n" +
             "block-crafting: true";
@@ -256,6 +260,8 @@ public class ConfigUpdater {
                 update.append(CONFIG_UPDATE_11);
             case 11:
                 update.append(CONFIG_UPDATE_12);
+            case 12:
+                update.append(CONFIG_UPDATE_13);
         }
 
         update.append(UPDATE_ALERT);
