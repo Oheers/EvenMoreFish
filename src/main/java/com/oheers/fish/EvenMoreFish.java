@@ -348,8 +348,9 @@ public class EvenMoreFish extends JavaPlugin {
                 logger.log(Level.SEVERE, "Failed to save all user data.");
                 exception.printStackTrace();
             }
+
+            DataManager.getInstance().uncacheAll();
         }
-        DataManager.getInstance().uncacheAll();
     }
 
     public void reload() {
