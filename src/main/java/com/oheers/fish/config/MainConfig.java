@@ -42,7 +42,7 @@ public class MainConfig {
     }
 
     public boolean isDatabaseOnline() {
-        return config.getBoolean("database") && doingExperimentalFeatures() && !EvenMoreFish.databaseV3.usingVersionV2();
+        return config.getBoolean("database") && !EvenMoreFish.databaseV3.usingVersionV2();
     }
 
     public boolean isCompetitionUnique() {
