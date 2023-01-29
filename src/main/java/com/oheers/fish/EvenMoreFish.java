@@ -323,7 +323,7 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void saveUserData() {
-        if (mainConfig.isDatabaseOnline() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
+        if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline()) {
             try {
                 databaseV3.getConnection();
                 ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();

@@ -246,7 +246,7 @@ public class FishingProcessor implements Listener {
             e.printStackTrace();
         }
 
-        if (EvenMoreFish.mainConfig.isDatabaseOnline() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
+        if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && EvenMoreFish.mainConfig.isDatabaseOnline()) {
             Fish finalFish = fish;
             new BukkitRunnable() {
                 @Override
