@@ -1,6 +1,10 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.requirements.Requirement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Rarity {
 
@@ -12,6 +16,7 @@ public class Rarity {
     boolean fishWeighted;
     boolean hasCompExemptFish;
     String displayName;
+    List<Requirement> requirements = new ArrayList<>();
 
     public Rarity(String value, String colour, double weight, boolean announce, String overridenLore) {
         this.value = value;
@@ -53,6 +58,21 @@ public class Rarity {
         this.displayName = displayName;
     }
 
+
+    /**
+     * Adds a requirement needed for players to be able to catch a fish. If all rarities have unmet requirements the plugin
+     * will likely break and give no fish. This will also modify the weight values as it will no longer be in the pool.
+     *
+     * @param requirement The requirement that needs to be met in order to catch a fish of this rarity.
+     */
+    public void addRequirement(Requirement requirement) {
+        this.requirements.add(requirement);
+    }
+
+    public void setRequirements(List<Requirement> requirements) {
+        this.requirements = requirements;
+    }
+
     public String getLorePrep() {
         if (overridenLore != null) return FishUtils.translateHexColorCodes(overridenLore);
         else {
@@ -79,5 +99,9 @@ public class Rarity {
 
     public void setHasCompExemptFish(boolean hasCompExemptFish) {
         this.hasCompExemptFish = hasCompExemptFish;
+    }
+
+    public List<Requirement> getRequirements() {
+        return requirements;
     }
 }

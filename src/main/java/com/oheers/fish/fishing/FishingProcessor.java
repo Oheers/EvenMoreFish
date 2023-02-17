@@ -295,14 +295,27 @@ public class FishingProcessor implements Listener {
            through again */
         if (allowedRarities.size() == 0) {
             if (fisher != null && EvenMoreFish.permission != null) {
+                rarityLoop:
                 for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {
                     if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
                         continue;
                     }
 
-                    if (rarity.getPermission() == null || EvenMoreFish.permission.has(fisher, rarity.getPermission())) {
-                        allowedRarities.add(rarity);
+                    if (!(rarity.getPermission() == null || EvenMoreFish.permission.has(fisher, rarity.getPermission()))) {
+                        continue;
                     }
+
+                    List<Requirement> requirements;
+                    if ((requirements = rarity.getRequirements()) != null) {
+                        RequirementContext context = new RequirementContext();
+                        context.setLocation(fisher.getLocation());
+                        context.setPlayer(fisher);
+                        for (Requirement requirement : requirements) {
+                            if (!requirement.requirementMet(context)) continue rarityLoop;
+                        }
+                    }
+
+                    allowedRarities.add(rarity);
                 }
             } else {
                 allowedRarities.addAll(totalRarities);

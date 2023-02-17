@@ -1,6 +1,7 @@
 package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -9,6 +10,7 @@ import java.util.logging.Level;
 public class IRLTime implements Requirement {
 
     public final String configLocation;
+    public final FileConfiguration fileConfig;
     public int minTime, maxTime;
 
     /**
@@ -19,9 +21,12 @@ public class IRLTime implements Requirement {
      *
      * @param configLocation The location that data regarding this should be found. It should cut off after "irl-time:"
      *                       for example, "fish.Common.Herring.requirements.irl-time".
+     * @param fileConfig The file configuration to fetch file data from, this is either the rarities or fish.yml file,
+     *                   but it would be possible to use any file, as long as the configLocation is correct.
      */
-    public IRLTime(@NotNull final String configLocation) {
+    public IRLTime(@NotNull final String configLocation, @NotNull final FileConfiguration fileConfig) {
         this.configLocation = configLocation;
+        this.fileConfig = fileConfig;
         fetchData();
     }
 
@@ -32,8 +37,8 @@ public class IRLTime implements Requirement {
     }
 
     public void fetchData() {
-        this.minTime = getDayMinute(EvenMoreFish.fishFile.getConfig().getString(configLocation + ".minTime", "00:00"), 0);
-        this.maxTime = getDayMinute(EvenMoreFish.fishFile.getConfig().getString(configLocation + ".maxTime", "24:00"), 1440);
+        this.minTime = getDayMinute(fileConfig.getString(configLocation + ".minTime", "00:00"), 0);
+        this.maxTime = getDayMinute(fileConfig.getString(configLocation + ".maxTime", "24:00"), 1440);
     }
 
     /**

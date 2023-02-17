@@ -1,6 +1,7 @@
 package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
@@ -8,6 +9,7 @@ import java.util.logging.Level;
 public class InGameTime implements Requirement {
 
     public final String configLocation;
+    public final FileConfiguration fileConfig;
     public int minTime, maxTime;
 
     /**
@@ -16,9 +18,12 @@ public class InGameTime implements Requirement {
      *
      * @param configLocation The location that data regarding this should be found. It should cut off after "ingame-time:"
      *                       for example, "fish.Common.Herring.requirements.ingame-time".
+     * @param fileConfig The file configuration to fetch file data from, this is either the rarities or fish.yml file,
+     *                   but it would be possible to use any file, as long as the configLocation is correct.
      */
-    public InGameTime(@NotNull final String configLocation) {
+    public InGameTime(@NotNull final String configLocation, @NotNull final FileConfiguration fileConfig) {
         this.configLocation = configLocation;
+        this.fileConfig = fileConfig;
         fetchData();
     }
 
@@ -34,7 +39,7 @@ public class InGameTime implements Requirement {
 
     @Override
     public void fetchData() {
-        this.minTime = EvenMoreFish.fishFile.getConfig().getInt(configLocation + ".minTime", 0);
-        this.maxTime = EvenMoreFish.fishFile.getConfig().getInt(configLocation + ".maxTime", 24000);
+        this.minTime = fileConfig.getInt(configLocation + ".minTime", 0);
+        this.maxTime = fileConfig.getInt(configLocation + ".maxTime", 24000);
     }
 }

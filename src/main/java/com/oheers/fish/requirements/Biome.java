@@ -1,6 +1,7 @@
 package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.logging.Level;
 public class Biome implements Requirement {
 
     public final String configLocation;
+    public final FileConfiguration fileConfig;
     public final List<org.bukkit.block.Biome> biomes = new ArrayList<>();
 
     /**
@@ -19,9 +21,12 @@ public class Biome implements Requirement {
      *
      * @param configLocation The location that data regarding this should be found. It should cut off after "biome:"
      *                       for example, "fish.Common.Herring.requirements.biome".
+     * @param fileConfig The file configuration to fetch file data from, this is either the rarities or fish.yml file,
+     *                   but it would be possible to use any file, as long as the configLocation is correct.
      */
-    public Biome(@NotNull final String configLocation) {
+    public Biome(@NotNull final String configLocation, @NotNull final FileConfiguration fileConfig) {
         this.configLocation = configLocation;
+        this.fileConfig = fileConfig;
         fetchData();
     }
 

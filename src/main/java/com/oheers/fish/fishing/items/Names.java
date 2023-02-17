@@ -57,6 +57,7 @@ public class Names {
             if (xmasRarity) EvenMoreFish.xmasRarity = r;
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
+            r.setRequirements(getRequirements(null, rarity, EvenMoreFish.raritiesFile.getConfig()));
 
             List<Fish> fishQueue = new ArrayList<>();
 
@@ -71,7 +72,7 @@ public class Names {
                 }
 
                 assert canvas != null;
-                canvas.setRequirements(getRequirements(fish, rarity));
+                canvas.setRequirements(getRequirements(fish, rarity, EvenMoreFish.fishFile.getConfig()));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
 
@@ -179,50 +180,60 @@ public class Names {
         return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
     }
 
-    private List<Requirement> getRequirements(String name, String rarity) {
-        ConfigurationSection requirementSection = this.fishConfiguration.getConfigurationSection("fish." + rarity + "." + name + ".requirements");
+    private List<Requirement> getRequirements(String name, String rarity, FileConfiguration config) {
+        ConfigurationSection requirementSection;
+        if (name != null) {
+            requirementSection = this.fishConfiguration.getConfigurationSection("fish." + rarity + "." + name + ".requirements");
+        } else {
+            requirementSection = this.rarityConfiguration.getConfigurationSection("rarities." + rarity + ".requirements");
+        }
         List<Requirement> currentRequirements = new ArrayList<>();
         boolean xmas2022 = false;
         if (requirementSection == null) {
             if (rarity.equals("Christmas 2022")) xmas2022 = true;
             else return null;
         } else {
+            String configLocator;
+            if (name != null) configLocator = "fish." + rarity + "." + name;
+            else configLocator = "rarities." + rarity;
             for (String s : requirementSection.getKeys(false)) {
                 switch (s.toLowerCase()) {
                     case "biome":
-                        currentRequirements.add(new com.oheers.fish.requirements.Biome("fish." + rarity + "." + name + ".requirements.biome"));
+                        currentRequirements.add(new Biome(configLocator + ".requirements.biome", config));
                         break;
                     case "irl-time":
-                        currentRequirements.add(new IRLTime("fish." + rarity + "." + name + ".requirements.irl-time"));
+                        currentRequirements.add(new IRLTime(configLocator + ".requirements.irl-time", config));
                         break;
                     case "ingame-time":
-                        currentRequirements.add(new InGameTime("fish." + rarity + "." + name + ".requirements.ingame-time"));
+                        currentRequirements.add(new InGameTime(configLocator + ".requirements.ingame-time", config));
                         break;
                     case "moon-phase":
-                        currentRequirements.add(new MoonPhase("fish." + rarity + "." + name + ".requirements.moon-phase"));
+                        currentRequirements.add(new MoonPhase(configLocator + ".requirements.moon-phase", config));
                         break;
                     case "permission":
-                        currentRequirements.add(new Permission("fish." + rarity + "." + name + ".requirements.permission"));
+                        currentRequirements.add(new Permission(configLocator + ".requirements.permission", config));
                         break;
                     case "region":
-                        currentRequirements.add(new Region("fish." + rarity + "." + name + ".requirements.region"));
+                        currentRequirements.add(new Region(configLocator + ".requirements.region", config));
                         regionCheck = true;
                         break;
                     case "weather":
-                        currentRequirements.add(new Weather("fish." + rarity + "." + name + ".requirements.weather"));
+                        currentRequirements.add(new Weather(configLocator + ".requirements.weather", config));
                         break;
                     case "world":
-                        currentRequirements.add(new World("fish." + rarity + "." + name + ".requirements.world"));
+                        currentRequirements.add(new World(configLocator + ".requirements.world", config));
                         break;
                 }
             }
         }
 
-        if (this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".disabled", false)) {
-            currentRequirements.add(new Disabled("fish." + rarity + "." + name + ".disabled"));
+        if (name != null && this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".disabled", false)) {
+            currentRequirements.add(new Disabled("fish." + rarity + "." + name + ".disabled", config));
+        } else if (this.rarityConfiguration.getBoolean("rarities." + rarity + ".disabled", false)) {
+            currentRequirements.add(new Disabled("rarities." + rarity + ".disabled", config));
         }
 
-        if (xmas2022) currentRequirements.add(new Day("fish." + rarity + "." + name + ".day"));
+        if (xmas2022) currentRequirements.add(new Day("fish." + rarity + "." + name + ".day", EvenMoreFish.xmas2022Config.getConfig()));
 
         return currentRequirements;
     }
