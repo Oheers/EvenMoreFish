@@ -2,7 +2,7 @@
 enabled: true
 
 # The locale of the message file
-# Currently: en, cs, de, es, fr, ko, nl, pt-br, ru, tr, vn, zh_cn
+# Currently: en, cs, de, es, fr, ja, ko, nl, pl, pt-br, ru, tr, vn, zh_cn
 # Delete messages.yml before changing this
 locale: en
 
