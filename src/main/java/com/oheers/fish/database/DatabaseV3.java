@@ -760,19 +760,13 @@ public class DatabaseV3 {
      * must be done before making any changes to data that is assumed to be in the database.
      *
      * @param fish The fish being queried.
-     * @returns If the fish is present or not. If an SQLException occurs, true will be returned.
+     * @return If the fish is present or not. If an SQLException occurs, true will be returned.
      */
     public boolean hasFishData(@NotNull final Fish fish) {
-        try {
-            PreparedStatement statement = this.getConnection().prepareStatement("SELECT * FROM emf_fish WHERE fish_name = ? AND fish_rarity = ?");
+        try (PreparedStatement statement = this.getConnection().prepareStatement("SELECT * FROM emf_fish WHERE fish_name = ? AND fish_rarity = ?")) {
             statement.setString(1, fish.getName());
             statement.setString(2, fish.getRarity().getValue());
-
-            try {
-                return statement.executeQuery().next();
-            } finally {
-                statement.close();
-            }
+            return statement.executeQuery().next();
         } catch (SQLException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not check if " + fish.getName() + " is present in the database.");
             exception.printStackTrace();
