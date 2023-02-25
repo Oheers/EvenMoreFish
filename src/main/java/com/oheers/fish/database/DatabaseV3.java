@@ -653,30 +653,30 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) throws SQLException {
-        PreparedStatement statement = this.getConnection().prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
-                "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
-                "WHERE uuid = ?;");
-        try {
-            statement.setString(1, report.getFirstFish());
-            statement.setString(2, report.getRecentFish());
-            statement.setString(3, report.getLargestFish());
-            statement.setFloat(4, report.getLargestLength());
-            statement.setInt(5, report.getNumFishCaught());
-            statement.setFloat(6, report.getTotalFishLength());
-            statement.setInt(7, report.getCompetitionsWon());
-            statement.setInt(8, report.getCompetitionsJoined());
-            statement.setString(9, uuid.toString());
-        } catch (NullPointerException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not write user report data for " + uuid);
-            exception.printStackTrace();
+        try (PreparedStatement statement = this.getConnection().prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
+            "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
+            "WHERE uuid = ?;")) {
+            try {
+                statement.setString(1, report.getFirstFish());
+                statement.setString(2, report.getRecentFish());
+                statement.setString(3, report.getLargestFish());
+                statement.setFloat(4, report.getLargestLength());
+                statement.setInt(5, report.getNumFishCaught());
+                statement.setFloat(6, report.getTotalFishLength());
+                statement.setInt(7, report.getCompetitionsWon());
+                statement.setInt(8, report.getCompetitionsJoined());
+                statement.setString(9, uuid.toString());
+            } catch (NullPointerException exception) { //todo figure out where this is coming from and ensure it throws the error
+                EvenMoreFish.logger.log(Level.SEVERE, "Could not write user report data for " + uuid);
+                exception.printStackTrace();
+            }
+        
+            if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                EvenMoreFish.logger.log(Level.INFO, "Written user report for (" + uuid + ") to the database.");
+            }
+        
+            statement.execute();
         }
-
-        if (EvenMoreFish.mainConfig.doDBVerbose()) {
-            EvenMoreFish.logger.log(Level.INFO, "Written user report for (" + uuid + ") to the database.");
-        }
-
-        statement.execute();
-        statement.close();
     }
 
     /**
@@ -691,24 +691,24 @@ public class DatabaseV3 {
     public UserReport readUserReport(@NotNull final UUID uuid) throws SQLException {
         try (PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM emf_users WHERE uuid = ?")) {
             statement.setString(1, uuid.toString());
-    
+        
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     if (EvenMoreFish.mainConfig.doDBVerbose()) {
                         EvenMoreFish.logger.log(Level.INFO, "Read user report for (" + uuid + ") from the database.");
                     }
-                        return new UserReport(
-                            resultSet.getInt("id"),
-                            resultSet.getInt("num_fish_caught"),
-                            resultSet.getInt("competitions_won"),
-                            resultSet.getInt("competitions_joined"),
-                            resultSet.getString("first_fish"),
-                            resultSet.getString("last_fish"),
-                            resultSet.getString("largest_fish"),
-                            resultSet.getFloat("total_fish_length"),
-                            resultSet.getFloat("largest_length"),
-                            resultSet.getString("uuid")
-                        );
+                    return new UserReport(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("num_fish_caught"),
+                        resultSet.getInt("competitions_won"),
+                        resultSet.getInt("competitions_joined"),
+                        resultSet.getString("first_fish"),
+                        resultSet.getString("last_fish"),
+                        resultSet.getString("largest_fish"),
+                        resultSet.getFloat("total_fish_length"),
+                        resultSet.getFloat("largest_length"),
+                        resultSet.getString("uuid")
+                    );
                 } else {
                     if (EvenMoreFish.mainConfig.doDBVerbose()) {
                         EvenMoreFish.logger.log(Level.INFO, "User report for (" + uuid + ") does not exist in the database.");
