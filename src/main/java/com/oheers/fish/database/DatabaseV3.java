@@ -50,7 +50,7 @@ public class DatabaseV3 {
      *
      * @param plugin An instance of the JavaPlugin extended main class.
      */
-    public DatabaseV3(EvenMoreFish plugin) {
+    public DatabaseV3(@NotNull EvenMoreFish plugin) {
         this.usingV2 = Files.isDirectory(Paths.get(plugin.getDataFolder() + "/data/"));
     
         if (EvenMoreFish.mainConfig.isMysql() && hasCredentials()) {
@@ -72,7 +72,6 @@ public class DatabaseV3 {
     /**
      * Creates a connection to the database to send/receive data. This must be closed with the #closeConnection() method
      * once the connection is no longer needed.
-     *
      * Should only be used internally in this class.
      * If you need to access the database, please add a method in this class for it.
      * @throws SQLException Something went wrong when carrying out SQL instructions.
@@ -229,7 +228,7 @@ public class DatabaseV3 {
             return;
         }
 
-        EvenMoreFish.logger.log(Level.INFO, initiator.getName() + " has begun the migration to EMF database V3 from V2.");
+        EvenMoreFish.logger.info(() -> initiator.getName() + " has begun the migration to EMF database V3 from V2.");
         Message msg = new Message("Beginning conversion to V3 database engine.");
         msg.usePrefix(PrefixType.ADMIN);
         msg.broadcast(initiator, true, false);
@@ -374,7 +373,7 @@ public class DatabaseV3 {
                         prep.execute();
                     }
                 } catch (SQLException exception) {
-                    EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
+                    EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: Users.");
                     exception.printStackTrace();
                 }
             });
@@ -398,7 +397,7 @@ public class DatabaseV3 {
             
                 prep.execute();
             } catch (SQLException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: emf_users.");
+                EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: emf_users.");
                 exception.printStackTrace();
             }
         });
@@ -468,11 +467,11 @@ public class DatabaseV3 {
                 prep.execute();
     
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                    EvenMoreFish.logger.log(Level.INFO, "Written competition report for (" + competition.getCompetitionName() + ") to the database.");
+                    EvenMoreFish.logger.info(() ->  "Written competition report for (" + competition.getCompetitionName() + ") to the database.");
                 }
                 
             } catch (SQLException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not add the current competition ("+competition.getCompetitionName()+") in the table: emf_competitions.");
+                EvenMoreFish.logger.severe(() -> "Could not add the current competition ("+competition.getCompetitionName()+") in the table: emf_competitions.");
                 exception.printStackTrace();
             }
         });
@@ -496,10 +495,10 @@ public class DatabaseV3 {
                 prep.execute();
         
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                    EvenMoreFish.logger.log(Level.INFO, "Written empty user report for (" + uuid + ") to the database.");
+                    EvenMoreFish.logger.info(() -> "Written empty user report for (" + uuid + ") to the database.");
                 }
             } catch (SQLException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.");
+                EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: Users.");
                 exception.printStackTrace();
             }
         });
@@ -574,7 +573,7 @@ public class DatabaseV3 {
                 }
         
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                    EvenMoreFish.logger.log(Level.INFO, "Read fish reports for (" + uuid + ") from the database.");
+                    EvenMoreFish.logger.info(() -> "Read fish reports for (" + uuid + ") from the database.");
                 }
         
                 return reports;
@@ -630,7 +629,7 @@ public class DatabaseV3 {
                 statement.execute();
     
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                    EvenMoreFish.logger.log(Level.INFO, "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
+                    EvenMoreFish.logger.info(() -> "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
                 }
             } catch (SQLException e) {
                 EvenMoreFish.logger.warning("There was a problem adding a new fish for (userID:" + userID+ ")");
@@ -683,7 +682,7 @@ public class DatabaseV3 {
         }
 
         if (EvenMoreFish.mainConfig.doDBVerbose()) {
-            EvenMoreFish.logger.log(Level.INFO, "Updated user report for (userID:" + userID + ") in the database.");
+            EvenMoreFish.logger.info(() -> "Updated user report for (userID:" + userID + ") in the database.");
         }
     }
 
@@ -713,7 +712,7 @@ public class DatabaseV3 {
             
             
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                    EvenMoreFish.logger.log(Level.INFO, "Written user report for (" + uuid + ") to the database.");
+                    EvenMoreFish.logger.info(() -> "Written user report for (" + uuid + ") to the database.");
                 }
             
                 statement.execute();
@@ -721,7 +720,7 @@ public class DatabaseV3 {
                 EvenMoreFish.logger.warning("Failed to write UserReport due to " + e.getCause());
                 e.printStackTrace();
             } catch (NullPointerException e) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not write user report data for " + uuid);
+                EvenMoreFish.logger.severe(() -> "Could not write user report data for " + uuid);
                 e.printStackTrace();
             }
         });
@@ -743,7 +742,7 @@ public class DatabaseV3 {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                            EvenMoreFish.logger.log(Level.INFO, "Read user report for (" + uuid + ") from the database.");
+                            EvenMoreFish.logger.info(() -> "Read user report for (" + uuid + ") from the database.");
                         }
                         return new UserReport(
                             resultSet.getInt("id"),
@@ -759,7 +758,7 @@ public class DatabaseV3 {
                         );
                     }
                     if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                        EvenMoreFish.logger.log(Level.INFO, "User report for (" + uuid + ") does not exist in the database.");
+                        EvenMoreFish.logger.info(() ->  "User report for (" + uuid + ") does not exist in the database.");
                     }
                     return null;
                 }
@@ -793,7 +792,7 @@ public class DatabaseV3 {
                 prep.setLong(7, Instant.now().getEpochSecond());
                 prep.execute();
             } catch (SQLException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + fish.getName() + " to the database.");
+                EvenMoreFish.logger.severe(() -> "Could not add " + fish.getName() + " to the database.");
                 exception.printStackTrace();
             }
         });
@@ -814,7 +813,7 @@ public class DatabaseV3 {
                 statement.setString(2, fish.getRarity().getValue());
                 return statement.executeQuery().next();
             } catch (SQLException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not check if " + fish.getName() + " is present in the database.");
+                EvenMoreFish.logger.severe(() -> "Could not check if " + fish.getName() + " is present in the database.");
                 exception.printStackTrace();
                 return true;
             }
@@ -835,7 +834,7 @@ public class DatabaseV3 {
                 prep.setString(2, fish.getName());
                 prep.execute();
             } catch (SQLException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not check if " + fish.getName() + " is present in the database.");
+                EvenMoreFish.logger.severe(() -> "Could not check if " + fish.getName() + " is present in the database.");
                 exception.printStackTrace();
             }
         });
@@ -860,7 +859,7 @@ public class DatabaseV3 {
                     return resultSet.getFloat("largest_fish");
                 }
             } catch (SQLException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not check for " + fish.getName() + "'s largest fish size.");
+                EvenMoreFish.logger.severe(() -> "Could not check for " + fish.getName() + "'s largest fish size.");
                 exception.printStackTrace();
                 return null;
             }
@@ -887,7 +886,7 @@ public class DatabaseV3 {
                 prep.setString(4, fish.getName());
                 prep.execute();
             } catch (SQLException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not update for " + fish.getName() + "'s largest fish size.");
+                EvenMoreFish.logger.severe(() -> "Could not update for " + fish.getName() + "'s largest fish size.");
                 exception.printStackTrace();
             }
         });
