@@ -36,4 +36,9 @@ public class MySqlConnectionFactory extends ConnectionFactory{
     
         super.overrideProperties(properties);
     }
+    
+    @Override
+    public String getType() {
+        return "MYSQL";
+    }
 }

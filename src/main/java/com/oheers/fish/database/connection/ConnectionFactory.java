@@ -82,6 +82,8 @@ public abstract class ConnectionFactory {
         }
     }
     
+    public abstract String getType();
+    
     public Connection getConnection() throws SQLException {
         if (this.dataSource == null) {
             throw new SQLException("Null data source");
