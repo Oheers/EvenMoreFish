@@ -845,21 +845,20 @@ public class DatabaseV3 {
      * @param uuid The uuid of the player who caught the fish.
      */
     public void updateLargestFish(@NotNull final Fish fish, @NotNull final UUID uuid) {
-        try {
-            String sql = "UPDATE emf_fish SET largest_fish = ?, largest_fisher = ? WHERE fish_rarity = ? AND fish_name = ?;";
+        String sql = "UPDATE emf_fish SET largest_fish = ?, largest_fisher = ? WHERE fish_rarity = ? AND fish_name = ?;";
 
-            float roundedFloatLength = Math.round(fish.getLength() * 10f) / 10f;
-            PreparedStatement prep = getConnection().prepareStatement(sql);
+        float roundedFloatLength = Math.round(fish.getLength() * 10f) / 10f;
+        try (PreparedStatement prep = getConnection().prepareStatement(sql)) {
             prep.setFloat(1, roundedFloatLength);
             prep.setString(2, uuid.toString());
             prep.setString(3, fish.getRarity().getValue());
             prep.setString(4, fish.getName());
             prep.execute();
-            prep.close();
         } catch (SQLException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not update for " + fish.getName() + "'s largest fish size.");
             exception.printStackTrace();
         }
+        
     }
 
 //    /**
