@@ -88,18 +88,6 @@ public class DatabaseV3 {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Closes the connection to the database to save memory and prevent memory leaks.
-     *
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
-     * TODO, should never be used, use try with
-     */
-    public void closeConnection() throws SQLException {
-        if (!EvenMoreFish.mainConfig.isMysql()) return;
-        if (getConnection() != null) getConnection().close();
-    }
-
     /**
      * This gets the database metadata and queries whether the table exists using the #getTables method. The connection
      * passed through must be open.
@@ -270,7 +258,7 @@ public class DatabaseV3 {
 
             for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
                 Type fishReportList = new TypeToken<List<FishReport>>() {
-                }.getType(); //todo, bit odd, isn't this List<FishReport>.class ?
+                }.getType();
 
                 Gson gson = new Gson();
                 FileReader reader = new FileReader(file); //todo try-with
@@ -562,9 +550,8 @@ public class DatabaseV3 {
      *
      * @param uuid The UUID of the user, NOT the id stored in emf_users.
      * @return A list of fish reports associated with the user.
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
-    public List<FishReport> getFishReports(@NotNull final UUID uuid) throws SQLException {
+    public List<FishReport> getFishReports(@NotNull final UUID uuid) {
         int userID = getUserID(uuid);
         
         return getStatement(f -> {
@@ -606,7 +593,6 @@ public class DatabaseV3 {
      * @param fish   The name string of the fish.
      * @param id     The user's id stored in the emf_user table.
      * @return If the user has already caught this fish, registering it into the database.
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id) {
         return Boolean.TRUE.equals(getStatement(f -> {
@@ -658,7 +644,6 @@ public class DatabaseV3 {
      *
      * @param report The report to be written.
      * @param userID The id of the user found in the emf_users table.
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void updateUserFish(@NotNull final FishReport report, final int userID) {
         executeStatement(c -> {
@@ -685,7 +670,6 @@ public class DatabaseV3 {
      *
      * @param uuid    The user having their data updated.
      * @param reports The report data which is being written to the database.
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void writeFishReports(@NotNull final UUID uuid, @NotNull final List<FishReport> reports)  {
         int userID = getUserID(uuid);
@@ -709,7 +693,6 @@ public class DatabaseV3 {
      *
      * @param uuid   The uuid of the user owning the report.
      * @param report The report to be written to the database.
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) {
         executeStatement(c -> {
@@ -751,7 +734,6 @@ public class DatabaseV3 {
      *
      * @param uuid The uuid of the user being fetched from the database.
      * @return A user report detailing their fishing history on this server. If the user is not present, null is returned.
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public UserReport readUserReport(@NotNull final UUID uuid) {
         return getStatement(f -> {
