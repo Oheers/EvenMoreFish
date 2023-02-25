@@ -187,11 +187,6 @@ public class EvenMoreFish extends JavaPlugin {
                 @Override
                 public void run() {
                     EvenMoreFish.databaseV3.createTables(false);
-//                        catch (SQLException exception) {
-//                            EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new tables or check for present tables.");
-//                            exception.printStackTrace();
-//                        }
-    
                     for (Player player : getServer().getOnlinePlayers()) {
                         UserReport playerReport = databaseV3.readUserReport(player.getUniqueId());
                         if (playerReport == null) {
@@ -210,7 +205,6 @@ public class EvenMoreFish extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
         terminateSellGUIS();
         saveUserData();
 
@@ -319,6 +313,7 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void saveUserData() {
+        //really slow, we should execute this often.
         if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline()) {
             try {
                 ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
