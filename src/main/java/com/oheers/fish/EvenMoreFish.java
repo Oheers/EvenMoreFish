@@ -36,7 +36,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -213,8 +212,8 @@ public class EvenMoreFish extends JavaPlugin {
             active.end();
         }
 
+        databaseV3.shutdown();
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
-
     }
 
     private void listeners() {
@@ -311,34 +310,39 @@ public class EvenMoreFish extends JavaPlugin {
             }
         });
     }
-
+    
     private void saveUserData() {
-        //really slow, we should execute this often.
-        if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline()) {
+        //really slow, we should execute this via a runnable.
+        if (!(EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline())) {
+            return;
+        }
+        
+        saveFishReports();
+        saveUserReports();
+        
+        DataManager.getInstance().uncacheAll();
+    }
+    
+    private void saveFishReports() {
+        ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
+        logger.info("Saving " + allReports.keySet().size() + " fish reports.");
+        for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
+            databaseV3.writeFishReports(entry.getKey(), entry.getValue());
+        
             try {
-                ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
-                for (UUID uuid : allReports.keySet()) {
-                    databaseV3.writeFishReports(uuid, allReports.get(uuid));
-
-                    try {
-                        if (!databaseV3.hasUser(uuid, Table.EMF_USERS)) {
-                            databaseV3.createUser(uuid);
-                        }
-                    } catch (InvalidTableException exception) {
-                        logger.log(Level.SEVERE, "Fatal error when storing data for " + uuid + ", their data in primary storage has been deleted.");
-                    }
+                if (!databaseV3.hasUser(entry.getKey(), Table.EMF_USERS)) {
+                    databaseV3.createUser(entry.getKey());
                 }
-
-                for (UserReport report : DataManager.getInstance().getAllUserReports()) {
-                    databaseV3.writeUserReport(report.getUUID(), report);
-                }
-
-            } catch (SQLException exception) {
-                logger.log(Level.SEVERE, "Failed to save all user data.");
-                exception.printStackTrace();
+            } catch (InvalidTableException exception) {
+                logger.log(Level.SEVERE, "Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
             }
-
-            DataManager.getInstance().uncacheAll();
+        }
+    }
+    
+    private void saveUserReports() {
+        logger.info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
+        for (UserReport report : DataManager.getInstance().getAllUserReports()) {
+            databaseV3.writeUserReport(report.getUUID(), report);
         }
     }
 

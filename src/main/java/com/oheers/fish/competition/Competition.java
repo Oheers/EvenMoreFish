@@ -115,16 +115,11 @@ public class Competition {
         if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
             Competition competitionRef = this;
             new BukkitRunnable() {
-
+            
                 @Override
                 public void run() {
-                        EvenMoreFish.databaseV3.createCompetitionReport(competitionRef); //todo should handle the closing of the connection
-                        leaderboard.clear();
-                    
-//                    catch (SQLException exception) {
-//                        EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing competition data for " + competitionRef.getCompetitionName() + ". Try restarting or contacting support.");
-//                        exception.printStackTrace();
-//                    }
+                    EvenMoreFish.databaseV3.createCompetitionReport(competitionRef); //todo should handle the closing of the connection
+                    leaderboard.clear();
                 }
             }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(Competition.class));
         } else {

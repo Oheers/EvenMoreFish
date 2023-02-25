@@ -80,6 +80,14 @@ public class DatabaseV3 {
     private Connection getConnection() throws SQLException {
         return this.connectionFactory.getConnection();
     }
+    
+    public void shutdown() {
+        try {
+            this.connectionFactory.shutdown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Closes the connection to the database to save memory and prevent memory leaks.
@@ -515,10 +523,9 @@ public class DatabaseV3 {
      * @param uuid  The user being queried.
      * @param table The table being queried.
      * @return If the database contains the user.
-     * @throws SQLException          Something went wrong when carrying out SQL instructions.
      * @throws InvalidTableException The table specified is not emf_users or emf_fish_log
      */
-    public boolean hasUser(@NotNull final UUID uuid, @NotNull final Table table) throws SQLException, InvalidTableException {
+    public boolean hasUser(@NotNull final UUID uuid, @NotNull final Table table) throws InvalidTableException {
         if (table == Table.EMF_FISH_LOG) {
             if (!hasUser(uuid, Table.EMF_USERS))
                 return false;
@@ -601,7 +608,7 @@ public class DatabaseV3 {
      * @return If the user has already caught this fish, registering it into the database.
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
-    public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id) throws SQLException {
+    public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id) {
         return Boolean.TRUE.equals(getStatement(f -> {
             try (PreparedStatement statement = this.getConnection().prepareStatement("SELECT * FROM emf_fish_log WHERE id = ? AND rarity = ? AND fish = ?")) {
                 statement.setInt(1, id);
@@ -621,9 +628,8 @@ public class DatabaseV3 {
      *
      * @param report The report to be saved to the database
      * @param userID The id of the user found in the emf_users table.
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
-    public void addUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
+    public void addUserFish(@NotNull final FishReport report, final int userID) {
         executeStatement(c -> {
             try (PreparedStatement statement = c.prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
                 "first_catch_time, largest_length) VALUES (?,?,?,?,?,?);")) {
@@ -654,7 +660,7 @@ public class DatabaseV3 {
      * @param userID The id of the user found in the emf_users table.
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
-    public void updateUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
+    public void updateUserFish(@NotNull final FishReport report, final int userID) {
         executeStatement(c -> {
             try (PreparedStatement statement = c.prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
                 "WHERE id = ? AND rarity = ? AND fish = ?;")) {
@@ -681,7 +687,7 @@ public class DatabaseV3 {
      * @param reports The report data which is being written to the database.
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
-    public void writeFishReports(@NotNull final UUID uuid, @NotNull final List<FishReport> reports) throws SQLException {
+    public void writeFishReports(@NotNull final UUID uuid, @NotNull final List<FishReport> reports)  {
         int userID = getUserID(uuid);
         for (FishReport report : reports) {
             if (userHasFish(report.getRarity(), report.getName(), userID)) {
@@ -705,7 +711,7 @@ public class DatabaseV3 {
      * @param report The report to be written to the database.
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
-    public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) throws SQLException {
+    public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) {
         executeStatement(c -> {
             try (PreparedStatement statement = c.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
                 "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
