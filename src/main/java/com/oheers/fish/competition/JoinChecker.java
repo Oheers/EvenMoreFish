@@ -71,7 +71,7 @@ public class JoinChecker implements Listener {
                                     ",\nFishReports: " + (fishReports != null && fishReports.size() > 0));
                         }
 
-                        EvenMoreFish.databaseV3.closeConnection();
+                        EvenMoreFish.databaseV3.closeConnection(); //todo
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst fetching user data for " + userName + ". Try restarting or contacting support.");
                         exception.printStackTrace();
@@ -146,7 +146,7 @@ public class JoinChecker implements Listener {
                         }
 
                         DataManager.getInstance().uncacheUser(userUUID);
-                        EvenMoreFish.databaseV3.closeConnection();
+                        EvenMoreFish.databaseV3.closeConnection(); //todo
 
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing data for user " + event.getPlayer().getName() + ". Try restarting or contacting support.");

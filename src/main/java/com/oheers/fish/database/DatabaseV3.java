@@ -291,7 +291,7 @@ public class DatabaseV3 {
      * This causes a renaming of the table "Fish2" to "emf_fish", no data internally changes, but it's good to have a clean
      * format for all the tables and to have a more descriptive name for this stuff.
      */
-    private void translateFishDataV2() throws SQLException {
+    private void translateFishDataV2() throws SQLException { //todo
         if (queryTableExistence(Table.EMF_FISH.getTableID())) {
             try {
                 return;
