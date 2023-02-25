@@ -774,30 +774,22 @@ public class DatabaseV3 {
      * max float value is returned.
      */
     public float getLargestFishSize(@NotNull final Fish fish) {
-        try {
             String sql = "SELECT largest_fish FROM emf_fish WHERE fish_rarity = ? AND fish_name = ?;";
-
-            PreparedStatement prep = getConnection().prepareStatement(sql); //todo try with
-            prep.setString(1, fish.getRarity().getValue());
-            prep.setString(2, fish.getName());
-            ResultSet resultSet = prep.executeQuery();
-            if (resultSet.next()) {
-                try {
-                    return resultSet.getFloat("largest_fish");
-                } finally {
-                    resultSet.close();
-                    prep.close();
+            Float largestFishSize;
+            largestFishSize = getStatement(f -> {
+                try (PreparedStatement prep = f.prepareStatement(sql)) {
+                    prep.setString(1, fish.getRarity().getValue());
+                    prep.setString(2, fish.getName());
+                    try (ResultSet resultSet = prep.executeQuery()) {
+                        return resultSet.getFloat("largest_fish");
+                    }
+                } catch (SQLException exception) {
+                    EvenMoreFish.logger.log(Level.SEVERE, "Could not check for " + fish.getName() + "'s largest fish size.");
+                    exception.printStackTrace();
+                    return null;
                 }
-            } else {
-                resultSet.close();
-                prep.close();
-            }
-        } catch (SQLException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not check for " + fish.getName() + "'s largest fish size.");
-            exception.printStackTrace();
-        }
-
-        return Float.MAX_VALUE;
+            });
+            return largestFishSize == null ? Float.MAX_VALUE : largestFishSize;
     }
 
     /**
@@ -812,7 +804,7 @@ public class DatabaseV3 {
 
         float roundedFloatLength = Math.round(fish.getLength() * 10f) / 10f;
         executeStatement(c -> {
-            try (PreparedStatement prep = getConnection().prepareStatement(sql)) {
+            try (PreparedStatement prep = c.prepareStatement(sql)) {
                 prep.setFloat(1, roundedFloatLength);
                 prep.setString(2, uuid.toString());
                 prep.setString(3, fish.getRarity().getValue());
@@ -823,8 +815,6 @@ public class DatabaseV3 {
                 exception.printStackTrace();
             }
         });
-        
-        
     }
     
     /**
@@ -841,7 +831,45 @@ public class DatabaseV3 {
         }
     }
     
-    private void executeStatement(Consumer<Connection> consumer) {
+    /**
+     * This should be used when obtaining data from a database.
+     * The connection is closed automatically.
+     * For example:
+     * <code>
+     *     getStatement(f -> {
+     *                 try (PreparedStatement prep = f.prepareStatement(sql)) {
+     *                     prep.setString(1, fish.getRarity().getValue());
+     *                     prep.setString(2, fish.getName());
+     *                     try (ResultSet resultSet = prep.executeQuery()) {
+     *                         return resultSet.getFloat("largest_fish");
+     *                     }
+     *                 } catch (SQLException exception) {
+     *                     EvenMoreFish.logger.log(Level.SEVERE, "Could not check for " + fish.getName() + "'s largest fish size.");
+     *                     exception.printStackTrace();
+     *                     return null;
+     *                 }
+     *             });
+     * </code>
+     * Here R is a float.
+     * @param func Function to pass.
+     * @return A value of whatever R is
+     * @param <R> Defined via func
+     */
+    private <R> R getStatement(Function<Connection, R> func){
+        try (Connection connection = getConnection()){
+            return func.apply(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * This should be used when executing a statement.
+     * The connection is closed automatically.
+     * @param consumer Function to execute.
+     */
+    private void executeStatement(@NotNull Consumer<Connection> consumer) {
         try (Connection connection = getConnection()){
             consumer.accept(connection);
         } catch (SQLException e) {
