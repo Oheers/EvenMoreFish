@@ -130,7 +130,6 @@ public class DatabaseV3 {
      *
      * @param overrideV2Check Whether the plugin should override checking for the /data/ folder - this should only be
      *                        done when migrating
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void createTables(final boolean overrideV2Check)  {
         if (!overrideV2Check && usingVersionV2()) {
@@ -263,10 +262,10 @@ public class DatabaseV3 {
 
             for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
                 Type fishReportList = new TypeToken<List<FishReport>>() {
-                }.getType();
+                }.getType(); //todo, bit odd, isn't this List<FishReport>.class ?
 
                 Gson gson = new Gson();
-                FileReader reader = new FileReader(file);
+                FileReader reader = new FileReader(file); //todo try-with
                 List<FishReport> reports = gson.fromJson(new FileReader(file), fishReportList);
                 UUID playerUUID = UUID.fromString(file.getName().substring(0, file.getName().lastIndexOf(".")));
                 reader.close();
