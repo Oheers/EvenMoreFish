@@ -30,9 +30,8 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class DatabaseV3 {
-    private final EvenMoreFish plugin;
-    private Boolean usingV2 = Files.isDirectory(Paths.get(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data/"));
-    private ConnectionFactory connectionFactory;
+    private boolean usingV2;
+    private final ConnectionFactory connectionFactory;
 
     /**
      * This is a reference to all database activity within the EMF plugin. It improves on the previous DatabaseV2 in that
@@ -49,7 +48,7 @@ public class DatabaseV3 {
      * @param plugin An instance of the JavaPlugin extended main class.
      */
     public DatabaseV3(EvenMoreFish plugin) {
-        this.plugin = plugin;
+        this.usingV2 = Files.isDirectory(Paths.get(plugin.getDataFolder() + "/data/"));
     
         if (EvenMoreFish.mainConfig.isMysql() && hasCredentials()) {
             this.connectionFactory = new MySqlConnectionFactory();
