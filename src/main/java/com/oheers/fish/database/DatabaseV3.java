@@ -261,10 +261,11 @@ public class DatabaseV3 {
                 }.getType();
 
                 Gson gson = new Gson();
-                FileReader reader = new FileReader(file); //todo try-with
-                List<FishReport> reports = gson.fromJson(new FileReader(file), fishReportList);
+                List<FishReport> reports;
+                try(FileReader reader = new FileReader(file)) {
+                    reports = gson.fromJson(reader, fishReportList);
+                }
                 UUID playerUUID = UUID.fromString(file.getName().substring(0, file.getName().lastIndexOf(".")));
-                reader.close();
                 createUser(playerUUID);
                 translateFishReportsV2(playerUUID, reports);
 
