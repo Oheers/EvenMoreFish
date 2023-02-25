@@ -186,23 +186,19 @@ public class EvenMoreFish extends JavaPlugin {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    try {
-                        databaseV3.getConnection();
-                        try {
-                            EvenMoreFish.databaseV3.createTables(false);
-                        } catch (SQLException exception) {
-                            EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new tables or check for present tables.");
-                            exception.printStackTrace();
+                    EvenMoreFish.databaseV3.createTables(false);
+//                        catch (SQLException exception) {
+//                            EvenMoreFish.logger.log(Level.SEVERE, "Failed to create new tables or check for present tables.");
+//                            exception.printStackTrace();
+//                        }
+    
+                    for (Player player : getServer().getOnlinePlayers()) {
+                        UserReport playerReport = databaseV3.readUserReport(player.getUniqueId());
+                        if (playerReport == null) {
+                            EvenMoreFish.logger.warning("Could not read report for player (" + player.getUniqueId() + ")");
+                            continue;
                         }
-
-                        for (Player player : getServer().getOnlinePlayers()) {
-                            DataManager.getInstance().putUserReportCache(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
-                        }
-
-                        databaseV3.closeConnection(); //todo
-                    } catch (SQLException exception) {
-                        logger.log(Level.SEVERE, "Failed SQL operations whilst enabling plugin. Try restarting or contacting support.");
-                        exception.printStackTrace();
+                        DataManager.getInstance().putUserReportCache(player.getUniqueId(), playerReport);
                     }
                 }
             }.runTaskAsynchronously(this);
@@ -325,7 +321,6 @@ public class EvenMoreFish extends JavaPlugin {
     private void saveUserData() {
         if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline()) {
             try {
-                databaseV3.getConnection();
                 ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
                 for (UUID uuid : allReports.keySet()) {
                     databaseV3.writeFishReports(uuid, allReports.get(uuid));
@@ -342,7 +337,6 @@ public class EvenMoreFish extends JavaPlugin {
                 for (UserReport report : DataManager.getInstance().getAllUserReports()) {
                     databaseV3.writeUserReport(report.getUUID(), report);
                 }
-                databaseV3.closeConnection(); //todo
 
             } catch (SQLException exception) {
                 logger.log(Level.SEVERE, "Failed to save all user data.");
