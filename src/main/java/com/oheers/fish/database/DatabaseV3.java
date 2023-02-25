@@ -128,10 +128,10 @@ public class DatabaseV3 {
         }
 
         for (Table table : Table.values()) {
-            if (queryTableExistence(table.getTableID())) continue;
-            if (table.getCreationCode() == null) continue;
-            if (EvenMoreFish.mainConfig.isMysql() && !table.isMySQLCompatible) continue;
-
+            if (queryTableExistence(table.getTableID()) ||
+                table.getCreationCode() == null ||
+                (EvenMoreFish.mainConfig.isMysql() && !table.isMySQLCompatible))
+                continue;
             sendStatement(table.getCreationCode(), getConnection());
         }
     }
