@@ -523,29 +523,29 @@ public class DatabaseV3 {
      */
     public List<FishReport> getFishReports(@NotNull final UUID uuid) throws SQLException {
         int userID = getUserID(uuid);
-        PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?");
-        statement.setInt(1, userID);
-
-        ResultSet resultSet = statement.executeQuery();
-        List<FishReport> reports = new ArrayList<>();
-        while (resultSet.next()) {
-            FishReport report = new FishReport(
-                    resultSet.getString("rarity"),
-                    resultSet.getString("fish"),
-                    resultSet.getFloat("largest_length"),
-                    resultSet.getInt("quantity"),
-                    resultSet.getLong("first_catch_time")
-            );
-            reports.add(report);
+        try (PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?")) {
+            statement.setInt(1, userID);
+            
+            List<FishReport> reports = new ArrayList<>();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    FishReport report = new FishReport(
+                        resultSet.getString("rarity"),
+                        resultSet.getString("fish"),
+                        resultSet.getFloat("largest_length"),
+                        resultSet.getInt("quantity"),
+                        resultSet.getLong("first_catch_time")
+                    );
+                    reports.add(report);
+                }
+            }
+    
+            if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                EvenMoreFish.logger.log(Level.INFO, "Read fish reports for (" + uuid + ") from the database.");
+            }
+            
+            return reports;
         }
-
-        resultSet.close();
-        statement.close();
-
-        if (EvenMoreFish.mainConfig.doDBVerbose()) {
-            EvenMoreFish.logger.log(Level.INFO, "Read fish reports for (" + uuid + ") from the database.");
-        }
-        return reports;
     }
 
     /**
@@ -559,15 +559,11 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id) throws SQLException {
-        PreparedStatement statement = this.getConnection().prepareStatement("SELECT * FROM emf_fish_log WHERE id = ? AND rarity = ? AND fish = ?");
-        statement.setInt(1, id);
-        statement.setString(2, rarity);
-        statement.setString(3, fish);
-
-        try {
+        try (PreparedStatement statement = this.getConnection().prepareStatement("SELECT * FROM emf_fish_log WHERE id = ? AND rarity = ? AND fish = ?")) {
+            statement.setInt(1, id);
+            statement.setString(2, rarity);
+            statement.setString(3, fish);
             return statement.executeQuery().next();
-        } finally {
-            statement.close();
         }
     }
 
