@@ -177,14 +177,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
                         @Override
                         public void run() {
-                            try {
-                                EvenMoreFish.databaseV3.getConnection();
-                                EvenMoreFish.databaseV3.migrate(sender);
-                                EvenMoreFish.databaseV3.closeConnection();
-                            } catch (SQLException exception) {
-                                EvenMoreFish.logger.log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.");
-                                exception.printStackTrace();
-                            }
+                            EvenMoreFish.databaseV3.migrate(sender);
                         }
                     }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(CommandCentre.class));
                 }

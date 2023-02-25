@@ -118,15 +118,13 @@ public class Competition {
 
                 @Override
                 public void run() {
-                    try {
-                        EvenMoreFish.databaseV3.getConnection();
-                        EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
-                        EvenMoreFish.databaseV3.closeConnection();
+                        EvenMoreFish.databaseV3.createCompetitionReport(competitionRef); //todo should handle the closing of the connection
                         leaderboard.clear();
-                    } catch (SQLException exception) {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing competition data for " + competitionRef.getCompetitionName() + ". Try restarting or contacting support.");
-                        exception.printStackTrace();
-                    }
+                    
+//                    catch (SQLException exception) {
+//                        EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing competition data for " + competitionRef.getCompetitionName() + ". Try restarting or contacting support.");
+//                        exception.printStackTrace();
+//                    }
                 }
             }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(Competition.class));
         } else {
