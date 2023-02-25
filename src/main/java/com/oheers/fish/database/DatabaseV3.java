@@ -27,6 +27,8 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 public class DatabaseV3 {
@@ -552,20 +554,22 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void addUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
-        try (PreparedStatement statement = this.getConnection().prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
                 "first_catch_time, largest_length) VALUES (?,?,?,?,?,?);")) {
-            statement.setInt(1, userID);
-            statement.setString(2, report.getRarity());
-            statement.setString(3, report.getName());
-            statement.setInt(4, report.getNumCaught());
-            statement.setLong(5, report.getTimeEpoch());
-            statement.setFloat(6, report.getLargestLength());
+                statement.setInt(1, userID);
+                statement.setString(2, report.getRarity());
+                statement.setString(3, report.getName());
+                statement.setInt(4, report.getNumCaught());
+                statement.setLong(5, report.getTimeEpoch());
+                statement.setFloat(6, report.getLargestLength());
+        
+                statement.execute();
+            }
     
-            statement.execute();
-        }
-
-        if (EvenMoreFish.mainConfig.doDBVerbose()) {
-            EvenMoreFish.logger.log(Level.INFO, "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
+            if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                EvenMoreFish.logger.log(Level.INFO, "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
+            }
         }
     }
 
@@ -578,15 +582,17 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void updateUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
-        try (PreparedStatement statement = this.getConnection().prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
+        try(Connection connection = getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
                 "WHERE id = ? AND rarity = ? AND fish = ?;")) {
-            statement.setInt(1, report.getNumCaught());
-            statement.setFloat(2, report.getLargestLength());
-            statement.setInt(3, userID);
-            statement.setString(4, report.getRarity());
-            statement.setString(5, report.getName());
-    
-            statement.execute();
+                statement.setInt(1, report.getNumCaught());
+                statement.setFloat(2, report.getLargestLength());
+                statement.setInt(3, userID);
+                statement.setString(4, report.getRarity());
+                statement.setString(5, report.getName());
+        
+                statement.execute();
+            }
         }
     }
 
@@ -805,16 +811,19 @@ public class DatabaseV3 {
         String sql = "UPDATE emf_fish SET largest_fish = ?, largest_fisher = ? WHERE fish_rarity = ? AND fish_name = ?;";
 
         float roundedFloatLength = Math.round(fish.getLength() * 10f) / 10f;
-        try (PreparedStatement prep = getConnection().prepareStatement(sql)) {
-            prep.setFloat(1, roundedFloatLength);
-            prep.setString(2, uuid.toString());
-            prep.setString(3, fish.getRarity().getValue());
-            prep.setString(4, fish.getName());
-            prep.execute();
-        } catch (SQLException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not update for " + fish.getName() + "'s largest fish size.");
-            exception.printStackTrace();
-        }
+        executeStatement(c -> {
+            try (PreparedStatement prep = getConnection().prepareStatement(sql)) {
+                prep.setFloat(1, roundedFloatLength);
+                prep.setString(2, uuid.toString());
+                prep.setString(3, fish.getRarity().getValue());
+                prep.setString(4, fish.getName());
+                prep.execute();
+            } catch (SQLException exception) {
+                EvenMoreFish.logger.log(Level.SEVERE, "Could not update for " + fish.getName() + "'s largest fish size.");
+                exception.printStackTrace();
+            }
+        });
+        
         
     }
     
@@ -831,4 +840,13 @@ public class DatabaseV3 {
             prep.execute();
         }
     }
+    
+    private void executeStatement(Consumer<Connection> consumer) {
+        try (Connection connection = getConnection()){
+            consumer.accept(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
