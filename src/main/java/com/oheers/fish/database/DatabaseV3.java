@@ -143,7 +143,14 @@ public class DatabaseV3 {
                 table.getCreationCode() == null ||
                 (EvenMoreFish.mainConfig.isMysql() && !table.isMySQLCompatible))
                 continue;
-            sendStatement(table.getCreationCode());
+            
+            executeStatement(c -> {
+                try(PreparedStatement statement = c.prepareStatement(table.getCreationCode())) {
+                    statement.execute();
+                } catch (SQLException e) {
+                    EvenMoreFish.logger.warning("There was a problem creating the table.");
+                }
+            });
         }
     }
 
@@ -305,12 +312,26 @@ public class DatabaseV3 {
         if (queryTableExistence(Table.EMF_FISH.getTableID())) {
             return;
         }
-        
+    
         if (queryTableExistence("Fish2")) {
-            sendStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";");
-        } else {
-            sendStatement(Table.EMF_FISH.creationCode);
+            executeStatement(c -> {
+                try (PreparedStatement preparedStatement = c.prepareStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";")) {
+                    preparedStatement.execute();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+            return;
         }
+    
+        executeStatement(c -> {
+            try (PreparedStatement preparedStatement = c.prepareStatement(Table.EMF_FISH.creationCode)) {
+                preparedStatement.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    
     }
 
     /**
@@ -884,23 +905,6 @@ public class DatabaseV3 {
         });
     }
     
-    /**
-     * Creates a prepared statement that is sent to the database to be executed. Examples could be to write data or
-     * create a new table. Data cannot be fetched using this method.
-     *
-     * @param sqlCode          The SQL code to go into the prepared statement.
-     * @throws SQLException Something went wrong when carrying out SQL instructions.
-     */
-    private void sendStatement(@NotNull final String sqlCode) {
-        executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(sqlCode)) {
-                prep.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-        
-    }
     
     /**
      * This should be used when obtaining data from a database.
