@@ -814,7 +814,7 @@ public class DatabaseV3 {
         try {
             String sql = "SELECT largest_fish FROM emf_fish WHERE fish_rarity = ? AND fish_name = ?;";
 
-            PreparedStatement prep = getConnection().prepareStatement(sql);
+            PreparedStatement prep = getConnection().prepareStatement(sql); //todo try with
             prep.setString(1, fish.getRarity().getValue());
             prep.setString(2, fish.getName());
             ResultSet resultSet = prep.executeQuery();
@@ -860,25 +860,7 @@ public class DatabaseV3 {
         }
         
     }
-
-//    /**
-//     * Gets the URL for the database, if the config states to use MySQL then the url will point to where it needs to
-//     * requiring a username & password are provided. If not it just uses local .db file anyway.
-//     *
-//     * @return The URL needed to access the database.
-//     */
-//    private String fetchURL() {
-//        if (isMySQL) {
-//            if (username != null && password != null && address != null && database != null) {
-//                return "jdbc:mysql://" + address + "/" + database;
-//            } else {
-//                EvenMoreFish.logger.log(Level.SEVERE, "MySQL credentials do not exist, using local database file.");
-//                isMySQL = false;
-//            }
-//        }
-//        return "jdbc:sqlite:plugins/EvenMoreFish/database.db";
-//    }
-
+    
     /**
      * Creates a prepared statement that is sent to the database to be executed. Examples could be to write data or
      * create a new table. Data cannot be fetched using this method.
