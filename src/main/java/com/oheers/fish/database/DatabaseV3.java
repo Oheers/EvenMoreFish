@@ -689,38 +689,33 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public UserReport readUserReport(@NotNull final UUID uuid) throws SQLException {
-        PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM emf_users WHERE uuid = ?");
-        statement.setString(1, uuid.toString());
-
-        ResultSet resultSet = statement.executeQuery();
-        if (resultSet.next()) {
-            if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                EvenMoreFish.logger.log(Level.INFO, "Read user report for (" + uuid + ") from the database.");
+        try (PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM emf_users WHERE uuid = ?")) {
+            statement.setString(1, uuid.toString());
+    
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                        EvenMoreFish.logger.log(Level.INFO, "Read user report for (" + uuid + ") from the database.");
+                    }
+                        return new UserReport(
+                            resultSet.getInt("id"),
+                            resultSet.getInt("num_fish_caught"),
+                            resultSet.getInt("competitions_won"),
+                            resultSet.getInt("competitions_joined"),
+                            resultSet.getString("first_fish"),
+                            resultSet.getString("last_fish"),
+                            resultSet.getString("largest_fish"),
+                            resultSet.getFloat("total_fish_length"),
+                            resultSet.getFloat("largest_length"),
+                            resultSet.getString("uuid")
+                        );
+                } else {
+                    if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                        EvenMoreFish.logger.log(Level.INFO, "User report for (" + uuid + ") does not exist in the database.");
+                    }
+                    return null;
+                }
             }
-            try {
-                return new UserReport(
-                        resultSet.getInt("id"),
-                        resultSet.getInt("num_fish_caught"),
-                        resultSet.getInt("competitions_won"),
-                        resultSet.getInt("competitions_joined"),
-                        resultSet.getString("first_fish"),
-                        resultSet.getString("last_fish"),
-                        resultSet.getString("largest_fish"),
-                        resultSet.getFloat("total_fish_length"),
-                        resultSet.getFloat("largest_length"),
-                        resultSet.getString("uuid")
-                );
-            } finally {
-                resultSet.close();
-                statement.close();
-            }
-        } else {
-            if (EvenMoreFish.mainConfig.doDBVerbose()) {
-                EvenMoreFish.logger.log(Level.INFO, "User report for (" + uuid + ") does not exist in the database.");
-            }
-            resultSet.close();
-            statement.close();
-            return null;
         }
     }
 
