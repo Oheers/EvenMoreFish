@@ -607,16 +607,16 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void updateUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
-        PreparedStatement statement = this.getConnection().prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
-                "WHERE id = ? AND rarity = ? AND fish = ?;");
-        statement.setInt(1, report.getNumCaught());
-        statement.setFloat(2, report.getLargestLength());
-        statement.setInt(3, userID);
-        statement.setString(4, report.getRarity());
-        statement.setString(5, report.getName());
-
-        statement.execute();
-        statement.close();
+        try (PreparedStatement statement = this.getConnection().prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
+                "WHERE id = ? AND rarity = ? AND fish = ?;")) {
+            statement.setInt(1, report.getNumCaught());
+            statement.setFloat(2, report.getLargestLength());
+            statement.setInt(3, userID);
+            statement.setString(4, report.getRarity());
+            statement.setString(5, report.getName());
+    
+            statement.execute();
+        }
     }
 
     /**
