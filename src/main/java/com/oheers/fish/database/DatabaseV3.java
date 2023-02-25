@@ -148,6 +148,39 @@ public class DatabaseV3 {
         }
     }
 
+    private List<FishReport> getCachedReportsOrReports(final UUID uuid, final Fish fish) {
+        List<FishReport> cachedReports = DataManager.getInstance().getFishReportsIfExists(uuid);
+        if(cachedReports == null) {
+            return new ArrayList<>(Collections.singletonList(
+                new FishReport(
+                    fish.getRarity().getValue(),
+                    fish.getName(),
+                    fish.getLength(),
+                    1,
+                    -1
+                )
+            ));
+        }
+    
+        for (FishReport report : cachedReports) {
+            if (report.getRarity().equals(fish.getRarity().getValue()) && report.getName().equals(fish.getName())) {
+                report.addFish(fish);
+                return cachedReports;
+            }
+        }
+    
+        cachedReports.add(
+            new FishReport(
+                fish.getRarity().getValue(),
+                fish.getName(),
+                fish.getLength(),
+                1,
+                -1
+            )
+        );
+        return cachedReports;
+        
+    }
     /**
      * Adds the fish data to the live fish reports list, or changes the existing matching fish report. The plugin will
      * also account for a new top fish record and set any other data to a new fishing report for example the epoch
@@ -157,42 +190,9 @@ public class DatabaseV3 {
      * @param fish The fish object.
      */
     public void handleFishCatch(@NotNull final UUID uuid, @NotNull final Fish fish) {
-        List<FishReport> cachedReports = DataManager.getInstance().getFishReportsIfExists(uuid);
-        checkingReports:
-        {
-            if (cachedReports != null) {
-                for (FishReport report : cachedReports) {
-                    if (report.getRarity().equals(fish.getRarity().getValue()) && report.getName().equals(fish.getName())) {
-                        report.addFish(fish);
-                        DataManager.getInstance().putFishReportsCache(uuid, cachedReports);
-                        break checkingReports;
-                    }
-                }
-
-                cachedReports.add(
-                        new FishReport(
-                                fish.getRarity().getValue(),
-                                fish.getName(),
-                                fish.getLength(),
-                                1,
-                                -1
-                        )
-                );
-                DataManager.getInstance().putFishReportsCache(uuid, cachedReports);
-            } else {
-                List<FishReport> reports = new ArrayList<>(Collections.singletonList(
-                        new FishReport(
-                                fish.getRarity().getValue(),
-                                fish.getName(),
-                                fish.getLength(),
-                                1,
-                                -1
-                        )
-                ));
-                DataManager.getInstance().putFishReportsCache(uuid, reports);
-            }
-        }
-
+        List<FishReport> cachedReports = getCachedReportsOrReports(uuid,fish);
+        DataManager.getInstance().putFishReportsCache(uuid, cachedReports);
+        
         UserReport report = DataManager.getInstance().getUserReportIfExists(uuid);
 
         if (report != null) {
