@@ -36,7 +36,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -318,8 +317,14 @@ public class EvenMoreFish extends JavaPlugin {
             return;
         }
         
-        ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
+        saveFishReports();
+        saveUserReports();
+        
+        DataManager.getInstance().uncacheAll();
+    }
     
+    private void saveFishReports() {
+        ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
         logger.info("Saving " + allReports.keySet().size() + " fish reports.");
         for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
             databaseV3.writeFishReports(entry.getKey(), entry.getValue());
@@ -332,15 +337,13 @@ public class EvenMoreFish extends JavaPlugin {
                 logger.log(Level.SEVERE, "Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
             }
         }
+    }
     
-    
+    private void saveUserReports() {
         logger.info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
         for (UserReport report : DataManager.getInstance().getAllUserReports()) {
             databaseV3.writeUserReport(report.getUUID(), report);
         }
-
-        
-        DataManager.getInstance().uncacheAll();
     }
 
     public void reload() {

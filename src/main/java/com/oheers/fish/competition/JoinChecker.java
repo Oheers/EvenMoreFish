@@ -58,9 +58,6 @@ public class JoinChecker implements Listener {
                         EvenMoreFish.databaseV3.createUser(userUUID);
                         userReport = EvenMoreFish.databaseV3.readUserReport(userUUID);
                     }
-//                    catch(SQLException exception){
-//                        EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch user reports for: " + userUUID);
-//                    }
                     
                     if (fishReports != null && userReport != null) {
                         DataManager.getInstance().cacheUser(userUUID, userReport, fishReports);
@@ -69,12 +66,7 @@ public class JoinChecker implements Listener {
                             "UserReport: " + (userReport == null) +
                             ",\nFishReports: " + (fishReports != null && fishReports.size() > 0));
                     }
-
-
-//                    catch (SQLException exception) {
-//                        EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst fetching user data for " + userName + ". Try restarting or contacting support.");
-//                        exception.printStackTrace();
-//                    }
+                    
                 }
             }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(JoinChecker.class));
         }
