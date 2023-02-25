@@ -360,18 +360,17 @@ public class DatabaseV3 {
 
             totalFish += report.getNumCaught();
             executeStatement(c -> {
-                try {
-                    // "Statement is not executing" when using setString yada yada... This seems to work though. todo set parameters probably need to user ` or something
-                    String emfFishLogSQL = "INSERT INTO emf_fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (" +
-                        getUserID(uuid) + ", \"" +
-                        report.getRarity() + "\", \"" +
-                        report.getName() + "\", " +
-                        report.getNumCaught() + ", " +
-                        report.getTimeEpoch() + ", " +
-                        report.getLargestLength() + ");";
-                    try (PreparedStatement prep = c.prepareStatement(emfFishLogSQL)) {
-                        prep.execute();
-                    }
+        
+                // "Statement is not executing" when using setString yada yada... This seems to work though. todo set parameters probably need to user ` or something
+                String emfFishLogSQL = "INSERT INTO emf_fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (" +
+                    getUserID(uuid) + ", \"" +
+                    report.getRarity() + "\", \"" +
+                    report.getName() + "\", " +
+                    report.getNumCaught() + ", " +
+                    report.getTimeEpoch() + ", " +
+                    report.getLargestLength() + ");";
+                try (PreparedStatement prep = c.prepareStatement(emfFishLogSQL)) {
+                    prep.execute();
                 } catch (SQLException exception) {
                     EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: Users.");
                     exception.printStackTrace();
