@@ -267,7 +267,7 @@ public class FishingProcessor implements Listener {
                         }
 
                         EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
-                        EvenMoreFish.databaseV3.closeConnection();
+                        EvenMoreFish.databaseV3.closeConnection(); //todo
                     } catch (SQLException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.");
                         exception.printStackTrace();

@@ -199,7 +199,7 @@ public class EvenMoreFish extends JavaPlugin {
                             DataManager.getInstance().putUserReportCache(player.getUniqueId(), databaseV3.readUserReport(player.getUniqueId()));
                         }
 
-                        databaseV3.closeConnection();
+                        databaseV3.closeConnection(); //todo
                     } catch (SQLException exception) {
                         logger.log(Level.SEVERE, "Failed SQL operations whilst enabling plugin. Try restarting or contacting support.");
                         exception.printStackTrace();
@@ -342,7 +342,7 @@ public class EvenMoreFish extends JavaPlugin {
                 for (UserReport report : DataManager.getInstance().getAllUserReports()) {
                     databaseV3.writeUserReport(report.getUUID(), report);
                 }
-                databaseV3.closeConnection();
+                databaseV3.closeConnection(); //todo
 
             } catch (SQLException exception) {
                 logger.log(Level.SEVERE, "Failed to save all user data.");
