@@ -581,17 +581,17 @@ public class DatabaseV3 {
      * @throws SQLException Something went wrong when carrying out SQL instructions.
      */
     public void addUserFish(@NotNull final FishReport report, final int userID) throws SQLException {
-        PreparedStatement statement = this.getConnection().prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
-                "first_catch_time, largest_length) VALUES (?,?,?,?,?,?);");
-        statement.setInt(1, userID);
-        statement.setString(2, report.getRarity());
-        statement.setString(3, report.getName());
-        statement.setInt(4, report.getNumCaught());
-        statement.setLong(5, report.getTimeEpoch());
-        statement.setFloat(6, report.getLargestLength());
-
-        statement.execute();
-        statement.close();
+        try (PreparedStatement statement = this.getConnection().prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
+                "first_catch_time, largest_length) VALUES (?,?,?,?,?,?);")) {
+            statement.setInt(1, userID);
+            statement.setString(2, report.getRarity());
+            statement.setString(3, report.getName());
+            statement.setInt(4, report.getNumCaught());
+            statement.setLong(5, report.getTimeEpoch());
+            statement.setFloat(6, report.getLargestLength());
+    
+            statement.execute();
+        }
 
         if (EvenMoreFish.mainConfig.doDBVerbose()) {
             EvenMoreFish.logger.log(Level.INFO, "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
