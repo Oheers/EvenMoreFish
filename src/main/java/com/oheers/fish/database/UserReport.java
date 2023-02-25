@@ -5,11 +5,16 @@ import java.util.UUID;
 public class UserReport {
 
     private final int id;
-    private String firstFish, recentFish, largestFish;
+    private String firstFish;
+    private String recentFish;
+    private String largestFish;
     private UUID uuid;
-    private int numFishCaught, competitionsWon, competitionsJoined;
+    private int numFishCaught;
+    private int competitionsWon;
+    private int competitionsJoined;
 
-    private float largestLength, totalFishLength;
+    private float largestLength;
+    private float totalFishLength;
 
     public UserReport(final int id, final int numFishCaught, final int competitionsWon, final int competitionsJoined,
                       final String firstFish, final String recentFish, final String largestFish, final float totalFishLength,
