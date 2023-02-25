@@ -213,8 +213,8 @@ public class EvenMoreFish extends JavaPlugin {
             active.end();
         }
 
+        databaseV3.shutdown();
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
-
     }
 
     private void listeners() {
@@ -311,35 +311,36 @@ public class EvenMoreFish extends JavaPlugin {
             }
         });
     }
-
+    
     private void saveUserData() {
-        //really slow, we should execute this often.
-        if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline()) {
-            try {
-                ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
-                for (UUID uuid : allReports.keySet()) {
-                    databaseV3.writeFishReports(uuid, allReports.get(uuid));
-
-                    try {
-                        if (!databaseV3.hasUser(uuid, Table.EMF_USERS)) {
-                            databaseV3.createUser(uuid);
-                        }
-                    } catch (InvalidTableException exception) {
-                        logger.log(Level.SEVERE, "Fatal error when storing data for " + uuid + ", their data in primary storage has been deleted.");
-                    }
-                }
-
-                for (UserReport report : DataManager.getInstance().getAllUserReports()) {
-                    databaseV3.writeUserReport(report.getUUID(), report);
-                }
-
-            } catch (SQLException exception) {
-                logger.log(Level.SEVERE, "Failed to save all user data.");
-                exception.printStackTrace();
-            }
-
-            DataManager.getInstance().uncacheAll();
+        //really slow, we should execute this via a runnable.
+        if (!(EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline())) {
+            return;
         }
+        
+        ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
+    
+        logger.info("Saving " + allReports.keySet().size() + " fish reports.");
+        for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
+            databaseV3.writeFishReports(entry.getKey(), entry.getValue());
+        
+            try {
+                if (!databaseV3.hasUser(entry.getKey(), Table.EMF_USERS)) {
+                    databaseV3.createUser(entry.getKey());
+                }
+            } catch (InvalidTableException exception) {
+                logger.log(Level.SEVERE, "Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
+            }
+        }
+    
+    
+        logger.info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
+        for (UserReport report : DataManager.getInstance().getAllUserReports()) {
+            databaseV3.writeUserReport(report.getUUID(), report);
+        }
+
+        
+        DataManager.getInstance().uncacheAll();
     }
 
     public void reload() {
