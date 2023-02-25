@@ -733,25 +733,25 @@ public class DatabaseV3 {
      * @param uuid The first person to have caught this fish.
      */
     public void createFishData(@NotNull final Fish fish, @NotNull final UUID uuid) {
-        try {
-            String sql = "INSERT INTO emf_fish (fish_name, fish_rarity, first_fisher, total_caught, largest_fish, largest_fisher, first_catch_time) VALUES (?,?,?,?,?,?,?);";
-
-            // starts a field for the new fish that's been fished for the first time
-            try (PreparedStatement prep = getConnection().prepareStatement(sql)) {
-                prep.setString(1, fish.getName());
-                prep.setString(2, fish.getRarity().getValue());
-                prep.setString(3, uuid.toString());
-                prep.setDouble(4, 1);
-                prep.setFloat(5, Math.round(fish.getLength() * 10f) / 10f);
-                prep.setString(6, uuid.toString());
-                prep.setLong(7, Instant.now().getEpochSecond());
-                prep.execute();
-            }
-
+    
+        String sql = "INSERT INTO emf_fish (fish_name, fish_rarity, first_fisher, total_caught, largest_fish, largest_fisher, first_catch_time) VALUES (?,?,?,?,?,?,?);";
+    
+        // starts a field for the new fish that's been fished for the first time
+        try (PreparedStatement prep = getConnection().prepareStatement(sql)) {
+            prep.setString(1, fish.getName());
+            prep.setString(2, fish.getRarity().getValue());
+            prep.setString(3, uuid.toString());
+            prep.setDouble(4, 1);
+            prep.setFloat(5, Math.round(fish.getLength() * 10f) / 10f);
+            prep.setString(6, uuid.toString());
+            prep.setLong(7, Instant.now().getEpochSecond());
+            prep.execute();
         } catch (SQLException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not add " + fish.getName() + " to the database.");
             exception.printStackTrace();
         }
+
+
     }
 
     /**
