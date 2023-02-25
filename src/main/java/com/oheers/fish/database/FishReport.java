@@ -1,62 +1,69 @@
 package com.oheers.fish.database;
 
 import com.oheers.fish.fishing.items.Fish;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 
 public class FishReport {
 
-    String r, n;
-    int c;
-    long t;
-    float l;
+    private final String rarity;
+    private final String name;
+    private int numCaught;
+    private final long timeEpoch;
+    private float size;
 
     public FishReport(String rarity, String name, float size, int numCaught, long timeEpoch) {
-        this.r = rarity;
-        this.n = name;
-        this.c = numCaught;
-        this.l = size;
-        if (timeEpoch == -1) this.t = Instant.now().getEpochSecond();
-        else this.t = timeEpoch;
+        this.rarity = rarity;
+        this.name = name;
+        this.numCaught = numCaught;
+        this.size = size;
+        this.timeEpoch = calcTimeEpoch(timeEpoch);
+    }
+    
+    private long calcTimeEpoch(long timeEpoch) {
+        if (timeEpoch == -1)
+            return Instant.now().getEpochSecond();
+        return timeEpoch;
     }
 
     public int getNumCaught() {
-        return c;
+        return numCaught;
     }
 
     public void setNumCaught(int numCaught) {
-        this.c = numCaught;
+        this.numCaught = numCaught;
     }
 
     public String getRarity() {
-        return r;
+        return rarity;
     }
 
     public String getName() {
-        return n;
+        return name;
     }
 
     public float getLargestLength() {
-        return l;
+        return size;
     }
 
     public void setLargestLength(float largestLength) {
-        this.l = largestLength;
+        this.size = largestLength;
     }
 
     public long getTimeEpoch() {
-        return t;
+        return timeEpoch;
     }
 
-    public void addFish(Fish f) {
-        if (f.getLength() > this.l) {
-            this.l = f.getLength();
+    public void addFish(final @NotNull Fish fish) {
+        if (fish.getLength() > this.size) {
+            this.size = fish.getLength();
         }
-        c++;
+        numCaught++;
     }
 
     @Override
     public String toString() {
-        return "FishReport=[name:" + n + ", rarity:" + r + ", largestLength:" + l + ", numCaught:" + c;
+        return "FishReport=[name:" + name + ", rarity:" + rarity + ", largestLength:" + size + ", numCaught:" + numCaught;
     }
 }
