@@ -27,16 +27,11 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class DatabaseV3 {
-
     private final String URL;
-    private final String username = EvenMoreFish.mainConfig.getUsername();
-    private final String password = EvenMoreFish.mainConfig.getPassword();
-    private final String address = EvenMoreFish.mainConfig.getAddress();
-    private final String database = EvenMoreFish.mainConfig.getDatabase();
     private final EvenMoreFish plugin;
     private boolean isMySQL;
     private Connection connection;
-    private boolean usingV2 = Files.isDirectory(Paths.get(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data/"));
+    private Boolean usingV2 = Files.isDirectory(Paths.get(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data/"));
 
     /**
      * This is a reference to all database activity within the EMF plugin. It improves on the previous DatabaseV2 in that
