@@ -787,15 +787,12 @@ public class DatabaseV3 {
      * @param fish The fish to be increased.
      */
     public void incrementFish(@NotNull final Fish fish) {
-        try {
-            String sql = "UPDATE emf_fish SET total_caught = total_caught + 1 WHERE fish_rarity = ? AND fish_name = ?;";
-
-            PreparedStatement prep = getConnection().prepareStatement(sql);
+        String sql = "UPDATE emf_fish SET total_caught = total_caught + 1 WHERE fish_rarity = ? AND fish_name = ?;";
+    
+        try (PreparedStatement prep = getConnection().prepareStatement(sql)) {
             prep.setString(1, fish.getRarity().getValue());
             prep.setString(2, fish.getName());
             prep.execute();
-            prep.close();
-
         } catch (SQLException exception) {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not check if " + fish.getName() + " is present in the database.");
             exception.printStackTrace();
