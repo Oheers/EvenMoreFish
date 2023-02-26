@@ -27,9 +27,12 @@ import java.util.logging.Level;
 /**
  * @author sarhatabaot
  */
-public class FileSystemToDatabaseMigration {
+public class LegacyToV3DatabaseMigration {
     private static DatabaseV3 database;
     
+    public LegacyToV3DatabaseMigration(final DatabaseV3 database) {
+        LegacyToV3DatabaseMigration.database = database;
+    }
     
     /**
      * This causes a renaming of the table "Fish2" to "emf_fish", no data internally changes, but it's good to have a clean

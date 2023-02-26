@@ -1,29 +1,19 @@
 package com.oheers.fish.database;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.Leaderboard;
-import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.database.connection.ConnectionFactory;
 import com.oheers.fish.database.connection.MySqlConnectionFactory;
 import com.oheers.fish.database.connection.SqliteConnectionFactory;
-import com.oheers.fish.database.migrate.FileSystemToDatabaseMigration;
+import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -222,15 +212,13 @@ public class DatabaseV3 {
      * Converts a V2 database system to a V3 database system. The server must not crash during this process as this may
      * lead to data loss, but honestly I'm not 100% sure on that one. Data is read from the /data/ folder and is
      * inserted into the new database system then the /data/ folder is renamed to /data-old/.
-     * TODO FLYWAY: The migration should be in a different class entirely. For migration V1/V2->V3
-     *  - [ ] We should first, refactor this method. And move it to it's own class.
      *
      * @param initiator The person who started the migration.
      *
      */
     @Deprecated
     public void migrate(CommandSender initiator) {
-        FileSystemToDatabaseMigration.migrate(initiator);
+        LegacyToV3DatabaseMigration.migrate(initiator);
     }
 
     
