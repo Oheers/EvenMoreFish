@@ -98,17 +98,15 @@ public class LegacyToV3DatabaseMigration {
             
             totalFish += report.getNumCaught();
             database.executeStatement(c -> {
-                
-                // "Statement is not executing" when using setString yada yada... This seems to work though. todo set parameters probably need to user ` or something
-                String emfFishLogSQL = "INSERT INTO emf_fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (" +
-                    database.getUserID(uuid) + ", \"" +
-                    report.getRarity() + "\", \"" +
-                    report.getName() + "\", " +
-                    report.getNumCaught() + ", " +
-                    report.getTimeEpoch() + ", " +
-                    report.getLargestLength() + ");";
+                String emfFishLogSQL = "INSERT INTO emf_fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (?,?,?,?,?,?)";
                 try (PreparedStatement prep = c.prepareStatement(emfFishLogSQL)) {
-                    prep.execute();
+                    prep.setInt(1, database.getUserID(uuid));
+                    prep.setString(2, report.getRarity());
+                    prep.setString(3, report.getName());
+                    prep.setInt(4, report.getNumCaught());
+                    prep.setLong(5, report.getTimeEpoch());
+                    prep.setFloat(6, report.getLargestLength());
+                    prep.executeUpdate();
                 } catch (SQLException exception) {
                     EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: Users.");
                     exception.printStackTrace();
