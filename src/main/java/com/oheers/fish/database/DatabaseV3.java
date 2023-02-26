@@ -11,6 +11,7 @@ import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.database.connection.ConnectionFactory;
 import com.oheers.fish.database.connection.MySqlConnectionFactory;
 import com.oheers.fish.database.connection.SqliteConnectionFactory;
+import com.oheers.fish.database.migrate.FileSystemToDatabaseMigration;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
@@ -35,7 +36,11 @@ import java.util.logging.Level;
 public class DatabaseV3 {
     private boolean usingV2;
     private final ConnectionFactory connectionFactory;
-
+    
+    public void setUsingV2(boolean usingV2) {
+        this.usingV2 = usingV2;
+    }
+    
     /**
      * This is a reference to all database activity within the EMF plugin. It improves on the previous DatabaseV2 in that
      * when the config states that data must be stored in MySQL it won't then go and store the data in flat-file format.
@@ -94,7 +99,7 @@ public class DatabaseV3 {
      * @param tableID The name of the table to be queried.
      * @return If the table exists, true will be returned. If it doesn't, or there is an error, false is returned.
      */
-    private boolean queryTableExistence(@NotNull final String tableID) {
+    public boolean queryTableExistence(@NotNull final String tableID) {
         return Boolean.TRUE.equals(getStatement(f -> {
             try {
                 DatabaseMetaData dbMetaData = f.getMetaData();
@@ -217,190 +222,18 @@ public class DatabaseV3 {
      * Converts a V2 database system to a V3 database system. The server must not crash during this process as this may
      * lead to data loss, but honestly I'm not 100% sure on that one. Data is read from the /data/ folder and is
      * inserted into the new database system then the /data/ folder is renamed to /data-old/.
+     * TODO FLYWAY: The migration should be in a different class entirely. For migration V1/V2->V3
+     *  - [ ] We should first, refactor this method. And move it to it's own class.
      *
      * @param initiator The person who started the migration.
-     */
-    public void migrate(CommandSender initiator) {
-        if (!usingVersionV2()) {
-            Message msg = new Message("EvenMoreFish is already using the latest V3 database engine.");
-            msg.usePrefix(PrefixType.ERROR);
-            msg.broadcast(initiator, true, false);
-            return;
-        }
-
-        EvenMoreFish.logger.info(() -> initiator.getName() + " has begun the migration to EMF database V3 from V2.");
-        Message msg = new Message("Beginning conversion to V3 database engine.");
-        msg.usePrefix(PrefixType.ADMIN);
-        msg.broadcast(initiator, true, false);
-
-        File oldDataFolder = new File(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data/");
-        File dataFolder = new File(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data-archived/");
-
-        if (oldDataFolder.renameTo(dataFolder)) {
-            Message message = new Message("Archived /data/ folder.");
-            message.usePrefix(PrefixType.ADMIN);
-            message.broadcast(initiator, true, false);
-        } else {
-            Message message = new Message("Failed to archive /data/ folder. Cancelling migration. [No further information]");
-            message.usePrefix(PrefixType.ADMIN);
-            message.broadcast(initiator, true, false);
-            return;
-        }
-
-        Message fishReportMSG = new Message("Beginning FishReport migrations. This may take a while.");
-        fishReportMSG.usePrefix(PrefixType.ADMIN);
-        fishReportMSG.broadcast(initiator, true, false);
-
-        try {
-            translateFishDataV2();
-            createTables(true);
-
-            for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
-                Type fishReportList = new TypeToken<List<FishReport>>() {
-                }.getType();
-
-                Gson gson = new Gson();
-                List<FishReport> reports;
-                try(FileReader reader = new FileReader(file)) {
-                    reports = gson.fromJson(reader, fishReportList);
-                }
-                UUID playerUUID = UUID.fromString(file.getName().substring(0, file.getName().lastIndexOf(".")));
-                createUser(playerUUID);
-                translateFishReportsV2(playerUUID, reports);
-
-                Message migratedMSG = new Message("Migrated " + reports.size() + " fish for: " + playerUUID);
-                migratedMSG.usePrefix(PrefixType.ADMIN);
-                migratedMSG.broadcast(initiator, true, false);
-            }
-
-        } catch (NullPointerException | FileNotFoundException exception) {
-            exception.printStackTrace();
-            Message message = new Message("Fatal error whilst upgrading to V3 database engine.");
-            message.usePrefix(PrefixType.ERROR);
-            message.broadcast(initiator, true, false);
-    
-            EvenMoreFish.logger.log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.");
-            exception.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-        Message migratedMSG = new Message("Migration completed. Your database is now using the V3 database engine: you do" +
-                " not need to restart or reload your server to complete the process.");
-        migratedMSG.usePrefix(PrefixType.ERROR);
-        migratedMSG.broadcast(initiator, true, false);
-
-        Message thankyou = new Message("Now that migration is complete, you will be able to use functionality in upcoming" +
-                " updates such as quests, deliveries and a fish log. - Oheers");
-        thankyou.usePrefix(PrefixType.ERROR);
-        thankyou.broadcast(initiator, true, false);
-
-        this.usingV2 = false;
-    }
-
-    /**
-     * This causes a renaming of the table "Fish2" to "emf_fish", no data internally changes, but it's good to have a clean
-     * format for all the tables and to have a more descriptive name for this stuff.
-     */
-    private void translateFishDataV2() {
-        if (queryTableExistence(Table.EMF_FISH.getTableID())) {
-            return;
-        }
-    
-        if (queryTableExistence("Fish2")) {
-            executeStatement(c -> {
-                try (PreparedStatement preparedStatement = c.prepareStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";")) {
-                    preparedStatement.execute();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
-            return;
-        }
-    
-        executeStatement(c -> {
-            try (PreparedStatement preparedStatement = c.prepareStatement(Table.EMF_FISH.creationCode)) {
-                preparedStatement.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    
-    }
-
-    /**
-     * Loops through each fish report passed through and sets all the default values for the user in the database. Note
-     * that the user must already have a field within the database. All data regarding competitions and the total size does
-     * not exist within the V2 and V1 recording system so are set to 0 by default, as this lost data cannot be recovered.
-     * Similarly, the latest fish cannot be retrieved so the "None" fish is left, to reference there is no value here yet.
-     * <p>
-     * This should only be used during the V1/2 -> V3 migration process.
      *
-     * @param uuid    The user
-     * @param reports The V2 fish reports associated with the user.
      */
-    private void translateFishReportsV2(final UUID uuid, final @NotNull List<FishReport> reports) {
-        String firstFishID = "";
-        long epochFirst = Long.MAX_VALUE;
-        String largestFishID = "";
-        float largestSize = 0f;
-
-        int totalFish = 0;
-
-        for (FishReport report : reports) {
-            if (report.getTimeEpoch() < epochFirst) {
-                epochFirst = report.getTimeEpoch();
-                firstFishID = report.getRarity() + ":" + report.getName();
-            }
-            if (report.getLargestLength() > largestSize) {
-                largestSize = report.getLargestLength();
-                largestFishID = report.getRarity() + ":" + report.getName();
-            }
-
-            totalFish += report.getNumCaught();
-            executeStatement(c -> {
-        
-                // "Statement is not executing" when using setString yada yada... This seems to work though. todo set parameters probably need to user ` or something
-                String emfFishLogSQL = "INSERT INTO emf_fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (" +
-                    getUserID(uuid) + ", \"" +
-                    report.getRarity() + "\", \"" +
-                    report.getName() + "\", " +
-                    report.getNumCaught() + ", " +
-                    report.getTimeEpoch() + ", " +
-                    report.getLargestLength() + ");";
-                try (PreparedStatement prep = c.prepareStatement(emfFishLogSQL)) {
-                    prep.execute();
-                } catch (SQLException exception) {
-                    EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: Users.");
-                    exception.printStackTrace();
-                }
-            });
-            // starts a field for the new fish for the user that's been fished for the first time
-            
-        }
-
-        createFieldForFishFirstTimeFished(uuid,firstFishID,largestFishID,totalFish,largestSize);
+    @Deprecated
+    public void migrate(CommandSender initiator) {
+        FileSystemToDatabaseMigration.migrate(initiator);
     }
+
     
-    private void createFieldForFishFirstTimeFished(final UUID uuid, final String firstFishID, final String largestFishID, int totalFish, float largestSize) {
-        String emfUsersSQL = "UPDATE emf_users SET first_fish = ?, largest_fish = ?, num_fish_caught = ?, largest_length = ? WHERE uuid = ?;";
-        // starts a field for the new fish that's been fished for the first time
-        executeStatement(c -> {
-            try (PreparedStatement prep = getConnection().prepareStatement(emfUsersSQL);){
-                prep.setString(1, firstFishID);
-                prep.setString(2, largestFishID);
-                prep.setInt(3, totalFish);
-                prep.setFloat(4, largestSize);
-                prep.setString(5, uuid.toString());
-            
-                prep.execute();
-            } catch (SQLException exception) {
-                EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: emf_users.");
-                exception.printStackTrace();
-            }
-        });
-    }
 
     /**
      * Returns the user's ID from the emf_users table. If there is no user, the value 0 will be returned to indicate
@@ -916,7 +749,7 @@ public class DatabaseV3 {
      * @return A value of whatever R is
      * @param <R> Defined via func
      */
-    private <R> @Nullable R getStatement(@NotNull Function<Connection, R> func){
+    public  <R> @Nullable R getStatement(@NotNull Function<Connection, R> func){
         try (Connection connection = getConnection()){
             return func.apply(connection);
         } catch (SQLException e) {
@@ -930,7 +763,7 @@ public class DatabaseV3 {
      * The connection is closed automatically.
      * @param consumer Function to execute.
      */
-    private void executeStatement(@NotNull Consumer<Connection> consumer) {
+    public void executeStatement(@NotNull Consumer<Connection> consumer) {
         try (Connection connection = getConnection()){
             consumer.accept(connection);
         } catch (SQLException e) {

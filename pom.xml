@@ -31,6 +31,7 @@
         <nbtapi.version>2.11.1</nbtapi.version>
         <itemsadder.api.version>3.0.0</itemsadder.api.version>
         <hikaricp.version>4.0.3</hikaricp.version>
+        <flyway.version>9.15.1</flyway.version>
     </properties>
 
     <build>
@@ -261,6 +262,12 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikaricp.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
