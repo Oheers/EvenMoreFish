@@ -30,8 +30,10 @@ import java.util.logging.Level;
 public class LegacyToV3DatabaseMigration {
     private static DatabaseV3 database;
     
-    public LegacyToV3DatabaseMigration(final DatabaseV3 database) {
-        LegacyToV3DatabaseMigration.database = database;
+    public static void init(final DatabaseV3 database) {
+        if(database == null) {
+            LegacyToV3DatabaseMigration.database = database;
+        }
     }
     
     /**
@@ -64,8 +66,6 @@ public class LegacyToV3DatabaseMigration {
         });
         
     }
-    
-    /*TODO, everything for migration should be handled via flyway. */
     
     /**
      * Loops through each fish report passed through and sets all the default values for the user in the database. Note
@@ -130,7 +130,7 @@ public class LegacyToV3DatabaseMigration {
                 prep.setFloat(4, largestSize);
                 prep.setString(5, uuid.toString());
                 
-                prep.execute();
+                prep.executeUpdate();
             } catch (SQLException exception) {
                 EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: emf_users.");
                 exception.printStackTrace();

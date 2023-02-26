@@ -218,6 +218,7 @@ public class DatabaseV3 {
      */
     @Deprecated
     public void migrate(CommandSender initiator) {
+        LegacyToV3DatabaseMigration.init(this);
         LegacyToV3DatabaseMigration.migrate(initiator);
     }
 
@@ -284,7 +285,7 @@ public class DatabaseV3 {
                     prep.setString(5, none);
                 }
         
-                prep.execute();
+                prep.executeUpdate();
     
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
                     EvenMoreFish.logger.info(() ->  "Written competition report for (" + competition.getCompetitionName() + ") to the database.");
@@ -312,7 +313,7 @@ public class DatabaseV3 {
         executeStatement(c -> {
             try (PreparedStatement prep = c.prepareStatement(sql);){
                 prep.setString(1, uuid.toString());
-                prep.execute();
+                prep.executeUpdate();
         
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
                     EvenMoreFish.logger.info(() -> "Written empty user report for (" + uuid + ") to the database.");
@@ -446,7 +447,7 @@ public class DatabaseV3 {
                 statement.setLong(5, report.getTimeEpoch());
                 statement.setFloat(6, report.getLargestLength());
         
-                statement.execute();
+                statement.executeUpdate();
     
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
                     EvenMoreFish.logger.info(() -> "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
@@ -475,7 +476,7 @@ public class DatabaseV3 {
                 statement.setString(4, report.getRarity());
                 statement.setString(5, report.getName());
         
-                statement.execute();
+                statement.executeUpdate();
             } catch (SQLException e) {
                 EvenMoreFish.logger.warning("There was a problems setting user's " + userID + "fish.");
                 e.printStackTrace();
