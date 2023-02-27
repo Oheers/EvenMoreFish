@@ -716,10 +716,10 @@ public class DatabaseV3 {
         });
     }
     
-    public void createSale(final int userId, final String fishName, final int fishAmount, final float priceSold) {
+    public void createSale(final int userId, final String fishName, final String fishRarity, final int fishAmount, final float priceSold) {
         final String sql =
-            "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_amount, price_sold) " +
-                "VALUES (?,?,?,?);";
+            "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_rarity, fish_amount, price_sold) " +
+                "VALUES (?,?,?,?,?);";
         final String transactionId = FriendlyId.createFriendlyId();
         
         createTransaction(transactionId, userId, Timestamp.from(Instant.now()));
@@ -728,8 +728,9 @@ public class DatabaseV3 {
             try (PreparedStatement statement = c.prepareStatement(sql)) {
                 statement.setString(1, transactionId);
                 statement.setString(2,fishName);
-                statement.setInt(3, fishAmount);
-                statement.setFloat(4, priceSold);
+                statement.setString(3,fishRarity);
+                statement.setInt(4, fishAmount);
+                statement.setFloat(5, priceSold);
                 statement.executeUpdate();
                 
                 //log in chat?

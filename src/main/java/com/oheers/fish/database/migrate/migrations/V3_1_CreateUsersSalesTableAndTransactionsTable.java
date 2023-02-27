@@ -29,7 +29,8 @@ public class V3_1_CreateUsersSalesTableAndTransactionsTable extends BaseJavaMigr
         String createEmfUserSalesSql = "CREATE TABLE emf_users_sales ( " +
             "id INTEGER NOT NULL${auto.increment}, " +
             "transaction_id VARCHAR(22) NOT NULL, " +
-            "fish_name VARCHAR NOT NULL," +
+            "fish_name VARCHAR(256) NOT NULL," +
+            "fish_rarity VARCHAR(256) NOT NULL," +
             "fish_amount INTEGER NOT NULL, " +
             "price_sold FLOAT NOT NULL, " +
             "${primary.key}" +
