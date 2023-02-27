@@ -2,8 +2,11 @@ package com.oheers.fish.database.connection;
 
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.database.DatabaseV3;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +64,20 @@ public abstract class ConnectionFactory {
         
         this.dataSource = new HikariDataSource(config);
         logger.info("Connected to database!");
-        
+    
+        Flyway flyway = Flyway.configure(getClass().getClassLoader())
+            .dataSource(dataSource)
+            .baselineOnMigrate(true)
+            .baselineVersion("3")
+            .locations("classpath:com/oheers/fish/data/migrate/migrations")
+            .target(DatabaseV3.VERSION)
+            .load();
+    
+        try {
+            flyway.migrate();
+        } catch (FlywayException e) {
+            logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
+        }
     }
     
     //LP

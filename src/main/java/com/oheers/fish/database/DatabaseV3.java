@@ -11,6 +11,7 @@ import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
+import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +25,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 public class DatabaseV3 {
+    public static final String VERSION = "3"; //latest database version
     private boolean usingV2;
     private final ConnectionFactory connectionFactory;
     
@@ -127,6 +129,7 @@ public class DatabaseV3 {
             return;
         }
 
+        //should be done via flyway possibly?
         for (Table table : Table.values()) {
             if (queryTableExistence(table.getTableID()) ||
                 table.getCreationCode() == null ||
@@ -216,8 +219,7 @@ public class DatabaseV3 {
      * @param initiator The person who started the migration.
      *
      */
-    @Deprecated
-    public void migrate(CommandSender initiator) {
+    public void migrateLegacy(CommandSender initiator) {
         LegacyToV3DatabaseMigration.init(this);
         LegacyToV3DatabaseMigration.migrate(initiator);
     }
