@@ -70,7 +70,6 @@ public abstract class ConnectionFactory {
             .baselineOnMigrate(true)
             .baselineVersion("3")
             .locations("classpath:com/oheers/fish/data/migrate/migrations")
-            .target(DatabaseV3.VERSION)
             .load();
     
         try {
