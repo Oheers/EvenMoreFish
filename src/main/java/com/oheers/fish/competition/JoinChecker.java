@@ -46,7 +46,7 @@ public class JoinChecker implements Listener {
                             if (EvenMoreFish.mainConfig.doDBVerbose())
                                 EvenMoreFish.logger.log(Level.INFO, userName + " has joined for the first time, creating new data handle for them.");
                         }
-                    } catch (SQLException | InvalidTableException exception) {
+                    } catch (InvalidTableException exception) {
                         EvenMoreFish.logger.log(Level.SEVERE, "Failed to check database existence of user " + userUUID);
                         exception.printStackTrace();
                     }

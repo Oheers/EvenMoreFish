@@ -182,6 +182,7 @@ public class EvenMoreFish extends JavaPlugin {
             DataManager.init();
 
             databaseV3 = new DatabaseV3(this);
+            //load user reports into cache
             new BukkitRunnable() {
                 @Override
                 public void run() {
