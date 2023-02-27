@@ -1,5 +1,6 @@
 package com.oheers.fish.database;
 
+import com.devskiller.friendly_id.FriendlyId;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
@@ -714,6 +715,53 @@ public class DatabaseV3 {
             }
         });
     }
+    
+    public void createSale(final int userId, final String fishName, final int fishAmount, final float priceSold) {
+        final String sql =
+            "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_amount, price_sold) " +
+                "VALUES (?,?,?,?);";
+        final String transactionId = FriendlyId.createFriendlyId();
+        
+        createTransaction(transactionId, userId, Timestamp.from(Instant.now()));
+        
+        executeStatement(c -> {
+            try (PreparedStatement statement = c.prepareStatement(sql)) {
+                statement.setString(1, transactionId);
+                statement.setString(2,fishName);
+                statement.setInt(3, fishAmount);
+                statement.setFloat(4, priceSold);
+                statement.executeUpdate();
+                
+                //log in chat?
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    /**
+     * Creates a new transaction.
+     *
+     * @param transactionId
+     * @param userId
+     * @param timestamp
+     */
+    public void createTransaction(final String transactionId, final int userId, final Timestamp timestamp) {
+        final String sql =
+            "INSERT INTO emf_transactions (id, user_id, timestamp) " +
+                "VALUES (?,?,?);";
+        executeStatement(c -> {
+            try(PreparedStatement statement = c.prepareStatement(sql)) {
+                statement.setString(1, transactionId);
+                statement.setInt(2, userId);
+                statement.setTimestamp(3, timestamp);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
     
     
     /**
