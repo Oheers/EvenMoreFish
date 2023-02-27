@@ -11,6 +11,10 @@ commands:
   evenmorefish:
     usage: /<command> [name]
     aliases: [ emf ]
+libraries:
+  - com.zaxxer:HikariCP:${hikaricp.version}
+  - org.flywaydb:flyway-core:${flyway.version}
+  - com.github.ben-manes.caffeine:caffeine:${caffiene.version}
 
 
 

@@ -32,6 +32,7 @@
         <itemsadder.api.version>3.0.0</itemsadder.api.version>
         <hikaricp.version>4.0.3</hikaricp.version>
         <flyway.version>9.15.1</flyway.version>
+        <friendlyid.version>1.1.0</friendlyid.version>
     </properties>
 
     <build>
@@ -57,8 +58,8 @@
                             <shadedPattern>com.oheers.evenmorefish.bstats</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
-                            <shadedPattern>com.oheers.fish.utils</shadedPattern>
+                            <pattern>de.tr7zw</pattern>
+                            <shadedPattern>com.oheers.fish.utils.nbt</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
@@ -169,7 +170,7 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
             <version>${caffiene.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -262,12 +263,18 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikaricp.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>${flyway.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.devskiller.friendly-id</groupId>
+            <artifactId>friendly-id</artifactId>
+            <version>${friendlyid.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
