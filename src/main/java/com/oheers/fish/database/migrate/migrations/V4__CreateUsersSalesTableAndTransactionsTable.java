@@ -32,7 +32,7 @@ public class V4__CreateUsersSalesTableAndTransactionsTable extends BaseJavaMigra
             "fish_name VARCHAR(256) NOT NULL," +
             "fish_rarity VARCHAR(256) NOT NULL," +
             "fish_amount INTEGER NOT NULL, " +
-            "fish_length DOUBLE NOT NULL"+
+            "fish_length DOUBLE NOT NULL, "+
             "price_sold DOUBLE NOT NULL, " +
             "${primary.key}" +
             ");";

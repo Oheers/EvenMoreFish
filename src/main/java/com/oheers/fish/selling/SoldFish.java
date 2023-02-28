@@ -6,14 +6,14 @@ public class SoldFish {
     private int amount;
     
     private double totalValue;
-    private double size;
+    private double length;
     
-    public SoldFish(String name, String rarity, int amount, double totalValue, double size) {
+    public SoldFish(String name, String rarity, int amount, double totalValue, double length) {
         this.name = name;
         this.rarity = rarity;
         this.amount = amount;
         this.totalValue = totalValue;
-        this.size = size;
+        this.length = length;
     }
     
     public void setAmount(int amount) {
@@ -40,7 +40,7 @@ public class SoldFish {
         return rarity;
     }
     
-    public double getSize() {
-        return size;
+    public double getLength() {
+        return length;
     }
 }

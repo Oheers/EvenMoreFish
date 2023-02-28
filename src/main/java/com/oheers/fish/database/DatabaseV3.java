@@ -714,21 +714,30 @@ public class DatabaseV3 {
         });
     }
     
+    public void updateUserFishSold(final UUID uuid, final int fishSold) {
+        final String sql = "UPDATE emf_users" +
+            "SET fish_sold = ? WHERE uuid = ?;"
+    }
+    
+    public  void updateUserMoneyEarned(final UUID uuid, final double moneyEarned) {
+    
+    }
+    
     //Used a single transaction with multiple sales, optionally.
     public void createSale(final String transactionId, final Timestamp timestamp, final int userId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
         final String sql =
             "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_rarity, fish_amount, fish_length, price_sold) " +
-                "VALUES (?,?,?,?,?);";
+                "VALUES (?,?,?,?,?,?);";
     
         createTransaction(transactionId, userId, timestamp);
     
         executeStatement(c -> {
             try (PreparedStatement statement = c.prepareStatement(sql)) {
                 statement.setString(1, transactionId);
-                statement.setString(2,fishName);
-                statement.setString(3,fishRarity);
+                statement.setString(2, fishName);
+                statement.setString(3, fishRarity);
                 statement.setInt(4, fishAmount);
-                statement.setDouble(5,fishLength);
+                statement.setDouble(5, fishLength);
                 statement.setDouble(6, (Math.floor(priceSold * 10) / 10));
                 statement.executeUpdate();
             
