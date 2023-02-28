@@ -715,9 +715,9 @@ public class DatabaseV3 {
     }
     
     //Used a single transaction with multiple sales, optionally.
-    public void createSale(final String transactionId, final Timestamp timestamp, final int userId, final String fishName, final String fishRarity, final int fishAmount, final double priceSold) {
+    public void createSale(final String transactionId, final Timestamp timestamp, final int userId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
         final String sql =
-            "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_rarity, fish_amount, price_sold) " +
+            "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_rarity, fish_amount, fish_length, price_sold) " +
                 "VALUES (?,?,?,?,?);";
     
         createTransaction(transactionId, userId, timestamp);
@@ -728,7 +728,8 @@ public class DatabaseV3 {
                 statement.setString(2,fishName);
                 statement.setString(3,fishRarity);
                 statement.setInt(4, fishAmount);
-                statement.setFloat(5, (float) (Math.floor(priceSold * 10) / 10));
+                statement.setDouble(5,fishLength);
+                statement.setDouble(6, (Math.floor(priceSold * 10) / 10));
                 statement.executeUpdate();
             
                 //log in chat?
@@ -739,8 +740,8 @@ public class DatabaseV3 {
     }
     
     //Used for single sales.
-    public void createSale(final int userId, final String fishName, final String fishRarity, final int fishAmount, final float priceSold) {
-        createSale(FriendlyId.createFriendlyId(), Timestamp.from(Instant.now()),userId,fishName,fishRarity,fishAmount,priceSold);
+    public void createSale(final int userId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
+        createSale(FriendlyId.createFriendlyId(), Timestamp.from(Instant.now()),userId,fishName,fishRarity,fishAmount,fishLength,priceSold);
     }
     
     /**

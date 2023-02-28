@@ -294,10 +294,11 @@ public class SellGUI implements InventoryHolder {
         NBTItem nbtItem = new NBTItem(item);
         final String fishName = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
         final String fishRarity = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
+        Float floatLength = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
+        final double fishLength = floatLength == null ? -1.0 : floatLength;
         final double fishValue = WorthNBT.getValue(item);
         
-        return new SoldFish(fishName, fishRarity, item.getAmount(), fishValue * item.getAmount());
-        
+        return new SoldFish(fishName, fishRarity, item.getAmount(), fishValue * item.getAmount(), fishLength);
     }
     
     
@@ -402,7 +403,7 @@ public class SellGUI implements InventoryHolder {
         final String transactionId = FriendlyId.createFriendlyId();
         final Timestamp timestamp = Timestamp.from(Instant.now());
         for(final SoldFish fish: soldFish) {
-            EvenMoreFish.databaseV3.createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(), (float) fish.getTotalValue());
+            EvenMoreFish.databaseV3.createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(), fish.getTotalValue());
         }
     }
 

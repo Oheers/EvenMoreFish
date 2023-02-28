@@ -6,14 +6,15 @@ public class SoldFish {
     private int amount;
     
     private double totalValue;
+    private double size;
     
-    public SoldFish(String name, String rarity, int amount, double totalValue) {
+    public SoldFish(String name, String rarity, int amount, double totalValue, double size) {
         this.name = name;
         this.rarity = rarity;
         this.amount = amount;
         this.totalValue = totalValue;
+        this.size = size;
     }
-    
     
     public void setAmount(int amount) {
         this.amount = amount;
@@ -37,5 +38,9 @@ public class SoldFish {
     
     public String getRarity() {
         return rarity;
+    }
+    
+    public double getSize() {
+        return size;
     }
 }
