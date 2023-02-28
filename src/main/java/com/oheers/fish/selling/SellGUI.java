@@ -1,5 +1,6 @@
 package com.oheers.fish.selling;
 
+import com.devskiller.friendly_id.FriendlyId;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
@@ -22,6 +23,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 
 public class SellGUI implements InventoryHolder {
@@ -396,13 +399,15 @@ public class SellGUI implements InventoryHolder {
     
     private void logSoldFish(final UUID uuid, @NotNull List<SoldFish> soldFish) {
         int userId = EvenMoreFish.databaseV3.getUserID(uuid);
+        final String transactionId = FriendlyId.createFriendlyId();
+        final Timestamp timestamp = Timestamp.from(Instant.now());
         for(final SoldFish fish: soldFish) {
-            EvenMoreFish.databaseV3.createSale(userId, fish.getName(),fish.getRarity(), fish.getAmount(), (float) fish.getTotalValue());
+            EvenMoreFish.databaseV3.createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(), (float) fish.getTotalValue());
         }
     }
 
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return menu;
     }
 }
