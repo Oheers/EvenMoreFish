@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 /**
  * @author sarhatabaot
  */
-public class V3_1_CreateUsersSalesTableAndTransactionsTable extends BaseJavaMigration {
+public class V4__CreateUsersSalesTableAndTransactionsTable extends BaseJavaMigration {
     
     @Override
     public void migrate(@NotNull Context context) throws Exception {

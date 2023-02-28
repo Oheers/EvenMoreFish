@@ -12,7 +12,6 @@ import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
-import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +25,6 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 public class DatabaseV3 {
-    public static final String VERSION = "3"; //latest database version
     private boolean usingV2;
     private final ConnectionFactory connectionFactory;
     

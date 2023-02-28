@@ -34,4 +34,8 @@ public class SoldFish {
     public double getTotalValue() {
         return totalValue;
     }
+    
+    public String getRarity() {
+        return rarity;
+    }
 }
