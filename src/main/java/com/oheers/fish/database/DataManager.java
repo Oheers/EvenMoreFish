@@ -65,7 +65,7 @@ public class DataManager {
      * however if they're offline then 0 will be returned, causing them to be uncached immediately.
      *
      * @param uuid The UUID of the user who owns the user report.
-     * @returns Long.MAX_VALUE if the user is online, 0 if not.
+     * @return Long.MAX_VALUE if the user is online, 0 if not.
      */
     private long getCacheDuration(UUID uuid) {
         if (Bukkit.getPlayer(uuid) != null) {

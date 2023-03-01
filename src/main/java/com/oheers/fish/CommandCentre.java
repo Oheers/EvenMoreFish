@@ -21,12 +21,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
@@ -177,14 +175,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
                         @Override
                         public void run() {
-                            try {
-                                EvenMoreFish.databaseV3.getConnection();
-                                EvenMoreFish.databaseV3.migrate(sender);
-                                EvenMoreFish.databaseV3.closeConnection();
-                            } catch (SQLException exception) {
-                                EvenMoreFish.logger.log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.");
-                                exception.printStackTrace();
-                            }
+                            EvenMoreFish.databaseV3.migrateLegacy(sender);
                         }
                     }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(CommandCentre.class));
                 }

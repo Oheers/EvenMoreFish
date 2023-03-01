@@ -8,11 +8,12 @@ import java.util.UUID;
 
 public class CompetitionReport {
 
-    final String competitionConfigID, winnerFish;
-    final UUID winnerUUID;
-    final List<UUID> contestants = new ArrayList<>();
+    private final String competitionConfigID;
+    private final String winnerFish;
+    private final UUID winnerUUID;
+    private final List<UUID> contestants = new ArrayList<>();
 
-    final float winnerScore;
+    private final float winnerScore;
 
     public CompetitionReport(@NotNull final String competitionConfigID, @NotNull final String winnerUUIDString,
                              @NotNull final String winnerFish, final float winnerScore, @NotNull final String contestants) {

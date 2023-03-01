@@ -12,6 +12,27 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.version>3.10.1</maven.compiler.version>
+        <maven.shade.version>3.4.0</maven.shade.version>
+        <maven.clean.version>3.2.0</maven.clean.version>
+
+        <spigot.api.version>1.18.2-R0.1-SNAPSHOT</spigot.api.version>
+        <caffiene.version>2.9.1</caffiene.version>
+        <authlib.version>1.5.21</authlib.version>
+        <vault.api.version>1.7.1</vault.api.version>
+        <bstats.version>3.0.0</bstats.version>
+        <worldguard.version>7.0.4</worldguard.version>
+        <placeholderapi.version>2.11.2</placeholderapi.version>
+        <redprotect.version>7.7.3</redprotect.version>
+        <redprotect.1.13.version>LATEST</redprotect.1.13.version>
+        <mcmmo.version>2.1.196</mcmmo.version>
+        <aureliiumskills.version>Beta1.2.8</aureliiumskills.version>
+        <nbtapi.version>2.11.1</nbtapi.version>
+        <itemsadder.api.version>3.0.0</itemsadder.api.version>
+        <hikaricp.version>4.0.3</hikaricp.version>
+        <flyway.version>9.15.1</flyway.version>
+        <friendlyid.version>1.1.0</friendlyid.version>
     </properties>
 
     <build>
@@ -19,7 +40,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>${maven.compiler.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -28,7 +49,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven.shade.version}</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <relocations>
@@ -37,10 +58,21 @@
                             <shadedPattern>com.oheers.evenmorefish.bstats</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
-                            <shadedPattern>com.oheers.fish.utils</shadedPattern>
+                            <pattern>de.tr7zw</pattern>
+                            <shadedPattern>com.oheers.fish.utils.nbt</shadedPattern>
                         </relocation>
                     </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <excludes>META-INF/*.SF</excludes>
+                                <excludes>META-INF/*.DSA</excludes>
+                                <excludes>META-INF/*.RSA</excludes>
+                                <exclude>META-INF/maven/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
                 <executions>
                     <execution>
@@ -53,7 +85,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>${maven.clean.version}</version>
                 <executions>
                     <execution>
                         <id>auto-clean</id>
@@ -74,7 +106,6 @@
     </build>
 
     <repositories>
-        <!-- This adds the Spigot Maven repository to the build -->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
@@ -120,7 +151,6 @@
             <url>https://nexus.neetgames.com/repository/maven-releases/</url>
         </repository>
 
-        <!-- CodeMC -->
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
@@ -129,26 +159,24 @@
     </repositories>
 
     <dependencies>
-
-        <!--This adds the Spigot API artifact to the build -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <version>${spigot.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-            <version>2.6.2</version>
-            <scope>compile</scope>
+            <version>${caffiene.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
-            <version>1.5.21</version>
+            <version>${authlib.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -156,57 +184,49 @@
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.7.1</version>
+            <version>${vault.api.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.39.2.1</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.0</version>
+            <version>${bstats.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.4</version>
+            <version>${worldguard.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.11.2</version>
+            <version>${placeholderapi.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>br.net.fabiozumbi12.RedProtect</groupId>
             <artifactId>RedProtect-Core</artifactId>
-            <version>LATEST</version>
+            <version>${redprotect.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>br.net.fabiozumbi12.RedProtect</groupId>
             <artifactId>RedProtect-Spigot-1.13</artifactId>
-            <version>LATEST</version>
+            <version>${redprotect.1.13.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>br.net.fabiozumbi12.RedProtect</groupId>
             <artifactId>RedProtect-Spigot-1.13</artifactId>
-            <version>LATEST</version>
+            <version>${redprotect.1.13.version}</version>
             <classifier>javadoc</classifier>
             <scope>provided</scope>
         </dependency>
@@ -214,29 +234,48 @@
         <dependency>
             <groupId>com.gmail.nossr50.mcMMO</groupId>
             <artifactId>mcMMO</artifactId>
-            <version>2.1.196</version>
+            <version>${mcmmo.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.Archy-X</groupId>
             <artifactId>AureliumSkills</artifactId>
-            <version>Beta1.2.8</version>
+            <version>${aureliiumskills.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api</artifactId>
-            <version>2.11.1</version>
+            <version>${nbtapi.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.LoneDev6</groupId>
             <artifactId>api-itemsadder</artifactId>
-            <version>3.0.0</version>
+            <version>${itemsadder.api.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.devskiller.friendly-id</groupId>
+            <artifactId>friendly-id</artifactId>
+            <version>${friendlyid.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

@@ -32,7 +32,7 @@ public class WorthNBT {
         return nbtItem.getItem();
     }
 
-    public static void setNBT(Skull fishSkull, Fish fish) { //todo issue 173
+    public static void setNBT(Skull fishSkull, Fish fish) {
         NamespacedKey nbtlength = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_LENGTH);
         NamespacedKey nbtplayer = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_PLAYER);
         NamespacedKey nbtrarity = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RARITY);
