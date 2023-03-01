@@ -402,6 +402,8 @@ public class SellGUI implements InventoryHolder {
         int userId = EvenMoreFish.databaseV3.getUserID(uuid);
         final String transactionId = FriendlyId.createFriendlyId();
         final Timestamp timestamp = Timestamp.from(Instant.now());
+        
+        EvenMoreFish.databaseV3.createTransaction(transactionId, userId, timestamp);
         for(final SoldFish fish: soldFish) {
             EvenMoreFish.databaseV3.createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());
         }

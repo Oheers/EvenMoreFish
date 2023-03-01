@@ -724,9 +724,7 @@ public class DatabaseV3 {
         final String sql =
             "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_rarity, fish_amount, fish_length, price_sold) " +
                 "VALUES (?,?,?,?,?,?);";
-    
-        createTransaction(transactionId, userId, timestamp);
-    
+        
         executeStatement(c -> {
             try (PreparedStatement statement = c.prepareStatement(sql)) {
                 statement.setString(1, transactionId);
