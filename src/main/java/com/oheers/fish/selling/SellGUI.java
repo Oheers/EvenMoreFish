@@ -6,6 +6,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.database.DataManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SellGUI implements InventoryHolder {
 
@@ -403,6 +405,15 @@ public class SellGUI implements InventoryHolder {
         for(final SoldFish fish: soldFish) {
             EvenMoreFish.databaseV3.createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());
         }
+        
+        double moneyEarned = getTotalWorth(soldFish);
+        int fishSold = calcFishSold(soldFish);
+        DataManager.getInstance().getUserReportIfExists(uuid).incrementFishSold(fishSold);
+        DataManager.getInstance().getUserReportIfExists(uuid).incrementMoneyEarned(moneyEarned);
+    }
+    
+    private int calcFishSold(@NotNull List<SoldFish> soldFish) {
+        return soldFish.stream().mapToInt(SoldFish::getAmount).sum();
     }
 
     @Override

@@ -519,7 +519,8 @@ public class DatabaseV3 {
     public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) {
         executeStatement(c -> {
             try (PreparedStatement statement = c.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
-                "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
+                "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, " +
+                "competitions_joined = ?, fish_sold = ?, money_earned = ? " +
                 "WHERE uuid = ?;")) {
             
                 statement.setString(1, report.getFirstFish());
@@ -530,7 +531,9 @@ public class DatabaseV3 {
                 statement.setFloat(6, report.getTotalFishLength());
                 statement.setInt(7, report.getCompetitionsWon());
                 statement.setInt(8, report.getCompetitionsJoined());
-                statement.setString(9, uuid.toString());
+                statement.setInt(9,report.getFishSold());
+                statement.setDouble(10,report.getMoneyEarned());
+                statement.setString(11, uuid.toString());
             
             
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
@@ -576,7 +579,9 @@ public class DatabaseV3 {
                             resultSet.getString("largest_fish"),
                             resultSet.getFloat("total_fish_length"),
                             resultSet.getFloat("largest_length"),
-                            resultSet.getString("uuid")
+                            resultSet.getString("uuid"),
+                            resultSet.getInt("fish_sold"),
+                            resultSet.getDouble("money_earned")
                         );
                     }
                     if (EvenMoreFish.mainConfig.doDBVerbose()) {
@@ -712,15 +717,6 @@ public class DatabaseV3 {
                 exception.printStackTrace();
             }
         });
-    }
-    
-    public void updateUserFishSold(final UUID uuid, final int fishSold) {
-        final String sql = "UPDATE emf_users" +
-            "SET fish_sold = ? WHERE uuid = ?;"
-    }
-    
-    public  void updateUserMoneyEarned(final UUID uuid, final double moneyEarned) {
-    
     }
     
     //Used a single transaction with multiple sales, optionally.
