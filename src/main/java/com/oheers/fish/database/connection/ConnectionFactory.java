@@ -2,7 +2,6 @@ package com.oheers.fish.database.connection;
 
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.database.DatabaseV3;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
@@ -92,7 +91,7 @@ public abstract class ConnectionFactory {
         }
     }
     
-    public void shutdown() throws Exception {
+    public void shutdown() {
         if (this.dataSource != null) {
             this.dataSource.close();
         }

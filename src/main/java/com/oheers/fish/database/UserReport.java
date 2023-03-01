@@ -8,7 +8,7 @@ public class UserReport {
     private String firstFish;
     private String recentFish;
     private String largestFish;
-    private UUID uuid;
+    private final UUID uuid;
     private int numFishCaught;
     private int competitionsWon;
     private int competitionsJoined;

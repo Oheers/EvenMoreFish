@@ -219,8 +219,8 @@ public class DatabaseV3 {
      *
      */
     public void migrateLegacy(CommandSender initiator) {
-        LegacyToV3DatabaseMigration.init(this);
-        LegacyToV3DatabaseMigration.migrate(initiator);
+        LegacyToV3DatabaseMigration legacy = new LegacyToV3DatabaseMigration(this);
+        legacy.migrate(initiator);
     }
 
     
@@ -265,7 +265,7 @@ public class DatabaseV3 {
         
         // starts a field for the new fish that's been fished for the first time
         executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(sql);){
+            try (PreparedStatement prep = c.prepareStatement(sql)){
                 Leaderboard leaderboard = competition.getLeaderboard();
                 prep.setString(1, competition.getCompetitionName());
                 if (leaderboard.getSize() > 0) {
@@ -312,7 +312,7 @@ public class DatabaseV3 {
 
         // starts a field for the new fish that's been fished for the first time
         executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(sql);){
+            try (PreparedStatement prep = c.prepareStatement(sql)){
                 prep.setString(1, uuid.toString());
                 prep.executeUpdate();
         
@@ -750,9 +750,9 @@ public class DatabaseV3 {
     /**
      * Creates a new transaction.
      *
-     * @param transactionId
-     * @param userId
-     * @param timestamp
+     * @param transactionId Unique transaction id
+     * @param userId User id
+     * @param timestamp timestamp
      */
     public void createTransaction(final String transactionId, final int userId, final Timestamp timestamp) {
         final String sql =
