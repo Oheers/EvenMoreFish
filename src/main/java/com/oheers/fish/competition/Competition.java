@@ -118,7 +118,7 @@ public class Competition {
             
                 @Override
                 public void run() {
-                    EvenMoreFish.databaseV3.createCompetitionReport(competitionRef); //todo should handle the closing of the connection
+                    EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
                     leaderboard.clear();
                 }
             }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(Competition.class));
