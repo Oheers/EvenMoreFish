@@ -28,19 +28,17 @@ import java.util.logging.Level;
  * @author sarhatabaot
  */
 public class LegacyToV3DatabaseMigration {
-    private static DatabaseV3 database;
+    private final DatabaseV3 database;
     
-    public static void init(final DatabaseV3 database) {
-        if(database == null) {
-            LegacyToV3DatabaseMigration.database = database;
-        }
+    public LegacyToV3DatabaseMigration(final DatabaseV3 database) {
+        this.database = database;
     }
     
     /**
      * This causes a renaming of the table "Fish2" to "emf_fish", no data internally changes, but it's good to have a clean
      * format for all the tables and to have a more descriptive name for this stuff.
      */
-    private static void translateFishDataV2() {
+    private void translateFishDataV2() {
         if (database.queryTableExistence(Table.EMF_FISH.getTableID())) {
             return;
         }
@@ -77,7 +75,7 @@ public class LegacyToV3DatabaseMigration {
      * @param uuid    The user
      * @param reports The V2 fish reports associated with the user.
      */
-    private static void translateFishReportsV2(final UUID uuid, final @NotNull List<FishReport> reports) {
+    private void translateFishReportsV2(final UUID uuid, final @NotNull List<FishReport> reports) {
         String firstFishID = "";
         long epochFirst = Long.MAX_VALUE;
         String largestFishID = "";
@@ -118,11 +116,11 @@ public class LegacyToV3DatabaseMigration {
         createFieldForFishFirstTimeFished(uuid, firstFishID, largestFishID, totalFish, largestSize);
     }
     
-    private static void createFieldForFishFirstTimeFished(final UUID uuid, final String firstFishID, final String largestFishID, int totalFish, float largestSize) {
+    private void createFieldForFishFirstTimeFished(final UUID uuid, final String firstFishID, final String largestFishID, int totalFish, float largestSize) {
         String emfUsersSQL = "UPDATE emf_users SET first_fish = ?, largest_fish = ?, num_fish_caught = ?, largest_length = ? WHERE uuid = ?;";
         // starts a field for the new fish that's been fished for the first time
         database.executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(emfUsersSQL);) {
+            try (PreparedStatement prep = c.prepareStatement(emfUsersSQL)) {
                 prep.setString(1, firstFishID);
                 prep.setString(2, largestFishID);
                 prep.setInt(3, totalFish);
@@ -145,7 +143,7 @@ public class LegacyToV3DatabaseMigration {
      * @param initiator The person who started the migration.
      *
      */
-    public static void migrate(CommandSender initiator) {
+    public void migrate(CommandSender initiator) {
         if (!database.usingVersionV2()) {
             Message msg = new Message("EvenMoreFish is already using the latest V3 database engine.");
             msg.usePrefix(PrefixType.ERROR);
