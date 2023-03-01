@@ -13,10 +13,14 @@ public class V5__AddUserSalesInfoToUsersTable extends BaseJavaMigration {
      */
     @Override
     public void migrate(@NotNull Context context) throws Exception {
-        String sql = "ALTER TABLE emf_users" +
-            "ADD fish_sold INTEGER DEFAULT 0;" +
+        String sql = "ALTER TABLE emf_users " +
+            "ADD fish_sold INTEGER DEFAULT 0;";
+        String sql2 = "ALTER TABLE emf_users " +
             "ADD money_earned DOUBLE DEFAULT 0;";
         try (PreparedStatement statement = context.getConnection().prepareStatement(sql)){
+            statement.execute();
+        }
+        try (PreparedStatement statement = context.getConnection().prepareStatement(sql2)){
             statement.execute();
         }
     }
