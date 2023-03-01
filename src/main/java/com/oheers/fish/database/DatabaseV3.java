@@ -1,5 +1,6 @@
 package com.oheers.fish.database;
 
+import com.devskiller.friendly_id.FriendlyId;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
@@ -11,7 +12,6 @@ import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
-import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +25,6 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 public class DatabaseV3 {
-    public static final String VERSION = "3"; //latest database version
     private boolean usingV2;
     private final ConnectionFactory connectionFactory;
     
@@ -520,7 +519,8 @@ public class DatabaseV3 {
     public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) {
         executeStatement(c -> {
             try (PreparedStatement statement = c.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
-                "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, competitions_joined = ? " +
+                "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, " +
+                "competitions_joined = ?, fish_sold = ?, money_earned = ? " +
                 "WHERE uuid = ?;")) {
             
                 statement.setString(1, report.getFirstFish());
@@ -531,7 +531,9 @@ public class DatabaseV3 {
                 statement.setFloat(6, report.getTotalFishLength());
                 statement.setInt(7, report.getCompetitionsWon());
                 statement.setInt(8, report.getCompetitionsJoined());
-                statement.setString(9, uuid.toString());
+                statement.setInt(9,report.getFishSold());
+                statement.setDouble(10,report.getMoneyEarned());
+                statement.setString(11, uuid.toString());
             
             
                 if (EvenMoreFish.mainConfig.doDBVerbose()) {
@@ -577,7 +579,9 @@ public class DatabaseV3 {
                             resultSet.getString("largest_fish"),
                             resultSet.getFloat("total_fish_length"),
                             resultSet.getFloat("largest_length"),
-                            resultSet.getString("uuid")
+                            resultSet.getString("uuid"),
+                            resultSet.getInt("fish_sold"),
+                            resultSet.getDouble("money_earned")
                         );
                     }
                     if (EvenMoreFish.mainConfig.doDBVerbose()) {
@@ -715,6 +719,58 @@ public class DatabaseV3 {
         });
     }
     
+    //Used a single transaction with multiple sales, optionally.
+    public void createSale(final String transactionId, final Timestamp timestamp, final int userId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
+        final String sql =
+            "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_rarity, fish_amount, fish_length, price_sold) " +
+                "VALUES (?,?,?,?,?,?);";
+        
+        executeStatement(c -> {
+            try (PreparedStatement statement = c.prepareStatement(sql)) {
+                statement.setString(1, transactionId);
+                statement.setString(2, fishName);
+                statement.setString(3, fishRarity);
+                statement.setInt(4, fishAmount);
+                statement.setDouble(5, fishLength);
+                statement.setDouble(6, (Math.floor(priceSold * 10) / 10));
+                statement.executeUpdate();
+            
+                //log in chat?
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    //Used for single sales.
+    public void createSale(final int userId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
+        createSale(FriendlyId.createFriendlyId(), Timestamp.from(Instant.now()),userId,fishName,fishRarity,fishAmount,fishLength,priceSold);
+    }
+    
+    /**
+     * Creates a new transaction.
+     *
+     * @param transactionId
+     * @param userId
+     * @param timestamp
+     */
+    public void createTransaction(final String transactionId, final int userId, final Timestamp timestamp) {
+        final String sql =
+            "INSERT INTO emf_transactions (id, user_id, timestamp) " +
+                "VALUES (?,?,?);";
+        executeStatement(c -> {
+            try(PreparedStatement statement = c.prepareStatement(sql)) {
+                statement.setString(1, transactionId);
+                statement.setInt(2, userId);
+                statement.setTimestamp(3, timestamp);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    
     
     /**
      * This should be used when obtaining data from a database.
@@ -761,5 +817,6 @@ public class DatabaseV3 {
             e.printStackTrace();
         }
     }
+
     
 }

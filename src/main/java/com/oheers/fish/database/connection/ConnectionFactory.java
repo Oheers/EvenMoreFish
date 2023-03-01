@@ -69,7 +69,8 @@ public abstract class ConnectionFactory {
             .dataSource(dataSource)
             .baselineOnMigrate(true)
             .baselineVersion("3")
-            .locations("classpath:com/oheers/fish/data/migrate/migrations")
+            .locations("classpath:com/oheers/fish/database/migrate/migrations")
+            .table("emf_flyway_schema_history")
             .load();
     
         try {

@@ -39,7 +39,6 @@ public class LegacyToV3DatabaseMigration {
     /**
      * This causes a renaming of the table "Fish2" to "emf_fish", no data internally changes, but it's good to have a clean
      * format for all the tables and to have a more descriptive name for this stuff.
-     * TODO FLYWAY
      */
     private static void translateFishDataV2() {
         if (database.queryTableExistence(Table.EMF_FISH.getTableID())) {
@@ -142,8 +141,6 @@ public class LegacyToV3DatabaseMigration {
      * Converts a V2 database system to a V3 database system. The server must not crash during this process as this may
      * lead to data loss, but honestly I'm not 100% sure on that one. Data is read from the /data/ folder and is
      * inserted into the new database system then the /data/ folder is renamed to /data-old/.
-     * TODO FLYWAY: The migration should be in a different class entirely. For migration V1/V2->V3
-     *  - [ ] We should first, refactor this method. And move it to it's own class.
      *
      * @param initiator The person who started the migration.
      *

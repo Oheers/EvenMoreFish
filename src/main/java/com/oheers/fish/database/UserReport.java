@@ -15,6 +15,9 @@ public class UserReport {
 
     private float largestLength;
     private float totalFishLength;
+    
+    private int fishSold;
+    private double moneyEarned;
 
     public UserReport(final int id, final int numFishCaught, final int competitionsWon, final int competitionsJoined,
                       final String firstFish, final String recentFish, final String largestFish, final float totalFishLength,
@@ -29,6 +32,23 @@ public class UserReport {
         this.totalFishLength = totalFishLength;
         this.largestLength = largestLength;
         this.uuid = UUID.fromString(uuid);
+    }
+    
+    public UserReport(final int id, final int numFishCaught, final int competitionsWon, final int competitionsJoined,
+                      final String firstFish, final String recentFish, final String largestFish, final float totalFishLength,
+                      final float largestLength, final String uuid, final int fishSold, final double moneyEarned) {
+        this.id = id;
+        this.numFishCaught = numFishCaught;
+        this.competitionsWon = competitionsWon;
+        this.competitionsJoined = competitionsJoined;
+        this.firstFish = firstFish;
+        this.recentFish = recentFish;
+        this.largestFish = largestFish;
+        this.totalFishLength = totalFishLength;
+        this.largestLength = largestLength;
+        this.uuid = UUID.fromString(uuid);
+        this.fishSold = fishSold;
+        this.moneyEarned = moneyEarned;
     }
 
     public String getFirstFish() {
@@ -137,5 +157,21 @@ public class UserReport {
 
     public UUID getUUID() {
         return uuid;
+    }
+    
+    public void incrementFishSold(final int fishSold) {
+        this.fishSold += fishSold;
+    }
+    
+    public void incrementMoneyEarned(final double moneyEarned) {
+        this.moneyEarned += moneyEarned;
+    }
+    
+    public int getFishSold() {
+        return fishSold;
+    }
+    
+    public double getMoneyEarned() {
+        return moneyEarned;
     }
 }
