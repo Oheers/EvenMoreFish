@@ -5,6 +5,8 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.database.DataManager;
+import com.oheers.fish.database.UserReport;
 import com.oheers.fish.fishing.items.Fish;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
@@ -198,6 +200,33 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
         }
+        
+        if(identifier.startsWith("total_money_earned_")) {
+            try {
+                final UUID uuid = UUID.fromString(identifier.split("total_money_earned_")[1]);
+                final UserReport userReport = DataManager.getInstance().getUserReportIfExists(uuid);
+                if(userReport == null)
+                    return null;
+        
+                return String.format("%.2f",userReport.getMoneyEarned());
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+        
+        if(identifier.startsWith("total_fish_sold_")) {
+            try {
+                final UUID uuid = UUID.fromString(identifier.split("total_fish_sold_")[1]);
+                final UserReport userReport = DataManager.getInstance().getUserReportIfExists(uuid);
+                if(userReport == null)
+                    return null;
+        
+                return String.valueOf(userReport.getFishSold());
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+        
         if (identifier.equals("competition_time_left")) {
             if (Competition.isActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP).getRawMessage(true, false);
@@ -214,6 +243,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             
             return message.getRawMessage(true, true);
         }
+        
         
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
         // was provided
