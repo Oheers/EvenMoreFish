@@ -213,7 +213,9 @@ public class EvenMoreFish extends JavaPlugin {
             active.end();
         }
 
-        databaseV3.shutdown();
+        if (mainConfig.databaseEnabled() && mainConfig.doingExperimentalFeatures()) {
+            databaseV3.shutdown();
+        }
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
     }
 
