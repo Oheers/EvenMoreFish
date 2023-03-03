@@ -1,0 +1,260 @@
+# If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
+
+# Sent to players when they fish an EvenMoreFish fish
+fish-caught: "&l{player} &rhar fanget en {rarity_colour}{length}cm lang &l{rarity} {rarity_colour}{fish}!"
+# By setting a fish's minimum-length to less than 0, you can create a lengthless fish. This is used when a player fishes a lengthless fish.
+lengthless-fish-caught: "&l{player} &rhar fanget en {rarity_colour}&l{rarity} {rarity_colour}{fish}!"
+# Sent to a player when they don't have permission to execute a command.
+no-permission: "&cDu har ikke tilladelse til at benytte denne kommando."
+
+# The message to be sent when a competition starts and ends
+contest-start: "&rEn fiskekonkurrence, om {type}, er nu begyndt."
+contest-end: "&rFiskekonkurrencen er nu slut."
+# The message to be sent when a player joins whilst a competition is going on
+contest-join: "&rDer er en fiskekonkurrence, om {type}, i gang."
+
+# Shown to players when a new player takes #1 spot, remove this value or set it to "" to disable this message
+new-first: "&r{player} er nu #1"
+# Should this message appear in chat (false) or above the exp bar (true)
+action-bar-message: true
+# What competition types should the action bar be used for? (recommended: MOST_FISH)
+action-bar-types:
+  - MOST_FISH
+
+# What should replace the {type} variable for each competition type?
+competition-types:
+  # MOST_FISH
+  most: "flest fangede fisk"
+  # LARGEST_FISH
+  largest: "den største fisk"
+  # LARGEST_TOTAL_FISH
+  largest-total: "den største totale længde af fisk"
+  # SPECIFIC_FISH
+  specific: "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r"
+  # SPECIFIC_RARITY
+  specific-rarity: "{amount} {rarity_colour}&l{rarity}&r fisk"
+# Segments shown in the bossbar when competitions run
+bossbar:
+  # The abbreviations used for different units of time
+  hour: "h"
+  minute: "m"
+  second: "s"
+  # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
+  remaining: " tilbage"
+
+# The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
+prefix: "[EvenMoreFish] "
+# The colour of the [EvenMoreFish] prefix in commands (for when your prefix doesn't have colours)
+prefix-regular: "&a"
+# The colour of the [EvenMoreFish] prefix in admin commands (for when your prefix doesn't have colours)
+prefix-admin: "&c"
+# The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command (for when your prefix doesn't have colours)
+prefix-error: "&c"
+
+# This is the format of the lore given to fish when they're caught.
+# {custom-lore} is specified in the fish.yml under the lore: section, if the fish has a lore, the lore's lines will
+# replace the {fish_lore}, however if it's empty the line will be removed. DO NOT ADD ANYTHING OTHER THAN THIS VARIABLE
+# TO THAT LINE.
+fish-lore:
+  - "{fisherman_lore}"
+  - "{length_lore}"
+  - ""
+  - "{fish_lore}"
+  - "{rarity_colour}&l{rarity}"
+
+# Sets what to replace with the {fisherman_lore} or {length_lore} with above ^
+fisherman-lore:
+  - "&fFanget af {player}"
+length-lore:
+  - "&fMåler {length}cm i længden."
+
+# The format of commands in /emf help (this message doesn't support papi placeholders)
+help: "/{command} - {description}"
+
+# The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
+leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
+leaderboard-largest-total: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)"
+leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
+# If you're running a competition where there's no leaderboard, this message is sent when there's a winner
+single-winner: "&r{player} har vundet konkurrencen om {type}. Tillykke!"
+# This shows the number of players currently in the competition, set to "" to disable.
+total-players: "&rDer er i alt {amount} spiller(e) på førertavlen."
+# The number of positions shown in the leaderboard - can't be less than 1.
+leaderboard-count: 5
+# If the player doesn't appear on /emf top, should their position be displayed at the bottom?
+always-show-pos: true
+# Sent to players when nobody got a record during a competition
+no-winners: "&rDer var ingen fiske rekorder."
+# When an individual player didn't get a record
+no-record: "&rDu fangede ingen fisk."
+# Sent when an admin tries to start a competition where the type doesn't exist e.g. /emf admin competition start 600 ABCDEFGH
+invalid-type: "&rDette er ikke en konkurrence type, tilgængelige typer: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+# Sent to all online players when not enough players are on to start a competition
+not-enough-players: "&rDer er ikke nok aktive spillere, til at starte den ellers planlagte fiskekonkurrence."
+# Sent to all players at specific times to show the remaining time left
+# {time_formatted} shows the time (e.g. 5m left, 10m 30s left)
+# {time_raw} is what you input in competitions.yml
+time-alert: "&rDer er {time_formatted} tilbage af konkurrencen om {type}"
+
+# The GUI title for /emf shop
+worth-gui-name: "&1&lSælg Fisk"
+# The name found on the selling item in /emf shop
+sell-gui-name: "&6&lSÆLG"
+# The name found on the item to sell all fish in inventory in /emf shop
+sell-all-name: "&6&lSÆLG ALLE"
+# The name found on the confirming item in /emf shop
+confirm-gui-name: "&6&lGODKEND"
+# The name found on the confirming sell all item in /emf shop
+confirm-sell-all-gui-name: "&6&lGODKEND"
+# The name found on the error item in /emf shop when the gui contains no items of value.
+error-gui-name: "&c&lKan ikke sælge"
+# The name found on the error item in /emf shop when the player's inventory contains no items of value.
+error-sell-all-gui-name: "&c&lKan ikke sælge"
+# The lore found on the selling/confirmation item in /emf shop
+sell-gui-lore:
+  - "&8Fiske Butik"
+  - ""
+  - "&7Total Værdi » &e${sell-price}"
+  - ""
+  - "&7Sælg dine fiske her for at tjene"
+  - "&7 nogle ekstra penge."
+  - ""
+  - "&e» (Venstre-klik) sælg fisken."
+  - "&7» (Højre-klik) annuller."
+
+sell-all-lore:
+  - "&8Inventar"
+  - ""
+  - "&7Total Værdi » &e${sell-price}"
+  - ""
+  - "&7Klik på denne knap for at sælge"
+  - "&7fiskene i dit inventar for at"
+  - "&7tjene nogle ekstra penge."
+  - ""
+  - "&e» (Venstre-klik) sælg fisken."
+# The lore below the error item in /emf shop when the gui contains no items of value.
+error-gui-lore:
+  - "&8Fiske Butik"
+  - ""
+  - "&7Total Værdi » &c$0"
+  - ""
+  - "&7Sælg dine fisk her for at tjene"
+  - "&7nogle ekstra penge."
+  - ""
+  - "&e» (Venstre-klik) sælg fisken."
+  - "&7» (Højre-klik) annuller."
+
+error-sell-all-gui-lore:
+  - "&8Inventar"
+  - ""
+  - "&7Total Værdi » &c$0"
+  - ""
+  - "&7Klik på denne knap for at sælge"
+  - "&7fiskene i dit inventar for at"
+  - "&7tjene nogle ekstra penge."
+  - ""
+  - "&e» (Venstre-klik) sælg fisken."
+# The message sent to players when they've sold their fish in the /emf shop
+fish-sale: "&rDu har solgt &a{amount} &ffisk for &a${sell-price}&f."
+
+# Help messages
+# General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
+help-general:
+  - "&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f"
+  - "&f/emf top - Viser en i gang sat konkurrences førertavle."
+  - "&f/emf help - Viser denne side."
+  - "&f/emf shop - Åbner en shop hvor du kan sælge dine fisk."
+  - "&f/emf toggle - Skifter mellem om du får selv lavede fisk eller ej."
+  - "&f/emf admin - Administrator kommando hjælpe side."
+
+# Competition help (/emf admin competition help)
+help-competition:
+  - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
+  - "&f/emf admin competition start <varighed> <type> - Starter en konkurrence der varer den specificerede varighed"
+  - "&f/emf admin competition end - Slutter den nuværende konkurrence (hvis der er en)"
+
+# Admin help (/emf admin help)
+help-admin:
+  - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
+  - "&f/emf admin competition <start/end> <varighed> <type> - Starter eller slutter en konkurrence"
+  - "&f/emf admin clearbait - Fjerner alle tilvalgte maddinger fra en fiskestang."
+  - "&f/emf admin reload - Genindlæser denne tilføjelses konfigurationsfiler"
+  - "&f/emf admin version - Viser information om denne tilføjelse."
+
+# Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
+no-player-in-place: "Begynd at fiske for at indtage denne plads"
+# Shown when the emf competition placeholders are used when there's no competition running
+no-competition-running: "Ingen konkurrence i gang sat lige nu."
+
+# How should the %emf_competition_place_fish_*% be formatted?
+emf-competition-fish-format: "{rarity_colour}{length}cm lang &l{rarity} {fish}"
+# How should the %emf_competition_place_fish_*% be formatted when there's no length on the fish?
+emf-lengthless-fish-format: "{rarity_colour}&l{rarity} {fish}"
+# How should %emf_competition_place_fish_*% be formatted during MOST/SPECIFIC_FISH competitions?
+emf-most-fish-format: "{amount} fisk"
+# What should be displayed for %emf_competition_place_size_*% during the MOST_FISH competition?
+emf-size-during-most-fish: "N/A"
+# How the %emf_competition_time_left% variable should be formatted.
+emf-time-remaining: "Tilbageværende tid indtil næste konkurrence: {days}d, {hours}h, {minutes}m."
+# Replaces the %emf_competition_time_left% variable when there's a competition already running.
+emf-time-remaining-during-comp: "Der er ikke en konkurrence i gang lige nu."
+
+# Sent when a player tries to apply too many types of baits to a fishing rod, set in the general section of baits.yml
+max-baits-reached: "&rDu har opnået det maksimale antal maddings typer denne fiskestang kan bruge."
+# Not to be confused with the above, this is sent when the maximum of a specific bait is reached. Define this in baits.yml using "max-baits".
+max-bait-reached: "&rDu har opnået det maksimale antal af {bait_theme}{bait} &rmadding der kan bruges på en enkelt fiskestang."
+# Sent when a player catches a bait from fishing (this can be disabled by setting catch-percentage to 0 in baits.yml
+bait-catch: "&r&l{player} &rhar fanget en {bait_theme}&l{bait} &rmadding!"
+# Sent when a bait is applied and a fish is caught.
+bait-use: "&rDu har brugt en af de {bait_theme}&l{bait} &rmaddinger din fiskestang havde."
+# Sent when someone tries to use a bait in creative
+bait-survival-limited: "&rDu er nød til at være i &noverlevelses tilstand&r for at benytte maddinger på fiskestænger."
+
+# Shown when /emf toggle is run, to turn off and on respectively.
+toggle-off: "&rMan vil ikke længere fange spiller-lavede fisk."
+toggle-on: "&rMan vil nu fange spiller-lavede fisk."
+
+# When trying to place a skull-fish when this is blocked in config.yml
+place-fish-blocked: "&rDu kan ikke placere denne fisk."
+
+admin:
+  # Opens an /emf shop for another player
+  open-fish-shop: "&rÅbnede et butiks inventar for {player}."
+  # When a fish is given to a player
+  given-player-fish: "&rDu har givet {player} en {fish}."
+  # When a bait is given to a player
+  given-player-bait: "&rDu har givet {player} en {bait} madding."
+  # When an admin runs /emf admin bait without a bait name.
+  no-bait-specified: "&rDu skal specificere et navn på en madding."
+  # When the admin tries the command /emf admin clearbaits whe not holding a fishing rod.
+  must-be-holding-rod: "&rDu skal holde en fiskestang for at benytte denne kommando."
+  # When /emf admin clearbaits command is run.
+  all-baits-cleared: "&rDu har fjernet alle {amount} maddinger fra din fiskestang."
+  # /emf admin clearbaits is run, but there are no baits on the rod.
+  no-baits-on-rod: "&rDenne fiskestang har ikke nogen tilvalgte maddinger."
+
+  # When economy is disabled for the plugin
+  economy-disabled: "&rEvenMoreFish's økonomiske tilføjelser er slået fra."
+
+  # When the specified player can't be found when using -p: parameter.
+  player-not-found: "&r{player} blev ikke fundet."
+  # When the specified number in -q: is not a number.
+  number-format-error: "&r{amount} er ikke et gyldigt tal."
+  # When the specified number in -q: is not within the minecraft stack range (1-64)
+  number-range-error: "&r{amount} er ikke et tal mellem 1-64."
+  # When a command cannot be run from the console
+  cannot-run-on-console: "&rKommandoen kan ikke køres fra konsol."
+
+  # Sent when a competition is already running when using /emf admin competition start
+  competition-already-running: "&rDer er allerede en konkurrence i gang."
+  # When an invalid competition type is tried to be started
+  competition-type-invalid: "&rDette er ikke en konkurrence type, tilgængelige typer: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+
+  # When there's a spigot update available, don't translate the URL otherwise it won't direct to the correct page.
+  update-available: "&rDer er en opdatering tilgængelig: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
+  # When the plugin is reloaded
+  reload: "&rGenindlæste tilføjelsen korrekt."
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
+config-version: 12
