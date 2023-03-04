@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SellGUI implements InventoryHolder {
 
@@ -394,7 +393,7 @@ public class SellGUI implements InventoryHolder {
                 }
             }
         }
-        logSoldFish(player.getUniqueId(),soldFish);
+        if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) logSoldFish(player.getUniqueId(),soldFish);
         return totalWorth != 0.0;
     }
     
