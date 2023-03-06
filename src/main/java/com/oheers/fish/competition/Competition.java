@@ -21,7 +21,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
