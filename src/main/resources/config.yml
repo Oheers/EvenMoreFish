@@ -13,6 +13,10 @@ fish-only-in-competition: false
 # may not work on all servers.
 experimental-features: false
 
+# Should the shop give you money or claim blocks?
+# Currently: money, claimblocks
+sell-type: money
+
 # The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
 # of this feature.
 # ATTENTION: Toggling this requires a full server restart.
