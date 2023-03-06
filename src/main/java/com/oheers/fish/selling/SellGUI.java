@@ -8,6 +8,8 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -106,7 +108,7 @@ public class SellGUI implements InventoryHolder {
 
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
         Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
-        message.setSellPrice(String.valueOf(getTotalWorth(true)));
+        message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(true))));
 
         saMeta.setLore(Arrays.asList(message.getRawMessage(true, true).split("\n")));
 
@@ -135,7 +137,7 @@ public class SellGUI implements InventoryHolder {
 
         // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
         Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
-        message.setSellPrice(String.valueOf(getTotalWorth(false)));
+        message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
 
         sellMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
 
@@ -191,9 +193,13 @@ public class SellGUI implements InventoryHolder {
                 errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_NAME).getRawMessage(true, false));
 
             if (sellAll) {
-                errorMeta.setLore(new ArrayList<>(Arrays.asList(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_LORE).getRawMessage(true, false).split("\n"))));
+                Message message = new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_LORE);
+                message.setSellPrice(formatWorth(0.0));
+                errorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
             } else {
-                errorMeta.setLore(new ArrayList<>(Arrays.asList(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_LORE).getRawMessage(true, false).split("\n"))));
+                Message message = new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_LORE);
+                message.setSellPrice(formatWorth(0.0));
+                errorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
             }
 
             error.setItemMeta(errorMeta);
@@ -217,11 +223,11 @@ public class SellGUI implements InventoryHolder {
 
             if (sellAll) {
                 Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
-                message.setSellPrice(String.valueOf(getTotalWorth(true)));
+                message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(true))));
                 cMeta.setLore(Arrays.asList(message.getRawMessage(true, true).split("\n")));
             } else {
                 Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
-                message.setSellPrice(String.valueOf(getTotalWorth(false)));
+                message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
 
                 cMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
             }
@@ -318,6 +324,14 @@ public class SellGUI implements InventoryHolder {
         return getTotalWorth(getTotalSoldFish(inventory));
     }
 
+    public String formatWorth(double totalWorth) {
+        if (EvenMoreFish.mainConfig.getSellType().equals("money")) {
+            return "$" + totalWorth;
+        } else {
+            return (int) totalWorth + " Claim Blocks";
+        }
+    }
+
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
     public void close() {
         player.closeInventory();
@@ -366,14 +380,22 @@ public class SellGUI implements InventoryHolder {
     public boolean sell(boolean sellAll) {
         List<SoldFish> soldFish = getTotalSoldFish(sellAll);
         double totalWorth = getTotalWorth(soldFish);
-        
-        if (EvenMoreFish.econ != null) {
-            EvenMoreFish.econ.depositPlayer(this.player, totalWorth);
+        String sellType = EvenMoreFish.mainConfig.getSellType();
+        double sellPrice = Math.floor(totalWorth * 10) / 10;
+
+        if (sellType.equals("money")) {
+            if (EvenMoreFish.econ != null) {
+                EvenMoreFish.econ.depositPlayer(this.player, totalWorth);
+            }
+        } else if (sellType.equals("claimblocks")) {
+            PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(this.player.getUniqueId());
+            playerData.setBonusClaimBlocks((int) sellPrice);
         }
 
         // sending the sell message to the player
+
         Message message = new Message(ConfigMessage.FISH_SALE);
-        message.setSellPrice(Double.toString(Math.floor(totalWorth * 10) / 10));
+        message.setSellPrice(formatWorth(sellPrice));
         message.setAmount(Integer.toString(fishCount));
         message.setPlayer(this.player.toString());
         message.broadcast(player, true, true);
@@ -401,7 +423,7 @@ public class SellGUI implements InventoryHolder {
         int userId = EvenMoreFish.databaseV3.getUserID(uuid);
         final String transactionId = FriendlyId.createFriendlyId();
         final Timestamp timestamp = Timestamp.from(Instant.now());
-        
+
         EvenMoreFish.databaseV3.createTransaction(transactionId, userId, timestamp);
         for(final SoldFish fish: soldFish) {
             EvenMoreFish.databaseV3.createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());

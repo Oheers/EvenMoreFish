@@ -69,6 +69,8 @@ public class MainConfig {
         return config.getBoolean("enable-economy");
     }
 
+    public String getSellType() {return config.getString("sell-type");}
+
     public String getFiller() {
         String returning = config.getString("gui.filler");
         if (returning != null) return returning;
