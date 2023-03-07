@@ -32,7 +32,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -203,7 +202,7 @@ public class FishingProcessor implements Listener {
         Bukkit.getPluginManager().callEvent(cEvent);
         if (cEvent.isCancelled()) return null;
 
-        if (sendMessages) {
+        if (sendMessages && !fish.isSilent()) {
             // puts all the fish information into a format that Messages.renderMessage() can print out nicely
 
             String length = Float.toString(fish.getLength());
