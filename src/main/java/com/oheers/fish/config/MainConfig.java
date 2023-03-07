@@ -68,6 +68,10 @@ public class MainConfig {
     public boolean isEconomyEnabled() {
         return config.getBoolean("enable-economy");
     }
+    
+    public boolean isVanillaFishing() {
+        return config.getBoolean("vanilla-fishing");
+    }
 
     public String getSellType() {return config.getString("sell-type");}
 
