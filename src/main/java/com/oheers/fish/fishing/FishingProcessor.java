@@ -39,6 +39,10 @@ public class FishingProcessor implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public static void process(PlayerFishEvent event) {
+        if (EvenMoreFish.mainConfig.isVanillaFishing()) {
+            return;
+        }
+        
         if (!isCustomFishAllowed(event.getPlayer().getUniqueId())) {
             return;
         }
