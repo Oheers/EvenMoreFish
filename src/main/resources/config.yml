@@ -13,10 +13,6 @@ fish-only-in-competition: false
 # may not work on all servers.
 experimental-features: false
 
-# Should the shop give you money or claim blocks?
-# Currently: money, claimblocks
-sell-type: money
-
 # The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
 # of this feature.
 # ATTENTION: Toggling this requires a full server restart.
@@ -101,6 +97,13 @@ disable-mcmmo-loot: true
 
 # Prevents AureliumSkills from overriding fishing loot, this means treasure won't appear when fish can.
 disable-aureliumskills-loot: true
+
+# Should the shop give you money or claim blocks?
+# Currently: money, claimblocks
+sell-type: money
+
+# Switch between custom fish or vanilla fishing
+vanilla-fishing: true
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
