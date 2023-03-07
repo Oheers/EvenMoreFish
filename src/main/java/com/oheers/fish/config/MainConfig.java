@@ -75,8 +75,6 @@ public class MainConfig {
 
     public String getSellType() {return config.getString("sell-type");}
 
-    public boolean isVanillaFishing() {return config.getBoolean("vanilla-fishing");}
-
     public String getFiller() {
         String returning = config.getString("gui.filler");
         if (returning != null) return returning;

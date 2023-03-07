@@ -7,6 +7,7 @@ import com.oheers.fish.NbtUtils;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
+import com.oheers.fish.utils.ItemFactory;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.PlayerData;
@@ -389,7 +390,7 @@ public class SellGUI implements InventoryHolder {
             }
         } else if (sellType.equals("claimblocks")) {
             PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(this.player.getUniqueId());
-            playerData.setBonusClaimBlocks((int) sellPrice);
+            playerData.setBonusClaimBlocks((int) (playerData.getBonusClaimBlocks() + sellPrice));
         }
 
         // sending the sell message to the player
