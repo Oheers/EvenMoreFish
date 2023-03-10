@@ -237,17 +237,22 @@ public class FishUtils {
     public static String timeFormat(long timeLeft) {
         String returning = "";
         long hours = timeLeft / 3600;
+        long minutes = (timeLeft % 3600) / 60;
+        long seconds = timeLeft % 60;
 
-        if (timeLeft >= 3600) {
+        if (hours > 0) {
             returning += hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false, false) + " ";
         }
 
-        if (timeLeft >= 60) {
-            returning += ((timeLeft % 3600) / 60) + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false, false) + " ";
+        if (minutes > 0) {
+            returning += minutes + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false, false) + " ";
         }
 
-        // Remaining seconds to always show, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        returning += (timeLeft % 60) + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false);
+        // Shows remaining seconds if seconds > 0 or hours and minutes are 0, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
+        if (seconds > 0 | (minutes == 0 & hours == 0)) {
+            returning += seconds + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false) + " ";
+        }
+
         return returning;
     }
 

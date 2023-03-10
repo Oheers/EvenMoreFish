@@ -40,7 +40,7 @@ bossbar:
   minute: "m"
   second: "s"
   # Pour traduire le "left" à la fin p.ex. "5s left" -> "5s restantes"
-  remaining: " restantes"
+  remaining: "restantes"
 
 # Le préfixe affiché avant à peu près toutes les commandes à faire avec le plugin. Il est recommandé de garder l'espace à l'intérieur.
 prefix: "[EvenMoreFish] "
