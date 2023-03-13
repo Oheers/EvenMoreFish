@@ -55,7 +55,9 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "help",
                 "shop",
                 "toggle",
-                "top"));
+                "top",
+                "gui")
+        );
 
         if (EvenMoreFish.xmas2022Config.isAvailable()) emfTabs.add("xmas");
 

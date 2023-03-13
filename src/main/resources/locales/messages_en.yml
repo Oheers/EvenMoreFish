@@ -40,7 +40,7 @@ bossbar:
   minute: "m"
   second: "s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
-  remaining: " left"
+  remaining: "left"
 
 # The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
 prefix: "[EvenMoreFish] "
@@ -114,7 +114,7 @@ error-sell-all-gui-name: "&c&lCan't Sell"
 sell-gui-lore:
   - "&8Fish Shop"
   - ""
-  - "&7Total Value » &e${sell-price}"
+  - "&7Total Value » &e{sell-price}"
   - ""
   - "&7Sell your fish here to make"
   - "&7some extra money."
@@ -125,7 +125,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8Inventory"
   - ""
-  - "&7Total Value » &e${sell-price}"
+  - "&7Total Value » &e{sell-price}"
   - ""
   - "&7Click this button to sell"
   - "&7the fish in your inventory to"
@@ -136,7 +136,7 @@ sell-all-lore:
 error-gui-lore:
   - "&8Fish Shop"
   - ""
-  - "&7Total Value » &c$0"
+  - "&7Total Value » &c{sell-price}"
   - ""
   - "&7Sell your fish here to make"
   - "&7some extra money."
@@ -147,7 +147,7 @@ error-gui-lore:
 error-sell-all-gui-lore:
   - "&8Inventory"
   - ""
-  - "&7Total Value » &c$0"
+  - "&7Total Value » &c{sell-price}"
   - ""
   - "&7Click this button to sell"
   - "&7the fish in your inventory to"
@@ -155,7 +155,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» (Left-click) sell the fish."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&rYou've sold &a{amount} &ffish for &a${sell-price}&f."
+fish-sale: "&rYou've sold &a{amount} &ffish for &a{sell-price}&f."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
