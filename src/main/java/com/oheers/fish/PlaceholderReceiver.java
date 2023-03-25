@@ -243,7 +243,10 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             
             return message.getRawMessage(true, true);
         }
-        
+
+        if (identifier.equals("competition_active")) {
+            return Boolean.toString(Competition.isActive());
+        }
         
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
         // was provided
