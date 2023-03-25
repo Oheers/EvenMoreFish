@@ -42,7 +42,7 @@ bossbar:
   minute: "分"
   second: "秒"
   # 用于翻译结尾的 "剩余"，例如 "5s 剩余“
-  remaining: " 剩余"
+  remaining: "剩余"
 
 # 几乎所有与该插件有关的命令前都有前缀。建议保留空格。
 prefix: "&b[钓鱼大赛] "

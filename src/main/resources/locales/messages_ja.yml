@@ -41,7 +41,7 @@ bossbar:
   minute: "分"
   second: "秒"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
-  remaining: " で終了"
+  remaining: "で終了"
 
 # The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
 prefix: "[EvenMoreFish] "

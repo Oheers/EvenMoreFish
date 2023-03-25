@@ -40,7 +40,7 @@ bossbar:
   minute: "m"
   second: "s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
-  remaining: " zbývá"
+  remaining: "zbývá"
 
 # The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
 prefix: "[EvenMoreFish] "

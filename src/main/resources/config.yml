@@ -98,6 +98,13 @@ disable-mcmmo-loot: true
 # Prevents AureliumSkills from overriding fishing loot, this means treasure won't appear when fish can.
 disable-aureliumskills-loot: true
 
+# Should the shop give you money or claim blocks?
+# Currently: money, claimblocks
+sell-type: money
+
+# Switch between custom fish or vanilla fishing
+vanilla-fishing: true
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
 config-version: 13

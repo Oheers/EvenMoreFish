@@ -6,7 +6,7 @@
 
     <groupId>com.oheers.evenmorefish</groupId>
     <artifactId>even-more-fish</artifactId>
-    <version>1.6.10.5</version>
+    <version>1.6.10.6</version>
 
 
     <properties>
@@ -276,6 +276,12 @@
             <artifactId>friendly-id</artifactId>
             <version>${friendlyid.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.TechFortress</groupId>
+            <artifactId>GriefPrevention</artifactId>
+            <version>16.18</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

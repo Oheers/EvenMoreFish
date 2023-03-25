@@ -2,6 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.Table;
@@ -15,7 +16,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -77,7 +77,8 @@ public class JoinChecker implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         if (Competition.isActive()) {
             EvenMoreFish.active.getStatusBar().addPlayer(event.getPlayer());
-            EvenMoreFish.active.getStartMessage().setMessage(ConfigMessage.COMPETITION_JOIN);
+            Message startMessage = EvenMoreFish.active.getStartMessage();
+            if (startMessage != null) startMessage.setMessage(ConfigMessage.COMPETITION_JOIN);
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(EvenMoreFish.getPlugin(EvenMoreFish.class),
                 () -> EvenMoreFish.active.getStartMessage().broadcast(event.getPlayer(), true, true), 20 * 3);
         }
