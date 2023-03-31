@@ -157,7 +157,7 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.papi) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         player.sendMessage(this.message);
     }
