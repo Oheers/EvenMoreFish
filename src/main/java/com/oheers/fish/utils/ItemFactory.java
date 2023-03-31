@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.List;
@@ -178,23 +179,9 @@ public class ItemFactory {
             return null;
         }
 
-        if (mValue.contains("itemsadder:")) {
-
-            String[] splitMaterialValue = mValue.split(":");
-            if (splitMaterialValue.length != 3) {
-                EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
-                return new ItemStack(Material.COD);
-            }
-
-            final String namespaceId = splitMaterialValue[1] + ":" + splitMaterialValue[2];
-            final CustomStack customStack = CustomStack.getInstance(namespaceId);
-            if (customStack == null) {
-                if(EvenMoreFish.itemsAdderLoaded) {
-                    EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
-                }
-                return new ItemStack(Material.COD);
-            }
-            return CustomStack.getInstance(namespaceId).getItemStack();
+        ItemStack stack;
+        if ((stack = getItemsAdderStack(mValue)) != null) {
+            return stack;
         }
 
         Material material = Material.getMaterial(mValue.toUpperCase());
@@ -347,10 +334,16 @@ public class ItemFactory {
      */
     private ItemStack checkRawMaterial() {
         String materialID = this.configurationFile.getString(configLocation + ".item.raw-material");
+
         Material material;
         if (materialID == null || (material = Material.getMaterial(materialID)) == null) {
             return null;
         } else {
+
+            ItemStack stack;
+            if ((stack = getItemsAdderStack(materialID)) != null) {
+                return stack;
+            }
             rawMaterial = true;
             return new ItemStack(material);
         }
@@ -506,6 +499,27 @@ public class ItemFactory {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch file configuration for: " + this.configLocation);
             return null;
         }
+    }
+
+    private ItemStack getItemsAdderStack(final String materialID) {
+        if (materialID.contains("itemsadder:")) {
+
+            String[] splitMaterialValue = materialID.split(":");
+            if (splitMaterialValue.length != 3) {
+                EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
+                return new ItemStack(Material.COD);
+            }
+
+            final String namespaceId = splitMaterialValue[1] + ":" + splitMaterialValue[2];
+            final CustomStack customStack = CustomStack.getInstance(namespaceId);
+            if (customStack == null) {
+                if(EvenMoreFish.itemsAdderLoaded) {
+                    EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
+                }
+                return new ItemStack(Material.COD);
+            }
+            return CustomStack.getInstance(namespaceId).getItemStack();
+        } else return null;
     }
 
     /**
