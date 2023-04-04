@@ -191,7 +191,6 @@ public class Names {
         boolean xmas2022 = false;
         if (requirementSection == null) {
             if (rarity.equals("Christmas 2022")) xmas2022 = true;
-            else return null;
         } else {
             String configLocator;
             if (name != null) configLocator = "fish." + rarity + "." + name;

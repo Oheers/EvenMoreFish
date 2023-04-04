@@ -506,7 +506,7 @@ public class ItemFactory {
 
             String[] splitMaterialValue = materialID.split(":");
             if (splitMaterialValue.length != 3) {
-                EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
+                EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, materialID));
                 return new ItemStack(Material.COD);
             }
 
