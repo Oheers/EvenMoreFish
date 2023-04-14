@@ -18,7 +18,7 @@
         <maven.clean.version>3.2.0</maven.clean.version>
 
         <spigot.api.version>1.18.2-R0.1-SNAPSHOT</spigot.api.version>
-        <caffiene.version>2.9.1</caffiene.version>
+        <caffiene.version>2.9.3</caffiene.version>
         <authlib.version>1.5.21</authlib.version>
         <vault.api.version>1.7.1</vault.api.version>
         <bstats.version>3.0.1</bstats.version>
