@@ -31,7 +31,7 @@
         <nbtapi.version>2.11.1</nbtapi.version>
         <itemsadder.api.version>3.0.0</itemsadder.api.version>
         <hikaricp.version>4.0.3</hikaricp.version>
-        <flyway.version>9.15.1</flyway.version>
+        <flyway.version>9.16.2/flyway.version>
         <friendlyid.version>1.1.0</friendlyid.version>
     </properties>
 
