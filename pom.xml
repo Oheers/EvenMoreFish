@@ -18,20 +18,20 @@
         <maven.clean.version>3.2.0</maven.clean.version>
 
         <spigot.api.version>1.18.2-R0.1-SNAPSHOT</spigot.api.version>
-        <caffiene.version>2.9.1</caffiene.version>
+        <caffiene.version>2.9.3</caffiene.version>
         <authlib.version>1.5.21</authlib.version>
         <vault.api.version>1.7.1</vault.api.version>
-        <bstats.version>3.0.0</bstats.version>
+        <bstats.version>3.0.1</bstats.version>
         <worldguard.version>7.0.4</worldguard.version>
         <placeholderapi.version>2.11.2</placeholderapi.version>
         <redprotect.version>7.7.3</redprotect.version>
         <redprotect.1.13.version>LATEST</redprotect.1.13.version>
         <mcmmo.version>2.1.196</mcmmo.version>
         <aureliiumskills.version>Beta1.2.8</aureliiumskills.version>
-        <nbtapi.version>2.11.1</nbtapi.version>
+        <nbtapi.version>2.11.2</nbtapi.version>
         <itemsadder.api.version>3.0.0</itemsadder.api.version>
         <hikaricp.version>4.0.3</hikaricp.version>
-        <flyway.version>9.15.1</flyway.version>
+        <flyway.version>9.16.2</flyway.version>
         <friendlyid.version>1.1.0</friendlyid.version>
     </properties>
 
@@ -280,7 +280,7 @@
         <dependency>
             <groupId>com.github.TechFortress</groupId>
             <artifactId>GriefPrevention</artifactId>
-            <version>16.18</version>
+            <version>16.17.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
