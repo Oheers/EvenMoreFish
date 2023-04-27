@@ -9,6 +9,7 @@ public enum ConfigMessage {
     ADMIN_GIVE_PLAYER_BAIT("admin.given-player-bait", "&rYou have given {player} a {bait}.", PrefixType.ADMIN, true, true),
     ADMIN_GIVE_PLAYER_FISH("admin.given-player-fish", "&rYou have given {player} a {fish}.", PrefixType.ADMIN, true, true),
     ADMIN_OPEN_FISH_SHOP("admin.open-fish-shop", "&rOpened a shop inventory for {player}.", PrefixType.ADMIN, true, true),
+    ADMIN_NBT_ROD_GIVEN("admin.nbt-rod-given", "&rYou have given {player} a NBT rod, make sure \"require-nbt-rod\" is set to &atrue &rfor this to be different from any other fishing rod.", PrefixType.ADMIN, true, true),
     ADMIN_NO_BAIT_SPECIFIED("admin.no-bait-specified", "&rYou must specify a bait name.", PrefixType.ERROR, false, true),
     ADMIN_NOT_HOLDING_ROD("admin.must-be-holding-rod", "&rYou need to be holding a fishing rod to run that command.", PrefixType.ERROR, false, false),
     ADMIN_NUMBER_FORMAT_ERROR("admin.number-format-error", "&r{amount} is not a valid number.", PrefixType.ERROR, false, true),

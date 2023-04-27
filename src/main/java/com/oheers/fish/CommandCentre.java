@@ -10,6 +10,8 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.xmas2022.XmasGUI;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -42,6 +44,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "clearbaits",
                 "competition",
                 "fish",
+                "nbt-rod",
                 "reload",
                 "version"
         );
@@ -449,6 +452,34 @@ class Controls {
 
                 break;
 
+            case "nbt-rod": {
+                Player player;
+                Message giveMessage;
+                if (args.length == 3 && args[2].startsWith("-p:")) {
+                    if ((player = Bukkit.getPlayer(args[2].substring(3))) == null) {
+                        Message errorMessage = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
+                        errorMessage.setPlayer(args[2].substring(3));
+                        errorMessage.broadcast(sender, true, true);
+                        return;
+                    }
+                    giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
+                    giveMessage.setPlayer(player.getName());
+                } else {
+                    if (!(sender instanceof Player)) {
+                        Message errorMessage = new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE);
+                        errorMessage.broadcast(sender, false, false);
+                        return;
+                    }
+                    player = (Player) sender;
+                }
+                NBTItem nbtItem = new NBTItem(new ItemStack(Material.FISHING_ROD));
+                NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+                emfCompound.setBoolean(NbtUtils.Keys.EMF_ROD_NBT, true);
+                FishUtils.giveItems(Collections.singletonList(nbtItem.getItem()), player);
+                giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
+                giveMessage.setPlayer(player.getName());
+                giveMessage.broadcast(sender, true, true);
+                break; }
             case "bait":
                 if (args.length >= 3) {
 
