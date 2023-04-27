@@ -151,6 +151,7 @@ public class BaitNBTManager {
 
                 if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
                     cursorModifier = -bait.getMaxApplications();
+                    combined.append(bait.getName()).append(":").append(bait.getMaxApplications());
                     maxBait = true;
                 } else {
                     combined.append(bait.getName()).append(":").append(quantity);

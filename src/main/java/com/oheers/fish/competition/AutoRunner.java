@@ -30,7 +30,13 @@ public class AutoRunner {
             }
 
             // delay is set to start at bang on :00 of every minute (assuming the tps to be 20), period is set to run once a minute
-        }.runTaskTimer(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class), (60 - LocalTime.now().getSecond()) * 20, 20);
+        }.runTaskTimer(
+                // You provide the plugin's main class - the one that inherits from JavaPlugin
+                EvenMoreFish.getProvidingPlugin(EvenMoreFish.class),
+                // how long between this code first running and the first iteration you want (in ticks)
+                (60 - LocalTime.now().getSecond()) * 20,
+                // time between each loop (in ticks)
+                20);
     }
 
     /**
