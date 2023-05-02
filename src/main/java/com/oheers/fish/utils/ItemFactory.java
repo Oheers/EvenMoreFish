@@ -334,17 +334,24 @@ public class ItemFactory {
         String materialID = this.configurationFile.getString(configLocation + ".item.raw-material");
 
         Material material;
-        if (materialID == null || (material = Material.getMaterial(materialID)) == null) {
+        if (materialID == null) {
             return null;
-        } else {
-
-            ItemStack stack;
-            if ((stack = getItemsAdderStack(materialID)) != null) {
-                return stack;
-            }
-            rawMaterial = true;
-            return new ItemStack(material);
         }
+
+        rawMaterial = true;
+
+        ItemStack stack;
+        if ((stack = getItemsAdderStack(materialID)) != null) {
+            return stack;
+        }
+
+        if ((material = Material.getMaterial(materialID.toUpperCase())) == null) {
+            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s",
+                                                           configLocation,
+                                                           materialID));
+            material = Material.COD;
+        }
+        return new ItemStack(material);
     }
 
     /**
