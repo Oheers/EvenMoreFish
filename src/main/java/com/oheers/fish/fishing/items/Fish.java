@@ -76,12 +76,8 @@ public class Fish implements Cloneable {
         checkDisplayName();
 
         // These settings don't mean these will be applied, but they will be considered if the settings exist.
-        factory.setItemModelDataCheck(true);
-        factory.setItemDamageCheck(true);
+        factory.enableDefaultChecks();
         factory.setItemDisplayNameCheck(this.displayName != null);
-        factory.setItemDyeCheck(true);
-        factory.setItemGlowCheck(true);
-        factory.setPotionMetaCheck(true);
 
         setSize();
         checkEatEvent();

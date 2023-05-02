@@ -20,7 +20,10 @@ import com.oheers.fish.gui.FillerStyle;
 import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
+import com.oheers.fish.utils.ItemFactory;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
@@ -29,6 +32,7 @@ import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -44,8 +48,8 @@ import java.util.logging.Logger;
 public class EvenMoreFish extends JavaPlugin {
 
     public static final int METRIC_ID = 11054;
-    public static final int MSG_CONFIG_VERSION = 12;
-    public static final int MAIN_CONFIG_VERSION = 11;
+    public static final int MSG_CONFIG_VERSION = 13;
+    public static final int MAIN_CONFIG_VERSION = 14;
     public static final int COMP_CONFIG_VERSION = 1;
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
@@ -64,6 +68,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Rarity xmasRarity;
     public final static Map<Integer, Fish> xmasFish = new HashMap<>();
     public static List<UUID> disabledPlayers = new ArrayList<>();
+    public static ItemStack customNBTRod;
     public static boolean checkingEatEvent;
     public static boolean checkingIntEvent;
     // Do some fish in some rarities have the comp-check-exempt: true.
@@ -122,6 +127,10 @@ public class EvenMoreFish extends JavaPlugin {
         if (guiConfig != null) guiFillerStyle = guiConfig.getFillerStyle("main-menu");
 
         usingPAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
+
+        if (mainConfig.requireNBTRod()) {
+            customNBTRod = createCustomNBTRod();
+        }
 
         if (mainConfig.isEconomyEnabled()) {
             // could not set up economy.
@@ -349,6 +358,17 @@ public class EvenMoreFish extends JavaPlugin {
         }
     }
 
+    public ItemStack createCustomNBTRod() {
+        ItemFactory itemFactory = new ItemFactory("nbt-rod-item", false);
+        itemFactory.enableDefaultChecks();
+        itemFactory.setItemDisplayNameCheck(true);
+        itemFactory.setItemLoreCheck(true);
+        NBTItem nbtItem = new NBTItem(itemFactory.createItem(null, 0));
+        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+        emfCompound.setBoolean(NbtUtils.Keys.EMF_ROD_NBT, true);
+        return nbtItem.getItem();
+    }
+
     public void reload() {
 
         terminateSellGUIS();
@@ -377,6 +397,10 @@ public class EvenMoreFish extends JavaPlugin {
         if (mainConfig.debugSession()) guiConfig.reload();
 
         competitionWorlds = competitionConfig.getRequiredWorlds();
+
+        if (mainConfig.requireNBTRod()) {
+            customNBTRod = createCustomNBTRod();
+        }
 
         competitionQueue.load();
     }

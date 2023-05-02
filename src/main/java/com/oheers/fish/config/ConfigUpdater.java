@@ -8,10 +8,30 @@ public class ConfigUpdater {
 
     private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
+    private static String CONFIG_UPDATE_14 = "\n" +
+            "# This defines the item given with the \"/emf admin rod-nbt -p:Playername\" command. It uses the same formatting as the fish\n" +
+            "# and baits in fish & baits .yml files.\n" +
+            "nbt-rod-item:\n" +
+            "  item:\n" +
+            "    # This needs to be FISHING_ROD\n" +
+            "    material: FISHING_ROD\n" +
+            "    displayname: \"&eEvenMoreFish Fishing Rod\"\n" +
+            "  glowing: true\n" +
+            "  lore:\n" +
+            "    - \"\"\n" +
+            "    - \"&7Catch &ecustom &7fish using this\"\n" +
+            "    - \"&7fishing rod.\"";
     private static String CONFIG_UPDATE_13 = "\n" +
             "# Would you like to test out new experimental features? These are partially working features such as the database that\n" +
             "# may not work on all servers.\n" +
             "experimental-features: false";
+
+    private static String MSG_UPDATE_13 = "\n" +
+            "admin:\n" +
+            "  # When the command /emf admin nbt-rod is run.\n" +
+            "  nbt-rod-given: \"&rYou have given {player} a NBT rod, make sure \\\"require-nbt-rod\\\" is set to &atrue &rfor this to be different from any other fishing rod.\"\n" +
+            "  # When the command /emf admin nbt-rod is run but require-rod-nbt is false in the config.yml file.\n" +
+            "  nbt-not-required: \"&rChange \\\"require-nbt-rod\\\" to true in order to use this feature.\"";
     private static String CONFIG_UPDATE_12 = "\n# Should fish and baits be blocked from being crafted into other items. For example, when the player tries to craft\n" +
             "# the starfish into a beacon.\n" +
             "block-crafting: true";
@@ -239,6 +259,8 @@ public class ConfigUpdater {
                 update.append(MSG_UPDATE_11);
             case 11:
                 update.append(MSG_UPDATE_12);
+            case 12:
+                update.append(MSG_UPDATE_13);
         }
 
         update.append(UPDATE_ALERT);
@@ -262,6 +284,8 @@ public class ConfigUpdater {
                 update.append(CONFIG_UPDATE_12);
             case 12:
                 update.append(CONFIG_UPDATE_13);
+            case 13:
+                update.append(CONFIG_UPDATE_14);
         }
 
         update.append(UPDATE_ALERT);
@@ -278,10 +302,14 @@ public class ConfigUpdater {
         MSG_UPDATE_10 = null;
         MSG_UPDATE_11 = null;
         MSG_UPDATE_12 = null;
+        MSG_UPDATE_13 = null;
 
         CONFIG_UPDATE_8 = null;
         CONFIG_UPDATE_9 = null;
         CONFIG_UPDATE_10 = null;
         CONFIG_UPDATE_11 = null;
+        CONFIG_UPDATE_12 = null;
+        CONFIG_UPDATE_13 = null;
+        CONFIG_UPDATE_14 = null;
     }
 }

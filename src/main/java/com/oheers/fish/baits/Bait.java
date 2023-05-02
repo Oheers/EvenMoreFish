@@ -60,12 +60,8 @@ public class Bait {
 
         this.itemFactory = new ItemFactory("baits." + name, false);
 
-        this.itemFactory.setItemGlowCheck(true);
+        this.itemFactory.enableDefaultChecks();
         this.itemFactory.setItemDisplayNameCheck(true);
-        this.itemFactory.setItemModelDataCheck(true);
-        this.itemFactory.setItemDamageCheck(true);
-        this.itemFactory.setItemDyeCheck(true);
-        this.itemFactory.setPotionMetaCheck(true);
 
         this.itemFactory.setDisplayName(FishUtils.translateHexColorCodes("&e" + name));
     }

@@ -29,6 +29,10 @@ public class MainConfig {
         return config.getString("locale", "en");
     }
 
+    public FileConfiguration getConfig() {
+        return this.config;
+    }
+
     public int getCompetitionDuration() {
         return config.getInt("competitions.duration");
     }

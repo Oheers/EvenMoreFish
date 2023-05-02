@@ -250,6 +250,11 @@ admin:
   # When an invalid competition type is tried to be started
   competition-type-invalid: "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
 
+  # When the command /emf admin nbt-rod is run.
+  nbt-rod-given: "&rYou have given {player} a NBT rod, make sure \"require-nbt-rod\" is set to &atrue &rfor this to be different from any other fishing rod."
+  # When the command /emf admin nbt-rod is run but require-rod-nbt is false in the config.yml file.
+  nbt-not-required: "&rChange \"require-nbt-rod\" to true in order to use this feature."
+
   # When there's a spigot update available, don't translate the URL otherwise it won't direct to the correct page.
   update-available: "&rThere is an update available: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
   # When the plugin is reloaded
@@ -257,4 +262,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 12
+config-version: 13
