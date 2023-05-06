@@ -108,7 +108,7 @@ error-sell-all-gui-name: "&c&lNe peut pas être vendus"
 sell-gui-lore:
   - "&8Poissonnerie"
   - ""
-  - "&7Valeur totale » &e${sell-price}"
+  - "&7Valeur totale » &e{sell-price}"
   - ""
   - "&7Vendez votre poisson ici pour faire"
   - "&7un peu d'argent supplémentaire."
@@ -119,7 +119,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8Inventaire"
   - ""
-  - "&7Valeur totale » &e${sell-price}"
+  - "&7Valeur totale » &e{sell-price}"
   - ""
   - "&7Cliquez sur ce bouton pour vendre"
   - "&7les poissons de votre inventaire pour"
@@ -149,7 +149,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» (Clic gauche) vendre le poisson."
 # Le message envoyé aux joueurs lorsqu'ils ont vendu leur poisson dans la boutique /emf
-fish-sale: "&fVous avez vendu &a{amount} &fpoisson(s) pour &a${sell-price}&f."
+fish-sale: "&fVous avez vendu &a{amount} &fpoisson(s) pour &a{sell-price}&f."
 
 # Messages d'aide
 # Aide générale (/emf help) - les commandes dépendantes du nœud d'autorisation ne s'afficheront que si elles sont formatées avec la barre oblique.

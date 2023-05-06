@@ -115,7 +115,7 @@ error-sell-all-gui-name: "&c&l売ることができません"
 sell-gui-lore:
   - "&8魚ショップ"
   - ""
-  - "&7合計金額 » &e${sell-price}"
+  - "&7合計金額 » &e{sell-price}"
   - ""
   - "&7魚を売って"
   - "&7お金を手に入れよう。"
@@ -126,7 +126,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8イベントリ"
   - ""
-  - "&7合計金額 » &e${sell-price}"
+  - "&7合計金額 » &e{sell-price}"
   - ""
   - "&7ボタンをクリックして"
   - "&7イベントリの魚を売って"
@@ -156,7 +156,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» 左クリック で 魚を売る"
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&a${sell-price} &rで &a{amount} &r匹の魚を売りました。"
+fish-sale: "&a{sell-price} &rで &a{amount} &r匹の魚を売りました。"
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.

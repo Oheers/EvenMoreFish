@@ -3,6 +3,7 @@ package com.oheers.fish.config;
 import com.oheers.fish.EvenMoreFish;
 
 import java.io.*;
+import java.util.logging.Level;
 
 public class ConfigUpdater {
 
@@ -198,6 +199,10 @@ public class ConfigUpdater {
                     "  sell-over-drop: false";
 
     public static void updateMessages(int version) throws IOException {
+        if (version == 13) { // This version does its own config-version update.
+            getMessageUpdates(13);
+            return;
+        }
         File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
@@ -261,6 +266,12 @@ public class ConfigUpdater {
                 update.append(MSG_UPDATE_12);
             case 12:
                 update.append(MSG_UPDATE_13);
+            case 13:
+                try {
+                    insertCurrencySymbol(13);
+                } catch (IOException exception) {
+                    EvenMoreFish.logger.log(Level.WARNING, "Could not update messages.yml");
+                }
         }
 
         update.append(UPDATE_ALERT);
@@ -291,6 +302,30 @@ public class ConfigUpdater {
         update.append(UPDATE_ALERT);
 
         return update.toString();
+    }
+
+    private static void insertCurrencySymbol(int version) throws IOException {
+        File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
+        if (messagesFile.exists()) {
+            try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
+
+                StringBuilder inputBuffer = new StringBuilder();
+                String line;
+
+                while ((line = file.readLine()) != null) {
+                    if (line.contains("{sell-price}")) {
+                        line = line.replace("{sell-price}", "${sell-price}");
+                    } else if (line.equals("config-version: " + version)) {
+                        line = "config-version: " + EvenMoreFish.MSG_CONFIG_VERSION; // replace the line here
+                    }
+                    inputBuffer.append(line);
+                    inputBuffer.append('\n');
+                }
+                // write the new string with the replaced line OVER the same file
+                FileOutputStream fileOut = new FileOutputStream(messagesFile);
+                fileOut.write(inputBuffer.toString().getBytes());
+            }
+        }
     }
 
     /**

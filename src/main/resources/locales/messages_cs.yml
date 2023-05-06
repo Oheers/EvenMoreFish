@@ -108,7 +108,7 @@ error-sell-all-gui-name: "&c&lNelze prodat"
 sell-gui-lore:
   - "&8Rybí obchod"
   - ""
-  - "&7Celková hodnota » &e{sell-price}$"
+  - "&7Celková hodnota » &e{sell-price}"
   - ""
   - "&7Prodej zde své ryby a vydělej"
   - "&7si nějaké peníze navíc."
@@ -119,7 +119,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8Inventář"
   - ""
-  - "&7Celková hodnota  » &e{sell-price}$"
+  - "&7Celková hodnota  » &e{sell-price}"
   - ""
   - "&7Kliknutím prodáte všechny ryby"
   - "&7v inventáři."
@@ -147,7 +147,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» (Klikněte levým) prodat."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&rProdal jsi &a{amount} &fryb za &a{sell-price}$&f."
+fish-sale: "&rProdal jsi &a{amount} &fryb za &a{sell-price}&f."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.

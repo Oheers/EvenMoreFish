@@ -100,7 +100,7 @@ error-sell-all-gui-name: "&c&lSatılamaz"
 sell-gui-lore:
   - "&8Fish Shop"
   - ""
-  - "&7Toplam değer » &a{sell-price}$"
+  - "&7Toplam değer » &a{sell-price}"
   - ""
   - "&7Daha fazla para kazanmak için"
   - "&7tuttuğun balıkları buraya koy"
@@ -112,7 +112,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8Inventory"
   - ""
-  - "&7Toplam değer » &a{sell-price}$"
+  - "&7Toplam değer » &a{sell-price}"
   - ""
   - "&7Envanterinde bulunan, tuttuğun"
   - "&7tüm balıkları satmak için bunu"
@@ -143,7 +143,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» Balık satmak için SOL TIKLA."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&a{amount} &fadet balığı &a{sell-price}$&f fiyatına sattın."
+fish-sale: "&a{amount} &fadet balığı &a{sell-price}&f fiyatına sattın."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.

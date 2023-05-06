@@ -59,7 +59,7 @@ confirm-gui-name: "&6&lACCEPTEER"
 error-gui-name: "&c&lKan niet verkopen!"
 # The lore found on the selling/confirmation item in /emf shop
 sell-gui-lore:
-  - "&e&lWaarde: &e${sell-price}"
+  - "&e&lWaarde: &e{sell-price}"
   - "&7LINKER KLIK om vis te verkopen."
   - "&7RECHTER KLIK om te annuleren."
 # The lore below the error item in /emf shop when the gui contains no items of value.
@@ -68,7 +68,7 @@ error-gui-lore:
   - "&cVoeg je gevangen vis toe aan dit."
   - "&cGUI om ze te verkopen."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&fU hebt &a{amount} &fvis verkocht voor &a${sell-price}&f."
+fish-sale: "&fU hebt &a{amount} &fvis verkocht voor &a{sell-price}&f."
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.

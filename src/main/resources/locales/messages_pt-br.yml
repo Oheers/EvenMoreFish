@@ -61,7 +61,7 @@ confirm-gui-name: "&6&lCONFIRMAR"
 error-gui-name: "&c&lNão é possível vender"
 # The lore found on the selling/confirmation item in /emf shop
 sell-gui-lore:
-  - "&e&lValor: &e${sell-price}"
+  - "&e&lValor: &e{sell-price}"
   - "&7Clique esquerdo para vender."
   - "&7Clique direito para cancelar."
 # The lore below the error item in /emf shop when the gui contains no items of value.
@@ -70,7 +70,7 @@ error-gui-lore:
   - "&cAdicione peixes pescados por"
   - "&cvocê para conseguir vender."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&fFoi vendido &a{amount} &fpeixes por &a${sell-price}&f."
+fish-sale: "&fFoi vendido &a{amount} &fpeixes por &a{sell-price}&f."
 
 # Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
 no-player-in-place: "Comece a pescar para preencher esta posição."

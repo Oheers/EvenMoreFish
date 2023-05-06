@@ -98,7 +98,7 @@ error-sell-all-gui-name: "&c&lNo se puede vender"
 sell-gui-lore:
   - "&8Pescadería"
   - ""
-  - "&7Valor total » &e${sell-price}"
+  - "&7Valor total » &e{sell-price}"
   - ""
   - "&7Vende tu pescado aquí para"
   - "&7ganar dinero extra."
@@ -109,7 +109,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8Inventario"
   - ""
-  - "&7Valor total » &e${sell-price}"
+  - "&7Valor total » &e{sell-price}"
   - ""
   - "&7Presiona este boton para vender"
   - "&7el pescado de tu inventario para"
@@ -139,7 +139,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» (Click izquierdo) vender el pescado."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&fHas vendido &a{amount} &fpescados por &a${sell-price}&f."
+fish-sale: "&fHas vendido &a{amount} &fpescados por &a{sell-price}&f."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.

@@ -99,7 +99,7 @@ error-sell-all-gui-name: "&c&lKhông thể bán"
 sell-gui-lore:
   - "&8Cửa hàng bán cá"
   - ""
-  - "&7Tổng giá bán được » &e${sell-price}"
+  - "&7Tổng giá bán được » &e{sell-price}"
   - ""
   - "&7Bán cá để"
   - "&7làm giàu."
@@ -109,7 +109,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8Cửa hàng bán cá"
   - ""
-  - "&7Tổng giá bán được » &e${sell-price}"
+  - "&7Tổng giá bán được » &e{sell-price}"
   - ""
   - "&7Bấm nút này để bán"
   - "&7cá trong kho đồ của bạn để"
@@ -138,7 +138,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» (Trái chuột) để bán."
 #The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&fBạn đã bán &a{amount} &fcá với giá &a${sell-price}&f."
+fish-sale: "&fBạn đã bán &a{amount} &fcá với giá &a{sell-price}&f."
 #Help messages
 #General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
 help-general:

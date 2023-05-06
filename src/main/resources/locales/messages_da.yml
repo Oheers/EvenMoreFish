@@ -114,7 +114,7 @@ error-sell-all-gui-name: "&c&lKan ikke sælge"
 sell-gui-lore:
   - "&8Fiske Butik"
   - ""
-  - "&7Total Værdi » &e${sell-price}"
+  - "&7Total Værdi » &e{sell-price}"
   - ""
   - "&7Sælg dine fiske her for at tjene"
   - "&7 nogle ekstra penge."
@@ -125,7 +125,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8Inventar"
   - ""
-  - "&7Total Værdi » &e${sell-price}"
+  - "&7Total Værdi » &e{sell-price}"
   - ""
   - "&7Klik på denne knap for at sælge"
   - "&7fiskene i dit inventar for at"
@@ -155,7 +155,7 @@ error-sell-all-gui-lore:
   - ""
   - "&e» (Venstre-klik) sælg fisken."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&rDu har solgt &a{amount} &ffisk for &a${sell-price}&f."
+fish-sale: "&rDu har solgt &a{amount} &ffisk for &a{sell-price}&f."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.

@@ -109,7 +109,7 @@ error-sell-all-gui-name: "&c&l无法出售"
 sell-gui-lore:
   - "&8钓鱼商店"
   - ""
-  - "&7总计价格» &e${sell-price}"
+  - "&7总计价格» &e{sell-price}"
   - ""
   - "&7在这里出售你的鱼"
   - ""
@@ -119,7 +119,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8物品栏"
   - ""
-  - "&7总计价格» &e${sell-price}"
+  - "&7总计价格» &e{sell-price}"
   - ""
   - "&7点击这个按钮来出售"
   - "&7物品栏中所有的鱼"
@@ -129,7 +129,7 @@ sell-all-lore:
 error-gui-lore:
   - "&8钓鱼商店"
   - ""
-  - "&7总计价格» &e${sell-price}"
+  - "&7总计价格» &e{sell-price}"
   - ""
   - "&7在这里出售你的鱼"
   - ""
@@ -139,14 +139,14 @@ error-gui-lore:
 error-sell-all-gui-lore:
   - "&8物品栏"
   - ""
-  - "&7总计价格» &e${sell-price}"
+  - "&7总计价格» &e{sell-price}"
   - ""
   - "&7点击这个按钮来出售"
   - "&7物品栏中所有的鱼"
   - ""
   - "&e» (左键) 出售鱼."
 # 当玩家在/emf shop中卖掉他们的鱼时，向他们发送的信息。
-fish-sale: "&f你出售了 &a{amount} &f条鱼，赚取了 &e${sell-price} &f块钱！"
+fish-sale: "&f你出售了 &a{amount} &f条鱼，赚取了 &e{sell-price} &f块钱！"
 
 # 帮助信息
 help-general:

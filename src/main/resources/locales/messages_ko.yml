@@ -105,7 +105,7 @@ error-sell-all-gui-name: "&c&l팔지 않기"
 sell-gui-lore:
   - "&8물고기 상점"
   - ""
-  - "&7총 가격 » &e${sell-price}"
+  - "&7총 가격 » &e{sell-price}"
   - ""
   - "여기에 물고기를 파세요."
   - ""
@@ -115,7 +115,7 @@ sell-gui-lore:
 sell-all-lore:
   - "&8인벤토리"
   - ""
-  - "&7총 가격 » &e${sell-price}"
+  - "&7총 가격 » &e{sell-price}"
   - ""
   - "&7판매하려면 클릭해주세요."
   - "&7전부 팔기"
@@ -142,7 +142,7 @@ error-sell-all-gui-lore:
   - ""
   - "&c» (좌클릭) 물고기를 팝니다."
 # The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&f&a{amount} &ffish 를&a${sell-price}&f에 판매했습니다."
+fish-sale: "&f&a{amount} &ffish 를&a{sell-price}&f에 판매했습니다."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
