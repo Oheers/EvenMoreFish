@@ -2,13 +2,17 @@ package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
 
 public class Permission implements Requirement {
 
     public final String configLocation;
     public final FileConfiguration fileConfig;
-    public String permissionNode;
+    private List<String> permissionNodes;
 
     /**
      * Just like the old permission checker, if the user doesn't have the correct permission node or isn't op then the
@@ -27,15 +31,44 @@ public class Permission implements Requirement {
 
     @Override
     public boolean requirementMet(RequirementContext context) {
-        if (EvenMoreFish.permission != null && permissionNode != null) {
-            return context.getPlayer() == null || EvenMoreFish.permission.has(context.getPlayer(), permissionNode);
-        } else {
-            return true;
+        if (EvenMoreFish.permission != null && permissionNodes != null) {
+            return context.getPlayer() == null || hasAllPermissions(context.getPlayer());
         }
+        
+        return true;
+    }
+    
+    private boolean hasAllPermissions(final Player player) {
+        for(final String permissionNode: permissionNodes) {
+            if(!EvenMoreFish.permission.has(player,permissionNode)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public void fetchData() {
-        this.permissionNode = fileConfig.getString(configLocation);
+        this.permissionNodes = getPermissionsListOrSingleton();
+    }
+    
+    /*
+        Here we account for the old permission format.
+        That way there is no need to migrate old .yml files to the new format.
+        So users can use either:
+        requirement:
+          permission: "evenmorefish.fish1"
+        or
+        requirement:
+          permission:
+          - "evenmorefish.fish1"
+          - "evenmorefish.fish2"
+     */
+    private @NotNull List<String> getPermissionsListOrSingleton() {
+        List<String> permissions = fileConfig.getStringList(configLocation);
+        if(permissions.isEmpty()) {
+            return Collections.singletonList(fileConfig.getString(configLocation));
+        }
+        return permissions;
     }
 }
