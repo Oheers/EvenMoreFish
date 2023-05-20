@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.*;
 
@@ -326,7 +327,8 @@ public class SellGUI implements InventoryHolder {
 
     public String formatWorth(double totalWorth) {
         if (EvenMoreFish.mainConfig.getSellType().equals("money")) {
-            return Double.toString(totalWorth);
+            DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false, false));
+            return format.format(totalWorth);
         } else {
             return (int) totalWorth + " Claim Blocks";
         }

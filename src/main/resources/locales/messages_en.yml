@@ -110,6 +110,13 @@ confirm-sell-all-gui-name: "&6&lCONFIRM"
 error-gui-name: "&c&lCan't Sell"
 # The name found on the error item in /emf shop when the player's inventory contains no items of value.
 error-sell-all-gui-name: "&c&lCan't Sell"
+# The sell price:
+# 0 – prints a digit if provided, 0 otherwise
+# # – prints a digit if provided, nothing otherwise
+# . – indicate where to put the decimal separator
+# , – indicate where to put the grouping separator
+sell-price-format: "#,##0.0"
+
 # The lore found on the selling/confirmation item in /emf shop
 sell-gui-lore:
   - "&8Fish Shop"
@@ -262,4 +269,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 14
+config-version: 15

@@ -26,7 +26,12 @@ public class ConfigUpdater {
             "# Would you like to test out new experimental features? These are partially working features such as the database that\n" +
             "# may not work on all servers.\n" +
             "experimental-features: false";
-
+    private static String MSG_UPDATE_15 = "\n# The sell price:\n" +
+            "# 0 – prints a digit if provided, 0 otherwise\n" +
+            "# # – prints a digit if provided, nothing otherwise\n" +
+            "# . – indicate where to put the decimal separator\n" +
+            "# , – indicate where to put the grouping separator\n" +
+            "sell-price-format: \"#,##0.0\"";
     private static String MSG_UPDATE_13 = "\n" +
             "admin:\n" +
             "  # When the command /emf admin nbt-rod is run.\n" +
@@ -272,6 +277,8 @@ public class ConfigUpdater {
                 } catch (IOException exception) {
                     EvenMoreFish.logger.log(Level.WARNING, "Could not update messages.yml");
                 }
+            case 14:
+                update.append(MSG_UPDATE_15);
         }
 
         update.append(UPDATE_ALERT);
@@ -338,6 +345,7 @@ public class ConfigUpdater {
         MSG_UPDATE_11 = null;
         MSG_UPDATE_12 = null;
         MSG_UPDATE_13 = null;
+        MSG_UPDATE_15 = null;
 
         CONFIG_UPDATE_8 = null;
         CONFIG_UPDATE_9 = null;
