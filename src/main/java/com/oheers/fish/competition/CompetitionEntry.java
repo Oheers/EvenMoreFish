@@ -29,7 +29,7 @@ public class CompetitionEntry implements Comparable<CompetitionEntry> {
      * @param increaseAmount The amount to increase the player's score by.
      */
     public void incrementValue(float increaseAmount) {
-        this.value += increaseAmount;
+        this.value += Math.abs(increaseAmount);
         this.time = Instant.now().toEpochMilli();
     }
 
