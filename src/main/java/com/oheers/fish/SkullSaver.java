@@ -18,8 +18,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.logging.Level;
-
 public class SkullSaver implements Listener {
     
     // EventPriority.HIGHEST makes this run last so it can listen to the cancels of protection plugins like Towny
