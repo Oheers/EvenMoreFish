@@ -1,6 +1,5 @@
 package com.oheers.fish;
 
-import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.NamespacedKey;

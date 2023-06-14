@@ -66,7 +66,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static Map<String, Bait> baits = new HashMap<>();
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
     public static Rarity xmasRarity;
-    public final static Map<Integer, Fish> xmasFish = new HashMap<>();
+    public static final Map<Integer, Fish> xmasFish = new HashMap<>();
     public static List<UUID> disabledPlayers = new ArrayList<>();
     public static ItemStack customNBTRod;
     public static boolean checkingEatEvent;
@@ -157,7 +157,7 @@ public class EvenMoreFish extends JavaPlugin {
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
         names.loadBaits(baitFile.getConfig());
 
-        if (!names.regionCheck && !(mainConfig.getAllowedRegions().size() > 0)) guardPL = null;
+        if (!names.regionCheck && mainConfig.getAllowedRegions().isEmpty()) guardPL = null;
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
