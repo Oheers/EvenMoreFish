@@ -13,8 +13,8 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.version>3.10.1</maven.compiler.version>
-        <maven.shade.version>3.4.0</maven.shade.version>
+        <maven.compiler.version>3.11.0</maven.compiler.version>
+        <maven.shade.version>3.4.1</maven.shade.version>
         <maven.clean.version>3.2.0</maven.clean.version>
 
         <spigot.api.version>1.18.2-R0.1-SNAPSHOT</spigot.api.version>
@@ -33,6 +33,7 @@
         <hikaricp.version>4.0.3</hikaricp.version>
         <flyway.version>9.16.2</flyway.version>
         <friendlyid.version>1.1.0</friendlyid.version>
+        <griefprevention.version>16.17.1</griefprevention.version>
     </properties>
 
     <build>
@@ -280,7 +281,7 @@
         <dependency>
             <groupId>com.github.TechFortress</groupId>
             <artifactId>GriefPrevention</artifactId>
-            <version>16.17.1</version>
+            <version>${griefprevention.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

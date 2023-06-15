@@ -1,6 +1,7 @@
 package com.oheers.fish.config.messages;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public enum ConfigMessage {
@@ -56,10 +57,10 @@ public enum ConfigMessage {
             "{fish_lore}",
             "{rarity_colour}&l{rarity}"
     ), PrefixType.NONE, false, false),
-    FISHERMAN_LORE("fisherman-lore", Arrays.asList(
+    FISHERMAN_LORE("fisherman-lore", Collections.singletonList(
             "&fCaught by {player}"
     ), PrefixType.NONE, false, false),
-    LENGTH_LORE("length-lore", Arrays.asList(
+    LENGTH_LORE("length-lore", Collections.singletonList(
             "&fMeasures {length}cm"
     ), PrefixType.NONE, false, false),
     FISH_SALE("fish-sale", "&rYou've sold &a{amount} &ffish for &a{sell-price}&f.", PrefixType.DEFAULT, true, true),

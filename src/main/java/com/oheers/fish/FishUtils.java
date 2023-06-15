@@ -36,22 +36,19 @@ public class FishUtils {
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
-        if (item != null) {
-            if (item.getType() != Material.AIR) {
-                if (item.hasItemMeta()) {
-                    return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_NAME);
-                }
-            }
+        if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) {
+            return false;
         }
-        return false;
+
+        return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_NAME);
     }
 
     public static boolean isFish(Skull skull) {
-        if (skull != null) {
-            return NbtUtils.hasKey(new NBTTileEntity(skull), NbtUtils.Keys.EMF_FISH_NAME);
+        if (skull == null) {
+            return false;
         }
 
-        return false;
+        return NbtUtils.hasKey(new NBTTileEntity(skull), NbtUtils.Keys.EMF_FISH_NAME);
     }
 
     public static Fish getFish(ItemStack item) {
@@ -70,8 +67,9 @@ public class FishUtils {
             isXmasFish = xmasINT == 1;
         }
 
-        if (nameString == null || rarityString == null)
+        if (nameString == null || rarityString == null) {
             return null; //throw new InvalidFishException("NBT Error");
+        }
 
 
         // Generating an empty rarity
@@ -86,9 +84,13 @@ public class FishUtils {
         // setting the correct length so it's an exact replica.
         try {
             Fish fish = new Fish(rarity, nameString, isXmasFish);
-            if (randomIndex != null) fish.getFactory().setType(randomIndex);
+            if (randomIndex != null) {
+                fish.getFactory().setType(randomIndex);
+            }
             fish.setLength(lengthFloat);
-            if (playerString != null) fish.setFisherman(UUID.fromString(playerString));
+            if (playerString != null) {
+                fish.setFisherman(UUID.fromString(playerString));
+            }
 
             return fish;
         } catch (InvalidFishException exception) {
@@ -101,21 +103,22 @@ public class FishUtils {
 
     public static Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
-        final String nameString = NBT.getPersistentData(skull,nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_NAME).toString()));
+        final String nameString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_NAME).toString()));
         final String playerString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_PLAYER).toString()));
         final String rarityString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RARITY).toString()));
-        final Float lengthFloat = NBT.getPersistentData(skull,nbt -> nbt.getFloat(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_LENGTH).toString()));
-        final Integer randomIndex = NBT.getPersistentData(skull,nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX).toString()));
+        final Float lengthFloat = NBT.getPersistentData(skull, nbt -> nbt.getFloat(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_LENGTH).toString()));
+        final Integer randomIndex = NBT.getPersistentData(skull, nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX).toString()));
         final Integer xmasInteger = NBT.getPersistentData(skull, nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_XMAS_FISH).toString()));
-        
+
         boolean isXmasFish = false;
 
         if (xmasInteger != null) {
             isXmasFish = xmasInteger == 1;
         }
 
-        if (nameString == null || rarityString == null)
+        if (nameString == null || rarityString == null) {
             throw new InvalidFishException("NBT Error");
+        }
 
         // Generating an empty rarity
         Rarity rarity = null;
@@ -161,7 +164,7 @@ public class FishUtils {
             return true;
         }
         // if the user has defined a region whitelist
-        if (whitelistedRegions.size() == 0) {
+        if (whitelistedRegions.isEmpty()) {
             return true;
         }
 
@@ -174,7 +177,9 @@ public class FishUtils {
 
             // runs the query
             for (ProtectedRegion pr : set) {
-                if (whitelistedRegions.contains(pr.getId())) return true;
+                if (whitelistedRegions.contains(pr.getId())) {
+                    return true;
+                }
             }
             return false;
         } else if (EvenMoreFish.guardPL.equals("redprotect")) {
