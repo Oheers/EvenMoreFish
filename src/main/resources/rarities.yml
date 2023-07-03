@@ -2,6 +2,7 @@
 # assistance in understanding a setting or feature, I am usually available at the official EvenMoreFish discord server at: https://discord.gg/Hb9cj3tNbb (this is a non-expiring link).
 
 # All files support hex codes, this is used in the format &#66aabb. A gradient maker can be found here: https://minecraft.menu/minecraft-rgb-generator - use the provided format ("Nickname (&rrggbb)") for compatibility with EvenMoreFish.
+# NOTE: If you change your rarity names here, make sure to change them in the fish.yml file too to match.
 
 rarities:
   # ▼ All rarity names should start on the same column as this down arrow.
