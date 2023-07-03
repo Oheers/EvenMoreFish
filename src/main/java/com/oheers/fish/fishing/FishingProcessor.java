@@ -291,7 +291,7 @@ public class FishingProcessor implements Listener {
 
         /* If allowed rarities has objects, it means we've run through and removed the Christmas rarity. Don't run
            through again */
-        if (allowedRarities.size() == 0) {
+        if (allowedRarities.isEmpty()) {
             if (fisher != null && EvenMoreFish.permission != null) {
                 rarityLoop:
                 for (Rarity rarity : EvenMoreFish.fishCollection.keySet()) {

@@ -126,11 +126,9 @@ public class Bait {
                 }
 
             } else if (lineAddition.equals("{lore}")) {
-                EvenMoreFish.baitFile.getLore(this.name).stream().forEach(line -> {
-                    lore.add(new OldMessage()
-                            .setMSG(line)
-                            .toString());
-                });
+                EvenMoreFish.baitFile.getLore(this.name).forEach(line -> lore.add(new OldMessage()
+                        .setMSG(line)
+                        .toString()));
             } else {
                 lore.add(new OldMessage()
                         .setMSG(lineAddition)
