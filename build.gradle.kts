@@ -1,7 +1,7 @@
 plugins {
     id("java")
     id("maven-publish")
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
+    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.github.johnrengelman.shadow") version "8.1.0"
 }
 
@@ -22,6 +22,7 @@ repositories {
     maven("https://nexus.neetgames.com/repository/maven-releases/")
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://repo.spongepowered.org/maven/")
+    maven("https://repo.essentialsx.net/releases/")
 }
 
 dependencies {
