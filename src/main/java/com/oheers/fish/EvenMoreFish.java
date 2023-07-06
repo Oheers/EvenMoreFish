@@ -89,6 +89,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean usingMcMMO;
 
     public static boolean itemsAdderLoaded = false;
+    public static boolean denizenLoaded = false;
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
@@ -150,6 +151,8 @@ public class EvenMoreFish extends JavaPlugin {
         } else if (checkRP()) {
             guardPL = "redprotect";
         }
+
+        denizenLoaded = Bukkit.getPluginManager().isPluginEnabled("Denizen");
 
         competitionWorlds = competitionConfig.getRequiredWorlds();
 
