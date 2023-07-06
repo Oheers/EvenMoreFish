@@ -34,6 +34,7 @@
         <flyway.version>9.20.0</flyway.version>
         <friendlyid.version>1.1.0</friendlyid.version>
         <griefprevention.version>16.18.1</griefprevention.version>
+        <denizen.version>1.2.8-SNAPSHOT</denizen.version>
     </properties>
 
     <build>
@@ -293,7 +294,7 @@
         <dependency>
             <groupId>com.denizenscript</groupId>
             <artifactId>denizen</artifactId>
-            <version>1.2.8-SNAPSHOT</version>
+            <version>${denizen.version}</version>
             <type>jar</type>
             <scope>provided</scope>
             <exclusions>
