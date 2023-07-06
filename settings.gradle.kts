@@ -8,7 +8,7 @@ dependencyResolutionManagement {
             library("placeholder-api", "me.clip:placeholderapi:2.11.3")
             library("authlib", "com.mojang:authlib:1.5.21")
             library("bstats", "org.bstats:bstats-bukkit:3.0.2")
-            version("worldguard", "7.0.8")
+            version("worldguard", "7.0.5")//We must use 7.0.5 until we upgrade to java 17
             library("worldguard-core", "com.sk89q.worldguard","worldguard-core").versionRef("worldguard")
             library("worldguard-bukkit", "com.sk89q.worldguard","worldguard-bukkit").versionRef("worldguard")
             version("worldedit", "7.2.15")
@@ -19,8 +19,8 @@ dependencyResolutionManagement {
             library("redprotect-spigot", "br.net.fabiozumbi12.RedProtect","RedProtect-Spigot-1.13").versionRef("redprotect")
             library("mcmmo", "com.gmail.nossr50.mcMMO:mcMMO:2.1.196")
             library("aurelium-skills", "com.github.Archy-X:AureliumSkills:Beta1.2.8")
-            library("griefprevention", "com.github.TechFortress:GriefPrevention:16.17.1")
-            library("caffeine", "com.github.ben-manes.caffeine:caffeine:2.9.3")
+            library("griefprevention", "com.github.TechFortress:GriefPrevention:16.17.1")//We must use 16.17.1 until we upgrade to java 17
+            library("caffeine", "com.github.ben-manes.caffeine:caffeine:2.9.3")//We must use 2.9.3 until we upgrade to java 17
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.4.1-r4")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.11.3")
@@ -30,9 +30,8 @@ dependencyResolutionManagement {
             library("flyway-mysql", "org.flywaydb","flyway-mysql").versionRef("flyway")
 
             library("friendlyid", "com.devskiller.friendly-id:friendly-id:1.1.0")
-            library("hikaricp", "com.zaxxer:HikariCP:4.0.3")
-            //            library("commands-paper","co.aikar:acf-paper:0.5.1-SNAPSHOT") maybe later
-
+            library("hikaricp", "com.zaxxer:HikariCP:4.0.3") //We must use 4.0.3 until we upgrade to java 17
+            library("json-simple", "com.googlecode.json-simple:json-simple:1.1.1")
         }
     }
 }

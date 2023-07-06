@@ -31,13 +31,26 @@ dependencies {
     compileOnly(libs.placeholder.api)
     compileOnly(libs.authlib)
 
-    compileOnly(libs.worldguard.core)
+    compileOnly(libs.worldguard.core) {
+        exclude("com.sk89q.worldedit", "worldedit-core")
+    }
     compileOnly(libs.worldguard.bukkit)
     compileOnly(libs.worldedit.core)
     compileOnly(libs.worldedit.bukkit)
 
-    compileOnly(libs.redprotect.core)
-    compileOnly(libs.redprotect.spigot)
+    compileOnly(libs.redprotect.core) {
+        exclude("net.ess3","EssentialsX")
+        exclude("org.spigotmc","spigot-api")
+    }
+    compileOnly(libs.redprotect.spigot) {
+        exclude("net.ess3","EssentialsX")
+        exclude("org.spigotmc","spigot-api")
+        exclude("com.destroystokyo.paper", "paper-api")
+        exclude("de.keyle", "mypet")
+        exclude("com.sk89q.worldedit", "worldedit-core")
+        exclude("com.sk89q.worldedit", "worldedit-bukkit")
+        exclude("com.sk89q.worldguard", "worldguard-bukkit")
+    }
     compileOnly(libs.aurelium.skills)
     compileOnly(libs.griefprevention)
     compileOnly(libs.itemsadder.api)
@@ -51,6 +64,8 @@ dependencies {
     library(libs.flyway.mysql)
     library(libs.hikaricp)
     library(libs.caffeine)
+
+    library(libs.json.simple)
 }
 
 bukkit {
