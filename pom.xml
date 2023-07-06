@@ -34,6 +34,7 @@
         <flyway.version>9.20.0</flyway.version>
         <friendlyid.version>1.1.0</friendlyid.version>
         <griefprevention.version>16.18.1</griefprevention.version>
+        <denizen.version>1.2.8-SNAPSHOT</denizen.version>
     </properties>
 
     <build>
@@ -156,6 +157,11 @@
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
             <layout>default</layout>
+        </repository>
+
+        <repository>
+            <id>citizens-repo</id>
+            <url>https://maven.citizensnpcs.co/repo</url>
         </repository>
     </repositories>
 
@@ -283,6 +289,20 @@
             <artifactId>GriefPrevention</artifactId>
             <version>${griefprevention.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.denizenscript</groupId>
+            <artifactId>denizen</artifactId>
+            <version>${denizen.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

@@ -1,5 +1,6 @@
 package com.oheers.fish.utils;
 
+import com.denizenscript.denizen.objects.ItemTag;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
@@ -182,6 +183,10 @@ public class ItemFactory {
             return stack;
         }
 
+        if ((stack = getDenizenStack(mValue)) != null) {
+            return stack;
+        }
+
         Material material = Material.getMaterial(mValue.toUpperCase());
         if (material == null) {
             EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
@@ -342,6 +347,10 @@ public class ItemFactory {
 
         ItemStack stack;
         if ((stack = getItemsAdderStack(materialID)) != null) {
+            return stack;
+        }
+
+        if ((stack = getDenizenStack(materialID)) != null) {
             return stack;
         }
 
@@ -538,6 +547,22 @@ public class ItemFactory {
                 return new ItemStack(Material.COD);
             }
             return CustomStack.getInstance(namespaceId).getItemStack();
+        } else return null;
+    }
+
+    private ItemStack getDenizenStack(final String materialID) {
+        if (materialID.contains("denizen:")) {
+
+            String id = materialID.split(":")[1];
+
+            final ItemTag itemTag = ItemTag.valueOf(id, false);
+            if (itemTag == null) {
+                if (EvenMoreFish.denizenLoaded) {
+                    EvenMoreFish.logger.info(() -> String.format("Could not obtain denizen item %s", id));
+                }
+                return new ItemStack(Material.COD);
+            }
+            return itemTag.getItemStack();
         } else return null;
     }
 
