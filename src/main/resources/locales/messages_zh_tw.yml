@@ -1,0 +1,247 @@
+# 由kyle翻译 Translated by kyle.
+
+# 如果一條信息包含EvenMoreFish的佔位符，例如{player}或{rarity}，它也支持api佔位符。
+
+# 當玩家釣到EvenMoreFish的魚時發給他們。
+fish-caught: "&a{player} &f捕捉到了 {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!"
+# 通過將魚的最小長度設置為小於0，你可以創建一條無長度的魚。當玩家釣到一條無長度的魚時，就會用到這一點。
+lengthless-fish-caught: "&a{player} &f捕捉到了 {rarity_colour}&l{rarity} {rarity_colour}{fish}!"
+# 當玩家沒有執行命令的權限時發給他們。
+no-permission: "&c你沒有權限使用此指令."
+
+# 比賽開始和結束時要發送的信息
+contest-start: "&r釣魚比賽開始了."
+contest-end: "&r釣魚比賽已結束."
+# 當玩家在比賽進行中加入服務器時，將發送的信息
+contest-join: "&r釣魚比賽正在進行中."
+
+# 當有新玩家佔據No.1位置時顯示給玩家，移除此值或將其設置為""來禁用此信息。
+new-first: "&r{player}現在成為比賽的第一名"
+# 這個消息應該出現在聊天中（false）還是出現在exp bar上面（true）。
+action-bar-message: true
+# action bar應該用於哪些比賽類型？(推荐：MOST_FISH)
+action-bar-types:
+  - MOST_FISH
+
+# 對於每個競爭類型，應該用什麼來代替{type}變量？
+competition-types:
+  # MOST_FISH
+  most: "最多的魚"
+  # LARGEST_FISH
+  largest: "最長的魚"
+  # LARGEST_TOTAL_FISH
+  largest-total: "魚的總長度"
+  # SPECIFIC_FISH
+  specific: "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r"
+  # SPECIFIC_RARITY
+  specific-rarity: "{amount} {rarity_colour}&l{rarity}&r 鱼"
+# bossbar上面顯示的文字
+bossbar:
+  # 用於不同時間單位的縮寫
+  hour: "時"
+  minute: "分"
+  second: "秒"
+  # 用於翻譯結尾的 "剩餘"，例如 "5s 剩餘“
+  remaining: "剩餘"
+
+# 幾乎所有與該插件有關的命令前都有前綴。建議保留空格。
+prefix: "&b[釣魚大賽] "
+# 命令中[EvenMoreFish]前綴的顏色（當你的前綴沒有顏色時）。
+prefix-regular: "&b"
+# 管理命令中[EvenMoreFish]前綴的顏色（當你的前綴沒有顏色時）。
+prefix-admin: "&b"
+# 當發生錯誤時，[EvenMoreFish]前綴的顏色，例如，沒有運行命令的權限（當你的前綴沒有顏色時）。
+prefix-error: "&c"
+
+# 這是魚被捕獲時給予的lore的格式。
+# {custom-lore}是在fish.yml的lore:部分下指定的，如果魚有一個lore。
+# lore的行会替换{fish_lore}，但但是如果它是空的，該行將被刪除。除了這個變量之外，不要在該行中添加其他任何東西。
+fish-lore:
+  - "&a品質: {rarity_colour}{rarity}"
+  - "&6長度: {length}cm"
+  - "&6捕捉者: {player}"
+  - ""
+  - "{fish_lore}"
+
+# 命令格式（該信息不支持papi佔位符）。
+help: "/{command} - {description}"
+
+# 比賽結束後排行榜的格式（此信息不支持papi佔位符）。
+leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
+leaderboard-largest-total: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)"
+leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
+# 如果你正在運行一個沒有排行榜的比賽，當有獲勝者時，會發送這個消息
+single-winner: "&r{player} 贏得了這場比賽!"
+# 這顯示了當前參加比賽的玩家數量，設置為""可禁用。
+total-players: "&r排行榜上共有 {amount} 個玩家."
+# 在排行榜上顯示的位置數- 不能少於1。
+leaderboard-count: 5
+# 如果該玩家沒有出現在/emf top, 他們的位置是否應該顯示在底部？
+always-show-pos: true
+# 在比賽中沒有人得到記錄時發給玩家
+no-winners: "&r這場比賽中目前沒有任何記錄."
+# 當個別玩家沒有得到一個記錄時
+no-record: "&r你還沒有釣到魚."
+# 當管理員試圖啟動一個類型不存在的比賽時發出，例如： /emf admin competition start 600 ABCDEFGH
+invalid-type: "&r這不是一個可用的比賽類型，可用類型: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH, LARGEST_TOTAL_FISH, SPECIFIC_RARITY"
+# 當沒有足夠的玩家開始比賽時，向所有在線玩家發送。
+not-enough-players: "&r在線玩家人數不足，無法開始預定的釣魚比賽"
+# 在特定時間發送給所有玩家，顯示剩餘的時間
+# {time_formatted}顯示時間（例如：還剩5分鐘，還剩10分鐘30秒）。
+# {time_raw}是你在competitions.yml中輸入的內容
+time-alert: "&r這場比賽還有{time_formatted} 結束"
+
+# 下面都是釣魚商店中的GUI格式修改
+worth-gui-name: "&1&l釣魚商店"
+
+sell-gui-name: "&6&l出售"
+
+sell-all-name: "&6&l出售全部"
+
+confirm-gui-name: "&6&l確認"
+
+confirm-sell-all-gui-name: "&6&l確認"
+
+error-gui-name: "&c&l無法出售"
+
+error-sell-all-gui-name: "&c&l無法出售"
+
+sell-gui-lore:
+  - "&8釣魚商店"
+  - ""
+  - "&7總計價格» &e{sell-price}"
+  - ""
+  - "&7在這裡出售你的魚"
+  - ""
+  - "&e» (左鍵) 出售魚."
+  - "&7» (右鍵) 取消出售."
+
+sell-all-lore:
+  - "&8物品欄"
+  - ""
+  - "&7總計價格» &e{sell-price}"
+  - ""
+  - "&7點擊這個按鈕來出售"
+  - "&7物品欄中所有的魚"
+  - ""
+  - "&e» (左鍵) 出售魚."
+
+error-gui-lore:
+  - "&8釣魚商店"
+  - ""
+  - "&7總計價格» &e{sell-price}"
+  - ""
+  - "&7在這裡出售你的魚"
+  - ""
+  - "&e» (左鍵) 出售魚."
+  - "&7» (右鍵) 取消出售."
+
+error-sell-all-gui-lore:
+  - "&8物品欄"
+  - ""
+  - "&7總計價格» &e{sell-price}"
+  - ""
+  - "&7點擊這個按鈕來出售"
+  - "&7物品欄中所有的魚"
+  - ""
+  - "&e» (左鍵) 出售魚."
+# 當玩家在/emf shop中賣掉他們的魚時，向他們發送的信息。
+fish-sale: "&f你出售了 &a{amount} &f條魚，賺取了 &e{sell-price} &f塊錢！"
+
+# 幫助信息
+help-general:
+  - "&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &b&l釣魚大賽 &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f"
+  - "&f/emf top - 顯示比賽排行榜."
+  - "&f/emf help - 顯示幫助頁面."
+  - "&f/emf shop - 打開釣魚商店."
+  - "&f/emf toggle - 切換是否釣到自定義魚類。"
+  - "&f/emf admin - 管理員幫助頁面."
+
+# 競賽幫助信息
+help-competition:
+  - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &b&l釣魚大賽 &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
+  - "&f/emf admin competition start <duration> <type> - 啟動一個指定期限的釣魚比賽"
+  - "&f/emf admin competition end - 結束當前的釣魚比賽"
+
+# 管理幫助信息
+help-admin:
+  - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &b&l釣魚大賽 &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
+  - "&f/emf admin competition <start/end> <duration> <type> - 開始或停止比賽"
+  - "&f/emf admin clearbait - 將所有應用的魚餌從魚竿上移走"
+  - "&f/emf admin reload - 重載插件配置文件"
+  - "&f/emf admin version - 顯示插件版本信息"
+
+# 當佔位符要求在排行榜上獲得一個不存在的位置時顯示。
+no-player-in-place: "&7------"
+# 在沒有比賽的情況下使用比賽佔位符時顯示。
+no-competition-running: "&7------"
+
+# %emf_competition_place_fish_*%的格式應該是怎樣的？
+emf-competition-fish-format: "{rarity_colour} &l{rarity} {fish}&r | {rarity_colour}{length}cm"
+# 當魚上沒有長度時，%emf_competition_place_fish_*%的格式應該是怎樣的
+emf-lengthless-fish-format: "{rarity_colour}&l{rarity} {fish}"
+# 在MOST/SPECIFIC_FISH比賽期間，%emf_competition_place_fish_*%的格式應該是怎樣的？
+emf-most-fish-format: "{amount} 條魚"
+# 在MOST_FISH比賽期間，%emf_competition_place_fish_*%的格式應該是怎樣的？
+emf-size-during-most-fish: "N/A"
+# %emf_competition_time_left%的格式應該是怎樣的？
+emf-time-remaining: "&b距離下次釣魚大賽還有： {days}天, {hours}時, {minutes}分。"
+# 当有一个比赛正在进行时，取代%emf_competition_time_left%變量。
+emf-time-remaining-during-comp: "&b現在有一個釣魚比賽正在進行中。"
+
+# 當玩家試圖在釣竿上應用過多類型的魚餌時發出，在baits.yml的常規部分設置。
+max-baits-reached: "&c你已經達到了該釣竿的最大魚餌類型數量。"
+# 不要與上述混淆，這是在達到特定誘餌的最大值時發送的。在baits.yml中使用"max-baits "來定義這個。
+max-bait-reached: "&c你已經達到了一個魚竿可以應用的 {bait_theme}{bait} &r的最大數量。"
+# 當玩家通過釣魚捕獲一個誘餌時發送（這可以通過在baits.yml中設置捕獲率為0來禁用）。
+bait-catch: "&a{player} &f捕捉到了 {bait_theme}&l{bait} &f!"
+# 在使用魚餌並捕到魚時發送。
+bait-use: "&a你使用了一根釣竿的 {bait_theme}&l{bait} &a誘餌."
+# 當有人試圖在創造模式中使用誘餌時發出的
+bait-survival-limited: "&c你必須在 &n生存模式&r 中才能將魚餌應用在釣竿上。"
+
+# 在運行/emf toggle時顯示，分別是關閉和開啟。
+toggle-off: "&c你將不再捕獲自定義的魚。"
+toggle-on: "&a現在你將捕捉到自定義的魚。"
+
+# 當試圖放置一個skull-fish時阻止
+place-fish-blocked: "&c你不能放置這條魚。"
+
+admin:
+  # 為另一個玩家打開一個釣魚商店
+  open-fish-shop: "&a為玩家{player}打開了釣魚商店."
+  # 當一條魚被給予給一個玩家時
+  given-player-fish: "&a你給予 {player} 一條 {fish}."
+  # 當一個誘餌被給予給一個玩家時
+  given-player-bait: "&a你给予 {player} 一個 {bait}."
+  # 當管理員運行/emf admin bait時，沒有bait名稱。
+  no-bait-specified: "&c你必須指定一個誘餌名稱。"
+  # 當管理員在不拿魚竿的情況下嘗試/emf admin clearbaits命令。
+  must-be-holding-rod: "&c你需要拿著一根魚竿來運行這個命令。"
+  # 當/emf admin clearbaits命令被運行時。
+  all-baits-cleared: "&a你已經從你的釣竿上取下了 {amount} 個魚餌。"
+  # /emf admin clearbaits 被運行，但魚竿上沒有魚餌。
+  no-baits-on-rod: "&c釣竿上沒有應用任何魚餌。"
+
+  # 當插件的經濟性被禁用時
+  economy-disabled: "&c釣魚大賽的經濟功能被禁用。"
+
+  player-not-found: "&c{player} 無法找到。"
+  number-format-error: "&a{amount} 不是一個有效的數字。"
+  number-range-error: "&a{amount} 不是1-64之間的數字。"
+  # 當一個命令不能從控制台運行時
+  cannot-run-on-console: "&c命令不能從後台運行。"
+
+  # 當使用/emf admin competition start時，當比賽已經在運行時發送。
+  competition-already-running: "&b已經有一場釣魚比賽在進行了。"
+  # 當一個無效的競爭類型被嘗試啟動時
+  competition-type-invalid: "&a這不是一個競爭類型，可用類型：MOST_FISH, LARGEST_FISH, SPECIFIC_FISH, LARGEST_TOTAL_FISH, SPECIFIC_RARITY"
+
+  # 當有spigot更新時，不要翻譯URL，否則它將無法引導到正確的頁面。
+  update-available: "&a釣魚大賽插件更新啦！還不來看看嗎https://www.spigotmc.org/resources/evenmorefish.91310/updates"
+  # 重啟插件信息
+  reload: "&a成功地重新加載了插件，由Kyle翻譯。"
+
+# 注意注意注意
+# 不要編輯這個值，除非你要更新信息。
+config-version: 12

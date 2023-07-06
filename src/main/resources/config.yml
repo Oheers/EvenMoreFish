@@ -115,6 +115,9 @@ disable-aureliumskills-loot: true
 # Currently: money, claimblocks
 sell-type: money
 
+# When set to true, players won't be able to place fish that are heads, like head-64 or head-uuid.
+place-head-fish: false
+
 # Switch between custom fish or vanilla fishing
 vanilla-fishing: true
 
