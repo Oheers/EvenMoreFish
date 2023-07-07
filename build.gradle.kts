@@ -99,7 +99,7 @@ tasks {
 
         exclude("META-INF/**")
 
-        archiveFileName.set("EvenMoreFish-${project.version}.jar")
+        archiveFileName.set("even-more-fish-${project.version}.jar")
         archiveClassifier.set("shadow")
 
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbt")
