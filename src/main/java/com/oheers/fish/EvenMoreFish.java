@@ -91,6 +91,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean itemsAdderLoaded = false;
     public static boolean denizenLoaded = false;
     public static boolean oraxenLoaded = false;
+    public static boolean ecoItemsLoaded = false;
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
@@ -479,6 +480,8 @@ public class EvenMoreFish extends JavaPlugin {
 
     private void registerItemHooks() {
         denizenLoaded = Bukkit.getPluginManager().isPluginEnabled("Denizen");
+
+        ecoItemsLoaded = Bukkit.getPluginManager().isPluginEnabled("EcoItems");
 
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
             Bukkit.getPluginManager().registerEvents(new ItemsAdderLoadEvent(this), this);

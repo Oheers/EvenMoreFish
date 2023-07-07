@@ -4,6 +4,8 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
+import com.willfp.ecoitems.items.EcoItem;
+import com.willfp.ecoitems.items.EcoItems;
 import dev.lone.itemsadder.api.CustomStack;
 import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.items.ItemBuilder;
@@ -193,6 +195,10 @@ public class ItemFactory {
             return stack;
         }
 
+        if ((stack = getEcoItemsStack(mValue)) != null) {
+            return stack;
+        }
+
         Material material = Material.getMaterial(mValue.toUpperCase());
         if (material == null) {
             EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
@@ -361,6 +367,10 @@ public class ItemFactory {
         }
 
         if ((stack = getOraxenStack(materialID)) != null) {
+            return stack;
+        }
+
+        if ((stack = getEcoItemsStack(materialID)) != null) {
             return stack;
         }
 
@@ -584,6 +594,21 @@ public class ItemFactory {
                 return new ItemStack(Material.COD);
             }
             return item.build();
+        } else return null;
+    }
+
+    private ItemStack getEcoItemsStack(final String materialID) {
+        if (materialID.contains("ecoitems:") && EvenMoreFish.ecoItemsLoaded) {
+
+            String id = materialID.split(":")[1];
+
+            final EcoItem item = EcoItems.INSTANCE.getByID(id);
+
+            if (item == null) {
+                EvenMoreFish.logger.info(() -> String.format("Could not obtain EcoItems item %s", id));
+                return new ItemStack(Material.COD);
+            }
+            return item.getItemStack();
         } else return null;
     }
 
