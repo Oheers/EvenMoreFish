@@ -4,7 +4,7 @@ version: ${project.version}
 main: com.oheers.fish.EvenMoreFish
 api-version: 1.16
 depend: [ Vault ]
-softdepend: [ WorldGuard, PlaceholderAPI, RedProtect, mcMMO, AureliumSkills, ItemsAdder, Denizen ]
+softdepend: [ WorldGuard, PlaceholderAPI, RedProtect, mcMMO, AureliumSkills, ItemsAdder, Denizen, Oraxen, EcoItems, libreforge, eco ]
 loadbefore: [ AntiAC ]
 
 commands:

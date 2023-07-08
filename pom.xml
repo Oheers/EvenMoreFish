@@ -35,6 +35,7 @@
         <friendlyid.version>1.1.0</friendlyid.version>
         <griefprevention.version>16.18.1</griefprevention.version>
         <denizen.version>1.2.8-SNAPSHOT</denizen.version>
+        <oraxen.version>1.157.4</oraxen.version>
     </properties>
 
     <build>
@@ -162,6 +163,11 @@
         <repository>
             <id>citizens-repo</id>
             <url>https://maven.citizensnpcs.co/repo</url>
+        </repository>
+
+        <repository>
+            <id>Auxilor</id>
+            <url>https://repo.auxilor.io/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -303,6 +309,57 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.oraxen</groupId>
+            <artifactId>oraxen</artifactId>
+            <version>${oraxen.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>gs.mclo</groupId>
+                    <artifactId>mclogs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ticxo</groupId>
+                    <artifactId>PlayerAnimator</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>me.gabytm.util</groupId>
+                    <artifactId>actions-spigot</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.kyori</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jeff_media</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- EcoItems requires libreforge and eco to work -->
+        <dependency>
+            <groupId>com.willfp</groupId>
+            <artifactId>EcoItems</artifactId>
+            <version>5.6.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.willfp</groupId>
+            <artifactId>libreforge</artifactId>
+            <version>4.21.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.willfp</groupId>
+            <artifactId>eco</artifactId>
+            <version>6.65.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

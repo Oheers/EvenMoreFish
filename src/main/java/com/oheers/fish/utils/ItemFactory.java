@@ -4,7 +4,11 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
+import com.willfp.ecoitems.items.EcoItem;
+import com.willfp.ecoitems.items.EcoItems;
 import dev.lone.itemsadder.api.CustomStack;
+import io.th0rgal.oraxen.api.OraxenItems;
+import io.th0rgal.oraxen.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -187,6 +191,14 @@ public class ItemFactory {
             return stack;
         }
 
+        if ((stack = getOraxenStack(mValue)) != null) {
+            return stack;
+        }
+
+        if ((stack = getEcoItemsStack(mValue)) != null) {
+            return stack;
+        }
+
         Material material = Material.getMaterial(mValue.toUpperCase());
         if (material == null) {
             EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
@@ -351,6 +363,14 @@ public class ItemFactory {
         }
 
         if ((stack = getDenizenStack(materialID)) != null) {
+            return stack;
+        }
+
+        if ((stack = getOraxenStack(materialID)) != null) {
+            return stack;
+        }
+
+        if ((stack = getEcoItemsStack(materialID)) != null) {
             return stack;
         }
 
@@ -530,7 +550,7 @@ public class ItemFactory {
     }
 
     private ItemStack getItemsAdderStack(final String materialID) {
-        if (materialID.contains("itemsadder:")) {
+        if (materialID.contains("itemsadder:") && EvenMoreFish.itemsAdderLoaded) {
 
             String[] splitMaterialValue = materialID.split(":");
             if (splitMaterialValue.length != 3) {
@@ -541,9 +561,7 @@ public class ItemFactory {
             final String namespaceId = splitMaterialValue[1] + ":" + splitMaterialValue[2];
             final CustomStack customStack = CustomStack.getInstance(namespaceId);
             if (customStack == null) {
-                if(EvenMoreFish.itemsAdderLoaded) {
-                    EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
-                }
+                EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
                 return new ItemStack(Material.COD);
             }
             return CustomStack.getInstance(namespaceId).getItemStack();
@@ -551,18 +569,46 @@ public class ItemFactory {
     }
 
     private ItemStack getDenizenStack(final String materialID) {
-        if (materialID.contains("denizen:")) {
+        if (materialID.contains("denizen:") && EvenMoreFish.denizenLoaded) {
 
             String id = materialID.split(":")[1];
 
             final ItemTag itemTag = ItemTag.valueOf(id, false);
             if (itemTag == null) {
-                if (EvenMoreFish.denizenLoaded) {
-                    EvenMoreFish.logger.info(() -> String.format("Could not obtain denizen item %s", id));
-                }
+                EvenMoreFish.logger.info(() -> String.format("Could not obtain denizen item %s", id));
                 return new ItemStack(Material.COD);
             }
             return itemTag.getItemStack();
+        } else return null;
+    }
+
+    private ItemStack getOraxenStack(final String materialID) {
+        if (materialID.contains("oraxen:") && EvenMoreFish.oraxenLoaded) {
+
+            String id = materialID.split(":")[1];
+
+            final ItemBuilder item = OraxenItems.getItemById(id);
+
+            if (item == null) {
+                EvenMoreFish.logger.info(() -> String.format("Could not obtain oraxen item %s", id));
+                return new ItemStack(Material.COD);
+            }
+            return item.build();
+        } else return null;
+    }
+
+    private ItemStack getEcoItemsStack(final String materialID) {
+        if (materialID.contains("ecoitems:") && EvenMoreFish.ecoItemsLoaded) {
+
+            String id = materialID.split(":")[1];
+
+            final EcoItem item = EcoItems.INSTANCE.getByID(id);
+
+            if (item == null) {
+                EvenMoreFish.logger.info(() -> String.format("Could not obtain EcoItems item %s", id));
+                return new ItemStack(Material.COD);
+            }
+            return item.getItemStack();
         } else return null;
     }
 
