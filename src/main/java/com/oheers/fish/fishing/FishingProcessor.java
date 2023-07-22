@@ -1,5 +1,6 @@
 package com.oheers.fish.fishing;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.gmail.nossr50.config.experience.ExperienceConfig;
 import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
@@ -247,7 +248,7 @@ public class FishingProcessor implements Listener {
 
         if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && EvenMoreFish.mainConfig.isDatabaseOnline()) {
             Fish finalFish = fish;
-            new BukkitRunnable() {
+            new UniversalRunnable() {
                 @Override
                 public void run() {
 

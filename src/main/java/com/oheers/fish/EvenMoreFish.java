@@ -1,5 +1,8 @@
 package com.oheers.fish;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
@@ -37,7 +40,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.*;
@@ -99,6 +101,7 @@ public class EvenMoreFish extends JavaPlugin {
     private static EvenMoreFish instance;
     public static FillerStyle guiFillerStyle;
     private EMFAPI api;
+    private TaskScheduler scheduler;
 
     public static EvenMoreFish getInstance() {
         return instance;
@@ -107,6 +110,7 @@ public class EvenMoreFish extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        scheduler = UniversalScheduler.getScheduler(this);
         this.api = new EMFAPI();
 
         guis = new ArrayList<>();
@@ -168,7 +172,7 @@ public class EvenMoreFish extends JavaPlugin {
         competitionQueue.load();
 
         // async check for updates on the spigot page
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+        this.scheduler.runTaskAsynchronously(() -> {
             isUpdateAvailable = checkUpdate();
             try {
                 checkConfigVers();
@@ -180,7 +184,7 @@ public class EvenMoreFish extends JavaPlugin {
         listeners();
         commands();
 
-        if (!mainConfig.debugSession()) metrics();
+        //if (!mainConfig.debugSession()) metrics();
 
         AutoRunner.init();
 
@@ -193,7 +197,7 @@ public class EvenMoreFish extends JavaPlugin {
 
             databaseV3 = new DatabaseV3(this);
             //load user reports into cache
-            new BukkitRunnable() {
+            new UniversalRunnable() {
                 @Override
                 public void run() {
                     EvenMoreFish.databaseV3.createTables(false);
@@ -268,29 +272,29 @@ public class EvenMoreFish extends JavaPlugin {
         }
     }
 
-    private void metrics() {
-        Metrics metrics = new Metrics(this, METRIC_ID);
-
-        metrics.addCustomChart(new SingleLineChart("fish_caught", () -> {
-            int returning = metric_fishCaught;
-            metric_fishCaught = 0;
-            return returning;
-        }));
-
-        metrics.addCustomChart(new SingleLineChart("baits_applied", () -> {
-            int returning = metric_baitsApplied;
-            metric_baitsApplied = 0;
-            return returning;
-        }));
-
-        metrics.addCustomChart(new SingleLineChart("baits_used", () -> {
-            int returning = metric_baitsUsed;
-            metric_baitsUsed = 0;
-            return returning;
-        }));
-
-        metrics.addCustomChart(new SimplePie("experimental_features", () -> mainConfig.doingExperimentalFeatures() ? "true" : "false"));
-    }
+    //private void metrics() {
+    //    Metrics metrics = new Metrics(this, METRIC_ID);
+    //
+    //    metrics.addCustomChart(new SingleLineChart("fish_caught", () -> {
+    //        int returning = metric_fishCaught;
+    //        metric_fishCaught = 0;
+    //        return returning;
+    //    }));
+    //
+    //    metrics.addCustomChart(new SingleLineChart("baits_applied", () -> {
+    //        int returning = metric_baitsApplied;
+    //        metric_baitsApplied = 0;
+    //        return returning;
+    //    }));
+    //
+    //    metrics.addCustomChart(new SingleLineChart("baits_used", () -> {
+    //        int returning = metric_baitsUsed;
+    //        metric_baitsUsed = 0;
+    //        return returning;
+    //    }));
+    //
+    //    metrics.addCustomChart(new SimplePie("experimental_features", () -> mainConfig.doingExperimentalFeatures() ? "true" : "false"));
+    //}
 
     private void commands() {
         getCommand("evenmorefish").setExecutor(new CommandCentre(this));
@@ -495,4 +499,6 @@ public class EvenMoreFish extends JavaPlugin {
     public EMFAPI getAPI() {
         return this.api;
     }
+
+    public TaskScheduler getScheduler() { return scheduler; }
 }

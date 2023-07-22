@@ -1,5 +1,6 @@
 package com.oheers.fish.selling;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.xmas2022.XmasGUI;
 import org.bukkit.event.EventHandler;
@@ -38,7 +39,7 @@ public class InteractHandler implements Listener {
         SellGUI gui = (SellGUI) holder;
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) {
-            new BukkitRunnable() {
+            new UniversalRunnable() {
                 @Override
                 public void run() {
                     gui.setSellItem();
@@ -96,7 +97,7 @@ public class InteractHandler implements Listener {
             } else if (clickedItem.isSimilar(gui.getFiller()) || clickedItem.isSimilar(gui.getErrorFiller())) {
                 event.setCancelled(true);
             } else {
-                new BukkitRunnable() {
+                new UniversalRunnable() {
                     @Override
                     public void run() {
                         gui.updateSellItem();

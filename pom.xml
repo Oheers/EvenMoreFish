@@ -18,6 +18,7 @@
         <maven.clean.version>3.3.1</maven.clean.version>
 
         <spigot.api.version>1.20.1-R0.1-SNAPSHOT</spigot.api.version>
+        <folia.api.version>1.20.1-R0.1-SNAPSHOT</folia.api.version>
         <caffiene.version>3.1.6</caffiene.version>
         <authlib.version>1.5.25</authlib.version>
         <vault.api.version>1.7.1</vault.api.version>
@@ -28,7 +29,7 @@
         <redprotect.1.13.version>LATEST</redprotect.1.13.version>
         <mcmmo.version>2.1.218</mcmmo.version>
         <aureliiumskills.version>Beta1.3.21</aureliiumskills.version>
-        <nbtapi.version>2.11.3</nbtapi.version>
+        <nbtapi.version>2.12.0-SNAPSHOT</nbtapi.version>
         <itemsadder.api.version>3.5.0b</itemsadder.api.version>
         <hikaricp.version>5.0.1</hikaricp.version>
         <flyway.version>9.20.0</flyway.version>
@@ -63,6 +64,10 @@
                         <relocation>
                             <pattern>de.tr7zw.changeme.nbtapi</pattern>
                             <shadedPattern>com.oheers.fish.utils.nbt</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.github.Anon8281.universalScheduler</pattern>
+                            <shadedPattern>com.oheers.evenmorefish.universalScheduler</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
@@ -169,9 +174,21 @@
             <id>Auxilor</id>
             <url>https://repo.auxilor.io/repository/maven-public/</url>
         </repository>
+
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>dev.folia</groupId>
+            <artifactId>folia-api</artifactId>
+            <version>${folia.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -360,6 +377,13 @@
             <artifactId>eco</artifactId>
             <version>6.65.1</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.Anon8281</groupId>
+            <artifactId>UniversalScheduler</artifactId>
+            <version>0.1.6</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

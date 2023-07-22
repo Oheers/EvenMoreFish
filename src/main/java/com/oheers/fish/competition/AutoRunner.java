@@ -1,5 +1,6 @@
 package com.oheers.fish.competition;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.oheers.fish.EvenMoreFish;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,7 +14,7 @@ public class AutoRunner {
     static int lastMinute;
 
     public static void init() {
-        new BukkitRunnable() {
+        new UniversalRunnable() {
             public void run() {
                 // If the minute hasn't been checked against the competition queue.
                 if (!wasMinuteChecked()) {

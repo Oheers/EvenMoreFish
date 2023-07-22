@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
@@ -174,7 +175,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (!EvenMoreFish.permission.has(sender, "emf.admin")) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
-                    new BukkitRunnable() {
+                    new UniversalRunnable() {
 
                         @Override
                         public void run() {

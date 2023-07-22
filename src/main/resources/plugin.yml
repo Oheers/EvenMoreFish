@@ -6,6 +6,7 @@ api-version: 1.16
 depend: [ Vault ]
 softdepend: [ WorldGuard, PlaceholderAPI, RedProtect, mcMMO, AureliumSkills, ItemsAdder, Denizen, Oraxen, EcoItems, libreforge, eco ]
 loadbefore: [ AntiAC ]
+folia-supported: true
 
 commands:
   evenmorefish:

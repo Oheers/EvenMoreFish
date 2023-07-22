@@ -1,5 +1,7 @@
 package com.oheers.fish.competition;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
@@ -46,7 +48,7 @@ public class Competition {
     List<Reward> participationRewards;
     int playersNeeded;
     Sound startSound;
-    BukkitTask timingSystem;
+    MyScheduledTask timingSystem;
     List<UUID> leaderboardMembers = new ArrayList<>();
 
     public Competition(final Integer duration, final CompetitionType type) {
@@ -113,7 +115,7 @@ public class Competition {
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
         if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
             Competition competitionRef = this;
-            new BukkitRunnable() {
+            new UniversalRunnable() {
             
                 @Override
                 public void run() {
@@ -128,7 +130,7 @@ public class Competition {
 
     // Starts a runnable to decrease the time left by 1s each second
     private void initTimer() {
-        this.timingSystem = new BukkitRunnable() {
+        this.timingSystem = new UniversalRunnable() {
             @Override
             public void run() {
                 statusBar.timerUpdate(timeLeft, maxDuration);

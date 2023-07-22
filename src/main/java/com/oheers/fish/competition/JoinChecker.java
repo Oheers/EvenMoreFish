@@ -1,5 +1,6 @@
 package com.oheers.fish.competition;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -31,7 +32,7 @@ public class JoinChecker implements Listener {
      */
     public void databaseRegistration(UUID userUUID, String userName) {
         if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && EvenMoreFish.mainConfig.isDatabaseOnline()) {
-            new BukkitRunnable() {
+            new UniversalRunnable() {
                 
                 @Override
                 public void run() {
@@ -79,11 +80,12 @@ public class JoinChecker implements Listener {
             EvenMoreFish.active.getStatusBar().addPlayer(event.getPlayer());
             Message startMessage = EvenMoreFish.active.getStartMessage();
             if (startMessage != null) startMessage.setMessage(ConfigMessage.COMPETITION_JOIN);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(EvenMoreFish.getPlugin(EvenMoreFish.class),
-                () -> EvenMoreFish.active.getStartMessage().broadcast(event.getPlayer(), true, true), 20 * 3);
+            EvenMoreFish.getInstance().getScheduler().runTaskLater(
+                    () -> EvenMoreFish.active.getStartMessage().broadcast(event.getPlayer(), true, true),
+                    20 * 3);
         }
         
-        new BukkitRunnable() {
+        new UniversalRunnable() {
             
             @Override
             public void run() {
@@ -101,7 +103,7 @@ public class JoinChecker implements Listener {
         }
         
         if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && EvenMoreFish.mainConfig.isDatabaseOnline()) {
-            new BukkitRunnable() {
+            new UniversalRunnable() {
                 
                 @Override
                 public void run() {

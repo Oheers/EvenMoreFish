@@ -2,6 +2,7 @@ package com.oheers.fish;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -151,7 +152,7 @@ public class FishUtils {
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
         player.getInventory().addItem(items.toArray(new ItemStack[0]))
                 .values()
-                .forEach(item -> new BukkitRunnable() {
+                .forEach(item -> new UniversalRunnable() {
                     public void run() {
                         player.getWorld().dropItem(player.getLocation(), item);
                     }

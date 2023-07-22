@@ -77,7 +77,7 @@ public class Reward {
 
                 // running the command
                 String finalCommand = inputCommand;
-                Bukkit.getScheduler().callSyncMethod(plugin, () ->
+                EvenMoreFish.getInstance().getScheduler().callSyncMethod(() ->
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand));
                 break;
             case EFFECT:
