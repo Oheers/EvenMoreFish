@@ -89,6 +89,9 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean usingMcMMO;
 
     public static boolean itemsAdderLoaded = false;
+    public static boolean denizenLoaded = false;
+    public static boolean oraxenLoaded = false;
+    public static boolean ecoItemsLoaded = false;
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
@@ -151,6 +154,8 @@ public class EvenMoreFish extends JavaPlugin {
             guardPL = "redprotect";
         }
 
+        registerItemHooks();
+
         competitionWorlds = competitionConfig.getRequiredWorlds();
 
         Names names = new Names();
@@ -171,10 +176,6 @@ public class EvenMoreFish extends JavaPlugin {
                 logger.log(Level.WARNING, "Could not update messages.yml");
             }
         });
-
-        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
-            Bukkit.getPluginManager().registerEvents(new ItemsAdderLoadEvent(this), this);
-        }
 
         listeners();
         commands();
@@ -475,6 +476,20 @@ public class EvenMoreFish extends JavaPlugin {
     private boolean checkWG() {
         Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
         return (pWG != null);
+    }
+
+    private void registerItemHooks() {
+        denizenLoaded = Bukkit.getPluginManager().isPluginEnabled("Denizen");
+
+        ecoItemsLoaded = Bukkit.getPluginManager().isPluginEnabled("EcoItems");
+
+        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
+            Bukkit.getPluginManager().registerEvents(new ItemsAdderLoadEvent(this), this);
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("Oraxen")) {
+            Bukkit.getPluginManager().registerEvents(new OraxenLoadEvent(this), this);
+        }
     }
 
     public EMFAPI getAPI() {
