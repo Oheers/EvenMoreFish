@@ -78,6 +78,7 @@ public class Fish implements Cloneable {
         // These settings don't mean these will be applied, but they will be considered if the settings exist.
         factory.enableDefaultChecks();
         factory.setItemDisplayNameCheck(this.displayName != null);
+        factory.setItemLoreCheck(this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-lore", true));
 
         setSize();
         checkEatEvent();
