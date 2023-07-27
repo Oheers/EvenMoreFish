@@ -123,7 +123,9 @@ public class Fish implements Cloneable {
             if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
             else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
 
-            fishMeta.setLore(getFishLore());
+            if (!this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-lore", false)) {
+                fishMeta.setLore(getFishLore());
+            }
 
             fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
             fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
