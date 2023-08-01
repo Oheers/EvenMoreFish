@@ -81,6 +81,9 @@ public class ItemFactory {
      */
     public ItemStack getType(OfflinePlayer player) {
 
+        ItemStack oneHeadDB = checkRandomHeadDB(-1);
+        if (oneHeadDB != null) return oneHeadDB;
+
         ItemStack oneMaterial = checkRandomMaterial(-1);
         if (oneMaterial != null) return oneMaterial;
 
@@ -92,6 +95,9 @@ public class ItemFactory {
 
         ItemStack oneOwnHead = checkOwnHead(player);
         if (oneOwnHead != null) return oneOwnHead;
+
+        ItemStack headDB = checkHeadDB();
+        if (headDB != null) return headDB;
 
         ItemStack material = checkMaterial();
         if (material != null) return material;
@@ -118,6 +124,9 @@ public class ItemFactory {
      * @return The type for the fish based on the random index.
      */
     public ItemStack setType(int randomIndex) {
+        ItemStack oneHeadDB = checkRandomHeadDB(randomIndex);
+        if (oneHeadDB != null) return oneHeadDB;
+
         ItemStack oneMaterial = checkRandomMaterial(randomIndex);
         if (oneMaterial != null) return oneMaterial;
 
@@ -165,6 +174,23 @@ public class ItemFactory {
         String bValue = this.configurationFile.getString(configLocation + ".item.head-64");
         if (bValue != null) {
             return FishUtils.get(bValue);
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks for a value in the item.headdb setting for this item.
+     *
+     * @return Null if the setting doesn't exist, the head from HDB in ItemStack form if it does.
+     */
+    private ItemStack checkHeadDB() {
+        // The fish has item: headdb selected
+        if (!EvenMoreFish.usingHeadsDB) return null;
+
+        int headID = this.configurationFile.getInt(configLocation + ".item.headdb", -1);
+        if (headID != -1) {
+            return EvenMoreFish.HDBapi.getItemHead(Integer.toString(headID));
         }
 
         return null;
@@ -270,6 +296,29 @@ public class ItemFactory {
             itemRandom = true;
 
             return FishUtils.get(base64);
+        }
+
+        return null;
+    }
+
+    private ItemStack checkRandomHeadDB(int randomIndex) {
+        // The fish has item: headdb selected
+        if (!EvenMoreFish.usingHeadsDB) return null;
+
+        List<Integer> headIDs = this.configurationFile.getIntegerList(configLocation + ".item.multiple-headdb");
+        if (headIDs.size() > 0) {
+            Random rand = new Random();
+
+            if (randomIndex == -1 || randomIndex + 1 > headIDs.size()) {
+                randomIndex = rand.nextInt(headIDs.size());
+            }
+
+            this.chosenRandomIndex = randomIndex;
+
+            int headID = headIDs.get(randomIndex);
+            itemRandom = true;
+
+            return EvenMoreFish.HDBapi.getItemHead(Integer.toString(headID));
         }
 
         return null;

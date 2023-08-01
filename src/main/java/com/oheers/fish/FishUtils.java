@@ -232,7 +232,7 @@ public class FishUtils {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         NBTItem nbtItem = new NBTItem(skull);
         NBTCompound nbtCompound = nbtItem.addCompound("SkullOwner");
-        nbtCompound.setString("Id", UUID.randomUUID().toString());
+        nbtCompound.setString("Id", "8667ba71-b85a-4004-af54-457a9734eed7");
 
         NBTListCompound texture = nbtCompound.addCompound("Properties").getCompoundList("textures").addCompound();
         texture.setString("Value", base64EncodedString);
