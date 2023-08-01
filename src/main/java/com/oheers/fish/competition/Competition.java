@@ -95,10 +95,12 @@ public class Competition {
             EvenMoreFish.decidedRarities.clear();
         } else {
             new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast(true, true);
+            active = false;
         }
     }
 
     public void end() {
+        active = false;
         // print leaderboard
         this.timingSystem.cancel();
         statusBar.hide();
@@ -109,7 +111,6 @@ public class Competition {
             sendPlayerLeaderboard(player);
         }
         handleRewards();
-        active = false;
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
         if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
             Competition competitionRef = this;
