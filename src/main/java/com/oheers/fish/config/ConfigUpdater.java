@@ -9,6 +9,15 @@ public class ConfigUpdater {
 
     private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
+    private static String MSG_UPDATE_16 = "\n" +
+            "# Shown when the emf %emf_competition_place_fish_*% placeholder requests a position in the leaderboard that doesn't exist\n" +
+            "no-fish-in-place: \"Start fishing to take this place\"\n" +
+            "# Shown when the emf %emf_competition_place_size_*% placeholder requests a position in the leaderboard that doesn't exist\n" +
+            "no-size-in-place: \"Start fishing to take this place\"\n" +
+            "# Shown when the emf %emf_competition_place_fish_*% placeholder is used when there's no competition running\n" +
+            "no-competition-running-fish: \"No competition running right now.\"\n" +
+            "# Shown when the emf %emf_competition_place_size_*% placeholder is used when there's no competition running\n" +
+            "no-competition-running-size: \"No competition running right now.\"";
     private static String CONFIG_UPDATE_14 = "\n" +
             "# This defines the item given with the \"/emf admin rod-nbt -p:Playername\" command. It uses the same formatting as the fish\n" +
             "# and baits in fish & baits .yml files.\n" +
@@ -279,6 +288,8 @@ public class ConfigUpdater {
                 }
             case 14:
                 update.append(MSG_UPDATE_15);
+            case 15:
+                update.append(MSG_UPDATE_16);
         }
 
         update.append(UPDATE_ALERT);
@@ -346,6 +357,7 @@ public class ConfigUpdater {
         MSG_UPDATE_12 = null;
         MSG_UPDATE_13 = null;
         MSG_UPDATE_15 = null;
+        MSG_UPDATE_16 = null;
 
         CONFIG_UPDATE_8 = null;
         CONFIG_UPDATE_9 = null;

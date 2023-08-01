@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 public class EvenMoreFish extends JavaPlugin {
 
     public static final int METRIC_ID = 11054;
-    public static final int MSG_CONFIG_VERSION = 15;
+    public static final int MSG_CONFIG_VERSION = 16;
     public static final int MAIN_CONFIG_VERSION = 14;
     public static final int COMP_CONFIG_VERSION = 1;
     public static FishFile fishFile;
