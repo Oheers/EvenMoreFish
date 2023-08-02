@@ -241,7 +241,6 @@ public class EvenMoreFish extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
         getServer().getPluginManager().registerEvents(new SkullSaver(), this);
         getServer().getPluginManager().registerEvents(new BaitApplicationListener(), this);
-        getServer().getPluginManager().registerEvents(new HeadDBIntegration(), this);
 
         optionalListeners();
     }
@@ -268,6 +267,7 @@ public class EvenMoreFish extends JavaPlugin {
 
         if (Bukkit.getPluginManager().getPlugin("HeadDatabase") != null) {
             usingHeadsDB = true;
+            getServer().getPluginManager().registerEvents(new HeadDBIntegration(), this);
         }
 
         if (Bukkit.getPluginManager().getPlugin("AureliumSkills") != null) {
