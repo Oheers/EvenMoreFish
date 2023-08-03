@@ -184,7 +184,7 @@ public class EvenMoreFish extends JavaPlugin {
         listeners();
         commands();
 
-        //if (!mainConfig.debugSession()) metrics();
+        if (!mainConfig.debugSession()) metrics();
 
         AutoRunner.init();
 
@@ -272,29 +272,29 @@ public class EvenMoreFish extends JavaPlugin {
         }
     }
 
-    //private void metrics() {
-    //    Metrics metrics = new Metrics(this, METRIC_ID);
-    //
-    //    metrics.addCustomChart(new SingleLineChart("fish_caught", () -> {
-    //        int returning = metric_fishCaught;
-    //        metric_fishCaught = 0;
-    //        return returning;
-    //    }));
-    //
-    //    metrics.addCustomChart(new SingleLineChart("baits_applied", () -> {
-    //        int returning = metric_baitsApplied;
-    //        metric_baitsApplied = 0;
-    //        return returning;
-    //    }));
-    //
-    //    metrics.addCustomChart(new SingleLineChart("baits_used", () -> {
-    //        int returning = metric_baitsUsed;
-    //        metric_baitsUsed = 0;
-    //        return returning;
-    //    }));
-    //
-    //    metrics.addCustomChart(new SimplePie("experimental_features", () -> mainConfig.doingExperimentalFeatures() ? "true" : "false"));
-    //}
+    private void metrics() {
+        Metrics metrics = new Metrics(this, METRIC_ID);
+
+        metrics.addCustomChart(new SingleLineChart("fish_caught", () -> {
+            int returning = metric_fishCaught;
+            metric_fishCaught = 0;
+            return returning;
+        }));
+
+        metrics.addCustomChart(new SingleLineChart("baits_applied", () -> {
+            int returning = metric_baitsApplied;
+            metric_baitsApplied = 0;
+            return returning;
+        }));
+
+        metrics.addCustomChart(new SingleLineChart("baits_used", () -> {
+            int returning = metric_baitsUsed;
+            metric_baitsUsed = 0;
+            return returning;
+        }));
+
+        metrics.addCustomChart(new SimplePie("experimental_features", () -> mainConfig.doingExperimentalFeatures() ? "true" : "false"));
+    }
 
     private void commands() {
         getCommand("evenmorefish").setExecutor(new CommandCentre(this));
