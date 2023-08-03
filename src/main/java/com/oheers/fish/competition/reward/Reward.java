@@ -1,15 +1,19 @@
 package com.oheers.fish.competition.reward;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFRewardEvent;
 import com.oheers.fish.config.messages.OldMessage;
+import io.papermc.paper.threadedregions.scheduler.EntityScheduler;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -84,8 +88,7 @@ public class Reward {
                 if (p != null) {
                     String[] parsedEffect = action.split(",");
                     // Adds a potion effect in accordance to the config.yml "EFFECT:" value
-
-                    p.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2]) * 20, Integer.parseInt(parsedEffect[1])));
+                    applyEffect(p, new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2]) * 20, Integer.parseInt(parsedEffect[1])));
                 }
 
                 break;
@@ -183,5 +186,16 @@ public class Reward {
 
     public void setFishVelocity(Vector fishVelocity) {
         this.fishVelocity = fishVelocity;
+    }
+
+    private void applyEffect(Player player, PotionEffect effect) {
+        EvenMoreFish.getInstance().getScheduler().runTask(player,
+                new UniversalRunnable() {
+                    @Override
+                    public void run() {
+                        player.addPotionEffect(effect);
+                    }
+                }
+        );
     }
 }
