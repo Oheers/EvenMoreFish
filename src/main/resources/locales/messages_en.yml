@@ -192,10 +192,19 @@ help-admin:
   - "&f/emf admin reload - Reloads the plugin's config files."
   - "&f/emf admin version - Displays plugin information."
 
-# Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
+# Shown when the emf %emf_competition_place_player_*% placeholder requests a position in the leaderboard that doesn't exist
 no-player-in-place: "Start fishing to take this place"
-# Shown when the emf competition placeholders are used when there's no competition running
+# Shown when the emf %emf_competition_place_fish_*% placeholder requests a position in the leaderboard that doesn't exist
+no-fish-in-place: "Start fishing to take this place"
+# Shown when the emf %emf_competition_place_size_*% placeholder requests a position in the leaderboard that doesn't exist
+no-size-in-place: "Start fishing to take this place"
+# Shown when the emf %emf_competition_place_player_*% placeholder is used when there's no competition running
 no-competition-running: "No competition running right now."
+# Shown when the emf %emf_competition_place_fish_*% placeholder is used when there's no competition running
+no-competition-running-fish: "No competition running right now."
+# Shown when the emf %emf_competition_place_size_*% placeholder is used when there's no competition running
+no-competition-running-size: "No competition running right now."
+
 
 # How should the %emf_competition_place_fish_*% be formatted?
 emf-competition-fish-format: "{rarity_colour}{length}cm &l{rarity} {fish}"
@@ -273,4 +282,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 15
+config-version: 16
