@@ -4,7 +4,6 @@ package com.oheers.fish.addons;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.addons.impl.DenizenItemAddon;
 import com.oheers.fish.addons.impl.ItemsAdderItemAddon;
-import me.clip.placeholderapi.util.FileUtil;
 import me.clip.placeholderapi.util.Futures;
 import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
@@ -138,7 +137,7 @@ public class AddonManager {
     public CompletableFuture<Class<? extends Addon>> findAddonInFile(File file) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                final Class<? extends Addon> addonClass = FileUtil.findClass(file, Addon.class);
+                final Class<? extends Addon> addonClass = FileUtil.findFirstClass(file, Addon.class);
 
                 if (addonClass == null) {
                     plugin.getLogger().warning(String.format("Failed to load addon from file: %s", file.getName()));

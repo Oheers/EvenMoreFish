@@ -58,8 +58,6 @@ dependencies {
     compileOnly(libs.itemsadder.api)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
-//    compileOnly(libs.ecoitems.api) disabled for now
-//    compileOnly(libs.oraxen) disabled for now
     compileOnly(libs.denizens.api)
 
     implementation(libs.nbt.api)

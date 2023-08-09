@@ -3,6 +3,9 @@ package com.oheers.evenmorefish.addons;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.addons.ItemAddon;
+import io.th0rgal.oraxen.api.OraxenItems;
+import io.th0rgal.oraxen.items.ItemBuilder;
+import org.apache.commons.lang3.JavaVersion;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,5 +34,10 @@ public class OraxenItemAddon extends ItemAddon {
             return new ItemStack(Material.COD);
         }
         return item.build();
+    }
+
+    @Override
+    public JavaVersion getRequiredJavaVersion() {
+        return JavaVersion.JAVA_17;
     }
 }
