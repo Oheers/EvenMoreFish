@@ -25,6 +25,8 @@ dependencyResolutionManagement {
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.5.0b")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.11.3")
+            library("denizens-api", "com.denizenscript:denizen:1.2.5-SNAPSHOT") // We must use 1.2.6 until we upgrade to java 17
+            library("oraxen", "com.github.oraxen:oraxen:1.159.0")
 
             version("flyway", "9.19.4")
             library("flyway-core", "org.flywaydb","flyway-core").versionRef("flyway")

@@ -23,6 +23,8 @@ repositories {
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://repo.spongepowered.org/maven/")
     maven("https://repo.essentialsx.net/releases/")
+    maven("https://repo.auxilor.io/repository/maven-public/")
+    maven("https://maven.citizensnpcs.co/repo")
 }
 
 dependencies {
@@ -56,6 +58,9 @@ dependencies {
     compileOnly(libs.itemsadder.api)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
+//    compileOnly(libs.ecoitems.api) disabled for now
+//    compileOnly(libs.oraxen) disabled for now
+    compileOnly(libs.denizens.api)
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)

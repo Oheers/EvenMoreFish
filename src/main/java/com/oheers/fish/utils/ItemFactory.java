@@ -4,11 +4,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.messages.Message;
-import com.willfp.ecoitems.items.EcoItem;
-import com.willfp.ecoitems.items.EcoItems;
 import dev.lone.itemsadder.api.CustomStack;
-import io.th0rgal.oraxen.api.OraxenItems;
-import io.th0rgal.oraxen.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -217,13 +213,13 @@ public class ItemFactory {
             return stack;
         }
 
-        if ((stack = getOraxenStack(mValue)) != null) {
-            return stack;
-        }
-
-        if ((stack = getEcoItemsStack(mValue)) != null) {
-            return stack;
-        }
+//        if ((stack = getOraxenStack(mValue)) != null) {
+//            return stack;
+//        }
+//
+//        if ((stack = getEcoItemsStack(mValue)) != null) {
+//            return stack;
+//        }
 
         Material material = Material.getMaterial(mValue.toUpperCase());
         if (material == null) {
@@ -415,13 +411,13 @@ public class ItemFactory {
             return stack;
         }
 
-        if ((stack = getOraxenStack(materialID)) != null) {
-            return stack;
-        }
+//        if ((stack = getOraxenStack(materialID)) != null) {
+//            return stack;
+//        }
 
-        if ((stack = getEcoItemsStack(materialID)) != null) {
-            return stack;
-        }
+//        if ((stack = getEcoItemsStack(materialID)) != null) {
+//            return stack;
+//        }
 
         if ((material = Material.getMaterial(materialID.toUpperCase())) == null) {
             EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s",
@@ -631,35 +627,35 @@ public class ItemFactory {
         } else return null;
     }
 
-    private ItemStack getOraxenStack(final String materialID) {
-        if (materialID.contains("oraxen:") && EvenMoreFish.oraxenLoaded) {
+//    private ItemStack getOraxenStack(final String materialID) {
+//        if (materialID.contains("oraxen:") && EvenMoreFish.oraxenLoaded) {
+//
+//            String id = materialID.split(":")[1];
+//
+//            final ItemBuilder item = OraxenItems.getItemById(id);
+//
+//            if (item == null) {
+//                EvenMoreFish.logger.info(() -> String.format("Could not obtain oraxen item %s", id));
+//                return new ItemStack(Material.COD);
+//            }
+//            return item.build();
+//        } else return null;
+//    }
 
-            String id = materialID.split(":")[1];
-
-            final ItemBuilder item = OraxenItems.getItemById(id);
-
-            if (item == null) {
-                EvenMoreFish.logger.info(() -> String.format("Could not obtain oraxen item %s", id));
-                return new ItemStack(Material.COD);
-            }
-            return item.build();
-        } else return null;
-    }
-
-    private ItemStack getEcoItemsStack(final String materialID) {
-        if (materialID.contains("ecoitems:") && EvenMoreFish.ecoItemsLoaded) {
-
-            String id = materialID.split(":")[1];
-
-            final EcoItem item = EcoItems.INSTANCE.getByID(id);
-
-            if (item == null) {
-                EvenMoreFish.logger.info(() -> String.format("Could not obtain EcoItems item %s", id));
-                return new ItemStack(Material.COD);
-            }
-            return item.getItemStack();
-        } else return null;
-    }
+//    private ItemStack getEcoItemsStack(final String materialID) {
+//        if (materialID.contains("ecoitems:") && EvenMoreFish.ecoItemsLoaded) {
+//
+//            String id = materialID.split(":")[1];
+//
+//            final EcoItem item = EcoItems.INSTANCE.getByID(id);
+//
+//            if (item == null) {
+//                EvenMoreFish.logger.info(() -> String.format("Could not obtain EcoItems item %s", id));
+//                return new ItemStack(Material.COD);
+//            }
+//            return item.getItemStack();
+//        } else return null;
+//    }
 
     public void enableDefaultChecks() {
         setItemModelDataCheck(true);
