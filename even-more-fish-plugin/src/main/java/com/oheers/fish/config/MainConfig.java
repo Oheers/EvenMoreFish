@@ -251,4 +251,8 @@ public class MainConfig {
     public boolean doingExperimentalFeatures() {
         return config.getBoolean("experimental-features", false);
     }
+
+    public boolean useAdditionalAddons() {
+        return config.getBoolean("addons.additional-addons", true);
+    }
 }
