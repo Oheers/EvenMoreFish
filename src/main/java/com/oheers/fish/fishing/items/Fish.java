@@ -78,6 +78,7 @@ public class Fish implements Cloneable {
         // These settings don't mean these will be applied, but they will be considered if the settings exist.
         factory.enableDefaultChecks();
         factory.setItemDisplayNameCheck(this.displayName != null);
+        factory.setItemLoreCheck(!this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-lore", false));
 
         setSize();
         checkEatEvent();
@@ -122,7 +123,9 @@ public class Fish implements Cloneable {
             if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
             else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
 
-            fishMeta.setLore(getFishLore());
+            if (!this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-lore", false)) {
+                fishMeta.setLore(getFishLore());
+            }
 
             fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
             fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
