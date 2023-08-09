@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.oheers.evenmorefish"
-version = "1.6.11.3"
+version = "1.6.11.4"
 
 description = "A fishing extension bringing an exciting new experience to fishing."
 
@@ -55,6 +55,7 @@ dependencies {
     compileOnly(libs.griefprevention)
     compileOnly(libs.itemsadder.api)
     compileOnly(libs.mcmmo)
+    compileOnly(libs.headdatabase.api)
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
@@ -105,6 +106,7 @@ tasks {
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbt")
         relocate("org.bstats", "com.oheers.evenmorefish.bstats")
     }
+
 }
 
 
