@@ -53,8 +53,8 @@ nbt-rod-item:
   item:
     # This needs to be FISHING_ROD
     material: FISHING_ROD
+    displayname: "&eEvenMoreFish Fishing Rod"
   glowing: true
-  displayname: "&eEvenMoreFish Fishing Rod"
   lore:
     - ""
     - "&7Catch &ecustom &7fish using this"

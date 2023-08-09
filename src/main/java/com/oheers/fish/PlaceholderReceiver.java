@@ -136,7 +136,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
         if (identifier.startsWith("competition_place_size_")) {
             if (!Competition.isActive()) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE).getRawMessage(true, false);
             }
             if (!(EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH ||
                 EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_TOTAL)) {
@@ -146,7 +146,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             // checking the leaderboard actually contains the value of place
             int place = Integer.parseInt(identifier.substring(23));
             if (!leaderboardContainsPlace(place)) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_SIZE_IN_PLACE).getRawMessage(true, false);
             }
             
             // getting "place" place in the competition
@@ -158,14 +158,14 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
         if (identifier.startsWith("competition_place_fish_")) {
             if (!Competition.isActive()) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_FISH).getRawMessage(true, false);
             }
             
             if (EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH) {
                 // checking the leaderboard actually contains the value of place
                 int place = Integer.parseInt(identifier.substring(23));
                 if (!leaderboardContainsPlace(place)) {
-                    return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
+                    return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(true, false);
                 }
                 
                 // getting "place" place in the competition
@@ -192,7 +192,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 // checking the leaderboard actually contains the value of place
                 float value = Competition.leaderboard.getPlaceValue(Integer.parseInt(identifier.substring(23)));
                 if (value == -1)
-                    return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(true, false);
+                    return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(true, false);
                 
                 Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_MOST_FORMAT);
                 message.setAmount(Integer.toString((int) value));
