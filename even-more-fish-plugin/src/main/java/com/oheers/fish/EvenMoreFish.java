@@ -1,8 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.addons.AddonManager;
-import com.oheers.fish.addons.impl.DenizenItemAddon;
-import com.oheers.fish.addons.impl.ItemsAdderItemAddon;
+import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
@@ -44,11 +43,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class EvenMoreFish extends JavaPlugin {
 
@@ -121,6 +122,7 @@ public class EvenMoreFish extends JavaPlugin {
     public void onEnable() {
         instance = this;
         this.api = new EMFAPI();
+        saveAdditionalDefaultAddons();
         this.addonManager = new AddonManager(this);
         this.addonManager.load();
 
@@ -242,6 +244,30 @@ public class EvenMoreFish extends JavaPlugin {
             databaseV3.shutdown();
         }
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
+    }
+
+    private void saveAdditionalDefaultAddons() {
+        if (!mainConfig.useAdditionalAddons()) return;
+
+        for(final String fileName: Arrays.stream(DefaultAddons.values())
+                .map(DefaultAddons::getFullFileName)
+                .collect(Collectors.toList())) {
+            if (!new File(getDataFolder(), "addons/"+ fileName).exists()) {
+                try {
+                    this.saveResource(fileName, false);
+                } catch (IllegalArgumentException e) {
+                    debug(Level.WARNING, String.format("Default addon %s does not exist.", fileName));
+                }
+            }
+        }
+    }
+
+    public static void debug(final String message) {
+        debug(Level.INFO, message);
+    }
+
+    public static void debug(final Level level, final String message) {
+        getInstance().getLogger().log(level, () -> message);
     }
 
     private void listeners() {

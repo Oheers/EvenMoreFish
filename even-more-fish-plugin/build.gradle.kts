@@ -29,6 +29,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.spigot.api)
+    implementation(project(":even-more-fish-api"))
     compileOnly(libs.vault.api)
     compileOnly(libs.placeholder.api)
     compileOnly(libs.authlib)

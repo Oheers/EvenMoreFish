@@ -1,23 +1,20 @@
 package com.oheers.evenmorefish.addons;
 
-
-import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.addons.ItemAddon;
-import io.th0rgal.oraxen.api.OraxenItems;
-import io.th0rgal.oraxen.items.ItemBuilder;
+import com.oheers.fish.api.addons.ItemAddon;
+import com.willfp.ecoitems.items.EcoItem;
+import com.willfp.ecoitems.items.EcoItems;
 import org.apache.commons.lang3.JavaVersion;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class OraxenItemAddon extends ItemAddon {
+public class EcoItemsItemAddon extends ItemAddon {
     @Override
     public String getPrefix() {
-        return "oraxen";
+        return "ecoitems";
     }
 
     @Override
     public String getPluginName() {
-        return "Oraxen";
+        return "EcoItems";
     }
 
     @Override
@@ -27,13 +24,14 @@ public class OraxenItemAddon extends ItemAddon {
 
     @Override
     public ItemStack getItemStack(String id) {
-        final ItemBuilder item = OraxenItems.getItemById(id);
+        final EcoItem item = EcoItems.INSTANCE.getByID(id);
 
         if (item == null) {
-            EvenMoreFish.logger.info(() -> String.format("Could not obtain oraxen item %s", id));
-            return new ItemStack(Material.COD);
+            getLogger().info(() -> String.format("Could not obtain EcoItems item %s", id));
+            return null;
         }
-        return item.build();
+
+        return item.getItemStack();
     }
 
     @Override

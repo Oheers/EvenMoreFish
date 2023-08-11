@@ -2,7 +2,7 @@ package com.oheers.fish.addons.impl;
 
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.addons.ItemAddon;
+import com.oheers.fish.api.addons.ItemAddon;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.Events.ItemsAdderLoadDataEvent;
 import org.bukkit.event.EventHandler;

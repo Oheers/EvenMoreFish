@@ -1,7 +1,9 @@
 rootProject.name = "even-more-fish"
 
+include(":even-more-fish-api")
+include(":even-more-fish-addons-j17")
 include(":even-more-fish-plugin")
-include(":even-more-fish-addons")
+
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -30,9 +32,13 @@ dependencyResolutionManagement {
             library("nbt-api", "de.tr7zw:item-nbt-api:2.11.3")
             library("denizens-api", "com.denizenscript:denizen:1.2.5-SNAPSHOT") // We must use 1.2.6 until we upgrade to java 17
             library("oraxen", "com.github.oraxen:oraxen:1.159.0")
+
             library("ecoitems-api", "com.willfp:EcoItems:5.6.1")
+            library("ecoitems-libreforge", "com.willfp:libreforge:4.21.1")
+            library("ecoitems-eco", "com.willfp:eco:6.65.1")
 
             library("commons-lang3", "org.apache.commons:commons-lang3:3.13.0")
+            library("annotations", "org.jetbrains:annotations:24.0.1")
 
             version("flyway", "9.19.4")
             library("flyway-core", "org.flywaydb","flyway-core").versionRef("flyway")

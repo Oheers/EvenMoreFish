@@ -11,8 +11,10 @@ dependencies {
     compileOnly(libs.spigot.api)
     compileOnly(libs.oraxen)
     compileOnly(libs.ecoitems.api)
+    compileOnly(libs.ecoitems.libreforge)
+    compileOnly(libs.ecoitems.eco)
     compileOnly(libs.commons.lang3)
-    compileOnly(project(":even-more-fish-plugin"))
+    compileOnly(project(":even-more-fish-api"))
 }
 
 java {

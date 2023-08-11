@@ -3,7 +3,7 @@ package com.oheers.fish.addons.impl;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.addons.ItemAddon;
+import com.oheers.fish.api.addons.ItemAddon;
 import org.bukkit.inventory.ItemStack;
 
 public class DenizenItemAddon extends ItemAddon {
