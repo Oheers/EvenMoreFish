@@ -3,12 +3,13 @@ package com.oheers.fish.addons;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.addons.impl.DenizenItemAddon;
+import com.oheers.fish.addons.impl.Head64ItemAddon;
+import com.oheers.fish.addons.impl.HeadDatabaseItemAddon;
 import com.oheers.fish.addons.impl.ItemsAdderItemAddon;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.addons.FileUtil;
 import com.oheers.fish.api.addons.Futures;
 import com.oheers.fish.api.addons.ItemAddon;
-import net.royawesome.jlibnoise.module.combiner.Add;
 import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,10 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -175,20 +174,19 @@ public class AddonManager {
 
     public void load() {
         registerInternal(
+                new Head64ItemAddon(),
+                new HeadDatabaseItemAddon(),
                 new ItemsAdderItemAddon(),
                 new DenizenItemAddon()
         );
 
         registerAll();
+
         for (Map.Entry<String, Addon> entry : addonMap.entrySet()) {
             if (entry.getValue() instanceof Listener) {
                 final Listener listener = (Listener) entry.getValue();
                 Bukkit.getPluginManager().registerEvents(listener, plugin);
             }
         }
-    }
-
-    public Map<String, Addon> getAddonMap() {
-        return addonMap;
     }
 }
