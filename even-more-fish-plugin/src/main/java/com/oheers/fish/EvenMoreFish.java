@@ -52,6 +52,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class EvenMoreFish extends JavaPlugin {
+    private Random random = new Random();
 
     public static final int METRIC_ID = 11054;
     public static final int MSG_CONFIG_VERSION = 16;
@@ -83,7 +84,7 @@ public class EvenMoreFish extends JavaPlugin {
     public static CompetitionQueue competitionQueue;
     public static Logger logger;
     public static PluginManager pluginManager;
-    public static ArrayList<SellGUI> guis;
+    public static List<SellGUI> guis;
     public static int metric_fishCaught = 0;
     public static int metric_baitsUsed = 0;
     public static int metric_baitsApplied = 0;
@@ -95,10 +96,6 @@ public class EvenMoreFish extends JavaPlugin {
     public static boolean usingMcMMO;
     public static boolean usingHeadsDB;
 
-    public static boolean itemsAdderLoaded = false;
-    public static boolean denizenLoaded = false;
-    public static boolean oraxenLoaded = false;
-    public static boolean ecoItemsLoaded = false;
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
     public static boolean papi;
@@ -176,8 +173,6 @@ public class EvenMoreFish extends JavaPlugin {
         } else if (checkRP()) {
             guardPL = "redprotect";
         }
-
-        registerItemHooks();
 
         competitionWorlds = competitionConfig.getRequiredWorlds();
 
@@ -543,21 +538,11 @@ public class EvenMoreFish extends JavaPlugin {
         return (pWG != null);
     }
 
-    private void registerItemHooks() {
-        denizenLoaded = Bukkit.getPluginManager().isPluginEnabled("Denizen");
-
-        ecoItemsLoaded = Bukkit.getPluginManager().isPluginEnabled("EcoItems");
-
-        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
-            Bukkit.getPluginManager().registerEvents(new ItemsAdderLoadEvent(this), this);
-        }
-
-        if (Bukkit.getPluginManager().isPluginEnabled("Oraxen")) {
-            Bukkit.getPluginManager().registerEvents(new OraxenLoadEvent(this), this);
-        }
-    }
-
     public EMFAPI getAPI() {
         return this.api;
+    }
+
+    public Random getRandom() {
+        return random;
     }
 }

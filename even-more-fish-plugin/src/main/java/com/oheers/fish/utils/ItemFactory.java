@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.List;
@@ -30,9 +31,15 @@ public class ItemFactory {
     private final FileConfiguration configurationFile;
     private ItemStack product;
     private int chosenRandomIndex = -1;
-    private boolean itemRandom, rawMaterial,
-            itemModelDataCheck, itemDamageCheck, itemDisplayNameCheck, itemDyeCheck, itemGlowCheck, itemLoreCheck,
-            itemPotionMetaCheck;
+    private boolean itemRandom;
+    private boolean rawMaterial;
+    private boolean itemModelDataCheck;
+    private boolean itemDamageCheck;
+    private boolean itemDisplayNameCheck;
+    private boolean itemDyeCheck;
+    private boolean itemGlowCheck;
+    private boolean itemLoreCheck;
+    private boolean itemPotionMetaCheck;
     private boolean xmas2022Item;
     private String displayName;
 
@@ -141,7 +148,7 @@ public class ItemFactory {
      *
      * @return Null if the setting doesn't exist, the head in ItemStack form if it does.
      */
-    private ItemStack checkHeadUUID() {
+    private @Nullable ItemStack checkHeadUUID() {
         String uValue = this.configurationFile.getString(configLocation + ".item.head-uuid");
 
         // The fish has item: uuid selected
@@ -166,7 +173,7 @@ public class ItemFactory {
      *
      * @return Null if the setting doesn't exist, the head in ItemStack form if it does.
      */
-    private ItemStack checkHead64() {
+    private @Nullable ItemStack checkHead64() {
         // The fish has item: 64 selected
         String bValue = this.configurationFile.getString(configLocation + ".item.head-64");
         if (bValue != null) {
@@ -181,7 +188,7 @@ public class ItemFactory {
      *
      * @return Null if the setting doesn't exist, the head from HDB in ItemStack form if it does.
      */
-    private ItemStack checkHeadDB() {
+    private @Nullable ItemStack checkHeadDB() {
         // The fish has item: headdb selected
         if (!EvenMoreFish.usingHeadsDB) return null;
 
@@ -229,9 +236,9 @@ public class ItemFactory {
     private ItemStack checkRandomMaterial(int randomIndex) {
 
         List<String> lValues = this.configurationFile.getStringList(configLocation + ".item.materials");
-        if (lValues.size() > 0) {
+        if (!lValues.isEmpty()) {
 
-            Random rand = new Random();
+            final Random rand = EvenMoreFish.getInstance().getRandom();
 
             if (randomIndex == -1 || randomIndex + 1 > lValues.size()) {
                 randomIndex = rand.nextInt(lValues.size());
@@ -267,9 +274,9 @@ public class ItemFactory {
      */
     private ItemStack checkRandomHead64(int randomIndex) {
         List<String> mh64Values = this.configurationFile.getStringList(configLocation + ".item.multiple-head-64");
-        if (mh64Values.size() > 0) {
+        if (!mh64Values.isEmpty()) {
 
-            Random rand = new Random();
+            final Random rand = EvenMoreFish.getInstance().getRandom();
 
             if (randomIndex == -1 || randomIndex + 1 > mh64Values.size()) {
                 randomIndex = rand.nextInt(mh64Values.size());
@@ -291,8 +298,8 @@ public class ItemFactory {
         if (!EvenMoreFish.usingHeadsDB) return null;
 
         List<Integer> headIDs = this.configurationFile.getIntegerList(configLocation + ".item.multiple-headdb");
-        if (headIDs.size() > 0) {
-            Random rand = new Random();
+        if (!headIDs.isEmpty()) {
+            final Random rand = EvenMoreFish.getInstance().getRandom();
 
             if (randomIndex == -1 || randomIndex + 1 > headIDs.size()) {
                 randomIndex = rand.nextInt(headIDs.size());
@@ -315,11 +322,11 @@ public class ItemFactory {
      *
      * @return Null if the setting doesn't exist, a random ItemStack representation from a list of head-uuid values if it does.
      */
-    private ItemStack checkRandomHeadUUID(int randomIndex) {
+    private @Nullable ItemStack checkRandomHeadUUID(int randomIndex) {
         List<String> mhuValues = this.configurationFile.getStringList(configLocation + ".item.multiple-head-uuid");
-        if (mhuValues.size() > 0) {
+        if (!mhuValues.isEmpty()) {
 
-            Random rand = new Random();
+            final Random rand = EvenMoreFish.getInstance().getRandom();
 
             if (randomIndex == -1 || randomIndex + 1 > mhuValues.size()) {
                 randomIndex = rand.nextInt(mhuValues.size());
@@ -462,7 +469,7 @@ public class ItemFactory {
             } else {
                 if (EvenMoreFish.mainConfig.doingRandomDurability()) {
                     int max = product.getType().getMaxDurability();
-                    nonDamaged.setDamage((int) (Math.random() * (max + 1)));
+                    nonDamaged.setDamage(EvenMoreFish.getInstance().getRandom().nextInt() * (max + 1));
                 }
             }
 
@@ -576,69 +583,6 @@ public class ItemFactory {
             return null;
         }
     }
-
-    private ItemStack getItemsAdderStack(final String materialID) {
-        if (materialID.contains("itemsadder:") && EvenMoreFish.itemsAdderLoaded) {
-
-            String[] splitMaterialValue = materialID.split(":");
-            if (splitMaterialValue.length != 3) {
-                EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, materialID));
-                return new ItemStack(Material.COD);
-            }
-
-            final String namespaceId = splitMaterialValue[1] + ":" + splitMaterialValue[2];
-            final CustomStack customStack = CustomStack.getInstance(namespaceId);
-            if (customStack == null) {
-                EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
-                return new ItemStack(Material.COD);
-            }
-            return CustomStack.getInstance(namespaceId).getItemStack();
-        } else return null;
-    }
-
-    private ItemStack getDenizenStack(final String materialID) {
-        if (materialID.contains("denizen:") && EvenMoreFish.denizenLoaded) {
-
-            String id = materialID.split(":")[1];
-
-            final ItemTag itemTag = ItemTag.valueOf(id, false);
-            if (itemTag == null) {
-                EvenMoreFish.logger.info(() -> String.format("Could not obtain denizen item %s", id));
-                return new ItemStack(Material.COD);
-            }
-            return itemTag.getItemStack();
-        } else return null;
-    }
-
-//    private ItemStack getOraxenStack(final String materialID) {
-//        if (materialID.contains("oraxen:") && EvenMoreFish.oraxenLoaded) {
-//
-//            String id = materialID.split(":")[1];
-//
-//            final ItemBuilder item = OraxenItems.getItemById(id);
-//
-//            if (item == null) {
-//                EvenMoreFish.logger.info(() -> String.format("Could not obtain oraxen item %s", id));
-//                return new ItemStack(Material.COD);
-//            }
-//            return item.build();
-//        } else return null;
-//    }
-
-//    private ItemStack getEcoItemsStack(final String materialID) {
-//        if (materialID.contains("ecoitems:") && EvenMoreFish.ecoItemsLoaded) {
-//
-//            String id = materialID.split(":")[1];
-//
-//            final EcoItem item = EcoItems.INSTANCE.getByID(id);
-//
-//            if (item == null) {
-//                EvenMoreFish.logger.info(() -> String.format("Could not obtain EcoItems item %s", id));
-//                return new ItemStack(Material.COD);
-//            }
-//            return item.getItemStack();
-//        } else return null;
-//    }
 
     public void enableDefaultChecks() {
         setItemModelDataCheck(true);

@@ -114,14 +114,14 @@ public class Bait {
         for (String lineAddition : EvenMoreFish.baitFile.getBaitLoreFormat()) {
             if (lineAddition.equals("{boosts}")) {
 
-                if (rarityList.size() > 0) {
+                if (!rarityList.isEmpty()) {
                     if (rarityList.size() > 1)
                         lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostRaritiesFormat()).setAmount(Integer.toString(rarityList.size())).setBaitTheme(theme).toString());
                     else
                         lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostRarityFormat()).setAmount(Integer.toString(1)).setBaitTheme(theme).toString());
                 }
 
-                if (fishList.size() > 0) {
+                if (!fishList.isEmpty()) {
                     lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostFishFormat()).setAmount(Integer.toString(fishList.size())).setBaitTheme(theme).toString());
                 }
 
@@ -160,7 +160,7 @@ public class Bait {
         Rarity fishRarity = FishingProcessor.randomWeightedRarity(player, getBoostRate(), boostedRarities, EvenMoreFish.fishCollection.keySet());
         Fish fish;
 
-        if (getFishList().size() > 0) {
+        if (!getFishList().isEmpty()) {
             // The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
             // the method isn't given an empty list.
             if (!fishListRarities.contains(fishRarity)) {
