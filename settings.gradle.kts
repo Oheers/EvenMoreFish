@@ -1,6 +1,7 @@
 rootProject.name = "even-more-fish"
 
 include(":even-more-fish-api")
+include(":even-more-fish-addons-j8")
 include(":even-more-fish-addons-j17")
 include(":even-more-fish-plugin")
 

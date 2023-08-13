@@ -1,4 +1,4 @@
-package com.oheers.fish.addons.impl;
+package com.oheers.evenmorefish.addons;
 
 
 import com.oheers.fish.EvenMoreFish;
@@ -7,12 +7,6 @@ import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.inventory.ItemStack;
 
 public class HeadDatabaseItemAddon extends ItemAddon {
-    private final HeadDatabaseAPI api;
-
-    public HeadDatabaseItemAddon() {
-        this.api = new HeadDatabaseAPI();
-    }
-
     @Override
     public String getPrefix() {
         return "headdb";
@@ -30,8 +24,9 @@ public class HeadDatabaseItemAddon extends ItemAddon {
 
     @Override
     public ItemStack getItemStack(String id) {
+        final HeadDatabaseAPI api = new HeadDatabaseAPI();
         if(!api.isHead(id)) {
-            EvenMoreFish.logger.warning(() -> String.format("No such head with the id %s",id));
+            getLogger().warning(() -> String.format("No such head with the id %s",id));
             return null;
         }
 

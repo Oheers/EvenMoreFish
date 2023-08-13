@@ -3,6 +3,7 @@ package com.oheers.fish;
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
+import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
 import com.oheers.fish.competition.AutoRunner;
@@ -51,7 +52,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class EvenMoreFish extends JavaPlugin {
+public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private Random random = new Random();
 
     public static final int METRIC_ID = 11054;

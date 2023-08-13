@@ -1,13 +1,16 @@
-package com.oheers.fish.addons.impl;
+package com.oheers.evenmorefish.addons;
 
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.addons.ItemAddon;
+import com.oheers.fish.api.plugin.EMFPlugin;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.Events.ItemsAdderLoadDataEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 public class ItemsAdderItemAddon extends ItemAddon implements Listener {
     private boolean itemsAdderLoaded = false;
@@ -35,14 +38,14 @@ public class ItemsAdderItemAddon extends ItemAddon implements Listener {
 
         String[] splitMaterialValue = id.split(":");
         if (splitMaterialValue.length != 3) {
-            EvenMoreFish.logger.severe(() -> String.format("Incorrect format for ItemsAdderItemAddon, use %s:namespace:id",getPrefix()));
+            getLogger().severe(() -> String.format("Incorrect format for ItemsAdderItemAddon, use %s:namespace:id",getPrefix()));
             return null;
         }
 
         final String namespaceId = splitMaterialValue[1] + ":" + splitMaterialValue[2];
         final CustomStack customStack = CustomStack.getInstance(namespaceId);
         if (customStack == null) {
-            EvenMoreFish.logger.info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
+            getLogger().info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
             return null;
         }
         return CustomStack.getInstance(namespaceId).getItemStack();
@@ -51,9 +54,10 @@ public class ItemsAdderItemAddon extends ItemAddon implements Listener {
 
     @EventHandler
     public void onItemsLoad(ItemsAdderLoadDataEvent event) {
-        EvenMoreFish.getInstance().getLogger().info("Detected that itemsadder has finished loading all items...");
-        EvenMoreFish.getInstance().getLogger().info("Reloading EMF.");
+        getLogger().info("Detected that itemsadder has finished loading all items...");
+        getLogger().info("Reloading EMF.");
         this.itemsAdderLoaded = true;
-        EvenMoreFish.getInstance().reload();
+
+        ((EMFPlugin) Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish"))).reload();
     }
 }

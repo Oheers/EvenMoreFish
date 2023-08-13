@@ -2,10 +2,7 @@ package com.oheers.fish.addons;
 
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.addons.impl.DenizenItemAddon;
-import com.oheers.fish.addons.impl.Head64ItemAddon;
-import com.oheers.fish.addons.impl.HeadDatabaseItemAddon;
-import com.oheers.fish.addons.impl.ItemsAdderItemAddon;
+import com.oheers.fish.addons.impl.Head64ItemAddon;;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.addons.FileUtil;
 import com.oheers.fish.api.addons.Futures;
@@ -174,10 +171,7 @@ public class AddonManager {
 
     public void load() {
         registerInternal(
-                new Head64ItemAddon(),
-                new HeadDatabaseItemAddon(),
-                new ItemsAdderItemAddon(),
-                new DenizenItemAddon()
+                new Head64ItemAddon()
         );
 
         registerAll();

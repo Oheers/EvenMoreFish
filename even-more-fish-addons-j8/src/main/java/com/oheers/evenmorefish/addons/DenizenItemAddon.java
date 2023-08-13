@@ -1,4 +1,4 @@
-package com.oheers.fish.addons.impl;
+package com.oheers.evenmorefish.addons;
 
 
 import com.denizenscript.denizen.objects.ItemTag;
@@ -26,7 +26,7 @@ public class DenizenItemAddon extends ItemAddon {
     public ItemStack getItemStack(String id) {
         final ItemTag itemTag = ItemTag.valueOf(id, false);
         if (itemTag == null) {
-            EvenMoreFish.logger.info(() -> String.format("Could not obtain denizen item %s", id));
+            getLogger().info(() -> String.format("Could not obtain denizen item %s", id));
             return null;
         }
 
