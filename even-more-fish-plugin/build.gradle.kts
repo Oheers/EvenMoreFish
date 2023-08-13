@@ -70,6 +70,7 @@ dependencies {
     library(libs.hikaricp)
     library(libs.caffeine)
     library(libs.commons.lang3)
+    library(libs.commons.codec)
 
     library(libs.json.simple)
 }
@@ -92,7 +93,8 @@ bukkit {
         "ItemsAdder",
         "Denizens",
         "EcoItems",
-        "Oraxen"
+        "Oraxen",
+        "HeadDatabase"
     )
     loadBefore = listOf("AntiAC")
     apiVersion = "1.16"

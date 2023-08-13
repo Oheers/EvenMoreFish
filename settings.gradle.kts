@@ -38,6 +38,7 @@ dependencyResolutionManagement {
             library("ecoitems-eco", "com.willfp:eco:6.65.1")
 
             library("commons-lang3", "org.apache.commons:commons-lang3:3.13.0")
+            library("commons-codec", "commons-codec:commons-codec:1.16.0")
             library("annotations", "org.jetbrains:annotations:24.0.1")
 
             version("flyway", "9.19.4")
