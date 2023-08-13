@@ -112,6 +112,15 @@ tasks {
         dependsOn(shadowJar)
     }
 
+    clean {
+        doFirst {
+            for (file in File(project.projectDir ,"src/main/resources/addons").listFiles()!!) {
+                file.delete()
+            }
+        }
+
+    }
+
     shadowJar {
         minimize()
 
