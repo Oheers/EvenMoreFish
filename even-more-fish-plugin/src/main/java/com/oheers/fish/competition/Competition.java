@@ -220,7 +220,7 @@ public class Competition {
      */
     public boolean isDoingFirstPlaceActionBar() {
         boolean a = EvenMoreFish.msgs.config.getBoolean("action-bar-message");
-        boolean b = EvenMoreFish.msgs.config.getStringList("action-bar-types").size() == 0 || EvenMoreFish.msgs.config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
+        boolean b = EvenMoreFish.msgs.config.getStringList("action-bar-types").isEmpty() || EvenMoreFish.msgs.config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
         return a && b;
     }
 
@@ -369,7 +369,7 @@ public class Competition {
                         message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
                         message.setPosition(Integer.toString(pos));
                         if (pos > competitionColours.size()) {
-                            Random r = new Random();
+                            Random r = EvenMoreFish.getInstance().getRandom();
                             int s = r.nextInt(3);
                             switch (s) {
                                 case 0:
@@ -532,7 +532,7 @@ public class Competition {
     public boolean chooseFish(String competitionName, boolean adminStart) {
         List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
 
-        if (configRarities.size() == 0) {
+        if (configRarities.isEmpty()) {
             EvenMoreFish.logger.log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
             return false;
         }
@@ -573,7 +573,7 @@ public class Competition {
     public boolean chooseRarity(String competitionName, boolean adminStart) {
         List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
 
-        if (configRarities.size() == 0) {
+        if (configRarities.isEmpty()) {
             EvenMoreFish.logger.log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
             return false;
         }
@@ -623,7 +623,7 @@ public class Competition {
             chosen = EvenMoreFish.competitionConfig.getRewardPositions();
             path = "rewards.";
         } else {
-            if (EvenMoreFish.competitionConfig.getRewardPositions(competitionName).size() == 0) {
+            if (EvenMoreFish.competitionConfig.getRewardPositions(competitionName).isEmpty()) {
                 chosen = EvenMoreFish.competitionConfig.getRewardPositions();
                 path = "rewards.";
             } else {
@@ -724,7 +724,7 @@ public class Competition {
 
         message.broadcast(true, true);
 
-        if (rewards.size() > 0) {
+        if (!rewards.isEmpty()) {
             for (Reward reward : rewards.get(1)) {
                 reward.run(player, null);
             }

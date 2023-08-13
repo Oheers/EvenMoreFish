@@ -177,7 +177,7 @@ public class Fish implements Cloneable {
     }
 
     public boolean hasFishRewards() {
-        return fishRewards.size() != 0;
+        return !fishRewards.isEmpty();
     }
 
     public boolean hasIntRewards() {

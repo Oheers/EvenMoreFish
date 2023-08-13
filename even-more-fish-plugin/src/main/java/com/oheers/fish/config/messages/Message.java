@@ -548,7 +548,7 @@ public class Message {
      */
     public void addLore(String variable, List<String> lore) {
         // checks that the custom lore exists, then adds it on to the lore
-        if (lore != null && lore.size() > 0) {
+        if (lore != null && !lore.isEmpty()) {
 
             StringBuilder customLore = new StringBuilder();
             // does colour coding, hence why .addAll() isn't used

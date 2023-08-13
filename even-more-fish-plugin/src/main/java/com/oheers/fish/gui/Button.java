@@ -44,7 +44,7 @@ public class Button {
             this.name = toggleVAR.getRawMessage(true, true);
         }
 
-        if (unformattedLore.size() != 0) {
+        if (!unformattedLore.isEmpty()) {
             this.lore = unformattedLore;
             for (int i = 0; i < unformattedLore.size(); i++) {
                 this.lore.set(i, new Message(unformattedLore.get(i)).getRawMessage(true, false));
@@ -59,7 +59,7 @@ public class Button {
         if (item.getItemMeta() != null) {
             ItemMeta itemMeta = item.getItemMeta();
             if (this.name != null) itemMeta.setDisplayName(new Message(this.name).getRawMessage(true, false));
-            if (this.lore.size() != 0) itemMeta.setLore(new Message(this.lore).getRawListMessage(true, false));
+            if (!this.lore.isEmpty()) itemMeta.setLore(new Message(this.lore).getRawListMessage(true, false));
             item.setItemMeta(itemMeta);
             return WorthNBT.attributeDefault(item);
         }

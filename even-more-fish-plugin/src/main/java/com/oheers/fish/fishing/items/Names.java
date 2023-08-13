@@ -106,7 +106,7 @@ public class Names {
 
             List<String> rarityList;
 
-            if ((rarityList = baitConfiguration.getStringList("baits." + s + ".rarities")).size() != 0) {
+            if (!(rarityList = baitConfiguration.getStringList("baits." + s + ".rarities")).isEmpty()) {
                 for (String rarityString : rarityList) {
                     boolean foundRarity = false;
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {

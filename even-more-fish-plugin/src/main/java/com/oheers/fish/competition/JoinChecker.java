@@ -64,7 +64,7 @@ public class JoinChecker implements Listener {
                     } else {
                         EvenMoreFish.logger.log(Level.SEVERE, "Null value when fetching data for user (" + userName + "),\n" +
                             "UserReport: " + (userReport == null) +
-                            ",\nFishReports: " + (fishReports != null && fishReports.size() > 0));
+                            ",\nFishReports: " + (fishReports != null && !fishReports.isEmpty()));
                     }
                     
                 }

@@ -76,7 +76,7 @@ public class CompetitionConfig {
     }
 
     public boolean doingRepeatedTiming(String competitionName) {
-        return config.getStringList("competitions." + competitionName + ".times").size() != 0;
+        return !config.getStringList("competitions." + competitionName + ".times").isEmpty();
     }
 
     public List<String> getRepeatedTiming(String competitionName) {
@@ -84,7 +84,7 @@ public class CompetitionConfig {
     }
 
     public boolean hasBlacklistedDays(String competitionName) {
-        return config.getStringList("competitions." + competitionName + ".blacklisted-days").size() != 0;
+        return !config.getStringList("competitions." + competitionName + ".blacklisted-days").isEmpty();
     }
 
     public List<String> getBlacklistedDays(String competitionName) {
@@ -116,7 +116,7 @@ public class CompetitionConfig {
     public List<String> getPositionColours() {
         List<String> returning = config.getStringList("leaderboard.position-colours");
 
-        if (returning.size() != 0) return returning;
+        if (!returning.isEmpty()) return returning;
         else {
             return Arrays.asList("&6", "&e", "&7", "&7", "&8");
         }

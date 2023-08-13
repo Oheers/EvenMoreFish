@@ -28,7 +28,7 @@ public class MoonPhase implements Requirement {
 
     @Override
     public void fetchData() {
-        fileConfig.getStringList(this.configLocation).forEach((stringPhase) -> {
+        fileConfig.getStringList(this.configLocation).forEach(stringPhase -> {
             try {
                 phases.add(Phase.valueOf(stringPhase.toUpperCase()));
             } catch (IllegalArgumentException exception) {
@@ -54,24 +54,3 @@ public class MoonPhase implements Requirement {
     }
 }
 
-enum Phase {
-
-    FULL_MOON(0),
-    WANING_GIBBOUS(1),
-    LAST_QUARTER(2),
-    WANING_CRESCENT(3),
-    NEW_MOON(4),
-    WAXING_CRESCENT(5),
-    FIRST_QUARTER(6),
-    WAXING_GIBBOUS(7);
-
-    final int phaseID;
-
-    Phase(int phaseID) {
-        this.phaseID = phaseID;
-    }
-
-    public int getPhaseID() {
-        return phaseID;
-    }
-}
