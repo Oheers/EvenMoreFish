@@ -42,12 +42,12 @@ dependencies {
     compileOnly(libs.worldedit.bukkit)
 
     compileOnly(libs.redprotect.core) {
-        exclude("net.ess3","EssentialsX")
-        exclude("org.spigotmc","spigot-api")
+        exclude("net.ess3", "EssentialsX")
+        exclude("org.spigotmc", "spigot-api")
     }
     compileOnly(libs.redprotect.spigot) {
-        exclude("net.ess3","EssentialsX")
-        exclude("org.spigotmc","spigot-api")
+        exclude("net.ess3", "EssentialsX")
+        exclude("org.spigotmc", "spigot-api")
         exclude("com.destroystokyo.paper", "paper-api")
         exclude("de.keyle", "mypet")
         exclude("com.sk89q.worldedit", "worldedit-core")
@@ -83,7 +83,17 @@ bukkit {
     website = "https://github.com/Oheers/EvenMoreFish"
 
     depend = listOf("Vault")
-    softDepend = listOf("WorldGuard", "PlaceholderAPI", "RedProtect", "mcMMO", "AureliumSkills", "ItemsAdder", "Denizens", "EcoItems")
+    softDepend = listOf(
+        "WorldGuard",
+        "PlaceholderAPI",
+        "RedProtect",
+        "mcMMO",
+        "AureliumSkills",
+        "ItemsAdder",
+        "Denizens",
+        "EcoItems",
+        "Oraxen"
+    )
     loadBefore = listOf("AntiAC")
     apiVersion = "1.16"
 
