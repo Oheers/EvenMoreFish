@@ -6,8 +6,9 @@ import com.oheers.fish.addons.impl.DenizenItemAddon;
 import com.oheers.fish.addons.impl.ItemsAdderItemAddon;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.addons.FileUtil;
+import com.oheers.fish.api.addons.Futures;
 import com.oheers.fish.api.addons.ItemAddon;
-import me.clip.placeholderapi.util.Futures;
+import net.royawesome.jlibnoise.module.combiner.Add;
 import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -133,35 +135,22 @@ public class AddonManager {
         }
 
         return Arrays.stream(files)
-                .map(this::findAddonInFile)
+                .map(this::findAddonsInFileAsync)
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
                 .collect(Futures.collector());
     }
 
-    public CompletableFuture<Class<? extends Addon>> findAddonInFile(File file) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                final Class<? extends Addon> addonClass = FileUtil.findFirstClass(file, Addon.class);
-
-                if (addonClass == null) {
-                    plugin.getLogger().warning(String.format("Failed to load addon from file: %s", file.getName()));
-                    return null;
-                }
-
-                return addonClass;
-            } catch (final VerifyError ex) {
-                plugin.getLogger().severe(String.format("Failed to load addon class %s", file.getName()));
-                plugin.getLogger().severe(String.format("Cause: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
-                return null;
-            } catch (final Exception ex) {
-                throw new CompletionException(ex);
-            }
-        });
+    public List<CompletableFuture<Class<? extends Addon>>> findAddonsInFileAsync(final File file) {
+        return FileUtil.findClassesAsync(file, Addon.class);
     }
 
     private void registerInternal(final @NotNull Addon @NotNull ... addons) {
         for (final Addon addon : addons) {
             registerAddon(addon);
         }
+        plugin.getLogger().info(() -> String.format("Registered %s internal addons", addons.length));
+
     }
 
     private void registerAll() {

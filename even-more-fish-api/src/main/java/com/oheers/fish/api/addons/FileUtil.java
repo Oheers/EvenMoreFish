@@ -22,6 +22,7 @@
 package com.oheers.fish.api.addons;
 
 
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,55 +31,76 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 public class FileUtil {
+    private FileUtil() {
+        throw new UnsupportedOperationException();
+    }
 
-    public static <T> @Nullable List<Class<? extends T>> findClasses(@NotNull final File file,
-                                                                     @NotNull final Class<T> clazz) throws IOException, ClassNotFoundException {
+    public static <T> @NotNull List<CompletableFuture<Class<? extends T>>> findClassesAsync(@NotNull final File file, @NotNull final Class<T> clazz) throws CompletionException {
         if (!file.exists()) {
-            return null;
+            return Collections.emptyList();
         }
 
-        final URL jar = file.toURI().toURL();
-        final URLClassLoader loader = new URLClassLoader(new URL[]{jar}, clazz.getClassLoader());
+        final List<CompletableFuture<Class<? extends T>>> futures = new ArrayList<>();
+
         final List<String> matches = new ArrayList<>();
-        final List<Class<? extends T>> classes = new ArrayList<>();
 
-        try (final JarInputStream stream = new JarInputStream(jar.openStream())) {
-            JarEntry entry;
-            while ((entry = stream.getNextJarEntry()) != null) {
-                final String name = entry.getName();
-                if (name.isEmpty() || !name.endsWith(".class")) {
-                    continue;
-                }
+        futures.add(
+                CompletableFuture.supplyAsync(() -> {
+                            try {
+                                final URL jar = file.toURI().toURL();
+                                try (final URLClassLoader loader = new URLClassLoader(new URL[]{jar}, clazz.getClassLoader())) {
+                                    try (final JarInputStream stream = new JarInputStream(jar.openStream())) {
+                                        JarEntry entry;
+                                        while ((entry = stream.getNextJarEntry()) != null) {
+                                            final String name = entry.getName();
+                                            if (!name.endsWith(".class")) {
+                                                continue;
+                                            }
 
-                matches.add(name.substring(0, name.lastIndexOf('.')).replace('/', '.'));
-            }
+                                            matches.add(name.substring(0, name.lastIndexOf('.')).replace('/', '.'));
+                                        }
 
-            for (final String match : matches) {
-                try {
-                    final Class<?> loaded = loader.loadClass(match);
-                    if (clazz.isAssignableFrom(loaded)) {
-                        classes.add(loaded.asSubclass(clazz));
-                    }
-                } catch (final NoClassDefFoundError ignored) {
-                }
-            }
-        }
-        if (classes.isEmpty()) {
-            loader.close();
-            return null;
-        }
-        return classes;
+                                        for (final String match : matches) {
+                                            Class<? extends T> addonClass = loadClass(loader, match, clazz);
+                                            if (addonClass != null) {
+                                                return addonClass;
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (final VerifyError ex) {
+                                //todo, this can't be here it's blocking
+                                Bukkit.getLogger().severe(() -> String.format("Failed to load addon class %s", file.getName()));
+                                Bukkit.getLogger().severe(() -> String.format("Cause: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
+                                return null;
+                            } catch (IOException | ClassNotFoundException e) {
+                                throw new CompletionException(e.getCause());
+                            }
+                            return null;
+                        }
+                )
+        );
+        return futures;
     }
-    @Nullable
-    public static <T> Class<? extends T> findFirstClass(@NotNull final File file,
-                                                   @NotNull final Class<T> clazz) throws IOException, ClassNotFoundException {
-       return Objects.requireNonNull(findClasses(file, clazz)).get(0);
+
+    private static <T> @Nullable Class<? extends T> loadClass(final @NotNull URLClassLoader loader, final String match, @NotNull final Class<T> clazz) throws ClassNotFoundException {
+        try {
+            final Class<?> loaded = loader.loadClass(match);
+            if (clazz.isAssignableFrom(loaded)) {
+                return (loaded.asSubclass(clazz));
+            }
+        } catch (final NoClassDefFoundError ignored) {
+        }
+        return null;
     }
+
 
 }

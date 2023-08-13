@@ -45,6 +45,6 @@ tasks {
 
 fun defaultAddonName(project: String): String {
     val jvmVersion = project.split("-")[4].uppercase()
-    return "EMF-Addons-${jvmVersion}.jar"
+    return "EMF-Addons-${jvmVersion}.addon"
 }
 

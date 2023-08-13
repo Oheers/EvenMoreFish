@@ -122,9 +122,7 @@ public class EvenMoreFish extends JavaPlugin {
     public void onEnable() {
         instance = this;
         this.api = new EMFAPI();
-        saveAdditionalDefaultAddons();
-        this.addonManager = new AddonManager(this);
-        this.addonManager.load();
+
 
         guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
@@ -138,13 +136,21 @@ public class EvenMoreFish extends JavaPlugin {
         mainConfig = new MainConfig(this);
         msgs = new Messages(this);
 
+        saveAdditionalDefaultAddons();
+        this.addonManager = new AddonManager(this);
+        this.addonManager.load();
+
         fishFile = new FishFile(this);
         raritiesFile = new RaritiesFile(this);
         baitFile = new BaitFile(this);
         competitionConfig = new CompetitionConfig(this);
         xmas2022Config = new Xmas2022Config(this);
-        if (mainConfig.debugSession()) guiConfig = new GUIConfig(this);
-        if (guiConfig != null) guiFillerStyle = guiConfig.getFillerStyle("main-menu");
+        if (mainConfig.debugSession()) {
+            guiConfig = new GUIConfig(this);
+        }
+        if (guiConfig != null) {
+            guiFillerStyle = guiConfig.getFillerStyle("main-menu");
+        }
 
         usingPAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
 
@@ -179,7 +185,9 @@ public class EvenMoreFish extends JavaPlugin {
         names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
         names.loadBaits(baitFile.getConfig());
 
-        if (!names.regionCheck && mainConfig.getAllowedRegions().isEmpty()) guardPL = null;
+        if (!names.regionCheck && mainConfig.getAllowedRegions().isEmpty()) {
+            guardPL = null;
+        }
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
@@ -197,7 +205,9 @@ public class EvenMoreFish extends JavaPlugin {
         listeners();
         commands();
 
-        if (!mainConfig.debugSession()) metrics();
+        if (!mainConfig.debugSession()) {
+            metrics();
+        }
 
         AutoRunner.init();
 
@@ -247,14 +257,19 @@ public class EvenMoreFish extends JavaPlugin {
     }
 
     private void saveAdditionalDefaultAddons() {
-        if (!mainConfig.useAdditionalAddons()) return;
+        if (!mainConfig.useAdditionalAddons()) {
+            return;
+        }
 
-        for(final String fileName: Arrays.stream(DefaultAddons.values())
+        for (final String fileName : Arrays.stream(DefaultAddons.values())
                 .map(DefaultAddons::getFullFileName)
                 .collect(Collectors.toList())) {
-            if (!new File(getDataFolder(), "addons/"+ fileName).exists()) {
+            final File addonFile = new File(getDataFolder(), "addons/" + fileName);
+            final File jarFile = new File(getDataFolder(), "addons/" + fileName.replace(".addon", ".jar"));
+            if (!jarFile.exists()) {
                 try {
-                    this.saveResource(fileName, false);
+                    this.saveResource("addons/" + fileName, true);
+                    addonFile.renameTo(jarFile);
                 } catch (IllegalArgumentException e) {
                     debug(Level.WARNING, String.format("Default addon %s does not exist.", fileName));
                 }
@@ -357,7 +372,9 @@ public class EvenMoreFish extends JavaPlugin {
             }
             econ = rsp.getProvider();
             return econ != null;
-        } else return false;
+        } else {
+            return false;
+        }
 
     }
 
@@ -369,25 +386,25 @@ public class EvenMoreFish extends JavaPlugin {
             }
         });
     }
-    
+
     private void saveUserData() {
         //really slow, we should execute this via a runnable.
         if (!(EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline())) {
             return;
         }
-        
+
         saveFishReports();
         saveUserReports();
-        
+
         DataManager.getInstance().uncacheAll();
     }
-    
+
     private void saveFishReports() {
         ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
         logger.info("Saving " + allReports.keySet().size() + " fish reports.");
         for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
             databaseV3.writeFishReports(entry.getKey(), entry.getValue());
-        
+
             try {
                 if (!databaseV3.hasUser(entry.getKey(), Table.EMF_USERS)) {
                     databaseV3.createUser(entry.getKey());
@@ -397,7 +414,7 @@ public class EvenMoreFish extends JavaPlugin {
             }
         }
     }
-    
+
     private void saveUserReports() {
         logger.info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
         for (UserReport report : DataManager.getInstance().getAllUserReports()) {
@@ -441,7 +458,9 @@ public class EvenMoreFish extends JavaPlugin {
         msgs.reload();
         competitionConfig.reload();
         xmas2022Config.reload();
-        if (mainConfig.debugSession()) guiConfig.reload();
+        if (mainConfig.debugSession()) {
+            guiConfig.reload();
+        }
 
         competitionWorlds = competitionConfig.getRequiredWorlds();
 

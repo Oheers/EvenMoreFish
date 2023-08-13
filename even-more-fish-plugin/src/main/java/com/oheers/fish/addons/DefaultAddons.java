@@ -11,7 +11,7 @@ public enum DefaultAddons {
 
     DefaultAddons(String targetJavaVersion) {
         this.targetJavaVersion = targetJavaVersion;
-        this.fullFileName = "EMF-Addons-J" + targetJavaVersion + ".jar";
+        this.fullFileName = "EMF-Addons-J" + targetJavaVersion + ".addon";
     }
 
     public String getTargetJavaVersion() {
