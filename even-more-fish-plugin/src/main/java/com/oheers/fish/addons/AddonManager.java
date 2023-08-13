@@ -90,6 +90,7 @@ public class AddonManager {
             if (!addonInstance.canRegister()) {
                 plugin.getLogger().warning(() -> String.format("Cannot load expansion %s due to an unknown issue.", addonInstance.getPrefix()));
                 plugin.getLogger().warning(() -> String.format("Required java version is %s, present %s",addonInstance.getRequiredJavaVersion(), SystemUtils.JAVA_VERSION_INT));
+                plugin.getLogger().warning(() -> String.format("Required plugin: %s, present %s",addonInstance.getPluginName(), Bukkit.getPluginManager().getPlugin(addonInstance.getPluginName()) != null));
                 this.loadingMap.put(addonInstance.getPrefix(), true);
                 return Optional.empty();
             }

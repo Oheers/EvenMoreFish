@@ -1,7 +1,6 @@
 package com.oheers.evenmorefish.addons;
 
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.addons.ItemAddon;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.inventory.ItemStack;
