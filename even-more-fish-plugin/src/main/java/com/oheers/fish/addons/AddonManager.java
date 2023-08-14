@@ -68,7 +68,7 @@ public class AddonManager {
                 return false;
             }
         } catch (JavaVersionException | RequiredPluginException e) {
-            EvenMoreFish.getInstance().getLogger().warning(e.getMessage());
+            EvenMoreFish.getInstance().getLogger().warning("Addon " + e.getMessage());
             this.loadingMap.put(prefix, true);
             return false;
         }
