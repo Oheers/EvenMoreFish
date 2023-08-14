@@ -201,6 +201,6 @@ public class AddonManager {
     }
 
     public boolean isLoading(final String prefix) {
-        return loadingMap.get(prefix);
+        return loadingMap.getOrDefault(prefix, true);
     }
 }
