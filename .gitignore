@@ -116,4 +116,6 @@ buildNumber.properties
 run/
 build
 
+*.addon
+
 !gradle-wrapper.jar
