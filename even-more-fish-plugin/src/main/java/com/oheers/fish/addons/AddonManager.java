@@ -9,7 +9,6 @@ import com.oheers.fish.api.addons.Futures;
 import com.oheers.fish.api.addons.ItemAddon;
 import com.oheers.fish.api.addons.exceptions.JavaVersionException;
 import com.oheers.fish.api.addons.exceptions.RequiredPluginException;
-import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
@@ -199,5 +198,9 @@ public class AddonManager {
 
     public Map<String, Addon> getAddonMap() {
         return addonMap;
+    }
+
+    public boolean isLoading(final String prefix) {
+        return loadingMap.get(prefix);
     }
 }

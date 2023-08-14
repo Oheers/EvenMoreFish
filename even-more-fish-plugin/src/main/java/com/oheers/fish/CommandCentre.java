@@ -1,5 +1,7 @@
 package com.oheers.fish;
 
+import com.oheers.fish.addons.AddonManager;
+import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
@@ -21,10 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
@@ -44,6 +43,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "fish",
                 "nbt-rod",
                 "reload",
+                "addons",
                 "version"
         );
 
@@ -625,6 +625,18 @@ class Controls {
                 Message msg = new Message(msgString);
                 msg.broadcast(sender, true, false);
                 break;
+            case "addons": {
+                final AddonManager addonManager = EvenMoreFish.getInstance().getAddonManager();
+                final String messageFormat = "Addon: %s, Loading: %b";
+                final List<String> messageList = new ArrayList<>();
+                for(final Map.Entry<String, Addon> entry: addonManager.getAddonMap().entrySet()) {
+                    final String prefix = entry.getKey();
+                    messageList.add(String.format(messageFormat,prefix,addonManager.isLoading(prefix)));
+                }
+
+                new Message(messageList).broadcast(sender,true,false);
+                break;
+            }
             default:
                 new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, true, false);
         }
