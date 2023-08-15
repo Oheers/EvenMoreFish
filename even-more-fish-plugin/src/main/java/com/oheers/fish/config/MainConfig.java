@@ -4,6 +4,8 @@ import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -22,7 +24,7 @@ public class MainConfig {
     }
 
     public int configVersion() {
-        return config.getInt("config-version");
+        return config.getInt("config-version", 14);
     }
 
     public String getLocale() {
@@ -38,27 +40,27 @@ public class MainConfig {
     }
 
     public boolean doingRandomDurability() {
-        return config.getBoolean("random-durability");
+        return config.getBoolean("random-durability", true);
     }
 
     public boolean databaseEnabled() {
-        return config.getBoolean("database");
+        return config.getBoolean("database", true);
     }
 
     public boolean isDatabaseOnline() {
-        return config.getBoolean("database") && !EvenMoreFish.databaseV3.usingVersionV2();
+        return databaseEnabled() && !EvenMoreFish.databaseV3.usingVersionV2();
     }
 
     public boolean isCompetitionUnique() {
-        return config.getBoolean("fish-only-in-competition");
+        return config.getBoolean("fish-only-in-competition", false);
     }
 
     public boolean getEnabled() {
-        return config.getBoolean("enabled");
+        return config.getBoolean("enabled", true);
     }
 
     public boolean worldWhitelist() {
-        return !config.getStringList("allowed-worlds").isEmpty();
+        return !getAllowedWorlds().isEmpty();
     }
 
     public List<String> getAllowedRegions() {
@@ -70,43 +72,33 @@ public class MainConfig {
     }
 
     public boolean isEconomyEnabled() {
-        return config.getBoolean("enable-economy");
+        return config.getBoolean("enable-economy", true);
     }
     
     public boolean isVanillaFishing() {
-        return config.getBoolean("vanilla-fishing");
+        return config.getBoolean("vanilla-fishing", true);
     }
 
-    public String getSellType() {return config.getString("sell-type");}
+    public String getSellType() {return config.getString("sell-type", "money");}
 
     public String getFiller() {
-        String returning = config.getString("gui.filler");
-        if (returning != null) return returning;
-        else return "GRAY_STAINED_GLASS_PANE";
+        return config.getString("gui.filler", "GRAY_STAINED_GLASS_PANE");
     }
 
     public String getFillerError() {
-        String returning = config.getString("gui.filler-error");
-        if (returning != null) return returning;
-        else return "RED_STAINED_GLASS_PANE";
+        return config.getString("gui.filler-error", "RED_STAINED_GLASS_PANE");
     }
 
     public String getSellItem() {
-        String returning = config.getString("gui.sell-item");
-        if (returning != null) return returning;
-        else return "GOLD_INGOT";
+        return config.getString("gui.sell-item", "GOLD_INGOT");
     }
 
     public String getSellItemConfirm() {
-        String returning = config.getString("gui.sell-item-confirm");
-        if (returning != null) return returning;
-        else return "GOLD_BLOCK";
+        return config.getString("gui.sell-item-confirm", "GOLD_BLOCK");
     }
 
     public String getSellItemError() {
-        String returning = config.getString("gui.sell-item-error");
-        if (returning != null) return returning;
-        else return "REDSTONE_BLOCK";
+        return config.getString("gui.sell-item-error", "REDSTONE_BLOCK");
     }
 
     public Integer getGUISize() {
@@ -116,21 +108,19 @@ public class MainConfig {
     }
 
     public String getBarStyle() {
-        String returning = config.getString("barstyle");
-        if (returning != null) return returning;
-        else return "SEGMENTED_10";
+        return config.getString("barstyle", "SEGMENTED_10");
     }
 
     public boolean sellOverDrop() {
-        return config.getBoolean("gui.sell-over-drop");
+        return config.getBoolean("gui.sell-over-drop", false);
     }
 
     public boolean disableMcMMOTreasure() {
-        return config.getBoolean("disable-mcmmo-loot");
+        return config.getBoolean("disable-mcmmo-loot", true);
     }
 
     public boolean disableAureliumSkills() {
-        return config.getBoolean("disable-aureliumskills-loot");
+        return config.getBoolean("disable-aureliumskills-loot",true);
     }
 
     public String rewardEffect() {
@@ -206,27 +196,27 @@ public class MainConfig {
     }
 
     public boolean isMysql() {
-        return config.getBoolean("mysql.use-mysql");
+        return config.getBoolean("mysql.use-mysql", false);
     }
 
     public boolean doDBVerbose() {
-        return !config.getBoolean("disable-db-verbose", false);
+        return !config.getBoolean("disable-db-verbose", true);
     }
 
     public String getAddress() {
-        return config.getString("mysql.address");
+        return config.getString("mysql.address", "localhost");
     }
 
     public String getDatabase() {
-        return config.getString("mysql.database");
+        return config.getString("mysql.database", "evenmorefish");
     }
 
     public String getUsername() {
-        return config.getString("mysql.username");
+        return config.getString("mysql.username", "root");
     }
 
     public String getPassword() {
-        return config.getString("mysql.password");
+        return config.getString("mysql.password", "");
     }
 
     public boolean blockPlacingHeads() {
