@@ -255,4 +255,4 @@ admin:
 
 # 注意 注意 注意
 # 不要编辑这个值，除非你要更新信息。
-config-version: 12
+config-version: 13
