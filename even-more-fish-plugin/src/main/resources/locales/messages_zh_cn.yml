@@ -52,7 +52,7 @@ prefix-admin: "&c"
 prefix-error: "&c"
 
 # 这是鱼类被捕获时的格式。
-# {custom-lore} 是在 fish.yml 中的 lore: 部分指定的，如果鱼有传说，传说的行将替换{fish_lore}，但如果它是空的，该行将被移除。除此变量外，请勿添加任何其他内容之外的任何内容。
+# {custom-lore} 是在 fish.yml 中的 lore: 部分指定的，如果鱼有格式，格式的行将替换{fish_lore}，但如果它是空的，该行将被移除。除此变量外，请勿添加任何其他内容之外的任何内容。
 fish-lore:
   - "{fisherman_lore}"
   - "{length_lore}"
