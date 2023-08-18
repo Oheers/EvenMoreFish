@@ -3,7 +3,7 @@
 Improve your server's fishing experience with an incredible **fishing competition plugin** based on elsiff's MoreFish
 plugin
 
-With over 40 custom fish in the default configurations, and the ability to add your own, this is the best competition
+With over 60 custom fish in the default configurations, and the ability to add your own, this is the best competition
 plugin for your server.
 
 ---
