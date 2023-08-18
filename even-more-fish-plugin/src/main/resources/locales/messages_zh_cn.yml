@@ -45,7 +45,7 @@ bossbar:
   remaining: "剩余"
 
 # 几乎所有与该插件有关的命令前都有前缀。建议保留空格。
-prefix: "&b[钓鱼大赛] "
+prefix: "&b&l钓鱼大赛 &r&l&7>>> "
 # 命令中[EvenMoreFish]前缀的颜色（当你的前缀没有颜色时）。
 prefix-regular: "&b"
 # 管理命令中[EvenMoreFish]前缀的颜色（当你的前缀没有颜色时）。
@@ -62,6 +62,11 @@ fish-lore:
   - "&6捕捉者: {player}"
   - ""
   - "{fish_lore}"
+# 设置用上面的 {fisherman_lore} 或 {length_lore} 替换的内容 ^
+fisherman-lore:
+  - "&f被{player}抓住"
+length-lore:
+  - "&f长度为 {length} 厘米。"
 
 # 命令格式（该信息不支持papi占位符）。
 help: "/{command} - {description}"
@@ -105,6 +110,12 @@ confirm-sell-all-gui-name: "&6&l确认"
 error-gui-name: "&c&l无法出售"
 
 error-sell-all-gui-name: "&c&l无法出售"
+# 售价：
+# 0 - 如果提供，则打印一位数字，否则为 0
+# # - 如果提供了数字，则打印一个数字，否则不打印任何数字
+# . - 指示小数分隔符的位置
+# , - 指示分组分隔符的位置
+sell-price-format: "#,##0.0"
 
 sell-gui-lore:
   - "&8钓鱼商店"
@@ -244,4 +255,4 @@ admin:
 
 # 注意 注意 注意
 # 不要编辑这个值，除非你要更新信息。
-config-version: 12
+config-version: 13
