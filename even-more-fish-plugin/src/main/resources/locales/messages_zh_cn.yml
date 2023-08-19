@@ -177,12 +177,12 @@ help-competition:
 # 管理帮助信息
 help-admin:
   - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &b&l更多的鱼 &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
-  - "&f/emf admin bait <baitname> (-q:amount) (-p:playername) - 向玩家提供鱼饵"。
+  - "&f/emf admin bait <baitname> (-q:amount) (-p:playername) - 向玩家提供鱼饵"
   - "&f/emf admin clearbait (-p:playername) - 清除玩家鱼竿上的所有鱼饵。"
   - "&f/emf admin competition <start/end> <duration> <type> - 开始或停止比赛"
   - "&f/emf admin clearbait - 将所有应用的鱼饵从鱼竿上移走"
-  - "&f/emf admin fish <rarity> <fishname> (-q:amount) (-p:playername) - 给玩家一条鱼"。
-  - "&f/emf admin nbt-rod - 向玩家赠送一根捕捉特定的鱼所需的定制 NBT 鱼竿。"
+  - "&f/emf admin fish <rarity> <fishname> (-q:amount) (-p:playername) - 给玩家一条鱼"
+  - "&f/emf admin nbt-rod - 向玩家赠送一根捕捉特定的鱼所需的定制 NBT 鱼竿"
   - "&f/emf admin reload - 重载插件配置文件"
   - "&f/emf admin version - 显示插件版本信息"
 
@@ -193,11 +193,11 @@ no-fish-in-place: "开始钓鱼以占据此位置"
 # 当 emf %emf_competition_place_size_*% 占位符请求一个不存在的排行榜位置时显示
 no-size-in-place: "开始捕鱼以占据此位置"
 # 在没有比赛的情况下使用 emf %emf_competition_place_player_*% 占位符时显示
-no-competition-running: "现在没有比赛"。
+no-competition-running: "现在没有比赛"
 # 当没有比赛时使用 emf %emf_competition_place_fish_*% 占位符时显示
-no-competition-running-fish: "现在没有正在进行的比赛"。
+no-competition-running-fish: "现在没有正在进行的比赛"
 # 当没有比赛时使用 emf %emf_competition_place_size_*% 占位符时显示
-no-competition-running-size: "现在没有比赛"。
+no-competition-running-size: "现在没有比赛"
 emf-competition-fish-format: "{rarity_colour}{length}cm &l{rarity} {fish}"
 # 当鱼上没有长度时，%emf_competition_place_fish_*%的格式应该是怎样的
 emf-lengthless-fish-format: "{rarity_colour}&l{rarity} {fish}"
@@ -206,14 +206,14 @@ emf-most-fish-format: "{amount} 条鱼"
 # 在MOST_FISH比赛期间，%emf_competition_place_fish_*%的格式应该是怎样的？
 emf-size-during-most-fish: "N/A"
 # %emf_competition_time_left%的格式应该是怎样的？
-emf-time-remaining: "&b距离下次更多的鱼还有： {days}天, {hours}时, {minutes}分。"
+emf-time-remaining: "&b距离下次更多的鱼还有： {days}天, {hours}时, {minutes}分"
 # 当有一个比赛正在进行时，取代%emf_competition_time_left%变量。
-emf-time-remaining-during-comp: "&b现在有一个钓鱼比赛正在进行中。"
+emf-time-remaining-during-comp: "&b现在有一个钓鱼比赛正在进行中"
 
 # 当玩家试图在钓竿上应用过多类型的鱼饵时发出，在baits.yml的常规部分设置。
-max-baits-reached: "&c你已经达到了该钓竿的最大鱼饵类型数量。"
+max-baits-reached: "&c你已经达到了该钓竿的最大鱼饵类型数量"
 # 不要与上述混淆，这是在达到特定诱饵的最大值时发送的。在baits.yml中使用 "max-baits "来定义这个。
-max-bait-reached: "&c你已经达到了一个鱼竿可以应用的 {bait_theme}{bait} &r的最大数量。"
+max-bait-reached: "&c你已经达到了一个鱼竿可以应用的 {bait_theme}{bait} &r的最大数量"
 # 当玩家通过钓鱼捕获一个诱饵时发送（这可以通过在baits.yml中设置捕获率为0来禁用）。
 bait-catch: "&a{player} &f捕捉到了 {bait_theme}&l{bait} &f!"
 # 在使用鱼饵并捕到鱼时发送。
@@ -222,11 +222,11 @@ bait-use: "&a你使用了一根钓竿的 {bait_theme}&l{bait} &a诱饵."
 bait-survival-limited: "&c你必须在 &n生存模式&r 中才能将鱼饵应用在钓竿上。"
 
 # 在运行/emf toggle时显示，分别是关闭和开启。
-toggle-off: "&c你将不再捕获自定义的鱼。"
-toggle-on: "&a现在你将捕捉到自定义的鱼。"
+toggle-off: "&c你将不再捕获自定义的鱼"
+toggle-on: "&a现在你将捕捉到自定义的鱼"
 
 # 当试图放置一个skull-fish时阻止
-place-fish-blocked: "&c你不能放置这条鱼。"
+place-fish-blocked: "&c你不能放置这条鱼"
 
 admin:
   # 为另一个玩家打开一个钓鱼商店
@@ -236,27 +236,27 @@ admin:
   # 当一个诱饵被给予给一个玩家时
   given-player-bait: "&a你给予 {player} 一个 {bait}."
   # 当管理员运行/emf admin bait时，没有bait名称。
-  no-bait-specified: "&c你必须指定一个诱饵名称。"
+  no-bait-specified: "&c你必须指定一个诱饵名称"
   # 当管理员在不拿鱼竿的情况下尝试/emf admin clearbaits命令。
-  must-be-holding-rod: "&c你需要拿着一根鱼竿来运行这个命令。"
+  must-be-holding-rod: "&c你需要拿着一根鱼竿来运行这个命令"
   # 当/emf admin clearbaits命令被运行时。
-  all-baits-cleared: "&a你已经从你的钓竿上取下了 {amount} 个鱼饵。"
+  all-baits-cleared: "&a你已经从你的钓竿上取下了 {amount} 个鱼饵"
   # /emf admin clearbaits 被运行，但鱼竿上没有鱼饵。
-  no-baits-on-rod: "&c钓竿上没有应用任何鱼饵。"
+  no-baits-on-rod: "&c钓竿上没有应用任何鱼饵"
 
   # 当插件的经济性被禁用时
-  economy-disabled: "&c更多的鱼的经济功能被禁用。"
+  economy-disabled: "&c更多的鱼的经济功能被禁用"
   # 当使用 -p: 参数时，无法找到指定的播放器。
-  player-not-found: "&c{player} 无法找到。"
+  player-not-found: "&c{player} 无法找到"
   # 当 -q: 中指定的数字不是数字时。
-  number-format-error: "&a{amount} 不是一个有效的数字。"
+  number-format-error: "&a{amount} 不是一个有效的数字"
   # 当 -q: 中指定的数字不在 minecraft 堆栈范围（1-64）内时
-  number-range-error: "&a{amount} 不是1-64之间的数字。"
+  number-range-error: "&a{amount} 不是1-64之间的数字"
   # 当一个命令不能从控制台运行时
-  cannot-run-on-console: "&c命令不能从后台运行。"
+  cannot-run-on-console: "&c命令不能从后台运行"
 
   # 当使用/emf admin competition start时，当比赛已经在运行时发送。
-  competition-already-running: "&b已经有一场钓鱼比赛在进行了。"
+  competition-already-running: "&b已经有一场钓鱼比赛在进行了"
   # 当一个无效的竞争类型被尝试启动时
   competition-type-invalid: "&a这不是一个竞争类型，可用类型：MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
   # 当运行 /emf admin nbt-rod 命令时。
