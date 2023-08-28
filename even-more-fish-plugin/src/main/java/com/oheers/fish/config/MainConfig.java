@@ -4,8 +4,6 @@ import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -35,8 +33,14 @@ public class MainConfig {
         return this.config;
     }
 
+    /**
+     * @deprecated
+     * This isn't a config option.
+     * Set to 10 by default, but should really be removed.
+     */
+    @Deprecated
     public int getCompetitionDuration() {
-        return config.getInt("competitions.duration");
+        return config.getInt("competitions.duration", 10);
     }
 
     public boolean doingRandomDurability() {
@@ -79,7 +83,9 @@ public class MainConfig {
         return config.getBoolean("vanilla-fishing", true);
     }
 
-    public String getSellType() {return config.getString("sell-type", "money");}
+    public String getSellType() {
+        return config.getString("sell-type", "money");
+    }
 
     public String getFiller() {
         return config.getString("gui.filler", "GRAY_STAINED_GLASS_PANE");
@@ -102,7 +108,7 @@ public class MainConfig {
     }
 
     public Integer getGUISize() {
-        int returning = config.getInt("gui.size");
+        int returning = config.getInt("gui.size", 3);
         if (returning <= 0 || returning > 5) return 3;
         else return returning;
     }
@@ -184,13 +190,13 @@ public class MainConfig {
     }
 
     public int getSellAllSlot() {
-        int returning = config.getInt("gui.sell-all-slot");
+        int returning = config.getInt("gui.sell-all-slot", 6);
         if (returning > 9 || returning < 1) return 6;
         else return returning;
     }
 
     public int getSellSlot() {
-        int returning = config.getInt("gui.sell-slot");
+        int returning = config.getInt("gui.sell-slot", 4);
         if (returning > 9 || returning < 1) return 4;
         else return returning;
     }
@@ -220,7 +226,7 @@ public class MainConfig {
     }
 
     public boolean blockPlacingHeads() {
-        return config.getBoolean("place-head-fish");
+        return config.getBoolean("place-head-fish", false);
     }
 
     public boolean requireNBTRod() {
