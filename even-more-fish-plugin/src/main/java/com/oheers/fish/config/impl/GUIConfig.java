@@ -1,9 +1,10 @@
-package com.oheers.fish.config;
+package com.oheers.fish.config.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.ConfigFile;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.gui.Button;
 import com.oheers.fish.gui.FillerStyle;
@@ -18,41 +19,28 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
-public class GUIConfig {
+public class GUIConfig extends ConfigFile {
 
-    private final EvenMoreFish plugin;
-    private FileConfiguration config;
-    public HashMap<Integer, ItemStack> fillerDefault = new HashMap<>();
+    public final Map<Integer, ItemStack> fillerDefault = new HashMap<>();
 
-    public GUIConfig (EvenMoreFish plugin) {
-        this.plugin = plugin;
-        reload();
+
+    public GUIConfig(EvenMoreFish plugin) {
+        super(plugin);
     }
 
     public void reload() {
-        File competitionsFile = new File(this.plugin.getDataFolder(), "guis.yml");
-
-        if (!competitionsFile.exists()) {
-            competitionsFile.getParentFile().mkdirs();
-            this.plugin.saveResource("guis.yml", false);
-        }
-
-        this.config = new YamlConfiguration();
-
-        try {
-            this.config.load(competitionsFile);
-        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+        super.reload();
 
         fillerDefault.clear();
         generateDefaultFiller();
+    }
+
+    @Override
+    public String getFileName() {
+        return "guis.yml";
     }
 
     public String getToggle(boolean toggleState) {

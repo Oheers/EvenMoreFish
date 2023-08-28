@@ -1,24 +1,26 @@
-package com.oheers.fish.config;
+package com.oheers.fish.config.impl;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.ConfigFile;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
 import java.util.logging.Level;
 
-public class MainConfig {
-
-    private final EvenMoreFish plugin;
-    private FileConfiguration config;
+public class MainConfig extends ConfigFile {
 
     public MainConfig(EvenMoreFish plugin) {
-        this.plugin = plugin;
-        reload();
+        super(plugin);
     }
 
     public void reload() {
         config = plugin.getConfig();
+    }
+
+    @Override
+    public String getFileName() {
+        return "config.yml";
     }
 
     public int configVersion() {
@@ -29,6 +31,7 @@ public class MainConfig {
         return config.getString("locale", "en");
     }
 
+    @Override
     public FileConfiguration getConfig() {
         return this.config;
     }

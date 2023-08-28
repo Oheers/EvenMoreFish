@@ -11,6 +11,7 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.config.*;
+import com.oheers.fish.config.impl.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.*;
 import com.oheers.fish.events.*;

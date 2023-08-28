@@ -1,7 +1,8 @@
-package com.oheers.fish.config;
+package com.oheers.fish.config.impl;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.config.ConfigFile;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,31 +12,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class CompetitionConfig {
-
-    private final EvenMoreFish plugin;
-    private FileConfiguration config;
+public class CompetitionConfig extends ConfigFile {
 
     public CompetitionConfig(EvenMoreFish plugin) {
-        this.plugin = plugin;
-        reload();
+        super(plugin);
     }
 
-    public void reload() {
-        File competitionsFile = new File(this.plugin.getDataFolder(), "competitions.yml");
-
-        if (!competitionsFile.exists()) {
-            competitionsFile.getParentFile().mkdirs();
-            this.plugin.saveResource("competitions.yml", false);
-        }
-
-        this.config = new YamlConfiguration();
-
-        try {
-            this.config.load(competitionsFile);
-        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public String getFileName() {
+        return "competitions.yml";
     }
 
     public int configVersion() {
@@ -102,11 +87,17 @@ public class CompetitionConfig {
     public int getNumberFishNeeded(String competitionName, boolean adminStart) {
         int returning;
 
-        if (adminStart) returning = config.getInt("general.number-needed");
-        else returning = config.getInt("competitions." + competitionName + ".number-needed", config.getInt("general.number-needed"));
+        if (adminStart) {
+            returning = config.getInt("general.number-needed");
+        } else {
+            returning = config.getInt("competitions." + competitionName + ".number-needed", config.getInt("general.number-needed"));
+        }
 
-        if (returning != 0) return returning;
-        else return 1;
+        if (returning != 0) {
+            return returning;
+        } else {
+            return 1;
+        }
     }
 
     public boolean broadcastOnlyRods() {
@@ -116,8 +107,9 @@ public class CompetitionConfig {
     public List<String> getPositionColours() {
         List<String> returning = config.getStringList("leaderboard.position-colours");
 
-        if (!returning.isEmpty()) return returning;
-        else {
+        if (!returning.isEmpty()) {
+            return returning;
+        } else {
             return Arrays.asList("&6", "&e", "&7", "&7", "&8");
         }
     }
@@ -128,32 +120,39 @@ public class CompetitionConfig {
 
     public Set<String> getRewardPositions(String competitionName) {
         ConfigurationSection returning = config.getConfigurationSection("competitions." + competitionName + ".rewards");
-        if (returning != null) return returning.getKeys(false);
-        else return new HashSet<>();
+        if (returning != null) {
+            return returning.getKeys(false);
+        } else {
+            return new HashSet<>();
+        }
     }
 
     public Set<String> getRewardPositions() {
         ConfigurationSection returning = config.getConfigurationSection("rewards");
-        if (returning != null) return returning.getKeys(false);
-        else return new HashSet<>();
+        if (returning != null) {
+            return returning.getKeys(false);
+        } else {
+            return new HashSet<>();
+        }
     }
 
     public String getBarColour(String competitionName) {
         if (competitionName != null) {
             if (config.getString("competitions." + competitionName + ".bossbar-colour") != null) {
                 return Objects.requireNonNull(config.getString("competitions." + competitionName + ".bossbar-colour")).toUpperCase();
-            } else if (config.getString("general.bossbar-colour") != null) {
-                return Objects.requireNonNull(config.getString("general.bossbar-colour")).toUpperCase();
-            } else {
-                return "GREEN";
             }
-        } else {
             if (config.getString("general.bossbar-colour") != null) {
                 return Objects.requireNonNull(config.getString("general.bossbar-colour")).toUpperCase();
-            } else {
-                return "GREEN";
             }
+
+            return "GREEN";
         }
+
+        if (config.getString("general.bossbar-colour") != null) {
+            return Objects.requireNonNull(config.getString("general.bossbar-colour")).toUpperCase();
+        }
+
+        return "GREEN";
     }
 
     public String getBarPrefix(String competitionName) {
@@ -178,14 +177,18 @@ public class CompetitionConfig {
         if (competitionName != null) {
             if (config.getInt("competitions." + competitionName + ".minimum-players") != 0) {
                 return config.getInt("competitions." + competitionName + ".minimum-players");
-            } else if (config.getInt("general.minimum-players") != 0) {
-                return config.getInt("general.minimum-players");
-            } else return 1;
-        } else {
+            }
             if (config.getInt("general.minimum-players") != 0) {
                 return config.getInt("general.minimum-players");
-            } else return 1;
+            }
+            return 1;
         }
+
+        if (config.getInt("general.minimum-players") != 0) {
+            return config.getInt("general.minimum-players");
+        }
+
+        return 1;
     }
 
     public Sound getStartNoise(String competitionName) {
@@ -198,9 +201,9 @@ public class CompetitionConfig {
 
         if (!stringSound.equalsIgnoreCase("NONE")) {
             return Sound.valueOf(stringSound);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     public List<String> getRequiredWorlds() {

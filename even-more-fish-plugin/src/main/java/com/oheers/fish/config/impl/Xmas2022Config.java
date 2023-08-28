@@ -1,6 +1,7 @@
-package com.oheers.fish.config;
+package com.oheers.fish.config.impl;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.ConfigFile;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,17 +10,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class Xmas2022Config {
+public class Xmas2022Config extends ConfigFile {
 
-    private final EvenMoreFish plugin;
-    private FileConfiguration config;
     private boolean isAvailable = true;
-    public HashMap<Integer, Material> fillerDefault = new HashMap<>();
+    public Map<Integer, Material> fillerDefault = new HashMap<>();
 
-    public Xmas2022Config (EvenMoreFish plugin) {
-        this.plugin = plugin;
-        reload();
+    @Override
+    public String getFileName() {
+        return "xmas2022.yml";
+    }
+
+    public Xmas2022Config(EvenMoreFish plugin) {
+        super(plugin);
     }
 
     public void reload() {
@@ -61,6 +65,7 @@ public class Xmas2022Config {
         return this.config.getString("gui.advent-calendar.title");
     }
 
+    @Override
     public FileConfiguration getConfig() {
         return this.config;
     }
