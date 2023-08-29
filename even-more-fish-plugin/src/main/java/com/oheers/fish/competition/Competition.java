@@ -219,8 +219,9 @@ public class Competition {
      * @return A boolean, true = do it in actionbar.
      */
     public boolean isDoingFirstPlaceActionBar() {
-        boolean a = EvenMoreFish.msgs.config.getBoolean("action-bar-message");
-        boolean b = EvenMoreFish.msgs.config.getStringList("action-bar-types").isEmpty() || EvenMoreFish.msgs.config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
+        boolean a = EvenMoreFish.msgs.getConfig().getBoolean("action-bar-message");
+        boolean b = EvenMoreFish.msgs.getConfig().getStringList("action-bar-types").isEmpty() || EvenMoreFish.msgs.getConfig()
+                .getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
         return a && b;
     }
 
@@ -409,8 +410,8 @@ public class Competition {
                         }
                         builder.append(message.getRawMessage(true, true));
 
-                        if (pos == EvenMoreFish.msgs.config.getInt("leaderboard-count")) {
-                            if (EvenMoreFish.msgs.config.getBoolean("always-show-pos")) {
+                        if (pos == EvenMoreFish.msgs.getConfig().getInt("leaderboard-count")) {
+                            if (EvenMoreFish.msgs.getConfig().getBoolean("always-show-pos")) {
                                 if (leaderboardMembers.contains(player.getUniqueId())) break;
                                 else reachingCount = false;
                             } else {

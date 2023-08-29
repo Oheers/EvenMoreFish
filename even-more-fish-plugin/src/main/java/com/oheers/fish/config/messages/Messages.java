@@ -1,6 +1,7 @@
 package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.ConfigFile;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -11,14 +12,14 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 
-public class Messages {
-
-    private final EvenMoreFish plugin;
-    public FileConfiguration config;
+public class Messages extends ConfigFile {
+    @Override
+    public String getFileName() {
+        return "messages.yml";
+    }
 
     public Messages(EvenMoreFish plugin) {
-        this.plugin = plugin;
-        reload();
+        super(plugin);
     }
 
     public void reload() {
