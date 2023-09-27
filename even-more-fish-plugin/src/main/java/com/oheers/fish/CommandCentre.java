@@ -646,7 +646,7 @@ class Controls {
         if (args.length == 2) {
             new Message(ConfigMessage.HELP_COMPETITION).broadcast(player, true, false);
         } else {
-            {
+
                 if (args[2].equalsIgnoreCase("start")) {
                     // if the admin has only done /emf admin competition start
                     if (args.length < 4) {
@@ -671,7 +671,7 @@ class Controls {
                 } else {
                     new Message(ConfigMessage.HELP_COMPETITION).broadcast(player, true, false);
                 }
-            }
+
         }
     }
 
