@@ -42,11 +42,11 @@ public class MainConfig {
     }
 
     public boolean databaseEnabled() {
-        return config.getBoolean("database");
+        return doingExperimentalFeatures() && config.getBoolean("database");
     }
 
     public boolean isDatabaseOnline() {
-        return config.getBoolean("database") && !EvenMoreFish.databaseV3.usingVersionV2();
+        return databaseEnabled() && !EvenMoreFish.databaseV3.usingVersionV2();
     }
 
     public boolean isCompetitionUnique() {
