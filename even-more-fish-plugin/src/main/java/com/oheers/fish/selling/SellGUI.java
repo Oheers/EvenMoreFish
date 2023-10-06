@@ -417,7 +417,7 @@ public class SellGUI implements InventoryHolder {
                 }
             }
         }
-        if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) logSoldFish(player.getUniqueId(),soldFish);
+        if (EvenMoreFish.mainConfig.databaseEnabled()) logSoldFish(player.getUniqueId(),soldFish);
         return totalWorth != 0.0;
     }
     

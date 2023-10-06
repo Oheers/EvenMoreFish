@@ -112,7 +112,7 @@ public class Competition {
         }
         handleRewards();
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
-        if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
+        if (EvenMoreFish.mainConfig.databaseEnabled()) {
             Competition competitionRef = this;
             new BukkitRunnable() {
             
@@ -652,7 +652,7 @@ public class Competition {
             int i = 1;
             CompetitionEntry topEntry = leaderboard.getTopEntry();
             if (topEntry != null) {
-                if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
+                if (EvenMoreFish.mainConfig.databaseEnabled()) {
                     UserReport report = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
                     if (report != null) {
                         report.incrementCompetitionsWon(1);
@@ -669,7 +669,7 @@ public class Competition {
                         reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null);
                     }
                     i++;
-                    if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures() && entry != null) {
+                    if (EvenMoreFish.mainConfig.databaseEnabled() && entry != null) {
                         UserReport report = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
                         if (report != null) {
                             report.incrementCompetitionsJoined(1);
@@ -686,7 +686,7 @@ public class Competition {
                                 reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()), null);
                             }
 
-                            if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
+                            if (EvenMoreFish.mainConfig.databaseEnabled()) {
                                 UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
                                 if (report != null) {
                                     report.incrementCompetitionsJoined(1);
@@ -696,7 +696,7 @@ public class Competition {
                                 }
                             }
                         });
-                    } else if (EvenMoreFish.mainConfig.databaseEnabled() && EvenMoreFish.mainConfig.doingExperimentalFeatures()) {
+                    } else if (EvenMoreFish.mainConfig.databaseEnabled()) {
                         iterator.forEachRemaining(competitionEntry -> {
                             UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
                             if (report != null) {

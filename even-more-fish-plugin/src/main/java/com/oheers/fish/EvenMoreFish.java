@@ -210,7 +210,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         wgPlugin = getWorldGuard();
         checkPapi();
 
-        if (mainConfig.databaseEnabled() && mainConfig.doingExperimentalFeatures()) {
+        if (mainConfig.databaseEnabled()) {
 
             DataManager.init();
 
@@ -246,7 +246,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             active.end();
         }
 
-        if (mainConfig.databaseEnabled() && mainConfig.doingExperimentalFeatures()) {
+        if (mainConfig.databaseEnabled()) {
             databaseV3.shutdown();
         }
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
@@ -385,7 +385,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private void saveUserData() {
         //really slow, we should execute this via a runnable.
-        if (!(EvenMoreFish.mainConfig.doingExperimentalFeatures() && mainConfig.isDatabaseOnline())) {
+        if (!(mainConfig.isDatabaseOnline())) {
             return;
         }
 

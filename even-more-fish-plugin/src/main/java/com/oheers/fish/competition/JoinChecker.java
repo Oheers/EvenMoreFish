@@ -30,7 +30,7 @@ public class JoinChecker implements Listener {
      * @param userName the in-game username of the user having their data read.
      */
     public void databaseRegistration(UUID userUUID, String userName) {
-        if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && EvenMoreFish.mainConfig.isDatabaseOnline()) {
+        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
             new BukkitRunnable() {
                 
                 @Override
@@ -100,7 +100,7 @@ public class JoinChecker implements Listener {
             EvenMoreFish.active.getStatusBar().removePlayer(event.getPlayer());
         }
         
-        if (EvenMoreFish.mainConfig.doingExperimentalFeatures() && EvenMoreFish.mainConfig.isDatabaseOnline()) {
+        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
             new BukkitRunnable() {
                 
                 @Override
