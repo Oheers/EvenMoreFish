@@ -100,7 +100,6 @@ public class Competition {
     }
 
     public void end() {
-        active = false;
         // print leaderboard
         this.timingSystem.cancel();
         statusBar.hide();
@@ -110,6 +109,7 @@ public class Competition {
             new Message(ConfigMessage.COMPETITION_END).broadcast(player, true, true);
             sendPlayerLeaderboard(player);
         }
+        active = false;
         handleRewards();
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
         if (EvenMoreFish.mainConfig.databaseEnabled()) {
