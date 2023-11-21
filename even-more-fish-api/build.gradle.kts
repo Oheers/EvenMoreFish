@@ -8,3 +8,10 @@ dependencies {
     compileOnly(libs.annotations)
     compileOnly(libs.commons.lang3)
 }
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+        vendor.set(JvmVendorSpec.ADOPTIUM)
+    }
+}
