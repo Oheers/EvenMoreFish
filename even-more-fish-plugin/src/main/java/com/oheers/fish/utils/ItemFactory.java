@@ -83,6 +83,15 @@ public class ItemFactory {
      */
     public ItemStack getType(OfflinePlayer player) {
 
+        ItemStack material = checkMaterial();
+        if (material != null) return material;
+
+        ItemStack rawMaterial = checkRawMaterial();
+        if (rawMaterial != null) return rawMaterial;
+
+        ItemStack externalItem = checkItem(this.configurationFile.getString(configLocation + ".item.material"));
+        if (externalItem != null) return externalItem;
+
         ItemStack oneHeadDB = checkRandomHeadDB(-1);
         if (oneHeadDB != null) return oneHeadDB;
 
@@ -101,17 +110,11 @@ public class ItemFactory {
         ItemStack headDB = checkHeadDB();
         if (headDB != null) return headDB;
 
-        ItemStack material = checkMaterial();
-        if (material != null) return material;
-
         ItemStack head64 = checkHead64();
         if (head64 != null) return head64;
 
         ItemStack headUUID = checkHeadUUID();
         if (headUUID != null) return headUUID;
-
-        ItemStack rawMaterial = checkRawMaterial();
-        if (rawMaterial != null) return rawMaterial;
 
         // The fish has no item type specified
         return new ItemStack(Material.COD);
@@ -204,7 +207,19 @@ public class ItemFactory {
      * @return Null if the setting doesn't exist, the item in ItemStack form if it does.
      */
     private ItemStack checkMaterial() {
-        return checkItem(this.configurationFile.getString(configLocation + ".item.material"));
+        // The fish has item: material selected
+        String mValue = this.configurationFile.getString(configLocation + ".item.material");
+        if (mValue == null) {
+            return null;
+        }
+
+        Material material = Material.getMaterial(mValue.toUpperCase());
+        if (material == null) {
+            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
+            material = Material.COD;
+        }
+
+        return new ItemStack(material);
     }
 
     //Need to impl oraxen, ecoitems, denizen & ItemsAdder addons
@@ -221,6 +236,7 @@ public class ItemFactory {
             EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s",
                     configLocation,
                     materialID));
+            rawMaterial = false;
             return new ItemStack(Material.COD);
         }
     }
