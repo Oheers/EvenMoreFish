@@ -209,6 +209,7 @@ public class Fish implements Cloneable {
         if (separated.length < 3) {
             Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
             EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Invalid potion effect specified. Defaulting to Speed 2 for 100 seconds.");
+            return;
         }
 
         PotionEffectType effect = PotionEffectType.getByName(separated[0].toUpperCase());
