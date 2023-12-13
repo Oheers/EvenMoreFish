@@ -89,14 +89,11 @@ public class ItemFactory {
         ItemStack rawMaterial = checkRawMaterial();
         if (rawMaterial != null) return rawMaterial;
 
-        ItemStack externalItem = checkItem(this.configurationFile.getString(configLocation + ".item.material"));
-        if (externalItem != null) return externalItem;
+        ItemStack oneMaterial = checkRandomMaterial(-1);
+        if (oneMaterial != null) return oneMaterial;
 
         ItemStack oneHeadDB = checkRandomHeadDB(-1);
         if (oneHeadDB != null) return oneHeadDB;
-
-        ItemStack oneMaterial = checkRandomMaterial(-1);
-        if (oneMaterial != null) return oneMaterial;
 
         ItemStack oneHead64 = checkRandomHead64(-1);
         if (oneHead64 != null) return oneHead64;
@@ -215,6 +212,26 @@ public class ItemFactory {
 
         Material material = Material.getMaterial(mValue.toUpperCase());
         if (material == null) {
+            ItemStack customItemStack = checkMaterial(mValue);
+            if (customItemStack != null) { return customItemStack; }
+            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
+            material = Material.COD;
+        }
+
+        return new ItemStack(material);
+    }
+
+    private ItemStack checkMaterial(String mValue) {
+        if (mValue == null) {
+            return null;
+        }
+
+        Material material = Material.getMaterial(mValue.toUpperCase());
+        if (material == null) {
+            ItemStack customItemStack = checkItem(mValue);
+            if (customItemStack != null) {
+                return customItemStack;
+            }
             EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
             material = Material.COD;
         }
@@ -259,20 +276,20 @@ public class ItemFactory {
                 this.chosenRandomIndex = randomIndex;
             }
 
-            Material m = Material.getMaterial(lValues.get(randomIndex).toUpperCase());
+            ItemStack customItemStack = checkMaterial(lValues.get(randomIndex));
             itemRandom = true;
 
-            if (m == null) {
+            if (customItemStack == null) {
                 EvenMoreFish.logger.log(Level.SEVERE, configLocation + "'s has an incorrect material name in its materials list.");
                 for (String material : lValues) {
-                    if (Material.getMaterial(material.toUpperCase()) != null) {
-                        return new ItemStack(Objects.requireNonNull(Material.getMaterial(material.toUpperCase())));
+                    ItemStack item = checkMaterial(material);
+                    if (item != null) {
+                        return item;
                     }
                 }
-
                 return new ItemStack(Material.COD);
             } else {
-                return new ItemStack(m);
+                return customItemStack;
             }
         }
 
