@@ -245,7 +245,17 @@ public class ItemFactory {
             return null;
         }
 
-        return getItem(materialID);
+        rawMaterial = true;
+
+        try {
+            return getItem(materialID);
+        } catch (Exception e) {
+            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s",
+                    configLocation,
+                    materialID));
+            rawMaterial = false;
+            return new ItemStack(Material.COD);
+        }
     }
 
     /**
@@ -418,17 +428,25 @@ public class ItemFactory {
         return checkItem(materialID);
     }
 
-    public ItemStack getItem(final @NotNull String materialString) {
+    public @NotNull ItemStack getItem(final @NotNull String materialString) throws Exception{
         if (materialString.contains(":")) {
             //assume this is an addon string
-            rawMaterial = true;
             final String[] split = materialString.split(":", 2);
             final String prefix = split[0];
             final String id = split[1];
             return EvenMoreFish.getInstance().getAddonManager().getItemStack(prefix,id);
         }
-        // Null if it isn't an addon string
-        return null;
+
+
+        Material material = Material.matchMaterial(materialString);
+        if (material == null) {
+            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s",
+                    configLocation,
+                    materialString));
+            return new ItemStack(Material.COD);
+        }
+
+        return new ItemStack(material);
     }
 
     /**
