@@ -83,11 +83,17 @@ public class ItemFactory {
      */
     public ItemStack getType(OfflinePlayer player) {
 
-        ItemStack oneHeadDB = checkRandomHeadDB(-1);
-        if (oneHeadDB != null) return oneHeadDB;
+        ItemStack material = checkMaterial();
+        if (material != null) return material;
+
+        ItemStack rawMaterial = checkRawMaterial();
+        if (rawMaterial != null) return rawMaterial;
 
         ItemStack oneMaterial = checkRandomMaterial(-1);
         if (oneMaterial != null) return oneMaterial;
+
+        ItemStack oneHeadDB = checkRandomHeadDB(-1);
+        if (oneHeadDB != null) return oneHeadDB;
 
         ItemStack oneHead64 = checkRandomHead64(-1);
         if (oneHead64 != null) return oneHead64;
@@ -101,17 +107,11 @@ public class ItemFactory {
         ItemStack headDB = checkHeadDB();
         if (headDB != null) return headDB;
 
-        ItemStack material = checkMaterial();
-        if (material != null) return material;
-
         ItemStack head64 = checkHead64();
         if (head64 != null) return head64;
 
         ItemStack headUUID = checkHeadUUID();
         if (headUUID != null) return headUUID;
-
-        ItemStack rawMaterial = checkRawMaterial();
-        if (rawMaterial != null) return rawMaterial;
 
         // The fish has no item type specified
         return new ItemStack(Material.COD);
@@ -204,7 +204,39 @@ public class ItemFactory {
      * @return Null if the setting doesn't exist, the item in ItemStack form if it does.
      */
     private ItemStack checkMaterial() {
-        return checkItem(this.configurationFile.getString(configLocation + ".item.material"));
+        // The fish has item: material selected
+        String mValue = this.configurationFile.getString(configLocation + ".item.material");
+        if (mValue == null) {
+            return null;
+        }
+
+        Material material = Material.getMaterial(mValue.toUpperCase());
+        if (material == null) {
+            ItemStack customItemStack = checkMaterial(mValue);
+            if (customItemStack != null) { return customItemStack; }
+            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
+            material = Material.COD;
+        }
+
+        return new ItemStack(material);
+    }
+
+    private ItemStack checkMaterial(String mValue) {
+        if (mValue == null) {
+            return null;
+        }
+
+        Material material = Material.getMaterial(mValue.toUpperCase());
+        if (material == null) {
+            ItemStack customItemStack = checkItem(mValue);
+            if (customItemStack != null) {
+                return customItemStack;
+            }
+            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
+            material = Material.COD;
+        }
+
+        return new ItemStack(material);
     }
 
     //Need to impl oraxen, ecoitems, denizen & ItemsAdder addons
@@ -221,6 +253,7 @@ public class ItemFactory {
             EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s",
                     configLocation,
                     materialID));
+            rawMaterial = false;
             return new ItemStack(Material.COD);
         }
     }
@@ -243,20 +276,20 @@ public class ItemFactory {
                 this.chosenRandomIndex = randomIndex;
             }
 
-            Material m = Material.getMaterial(lValues.get(randomIndex).toUpperCase());
+            ItemStack customItemStack = checkMaterial(lValues.get(randomIndex));
             itemRandom = true;
 
-            if (m == null) {
+            if (customItemStack == null) {
                 EvenMoreFish.logger.log(Level.SEVERE, configLocation + "'s has an incorrect material name in its materials list.");
                 for (String material : lValues) {
-                    if (Material.getMaterial(material.toUpperCase()) != null) {
-                        return new ItemStack(Objects.requireNonNull(Material.getMaterial(material.toUpperCase())));
+                    ItemStack item = checkMaterial(material);
+                    if (item != null) {
+                        return item;
                     }
                 }
-
                 return new ItemStack(Material.COD);
             } else {
-                return new ItemStack(m);
+                return customItemStack;
             }
         }
 

@@ -88,7 +88,7 @@ bukkit {
         "mcMMO",
         "AureliumSkills",
         "ItemsAdder",
-        "Denizens",
+        "Denizen",
         "EcoItems",
         "Oraxen",
         "HeadDatabase"

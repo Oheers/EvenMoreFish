@@ -206,8 +206,11 @@ public class Fish implements Cloneable {
 
         String[] separated = effectConfig.split(":");
         // if it's formatted wrong, it'll just give the player this as a stock effect
-        if (separated.length != 3)
+        if (separated.length < 3) {
             Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
+            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Invalid potion effect specified. Defaulting to Speed 2 for 5 seconds.");
+            return;
+        }
 
         PotionEffectType effect = PotionEffectType.getByName(separated[0].toUpperCase());
         int amplitude = Integer.parseInt(separated[1]);

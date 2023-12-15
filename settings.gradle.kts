@@ -31,7 +31,7 @@ dependencyResolutionManagement {
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.5.0b")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.12.2")
-            library("denizens-api", "com.denizenscript:denizen:1.2.5-SNAPSHOT") // We must use 1.2.6 until we upgrade to java 17
+            library("denizen-api", "com.denizenscript:denizen:1.2.5-SNAPSHOT") // We must use 1.2.6 until we upgrade to java 17
             library("oraxen", "com.github.oraxen:oraxen:1.159.0")
 
             library("ecoitems-api", "com.willfp:EcoItems:5.6.1")
