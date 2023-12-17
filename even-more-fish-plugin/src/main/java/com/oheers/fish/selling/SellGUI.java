@@ -46,7 +46,7 @@ public class SellGUI implements InventoryHolder {
 
     private ItemStack sellIcon, sellAllIcon, filler, errorFiller, confirmIcon, confirmSellAllIcon, noValueIcon, sellAllErrorIcon;
 
-    public SellGUI(Player p) {
+    public SellGUI(Player p, boolean open) {
         this.guiSize = (EvenMoreFish.mainConfig.getGUISize() + 1) * 9;
         this.player = p;
         this.modified = false;
@@ -55,7 +55,9 @@ public class SellGUI implements InventoryHolder {
         addFiller(filler);
         setSellItem();
         setSellAllItem();
-        this.player.openInventory(menu);
+        if (open) {
+            this.player.openInventory(menu);
+        }
     }
 
     public Player getPlayer() {

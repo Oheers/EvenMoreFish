@@ -55,6 +55,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         emfTabs = new ArrayList<>(Arrays.asList(
                 "help",
                 "shop",
+                "sellall",
                 "toggle",
                 "top",
                 "gui")
@@ -113,7 +114,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                             if (EvenMoreFish.permission.has(sender, "emf.admin") && args.length == 2) {
                                 Player p = Bukkit.getPlayer(args[1]);
                                 if (p != null) {
-                                    new SellGUI(p);
+                                    new SellGUI(p, true);
                                     Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
                                     message.setPlayer(p.getName());
                                     message.broadcast(sender, true, true);
@@ -124,7 +125,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                                 }
                             } else {
                                 if (sender instanceof Player) {
-                                    new SellGUI((Player) sender);
+                                    new SellGUI((Player) sender, true);
                                 }
                             }
                         } else {
@@ -139,9 +140,26 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     if (args.length == 2) {
                         Player p = Bukkit.getPlayer(args[1]);
                         if (p != null) {
-                            new SellGUI(p);
+                            new SellGUI(p, true);
                         }
                     }
+                }
+                break;
+            case "sellall":
+                if (!(sender instanceof Player)) {
+                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                    break;
+                }
+                Player p = (Player) sender;
+                if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
+                    if (EvenMoreFish.permission.has(p, "emf.sellall")) {
+                        SellGUI gui = new SellGUI(p, false);
+                        gui.sell(true);
+                    } else {
+                        new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                    }
+                } else {
+                    new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
                 }
                 break;
             case "toggle":
