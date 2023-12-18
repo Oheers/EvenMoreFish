@@ -29,7 +29,6 @@ public class Reward {
     String action;
 
     Vector fishVelocity;
-    Plugin plugin = JavaPlugin.getProvidingPlugin(getClass());
 
     public Reward(String value) {
         String[] split = value.split(":");
@@ -58,9 +57,14 @@ public class Reward {
     }
 
     public void run(OfflinePlayer player, Location hookLocation) {
-        Player p = null;
+        Player p;
 
-        if (player.isOnline()) p = (Player) player;
+        // Done like this to make the runnables not complain
+        if (player.isOnline()) {
+            p = (Player) player;
+        } else {
+            p = null;
+        }
 
         switch (type) {
             case COMMAND:

@@ -60,6 +60,7 @@ dependencies {
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
+    implementation(libs.universalscheduler)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -70,7 +71,6 @@ dependencies {
     library(libs.commons.codec)
 
     library(libs.json.simple)
-    library(libs.universalscheduler)
 }
 
 bukkit {
