@@ -70,6 +70,7 @@ dependencies {
     library(libs.commons.codec)
 
     library(libs.json.simple)
+    library(libs.universalscheduler)
 }
 
 bukkit {
@@ -79,6 +80,7 @@ bukkit {
     version = project.version.toString()
     description = project.description.toString()
     website = "https://github.com/Oheers/EvenMoreFish"
+    foliaSupported = true
 
     depend = listOf("Vault")
     softDepend = listOf(

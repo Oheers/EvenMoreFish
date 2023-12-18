@@ -7,6 +7,7 @@ dependencies {
     compileOnly(libs.spigot.api)
     compileOnly(libs.annotations)
     compileOnly(libs.commons.lang3)
+    compileOnly(libs.universalscheduler)
 }
 
 java {

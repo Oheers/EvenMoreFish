@@ -1,5 +1,7 @@
 package com.oheers.fish.competition;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
@@ -17,9 +19,6 @@ import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Instant;
 import java.util.*;
@@ -46,7 +45,7 @@ public class Competition {
     List<Reward> participationRewards;
     int playersNeeded;
     Sound startSound;
-    BukkitTask timingSystem;
+    MyScheduledTask timingSystem;
     List<UUID> leaderboardMembers = new ArrayList<>();
 
     public Competition(final Integer duration, final CompetitionType type) {
@@ -114,14 +113,10 @@ public class Competition {
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
         if (EvenMoreFish.mainConfig.databaseEnabled()) {
             Competition competitionRef = this;
-            new BukkitRunnable() {
-            
-                @Override
-                public void run() {
-                    EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
-                    leaderboard.clear();
-                }
-            }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(Competition.class));
+            EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
+                EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
+                leaderboard.clear();
+            });
         } else {
             leaderboard.clear();
         }
@@ -129,14 +124,14 @@ public class Competition {
 
     // Starts a runnable to decrease the time left by 1s each second
     private void initTimer() {
-        this.timingSystem = new BukkitRunnable() {
+        this.timingSystem = new UniversalRunnable() {
             @Override
             public void run() {
                 statusBar.timerUpdate(timeLeft, maxDuration);
                 if (decreaseTime()) cancel();
                 //timeLeft--;
             }
-        }.runTaskTimer(JavaPlugin.getProvidingPlugin(getClass()), 0, 20);
+        }.runTaskTimer(EvenMoreFish.getInstance(), 0, 20);
     }
 
     /**
