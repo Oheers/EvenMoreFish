@@ -2,8 +2,6 @@ package com.oheers.fish.addons;
 
 public enum DefaultAddons {
     J8("8"),
-    J9("9"),
-    J16("16"),
     J17("17")
     ;
 
