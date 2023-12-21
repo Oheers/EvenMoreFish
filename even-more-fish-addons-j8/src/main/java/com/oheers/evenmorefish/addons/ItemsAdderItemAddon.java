@@ -37,12 +37,12 @@ public class ItemsAdderItemAddon extends ItemAddon implements Listener {
         }
 
         String[] splitMaterialValue = id.split(":");
-        if (splitMaterialValue.length != 3) {
-            getLogger().severe(() -> String.format("Incorrect format for ItemsAdderItemAddon, use %s:namespace:id",getPrefix()));
+        if (splitMaterialValue.length != 2) {
+            getLogger().severe(() -> String.format("Incorrect format for ItemsAdderItemAddon, use %s:namespace:id. Got %s",getPrefix(), id));
             return null;
         }
 
-        final String namespaceId = splitMaterialValue[1] + ":" + splitMaterialValue[2];
+        final String namespaceId = splitMaterialValue[0] + ":" + splitMaterialValue[1];
         final CustomStack customStack = CustomStack.getInstance(namespaceId);
         if (customStack == null) {
             getLogger().info(() -> String.format("Could not obtain itemsadder item %s", namespaceId));
