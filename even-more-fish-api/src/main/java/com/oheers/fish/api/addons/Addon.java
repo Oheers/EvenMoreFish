@@ -1,7 +1,5 @@
 package com.oheers.fish.api.addons;
 
-import com.oheers.fish.api.addons.exceptions.JavaVersionException;
-import com.oheers.fish.api.addons.exceptions.RequiredPluginException;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import org.bukkit.Bukkit;

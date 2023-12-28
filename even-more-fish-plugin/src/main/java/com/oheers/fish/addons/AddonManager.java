@@ -7,8 +7,6 @@ import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.addons.FileUtil;
 import com.oheers.fish.api.addons.Futures;
 import com.oheers.fish.api.addons.ItemAddon;
-import com.oheers.fish.api.addons.exceptions.JavaVersionException;
-import com.oheers.fish.api.addons.exceptions.RequiredPluginException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
