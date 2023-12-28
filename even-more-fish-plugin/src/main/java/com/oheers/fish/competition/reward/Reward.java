@@ -29,7 +29,6 @@ public class Reward {
     String action;
 
     Vector fishVelocity;
-    Plugin plugin = JavaPlugin.getProvidingPlugin(getClass());
 
     public Reward(String value) {
         String[] split = value.split(":");
@@ -58,9 +57,14 @@ public class Reward {
     }
 
     public void run(OfflinePlayer player, Location hookLocation) {
-        Player p = null;
+        Player p;
 
-        if (player.isOnline()) p = (Player) player;
+        // Done like this to make the runnables not complain
+        if (player.isOnline()) {
+            p = (Player) player;
+        } else {
+            p = null;
+        }
 
         switch (type) {
             case COMMAND:
@@ -77,15 +81,14 @@ public class Reward {
 
                 // running the command
                 String finalCommand = inputCommand;
-                Bukkit.getScheduler().callSyncMethod(plugin, () ->
+                EvenMoreFish.getScheduler().callSyncMethod(() ->
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), finalCommand));
                 break;
             case EFFECT:
                 if (p != null) {
                     String[] parsedEffect = action.split(",");
                     // Adds a potion effect in accordance to the config.yml "EFFECT:" value
-
-                    p.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2]) * 20, Integer.parseInt(parsedEffect[1])));
+                    EvenMoreFish.getScheduler().runTask(p, () -> p.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2]) * 20, Integer.parseInt(parsedEffect[1]))));
                 }
 
                 break;
@@ -93,16 +96,18 @@ public class Reward {
                 // checking the player doesn't have a special effect thingy on
 
                 if (p != null) {
-                    double newhealth = p.getHealth() + Integer.parseInt(action);
-                    // checking the new health won't go above 20
-                    p.setHealth(newhealth > 20 ? 20 : newhealth < 0 ? 0 : newhealth);
+                    EvenMoreFish.getScheduler().runTask(p, () -> {
+                        double newhealth = p.getHealth() + Integer.parseInt(action);
+                        // checking the new health won't go above 20
+                        p.setHealth(newhealth > 20 ? 20 : newhealth < 0 ? 0 : newhealth);
+                    });
                 }
 
                 break;
             case HUNGER:
 
                 if (p != null) {
-                    p.setFoodLevel(p.getFoodLevel() + Integer.parseInt(action));
+                    EvenMoreFish.getScheduler().runTask(p, () -> p.setFoodLevel(p.getFoodLevel() + Integer.parseInt(action)));
                 }
 
                 break;

@@ -20,6 +20,7 @@
 
 package com.oheers.fish.api.addons;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,12 @@ public final class Futures {
             if (Bukkit.isPrimaryThread()) {
                 consumer.accept(value, exception);
             } else {
-                Bukkit.getScheduler().runTask(plugin, () -> consumer.accept(value, exception));
+                new UniversalRunnable() {
+                    @Override
+                    public void run() {
+                        consumer.accept(value, exception);
+                    }
+                }.runTask(plugin);
             }
         });
     }

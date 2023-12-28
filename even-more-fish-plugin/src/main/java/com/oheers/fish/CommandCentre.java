@@ -19,8 +19,6 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -192,13 +190,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (!EvenMoreFish.permission.has(sender, "emf.admin")) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
-                    new BukkitRunnable() {
-
-                        @Override
-                        public void run() {
-                            EvenMoreFish.databaseV3.migrateLegacy(sender);
-                        }
-                    }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(CommandCentre.class));
+                    EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.databaseV3.migrateLegacy(sender));
                 }
                 break;
             case "xmas":

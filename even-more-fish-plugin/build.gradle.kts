@@ -60,6 +60,7 @@ dependencies {
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
+    implementation(libs.universalscheduler)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -79,6 +80,7 @@ bukkit {
     version = project.version.toString()
     description = project.description.toString()
     website = "https://github.com/Oheers/EvenMoreFish"
+    foliaSupported = true
 
     depend = listOf("Vault")
     softDepend = listOf(
