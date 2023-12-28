@@ -26,16 +26,10 @@ public interface Addon {
     /**
      * Can this addon be registered.
      */
-    default boolean canRegister() throws JavaVersionException, RequiredPluginException {
+    default boolean canRegister() {
         final boolean hasRequiredPlugin = Bukkit.getPluginManager().getPlugin(getPluginName()) != null;
         final boolean hasRequiredJavaVersion = SystemUtils.isJavaVersionAtLeast(getRequiredJavaVersion());
-        if(!hasRequiredPlugin) {
-            throw new RequiredPluginException(getPluginName());
-        }
-        if(!hasRequiredJavaVersion) {
-            throw new JavaVersionException(getPluginName(), getRequiredJavaVersion());
-        }
-        return (Bukkit.getPluginManager().getPlugin(getPluginName()) != null) && SystemUtils.isJavaVersionAtLeast(getRequiredJavaVersion());
+        return hasRequiredPlugin && hasRequiredJavaVersion;
     }
 
     /**
