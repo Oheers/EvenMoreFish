@@ -1,5 +1,7 @@
 package com.oheers.fish.api.addons;
 
+import com.oheers.fish.api.addons.exceptions.JavaVersionException;
+import com.oheers.fish.api.addons.exceptions.RequiredPluginException;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import org.bukkit.Bukkit;
@@ -24,10 +26,16 @@ public interface Addon {
     /**
      * Can this addon be registered.
      */
-    default boolean canRegister() {
+    default boolean canRegister() throws JavaVersionException, RequiredPluginException {
         final boolean hasRequiredPlugin = Bukkit.getPluginManager().getPlugin(getPluginName()) != null;
         final boolean hasRequiredJavaVersion = SystemUtils.isJavaVersionAtLeast(getRequiredJavaVersion());
-        return hasRequiredPlugin && hasRequiredJavaVersion;
+        if(!hasRequiredPlugin) {
+            throw new RequiredPluginException(getPluginName());
+        }
+        if(!hasRequiredJavaVersion) {
+            throw new JavaVersionException(getPluginName(), getRequiredJavaVersion());
+        }
+        return (Bukkit.getPluginManager().getPlugin(getPluginName()) != null) && SystemUtils.isJavaVersionAtLeast(getRequiredJavaVersion());
     }
 
     /**
