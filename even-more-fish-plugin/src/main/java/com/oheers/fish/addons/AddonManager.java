@@ -7,8 +7,6 @@ import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.addons.FileUtil;
 import com.oheers.fish.api.addons.Futures;
 import com.oheers.fish.api.addons.ItemAddon;
-import com.oheers.fish.api.addons.exceptions.JavaVersionException;
-import com.oheers.fish.api.addons.exceptions.RequiredPluginException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
@@ -62,13 +60,7 @@ public class AddonManager {
 
     public boolean registerAddon(final @NotNull Addon addon) {
         final String prefix = addon.getPrefix().toLowerCase(Locale.ROOT);
-        try {
-            if (!addon.canRegister()) {
-                this.loadingMap.put(prefix, true);
-                return false;
-            }
-        } catch (JavaVersionException | RequiredPluginException e) {
-            EvenMoreFish.getInstance().getLogger().warning("Addon " + e.getMessage());
+        if (!addon.canRegister()) {
             this.loadingMap.put(prefix, true);
             return false;
         }
@@ -94,14 +86,7 @@ public class AddonManager {
             Objects.requireNonNull(addonInstance.getAuthor(), "The expansion author is null!");
             Objects.requireNonNull(addonInstance.getPrefix(), "The expansion identifier is null!");
 
-            try {
-                if (!addonInstance.canRegister()) {
-                    plugin.getLogger().warning(() -> String.format("Cannot load expansion %s due to an unknown issue.", addonInstance.getPrefix()));
-                    this.loadingMap.put(addonInstance.getPrefix(), true);
-                    return Optional.empty();
-                }
-            } catch (JavaVersionException | RequiredPluginException e) {
-                EvenMoreFish.getInstance().getLogger().warning(e.getMessage());
+            if (!addonInstance.canRegister()) {
                 this.loadingMap.put(addonInstance.getPrefix(), true);
                 return Optional.empty();
             }
