@@ -10,6 +10,8 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.permissions.AdminPerms;
+import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.xmas2022.XmasGUI;
 import net.md_5.bungee.api.chat.*;
@@ -91,7 +93,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         // we've already checked that that args exist
         switch (args[0].toLowerCase()) {
             case "top":
-                if (EvenMoreFish.permission.has(sender, "emf.top")) {
+                if (EvenMoreFish.permission.has(sender, UserPerms.TOP)) {
                     if (!Competition.isActive()) {
                         new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
                     } else {
@@ -108,8 +110,8 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
             case "shop":
                 if (sender instanceof Player || args.length > 1) {
                     if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
-                        if (EvenMoreFish.permission.has(sender, "emf.shop")) {
-                            if (EvenMoreFish.permission.has(sender, "emf.admin") && args.length == 2) {
+                        if (EvenMoreFish.permission.has(sender, UserPerms.SHOP)) {
+                            if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN) && args.length == 2) {
                                 Player p = Bukkit.getPlayer(args[1]);
                                 if (p != null) {
                                     new SellGUI(p, true);
@@ -150,7 +152,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 Player p = (Player) sender;
                 if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
-                    if (EvenMoreFish.permission.has(p, "emf.sellall")) {
+                    if (EvenMoreFish.permission.has(p, UserPerms.SELL_ALL)) {
                         SellGUI gui = new SellGUI(p, false);
                         gui.sell(true);
                     } else {
@@ -166,7 +168,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     break;
                 }
 
-                if (!(EvenMoreFish.permission.has(sender, "emf.toggle"))) {
+                if (!(EvenMoreFish.permission.has(sender, UserPerms.TOGGLE))) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                     break;
                 }
@@ -180,14 +182,14 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 break;
             case "admin":
-                if (EvenMoreFish.permission.has(sender, "emf.admin")) {
+                if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
                     Controls.adminControl(this.plugin, args, sender);
                 } else {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 }
                 break;
             case "migrate":
-                if (!EvenMoreFish.permission.has(sender, "emf.admin")) {
+                if (!EvenMoreFish.permission.has(sender, AdminPerms.MIGRATE)) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
                     EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.databaseV3.migrateLegacy(sender));
@@ -195,7 +197,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 break;
             case "xmas":
                 if (!EvenMoreFish.xmas2022Config.isAvailable()) break;
-                if (!EvenMoreFish.permission.has(sender, "emf.xmas")) {
+                if (!EvenMoreFish.permission.has(sender, UserPerms.XMAS)) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
                     new XmasGUI(((Player) sender).getUniqueId()).display((Player) sender);
@@ -211,7 +213,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         if (args.length > 2 && args[args.length - 1].startsWith("-p:")) {
             if (args[1].equalsIgnoreCase("fish") || args[1].equalsIgnoreCase("bait")) {
-                if (EvenMoreFish.permission.has(sender, "emf.admin")) {
+                if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
                     List<String> playerNames = new ArrayList<>();
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         playerNames.add("-p:" + p.getName());
@@ -223,7 +225,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         switch (args.length) {
             case 1:
-                if (EvenMoreFish.permission.has(sender, "emf.admin")) {
+                if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
 
                     // creates a temp version of tablist where only the qualified completes go through
                     List<String> TEMP_townTabCompletes = l(args[args.length - 1], emfTabs);
@@ -237,28 +239,28 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
             case 2:
                 // checks player has admin perms and has actually used "/emf admin" prior to the 2nd arg
-                if (args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                if (args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
                     return l(args[args.length - 1], adminTabs);
                 } else {
                     return empty;
                 }
             case 3:
-                if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
                     return l(args[args.length - 1], compTabs);
-                } else if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                } else if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
                     List<String> returning = new ArrayList<>();
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                         returning.add(r.getValue().replace(" ", "_"));
                     }
 
                     return l(args[args.length - 1], returning);
-                } else if (args[1].equalsIgnoreCase("bait") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                } else if (args[1].equalsIgnoreCase("bait") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
                     return l(args[args.length - 1], new ArrayList<>(EvenMoreFish.baits.keySet()));
                 } else {
                     return empty;
                 }
             case 4:
-                if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, "emf.admin")) {
+                if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
                     for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
                         if (r.getValue().equalsIgnoreCase(args[2].replace("_", " "))) {
                             List<String> fish = new ArrayList<>();
@@ -272,7 +274,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 return empty;
             case 5:
-                if (EvenMoreFish.permission.has(sender, "emf.admin") && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
+                if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN) && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
                     return l(args[args.length - 1], compTypes);
                 } else {
                     return empty;
@@ -734,13 +736,13 @@ class Help {
             for (int i = 0; i < commands.size(); i++) {
                 if (i == commands.size() - 1) escape = "";
                 if (commands.get(i).contains("/emf admin")) {
-                    if (EvenMoreFish.permission.has(user, "emf.admin")) out.append(commands.get(i)).append(escape);
+                    if (EvenMoreFish.permission.has(user, AdminPerms.ADMIN)) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf top")) {
-                    if (EvenMoreFish.permission.has(user, "emf.top")) out.append(commands.get(i)).append(escape);
+                    if (EvenMoreFish.permission.has(user, UserPerms.TOP)) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf shop")) {
-                    if (EvenMoreFish.permission.has(user, "emf.shop")) out.append(commands.get(i)).append(escape);
+                    if (EvenMoreFish.permission.has(user, UserPerms.SHOP)) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf toggle")) {
-                    if (EvenMoreFish.permission.has(user, "emf.toggle")) out.append(commands.get(i)).append(escape);
+                    if (EvenMoreFish.permission.has(user, UserPerms.TOGGLE)) out.append(commands.get(i)).append(escape);
                 } else out.append(commands.get(i)).append(escape);
             }
         } else {
