@@ -104,6 +104,59 @@ bukkit {
             aliases = listOf("emf")
         }
     }
+
+    permissions {
+        register("emf.*") {
+            children = listOf(
+                "emf.admin",
+                "emf.user"
+            )
+        }
+
+        register("emf.admin") {
+            children = listOf(
+                "emf.admin.update.notify",
+                "emf.admin.migrate"
+            )
+        }
+
+        register("emf.admin.update.notify") {
+            description = "Allows users to be notified about updates."
+        }
+
+        register("emf.admin.migrate") {
+            description = "Allows users to use the migrate command."
+        }
+
+        register("emf.user") {
+            children = listOf(
+                "emf.toggle",
+                "emf.top",
+                "emf.shop",
+                "emf.use_rod",
+                "emf.sellall"
+            )
+        }
+
+        register("emf.sellall") {
+            description = "Allows users to use sellall."
+        }
+        register("emf.toggle") {
+            description = "Allows users to toggle emf."
+        }
+
+        register("emf.top") {
+            description = "Allows users to use /emf top."
+        }
+
+        register("emf.shop") {
+            description = "Allows users to use /emf shop."
+        }
+
+        register("emf.use_rod") {
+            description = "Allows users to use emf rods."
+        }
+    }
 }
 
 tasks {

@@ -16,6 +16,7 @@ import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.requirements.RequirementContext;
 import de.tr7zw.changeme.nbtapi.NBTItem;
@@ -56,7 +57,7 @@ public class FishingProcessor implements Listener {
 
         if (EvenMoreFish.mainConfig.requireFishingPermission()) {
             //check if player have permssion to fish emf fishes
-            if (!EvenMoreFish.permission.has(event.getPlayer(), "emf.use_rod")) {
+            if (!EvenMoreFish.permission.has(event.getPlayer(), UserPerms.USE_ROD)) {
                 if (event.getState() == PlayerFishEvent.State.FISHING) {//send msg only when throw the lure
                     new Message(ConfigMessage.NO_PERMISSION_FISHING).broadcast(event.getPlayer(), true, false);
                 }
