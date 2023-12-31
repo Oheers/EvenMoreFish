@@ -117,7 +117,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return instance;
     }
 
-    public static TaskScheduler getScheduler() { return scheduler; }
+    public static TaskScheduler getScheduler() {
+        return scheduler;
+    }
 
     public AddonManager getAddonManager() {
         return addonManager;
@@ -164,11 +166,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             customNBTRod = createCustomNBTRod();
         }
 
-        if (mainConfig.isEconomyEnabled()) {
-            // could not set up economy.
-            if (!setupEconomy()) {
-                EvenMoreFish.logger.log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
-            }
+        if (mainConfig.isEconomyEnabled() && (!setupEconomy())) {
+            EvenMoreFish.logger.log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
         }
 
         if (!setupPermissions()) {
@@ -323,10 +322,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             getServer().getPluginManager().registerEvents(new HeadDBIntegration(), this);
         }
 
-        if (Bukkit.getPluginManager().getPlugin("AureliumSkills") != null) {
-            if (mainConfig.disableAureliumSkills()) {
-                getServer().getPluginManager().registerEvents(AureliumSkillsFishingEvent.getInstance(), this);
-            }
+        if (Bukkit.getPluginManager().getPlugin("AureliumSkills") != null && (mainConfig.disableAureliumSkills())) {
+            getServer().getPluginManager().registerEvents(AureliumSkillsFishingEvent.getInstance(), this);
+
         }
     }
 
@@ -412,7 +410,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                     databaseV3.createUser(entry.getKey());
                 }
             } catch (InvalidTableException exception) {
-                logger.log(Level.SEVERE, "Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
+                logger.severe("Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
             }
         }
     }

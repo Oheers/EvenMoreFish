@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 public class ConfigUpdater {
 
-    private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
+    private static final String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
     private static String MSG_UPDATE_16 = "\n" +
             "# Shown when the emf %emf_competition_place_fish_*% placeholder requests a position in the leaderboard that doesn't exist\n" +
@@ -217,7 +217,7 @@ public class ConfigUpdater {
             getMessageUpdates(13);
             return;
         }
-        File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
+        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder().getPath() + "\\messages.yml");
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
@@ -242,7 +242,7 @@ public class ConfigUpdater {
     }
 
     public static void updateConfig(int version) throws IOException {
-        File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\config.yml");
+        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder().getPath() + "\\config.yml");
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
@@ -325,7 +325,7 @@ public class ConfigUpdater {
     }
 
     private static void insertCurrencySymbol(int version) throws IOException {
-        File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
+        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder().getPath() + "\\messages.yml");
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
