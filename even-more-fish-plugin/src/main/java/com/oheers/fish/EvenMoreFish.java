@@ -57,7 +57,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public static final int METRIC_ID = 11054;
     public static final int MSG_CONFIG_VERSION = 16;

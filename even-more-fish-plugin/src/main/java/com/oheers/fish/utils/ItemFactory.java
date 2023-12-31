@@ -38,7 +38,7 @@ public class ItemFactory {
     private boolean itemGlowCheck;
     private boolean itemLoreCheck;
     private boolean itemPotionMetaCheck;
-    private boolean xmas2022Item;
+    private final boolean xmas2022Item;
     private String displayName;
 
     public ItemFactory(String configLocation, boolean xmas2022Item) {

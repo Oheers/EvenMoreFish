@@ -8,7 +8,6 @@ import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.Table;
 import com.oheers.fish.database.UserReport;
 import com.oheers.fish.exceptions.InvalidTableException;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

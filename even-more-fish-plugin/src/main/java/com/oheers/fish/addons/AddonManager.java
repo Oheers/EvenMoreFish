@@ -2,7 +2,7 @@ package com.oheers.fish.addons;
 
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.addons.impl.Head64ItemAddon;;
+import com.oheers.fish.addons.impl.Head64ItemAddon;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.addons.FileUtil;
 import com.oheers.fish.api.addons.Futures;

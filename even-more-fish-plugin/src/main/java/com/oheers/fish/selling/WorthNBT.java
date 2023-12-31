@@ -72,7 +72,7 @@ public class WorthNBT {
 
         // gets a possible set-worth in the fish.yml
         try {
-            int configValue = 0;
+            int configValue;
             if (!isXmasFish) configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
             else configValue = EvenMoreFish.xmas2022Config.getConfig().getInt("fish.Christmas 2022." + name + ".set-worth");
 

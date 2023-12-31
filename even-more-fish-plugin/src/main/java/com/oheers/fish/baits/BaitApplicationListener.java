@@ -39,7 +39,7 @@ public class BaitApplicationListener implements Listener {
             return;
         }
 
-        ApplicationResult result = null;
+        ApplicationResult result;
         Bait bait = EvenMoreFish.baits.get(BaitNBTManager.getBaitName(event.getCursor()));
 
         ItemStack fishingRod = clickedItem;

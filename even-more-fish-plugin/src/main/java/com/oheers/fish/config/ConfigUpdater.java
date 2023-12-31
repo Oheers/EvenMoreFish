@@ -234,8 +234,9 @@ public class ConfigUpdater {
 
                 inputBuffer.append(getMessageUpdates(version));
                 // write the new string with the replaced line OVER the same file
-                FileOutputStream fileOut = new FileOutputStream(messagesFile);
-                fileOut.write(inputBuffer.toString().getBytes());
+                try (FileOutputStream fileOut = new FileOutputStream(messagesFile)) {
+                    fileOut.write(inputBuffer.toString().getBytes());
+                }
             }
         }
     }
@@ -258,8 +259,9 @@ public class ConfigUpdater {
 
                 inputBuffer.append(getConfigUpdates(version));
                 // write the new string with the replaced line OVER the same file
-                FileOutputStream fileOut = new FileOutputStream(messagesFile);
-                fileOut.write(inputBuffer.toString().getBytes());
+                try (FileOutputStream fileOut = new FileOutputStream(messagesFile)) {
+                    fileOut.write(inputBuffer.toString().getBytes());
+                }
             }
         }
     }
@@ -340,8 +342,9 @@ public class ConfigUpdater {
                     inputBuffer.append('\n');
                 }
                 // write the new string with the replaced line OVER the same file
-                FileOutputStream fileOut = new FileOutputStream(messagesFile);
-                fileOut.write(inputBuffer.toString().getBytes());
+                try (FileOutputStream fileOut = new FileOutputStream(messagesFile)) {
+                    fileOut.write(inputBuffer.toString().getBytes());
+                }
             }
         }
     }
