@@ -248,7 +248,7 @@ public class FishUtils {
         }
 
         // Shows remaining seconds if seconds > 0 or hours and minutes are 0, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        if (seconds > 0 | (minutes == 0 & hours == 0)) {
+        if (seconds > 0 || (minutes == 0 && hours == 0)) {
             returning += seconds + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false) + " ";
         }
 

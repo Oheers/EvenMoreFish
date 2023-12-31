@@ -18,17 +18,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class GUIConfig {
 
     private final EvenMoreFish plugin;
     private FileConfiguration config;
-    public HashMap<Integer, ItemStack> fillerDefault = new HashMap<>();
+    public Map<Integer, ItemStack> fillerDefault = new HashMap<>();
 
     public GUIConfig (EvenMoreFish plugin) {
         this.plugin = plugin;

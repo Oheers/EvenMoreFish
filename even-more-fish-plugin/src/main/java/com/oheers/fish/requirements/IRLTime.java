@@ -11,7 +11,8 @@ public class IRLTime implements Requirement {
 
     public final String configLocation;
     public final FileConfiguration fileConfig;
-    public int minTime, maxTime;
+    public int minTime;
+    public int maxTime;
 
     /**
      * Compares the real-world time to make fish only available to be caught at certain times of the day. If minTime
