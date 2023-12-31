@@ -23,12 +23,17 @@ import java.util.Set;
 public class Bait {
 
     private final ItemFactory itemFactory;
-    private final String name, displayName, theme;
-    private final int maxApplications, dropQuantity;
+    private final String name;
+    private final String displayName;
+    private final String theme;
+    private final int maxApplications;
+    private final int dropQuantity;
     List<Fish> fishList = new ArrayList<>();
     List<Rarity> rarityList = new ArrayList<>();
     Set<Rarity> fishListRarities = new HashSet<>();
-    double boostRate, applicationWeight, catchWeight;
+    double boostRate;
+    double applicationWeight;
+    double catchWeight;
 
     /**
      * This represents a bait, which can be used to boost the likelihood that a certain fish or fish rarity appears from

@@ -45,7 +45,7 @@ public class AddonManager {
     public ItemStack getItemStack(final String prefix, final String id) {
         if (!addonMap.containsKey(prefix)) {
 
-            if (!loadingMap.getOrDefault(prefix, true)) {
+            if (Boolean.FALSE.equals(loadingMap.getOrDefault(prefix, true))) {
                 plugin.getLogger().warning(() -> String.format("No such prefix %s, did you install the addon?", prefix));
             }
             return null;

@@ -12,8 +12,7 @@ public class AntiCraft implements Listener {
     public void onCraft(CraftItemEvent event) {
         for (ItemStack craftItem : event.getInventory().getMatrix()) {
             if (craftItem == null) continue;
-            if (FishUtils.isFish(craftItem)) event.setCancelled(true);
-            else if (FishUtils.isBaitObject(craftItem)) event.setCancelled(true);
+            if (FishUtils.isFish(craftItem) || FishUtils.isBaitObject(craftItem)) event.setCancelled(true);
         }
     }
 }
