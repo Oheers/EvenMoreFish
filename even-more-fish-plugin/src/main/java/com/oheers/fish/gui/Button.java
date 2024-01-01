@@ -34,7 +34,7 @@ public class Button {
         try {
             this.material = Material.valueOf(materialString);
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Invalid material ("  + materialString + ") for gui button: " + identifier);
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Invalid material ("  + materialString + ") for gui button: " + identifier);
             this.material = Material.BARRIER;
         }
 

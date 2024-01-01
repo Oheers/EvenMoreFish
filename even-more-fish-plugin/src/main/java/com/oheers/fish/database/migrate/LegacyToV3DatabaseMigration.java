@@ -105,7 +105,7 @@ public class LegacyToV3DatabaseMigration {
                     prep.setFloat(6, report.getLargestLength());
                     prep.executeUpdate();
                 } catch (SQLException exception) {
-                    EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: Users.");
+                    EvenMoreFish.getInstance().getLogger().severe(() -> "Could not add " + uuid + " in the table: Users.");
                     exception.printStackTrace();
                 }
             });
@@ -129,7 +129,7 @@ public class LegacyToV3DatabaseMigration {
                 
                 prep.executeUpdate();
             } catch (SQLException exception) {
-                EvenMoreFish.logger.severe(() -> "Could not add " + uuid + " in the table: emf_users.");
+                EvenMoreFish.getInstance().getLogger().severe(() -> "Could not add " + uuid + " in the table: emf_users.");
                 exception.printStackTrace();
             }
         });
@@ -151,7 +151,7 @@ public class LegacyToV3DatabaseMigration {
             return;
         }
         
-        EvenMoreFish.logger.info(() -> initiator.getName() + " has begun the migration to EMF database V3 from V2.");
+        EvenMoreFish.getInstance().getLogger().info(() -> initiator.getName() + " has begun the migration to EMF database V3 from V2.");
         Message msg = new Message("Beginning conversion to V3 database engine.");
         msg.usePrefix(PrefixType.ADMIN);
         msg.broadcast(initiator, true, false);
@@ -202,7 +202,7 @@ public class LegacyToV3DatabaseMigration {
             message.usePrefix(PrefixType.ERROR);
             message.broadcast(initiator, true, false);
             
-            EvenMoreFish.logger.log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.");
             exception.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

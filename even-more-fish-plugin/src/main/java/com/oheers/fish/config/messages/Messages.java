@@ -40,7 +40,7 @@ public class Messages {
                 stream = this.plugin.getResource("locales/messages_en.yml");
             }
             if (stream == null) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not get resource for EvenMoreFish/messages.yml");
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not get resource for EvenMoreFish/messages.yml");
                 return;
             }
             try {

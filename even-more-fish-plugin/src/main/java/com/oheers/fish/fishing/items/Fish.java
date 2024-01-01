@@ -1,7 +1,7 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
+import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -165,7 +165,7 @@ public class Fish implements Cloneable {
             this.length = -1f;
         } else {
             // Random logic that returns a float to 1dp
-            int len = (int) (Math.random() * (maxSize * 10 - minSize * 10 + 1) + minSize * 10);
+            int len = (int) (EvenMoreFish.getInstance().getRandom().nextInt() * (maxSize * 10 - minSize * 10 + 1) + minSize * 10);
             this.length = (float) len / 10;
         }
     }

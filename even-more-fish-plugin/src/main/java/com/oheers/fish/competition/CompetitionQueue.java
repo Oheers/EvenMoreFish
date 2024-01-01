@@ -12,46 +12,49 @@ public class CompetitionQueue {
     public void load() {
         competitions = new TreeMap<>();
         // Competitions exist in the competitions.yml
-        if (EvenMoreFish.competitionConfig.getCompetitions() != null) {
-            for (String comp : EvenMoreFish.competitionConfig.getCompetitions()) {
+        if (EvenMoreFish.competitionConfig.getCompetitions() == null) {
+            return;
+        }
 
-                CompetitionType type = EvenMoreFish.competitionConfig.getCompetitionType(comp);
-                Competition competition = new Competition(EvenMoreFish.competitionConfig.getCompetitionDuration(comp) * 60, type);
+        for (String comp : EvenMoreFish.competitionConfig.getCompetitions()) {
 
-                competition.setCompetitionName(comp);
-                competition.setAdminStarted(false);
-                competition.initAlerts(comp);
-                competition.initRewards(comp, false);
-                competition.initBar(comp);
-                competition.initGetNumbersNeeded(comp);
-                competition.initStartSound(comp);
+            CompetitionType type = EvenMoreFish.competitionConfig.getCompetitionType(comp);
+            Competition competition = new Competition(EvenMoreFish.competitionConfig.getCompetitionDuration(comp) * 60, type);
 
-                if (EvenMoreFish.competitionConfig.specificDayTimes(comp)) {
-                    for (String day : EvenMoreFish.competitionConfig.activeDays(comp)) {
-                        for (String time : EvenMoreFish.competitionConfig.getDayTimes(comp, day)) {
-                            competitions.put(generateTimeCode(day, time), competition);
-                        }
+            competition.setCompetitionName(comp);
+            competition.setAdminStarted(false);
+            competition.initAlerts(comp);
+            competition.initRewards(comp, false);
+            competition.initBar(comp);
+            competition.initGetNumbersNeeded(comp);
+            competition.initStartSound(comp);
+
+            if (EvenMoreFish.competitionConfig.specificDayTimes(comp)) {
+                for (String day : EvenMoreFish.competitionConfig.activeDays(comp)) {
+                    for (String time : EvenMoreFish.competitionConfig.getDayTimes(comp, day)) {
+                        competitions.put(generateTimeCode(day, time), competition);
                     }
-                } else if (EvenMoreFish.competitionConfig.doingRepeatedTiming(comp)) {
-                    if (EvenMoreFish.competitionConfig.hasBlacklistedDays(comp)) {
-                        List<String> blacklistedDays = EvenMoreFish.competitionConfig.getBlacklistedDays(comp);
-                        for (String time : EvenMoreFish.competitionConfig.getRepeatedTiming(comp)) {
-                            for (String day : days) {
-                                if (!blacklistedDays.contains(day)) {
-                                    competitions.put(generateTimeCode(day, time), competition);
-                                }
-                            }
-                        }
-                    } else {
-                        for (String time : EvenMoreFish.competitionConfig.getRepeatedTiming(comp)) {
-                            for (String day : days) {
+                }
+            } else if (EvenMoreFish.competitionConfig.doingRepeatedTiming(comp)) {
+                if (EvenMoreFish.competitionConfig.hasBlacklistedDays(comp)) {
+                    List<String> blacklistedDays = EvenMoreFish.competitionConfig.getBlacklistedDays(comp);
+                    for (String time : EvenMoreFish.competitionConfig.getRepeatedTiming(comp)) {
+                        for (String day : days) {
+                            if (!blacklistedDays.contains(day)) {
                                 competitions.put(generateTimeCode(day, time), competition);
                             }
+                        }
+                    }
+                } else {
+                    for (String time : EvenMoreFish.competitionConfig.getRepeatedTiming(comp)) {
+                        for (String day : days) {
+                            competitions.put(generateTimeCode(day, time), competition);
                         }
                     }
                 }
             }
         }
+
     }
 
     // Converts "Wednesday, 14:30" for example, into the minute of the week, Wednesday 14:30 becomes (24*60*2) + (14*60) + 30
@@ -99,17 +102,17 @@ public class CompetitionQueue {
         if (position == this.competitions.size() - 1) {
             this.competitions.remove(currentTimeCode);
             return this.competitions.keySet().iterator().next();
-        } else {
-            int i = 0;
-            for (Map.Entry<Integer, Competition> integerCompetitionEntry : this.competitions.entrySet()) {
-                if (i == position + 1) {
-                    this.competitions.remove(currentTimeCode);
-                    return integerCompetitionEntry.getKey();
-                }
-                i++;
-            }
-            this.competitions.remove(currentTimeCode);
-            return -1;
         }
+
+        int i = 0;
+        for (Map.Entry<Integer, Competition> integerCompetitionEntry : this.competitions.entrySet()) {
+            if (i == position + 1) {
+                this.competitions.remove(currentTimeCode);
+                return integerCompetitionEntry.getKey();
+            }
+            i++;
+        }
+        this.competitions.remove(currentTimeCode);
+        return -1;
     }
 }

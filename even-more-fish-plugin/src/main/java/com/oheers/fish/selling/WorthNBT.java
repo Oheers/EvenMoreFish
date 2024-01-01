@@ -1,8 +1,8 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.FishUtils;
+import com.oheers.fish.utils.NbtUtils;
 import com.oheers.fish.fishing.items.Fish;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
@@ -72,7 +72,7 @@ public class WorthNBT {
 
         // gets a possible set-worth in the fish.yml
         try {
-            int configValue = 0;
+            int configValue;
             if (!isXmasFish) configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
             else configValue = EvenMoreFish.xmas2022Config.getConfig().getInt("fish.Christmas 2022." + name + ".set-worth");
 

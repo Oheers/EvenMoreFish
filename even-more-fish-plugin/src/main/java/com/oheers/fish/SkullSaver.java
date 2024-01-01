@@ -5,6 +5,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.selling.WorthNBT;
+import com.oheers.fish.utils.FishUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -46,7 +47,7 @@ public class SkullSaver implements Listener {
             block.getWorld().dropItem(block.getLocation(), stack);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 1);
         } catch (InvalidFishException exception) {
-            EvenMoreFish.logger.severe(() -> String.format("Error fetching fish from config at location: " +
+            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("Error fetching fish from config at location: " +
                 "x:%d y:%d z:%d world:%s",
                 block.getLocation().getBlockX(),
                 block.getLocation().getBlockY(),

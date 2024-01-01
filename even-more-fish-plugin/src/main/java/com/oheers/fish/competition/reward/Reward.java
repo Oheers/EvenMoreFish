@@ -1,7 +1,7 @@
 package com.oheers.fish.competition.reward;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
+import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.api.EMFRewardEvent;
 import com.oheers.fish.config.messages.OldMessage;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -12,12 +12,11 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class Reward {
         String[] split = value.split(":");
 
         if (split.length < 2) {
-            EvenMoreFish.logger.log(Level.WARNING, value + " is not formatted correctly. It won't be given as a reward");
+            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, value + " is not formatted correctly. It won't be given as a reward");
             this.type = RewardType.BAD_FORMAT;
         } else {
             try {
@@ -56,7 +55,7 @@ public class Reward {
         return action;
     }
 
-    public void run(OfflinePlayer player, Location hookLocation) {
+    public void run(@NotNull OfflinePlayer player, Location hookLocation) {
         Player p;
 
         // Done like this to make the runnables not complain
@@ -133,7 +132,7 @@ public class Reward {
                 pM.callEvent(event);
                 break;
             default:
-                EvenMoreFish.logger.log(Level.SEVERE, "Error in loading a reward.");
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Error in loading a reward.");
         }
     }
 

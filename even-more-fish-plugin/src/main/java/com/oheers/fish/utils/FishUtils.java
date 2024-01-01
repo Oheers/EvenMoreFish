@@ -1,7 +1,8 @@
-package com.oheers.fish;
+package com.oheers.fish.utils;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -30,7 +31,7 @@ import java.util.regex.Pattern;
 public class FishUtils {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '\u00A7';
+    private static final String COLOR_CHAR = "§";
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
@@ -92,7 +93,7 @@ public class FishUtils {
 
             return fish;
         } catch (InvalidFishException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
                     "deleted the fish since this fish was caught.");
         }
 
@@ -186,7 +187,7 @@ public class FishUtils {
             return false;
         } else {
             // the user has defined a region whitelist but doesn't have a region plugin.
-            EvenMoreFish.logger.log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
+            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
             return true;
         }
     }
@@ -248,7 +249,7 @@ public class FishUtils {
         }
 
         // Shows remaining seconds if seconds > 0 or hours and minutes are 0, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
-        if (seconds > 0 | (minutes == 0 & hours == 0)) {
+        if (seconds > 0 || (minutes == 0 && hours == 0)) {
             returning += seconds + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false) + " ";
         }
 

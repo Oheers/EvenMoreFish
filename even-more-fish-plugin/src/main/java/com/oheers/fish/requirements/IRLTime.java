@@ -11,7 +11,8 @@ public class IRLTime implements Requirement {
 
     public final String configLocation;
     public final FileConfiguration fileConfig;
-    public int minTime, maxTime;
+    public int minTime;
+    public int maxTime;
 
     /**
      * Compares the real-world time to make fish only available to be caught at certain times of the day. If minTime
@@ -55,7 +56,7 @@ public class IRLTime implements Requirement {
         try {
             return (Integer.parseInt(time[0]) * 60) + Integer.parseInt(time[1]);
         } catch (IndexOutOfBoundsException | NumberFormatException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "FATAL error reading " + HHMMFormat + ", resorting to default value of " + fallback);
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "FATAL error reading " + HHMMFormat + ", resorting to default value of " + fallback);
             return fallback;
         }
     }

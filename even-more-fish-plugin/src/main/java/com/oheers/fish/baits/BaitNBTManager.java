@@ -1,8 +1,8 @@
 package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.FishUtils;
+import com.oheers.fish.utils.NbtUtils;
 import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
@@ -108,7 +108,7 @@ public class BaitNBTManager {
                     item.setItemMeta(meta);
                 }
             } catch (IndexOutOfBoundsException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Failed to apply bait: " + bait.getName() + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed to apply bait: " + bait.getName() + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
                 return null;
             }
 

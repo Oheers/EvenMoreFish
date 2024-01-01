@@ -1,7 +1,7 @@
 package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
+import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class Message {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '\u00A7';
+    private static final String COLOR_CHAR = "§";
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     public String message;
     private boolean canSilent, canHidePrefix;
@@ -192,7 +192,7 @@ public class Message {
             String returning = EvenMoreFish.msgs.config.getString(id);
             if (returning != null) return returning;
             else {
-                EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
                 return normal;
             }
         }
@@ -212,7 +212,7 @@ public class Message {
             List<String> returning = EvenMoreFish.msgs.config.getStringList(id);
             if (!returning.isEmpty()) return returning;
             else {
-                EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
                 return normal;
             }
         }

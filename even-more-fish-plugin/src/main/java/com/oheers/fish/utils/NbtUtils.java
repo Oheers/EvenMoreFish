@@ -1,4 +1,4 @@
-package com.oheers.fish;
+package com.oheers.fish.utils;
 
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;

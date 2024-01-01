@@ -2,7 +2,7 @@ package com.oheers.fish.addons;
 
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.addons.impl.Head64ItemAddon;;
+import com.oheers.fish.addons.impl.Head64ItemAddon;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.addons.FileUtil;
 import com.oheers.fish.api.addons.Futures;
@@ -45,7 +45,7 @@ public class AddonManager {
     public ItemStack getItemStack(final String prefix, final String id) {
         if (!addonMap.containsKey(prefix)) {
 
-            if (!loadingMap.getOrDefault(prefix, true)) {
+            if (Boolean.FALSE.equals(loadingMap.getOrDefault(prefix, true))) {
                 plugin.getLogger().warning(() -> String.format("No such prefix %s, did you install the addon?", prefix));
             }
             return null;

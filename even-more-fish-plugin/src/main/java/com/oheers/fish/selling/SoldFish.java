@@ -6,7 +6,7 @@ public class SoldFish {
     private int amount;
     
     private double totalValue;
-    private double length;
+    private final double length;
     
     public SoldFish(String name, String rarity, int amount, double totalValue, double length) {
         this.name = name;

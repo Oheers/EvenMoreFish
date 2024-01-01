@@ -98,7 +98,7 @@ public class XmasGUI implements InventoryHolder {
                     this.inventory.setItem(i, createItem(false, day, currentDay, null));
 
                 } catch (NullPointerException exception) {
-                    EvenMoreFish.logger.log(Level.SEVERE, "No fish found for day (" + day + ") in xmas2022.yml config file.");
+                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "No fish found for day (" + day + ") in xmas2022.yml config file.");
                 }
             }
     }

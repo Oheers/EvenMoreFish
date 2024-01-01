@@ -2,7 +2,6 @@ package com.oheers.evenmorefish.addons;
 
 
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.oheers.fish.api.addons.ItemAddon;
 import org.bukkit.inventory.ItemStack;
 

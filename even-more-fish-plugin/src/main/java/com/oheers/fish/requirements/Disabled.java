@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class Disabled implements Requirement {
 
-    private String configLocation;
+    private final String configLocation;
     public final FileConfiguration fileConfig;
     private boolean isDisabled;
 
