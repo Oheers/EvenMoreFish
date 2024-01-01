@@ -32,7 +32,7 @@ public class MoonPhase implements Requirement {
             try {
                 phases.add(Phase.valueOf(stringPhase.toUpperCase()));
             } catch (IllegalArgumentException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, stringPhase + " is not a valid moon phase at fish.yml location " + this.configLocation);
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, stringPhase + " is not a valid moon phase at fish.yml location " + this.configLocation);
             }
         });
     }

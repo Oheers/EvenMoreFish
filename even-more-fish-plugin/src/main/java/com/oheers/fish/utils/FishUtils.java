@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class FishUtils {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '§';
+    private static final String COLOR_CHAR = "§";
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
@@ -93,7 +93,7 @@ public class FishUtils {
 
             return fish;
         } catch (InvalidFishException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
                     "deleted the fish since this fish was caught.");
         }
 
@@ -187,7 +187,7 @@ public class FishUtils {
             return false;
         } else {
             // the user has defined a region whitelist but doesn't have a region plugin.
-            EvenMoreFish.logger.log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
+            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
             return true;
         }
     }

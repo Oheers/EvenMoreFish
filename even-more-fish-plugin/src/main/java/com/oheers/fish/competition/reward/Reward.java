@@ -16,6 +16,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class Reward {
         String[] split = value.split(":");
 
         if (split.length < 2) {
-            EvenMoreFish.logger.log(Level.WARNING, value + " is not formatted correctly. It won't be given as a reward");
+            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, value + " is not formatted correctly. It won't be given as a reward");
             this.type = RewardType.BAD_FORMAT;
         } else {
             try {
@@ -54,7 +55,7 @@ public class Reward {
         return action;
     }
 
-    public void run(OfflinePlayer player, Location hookLocation) {
+    public void run(@NotNull OfflinePlayer player, Location hookLocation) {
         Player p;
 
         // Done like this to make the runnables not complain
@@ -131,7 +132,7 @@ public class Reward {
                 pM.callEvent(event);
                 break;
             default:
-                EvenMoreFish.logger.log(Level.SEVERE, "Error in loading a reward.");
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Error in loading a reward.");
         }
     }
 

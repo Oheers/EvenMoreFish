@@ -54,7 +54,7 @@ public class Names {
 
             // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
-            if (xmasRarity) EvenMoreFish.xmasRarity = r;
+            if (xmasRarity) EvenMoreFish.getInstance().setXmasRarity(r);
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
             r.setRequirements(getRequirements(null, rarity, EvenMoreFish.raritiesFile.getConfig()));
@@ -117,7 +117,7 @@ public class Names {
                         }
                     }
                     if (!foundRarity)
-                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
+                        EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
                 }
             }
 
@@ -132,7 +132,7 @@ public class Names {
                     }
 
                     if (rarity == null) {
-                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
+                        EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
                     } else {
                         for (String fishString : baitConfiguration.getStringList("baits." + s + ".fish." + rarityString)) {
                             boolean foundFish = false;
@@ -144,7 +144,7 @@ public class Names {
                                 }
                             }
                             if (!foundFish)
-                                EvenMoreFish.logger.log(Level.SEVERE, fishString + " could not be found in the " + rarity.getValue() + " config. It was not added to the " + s + " bait.");
+                                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, fishString + " could not be found in the " + rarity.getValue() + " config. It was not added to the " + s + " bait.");
                         }
                     }
                 }

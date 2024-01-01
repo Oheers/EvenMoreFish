@@ -286,7 +286,7 @@ public class ConfigUpdater {
                 try {
                     insertCurrencySymbol(13);
                 } catch (IOException exception) {
-                    EvenMoreFish.logger.log(Level.WARNING, "Could not update messages.yml");
+                    EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Could not update messages.yml");
                 }
             case 14:
                 update.append(MSG_UPDATE_15);

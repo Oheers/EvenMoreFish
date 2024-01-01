@@ -118,7 +118,7 @@ public class Competition {
         if (EvenMoreFish.mainConfig.databaseEnabled()) {
             Competition competitionRef = this;
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
+                EvenMoreFish.getInstance().getDatabaseV3().createCompetitionReport(competitionRef);
                 leaderboard.clear();
             });
         } else {
@@ -270,7 +270,7 @@ public class Competition {
                         entry.incrementValue(increaseAmount);
                         leaderboard.addEntry(entry);
                     } catch (Exception exception) {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Could not delete: " + entry);
+                        EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not delete: " + entry);
                     }
 
                     if (entry.getValue() == numberNeeded && (competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY)) {
@@ -526,7 +526,7 @@ public class Competition {
         List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
 
         if (configRarities.isEmpty()) {
-            EvenMoreFish.logger.log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
             return false;
         }
 
@@ -556,9 +556,9 @@ public class Competition {
             this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
             return true;
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
-            EvenMoreFish.logger.log(Level.SEVERE, "fish.size(): " + fish.size());
-            EvenMoreFish.logger.log(Level.SEVERE, "allowedRarities.size(): " + configRarities.size());
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "fish.size(): " + fish.size());
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "allowedRarities.size(): " + configRarities.size());
             return false;
         }
     }
@@ -567,7 +567,7 @@ public class Competition {
         List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
 
         if (configRarities.isEmpty()) {
-            EvenMoreFish.logger.log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
             return false;
         }
 
@@ -584,9 +584,9 @@ public class Competition {
             this.selectedRarity = FishingProcessor.randomWeightedRarity(null, 0, null, EvenMoreFish.fishCollection.keySet());
             return true;
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not load: " + competitionName + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
-            EvenMoreFish.logger.log(Level.SEVERE, "rarities.size(): " + EvenMoreFish.fishCollection.keySet().size());
-            EvenMoreFish.logger.log(Level.SEVERE, "allowedRarities.size(): " + configRarities.size());
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not load: " + competitionName + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "rarities.size(): " + EvenMoreFish.fishCollection.keySet().size());
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "allowedRarities.size(): " + configRarities.size());
             return false;
         }
     }
@@ -599,10 +599,10 @@ public class Competition {
                 try {
                     alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
                 } catch (NumberFormatException nfe) {
-                    EvenMoreFish.logger.log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
+                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
                 }
             } else {
-                EvenMoreFish.logger.log(Level.SEVERE, s + " is not formatted correctly. Use MM:SS");
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, s + " is not formatted correctly. Use MM:SS");
             }
         }
     }
@@ -655,7 +655,7 @@ public class Competition {
             if (report != null) {
                 report.incrementCompetitionsWon(1);
             } else {
-                EvenMoreFish.logger.severe("Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
+                EvenMoreFish.getInstance().getLogger().severe("Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
             }
         }
 
@@ -673,7 +673,7 @@ public class Competition {
                         report.incrementCompetitionsJoined(1);
                         DataManager.getInstance().putUserReportCache(entry.getPlayer(), report);
                     } else {
-                        EvenMoreFish.logger.severe("Could not increment competitions won for " + entry.getPlayer());
+                        EvenMoreFish.getInstance().getLogger().severe("Could not increment competitions won for " + entry.getPlayer());
                     }
                 }
             } else {
@@ -689,7 +689,7 @@ public class Competition {
                                 report.incrementCompetitionsJoined(1);
                                 DataManager.getInstance().putUserReportCache(competitionEntry.getPlayer(), report);
                             } else {
-                                EvenMoreFish.logger.severe("User " + competitionEntry.getPlayer() + " does not exist in cache. ");
+                                EvenMoreFish.getInstance().getLogger().severe("User " + competitionEntry.getPlayer() + " does not exist in cache. ");
                             }
                         }
                     });
@@ -700,7 +700,7 @@ public class Competition {
                             report.incrementCompetitionsJoined(1);
                             DataManager.getInstance().putUserReportCache(competitionEntry.getPlayer(), report);
                         } else {
-                            EvenMoreFish.logger.severe("User " + competitionEntry.getPlayer() + " does not exist in cache. ");
+                            EvenMoreFish.getInstance().getLogger().severe("User " + competitionEntry.getPlayer() + " does not exist in cache. ");
                         }
                     });
                 }
@@ -729,7 +729,7 @@ public class Competition {
         try {
             this.statusBar.setColour(BarColor.valueOf(barColour));
         } catch (IllegalArgumentException iae) {
-            EvenMoreFish.logger.severe(barColour + " is not a valid bossbar colour, check ");
+            EvenMoreFish.getInstance().getLogger().severe(barColour + " is not a valid bossbar colour, check ");
         }
 
         this.statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.competitionConfig.getBarPrefix(competionName)));

@@ -26,7 +26,7 @@ public class Head64ItemAddon extends ItemAddon {
     @Override
     public ItemStack getItemStack(String id) {
         if(!Base64.isBase64(id)) {
-            EvenMoreFish.logger.warning(() -> String.format("%s is not a valid base64 string.", id));
+            EvenMoreFish.getInstance().getLogger().warning(() -> String.format("%s is not a valid base64 string.", id));
             return null;
         }
 

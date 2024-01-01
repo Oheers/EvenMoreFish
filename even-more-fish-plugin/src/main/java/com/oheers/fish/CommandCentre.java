@@ -191,7 +191,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 if (!EvenMoreFish.permission.has(sender, "emf.admin")) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
-                    EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.databaseV3.migrateLegacy(sender));
+                    EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
                 }
                 break;
             case "xmas":
@@ -624,7 +624,7 @@ class Controls {
                         EvenMoreFish.msgs.getSTDPrefix();
 
                 if (EvenMoreFish.mainConfig.databaseEnabled()) {
-                    if (EvenMoreFish.databaseV3.usingVersionV2()) {
+                    if (EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2()) {
                         msgString += "Database Engine: V2";
                     } else {
                         msgString += "Database Engine: V3";

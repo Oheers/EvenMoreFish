@@ -56,7 +56,7 @@ public class IRLTime implements Requirement {
         try {
             return (Integer.parseInt(time[0]) * 60) + Integer.parseInt(time[1]);
         } catch (IndexOutOfBoundsException | NumberFormatException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "FATAL error reading " + HHMMFormat + ", resorting to default value of " + fallback);
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "FATAL error reading " + HHMMFormat + ", resorting to default value of " + fallback);
             return fallback;
         }
     }

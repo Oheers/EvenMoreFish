@@ -108,7 +108,7 @@ public class BaitNBTManager {
                     item.setItemMeta(meta);
                 }
             } catch (IndexOutOfBoundsException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Failed to apply bait: " + bait.getName() + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed to apply bait: " + bait.getName() + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
                 return null;
             }
 

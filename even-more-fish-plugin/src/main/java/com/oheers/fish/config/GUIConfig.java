@@ -96,7 +96,7 @@ public class GUIConfig {
         try {
             return FillerStyle.valueOf(this.config.getString(menuID + ".filler-layout", "DEFAULT").toUpperCase());
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, this.config.getString(menuID + ".filler-layout") + " is not a valid filler layout for the " + menuID);
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, this.config.getString(menuID + ".filler-layout") + " is not a valid filler layout for the " + menuID);
             return FillerStyle.DEFAULT;
         }
     }

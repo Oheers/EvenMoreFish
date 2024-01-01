@@ -3,6 +3,7 @@ package com.oheers.fish.fishing;
 import com.gmail.nossr50.config.experience.ExperienceConfig;
 import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.utils.NbtUtils;
 import com.oheers.fish.api.EMFFishEvent;
@@ -123,13 +124,13 @@ public class FishingProcessor implements Listener {
     public static Fish chooseNonBaitFish(Player player, Location location) {
         Rarity fishRarity = randomWeightedRarity(player, 1, null, EvenMoreFish.fishCollection.keySet());
         if (fishRarity == null) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not determine a rarity for fish for " + player.getName());
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not determine a rarity for fish for " + player.getName());
             return null;
         }
 
         Fish fish = getFish(fishRarity, location, player, 1, null, true);
         if (fish == null) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not determine a fish for " + player.getName());
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not determine a fish for " + player.getName());
             return null;
         }
         fish.setFisherman(player.getUniqueId());
@@ -240,7 +241,7 @@ public class FishingProcessor implements Listener {
         try {
             competitionCheck(fish.clone(), player, location);
         } catch (CloneNotSupportedException e) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Failed to create a clone of: " + fish);
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed to create a clone of: " + fish);
             e.printStackTrace();
         }
 
@@ -248,23 +249,19 @@ public class FishingProcessor implements Listener {
             Fish finalFish = fish;
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
                 // increases the fish fished count if the fish is already in the db
-                if (EvenMoreFish.databaseV3.hasFishData(finalFish)) {
-                    EvenMoreFish.databaseV3.incrementFish(finalFish);
+                final DatabaseV3 databaseV3 = EvenMoreFish.getInstance().getDatabaseV3();
+                if (databaseV3.hasFishData(finalFish)) {
+                    databaseV3.incrementFish(finalFish);
 
                     // sets the new leader in top fish, if the player has fished a record fish
-                    if (EvenMoreFish.databaseV3.getLargestFishSize(finalFish) < finalFish.getLength()) {
-                        EvenMoreFish.databaseV3.updateLargestFish(finalFish, player.getUniqueId());
+                    if (databaseV3.getLargestFishSize(finalFish) < finalFish.getLength()) {
+                        databaseV3.updateLargestFish(finalFish, player.getUniqueId());
                     }
                 } else {
-                    EvenMoreFish.databaseV3.createFishData(finalFish, player.getUniqueId());
+                    databaseV3.createFishData(finalFish, player.getUniqueId());
                 }
 
-                EvenMoreFish.databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
-
-//                    catch (SQLException exception) {
-//                        EvenMoreFish.logger.log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.");
-//                        exception.printStackTrace();
-//                    }
+                databaseV3.handleFishCatch(player.getUniqueId(), finalFish);
             });
         }
 
@@ -334,7 +331,7 @@ public class FishingProcessor implements Listener {
         }
 
         if (allowedRarities.isEmpty()) {
-            EvenMoreFish.logger.log(Level.SEVERE, "There are no rarities for the user " + fisher.getName() + " to fish. They have received no fish.");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "There are no rarities for the user " + fisher.getName() + " to fish. They have received no fish.");
             return null;
         }
 
@@ -432,7 +429,7 @@ public class FishingProcessor implements Listener {
 
         // if the config doesn't define any fish that can be fished in this biome.
         if (available.isEmpty()) {
-            EvenMoreFish.logger.log(Level.WARNING, "There are no fish of the rarity " + r.getValue() + " that can be fished at (x=" + l.getX() + ", y=" + l.getY() + ", z=" + l.getZ() + ")");
+            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "There are no fish of the rarity " + r.getValue() + " that can be fished at (x=" + l.getX() + ", y=" + l.getY() + ", z=" + l.getZ() + ")");
             return null;
         }
 
@@ -465,7 +462,7 @@ public class FishingProcessor implements Listener {
                         return;
                     }
                 } else {
-                    EvenMoreFish.logger.log(Level.SEVERE, fisherman.getName() + " was unable to be checked for \"general.required-worlds\" in competitions.yml because their world is null.");
+                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, fisherman.getName() + " was unable to be checked for \"general.required-worlds\" in competitions.yml because their world is null.");
                 }
             }
 

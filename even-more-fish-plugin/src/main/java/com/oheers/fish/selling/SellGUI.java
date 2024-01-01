@@ -424,13 +424,13 @@ public class SellGUI implements InventoryHolder {
     }
     
     private void logSoldFish(final UUID uuid, @NotNull List<SoldFish> soldFish) {
-        int userId = EvenMoreFish.databaseV3.getUserID(uuid);
+        int userId = EvenMoreFish.getInstance().getDatabaseV3().getUserID(uuid);
         final String transactionId = FriendlyId.createFriendlyId();
         final Timestamp timestamp = Timestamp.from(Instant.now());
 
-        EvenMoreFish.databaseV3.createTransaction(transactionId, userId, timestamp);
+        EvenMoreFish.getInstance().getDatabaseV3().createTransaction(transactionId, userId, timestamp);
         for(final SoldFish fish: soldFish) {
-            EvenMoreFish.databaseV3.createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());
+            EvenMoreFish.getInstance().getDatabaseV3().createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());
         }
         
         double moneyEarned = getTotalWorth(soldFish);

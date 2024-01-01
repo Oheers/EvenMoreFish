@@ -59,57 +59,54 @@ import java.util.stream.Collectors;
 
 public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private final Random random = new Random();
-
     public static final int METRIC_ID = 11054;
     public static final int MSG_CONFIG_VERSION = 16;
     public static final int MAIN_CONFIG_VERSION = 14;
     public static final int COMP_CONFIG_VERSION = 1;
-    public static FishFile fishFile;
-    public static RaritiesFile raritiesFile;
-    public static BaitFile baitFile;
-    public static Messages msgs;
-    public static MainConfig mainConfig;
-    public static CompetitionConfig competitionConfig;
-    public static Xmas2022Config xmas2022Config;
-    public static GUIConfig guiConfig;
-    public static List<String> competitionWorlds = new ArrayList<>();
-    public static Permission permission = null;
-    public static Economy econ = null;
-    public static Map<Integer, Set<String>> fish = new HashMap<>();
-    public static Map<String, Bait> baits = new HashMap<>();
-    public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
-    public static Rarity xmasRarity;
-    public static final Map<Integer, Fish> xmasFish = new HashMap<>();
-    public static List<UUID> disabledPlayers = new ArrayList<>();
-    public static ItemStack customNBTRod;
-    public static boolean checkingEatEvent;
-    public static boolean checkingIntEvent;
+    public static FishFile fishFile; //todo remove static
+    public static RaritiesFile raritiesFile; //todo remove static
+    public static BaitFile baitFile; //todo remove static
+    public static Messages msgs; //todo remove static
+    public static MainConfig mainConfig; //todo remove static
+    public static CompetitionConfig competitionConfig; //todo remove static
+    public static Xmas2022Config xmas2022Config; //todo remove static
+    public static GUIConfig guiConfig; //todo remove static
+    public static List<String> competitionWorlds = new ArrayList<>(); //todo remove static
+    public static Permission permission = null; //todo remove static
+    public static Economy econ = null; //todo remove static
+    public static Map<Integer, Set<String>> fish = new HashMap<>(); //todo remove static
+    public static Map<String, Bait> baits = new HashMap<>(); //todo remove static
+    public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>(); //todo remove static
+    private Rarity xmasRarity;
+    public static final Map<Integer, Fish> xmasFish = new HashMap<>(); //todo remove static
+    public static List<UUID> disabledPlayers = new ArrayList<>(); //todo remove static
+    public static ItemStack customNBTRod; //todo remove static
+    public static boolean checkingEatEvent; //todo remove static
+    public static boolean checkingIntEvent; //todo remove static
     // Do some fish in some rarities have the comp-check-exempt: true.
-    public static boolean raritiesCompCheckExempt = false;
-    public static Competition active;
-    public static CompetitionQueue competitionQueue;
-    public static Logger logger;
-    public static PluginManager pluginManager;
-    public static List<SellGUI> guis;
+    public static boolean raritiesCompCheckExempt = false; //todo remove static
+    public static Competition active; //todo remove static
+    public static CompetitionQueue competitionQueue; //todo remove static
+    public static List<SellGUI> guis; //todo remove static
     public static int metric_fishCaught = 0;
     public static int metric_baitsUsed = 0;
     public static int metric_baitsApplied = 0;
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
-    public static Map<UUID, Rarity> decidedRarities;
-    public static boolean isUpdateAvailable;
-    public static boolean usingPAPI;
-    public static boolean usingMcMMO;
-    public static boolean usingHeadsDB;
+    public static Map<UUID, Rarity> decidedRarities; //todo remove static
+    public static boolean isUpdateAvailable; //todo remove static
+    public static boolean usingPAPI; //todo remove static
+    public static boolean usingMcMMO; //todo remove static
+    public static boolean usingHeadsDB; //todo remove static
 
-    public static WorldGuardPlugin wgPlugin;
-    public static String guardPL;
-    public static boolean papi;
-    public static DatabaseV3 databaseV3;
-    public static HeadDatabaseAPI HDBapi;
+    public static WorldGuardPlugin wgPlugin; //todo remove static
+    public static String guardPL; //todo remove static
+    public static boolean papi; //todo remove static
+    private DatabaseV3 databaseV3;
+    public static HeadDatabaseAPI HDBapi; //todo remove static
     private static EvenMoreFish instance;
     private static TaskScheduler scheduler;
-    public static FillerStyle guiFillerStyle;
+    private FillerStyle guiFillerStyle;
     private EMFAPI api;
 
     private AddonManager addonManager;
@@ -126,9 +123,18 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return addonManager;
     }
 
+
+    public Rarity getXmasRarity() {
+        return xmasRarity;
+    }
+
+    public void setXmasRarity(Rarity xmasRarity) {
+        this.xmasRarity = xmasRarity;
+    }
+
     @Override
     public void onEnable() {
-        instance = this;
+        EvenMoreFish.instance = this;
         scheduler = UniversalScheduler.getScheduler(this);
         this.api = new EMFAPI();
 
@@ -136,8 +142,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
 
-        logger = getLogger();
-        pluginManager = getServer().getPluginManager();
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -168,7 +172,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         if (mainConfig.isEconomyEnabled() && (!setupEconomy())) {
-            EvenMoreFish.logger.log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
+            getLogger().log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
         }
 
         if (!setupPermissions()) {
@@ -202,7 +206,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             try {
                 checkConfigVers();
             } catch (IOException exception) {
-                logger.log(Level.WARNING, "Could not update messages.yml");
+                getLogger().log(Level.WARNING, "Could not update messages.yml");
             }
         });
 
@@ -222,14 +226,14 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
             DataManager.init();
 
-            databaseV3 = new DatabaseV3(this);
+            setDatabaseV3(new DatabaseV3(this));
             //load user reports into cache
             getScheduler().runTaskAsynchronously(() -> {
-                EvenMoreFish.databaseV3.createTables(false);
+                EvenMoreFish.getInstance().getDatabaseV3().createTables(false);
                 for (Player player : getServer().getOnlinePlayers()) {
-                    UserReport playerReport = databaseV3.readUserReport(player.getUniqueId());
+                    UserReport playerReport = getDatabaseV3().readUserReport(player.getUniqueId());
                     if (playerReport == null) {
-                        EvenMoreFish.logger.warning("Could not read report for player (" + player.getUniqueId() + ")");
+                        EvenMoreFish.getInstance().getLogger().warning("Could not read report for player (" + player.getUniqueId() + ")");
                         continue;
                     }
                     DataManager.getInstance().putUserReportCache(player.getUniqueId(), playerReport);
@@ -238,7 +242,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         }
 
-        logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
+        getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
     }
 
     @Override
@@ -252,9 +256,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         if (mainConfig.databaseEnabled()) {
-            databaseV3.shutdown();
+            getDatabaseV3().shutdown();
         }
-        logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
+        getLogger().log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
     }
 
     private void saveAdditionalDefaultAddons() {
@@ -401,24 +405,24 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private void saveFishReports() {
         ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
-        logger.info("Saving " + allReports.keySet().size() + " fish reports.");
+        getLogger().info("Saving " + allReports.keySet().size() + " fish reports.");
         for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
-            databaseV3.writeFishReports(entry.getKey(), entry.getValue());
+            getDatabaseV3().writeFishReports(entry.getKey(), entry.getValue());
 
             try {
-                if (!databaseV3.hasUser(entry.getKey(), Table.EMF_USERS)) {
-                    databaseV3.createUser(entry.getKey());
+                if (!getDatabaseV3().hasUser(entry.getKey(), Table.EMF_USERS)) {
+                    getDatabaseV3().createUser(entry.getKey());
                 }
             } catch (InvalidTableException exception) {
-                logger.severe("Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
+                getLogger().severe("Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
             }
         }
     }
 
     private void saveUserReports() {
-        logger.info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
+        getLogger().info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
         for (UserReport report : DataManager.getInstance().getAllUserReports()) {
-            databaseV3.writeUserReport(report.getUUID(), report);
+            getDatabaseV3().writeUserReport(report.getUUID(), report);
         }
     }
 
@@ -473,8 +477,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     // Checks for updates, surprisingly
     private boolean checkUpdate() {
-
-
         String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
         String[] serverVersion = getDescription().getVersion().split("\\.");
 
@@ -491,7 +493,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private void checkConfigVers() throws IOException {
-
         if (msgs.configVersion() < MSG_CONFIG_VERSION) {
             ConfigUpdater.updateMessages(msgs.configVersion());
             getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. The plugin may have automatically added the extra features but you may wish to" +
@@ -549,5 +550,13 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public Random getRandom() {
         return random;
+    }
+
+    public DatabaseV3 getDatabaseV3() {
+        return databaseV3;
+    }
+
+    public void setDatabaseV3(DatabaseV3 databaseV3) {
+        this.databaseV3 = databaseV3;
     }
 }
