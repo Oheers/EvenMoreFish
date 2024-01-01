@@ -5,6 +5,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.selling.WorthNBT;
+import com.oheers.fish.utils.FishUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;

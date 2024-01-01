@@ -2,7 +2,7 @@ package com.oheers.fish.addons.impl;
 
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
+import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.api.addons.ItemAddon;
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.inventory.ItemStack;

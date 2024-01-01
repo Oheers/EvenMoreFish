@@ -1,6 +1,5 @@
 package com.oheers.fish.utils;
 
-import com.oheers.fish.FishUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;

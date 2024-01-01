@@ -11,6 +11,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.xmas2022.XmasGUI;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;

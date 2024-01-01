@@ -1,8 +1,8 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.FishUtils;
+import com.oheers.fish.utils.NbtUtils;
 import com.oheers.fish.fishing.items.Fish;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;

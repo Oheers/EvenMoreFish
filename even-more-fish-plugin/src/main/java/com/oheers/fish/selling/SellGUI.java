@@ -2,8 +2,8 @@ package com.oheers.fish.selling;
 
 import com.devskiller.friendly_id.FriendlyId;
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.FishUtils;
+import com.oheers.fish.utils.NbtUtils;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;

@@ -30,6 +30,7 @@ import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
+import com.oheers.fish.utils.NbtUtils;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
