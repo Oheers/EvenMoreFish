@@ -287,7 +287,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private void listeners() {
-
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
         getServer().getPluginManager().registerEvents(new FishingProcessor(), this);
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);

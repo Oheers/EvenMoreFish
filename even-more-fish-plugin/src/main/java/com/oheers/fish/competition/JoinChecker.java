@@ -19,7 +19,24 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class JoinChecker implements Listener {
-    
+
+    private List<FishReport> getFishReportsFromDatabase(final UUID userUUID, final String userName) {
+        try {
+            if (EvenMoreFish.databaseV3.hasUser(userUUID, Table.EMF_FISH_LOG)) {
+                return EvenMoreFish.databaseV3.getFishReports(userUUID);
+            } else {
+                if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                    EvenMoreFish.logger.info(() -> userName + " has joined for the first time, creating new data handle for them.");
+                }
+
+                return new ArrayList<>();
+            }
+        } catch (InvalidTableException exception) {
+            EvenMoreFish.logger.log(Level.SEVERE, exception, () -> "Failed to check database existence of user " + userUUID);
+            return new ArrayList<>();
+        }
+    }
+
     /**
      * Reads all the database information for the user specified.
      *
@@ -27,42 +44,32 @@ public class JoinChecker implements Listener {
      * @param userName the in-game username of the user having their data read.
      */
     public void databaseRegistration(UUID userUUID, String userName) {
-        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-            EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                List<FishReport> fishReports = new ArrayList<>();
-
-                try {
-                    if (EvenMoreFish.databaseV3.hasUser(userUUID, Table.EMF_FISH_LOG)) {
-                        fishReports = EvenMoreFish.databaseV3.getFishReports(userUUID);
-                    } else {
-                        fishReports = new ArrayList<>();
-                        if (EvenMoreFish.mainConfig.doDBVerbose())
-                            EvenMoreFish.logger.log(Level.INFO, userName + " has joined for the first time, creating new data handle for them.");
-                    }
-                } catch (InvalidTableException exception) {
-                    EvenMoreFish.logger.log(Level.SEVERE, "Failed to check database existence of user " + userUUID);
-                    exception.printStackTrace();
-                }
-
-                UserReport userReport;
-
-                userReport = EvenMoreFish.databaseV3.readUserReport(userUUID);
-                if (userReport == null) {
-                    EvenMoreFish.databaseV3.createUser(userUUID);
-                    userReport = EvenMoreFish.databaseV3.readUserReport(userUUID);
-                }
-
-                if (fishReports != null && userReport != null) {
-                    DataManager.getInstance().cacheUser(userUUID, userReport, fishReports);
-                } else {
-                    EvenMoreFish.logger.log(Level.SEVERE, "Null value when fetching data for user (" + userName + "),\n" +
-                            "UserReport: " + (userReport == null) +
-                            ",\nFishReports: " + (fishReports != null && !fishReports.isEmpty()));
-                }
-            });
+        if (!EvenMoreFish.mainConfig.isDatabaseOnline()) {
+            return;
         }
+
+        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
+            List<FishReport> fishReports = getFishReportsFromDatabase(userUUID, userName);
+
+            UserReport userReport;
+
+            userReport = EvenMoreFish.databaseV3.readUserReport(userUUID);
+            if (userReport == null) {
+                EvenMoreFish.databaseV3.createUser(userUUID);
+                userReport = EvenMoreFish.databaseV3.readUserReport(userUUID);
+            }
+
+            if (fishReports != null && userReport != null) {
+                DataManager.getInstance().cacheUser(userUUID, userReport, fishReports);
+            } else {
+                EvenMoreFish.logger.log(Level.SEVERE, "Null value when fetching data for user (" + userName + "),\n" +
+                        "UserReport: " + (userReport == null) +
+                        ",\nFishReports: " + (fishReports != null && !fishReports.isEmpty()));
+            }
+        });
+
     }
-    
+
     // Gives the player the active fishing bar if there's a fishing event cracking off
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
@@ -75,44 +82,45 @@ public class JoinChecker implements Listener {
 
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> databaseRegistration(event.getPlayer().getUniqueId(), event.getPlayer().getName()));
     }
-    
+
     // Removes the player from the bar list if they leave the server
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        
+
         if (Competition.isActive()) {
             EvenMoreFish.active.getStatusBar().removePlayer(event.getPlayer());
         }
-        
-        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
-            EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                UUID userUUID = event.getPlayer().getUniqueId();
-                try {
-                    if (!EvenMoreFish.databaseV3.hasUser(userUUID, Table.EMF_USERS)) {
-                        EvenMoreFish.databaseV3.createUser(userUUID);
-                    }
-                } catch (InvalidTableException exception) {
-                    EvenMoreFish.logger.log(Level.SEVERE, "Fatal error when running database checks for " + event.getPlayer().getName() + ", deleting data in primary storage.");
-                    exception.printStackTrace();
-                    return;
-                }
-
-                List<FishReport> fishReports = DataManager.getInstance().getFishReportsIfExists(userUUID);
-                if (fishReports != null) {
-
-                    EvenMoreFish.databaseV3.writeFishReports(userUUID, fishReports);
-
-                }
-
-                UserReport userReport = DataManager.getInstance().getUserReportIfExists(userUUID);
-                if (userReport != null) {
-
-                    EvenMoreFish.databaseV3.writeUserReport(userUUID, userReport);
-
-                }
-
-                DataManager.getInstance().uncacheUser(userUUID);
-            });
+        if (!EvenMoreFish.mainConfig.isDatabaseOnline()) {
+            return;
         }
+
+        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
+            UUID userUUID = event.getPlayer().getUniqueId();
+            try {
+                if (!EvenMoreFish.databaseV3.hasUser(userUUID, Table.EMF_USERS)) {
+                    EvenMoreFish.databaseV3.createUser(userUUID);
+                }
+            } catch (InvalidTableException exception) {
+                EvenMoreFish.logger.log(Level.SEVERE, exception, () -> "Fatal error when running database checks for " + event.getPlayer().getName() + ", deleting data in primary storage.");
+                return;
+            }
+
+            List<FishReport> fishReports = DataManager.getInstance().getFishReportsIfExists(userUUID);
+            if (fishReports != null) {
+
+                EvenMoreFish.databaseV3.writeFishReports(userUUID, fishReports);
+
+            }
+
+            UserReport userReport = DataManager.getInstance().getUserReportIfExists(userUUID);
+            if (userReport != null) {
+
+                EvenMoreFish.databaseV3.writeUserReport(userUUID, userReport);
+
+            }
+
+            DataManager.getInstance().uncacheUser(userUUID);
+        });
+
     }
 }

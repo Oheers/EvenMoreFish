@@ -18,11 +18,10 @@ public class AutoRunner {
                 int weekMinute = getCurrentTimeCode();
 
                 // Beginning the competition set for schedule
-                if (EvenMoreFish.competitionQueue.competitions.containsKey(weekMinute)) {
-                    if (!Competition.isActive()) {
-                        EvenMoreFish.active = EvenMoreFish.competitionQueue.competitions.get(weekMinute);
-                        EvenMoreFish.active.begin(false);
-                    }
+                if (EvenMoreFish.competitionQueue.competitions.containsKey(weekMinute) && (!Competition.isActive())) {
+                    EvenMoreFish.active = EvenMoreFish.competitionQueue.competitions.get(weekMinute);
+                    EvenMoreFish.active.begin(false);
+
                 }
             }
         }, (60 - LocalTime.now().getSecond()) * 20, 20);
