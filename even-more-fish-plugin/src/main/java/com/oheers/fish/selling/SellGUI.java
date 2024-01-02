@@ -35,15 +35,15 @@ public class SellGUI implements InventoryHolder {
     private final Player player;
     private final Inventory menu;
 
-    public boolean modified;
+    private boolean modified;
 
-    public double value;
+    private double value;
 
-    public boolean error;
+    private boolean error;
 
-    public int fishCount;
+    private int fishCount;
 
-    public int guiSize;
+    private int guiSize;
 
     private ItemStack sellIcon, sellAllIcon, filler, errorFiller, confirmIcon, confirmSellAllIcon, noValueIcon, sellAllErrorIcon;
 
@@ -68,7 +68,8 @@ public class SellGUI implements InventoryHolder {
     public void setFiller() {
         // the gray glass panes at the bottom
         ItemStack fill = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFiller())), error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFillerError()));
-        ItemMeta fillMeta = fill.getItemMeta(), errMeta = error.getItemMeta();
+        ItemMeta fillMeta = fill.getItemMeta();
+        ItemMeta errMeta = error.getItemMeta();
         if (fillMeta != null) {
             fillMeta.setDisplayName(ChatColor.RESET + "");
             fill.setItemMeta(fillMeta);
@@ -210,7 +211,7 @@ public class SellGUI implements InventoryHolder {
             glowify(error);
             if (sellAll) this.sellAllErrorIcon = WorthNBT.attributeDefault(error);
             else this.noValueIcon = WorthNBT.attributeDefault(error);
-            this.error = true;
+            this.setError(true);
         } else {
 
             ItemStack confirm;
@@ -242,12 +243,12 @@ public class SellGUI implements InventoryHolder {
             if (sellAll) this.confirmSellAllIcon = WorthNBT.attributeDefault(confirm);
             else this.confirmIcon = WorthNBT.attributeDefault(confirm);
 
-            this.error = false;
+            this.setError(false);
         }
     }
 
     public void setIcon(boolean sellAll) {
-        if (this.error) {
+        if (this.isError()) {
             if (sellAll) {
                 this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.sellAllErrorIcon);
             } else {
@@ -445,5 +446,13 @@ public class SellGUI implements InventoryHolder {
     @Override
     public @NotNull Inventory getInventory() {
         return menu;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
     }
 }

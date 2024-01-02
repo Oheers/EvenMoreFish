@@ -150,6 +150,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         this.addonManager.load();
 
         this.configManager = new ConfigManager(this);
+        this.configManager.load();
 
         if (this.configManager.getGuiConfig() != null) {
             guiFillerStyle = this.configManager.getGuiConfig().getFillerStyle("main-menu");
@@ -212,7 +213,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         checkPapi();
 
         if (mainConfig.databaseEnabled()) {
-
             DataManager.init();
 
             setDatabaseV3(new DatabaseV3(this));
@@ -276,7 +276,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     public static void debug(final Level level, final String message) {
-        getInstance().getLogger().log(level, () -> message);
+        getInstance().getLogger().log(level, () -> "DEBUG" + message);
     }
 
     private void listeners() {

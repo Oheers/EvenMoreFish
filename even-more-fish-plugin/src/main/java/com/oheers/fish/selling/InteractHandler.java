@@ -96,8 +96,7 @@ public class InteractHandler implements Listener {
                     gui.updateSellAllItem();
                     gui.setModified(true);
                     gui.resetGlassColour();
-
-                    gui.error = false;
+                    gui.setError(false);
                 });
             }
         }
