@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-//todo, not being used??
 public class FishingGUI extends Gui {
 
     List<Button> guiButtons = new ArrayList<>();
