@@ -274,7 +274,7 @@ public class FishUtils {
     }
 
     public static void broadcastFishMessage(Message message, boolean actionBar) {
-        if (EvenMoreFish.competitionConfig.broadcastOnlyRods()) {
+        if (EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().broadcastOnlyRods()) {
             // sends it to all players holding ords
             if (actionBar) {
                 for (Player p : Bukkit.getOnlinePlayers()) {

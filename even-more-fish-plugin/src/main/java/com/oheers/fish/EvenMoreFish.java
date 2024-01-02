@@ -63,14 +63,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public static final int MSG_CONFIG_VERSION = 16;
     public static final int MAIN_CONFIG_VERSION = 14;
     public static final int COMP_CONFIG_VERSION = 1;
-    public static FishFile fishFile; //todo remove static
-    public static RaritiesFile raritiesFile; //todo remove static
-    public static BaitFile baitFile; //todo remove static
+
+    private ConfigManager configManager;
+
     public static Messages msgs; //todo remove static
     public static MainConfig mainConfig; //todo remove static
-    public static CompetitionConfig competitionConfig; //todo remove static
-    public static Xmas2022Config xmas2022Config; //todo remove static
-    public static GUIConfig guiConfig; //todo remove static
     public static List<String> competitionWorlds = new ArrayList<>(); //todo remove static
     public static Permission permission = null; //todo remove static
     public static Economy econ = null; //todo remove static
@@ -110,6 +107,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private EMFAPI api;
 
     private AddonManager addonManager;
+
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
 
     public static EvenMoreFish getInstance() {
         return instance;
@@ -153,16 +154,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         this.addonManager = new AddonManager(this);
         this.addonManager.load();
 
-        fishFile = new FishFile(this);
-        raritiesFile = new RaritiesFile(this);
-        baitFile = new BaitFile(this);
-        competitionConfig = new CompetitionConfig(this);
-        xmas2022Config = new Xmas2022Config(this);
-        if (mainConfig.debugSession()) {
-            guiConfig = new GUIConfig(this);
-        }
-        if (guiConfig != null) {
-            guiFillerStyle = guiConfig.getFillerStyle("main-menu");
+        this.configManager = new ConfigManager(this);
+
+        if (this.configManager.getGuiConfig() != null) {
+            guiFillerStyle = this.configManager.getGuiConfig().getFillerStyle("main-menu");
         }
 
         usingPAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
@@ -187,11 +182,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             guardPL = "redprotect";
         }
 
-        competitionWorlds = competitionConfig.getRequiredWorlds();
+        competitionWorlds = configManager.getCompetitionConfig().getRequiredWorlds();
 
         Names names = new Names();
-        names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
-        names.loadBaits(baitFile.getConfig());
+        names.loadRarities(configManager.getFishFile().getConfig(), configManager.getRaritiesFile().getConfig());
+        names.loadBaits(configManager.getBaitFile().getConfig());
 
         if (!names.regionCheck && mainConfig.getAllowedRegions().isEmpty()) {
             guardPL = null;
@@ -248,7 +243,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     @Override
     public void onDisable() {
         terminateSellGUIS();
-        saveUserData();
+        DataManager.getInstance().saveUserData();
 
         // Ends the current competition in case the plugin is being disabled when the server will continue running
         if (Competition.isActive()) {
@@ -390,42 +385,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
     }
 
-    private void saveUserData() {
-        getScheduler().runTask(() -> {
-            if (!(mainConfig.isDatabaseOnline())) {
-                return;
-            }
-
-            saveFishReports();
-            saveUserReports();
-
-            DataManager.getInstance().uncacheAll();
-        });
-    }
-
-    private void saveFishReports() {
-        ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
-        getLogger().info("Saving " + allReports.keySet().size() + " fish reports.");
-        for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
-            getDatabaseV3().writeFishReports(entry.getKey(), entry.getValue());
-
-            try {
-                if (!getDatabaseV3().hasUser(entry.getKey(), Table.EMF_USERS)) {
-                    getDatabaseV3().createUser(entry.getKey());
-                }
-            } catch (InvalidTableException exception) {
-                getLogger().severe("Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
-            }
-        }
-    }
-
-    private void saveUserReports() {
-        getLogger().info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
-        for (UserReport report : DataManager.getInstance().getAllUserReports()) {
-            getDatabaseV3().writeUserReport(report.getUUID(), report);
-        }
-    }
-
     public ItemStack createCustomNBTRod() {
         ItemFactory itemFactory = new ItemFactory("nbt-rod-item", false);
         itemFactory.enableDefaultChecks();
@@ -450,8 +409,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         saveDefaultConfig();
 
         Names names = new Names();
-        names.loadRarities(fishFile.getConfig(), raritiesFile.getConfig());
-        names.loadBaits(baitFile.getConfig());
+        names.loadRarities(this.configManager.getFishFile().getConfig(), this.configManager.getRaritiesFile().getConfig());
+        names.loadBaits(this.configManager.getBaitFile().getConfig());
 
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());
@@ -460,13 +419,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         mainConfig.reload();
         msgs.reload();
-        competitionConfig.reload();
-        xmas2022Config.reload();
-        if (mainConfig.debugSession()) {
-            guiConfig.reload();
-        }
 
-        competitionWorlds = competitionConfig.getRequiredWorlds();
+        this.configManager.reload();
+
+        competitionWorlds = this.configManager.getCompetitionConfig().getRequiredWorlds();
 
         if (mainConfig.requireNBTRod()) {
             customNBTRod = createCustomNBTRod();
@@ -509,12 +465,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             reloadConfig();
         }
 
-        if (competitionConfig.configVersion() < COMP_CONFIG_VERSION) {
+        if (this.configManager.getCompetitionConfig().configVersion() < COMP_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
 
-            competitionConfig.reload();
+            this.configManager.getCompetitionConfig().reload();
         }
 
         ConfigUpdater.clearUpdaters();

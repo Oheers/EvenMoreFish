@@ -35,7 +35,6 @@ public class FishFile {
             e.printStackTrace();
         }
 
-        EvenMoreFish.fishFile = this;
     }
 
     public FileConfiguration getConfig() {

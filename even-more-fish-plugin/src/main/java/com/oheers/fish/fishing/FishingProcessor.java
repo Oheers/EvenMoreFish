@@ -3,6 +3,7 @@ package com.oheers.fish.fishing;
 import com.gmail.nossr50.config.experience.ExperienceConfig;
 import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.utils.NbtUtils;
@@ -154,9 +155,9 @@ public class FishingProcessor implements Listener {
                 }
             }
         }
-
-        if (EvenMoreFish.baitFile.getBaitCatchPercentage() > 0) {
-            if (new Random().nextDouble() * 100.0 < EvenMoreFish.baitFile.getBaitCatchPercentage()) {
+        final BaitFile baitFile = EvenMoreFish.getInstance().getConfigManager().getBaitFile();
+        if (baitFile.getBaitCatchPercentage() > 0) {
+            if (EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < baitFile.getBaitCatchPercentage()) {
                 Bait caughtBait = BaitNBTManager.randomBaitCatch();
                 Message message = new Message(ConfigMessage.BAIT_CAUGHT);
                 message.setBaitTheme(caughtBait.getTheme());
@@ -170,7 +171,7 @@ public class FishingProcessor implements Listener {
 
         Fish fish;
 
-        if (BaitNBTManager.isBaitedRod(fishingRod) && (!EvenMoreFish.baitFile.competitionsBlockBaits() || !Competition.isActive())) {
+        if (BaitNBTManager.isBaitedRod(fishingRod) && (!EvenMoreFish.getInstance().getConfigManager().getBaitFile().competitionsBlockBaits() || !Competition.isActive())) {
 
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
             fish = applyingBait.chooseFish(player, location);

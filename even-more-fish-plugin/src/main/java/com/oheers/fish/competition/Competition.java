@@ -383,7 +383,7 @@ public class Competition {
         }
 
 
-        List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
+        List<String> competitionColours = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getPositionColours();
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
@@ -478,7 +478,7 @@ public class Competition {
         }
 
 
-        List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
+        List<String> competitionColours = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getPositionColours();
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
@@ -523,7 +523,7 @@ public class Competition {
     }
 
     public boolean chooseFish(String competitionName, boolean adminStart) {
-        List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
+        List<String> configRarities = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().allowedRarities(competitionName, adminStart);
 
         if (configRarities.isEmpty()) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
@@ -550,7 +550,7 @@ public class Competition {
             if (r <= 0.0) break;
         }
 
-        setNumberNeeded(EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart));
+        setNumberNeeded(EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getNumberFishNeeded(competitionName, adminStart));
 
         try {
             this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
@@ -564,14 +564,14 @@ public class Competition {
     }
 
     public boolean chooseRarity(String competitionName, boolean adminStart) {
-        List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
+        List<String> configRarities = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().allowedRarities(competitionName, adminStart);
 
         if (configRarities.isEmpty()) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
             return false;
         }
 
-        setNumberNeeded(EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart));
+        setNumberNeeded(EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getNumberFishNeeded(competitionName, adminStart));
 
         try {
             String randomRarity = configRarities.get(EvenMoreFish.getInstance().getRandom().nextInt(configRarities.size()));
@@ -592,7 +592,7 @@ public class Competition {
     }
 
     public void initAlerts(String competitionName) {
-        for (String s : EvenMoreFish.competitionConfig.getAlertTimes(competitionName)) {
+        for (String s : EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getAlertTimes(competitionName)) {
 
             String[] split = s.split(":");
             if (split.length == 2) {
@@ -613,14 +613,14 @@ public class Competition {
 
         // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the compeitions
         if (adminStart) {
-            chosen = EvenMoreFish.competitionConfig.getRewardPositions();
+            chosen = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getRewardPositions();
             path = "rewards.";
         } else {
-            if (EvenMoreFish.competitionConfig.getRewardPositions(competitionName).isEmpty()) {
-                chosen = EvenMoreFish.competitionConfig.getRewardPositions();
+            if (EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getRewardPositions(competitionName).isEmpty()) {
+                chosen = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getRewardPositions();
                 path = "rewards.";
             } else {
-                chosen = EvenMoreFish.competitionConfig.getRewardPositions(competitionName);
+                chosen = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getRewardPositions(competitionName);
                 path = "competitions." + competitionName + ".rewards.";
             }
         }
@@ -628,7 +628,7 @@ public class Competition {
         if (chosen != null) {
             for (String i : chosen) {
                 List<Reward> addingRewards = new ArrayList<>();
-                for (String j : EvenMoreFish.competitionConfig.getStringList(path + i)) {
+                for (String j : EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getStringList(path + i)) {
                     Reward reward = new Reward(j);
                     addingRewards.add(reward);
                 }
@@ -725,18 +725,18 @@ public class Competition {
 
     public void initBar(String competionName) {
         this.statusBar = new Bar();
-        final String barColour = EvenMoreFish.competitionConfig.getBarColour(competionName);
+        final String barColour = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getBarColour(competionName);
         try {
             this.statusBar.setColour(BarColor.valueOf(barColour));
         } catch (IllegalArgumentException iae) {
             EvenMoreFish.getInstance().getLogger().severe(barColour + " is not a valid bossbar colour, check ");
         }
 
-        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.competitionConfig.getBarPrefix(competionName)));
+        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getBarPrefix(competionName)));
     }
 
     public void initGetNumbersNeeded(String competitionName) {
-        this.playersNeeded = EvenMoreFish.competitionConfig.getPlayersNeeded(competitionName);
+        this.playersNeeded = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getPlayersNeeded(competitionName);
     }
 
     /**
@@ -745,7 +745,7 @@ public class Competition {
      * @param competitionName The name of the competition as stated in the competitions.yml file.
      */
     public void initStartSound(String competitionName) {
-        this.startSound = EvenMoreFish.competitionConfig.getStartNoise(competitionName);
+        this.startSound = EvenMoreFish.getInstance().getConfigManager().getCompetitionConfig().getStartNoise(competitionName);
     }
 
     private CompetitionType getRandomType() {

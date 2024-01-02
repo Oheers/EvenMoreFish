@@ -34,7 +34,6 @@ public class RaritiesFile {
             e.printStackTrace();
         }
 
-        EvenMoreFish.raritiesFile = this;
     }
 
     public FileConfiguration getConfig() {

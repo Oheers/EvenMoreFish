@@ -40,7 +40,7 @@ public class Button {
 
         if (name != null) {
             Message toggleVAR = new Message(name);
-            toggleVAR.setToggleMSG(EvenMoreFish.guiConfig.getToggle(!EvenMoreFish.disabledPlayers.contains(viewer)));
+            toggleVAR.setToggleMSG(EvenMoreFish.getInstance().getConfigManager().getGuiConfig().getToggle(!EvenMoreFish.disabledPlayers.contains(viewer)));
             this.name = toggleVAR.getRawMessage(true, true);
         }
 

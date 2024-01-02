@@ -600,12 +600,13 @@ public class ItemFactory {
     }
 
     private FileConfiguration getConfiguration() {
-        if (this.xmas2022Item) return EvenMoreFish.xmas2022Config.getConfig();
+        if (this.xmas2022Item)
+            return EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().getConfig();
 
         if (this.configLocation.startsWith("fish.")) {
-            return EvenMoreFish.fishFile.getConfig();
+            return EvenMoreFish.getInstance().getConfigManager().getFishFile().getConfig();
         } else if (this.configLocation.startsWith("baits.")) {
-            return EvenMoreFish.baitFile.getConfig();
+            return EvenMoreFish.getInstance().getConfigManager().getBaitFile().getConfig();
         } else if (this.configLocation.startsWith("nbt-rod-item")) {
             return EvenMoreFish.mainConfig.getConfig();
         }else {

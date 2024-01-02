@@ -1,6 +1,7 @@
 package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.utils.NbtUtils;
 import com.oheers.fish.config.messages.OldMessage;
@@ -92,7 +93,7 @@ public class BaitNBTManager {
      * @throws MaxBaitReachedException  When one of the baits has hit maximum set by max-baits in baits.yml
      */
     public static ApplicationResult applyBaitedRodNBT(ItemStack item, Bait bait, int quantity) throws MaxBaitsReachedException, MaxBaitReachedException {
-        boolean doingLoreStuff = EvenMoreFish.baitFile.doRodLore();
+        boolean doingLoreStuff = EvenMoreFish.getInstance().getConfigManager().getBaitFile().doRodLore();
         boolean maxBait = false;
         int cursorModifier = 0;
 
@@ -139,7 +140,7 @@ public class BaitNBTManager {
             // We can manage the last character not being a colon if we have to add it in ourselves.
             if (!foundBait) {
 
-                if (getNumBaitsApplied(item) >= EvenMoreFish.baitFile.getMaxBaits()) {
+                if (getNumBaitsApplied(item) >= EvenMoreFish.getInstance().getConfigManager().getBaitFile().getMaxBaits()) {
                     // the lore's been taken out, we're not going to be doing anymore here, so we're just re-adding it now.
                     if (doingLoreStuff) {
                         ItemMeta rodMeta = item.getItemMeta();
@@ -318,7 +319,8 @@ public class BaitNBTManager {
         if (lore == null)
             lore = new ArrayList<>();
 
-        List<String> format = EvenMoreFish.baitFile.getRodLoreFormat();
+        final BaitFile baitFile = EvenMoreFish.getInstance().getConfigManager().getBaitFile();
+        List<String> format = baitFile.getRodLoreFormat();
         for (String lineAddition : format) {
             if (lineAddition.equals("{baits}")) {
                 NBTItem nbtItem = new NBTItem(itemStack);
@@ -333,22 +335,22 @@ public class BaitNBTManager {
                 for (String bait : rodNBT.split(",")) {
                     baitCount++;
                     lore.add(new OldMessage()
-                            .setMSG(EvenMoreFish.baitFile.getBaitFormat())
+                            .setMSG(baitFile.getBaitFormat())
                             .setAmount(bait.split(":")[1])
                             .setBait(getBaitFormatted(bait.split(":")[0]))
                             .toString());
                 }
 
-                if (EvenMoreFish.baitFile.showUnusedBaitSlots()) {
-                    for (int i = baitCount; i < EvenMoreFish.baitFile.getMaxBaits(); i++) {
-                        lore.add(FishUtils.translateHexColorCodes(EvenMoreFish.baitFile.unusedBaitSlotFormat()));
+                if (baitFile.showUnusedBaitSlots()) {
+                    for (int i = baitCount; i < baitFile.getMaxBaits(); i++) {
+                        lore.add(FishUtils.translateHexColorCodes(baitFile.unusedBaitSlotFormat()));
                     }
                 }
             } else {
                 lore.add(new OldMessage()
                         .setMSG(lineAddition)
                         .setCurrBaits(Integer.toString(getNumBaitsApplied(itemStack)))
-                        .setMaxBaits(Integer.toString(EvenMoreFish.baitFile.getMaxBaits()))
+                        .setMaxBaits(Integer.toString(baitFile.getMaxBaits()))
                         .toString());
             }
         }
@@ -372,15 +374,16 @@ public class BaitNBTManager {
         if (lore == null)
             return Collections.emptyList();
 
-        if (EvenMoreFish.baitFile.showUnusedBaitSlots()) {
+        final BaitFile baitFile = EvenMoreFish.getInstance().getConfigManager().getBaitFile();
+        if (baitFile.showUnusedBaitSlots()) {
             // starting at 1, because at least one bait replacing {baits} is repeated.
-            for (int i = 1; i < EvenMoreFish.baitFile.getMaxBaits() + EvenMoreFish.baitFile.getRodLoreFormat().size(); i++) {
+            for (int i = 1; i < baitFile.getMaxBaits() + baitFile.getRodLoreFormat().size(); i++) {
                 lore.remove(lore.size() - 1);
 
             }
         } else {
             // starting at 1, because at least one bait replacing {baits} is repeated.
-            for (int i = 1; i < getNumBaitsApplied(itemStack) + EvenMoreFish.baitFile.getRodLoreFormat().size(); i++) {
+            for (int i = 1; i < getNumBaitsApplied(itemStack) + baitFile.getRodLoreFormat().size(); i++) {
                 lore.remove(lore.size() - 1);
             }
         }

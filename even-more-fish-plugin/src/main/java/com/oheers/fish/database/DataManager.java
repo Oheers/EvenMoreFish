@@ -3,11 +3,14 @@ package com.oheers.fish.database;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
+import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.exceptions.InvalidTableException;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
@@ -175,6 +178,41 @@ public class DataManager {
         fishReportCache.invalidate(uuid);
     }
 
+    private void saveUserReports () {
+        EvenMoreFish.getInstance().getLogger().info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
+        for (UserReport report : getAllUserReports()) {
+            EvenMoreFish.getInstance().getDatabaseV3().writeUserReport(report.getUUID(), report);
+        }
+    }
+
+    private void saveFishReports() {
+        ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
+        EvenMoreFish.getInstance().getLogger().info("Saving " + allReports.keySet().size() + " fish reports.");
+        for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
+            EvenMoreFish.getInstance().getDatabaseV3().writeFishReports(entry.getKey(), entry.getValue());
+
+            try {
+                if (!EvenMoreFish.getInstance().getDatabaseV3().hasUser(entry.getKey(), Table.EMF_USERS)) {
+                    EvenMoreFish.getInstance().getDatabaseV3().createUser(entry.getKey());
+                }
+            } catch (InvalidTableException exception) {
+                EvenMoreFish.getInstance().getLogger().severe("Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
+            }
+        }
+    }
+
+    public void saveUserData() {
+        EvenMoreFish.getScheduler().runTask(() -> {
+            if (!(EvenMoreFish.mainConfig.isDatabaseOnline())) {
+                return;
+            }
+
+            DataManager.getInstance().saveFishReports();
+            DataManager.getInstance().saveUserReports();
+
+            DataManager.getInstance().uncacheAll();
+        });
+    }
     public static DataManager getInstance() {
         return instance;
     }

@@ -73,8 +73,8 @@ public class WorthNBT {
         // gets a possible set-worth in the fish.yml
         try {
             int configValue;
-            if (!isXmasFish) configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
-            else configValue = EvenMoreFish.xmas2022Config.getConfig().getInt("fish.Christmas 2022." + name + ".set-worth");
+            if (!isXmasFish) configValue = EvenMoreFish.getInstance().getConfigManager().getFishFile().getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            else configValue = EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().getConfig().getInt("fish.Christmas 2022." + name + ".set-worth");
 
             if (configValue == 0)
                 throw new NullPointerException();
@@ -104,12 +104,12 @@ public class WorthNBT {
 
     private static double getWorthMultiplier(final String rarity, final String name, boolean isXmasFish) {
         double value;
-        if (isXmasFish) value = EvenMoreFish.xmas2022Config.getConfig().getDouble("fish.Christmas 2022." + name + ".worth-multiplier");
-        else value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
+        if (isXmasFish) value = EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().getConfig().getDouble("fish.Christmas 2022." + name + ".worth-multiplier");
+        else value = EvenMoreFish.getInstance().getConfigManager().getFishFile().getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            if (isXmasFish) return EvenMoreFish.xmas2022Config.getConfig().getDouble("rarities.Christmas 2022.worth-multiplier");
-            else return EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+            if (isXmasFish) return EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().getConfig().getDouble("rarities.Christmas 2022.worth-multiplier");
+            else return EvenMoreFish.getInstance().getConfigManager().getRaritiesFile().getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
         }
 
         return value;

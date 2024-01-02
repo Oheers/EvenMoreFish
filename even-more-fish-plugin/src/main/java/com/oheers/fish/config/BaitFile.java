@@ -35,8 +35,6 @@ public class BaitFile {
         } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
             e.printStackTrace();
         }
-
-        EvenMoreFish.baitFile = this;
     }
 
     public FileConfiguration getConfig() {

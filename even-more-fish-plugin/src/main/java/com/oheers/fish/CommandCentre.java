@@ -60,7 +60,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "gui")
         );
 
-        if (EvenMoreFish.xmas2022Config.isAvailable()) emfTabs.add("xmas");
+        if (EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().isAvailable()) emfTabs.add("xmas");
 
         compTypes = Arrays.asList(
                 "largest_fish",
@@ -195,7 +195,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 break;
             case "xmas":
-                if (!EvenMoreFish.xmas2022Config.isAvailable()) break;
+                if (!EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().isAvailable()) break;
                 if (!EvenMoreFish.permission.has(sender, "emf.xmas")) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
@@ -600,9 +600,9 @@ class Controls {
 
             case "reload":
 
-                EvenMoreFish.fishFile.reload();
-                EvenMoreFish.raritiesFile.reload();
-                EvenMoreFish.baitFile.reload();
+                EvenMoreFish.getInstance().getConfigManager().getFishFile().reload();
+                EvenMoreFish.getInstance().getConfigManager().getRaritiesFile().reload();
+                EvenMoreFish.getInstance().getConfigManager().getBaitFile().reload();
 
                 plugin.reload();
 

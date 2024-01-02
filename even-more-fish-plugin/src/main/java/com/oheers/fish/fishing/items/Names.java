@@ -2,6 +2,7 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.baits.Bait;
+import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,14 +33,15 @@ public class Names {
         rarities = fishConfiguration.getConfigurationSection("fish").getKeys(false);
         rarities.add("Christmas 2022");
 
+        final Xmas2022Config xmas2022Config = EvenMoreFish.getInstance().getConfigManager().getXmas2022Config();
         for (String rarity : rarities) {
 
             boolean xmasRarity = rarity.equals("Christmas 2022");
 
             if (xmasRarity) {
-                if (EvenMoreFish.xmas2022Config.isAvailable()) {
-                    this.rarityConfiguration = EvenMoreFish.xmas2022Config.getConfig();
-                    this.fishConfiguration = EvenMoreFish.xmas2022Config.getConfig();
+                if (xmas2022Config.isAvailable()) {
+                    this.rarityConfiguration = xmas2022Config.getConfig();
+                    this.fishConfiguration = xmas2022Config.getConfig();
                 } else {
                     continue;
                 }
@@ -57,7 +59,7 @@ public class Names {
             if (xmasRarity) EvenMoreFish.getInstance().setXmasRarity(r);
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
-            r.setRequirements(getRequirements(null, rarity, EvenMoreFish.raritiesFile.getConfig()));
+            r.setRequirements(getRequirements(null, rarity, EvenMoreFish.getInstance().getConfigManager().getRaritiesFile().getConfig()));
 
             List<Fish> fishQueue = new ArrayList<>();
 
@@ -72,7 +74,7 @@ public class Names {
                 }
 
                 assert canvas != null;
-                canvas.setRequirements(getRequirements(fish, rarity, EvenMoreFish.fishFile.getConfig()));
+                canvas.setRequirements(getRequirements(fish, rarity, EvenMoreFish.getInstance().getConfigManager().getFishFile().getConfig()));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
 
@@ -232,7 +234,7 @@ public class Names {
             currentRequirements.add(new Disabled("rarities." + rarity + ".disabled", config));
         }
 
-        if (xmas2022) currentRequirements.add(new Day("fish." + rarity + "." + name + ".day", EvenMoreFish.xmas2022Config.getConfig()));
+        if (xmas2022) currentRequirements.add(new Day("fish." + rarity + "." + name + ".day", EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().getConfig()));
 
         return currentRequirements;
     }

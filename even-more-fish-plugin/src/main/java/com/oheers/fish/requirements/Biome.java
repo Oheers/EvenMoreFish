@@ -43,7 +43,7 @@ public class Biome implements Requirement {
     @Override
     public void fetchData() {
         // returns the biomes found in the "biomes:" section of the fish.yml
-        for (String biome : EvenMoreFish.fishFile.getConfig().getStringList(configLocation)) {
+        for (String biome : EvenMoreFish.getInstance().getConfigManager().getFishFile().getConfig().getStringList(configLocation)) {
             try {
                 this.biomes.add(org.bukkit.block.Biome.valueOf(biome));
             } catch (IllegalArgumentException iae) {
