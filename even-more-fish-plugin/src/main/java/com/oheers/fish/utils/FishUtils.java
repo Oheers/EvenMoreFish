@@ -21,6 +21,7 @@ import org.bukkit.*;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 import java.util.UUID;
@@ -153,9 +154,10 @@ public class FishUtils {
                 .forEach(item -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), item)));
     }
 
+
     public static boolean checkRegion(Location l, List<String> whitelistedRegions) {
         // if there's any region plugin installed
-        if (EvenMoreFish.guardPL == null) {
+        if (EvenMoreFish.guardPlugin == null) {
             return true;
         }
         // if the user has defined a region whitelist
@@ -163,7 +165,7 @@ public class FishUtils {
             return true;
         }
 
-        if (EvenMoreFish.guardPL.equals("worldguard")) {
+        if (EvenMoreFish.guardPlugin.equals("worldguard")) {
 
             // Creates a query for whether the player is stood in a protectedregion defined by the user
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -177,7 +179,7 @@ public class FishUtils {
                 }
             }
             return false;
-        } else if (EvenMoreFish.guardPL.equals("redprotect")) {
+        } else if (EvenMoreFish.guardPlugin.equals("redprotect")) {
             Region r = RedProtect.get().getAPI().getRegion(l);
             // if the hook is in any redprotect region
             if (r != null) {

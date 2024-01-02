@@ -5,6 +5,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.gui.Gui;
 import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,11 +25,8 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class XmasGUI implements InventoryHolder {
+public class XmasGUI extends Gui {
 
-    final Inventory inventory;
-    final int INV_SIZE = 54;
-    final UUID viewer;
 
     /**
      * Creates the advent calendar GUI for the player and loads all filler items in for them. The fish will also be
@@ -37,8 +35,7 @@ public class XmasGUI implements InventoryHolder {
      * @param viewer The UUID of the player who will open the GUI.
      */
     public XmasGUI(@NotNull final UUID viewer) {
-        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().getGUIName()).getRawMessage(true, false));
-        this.viewer = viewer;
+        super(viewer, new Message(EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().getGUIName()));
         loadFiller();
         setFish();
     }
@@ -48,7 +45,7 @@ public class XmasGUI implements InventoryHolder {
      * the state of /emf toggle.
      * @param player The player to send the inventory to.
      */
-    public void display(Player player) {
+    public void display(@NotNull Player player) {
         player.openInventory(this.inventory);
     }
 
@@ -105,12 +102,6 @@ public class XmasGUI implements InventoryHolder {
 
     public void loadFiller() {
         EvenMoreFish.getInstance().getConfigManager().getXmas2022Config().fillerDefault.forEach(this::setFillerItem);
-    }
-
-    @NotNull
-    @Override
-    public Inventory getInventory() {
-        return inventory;
     }
 
     private ItemStack createItem(final boolean unlocked, final int day, @NotNull final Fish fish, final FishReport fishReport) {

@@ -19,7 +19,6 @@ import com.oheers.fish.events.AureliumSkillsFishingEvent;
 import com.oheers.fish.events.FishEatEvent;
 import com.oheers.fish.events.FishInteractEvent;
 import com.oheers.fish.events.McMMOTreasureEvent;
-import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
@@ -31,7 +30,6 @@ import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
 import com.oheers.fish.utils.NbtUtils;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -45,16 +43,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
@@ -96,8 +91,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public static boolean usingPAPI; //todo remove static
     public static boolean usingMcMMO; //todo remove static
     public static boolean usingHeadsDB; //todo remove static
-    
-    public static String guardPL; //todo remove static
+
+    public static String guardPlugin; //todo remove static
     public static boolean papi; //todo remove static
     private DatabaseV3 databaseV3;
     public static HeadDatabaseAPI HDBapi; //todo remove static
@@ -177,9 +172,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         // checks against both support region plugins and sets an active plugin (worldguard is priority)
         if (checkWG()) {
-            guardPL = "worldguard";
+            guardPlugin = "worldguard";
         } else if (checkRP()) {
-            guardPL = "redprotect";
+            guardPlugin = "redprotect";
         }
 
         competitionWorlds = configManager.getCompetitionConfig().getRequiredWorlds();
@@ -189,7 +184,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         names.loadBaits(configManager.getBaitFile().getConfig());
 
         if (!names.regionCheck && mainConfig.getAllowedRegions().isEmpty()) {
-            guardPL = null;
+            guardPlugin = null;
         }
 
         competitionQueue = new CompetitionQueue();
