@@ -59,18 +59,19 @@ import java.util.stream.Collectors;
 
 public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private final Random random = new Random();
-    public static final int METRIC_ID = 11054;
+    private static final int METRIC_ID = 11054;
     public static final int MSG_CONFIG_VERSION = 16;
     public static final int MAIN_CONFIG_VERSION = 14;
     public static final int COMP_CONFIG_VERSION = 1;
 
     private ConfigManager configManager;
 
-    public static Messages msgs; //todo remove static
-    public static MainConfig mainConfig; //todo remove static
+    public static Messages msgs;
+    public static MainConfig mainConfig;
     public static List<String> competitionWorlds = new ArrayList<>(); //todo remove static
     public static Permission permission = null; //todo remove static
     public static Economy econ = null; //todo remove static
+
     public static Map<Integer, Set<String>> fish = new HashMap<>(); //todo remove static
     public static Map<String, Bait> baits = new HashMap<>(); //todo remove static
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>(); //todo remove static
@@ -95,8 +96,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public static boolean usingPAPI; //todo remove static
     public static boolean usingMcMMO; //todo remove static
     public static boolean usingHeadsDB; //todo remove static
-
-    public static WorldGuardPlugin wgPlugin; //todo remove static
+    
     public static String guardPL; //todo remove static
     public static boolean papi; //todo remove static
     private DatabaseV3 databaseV3;
@@ -214,7 +214,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         AutoRunner.init();
 
-        wgPlugin = getWorldGuard();
         checkPapi();
 
         if (mainConfig.databaseEnabled()) {
@@ -476,11 +475,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         ConfigUpdater.clearUpdaters();
     }
 
-    /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
-       can't find the plugin. */
-    private WorldGuardPlugin getWorldGuard() {
-        return (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
-    }
 
     private void checkPapi() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
