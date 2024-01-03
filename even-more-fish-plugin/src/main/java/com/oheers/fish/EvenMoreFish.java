@@ -237,7 +237,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     @Override
     public void onDisable() {
         terminateSellGUIS();
-        DataManager.getInstance().saveUserData();
+        if (mainConfig.databaseEnabled()) {
+            DataManager.getInstance().saveUserData();
+        }
 
         // Ends the current competition in case the plugin is being disabled when the server will continue running
         if (Competition.isActive()) {
