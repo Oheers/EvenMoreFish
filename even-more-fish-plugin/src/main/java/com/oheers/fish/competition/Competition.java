@@ -3,6 +3,7 @@ package com.oheers.fish.competition;
 import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.utils.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
 import com.oheers.fish.api.EMFCompetitionStartEvent;
@@ -105,9 +106,11 @@ public class Competition {
     public void end() {
         // print leaderboard
         this.timingSystem.cancel();
-        statusBar.hide();
-        EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(new Competition((int) this.maxDuration, this.competitionType));
+        this.statusBar.hide();
+
+        EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(this);
         Bukkit.getServer().getPluginManager().callEvent(endEvent);
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             new Message(ConfigMessage.COMPETITION_END).broadcast(player, true, true);
             sendPlayerLeaderboard(player);
@@ -223,8 +226,13 @@ public class Competition {
         return a && b;
     }
 
+    /**
+     * Adds a fish to the leaderboard
+     * @param fish
+     * @param fisher
+     */
+    //todo we can use this to create fake fish for fake compeitions for testing
     public void applyToLeaderboard(Fish fish, Player fisher) {
-
         if (
                 competitionType == CompetitionType.SPECIFIC_FISH ||
                         competitionType == CompetitionType.SPECIFIC_RARITY ||
