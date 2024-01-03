@@ -386,7 +386,8 @@ public class FishingProcessor implements Listener {
     }
 
     public static Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish, boolean doRequirementChecks) {
-        if (r == null) return null;
+        if (r == null)
+            return null;
         // will store all the fish that match the player's biome or don't discriminate biomes
 
         List<Fish> available = new ArrayList<>();
@@ -441,9 +442,9 @@ public class FishingProcessor implements Listener {
 
         if (Competition.isActive() || !EvenMoreFish.mainConfig.isCompetitionUnique() || (EvenMoreFish.raritiesCompCheckExempt && returningFish.isCompExemptFish())) {
             return returningFish;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml

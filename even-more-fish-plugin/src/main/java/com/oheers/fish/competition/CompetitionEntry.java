@@ -13,7 +13,7 @@ public class CompetitionEntry implements Comparable<CompetitionEntry> {
     private long time;
     private float value;
 
-    CompetitionEntry(UUID player, Fish fish, CompetitionType type) {
+    public CompetitionEntry(UUID player, Fish fish, CompetitionType type) {
         this.player = player;
         this.fish = fish;
         this.time = Instant.now().toEpochMilli();
