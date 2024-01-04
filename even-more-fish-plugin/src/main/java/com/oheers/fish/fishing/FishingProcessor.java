@@ -138,35 +138,35 @@ public class FishingProcessor implements Listener {
         return fish;
     }
 
-    public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {
+    private static boolean checkMcMMOFishingExploit(final Player player, final Location location) {
+        return EvenMoreFish.usingMcMMO &&
+                ExperienceConfig.getInstance().isFishingExploitingPrevented() &&
+                UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector());
+    }
 
-        if (!FishUtils.checkRegion(location, EvenMoreFish.mainConfig.getAllowedRegions())) {
-            return null;
-        }
-
-        if (!FishUtils.checkWorld(location)) {
-            return null;
-        }
-
-        if (EvenMoreFish.usingMcMMO) {
-            if (ExperienceConfig.getInstance().isFishingExploitingPrevented()) {
-                if (UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector())) {
-                    return null;
-                }
-            }
-        }
+    /**
+     * @return true if a bait was caught.
+     */
+    private static boolean checkCaughtBait() {
         final BaitFile baitFile = EvenMoreFish.getInstance().getConfigManager().getBaitFile();
-        if (baitFile.getBaitCatchPercentage() > 0) {
-            if (EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < baitFile.getBaitCatchPercentage()) {
-                Bait caughtBait = BaitNBTManager.randomBaitCatch();
-                Message message = new Message(ConfigMessage.BAIT_CAUGHT);
-                message.setBaitTheme(caughtBait.getTheme());
-                message.setBait(caughtBait.getName());
-                message.setPlayer(player.getName());
-                message.broadcast(player, true, true);
+        return baitFile.getBaitCatchPercentage() > 0 && EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < baitFile.getBaitCatchPercentage();
+    }
 
-                return caughtBait.create(player);
-            }
+    public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {
+        if (!FishUtils.checkRegion(location, EvenMoreFish.mainConfig.getAllowedRegions())) return null;
+        if (!FishUtils.checkWorld(location)) return null;
+        if (checkMcMMOFishingExploit(player, location)) return null;
+
+
+        if (checkCaughtBait()) {
+            Bait caughtBait = BaitNBTManager.randomBaitCatch();
+            Message message = new Message(ConfigMessage.BAIT_CAUGHT);
+            message.setBaitTheme(caughtBait.getTheme());
+            message.setBait(caughtBait.getName());
+            message.setPlayer(player.getName());
+            message.broadcast(player, true, true);
+
+            return caughtBait.create(player);
         }
 
         Fish fish;
