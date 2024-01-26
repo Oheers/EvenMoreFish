@@ -244,7 +244,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     @Override
     public void onDisable() {
         terminateSellGUIS();
-        saveUserData();
+        // Don't use the scheduler here because it will throw errors on disable
+        saveUserData(false);
 
         // Ends the current competition in case the plugin is being disabled when the server will continue running
         if (Competition.isActive()) {
@@ -388,8 +389,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
     }
 
-    private void saveUserData() {
-        getScheduler().runTask(() -> {
+    private void saveUserData(boolean scheduler) {
+        Runnable save = () -> {
             if (!(mainConfig.isDatabaseOnline())) {
                 return;
             }
@@ -398,7 +399,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             saveUserReports();
 
             DataManager.getInstance().uncacheAll();
-        });
+        };
+        if (scheduler) {
+            getScheduler().runTask(save);
+        } else {
+            save.run();
+        }
     }
 
     private void saveFishReports() {
