@@ -390,18 +390,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private void saveUserData(boolean scheduler) {
-        if (scheduler) {
-            getScheduler().runTask(() -> {
-                if (!(mainConfig.isDatabaseOnline())) {
-                    return;
-                }
-
-                saveFishReports();
-                saveUserReports();
-
-                DataManager.getInstance().uncacheAll();
-            });
-        } else {
+        Runnable save = () -> {
             if (!(mainConfig.isDatabaseOnline())) {
                 return;
             }
@@ -410,6 +399,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             saveUserReports();
 
             DataManager.getInstance().uncacheAll();
+        };
+        if (scheduler) {
+            getScheduler().runTask(save);
+        } else {
+            save.run();
         }
     }
 
