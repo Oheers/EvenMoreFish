@@ -99,6 +99,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public static boolean usingPAPI;
     public static boolean usingMcMMO;
     public static boolean usingHeadsDB;
+    public static boolean usingPlayerPoints;
 
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
@@ -135,6 +136,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         logger = getLogger();
         pluginManager = getServer().getPluginManager();
 
+        usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
+        
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 

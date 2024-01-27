@@ -7,6 +7,8 @@ import com.oheers.fish.api.EMFRewardEvent;
 import com.oheers.fish.config.messages.OldMessage;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang.StringUtils;
+import org.black_ixx.playerpoints.PlayerPoints;
+import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -129,6 +131,11 @@ public class Reward {
                 Economy economy = EvenMoreFish.economy;
                 if (economy.isEnabled()) { economy.deposit(player, Integer.parseInt(action)); }
                 break;
+            // Specifically for when using Vault but also wanting to give points
+            case PLAYER_POINTS:
+                if (EvenMoreFish.usingPlayerPoints) {
+                    PlayerPoints.getInstance().getAPI().give(player.getUniqueId(), Integer.parseInt(action));
+                }
             case OTHER:
                 PluginManager pM = Bukkit.getPluginManager();
                 EMFRewardEvent event = new EMFRewardEvent(this, p, fishVelocity, hookLocation);
