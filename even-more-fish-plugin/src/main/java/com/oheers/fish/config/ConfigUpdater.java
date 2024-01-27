@@ -360,7 +360,7 @@ public class ConfigUpdater {
     }
 
     private static void insertCurrencySymbol(int version) throws IOException {
-        File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
+        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder(), "messages.yml");
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
