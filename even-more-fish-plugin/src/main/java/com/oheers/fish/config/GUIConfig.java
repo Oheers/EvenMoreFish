@@ -115,7 +115,17 @@ public class GUIConfig {
             for (int j = 0; j < layoutArray.get(i).getAsString().length(); j++) {
                 char materialID = line.charAt(j);
                 if (materialID != 'X') {
-                    fillerDefault.put(((i * 9) + j), new ItemStack(Material.valueOf(planArray.get(Integer.parseInt(String.valueOf(materialID))).getAsString())));
+                    // Sucky code but it does the job
+                    String materialName = planArray.get(Integer.parseInt(String.valueOf(materialID))).getAsString().toUpperCase();
+                    try {
+                        fillerDefault.put(((i * 9) + j), new ItemStack(Material.valueOf(materialName)));
+                    } catch (IllegalArgumentException ex) {
+                        if (materialName.equals("GRASS")) {
+                            fillerDefault.put(((i * 9) + j), new ItemStack(Material.valueOf("SHORT_GRASS")));
+                        } else {
+                            throw ex;
+                        }
+                    }
                 }
             }
         }
