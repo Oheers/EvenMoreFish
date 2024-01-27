@@ -496,17 +496,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         if (msgs.configVersion() < MSG_CONFIG_VERSION) {
             ConfigUpdater.updateMessages(msgs.configVersion());
-            getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. The plugin may have automatically added the extra features but you may wish to" +
-                    " modify them to suit your server.");
-
             msgs.reload();
         }
 
         if (mainConfig.configVersion() < MAIN_CONFIG_VERSION) {
             ConfigUpdater.updateConfig(mainConfig.configVersion());
-            getLogger().log(Level.WARNING, "Your config.yml config is not up to date. The plugin may have automatically added the extra features but you may wish to" +
-                    " modify them to suit your server.");
-
             reloadConfig();
         }
 
@@ -514,7 +508,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
-
             competitionConfig.reload();
         }
 
