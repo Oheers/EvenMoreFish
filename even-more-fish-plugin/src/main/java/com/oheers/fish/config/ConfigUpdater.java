@@ -9,6 +9,10 @@ public class ConfigUpdater {
 
     private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
+    private static String CONFIG_UPDATE_15 = "\n" +
+            "# Choose which economy plugin you wish to use\n" +
+            "# Supported values are: Vault, PlayerPoints, None\n" +
+            "economy-type: Vault";
     private static String MSG_UPDATE_16 = "\n" +
             "# Shown when the emf %emf_competition_place_fish_*% placeholder requests a position in the leaderboard that doesn't exist\n" +
             "no-fish-in-place: \"Start fishing to take this place\"\n" +
@@ -331,6 +335,9 @@ public class ConfigUpdater {
             case 13:
                 update.append(CONFIG_UPDATE_14);
                 logConfigUpdate(version + 1);
+            case 14:
+                update.append(CONFIG_UPDATE_15);
+                logConfigUpdate(version + 1);
         }
 
         update.append(UPDATE_ALERT);
@@ -396,5 +403,6 @@ public class ConfigUpdater {
         CONFIG_UPDATE_12 = null;
         CONFIG_UPDATE_13 = null;
         CONFIG_UPDATE_14 = null;
+        CONFIG_UPDATE_15 = null;
     }
 }
