@@ -34,7 +34,6 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -73,7 +72,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public static GUIConfig guiConfig;
     public static List<String> competitionWorlds = new ArrayList<>();
     public static Permission permission = null;
-    public static Economy econ = null;
+    public static Economy economy;
     public static Map<Integer, Set<String>> fish = new HashMap<>();
     public static Map<String, Bait> baits = new HashMap<>();
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
@@ -368,16 +367,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private boolean setupEconomy() {
         if (mainConfig.isEconomyEnabled()) {
-            RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-            if (rsp == null) {
-                return false;
-            }
-            econ = rsp.getProvider();
-            return econ != null;
+            economy = new Economy(mainConfig.economyType());
+            return economy.isEnabled();
         } else {
             return false;
         }
-
     }
 
     // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
