@@ -17,7 +17,6 @@ public class Economy {
 
     public Economy(EconomyType type) {
         EvenMoreFish emf = EvenMoreFish.getInstance();
-        System.out.println(type.toString());
         switch (type) {
             case VAULT:
                 emf.getLogger().log(Level.INFO, "Attempting to hook into Vault for Economy Handling.");
