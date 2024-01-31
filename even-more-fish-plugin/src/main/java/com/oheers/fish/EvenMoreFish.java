@@ -103,7 +103,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
-    public static boolean papi;
     public static DatabaseV3 databaseV3;
     public static HeadDatabaseAPI HDBapi;
     private static EvenMoreFish instance;
@@ -158,7 +157,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             guiFillerStyle = guiConfig.getFillerStyle("main-menu");
         }
 
-        usingPAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
+        checkPapi();
 
         if (mainConfig.requireNBTRod()) {
             customNBTRod = createCustomNBTRod();
@@ -216,7 +215,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         AutoRunner.init();
 
         wgPlugin = getWorldGuard();
-        checkPapi();
 
         if (mainConfig.databaseEnabled()) {
 
@@ -535,7 +533,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private void checkPapi() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            papi = true;
+            usingPAPI = true;
             new PlaceholderReceiver(this).register();
         }
 
