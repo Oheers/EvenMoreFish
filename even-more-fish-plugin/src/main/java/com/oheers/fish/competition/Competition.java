@@ -793,4 +793,34 @@ public class Competition {
     public void setCompetitionName(String competitionName) {
         this.competitionName = competitionName;
     }
+
+    public static Message getNextCompetitionMessage() {
+        if (Competition.isActive()) {
+            return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP);
+        }
+
+        int competitionStartTime = EvenMoreFish.competitionQueue.getNextCompetition();
+        int currentTime = AutoRunner.getCurrentTimeCode();
+        int remainingTime = getRemainingTime(competitionStartTime,currentTime);
+
+        Message message = new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING);
+        message.setDays(Integer.toString(remainingTime / 1440));
+        message.setHours(Integer.toString((remainingTime % 1440) / 60));
+        message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
+
+        return message;
+    }
+
+    private static int getRemainingTime(int competitionStartTime, int currentTime) {
+        if (competitionStartTime > currentTime) {
+            return competitionStartTime - currentTime;
+        }
+
+        return getRemainingTimeOverWeek(competitionStartTime,currentTime);
+    }
+
+    // time left of the current week + the time next week until next competition
+    private static int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
+        return (10080 - currentTime) + competitionStartTime;
+    }
 }
