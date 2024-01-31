@@ -215,7 +215,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         AutoRunner.init();
 
         wgPlugin = getWorldGuard();
-        checkPapi();
 
         if (mainConfig.databaseEnabled()) {
 
