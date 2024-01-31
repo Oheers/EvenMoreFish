@@ -799,9 +799,7 @@ public class Competition {
             return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP);
         }
 
-        int competitionStartTime = EvenMoreFish.competitionQueue.getNextCompetition();
-        int currentTime = AutoRunner.getCurrentTimeCode();
-        int remainingTime = getRemainingTime(competitionStartTime,currentTime);
+        int remainingTime = getRemainingTime();
 
         Message message = new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING);
         message.setDays(Integer.toString(remainingTime / 1440));
@@ -811,7 +809,9 @@ public class Competition {
         return message;
     }
 
-    private static int getRemainingTime(int competitionStartTime, int currentTime) {
+    private static int getRemainingTime() {
+        int competitionStartTime = EvenMoreFish.competitionQueue.getNextCompetition();
+        int currentTime = AutoRunner.getCurrentTimeCode();
         if (competitionStartTime > currentTime) {
             return competitionStartTime - currentTime;
         }
