@@ -1,5 +1,6 @@
 package com.oheers.fish.config;
 
+import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -71,6 +72,18 @@ public class MainConfig {
 
     public boolean isEconomyEnabled() {
         return config.getBoolean("enable-economy", true);
+    }
+
+    public Economy.EconomyType economyType() {
+        String economyString = config.getString("economy-type", "Vault");
+        switch (economyString) {
+            case "Vault":
+                return Economy.EconomyType.VAULT;
+            case "PlayerPoints":
+                return Economy.EconomyType.PLAYER_POINTS;
+            default:
+                return Economy.EconomyType.NONE;
+        }
     }
     
     public boolean isVanillaFishing() {

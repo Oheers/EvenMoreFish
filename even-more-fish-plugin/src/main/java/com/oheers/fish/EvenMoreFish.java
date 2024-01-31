@@ -34,7 +34,6 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -61,7 +60,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public static final int METRIC_ID = 11054;
     public static final int MSG_CONFIG_VERSION = 16;
-    public static final int MAIN_CONFIG_VERSION = 14;
+    public static final int MAIN_CONFIG_VERSION = 15;
     public static final int COMP_CONFIG_VERSION = 1;
     public static FishFile fishFile;
     public static RaritiesFile raritiesFile;
@@ -73,7 +72,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public static GUIConfig guiConfig;
     public static List<String> competitionWorlds = new ArrayList<>();
     public static Permission permission = null;
-    public static Economy econ = null;
+    public static Economy economy;
     public static Map<Integer, Set<String>> fish = new HashMap<>();
     public static Map<String, Bait> baits = new HashMap<>();
     public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
@@ -100,6 +99,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public static boolean usingPAPI;
     public static boolean usingMcMMO;
     public static boolean usingHeadsDB;
+    public static boolean usingPlayerPoints;
 
     public static WorldGuardPlugin wgPlugin;
     public static String guardPL;
@@ -135,6 +135,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         logger = getLogger();
         pluginManager = getServer().getPluginManager();
 
+        usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
+        
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
@@ -366,16 +368,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private boolean setupEconomy() {
         if (mainConfig.isEconomyEnabled()) {
-            RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-            if (rsp == null) {
-                return false;
-            }
-            econ = rsp.getProvider();
-            return econ != null;
+            economy = new Economy(mainConfig.economyType());
+            return economy.isEnabled();
         } else {
             return false;
         }
-
     }
 
     // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
@@ -500,17 +497,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         if (msgs.configVersion() < MSG_CONFIG_VERSION) {
             ConfigUpdater.updateMessages(msgs.configVersion());
-            getLogger().log(Level.WARNING, "Your messages.yml config is not up to date. The plugin may have automatically added the extra features but you may wish to" +
-                    " modify them to suit your server.");
-
             msgs.reload();
         }
 
         if (mainConfig.configVersion() < MAIN_CONFIG_VERSION) {
             ConfigUpdater.updateConfig(mainConfig.configVersion());
-            getLogger().log(Level.WARNING, "Your config.yml config is not up to date. The plugin may have automatically added the extra features but you may wish to" +
-                    " modify them to suit your server.");
-
             reloadConfig();
         }
 
@@ -518,7 +509,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
                     " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
-
             competitionConfig.reload();
         }
 

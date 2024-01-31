@@ -9,6 +9,10 @@ public class ConfigUpdater {
 
     private final static String UPDATE_ALERT = "\n###################### THIS IS AUTOMATICALLY UPDATED BY THE PLUGIN, IT IS RECOMMENDED TO MOVE THESE VALUES TO THEIR APPROPRIATE PLACES. ######################\n";
 
+    private static String CONFIG_UPDATE_15 = "\n" +
+            "# Choose which economy plugin you wish to use\n" +
+            "# Supported values are: Vault, PlayerPoints, None\n" +
+            "economy-type: Vault";
     private static String MSG_UPDATE_16 = "\n" +
             "# Shown when the emf %emf_competition_place_fish_*% placeholder requests a position in the leaderboard that doesn't exist\n" +
             "no-fish-in-place: \"Start fishing to take this place\"\n" +
@@ -217,7 +221,7 @@ public class ConfigUpdater {
             getMessageUpdates(13);
             return;
         }
-        File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
+        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder(), "messages.yml");
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
@@ -241,7 +245,7 @@ public class ConfigUpdater {
     }
 
     public static void updateConfig(int version) throws IOException {
-        File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\config.yml");
+        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder(), "config.yml");
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
@@ -270,19 +274,26 @@ public class ConfigUpdater {
         switch (version) {
             case 7:
                 update.append(MSG_UPDATE_8);
+                logMessageUpdate(version + 1);
             case 8:
                 update.append(MSG_UPDATE_9);
+                logMessageUpdate(version + 1);
             case 9:
                 update.append(MSG_UPDATE_10);
+                logMessageUpdate(version + 1);
             case 10:
                 update.append(MSG_UPDATE_11);
+                logMessageUpdate(version + 1);
             case 11:
                 update.append(MSG_UPDATE_12);
+                logMessageUpdate(version + 1);
             case 12:
                 update.append(MSG_UPDATE_13);
+                logMessageUpdate(version + 1);
             case 13:
                 try {
                     insertCurrencySymbol(13);
+                    logMessageUpdate(version + 1);
                 } catch (IOException exception) {
                     EvenMoreFish.logger.log(Level.WARNING, "Could not update messages.yml");
                 }
@@ -290,6 +301,7 @@ public class ConfigUpdater {
                 update.append(MSG_UPDATE_15);
             case 15:
                 update.append(MSG_UPDATE_16);
+                logMessageUpdate(version + 1);
         }
 
         update.append(UPDATE_ALERT);
@@ -300,21 +312,32 @@ public class ConfigUpdater {
     private static String getConfigUpdates(int version) {
         StringBuilder update = new StringBuilder();
         update.append(UPDATE_ALERT);
+
         switch (version) {
             case 7:
                 update.append(CONFIG_UPDATE_8);
+                logConfigUpdate(version + 1);
             case 8:
                 update.append(CONFIG_UPDATE_9);
+                logConfigUpdate(version + 1);
             case 9:
                 update.append(CONFIG_UPDATE_10);
+                logConfigUpdate(version + 1);
             case 10:
                 update.append(CONFIG_UPDATE_11);
+                logConfigUpdate(version + 1);
             case 11:
                 update.append(CONFIG_UPDATE_12);
+                logConfigUpdate(version + 1);
             case 12:
                 update.append(CONFIG_UPDATE_13);
+                logConfigUpdate(version + 1);
             case 13:
                 update.append(CONFIG_UPDATE_14);
+                logConfigUpdate(version + 1);
+            case 14:
+                update.append(CONFIG_UPDATE_15);
+                logConfigUpdate(version + 1);
         }
 
         update.append(UPDATE_ALERT);
@@ -322,8 +345,22 @@ public class ConfigUpdater {
         return update.toString();
     }
 
+    private static void logConfigUpdate(int version) {
+        EvenMoreFish.getInstance().getLogger().log(
+                Level.WARNING,
+                "Updated config.yml to Version " + version + ". This warning exists in case you wish to modify these new values."
+        );
+    }
+
+    private static void logMessageUpdate(int version) {
+        EvenMoreFish.getInstance().getLogger().log(
+                Level.WARNING,
+                "Updated messages.yml to Version " + version + ". This warning exists in case you wish to modify these new values."
+        );
+    }
+
     private static void insertCurrencySymbol(int version) throws IOException {
-        File messagesFile = new File(EvenMoreFish.getProvidingPlugin(EvenMoreFish.class).getDataFolder().getPath() + "\\messages.yml");
+        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder(), "messages.yml");
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
@@ -366,5 +403,6 @@ public class ConfigUpdater {
         CONFIG_UPDATE_12 = null;
         CONFIG_UPDATE_13 = null;
         CONFIG_UPDATE_14 = null;
+        CONFIG_UPDATE_15 = null;
     }
 }

@@ -1,6 +1,7 @@
 package com.oheers.fish.selling;
 
 import com.devskiller.friendly_id.FriendlyId;
+import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
@@ -319,8 +320,10 @@ public class SellGUI implements InventoryHolder {
         }
         this.value = totalValue;
         this.fishCount = count;
-        
-        return Math.floor(totalValue * 10) / 10;
+
+        // Run this through the Economy#prepareValue method so the value is correct
+        // double for Vault, int for PlayerPoints, 0 when there is no economy plugin
+        return Economy.prepareValue(Math.floor(totalValue * 10) / 10);
     }
 
     public double getTotalWorth(boolean inventory) {
@@ -388,8 +391,9 @@ public class SellGUI implements InventoryHolder {
         double sellPrice = Math.floor(totalWorth * 10) / 10;
 
         if (sellType.equals("money")) {
-            if (EvenMoreFish.econ != null) {
-                EvenMoreFish.econ.depositPlayer(this.player, totalWorth);
+            Economy economy = EvenMoreFish.economy;
+            if (economy != null && economy.isEnabled()) {
+                economy.deposit(this.player, totalWorth);
             }
         } else if (sellType.equals("claimblocks")) {
             PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(this.player.getUniqueId());

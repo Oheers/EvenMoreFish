@@ -24,6 +24,7 @@ repositories {
     maven("https://repo.spongepowered.org/maven/")
     maven("https://repo.essentialsx.net/releases/")
     maven("https://repo.auxilor.io/repository/maven-public/")
+    maven("https://repo.rosewooddev.io/repository/public/")
 }
 
 dependencies {
@@ -57,6 +58,7 @@ dependencies {
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
+    compileOnly(libs.playerpoints)
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
@@ -82,8 +84,11 @@ bukkit {
     website = "https://github.com/Oheers/EvenMoreFish"
     foliaSupported = true
 
-    depend = listOf("Vault")
+    depend = listOf(
+        "Vault"
+    )
     softDepend = listOf(
+        "PlayerPoints",
         "WorldGuard",
         "PlaceholderAPI",
         "RedProtect",

@@ -39,6 +39,10 @@ random-durability: true
 # you'll want to do this, but it is possible.
 enable-economy: true
 
+# Choose which economy plugin you wish to use
+# Supported values are: Vault, PlayerPoints, None
+economy-type: Vault
+
 # Setting this to change the boosbar style
 # you can use like: SEGMENTED_6 SEGMENTED_10 SEGMENTED_12 SEGMENTED_20 SOLID
 barstyle: 'SEGMENTED_10'
