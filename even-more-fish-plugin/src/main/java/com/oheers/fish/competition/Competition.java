@@ -83,6 +83,7 @@ public class Competition {
             this.timeLeft = this.maxDuration;
 
             leaderboard = new Leaderboard(competitionType);
+            statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.competitionConfig.getBarPrefix(competitionName)), competitionType);
             statusBar.show();
             initTimer();
             announceBegin();
