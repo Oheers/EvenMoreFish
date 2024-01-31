@@ -5,6 +5,7 @@ plugins {
 
 repositories {
     maven("https://repo.auxilor.io/repository/maven-public/")
+    maven("https://maven.citizensnpcs.co/repo")
 }
 
 dependencies {
@@ -13,6 +14,7 @@ dependencies {
     compileOnly(libs.ecoitems.api)
     compileOnly(libs.ecoitems.libreforge)
     compileOnly(libs.ecoitems.eco)
+    compileOnly(libs.denizen.api)
     compileOnly(libs.commons.lang3)
     compileOnly(project(":even-more-fish-api"))
 }
