@@ -106,7 +106,7 @@ public class OldMessage {
 
     public String toString() {
 
-        if (EvenMoreFish.papi) {
+        if (EvenMoreFish.usingPAPI) {
             if (receiver != null) {
                 msg = PlaceholderAPI.setPlaceholders(receiver, msg);
             }
