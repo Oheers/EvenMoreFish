@@ -190,6 +190,10 @@ public class FishingProcessor implements Listener {
             fish = chooseNonBaitFish(player, location);
         }
 
+        if (fish == null) {
+            return null;
+        }
+
         fish.init();
 
         if (runRewards && fish.hasFishRewards()) {
