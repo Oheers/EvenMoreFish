@@ -134,7 +134,11 @@ public class FishUtils {
             fish.getFactory().setType(randomIndex);
         }
         if (playerString != null) {
-            fish.setFisherman(UUID.fromString(playerString));
+            try {
+                fish.setFisherman(UUID.fromString(playerString));
+            } catch (IllegalArgumentException ex) {
+                fish.setFisherman(fisher.getUniqueId());
+            }
         } else {
             fish.setFisherman(fisher.getUniqueId());
         }

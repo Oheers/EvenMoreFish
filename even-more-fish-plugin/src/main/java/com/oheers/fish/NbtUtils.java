@@ -127,6 +127,14 @@ public class NbtUtils {
         return new NamespacedKey(JavaPlugin.getProvidingPlugin(NbtUtils.class), key);
     }
 
+    public static NBTItem getNBTItem(ItemStack item) {
+        try {
+            return new NBTItem(item);
+        } catch (NullPointerException ex) {
+            return null;
+        }
+    }
+
 
     public enum NbtVersion {
         LEGACY, //pre nbt-api pr

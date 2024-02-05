@@ -52,13 +52,14 @@ public class WorthNBT {
     }
 
     public static double getValue(ItemStack item) {
+
+        NBTItem nbtItem = NbtUtils.getNBTItem(item);
+
         // creating the key to check for
-        if (!FishUtils.isFish(item)) {
+        if (nbtItem == null || !FishUtils.isFish(item)) {
             return -1.0;
         }
 
-
-        NBTItem nbtItem = new NBTItem(item);
         // it's a fish so it'll definitely have these NBT values
         Float length = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
         String rarity = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
