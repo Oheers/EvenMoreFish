@@ -244,11 +244,17 @@ public class Fish implements Cloneable {
      * @return A lore to be used by fetching data from the old messages.yml set-up.
      */
     private List<String> getFishLore() {
-        Message newLoreLine = new Message(ConfigMessage.FISH_LORE);
+        List<String> loreOverride = this.fishConfig.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore-override");
+        Message newLoreLine;
+        if (!loreOverride.isEmpty()) {
+            newLoreLine = new Message(loreOverride);
+        } else {
+            newLoreLine = new Message(ConfigMessage.FISH_LORE);
+        }
         newLoreLine.setRarityColour(rarity.getColour());
 
         newLoreLine.addLore(
-            "{fish_lore}",
+                "{fish_lore}",
                 this.fishConfig.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".lore")
         );
 
