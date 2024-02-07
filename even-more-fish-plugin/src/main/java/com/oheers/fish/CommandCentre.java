@@ -12,6 +12,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.gui.FishingGUI;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellGUI;
@@ -59,8 +60,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "shop",
                 "sellall",
                 "toggle",
-                "top",
-                "gui")
+                "top")
         );
 
         if (Xmas2022Config.getInstance().isAvailable()) emfTabs.add("xmas");
