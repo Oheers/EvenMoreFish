@@ -24,65 +24,58 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class GUIConfig {
+public class GUIConfig extends ConfigBase {
 
-    private final EvenMoreFish plugin;
-    private FileConfiguration config;
+    private static GUIConfig instance = null;
     public HashMap<Integer, ItemStack> fillerDefault = new HashMap<>();
+    public FillerStyle guiFillerStyle;
 
-    public GUIConfig (EvenMoreFish plugin) {
-        this.plugin = plugin;
+    public GUIConfig() {
+        super("guis.yml");
         reload();
+        instance = this;
     }
-
+    
+    public static GUIConfig getInstance() {
+        return instance;
+    }
+    
+    @Override
     public void reload() {
-        File competitionsFile = new File(this.plugin.getDataFolder(), "guis.yml");
-
-        if (!competitionsFile.exists()) {
-            competitionsFile.getParentFile().mkdirs();
-            this.plugin.saveResource("guis.yml", false);
-        }
-
-        this.config = new YamlConfiguration();
-
-        try {
-            this.config.load(competitionsFile);
-        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-
+        super.reload();
         fillerDefault.clear();
         generateDefaultFiller();
+        guiFillerStyle = getFillerStyle("main-menu");
     }
 
     public String getToggle(boolean toggleState) {
-        if (toggleState) return this.config.getString("enabled-msg", "&a&l✔");
-        else return this.config.getString("disabled-msg", "&c&l✘");
+        if (toggleState) return getConfig().getString("enabled-msg", "&a&l✔");
+        else return getConfig().getString("disabled-msg", "&c&l✘");
     }
 
     public String getMaterial(boolean toggleState) {
-        if (toggleState) return this.config.getString("enabled-icon", "TROPICAL_FISH");
-        else return this.config.getString("disabled-icon", "SALMON");
+        if (toggleState) return getConfig().getString("enabled-icon", "TROPICAL_FISH");
+        else return getConfig().getString("disabled-icon", "SALMON");
     }
 
     public String getGUIName(String gui) {
-        return this.config.getString(gui + ".title", "&#55aaffEvenMoreFish GUI");
+        return getConfig().getString(gui + ".title", "&#55aaffEvenMoreFish GUI");
     }
 
     public List<Button> getButtons(@NotNull final UUID uuid) {
         List<Button> buttons = new ArrayList<>();
-        ConfigurationSection section = this.config.getConfigurationSection("main-menu");
+        ConfigurationSection section = getConfig().getConfigurationSection("main-menu");
         if (section == null) return buttons;
         for (String value : section.getKeys(false)) {
-            Message materialIcon = new Message(this.config.getString("main-menu." + value + ".item", "BARRIER"));
+            Message materialIcon = new Message(getConfig().getString("main-menu." + value + ".item", "BARRIER"));
             materialIcon.setToggleIcon(getMaterial(!EvenMoreFish.disabledPlayers.contains(uuid)));
             Button button = new Button(
                     value,
                     uuid,
                     materialIcon.getRawMessage(false, true),
-                    this.config.getString("main-menu." + value + ".name"),
-                    this.config.getStringList("main-menu." + value + ".lore"),
-                    this.config.getInt("main-menu." + value + ".slot", -1)
+                    getConfig().getString("main-menu." + value + ".name"),
+                    getConfig().getStringList("main-menu." + value + ".lore"),
+                    getConfig().getInt("main-menu." + value + ".slot", -1)
             );
             buttons.add(button);
         }
@@ -97,9 +90,9 @@ public class GUIConfig {
      */
     public FillerStyle getFillerStyle(@NotNull final String menuID) {
         try {
-            return FillerStyle.valueOf(this.config.getString(menuID + ".filler-layout", "DEFAULT").toUpperCase());
+            return FillerStyle.valueOf(getConfig().getString(menuID + ".filler-layout", "DEFAULT").toUpperCase());
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, this.config.getString(menuID + ".filler-layout") + " is not a valid filler layout for the " + menuID);
+            EvenMoreFish.logger.log(Level.SEVERE, getConfig().getString(menuID + ".filler-layout") + " is not a valid filler layout for the " + menuID);
             return FillerStyle.DEFAULT;
         }
     }

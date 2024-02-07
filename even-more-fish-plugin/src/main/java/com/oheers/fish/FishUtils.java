@@ -2,6 +2,8 @@ package com.oheers.fish;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
+import com.oheers.fish.config.CompetitionConfig;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -197,12 +199,12 @@ public class FishUtils {
 
     public static boolean checkWorld(Location l) {
         // if the user has defined a world whitelist
-        if (!EvenMoreFish.mainConfig.worldWhitelist()) {
+        if (!MainConfig.getInstance().worldWhitelist()) {
             return true;
         }
 
         // Gets a list of user defined regions
-        List<String> whitelistedWorlds = EvenMoreFish.mainConfig.getAllowedWorlds();
+        List<String> whitelistedWorlds = MainConfig.getInstance().getAllowedWorlds();
         if (l.getWorld() == null) {
             return false;
         } else {
@@ -277,7 +279,7 @@ public class FishUtils {
     }
 
     public static void broadcastFishMessage(Message message, boolean actionBar) {
-        if (EvenMoreFish.competitionConfig.broadcastOnlyRods()) {
+        if (CompetitionConfig.getInstance().broadcastOnlyRods()) {
             // sends it to all players holding ords
             if (actionBar) {
                 for (Player p : Bukkit.getOnlinePlayers()) {

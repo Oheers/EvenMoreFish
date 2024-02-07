@@ -1,50 +1,38 @@
 package com.oheers.fish.config;
 
-import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-public class Xmas2022Config {
+public class Xmas2022Config extends ConfigBase {
 
-    private final EvenMoreFish plugin;
-    private FileConfiguration config;
     private boolean isAvailable = true;
-    public HashMap<Integer, Material> fillerDefault = new HashMap<>();
+    public HashMap<Integer, Material> fillerDefault = null;
+    private static Xmas2022Config instance = null;
 
-    public Xmas2022Config (EvenMoreFish plugin) {
-        this.plugin = plugin;
+    public Xmas2022Config() {
+        super("xmas2022.yml");
         reload();
+        instance = this;
     }
 
+    public static Xmas2022Config getInstance() {
+        return instance;
+    }
+
+    @Override
     public void reload() {
-        File xmas2022File = new File(this.plugin.getDataFolder(), "xmas2022.yml");
-
-        if (!xmas2022File.exists()) {
-            this.isAvailable = false;
-            return;
+        super.reload();
+        if (fillerDefault == null) {
+            fillerDefault = new HashMap<>();
         }
-
-        this.config = new YamlConfiguration();
-
-        try {
-            this.config.load(xmas2022File);
-        } catch (IOException | org.bukkit.configuration.InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        fillerDefault.clear();
         generateDefaultFiller();
     }
 
     public void generateDefaultFiller() {
-        List<String> layoutArray = this.config.getStringList("gui.advent-calendar.filler-settings.layout");
-        List<String> planArray = this.config.getStringList("gui.advent-calendar.filler-settings.plan");
+        List<String> layoutArray = getConfig().getStringList("gui.advent-calendar.filler-settings.layout");
+        List<String> planArray = getConfig().getStringList("gui.advent-calendar.filler-settings.plan");
 
         for (int i=0; i < layoutArray.size(); i++) {
             String line = layoutArray.get(i);
@@ -58,31 +46,27 @@ public class Xmas2022Config {
     }
 
     public String getGUIName() {
-        return this.config.getString("gui.advent-calendar.title");
-    }
-
-    public FileConfiguration getConfig() {
-        return this.config;
+        return getConfig().getString("gui.advent-calendar.title");
     }
 
     public String getFoundFishName() {
-        return this.config.getString("gui.advent-calendar.filler-settings.fish-name", "&#74d680Day {day} - {name}");
+        return getConfig().getString("gui.advent-calendar.filler-settings.fish-name", "&#74d680Day {day} - {name}");
     }
 
     public String getLockedFishName() {
-        return this.config.getString("gui.advent-calendar.filler-settings.locked-fish-name", "&cDay {day} - ???");
+        return getConfig().getString("gui.advent-calendar.filler-settings.locked-fish-name", "&cDay {day} - ???");
     }
 
     public List<String> getFoundFishLore() {
-        return this.config.getStringList("gui.advent-calendar.fish-lore");
+        return getConfig().getStringList("gui.advent-calendar.fish-lore");
     }
 
     public Material getLockedFishMaterial() {
-        return Material.valueOf(this.config.getString("gui.advent-calendar.fish-material", "BARRIER"));
+        return Material.valueOf(getConfig().getString("gui.advent-calendar.fish-material", "BARRIER"));
     }
 
     public List<String> getLockedFishLore() {
-        return this.config.getStringList("gui.advent-calendar.locked-fish-lore");
+        return getConfig().getStringList("gui.advent-calendar.locked-fish-lore");
     }
 
     public boolean isAvailable() {

@@ -1,6 +1,7 @@
 package com.oheers.fish.gui;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.selling.WorthNBT;
 import org.bukkit.Material;
@@ -40,7 +41,7 @@ public class Button {
 
         if (name != null) {
             Message toggleVAR = new Message(name);
-            toggleVAR.setToggleMSG(EvenMoreFish.guiConfig.getToggle(!EvenMoreFish.disabledPlayers.contains(viewer)));
+            toggleVAR.setToggleMSG(GUIConfig.getInstance().getToggle(!EvenMoreFish.disabledPlayers.contains(viewer)));
             this.name = toggleVAR.getRawMessage(true, true);
         }
 

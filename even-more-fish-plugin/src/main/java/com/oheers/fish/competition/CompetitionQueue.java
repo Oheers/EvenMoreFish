@@ -1,6 +1,7 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.CompetitionConfig;
 
 import java.util.*;
 
@@ -12,11 +13,11 @@ public class CompetitionQueue {
     public void load() {
         competitions = new TreeMap<>();
         // Competitions exist in the competitions.yml
-        if (EvenMoreFish.competitionConfig.getCompetitions() != null) {
-            for (String comp : EvenMoreFish.competitionConfig.getCompetitions()) {
+        if (CompetitionConfig.getInstance().getCompetitions() != null) {
+            for (String comp : CompetitionConfig.getInstance().getCompetitions()) {
 
-                CompetitionType type = EvenMoreFish.competitionConfig.getCompetitionType(comp);
-                Competition competition = new Competition(EvenMoreFish.competitionConfig.getCompetitionDuration(comp) * 60, type);
+                CompetitionType type = CompetitionConfig.getInstance().getCompetitionType(comp);
+                Competition competition = new Competition(CompetitionConfig.getInstance().getCompetitionDuration(comp) * 60, type);
 
                 competition.setCompetitionName(comp);
                 competition.setAdminStarted(false);
@@ -26,16 +27,16 @@ public class CompetitionQueue {
                 competition.initGetNumbersNeeded(comp);
                 competition.initStartSound(comp);
 
-                if (EvenMoreFish.competitionConfig.specificDayTimes(comp)) {
-                    for (String day : EvenMoreFish.competitionConfig.activeDays(comp)) {
-                        for (String time : EvenMoreFish.competitionConfig.getDayTimes(comp, day)) {
+                if (CompetitionConfig.getInstance().specificDayTimes(comp)) {
+                    for (String day : CompetitionConfig.getInstance().activeDays(comp)) {
+                        for (String time : CompetitionConfig.getInstance().getDayTimes(comp, day)) {
                             competitions.put(generateTimeCode(day, time), competition);
                         }
                     }
-                } else if (EvenMoreFish.competitionConfig.doingRepeatedTiming(comp)) {
-                    if (EvenMoreFish.competitionConfig.hasBlacklistedDays(comp)) {
-                        List<String> blacklistedDays = EvenMoreFish.competitionConfig.getBlacklistedDays(comp);
-                        for (String time : EvenMoreFish.competitionConfig.getRepeatedTiming(comp)) {
+                } else if (CompetitionConfig.getInstance().doingRepeatedTiming(comp)) {
+                    if (CompetitionConfig.getInstance().hasBlacklistedDays(comp)) {
+                        List<String> blacklistedDays = CompetitionConfig.getInstance().getBlacklistedDays(comp);
+                        for (String time : CompetitionConfig.getInstance().getRepeatedTiming(comp)) {
                             for (String day : days) {
                                 if (!blacklistedDays.contains(day)) {
                                     competitions.put(generateTimeCode(day, time), competition);
@@ -43,7 +44,7 @@ public class CompetitionQueue {
                             }
                         }
                     } else {
-                        for (String time : EvenMoreFish.competitionConfig.getRepeatedTiming(comp)) {
+                        for (String time : CompetitionConfig.getInstance().getRepeatedTiming(comp)) {
                             for (String day : days) {
                                 competitions.put(generateTimeCode(day, time), competition);
                             }

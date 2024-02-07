@@ -4,6 +4,7 @@ import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFRewardEvent;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.OldMessage;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang.StringUtils;
@@ -149,9 +150,9 @@ public class Reward {
     public String format() {
         switch (type) {
             case COMMAND:
-                if (EvenMoreFish.mainConfig.rewardCommand(action) != null) {
+                if (MainConfig.getInstance().rewardCommand(action) != null) {
                     return new OldMessage()
-                            .setMSG(EvenMoreFish.mainConfig.rewardCommand(action))
+                            .setMSG(MainConfig.getInstance().rewardCommand(action))
                             .toString();
                 } else {
                     return new OldMessage()
@@ -162,7 +163,7 @@ public class Reward {
                 String[] parsedEffect = action.split(",");
                 // Adds a potion effect in accordance to the config.yml "EFFECT:" value
                 return new OldMessage()
-                        .setMSG(EvenMoreFish.mainConfig.rewardEffect())
+                        .setMSG(MainConfig.getInstance().rewardEffect())
                         .setEffect(parsedEffect[0])
                         .setAmplifier(parsedEffect[1])
                         .setTime(FishUtils.timeFormat(Integer.parseInt(parsedEffect[2])))
@@ -170,23 +171,23 @@ public class Reward {
             case ITEM:
                 String[] parsedItem = action.split(",");
                 return new OldMessage()
-                        .setMSG(EvenMoreFish.mainConfig.rewardItem())
+                        .setMSG(MainConfig.getInstance().rewardItem())
                         .setItem(parsedItem[0])
                         .setAmount(parsedItem[1])
                         .toString();
             case MONEY:
                 return new OldMessage()
-                        .setMSG(EvenMoreFish.mainConfig.rewardMoney())
+                        .setMSG(MainConfig.getInstance().rewardMoney())
                         .setAmount(action)
                         .toString();
             case HEALTH:
                 return new OldMessage()
-                        .setMSG(EvenMoreFish.mainConfig.rewardHealth())
+                        .setMSG(MainConfig.getInstance().rewardHealth())
                         .setAmount(action)
                         .toString();
             case HUNGER:
                 return new OldMessage()
-                        .setMSG(EvenMoreFish.mainConfig.rewardHunger())
+                        .setMSG(MainConfig.getInstance().rewardHunger())
                         .setAmount(action)
                         .toString();
             default:

@@ -1,6 +1,7 @@
 package com.oheers.fish.gui;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,7 +29,7 @@ public class FishingGUI implements InventoryHolder {
      * @param viewer The UUID of the player who will open the GUI.
      */
     public FishingGUI(@NotNull final UUID viewer, @NotNull final FillerStyle fillerStyle) {
-        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(EvenMoreFish.guiConfig.getGUIName("main-menu")).getRawMessage(true, false));
+        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(GUIConfig.getInstance().getGUIName("main-menu")).getRawMessage(true, false));
         loadFiller();
         this.viewer = viewer;
         loadButtons();
@@ -55,10 +56,10 @@ public class FishingGUI implements InventoryHolder {
     }
 
     public void loadButtons() {
-        this.guiButtons = EvenMoreFish.guiConfig.getButtons(viewer);
+        this.guiButtons = GUIConfig.getInstance().getButtons(viewer);
     }
 
     public void loadFiller() {
-        EvenMoreFish.guiConfig.fillerDefault.forEach(this.inventory::setItem);
+        GUIConfig.getInstance().fillerDefault.forEach(this.inventory::setItem);
     }
 }

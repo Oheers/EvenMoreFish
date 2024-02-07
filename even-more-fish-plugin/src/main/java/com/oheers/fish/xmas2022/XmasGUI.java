@@ -1,6 +1,7 @@
 package com.oheers.fish.xmas2022;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.FishReport;
@@ -37,7 +38,7 @@ public class XmasGUI implements InventoryHolder {
      * @param viewer The UUID of the player who will open the GUI.
      */
     public XmasGUI(@NotNull final UUID viewer) {
-        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(EvenMoreFish.xmas2022Config.getGUIName()).getRawMessage(true, false));
+        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(Xmas2022Config.getInstance().getGUIName()).getRawMessage(true, false));
         this.viewer = viewer;
         loadFiller();
         setFish();
@@ -86,7 +87,7 @@ public class XmasGUI implements InventoryHolder {
                 day++;
 
                 try {
-                    if (fishReportList == null) this.inventory.setItem(i, new ItemStack(EvenMoreFish.xmas2022Config.getLockedFishMaterial()));
+                    if (fishReportList == null) this.inventory.setItem(i, new ItemStack(Xmas2022Config.getInstance().getLockedFishMaterial()));
 
                     Fish currentDay = EvenMoreFish.xmasFish.get(day);
                     for (FishReport fishReport : fishReportList) {
@@ -104,7 +105,7 @@ public class XmasGUI implements InventoryHolder {
     }
 
     public void loadFiller() {
-        EvenMoreFish.xmas2022Config.fillerDefault.forEach(this::setFillerItem);
+        Xmas2022Config.getInstance().fillerDefault.forEach(this::setFillerItem);
     }
 
     @NotNull
@@ -117,11 +118,11 @@ public class XmasGUI implements InventoryHolder {
         if (unlocked) {
             ItemStack itemStack = EvenMoreFish.xmasFish.get(day).give(-1);
             ItemMeta meta = itemStack.getItemMeta();
-            Message fishName = new Message(EvenMoreFish.xmas2022Config.getFoundFishName());
+            Message fishName = new Message(Xmas2022Config.getInstance().getFoundFishName());
             fishName.setDay(Integer.toString(day));
             fishName.setName(fish.getName());
             meta.setDisplayName(fishName.getRawMessage(true, true));
-            Message fishLore = new Message(EvenMoreFish.xmas2022Config.getFoundFishLore());
+            Message fishLore = new Message(Xmas2022Config.getInstance().getFoundFishLore());
             fishLore.setName(fish.getName());
             fishLore.setNumCaught(Integer.toString(fishReport.getNumCaught()));
             fishLore.setLargestSize(Float.toString(fishReport.getLargestLength()));
@@ -132,12 +133,12 @@ public class XmasGUI implements InventoryHolder {
             itemStack.setItemMeta(meta);
             return itemStack;
         } else {
-            ItemStack itemStack = new ItemStack(EvenMoreFish.xmas2022Config.getLockedFishMaterial());
+            ItemStack itemStack = new ItemStack(Xmas2022Config.getInstance().getLockedFishMaterial());
             ItemMeta meta = itemStack.getItemMeta();
-            Message lockedName = new Message(EvenMoreFish.xmas2022Config.getLockedFishName());
+            Message lockedName = new Message(Xmas2022Config.getInstance().getLockedFishName());
             lockedName.setDay(Integer.toString(day));
             meta.setDisplayName(lockedName.getRawMessage(true, true));
-            Message lockedLore = new Message(EvenMoreFish.xmas2022Config.getLockedFishLore());
+            Message lockedLore = new Message(Xmas2022Config.getInstance().getLockedFishLore());
             lockedLore.setTimeRemaining("(never)");
             meta.setLore(lockedLore.getRawListMessage(true, true));
             itemStack.setItemMeta(meta);

@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -73,7 +74,7 @@ public class SkullSaver implements Listener {
         }
         
         if (FishUtils.isFish(stack)) {
-            if (EvenMoreFish.mainConfig.blockPlacingHeads()) {
+            if (MainConfig.getInstance().blockPlacingHeads()) {
                 event.setCancelled(true);
                 new Message(ConfigMessage.FISH_CANT_BE_PLACED).broadcast(event.getPlayer(), true, false);
                 return;
