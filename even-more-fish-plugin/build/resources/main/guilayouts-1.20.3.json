@@ -1,0 +1,60 @@
+{
+  "blue": {
+    "layout": [
+      "0122X2210",
+      "133333331",
+      "233333332",
+      "233333332",
+      "133333331",
+      "0122X2210"
+    ],
+    "plan": [
+      "LIGHT_BLUE_STAINED_GLASS_PANE", "CYAN_STAINED_GLASS_PANE", "BLUE_STAINED_GLASS_PANE", "GRAY_STAINED_GLASS_PANE"
+    ]
+  },
+  "default": {
+    "layout": [
+      "0123X3210",
+      "145555541",
+      "655555556",
+      "655555556",
+      "145555541",
+      "0123X3210"
+    ],
+    "plan": [
+      "SEAGRASS", "LIGHT_BLUE_STAINED_GLASS_PANE", "SHORT_GRASS", "KELP", "CYAN_STAINED_GLASS_PANE", "BLACK_STAINED_GLASS_PANE", "GRAY_STAINED_GLASS_PANE"
+    ]
+  },
+  "monotone": {
+    "layout": [
+      "0000X0000",
+      "111111111",
+      "111111111",
+      "111111111",
+      "111111111",
+      "0000X0000"
+    ],
+    "plan": [
+      "BLACK_STAINED_GLASS_PANE", "LIGHT_GRAY_STAINED_GLASS_PANE"
+    ]
+  },
+  "ocean": {
+    "layout": [
+      "0123X3210",
+      "145454541",
+      "655555556",
+      "655555556",
+      "145454541",
+      "0123X3210"
+    ],
+    "plan": [
+      "FERN",
+      "BLUE_STAINED_GLASS_PANE",
+      "SEAGRASS",
+      "WARPED_ROOTS",
+      "CYAN_STAINED_GLASS_PANE",
+      "LIGHT_BLUE_STAINED_GLASS_PANE",
+      "GRAY_STAINED_GLASS_PANE"
+    ]
+  }
+}

@@ -105,7 +105,14 @@ public class GUIConfig {
     }
 
     public void generateDefaultFiller() {
-        InputStream fillerSchematicsStream = this.getClass().getClassLoader().getResourceAsStream("guilayouts.json");
+        String layouts = "";
+        try {
+            Material.valueOf("GRASS");
+            layouts = "guilayouts.json";
+        } catch (IllegalArgumentException ex) {
+            layouts = "guilayouts-1.20.3.json";
+        }
+        InputStream fillerSchematicsStream = this.getClass().getClassLoader().getResourceAsStream(layouts);
         JsonObject jsonObject = (JsonObject) JsonParser.parseReader(new InputStreamReader(fillerSchematicsStream));
         JsonObject relevantSchematic = (JsonObject) jsonObject.get(getFillerStyle("main-menu").toString().toLowerCase());
         JsonArray layoutArray = (JsonArray) relevantSchematic.get("layout");
