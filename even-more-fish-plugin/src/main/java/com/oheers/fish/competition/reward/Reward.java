@@ -137,6 +137,10 @@ public class Reward {
                 if (EvenMoreFish.usingPlayerPoints) {
                     PlayerPoints.getInstance().getAPI().give(player.getUniqueId(), Integer.parseInt(action));
                 }
+                break;
+            case PERMISSION:
+                EvenMoreFish.permission.playerAdd(player.getPlayer(), action);
+                break;
             case OTHER:
                 PluginManager pM = Bukkit.getPluginManager();
                 EMFRewardEvent event = new EMFRewardEvent(this, p, fishVelocity, hookLocation);

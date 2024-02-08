@@ -1,6 +1,5 @@
 package com.oheers.fish;
 
-import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -228,20 +227,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
         
         if (identifier.equals("competition_time_left")) {
-            if (Competition.isActive()) {
-                return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP).getRawMessage(true, false);
-            }
-            
-            int competitionStartTime = EvenMoreFish.competitionQueue.getNextCompetition();
-            int currentTime = AutoRunner.getCurrentTimeCode();
-            int remainingTime = getRemainingTime(competitionStartTime,currentTime);
-            
-            Message message = new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING);
-            message.setDays(Integer.toString(remainingTime / 1440));
-            message.setHours(Integer.toString((remainingTime % 1440) / 60));
-            message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
-            
-            return message.getRawMessage(true, true);
+            return Competition.getNextCompetitionMessage().getRawMessage(true, true);
         }
 
         if (identifier.equals("competition_active")) {
@@ -251,19 +237,6 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
         // was provided
         return null;
-    }
-    
-    private int getRemainingTime(int competitionStartTime, int currentTime) {
-        if (competitionStartTime > currentTime) {
-            return competitionStartTime - currentTime;
-        }
-
-        return getRemainingTimeOverWeek(competitionStartTime,currentTime);
-    }
-    
-    // time left of the current week + the time next week until next competition
-    private int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
-        return (10080 - currentTime) + competitionStartTime;
     }
     
     private boolean leaderboardContainsPlace(int place) {

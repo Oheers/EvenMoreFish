@@ -10,6 +10,7 @@ import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.FishingGUI;
@@ -59,6 +60,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "help",
                 "shop",
                 "sellall",
+                "next",
                 "toggle",
                 "top")
         );
@@ -163,6 +165,11 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 } else {
                     new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
                 }
+                break;
+            case "next":
+                Message message = Competition.getNextCompetitionMessage();
+                message.usePrefix(PrefixType.DEFAULT);
+                message.broadcast(sender, true, true);
                 break;
             case "toggle":
                 if (!(sender instanceof Player)) {
