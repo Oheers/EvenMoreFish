@@ -4,6 +4,7 @@ import com.gmail.nossr50.events.McMMOReplaceVanillaTreasureEvent;
 import com.gmail.nossr50.events.skills.fishing.McMMOPlayerFishingTreasureEvent;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.config.MainConfig;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -21,8 +22,8 @@ public class McMMOTreasureEvent implements Listener {
 
     @EventHandler
     public void mcmmoTreasure(McMMOReplaceVanillaTreasureEvent event) {
-        if (EvenMoreFish.mainConfig.disableMcMMOTreasure()) {
-            if (EvenMoreFish.mainConfig.isCompetitionUnique()) {
+        if (MainConfig.getInstance().disableMcMMOTreasure()) {
+            if (MainConfig.getInstance().isCompetitionUnique()) {
                 if (EvenMoreFish.active != null) {
                     event.setReplacementItemStack(event.getOriginalItem().getItemStack());
                 }
@@ -34,8 +35,8 @@ public class McMMOTreasureEvent implements Listener {
 
     @EventHandler
     public void mcmmoTreasure(McMMOPlayerFishingTreasureEvent event) {
-        if (EvenMoreFish.mainConfig.disableMcMMOTreasure()) {
-            if (EvenMoreFish.mainConfig.isCompetitionUnique()) {
+        if (MainConfig.getInstance().disableMcMMOTreasure()) {
+            if (MainConfig.getInstance().isCompetitionUnique()) {
                 if (Competition.isActive()) {
                     event.setTreasure(null);
                 }

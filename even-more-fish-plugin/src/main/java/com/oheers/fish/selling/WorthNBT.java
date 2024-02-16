@@ -3,6 +3,9 @@ package com.oheers.fish.selling;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
+import com.oheers.fish.config.FishFile;
+import com.oheers.fish.config.RaritiesFile;
+import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.fishing.items.Fish;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
@@ -73,9 +76,9 @@ public class WorthNBT {
 
         // gets a possible set-worth in the fish.yml
         try {
-            int configValue = 0;
-            if (!isXmasFish) configValue = EvenMoreFish.fishFile.getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
-            else configValue = EvenMoreFish.xmas2022Config.getConfig().getInt("fish.Christmas 2022." + name + ".set-worth");
+            int configValue;
+            if (!isXmasFish) configValue = FishFile.getInstance().getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            else configValue = Xmas2022Config.getInstance().getConfig().getInt("fish.Christmas 2022." + name + ".set-worth");
 
             if (configValue == 0)
                 throw new NullPointerException();
@@ -105,12 +108,12 @@ public class WorthNBT {
 
     private static double getWorthMultiplier(final String rarity, final String name, boolean isXmasFish) {
         double value;
-        if (isXmasFish) value = EvenMoreFish.xmas2022Config.getConfig().getDouble("fish.Christmas 2022." + name + ".worth-multiplier");
-        else value = EvenMoreFish.fishFile.getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
+        if (isXmasFish) value = Xmas2022Config.getInstance().getConfig().getDouble("fish.Christmas 2022." + name + ".worth-multiplier");
+        else value = FishFile.getInstance().getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            if (isXmasFish) return EvenMoreFish.xmas2022Config.getConfig().getDouble("rarities.Christmas 2022.worth-multiplier");
-            else return EvenMoreFish.raritiesFile.getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+            if (isXmasFish) return Xmas2022Config.getInstance().getConfig().getDouble("rarities.Christmas 2022.worth-multiplier");
+            else return RaritiesFile.getInstance().getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
         }
 
         return value;

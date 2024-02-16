@@ -2,6 +2,7 @@ package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.OldMessage;
@@ -44,19 +45,19 @@ public class Bait {
     public Bait(String name) {
         this.name = name;
 
-        if (EvenMoreFish.baitFile.getBaitTheme(name) != null) {
-            this.theme = FishUtils.translateHexColorCodes(EvenMoreFish.baitFile.getBaitTheme(name));
+        if (BaitFile.getInstance().getBaitTheme(name) != null) {
+            this.theme = FishUtils.translateHexColorCodes(BaitFile.getInstance().getBaitTheme(name));
         } else {
             this.theme = "&e";
         }
 
-        setApplicationWeight(EvenMoreFish.baitFile.getApplicationWeight(name));
-        setCatchWeight(EvenMoreFish.baitFile.getCatchWeight(name));
+        setApplicationWeight(BaitFile.getInstance().getApplicationWeight(name));
+        setCatchWeight(BaitFile.getInstance().getCatchWeight(name));
 
-        this.boostRate = EvenMoreFish.baitFile.getBoostRate();
-        this.maxApplications = EvenMoreFish.baitFile.getMaxBaitApplication(this.name);
-        this.displayName = EvenMoreFish.baitFile.getDisplayName(this.name);
-        this.dropQuantity = EvenMoreFish.baitFile.getDropQuantity(this.name);
+        this.boostRate = BaitFile.getInstance().getBoostRate();
+        this.maxApplications = BaitFile.getInstance().getMaxBaitApplication(this.name);
+        this.displayName = BaitFile.getInstance().getDisplayName(this.name);
+        this.dropQuantity = BaitFile.getInstance().getDropQuantity(this.name);
 
         this.itemFactory = new ItemFactory("baits." + name, false);
 
@@ -111,22 +112,22 @@ public class Bait {
 
         List<String> lore = new ArrayList<>();
 
-        for (String lineAddition : EvenMoreFish.baitFile.getBaitLoreFormat()) {
+        for (String lineAddition : BaitFile.getInstance().getBaitLoreFormat()) {
             if (lineAddition.equals("{boosts}")) {
 
                 if (!rarityList.isEmpty()) {
                     if (rarityList.size() > 1)
-                        lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostRaritiesFormat()).setAmount(Integer.toString(rarityList.size())).setBaitTheme(theme).toString());
+                        lore.add(new OldMessage().setMSG(BaitFile.getInstance().getBoostRaritiesFormat()).setAmount(Integer.toString(rarityList.size())).setBaitTheme(theme).toString());
                     else
-                        lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostRarityFormat()).setAmount(Integer.toString(1)).setBaitTheme(theme).toString());
+                        lore.add(new OldMessage().setMSG(BaitFile.getInstance().getBoostRarityFormat()).setAmount(Integer.toString(1)).setBaitTheme(theme).toString());
                 }
 
                 if (!fishList.isEmpty()) {
-                    lore.add(new OldMessage().setMSG(EvenMoreFish.baitFile.getBoostFishFormat()).setAmount(Integer.toString(fishList.size())).setBaitTheme(theme).toString());
+                    lore.add(new OldMessage().setMSG(BaitFile.getInstance().getBoostFishFormat()).setAmount(Integer.toString(fishList.size())).setBaitTheme(theme).toString());
                 }
 
             } else if (lineAddition.equals("{lore}")) {
-                EvenMoreFish.baitFile.getLore(this.name).forEach(line -> lore.add(new OldMessage()
+                BaitFile.getInstance().getLore(this.name).forEach(line -> lore.add(new OldMessage()
                         .setMSG(line)
                         .toString()));
             } else {
@@ -164,9 +165,9 @@ public class Bait {
             // The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
             // the method isn't given an empty list.
             if (!fishListRarities.contains(fishRarity)) {
-                fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), EvenMoreFish.fishCollection.get(fishRarity), true);
+                fish = FishingProcessor.getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), EvenMoreFish.fishCollection.get(fishRarity), true);
             } else {
-                fish = FishingProcessor.getFish(fishRarity, location, player, EvenMoreFish.baitFile.getBoostRate(), getFishList(), true);
+                fish = FishingProcessor.getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFishList(), true);
             }
             if (fish != null) fish.setWasBaited(true);
 

@@ -3,47 +3,42 @@ package com.oheers.fish.config;
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
 import java.util.logging.Level;
 
-public class MainConfig {
+public class MainConfig extends ConfigBase {
 
-    private final EvenMoreFish plugin;
-    private FileConfiguration config;
+    private static MainConfig instance = null;
 
-    public MainConfig(EvenMoreFish plugin) {
-        this.plugin = plugin;
+    public MainConfig() {
+        super("config.yml");
         reload();
+        instance = this;
     }
 
-    public void reload() {
-        config = plugin.getConfig();
+    public static MainConfig getInstance() {
+        return instance;
     }
 
     public int configVersion() {
-        return config.getInt("config-version");
+        return getConfig().getInt("config-version");
     }
 
     public String getLocale() {
-        return config.getString("locale", "en");
-    }
-
-    public FileConfiguration getConfig() {
-        return this.config;
+        return getConfig().getString("locale", "en");
     }
 
     public int getCompetitionDuration() {
-        return config.getInt("competitions.duration");
+        return getConfig().getInt("competitions.duration");
     }
 
     public boolean doingRandomDurability() {
-        return config.getBoolean("random-durability", true);
+        return getConfig().getBoolean("random-durability", true);
     }
 
     public boolean databaseEnabled() {
-        return doingExperimentalFeatures() && config.getBoolean("database", true);
+        return doingExperimentalFeatures() && getConfig().getBoolean("database", true);
     }
 
     public boolean isDatabaseOnline() {
@@ -51,31 +46,31 @@ public class MainConfig {
     }
 
     public boolean isCompetitionUnique() {
-        return config.getBoolean("fish-only-in-competition", false);
+        return getConfig().getBoolean("fish-only-in-competition", false);
     }
 
     public boolean getEnabled() {
-        return config.getBoolean("enabled", true);
+        return getConfig().getBoolean("enabled", true);
     }
 
     public boolean worldWhitelist() {
-        return !config.getStringList("allowed-worlds").isEmpty();
+        return !getConfig().getStringList("allowed-worlds").isEmpty();
     }
 
     public List<String> getAllowedRegions() {
-        return config.getStringList("allowed-regions");
+        return getConfig().getStringList("allowed-regions");
     }
 
     public List<String> getAllowedWorlds() {
-        return config.getStringList("allowed-worlds");
+        return getConfig().getStringList("allowed-worlds");
     }
 
     public boolean isEconomyEnabled() {
-        return config.getBoolean("enable-economy", true);
+        return getConfig().getBoolean("enable-economy", true);
     }
 
     public Economy.EconomyType economyType() {
-        String economyString = config.getString("economy-type", "Vault");
+        String economyString = getConfig().getString("economy-type", "Vault");
         switch (economyString) {
             case "Vault":
                 return Economy.EconomyType.VAULT;
@@ -87,79 +82,79 @@ public class MainConfig {
     }
     
     public boolean isVanillaFishing() {
-        return config.getBoolean("vanilla-fishing", true);
+        return getConfig().getBoolean("vanilla-fishing", true);
     }
 
-    public String getSellType() {return config.getString("sell-type", "money");}
+    public String getSellType() {return getConfig().getString("sell-type", "money");}
 
     public String getFiller() {
-        return config.getString("gui.filler", "GRAY_STAINED_GLASS_PANE");
+        return getConfig().getString("gui.filler", "GRAY_STAINED_GLASS_PANE");
     }
 
     public String getFillerError() {
-        return config.getString("gui.filler-error", "RED_STAINED_GLASS_PANE");
+        return getConfig().getString("gui.filler-error", "RED_STAINED_GLASS_PANE");
     }
 
     public String getSellItem() {
-        return config.getString("gui.sell-item", "GOLD_INGOT");
+        return getConfig().getString("gui.sell-item", "GOLD_INGOT");
     }
 
     public String getSellItemConfirm() {
-        return config.getString("gui.sell-item-confirm", "GOLD_BLOCK");
+        return getConfig().getString("gui.sell-item-confirm", "GOLD_BLOCK");
     }
 
     public String getSellItemError() {
-        return config.getString("gui.sell-item-error", "REDSTONE_BLOCK");
+        return getConfig().getString("gui.sell-item-error", "REDSTONE_BLOCK");
     }
 
     public Integer getGUISize() {
-        int returning = config.getInt("gui.size", 3);
+        int returning = getConfig().getInt("gui.size", 3);
         if (returning <= 0 || returning > 5) return 3;
         else return returning;
     }
 
     public String getBarStyle() {
-        return config.getString("barstyle", "SEGMENTED_10");
+        return getConfig().getString("barstyle", "SEGMENTED_10");
     }
 
     public boolean sellOverDrop() {
-        return config.getBoolean("gui.sell-over-drop", false);
+        return getConfig().getBoolean("gui.sell-over-drop", false);
     }
 
     public boolean disableMcMMOTreasure() {
-        return config.getBoolean("disable-mcmmo-loot", true);
+        return getConfig().getBoolean("disable-mcmmo-loot", true);
     }
 
     public boolean disableAureliumSkills() {
-        return config.getBoolean("disable-aureliumskills-loot", true);
+        return getConfig().getBoolean("disable-aureliumskills-loot", true);
     }
 
     public String rewardEffect() {
-        return config.getString("reward-gui.reward-effect");
+        return getConfig().getString("reward-gui.reward-effect");
     }
 
     public String rewardItem() {
-        return config.getString("reward-gui.reward-item");
+        return getConfig().getString("reward-gui.reward-item");
     }
 
     public String rewardMoney() {
-        return config.getString("reward-gui.reward-money");
+        return getConfig().getString("reward-gui.reward-money");
     }
 
     public String rewardHealth() {
-        return config.getString("reward-gui.reward-health");
+        return getConfig().getString("reward-gui.reward-health");
     }
 
     public String rewardHunger() {
-        return config.getString("reward-gui.reward-hunger");
+        return getConfig().getString("reward-gui.reward-hunger");
     }
 
     public String rewardCommand(String command) {
-        return config.getString("reward-gui.command-override." + command);
+        return getConfig().getString("reward-gui.command-override." + command);
     }
 
     public Material getSellAllMaterial() {
-        String s = config.getString("gui.sell-all-item", "COD_BUCKET");
+        String s = getConfig().getString("gui.sell-all-item", "COD_BUCKET");
         try {
             return Material.valueOf(s);
         } catch (IllegalArgumentException exception) {
@@ -169,7 +164,7 @@ public class MainConfig {
     }
 
     public Material getSellAllConfirmMaterial() {
-        String s = config.getString("gui.sell-all-item-confirm", "TROPICAL_FISH_BUCKET");
+        String s = getConfig().getString("gui.sell-all-item-confirm", "TROPICAL_FISH_BUCKET");
         try {
             return Material.valueOf(s);
         } catch (IllegalArgumentException exception) {
@@ -179,7 +174,7 @@ public class MainConfig {
     }
 
     public Material getSellAllErrorMaterial() {
-        String s = config.getString("gui.sell-all-item-error", "SALMON_BUCKET");
+        String s = getConfig().getString("gui.sell-all-item-error", "SALMON_BUCKET");
         try {
             return Material.valueOf(s);
         } catch (IllegalArgumentException exception) {
@@ -189,65 +184,65 @@ public class MainConfig {
     }
 
     public int getSellAllSlot() {
-        int returning = config.getInt("gui.sell-all-slot", 6);
+        int returning = getConfig().getInt("gui.sell-all-slot", 6);
         if (returning > 9 || returning < 1) return 6;
         else return returning;
     }
 
     public int getSellSlot() {
-        int returning = config.getInt("gui.sell-slot", 4);
+        int returning = getConfig().getInt("gui.sell-slot", 4);
         if (returning > 9 || returning < 1) return 4;
         else return returning;
     }
 
     public boolean isMysql() {
-        return config.getBoolean("mysql.use-mysql", false);
+        return getConfig().getBoolean("mysql.use-mysql", false);
     }
 
     public boolean doDBVerbose() {
-        return !config.getBoolean("disable-db-verbose", false);
+        return !getConfig().getBoolean("disable-db-verbose", false);
     }
 
     public String getAddress() {
-        return config.getString("mysql.address", "localhost");
+        return getConfig().getString("mysql.address", "localhost");
     }
 
     public String getDatabase() {
-        return config.getString("mysql.database", "evenmorefish");
+        return getConfig().getString("mysql.database", "evenmorefish");
     }
 
     public String getUsername() {
-        return config.getString("mysql.username", "root");
+        return getConfig().getString("mysql.username", "root");
     }
 
     public String getPassword() {
-        return config.getString("mysql.password", "");
+        return getConfig().getString("mysql.password", "");
     }
 
     public boolean blockPlacingHeads() {
-        return config.getBoolean("place-head-fish", false);
+        return getConfig().getBoolean("place-head-fish", false);
     }
 
     public boolean requireNBTRod() {
-        return config.getBoolean("require-nbt-rod", false);
+        return getConfig().getBoolean("require-nbt-rod", false);
     }
 
     public boolean requireFishingPermission() {
-        return config.getBoolean("requires-fishing-permission", false);
+        return getConfig().getBoolean("requires-fishing-permission", false);
     }
 
     public boolean blockCrafting() {
-        return config.getBoolean("block-crafting", false);
+        return getConfig().getBoolean("block-crafting", false);
     }
     public boolean debugSession() {
-        return config.getBoolean("debug-session", false);
+        return getConfig().getBoolean("debug-session", false);
     }
 
     public boolean doingExperimentalFeatures() {
-        return config.getBoolean("experimental-features", false);
+        return getConfig().getBoolean("experimental-features", false);
     }
 
     public boolean useAdditionalAddons() {
-        return config.getBoolean("addons.additional-addons", true);
+        return getConfig().getBoolean("addons.additional-addons", true);
     }
 }

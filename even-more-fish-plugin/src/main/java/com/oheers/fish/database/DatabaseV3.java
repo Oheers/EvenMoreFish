@@ -5,6 +5,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.Leaderboard;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.connection.ConnectionFactory;
 import com.oheers.fish.database.connection.MySqlConnectionFactory;
 import com.oheers.fish.database.connection.SqliteConnectionFactory;
@@ -49,7 +50,7 @@ public class DatabaseV3 {
     public DatabaseV3(@NotNull EvenMoreFish plugin) {
         this.usingV2 = Files.isDirectory(Paths.get(plugin.getDataFolder() + "/data/"));
     
-        if (EvenMoreFish.mainConfig.isMysql() && hasCredentials()) {
+        if (MainConfig.getInstance().isMysql() && hasCredentials()) {
             this.connectionFactory = new MySqlConnectionFactory();
         } else {
             this.connectionFactory = new SqliteConnectionFactory();
@@ -59,10 +60,10 @@ public class DatabaseV3 {
     }
     
     private boolean hasCredentials() {
-        return EvenMoreFish.mainConfig.getUsername() != null &&
-            EvenMoreFish.mainConfig.getPassword() != null &&
-            EvenMoreFish.mainConfig.getAddress() != null &&
-            EvenMoreFish.mainConfig.getDatabase() != null;
+        return MainConfig.getInstance().getUsername() != null &&
+            MainConfig.getInstance().getPassword() != null &&
+            MainConfig.getInstance().getAddress() != null &&
+            MainConfig.getInstance().getDatabase() != null;
     }
 
     /**
@@ -132,7 +133,7 @@ public class DatabaseV3 {
         for (Table table : Table.values()) {
             if (queryTableExistence(table.getTableID()) ||
                 table.getCreationCode() == null ||
-                (EvenMoreFish.mainConfig.isMysql() && !table.isMySQLCompatible))
+                (MainConfig.getInstance().isMysql() && !table.isMySQLCompatible))
                 continue;
             
             executeStatement(c -> {
@@ -288,7 +289,7 @@ public class DatabaseV3 {
         
                 prep.executeUpdate();
     
-                if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                if (MainConfig.getInstance().doDBVerbose()) {
                     EvenMoreFish.logger.info(() ->  "Written competition report for (" + competition.getCompetitionName() + ") to the database.");
                 }
                 
@@ -316,7 +317,7 @@ public class DatabaseV3 {
                 prep.setString(1, uuid.toString());
                 prep.executeUpdate();
         
-                if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                if (MainConfig.getInstance().doDBVerbose()) {
                     EvenMoreFish.logger.info(() -> "Written empty user report for (" + uuid + ") to the database.");
                 }
             } catch (SQLException exception) {
@@ -394,7 +395,7 @@ public class DatabaseV3 {
                     }
                 }
         
-                if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                if (MainConfig.getInstance().doDBVerbose()) {
                     EvenMoreFish.logger.info(() -> "Read fish reports for (" + uuid + ") from the database.");
                 }
         
@@ -450,7 +451,7 @@ public class DatabaseV3 {
         
                 statement.executeUpdate();
     
-                if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                if (MainConfig.getInstance().doDBVerbose()) {
                     EvenMoreFish.logger.info(() -> "Written first user fish log data for (userID:" + userID + ") for (" + report.getName() + ") to the database.");
                 }
             } catch (SQLException e) {
@@ -503,7 +504,7 @@ public class DatabaseV3 {
             }
         }
 
-        if (EvenMoreFish.mainConfig.doDBVerbose()) {
+        if (MainConfig.getInstance().doDBVerbose()) {
             EvenMoreFish.logger.info(() -> "Updated user report for (userID:" + userID + ") in the database.");
         }
     }
@@ -536,7 +537,7 @@ public class DatabaseV3 {
                 statement.setString(11, uuid.toString());
             
             
-                if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                if (MainConfig.getInstance().doDBVerbose()) {
                     EvenMoreFish.logger.info(() -> "Written user report for (" + uuid + ") to the database.");
                 }
             
@@ -566,7 +567,7 @@ public class DatabaseV3 {
                 statement.setString(1, uuid.toString());
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                        if (MainConfig.getInstance().doDBVerbose()) {
                             EvenMoreFish.logger.info(() -> "Read user report for (" + uuid + ") from the database.");
                         }
                         return new UserReport(
@@ -584,7 +585,7 @@ public class DatabaseV3 {
                             resultSet.getDouble("money_earned")
                         );
                     }
-                    if (EvenMoreFish.mainConfig.doDBVerbose()) {
+                    if (MainConfig.getInstance().doDBVerbose()) {
                         EvenMoreFish.logger.info(() ->  "User report for (" + uuid + ") does not exist in the database.");
                     }
                     return null;

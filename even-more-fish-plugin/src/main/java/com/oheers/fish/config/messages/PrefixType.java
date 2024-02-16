@@ -31,8 +31,8 @@ public enum PrefixType {
     public String getPrefix() {
         if (id == null) return "";
         else {
-            return new Message(EvenMoreFish.msgs.config.getString(id, normal)).getRawMessage(false, false)
-                    + new Message(EvenMoreFish.msgs.config.getString("prefix", "[EvenMoreFish]") + "&r").getRawMessage(false, false);
+            return new Message(Messages.getInstance().getConfig().getString(id, normal)).getRawMessage(false, false)
+                    + new Message(Messages.getInstance().getConfig().getString("prefix", "[EvenMoreFish]") + "&r").getRawMessage(false, false);
         }
     }
 }

@@ -2,6 +2,10 @@ package com.oheers.fish.utils;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.BaitFile;
+import com.oheers.fish.config.FishFile;
+import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -498,7 +502,7 @@ public class ItemFactory {
             if (predefinedDamage >= 0 && predefinedDamage <= 100) {
                 nonDamaged.setDamage((int) (predefinedDamage / 100.0 * product.getType().getMaxDurability()));
             } else {
-                if (EvenMoreFish.mainConfig.doingRandomDurability()) {
+                if (MainConfig.getInstance().doingRandomDurability()) {
                     int max = product.getType().getMaxDurability();
                     nonDamaged.setDamage(EvenMoreFish.getInstance().getRandom().nextInt() * (max + 1));
                 }
@@ -601,14 +605,14 @@ public class ItemFactory {
     }
 
     private FileConfiguration getConfiguration() {
-        if (this.xmas2022Item) return EvenMoreFish.xmas2022Config.getConfig();
+        if (this.xmas2022Item) return Xmas2022Config.getInstance().getConfig();
 
         if (this.configLocation.startsWith("fish.")) {
-            return EvenMoreFish.fishFile.getConfig();
+            return FishFile.getInstance().getConfig();
         } else if (this.configLocation.startsWith("baits.")) {
-            return EvenMoreFish.baitFile.getConfig();
+            return BaitFile.getInstance().getConfig();
         } else if (this.configLocation.startsWith("nbt-rod-item")) {
-            return EvenMoreFish.mainConfig.getConfig();
+            return MainConfig.getInstance().getConfig();
         }else {
             EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch file configuration for: " + this.configLocation);
             return null;

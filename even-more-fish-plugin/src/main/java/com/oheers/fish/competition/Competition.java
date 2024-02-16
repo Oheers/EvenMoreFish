@@ -7,8 +7,11 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
 import com.oheers.fish.api.EMFCompetitionStartEvent;
 import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.config.CompetitionConfig;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.UserReport;
 import com.oheers.fish.fishing.FishingProcessor;
@@ -83,7 +86,7 @@ public class Competition {
             this.timeLeft = this.maxDuration;
 
             leaderboard = new Leaderboard(competitionType);
-            statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.competitionConfig.getBarPrefix(competitionName)), competitionType);
+            statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
             statusBar.show();
             initTimer();
             announceBegin();
@@ -112,7 +115,7 @@ public class Competition {
         active = false;
         handleRewards();
         if (originallyRandom) competitionType = CompetitionType.RANDOM;
-        if (EvenMoreFish.mainConfig.databaseEnabled()) {
+        if (MainConfig.getInstance().databaseEnabled()) {
             Competition competitionRef = this;
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
                 EvenMoreFish.databaseV3.createCompetitionReport(competitionRef);
@@ -215,8 +218,8 @@ public class Competition {
      * @return A boolean, true = do it in actionbar.
      */
     public boolean isDoingFirstPlaceActionBar() {
-        boolean a = EvenMoreFish.msgs.config.getBoolean("action-bar-message");
-        boolean b = EvenMoreFish.msgs.config.getStringList("action-bar-types").isEmpty() || EvenMoreFish.msgs.config.getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
+        boolean a = Messages.getInstance().getConfig().getBoolean("action-bar-message");
+        boolean b = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance().getConfig().getStringList("action-bar-types").contains(EvenMoreFish.active.getCompetitionType().toString());
         return a && b;
     }
 
@@ -353,7 +356,7 @@ public class Competition {
         if (active) {
             if (leaderboard.getSize() != 0) {
 
-                List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
+                List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
                 StringBuilder builder = new StringBuilder();
                 int pos = 0;
 
@@ -405,8 +408,8 @@ public class Competition {
                         }
                         builder.append(message.getRawMessage(true, true));
 
-                        if (pos == EvenMoreFish.msgs.config.getInt("leaderboard-count")) {
-                            if (EvenMoreFish.msgs.config.getBoolean("always-show-pos")) {
+                        if (pos == Messages.getInstance().getConfig().getInt("leaderboard-count")) {
+                            if (Messages.getInstance().getConfig().getBoolean("always-show-pos")) {
                                 if (leaderboardMembers.contains(player.getUniqueId())) break;
                                 else reachingCount = false;
                             } else {
@@ -461,7 +464,7 @@ public class Competition {
         if (active) {
             if (leaderboard.getSize() != 0) {
 
-                List<String> competitionColours = EvenMoreFish.competitionConfig.getPositionColours();
+                List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
                 StringBuilder builder = new StringBuilder();
                 int pos = 0;
 
@@ -526,7 +529,7 @@ public class Competition {
     }
 
     public boolean chooseFish(String competitionName, boolean adminStart) {
-        List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
+        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStart);
 
         if (configRarities.isEmpty()) {
             EvenMoreFish.logger.log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
@@ -553,7 +556,7 @@ public class Competition {
             if (r <= 0.0) break;
         }
 
-        setNumberNeeded(EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart));
+        setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
 
         try {
             this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
@@ -567,14 +570,14 @@ public class Competition {
     }
 
     public boolean chooseRarity(String competitionName, boolean adminStart) {
-        List<String> configRarities = EvenMoreFish.competitionConfig.allowedRarities(competitionName, adminStart);
+        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStart);
 
         if (configRarities.isEmpty()) {
             EvenMoreFish.logger.log(Level.SEVERE, "No allowed-rarities list found in the " + competitionName + " competition config section.");
             return false;
         }
 
-        setNumberNeeded(EvenMoreFish.competitionConfig.getNumberFishNeeded(competitionName, adminStart));
+        setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
 
         try {
             String randomRarity = configRarities.get(new Random().nextInt(configRarities.size()));
@@ -595,7 +598,7 @@ public class Competition {
     }
 
     public void initAlerts(String competitionName) {
-        for (String s : EvenMoreFish.competitionConfig.getAlertTimes(competitionName)) {
+        for (String s : CompetitionConfig.getInstance().getAlertTimes(competitionName)) {
 
             String[] split = s.split(":");
             if (split.length == 2) {
@@ -616,14 +619,14 @@ public class Competition {
 
         // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the compeitions
         if (adminStart) {
-            chosen = EvenMoreFish.competitionConfig.getRewardPositions();
+            chosen = CompetitionConfig.getInstance().getRewardPositions();
             path = "rewards.";
         } else {
-            if (EvenMoreFish.competitionConfig.getRewardPositions(competitionName).isEmpty()) {
-                chosen = EvenMoreFish.competitionConfig.getRewardPositions();
+            if (CompetitionConfig.getInstance().getRewardPositions(competitionName).isEmpty()) {
+                chosen = CompetitionConfig.getInstance().getRewardPositions();
                 path = "rewards.";
             } else {
-                chosen = EvenMoreFish.competitionConfig.getRewardPositions(competitionName);
+                chosen = CompetitionConfig.getInstance().getRewardPositions(competitionName);
                 path = "competitions." + competitionName + ".rewards.";
             }
         }
@@ -631,7 +634,7 @@ public class Competition {
         if (chosen != null) {
             for (String i : chosen) {
                 List<Reward> addingRewards = new ArrayList<>();
-                for (String j : EvenMoreFish.competitionConfig.getStringList(path + i)) {
+                for (String j : CompetitionConfig.getInstance().getStringList(path + i)) {
                     Reward reward = new Reward(j);
                     addingRewards.add(reward);
                 }
@@ -648,7 +651,7 @@ public class Competition {
             int i = 1;
             CompetitionEntry topEntry = leaderboard.getTopEntry();
             if (topEntry != null) {
-                if (EvenMoreFish.mainConfig.databaseEnabled()) {
+                if (MainConfig.getInstance().databaseEnabled()) {
                     UserReport report = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
                     if (report != null) {
                         report.incrementCompetitionsWon(1);
@@ -665,7 +668,7 @@ public class Competition {
                         reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null);
                     }
                     i++;
-                    if (EvenMoreFish.mainConfig.databaseEnabled() && entry != null) {
+                    if (MainConfig.getInstance().databaseEnabled() && entry != null) {
                         UserReport report = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
                         if (report != null) {
                             report.incrementCompetitionsJoined(1);
@@ -682,7 +685,7 @@ public class Competition {
                                 reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()), null);
                             }
 
-                            if (EvenMoreFish.mainConfig.databaseEnabled()) {
+                            if (MainConfig.getInstance().databaseEnabled()) {
                                 UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
                                 if (report != null) {
                                     report.incrementCompetitionsJoined(1);
@@ -692,7 +695,7 @@ public class Competition {
                                 }
                             }
                         });
-                    } else if (EvenMoreFish.mainConfig.databaseEnabled()) {
+                    } else if (MainConfig.getInstance().databaseEnabled()) {
                         iterator.forEachRemaining(competitionEntry -> {
                             UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
                             if (report != null) {
@@ -731,16 +734,16 @@ public class Competition {
         this.statusBar = new Bar();
 
         try {
-            this.statusBar.setColour(BarColor.valueOf(EvenMoreFish.competitionConfig.getBarColour(competionName)));
+            this.statusBar.setColour(BarColor.valueOf(CompetitionConfig.getInstance().getBarColour(competionName)));
         } catch (IllegalArgumentException iae) {
-            EvenMoreFish.logger.log(Level.SEVERE, EvenMoreFish.competitionConfig.getBarColour(competionName) + " is not a valid bossbar colour, check ");
+            EvenMoreFish.logger.log(Level.SEVERE, CompetitionConfig.getInstance().getBarColour(competionName) + " is not a valid bossbar colour, check ");
         }
 
-        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(EvenMoreFish.competitionConfig.getBarPrefix(competionName)));
+        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competionName)));
     }
 
     public void initGetNumbersNeeded(String competitionName) {
-        this.playersNeeded = EvenMoreFish.competitionConfig.getPlayersNeeded(competitionName);
+        this.playersNeeded = CompetitionConfig.getInstance().getPlayersNeeded(competitionName);
     }
 
     /**
@@ -749,7 +752,7 @@ public class Competition {
      * @param competitionName The name of the competition as stated in the competitions.yml file.
      */
     public void initStartSound(String competitionName) {
-        this.startSound = EvenMoreFish.competitionConfig.getStartNoise(competitionName);
+        this.startSound = CompetitionConfig.getInstance().getStartNoise(competitionName);
     }
 
     private CompetitionType getRandomType() {

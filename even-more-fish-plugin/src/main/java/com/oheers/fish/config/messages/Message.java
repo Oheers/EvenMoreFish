@@ -188,8 +188,8 @@ public class Message {
      */
     public String getString(String normal, String... ids) {
         for (String id : ids) {
-            if (!EvenMoreFish.msgs.config.contains(id)) continue;
-            String returning = EvenMoreFish.msgs.config.getString(id);
+            if (!Messages.getInstance().getConfig().contains(id)) continue;
+            String returning = Messages.getInstance().getConfig().getString(id);
             if (returning != null) return returning;
             else {
                 EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
@@ -208,8 +208,8 @@ public class Message {
      */
     public List<String> getStringList(List<String> normal, String... ids) {
         for (String id : ids) {
-            if (!EvenMoreFish.msgs.config.contains(id)) continue;
-            List<String> returning = EvenMoreFish.msgs.config.getStringList(id);
+            if (!Messages.getInstance().getConfig().contains(id)) continue;
+            List<String> returning = Messages.getInstance().getConfig().getStringList(id);
             if (!returning.isEmpty()) return returning;
             else {
                 EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");

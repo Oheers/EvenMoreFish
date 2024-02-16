@@ -1,6 +1,7 @@
 package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.messages.Messages;
 
 import java.io.*;
 import java.util.logging.Level;
@@ -221,7 +222,7 @@ public class ConfigUpdater {
             getMessageUpdates(13);
             return;
         }
-        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder(), "messages.yml");
+        File messagesFile = Messages.getInstance().getFile();
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
@@ -245,7 +246,7 @@ public class ConfigUpdater {
     }
 
     public static void updateConfig(int version) throws IOException {
-        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder(), "config.yml");
+        File messagesFile = MainConfig.getInstance().getFile();
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 
@@ -360,7 +361,7 @@ public class ConfigUpdater {
     }
 
     private static void insertCurrencySymbol(int version) throws IOException {
-        File messagesFile = new File(EvenMoreFish.getInstance().getDataFolder(), "messages.yml");
+        File messagesFile = Messages.getInstance().getFile();
         if (messagesFile.exists()) {
             try (BufferedReader file = new BufferedReader(new FileReader(messagesFile))) {
 

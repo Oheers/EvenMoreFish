@@ -5,6 +5,7 @@ import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
@@ -48,7 +49,7 @@ public class SellGUI implements InventoryHolder {
     private ItemStack sellIcon, sellAllIcon, filler, errorFiller, confirmIcon, confirmSellAllIcon, noValueIcon, sellAllErrorIcon;
 
     public SellGUI(Player p, boolean open) {
-        this.guiSize = (EvenMoreFish.mainConfig.getGUISize() + 1) * 9;
+        this.guiSize = (MainConfig.getInstance().getGUISize() + 1) * 9;
         this.player = p;
         this.modified = false;
         this.menu = Bukkit.createInventory(this, guiSize, new Message(ConfigMessage.WORTH_GUI_NAME).getRawMessage(true, true));
@@ -67,7 +68,7 @@ public class SellGUI implements InventoryHolder {
 
     public void setFiller() {
         // the gray glass panes at the bottom
-        ItemStack fill = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFiller())), error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getFillerError()));
+        ItemStack fill = new ItemStack(Material.valueOf(MainConfig.getInstance().getFiller())), error = new ItemStack(Material.valueOf(MainConfig.getInstance().getFillerError()));
         ItemMeta fillMeta = fill.getItemMeta(), errMeta = error.getItemMeta();
         if (fillMeta != null) {
             fillMeta.setDisplayName(ChatColor.RESET + "");
@@ -93,7 +94,7 @@ public class SellGUI implements InventoryHolder {
 
 
     public void setSellAllItem() {
-        ItemStack saIcon = new ItemStack(EvenMoreFish.mainConfig.getSellAllMaterial());
+        ItemStack saIcon = new ItemStack(MainConfig.getInstance().getSellAllMaterial());
 
         ItemMeta saMeta = saIcon.getItemMeta();
         saMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_NAME).getRawMessage(true, false));
@@ -102,7 +103,7 @@ public class SellGUI implements InventoryHolder {
         glowify(saIcon);
 
         this.sellAllIcon = WorthNBT.attributeDefault(saIcon);
-        menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.sellAllIcon);
+        menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.sellAllIcon);
 
         updateSellAllItem();
     }
@@ -117,11 +118,11 @@ public class SellGUI implements InventoryHolder {
         saMeta.setLore(Arrays.asList(message.getRawMessage(true, true).split("\n")));
 
         this.sellAllIcon.setItemMeta(saMeta);
-        menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.sellAllIcon);
+        menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.sellAllIcon);
     }
 
     public void setSellItem() {
-        ItemStack sIcon = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItem()));
+        ItemStack sIcon = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItem()));
 
         ItemMeta sellMeta = sIcon.getItemMeta();
         sellMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_NAME).getRawMessage(true, false));
@@ -131,7 +132,7 @@ public class SellGUI implements InventoryHolder {
         glowify(sIcon);
 
         this.sellIcon = WorthNBT.attributeDefault(sIcon);
-        menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.sellIcon);
+        menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.sellIcon);
 
         updateSellItem();
     }
@@ -146,7 +147,7 @@ public class SellGUI implements InventoryHolder {
         sellMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
 
         this.sellIcon.setItemMeta(sellMeta);
-        menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.sellIcon);
+        menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.sellIcon);
     }
 
     /**
@@ -186,8 +187,8 @@ public class SellGUI implements InventoryHolder {
         if (totalWorth == 0.0) {
 
             ItemStack error;
-            if (sellAll) error = new ItemStack(EvenMoreFish.mainConfig.getSellAllErrorMaterial());
-            else error = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemError()));
+            if (sellAll) error = new ItemStack(MainConfig.getInstance().getSellAllErrorMaterial());
+            else error = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItemError()));
 
             ItemMeta errorMeta = error.getItemMeta();
 
@@ -214,8 +215,8 @@ public class SellGUI implements InventoryHolder {
         } else {
 
             ItemStack confirm;
-            if (sellAll) confirm = new ItemStack(EvenMoreFish.mainConfig.getSellAllConfirmMaterial());
-            else confirm = new ItemStack(Material.valueOf(EvenMoreFish.mainConfig.getSellItemConfirm()));
+            if (sellAll) confirm = new ItemStack(MainConfig.getInstance().getSellAllConfirmMaterial());
+            else confirm = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItemConfirm()));
 
             ItemMeta cMeta = confirm.getItemMeta();
             if (sellAll)
@@ -249,18 +250,18 @@ public class SellGUI implements InventoryHolder {
     public void setIcon(boolean sellAll) {
         if (this.error) {
             if (sellAll) {
-                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.sellAllErrorIcon);
+                this.menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.sellAllErrorIcon);
             } else {
-                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.noValueIcon);
+                this.menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.noValueIcon);
             }
 
             this.addFiller(errorFiller);
             this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1.0f, 0.0f);
         } else {
             if (sellAll) {
-                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellAllSlot()), this.confirmSellAllIcon);
+                this.menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.confirmSellAllIcon);
             } else {
-                this.menu.setItem(guiSize - (10 - EvenMoreFish.mainConfig.getSellSlot()), this.confirmIcon);
+                this.menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.confirmIcon);
             }
 
             this.addFiller(filler);
@@ -331,7 +332,7 @@ public class SellGUI implements InventoryHolder {
     }
 
     public String formatWorth(double totalWorth) {
-        if (EvenMoreFish.mainConfig.getSellType().equals("money")) {
+        if (MainConfig.getInstance().getSellType().equals("money")) {
             DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false, false));
             return format.format(totalWorth);
         } else {
@@ -387,7 +388,7 @@ public class SellGUI implements InventoryHolder {
     public boolean sell(boolean sellAll) {
         List<SoldFish> soldFish = getTotalSoldFish(sellAll);
         double totalWorth = getTotalWorth(soldFish);
-        String sellType = EvenMoreFish.mainConfig.getSellType();
+        String sellType = MainConfig.getInstance().getSellType();
         double sellPrice = Math.floor(totalWorth * 10) / 10;
 
         if (sellType.equals("money")) {
@@ -423,7 +424,7 @@ public class SellGUI implements InventoryHolder {
                 }
             }
         }
-        if (EvenMoreFish.mainConfig.databaseEnabled()) logSoldFish(player.getUniqueId(),soldFish);
+        if (MainConfig.getInstance().databaseEnabled()) logSoldFish(player.getUniqueId(),soldFish);
         return totalWorth != 0.0;
     }
     

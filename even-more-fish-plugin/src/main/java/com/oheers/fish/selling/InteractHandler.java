@@ -1,6 +1,7 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.xmas2022.XmasGUI;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -81,7 +82,7 @@ public class InteractHandler implements Listener {
                 if (gui.getModified()) {
 
                     // the menu has been modified since we last gave the confirmation button, so it sends it again
-                    gui.createIcon(event.getSlot() != EvenMoreFish.mainConfig.getSellSlot());
+                    gui.createIcon(event.getSlot() != MainConfig.getInstance().getSellSlot());
                     gui.setIcon(false);
 
                     gui.setModified(false);
@@ -111,7 +112,7 @@ public class InteractHandler implements Listener {
             return;
         }
         SellGUI gui = (SellGUI) holder;
-        if (EvenMoreFish.mainConfig.sellOverDrop()) {
+        if (MainConfig.getInstance().sellOverDrop()) {
             gui.sell(false);
         }
         gui.doRescue();

@@ -10,6 +10,9 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.config.BaitFile;
+import com.oheers.fish.config.CompetitionConfig;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
@@ -43,7 +46,7 @@ public class FishingProcessor implements Listener {
             return;
         }
 
-        if (EvenMoreFish.mainConfig.requireNBTRod()) {
+        if (MainConfig.getInstance().requireNBTRod()) {
             //check if player is using the fishing rod with correct nbt value.
             ItemStack rodInHand = event.getPlayer().getInventory().getItemInMainHand();
             if (rodInHand.getType() != Material.AIR) {
@@ -55,7 +58,7 @@ public class FishingProcessor implements Listener {
             }
         }
 
-        if (EvenMoreFish.mainConfig.requireFishingPermission()) {
+        if (MainConfig.getInstance().requireFishingPermission()) {
             //check if player have permssion to fish emf fishes
             if (!EvenMoreFish.permission.has(event.getPlayer(), UserPerms.USE_ROD)) {
                 if (event.getState() == PlayerFishEvent.State.FISHING) {//send msg only when throw the lure
@@ -110,7 +113,7 @@ public class FishingProcessor implements Listener {
     }
 
     public static boolean isCustomFishAllowed(UUID player) {
-        return EvenMoreFish.mainConfig.getEnabled() && (competitionOnlyCheck() || EvenMoreFish.raritiesCompCheckExempt) && !EvenMoreFish.disabledPlayers.contains(player);
+        return MainConfig.getInstance().getEnabled() && (competitionOnlyCheck() || EvenMoreFish.raritiesCompCheckExempt) && !EvenMoreFish.disabledPlayers.contains(player);
     }
 
     /**
@@ -139,7 +142,7 @@ public class FishingProcessor implements Listener {
 
     public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {
 
-        if (!FishUtils.checkRegion(location, EvenMoreFish.mainConfig.getAllowedRegions())) {
+        if (!FishUtils.checkRegion(location, MainConfig.getInstance().getAllowedRegions())) {
             return null;
         }
 
@@ -155,8 +158,8 @@ public class FishingProcessor implements Listener {
             }
         }
 
-        if (EvenMoreFish.baitFile.getBaitCatchPercentage() > 0) {
-            if (new Random().nextDouble() * 100.0 < EvenMoreFish.baitFile.getBaitCatchPercentage()) {
+        if (BaitFile.getInstance().getBaitCatchPercentage() > 0) {
+            if (new Random().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
                 Bait caughtBait = BaitNBTManager.randomBaitCatch();
                 Message message = new Message(ConfigMessage.BAIT_CAUGHT);
                 message.setBaitTheme(caughtBait.getTheme());
@@ -170,7 +173,7 @@ public class FishingProcessor implements Listener {
 
         Fish fish;
 
-        if (BaitNBTManager.isBaitedRod(fishingRod) && (!EvenMoreFish.baitFile.competitionsBlockBaits() || !Competition.isActive())) {
+        if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !Competition.isActive())) {
 
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
             fish = applyingBait.chooseFish(player, location);
@@ -249,7 +252,7 @@ public class FishingProcessor implements Listener {
             e.printStackTrace();
         }
 
-        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+        if (MainConfig.getInstance().isDatabaseOnline()) {
             Fish finalFish = fish;
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
                 // increases the fish fished count if the fish is already in the db
@@ -345,7 +348,7 @@ public class FishingProcessor implements Listener {
 
         if (!Competition.isActive() && EvenMoreFish.raritiesCompCheckExempt) {
             if (allowedRarities.get(idx).hasCompExemptFish()) return allowedRarities.get(idx);
-        } else if (Competition.isActive() || !EvenMoreFish.mainConfig.isCompetitionUnique()) {
+        } else if (Competition.isActive() || !MainConfig.getInstance().isCompetitionUnique()) {
             return allowedRarities.get(idx);
         }
 
@@ -446,7 +449,7 @@ public class FishingProcessor implements Listener {
         // checks whether weight calculations need doing for fish
         returningFish = randomWeightedFish(available, boostRate, boostedFish);
 
-        if (Competition.isActive() || !EvenMoreFish.mainConfig.isCompetitionUnique() || (EvenMoreFish.raritiesCompCheckExempt && returningFish.isCompExemptFish())) {
+        if (Competition.isActive() || !MainConfig.getInstance().isCompetitionUnique() || (EvenMoreFish.raritiesCompCheckExempt && returningFish.isCompExemptFish())) {
             return returningFish;
         } else {
             return null;
@@ -455,7 +458,7 @@ public class FishingProcessor implements Listener {
 
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
     public static boolean competitionOnlyCheck() {
-        if (EvenMoreFish.mainConfig.isCompetitionUnique()) {
+        if (MainConfig.getInstance().isCompetitionUnique()) {
             return Competition.isActive();
         } else {
             return true;
@@ -464,9 +467,10 @@ public class FishingProcessor implements Listener {
 
     public static void competitionCheck(Fish fish, Player fisherman, Location location) {
         if (Competition.isActive()) {
-            if (!EvenMoreFish.competitionWorlds.isEmpty()) {
+            List<String> competitionWorlds = CompetitionConfig.getInstance().getRequiredWorlds();
+            if (!competitionWorlds.isEmpty()) {
                 if (location.getWorld() != null) {
-                    if (!EvenMoreFish.competitionWorlds.contains(location.getWorld().getName())) {
+                    if (!competitionWorlds.contains(location.getWorld().getName())) {
                         return;
                     }
                 } else {

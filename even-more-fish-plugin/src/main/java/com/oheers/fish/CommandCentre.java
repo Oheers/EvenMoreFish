@@ -6,11 +6,14 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.gui.FishingGUI;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellGUI;
@@ -59,11 +62,10 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "sellall",
                 "next",
                 "toggle",
-                "top",
-                "gui")
+                "top")
         );
 
-        if (EvenMoreFish.xmas2022Config.isAvailable()) emfTabs.add("xmas");
+        if (Xmas2022Config.getInstance().isAvailable()) emfTabs.add("xmas");
 
         compTypes = Arrays.asList(
                 "largest_fish",
@@ -111,7 +113,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 break;
             case "shop":
                 if (sender instanceof Player || args.length > 1) {
-                    if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
+                    if (MainConfig.getInstance().isEconomyEnabled()) {
                         if (EvenMoreFish.permission.has(sender, UserPerms.SHOP)) {
                             if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN) && args.length == 2) {
                                 Player p = Bukkit.getPlayer(args[1]);
@@ -153,7 +155,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     break;
                 }
                 Player p = (Player) sender;
-                if (EvenMoreFish.mainConfig.isEconomyEnabled()) {
+                if (MainConfig.getInstance().isEconomyEnabled()) {
                     if (EvenMoreFish.permission.has(p, UserPerms.SELL_ALL)) {
                         SellGUI gui = new SellGUI(p, false);
                         gui.sell(true);
@@ -203,7 +205,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 break;
             case "xmas":
-                if (!EvenMoreFish.xmas2022Config.isAvailable()) break;
+                if (!Xmas2022Config.getInstance().isAvailable()) break;
                 if (!EvenMoreFish.permission.has(sender, UserPerms.XMAS)) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
@@ -470,7 +472,7 @@ class Controls {
                 break;
 
             case "nbt-rod": {
-                if (!EvenMoreFish.mainConfig.requireNBTRod()) {
+                if (!MainConfig.getInstance().requireNBTRod()) {
                     new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender, true, false);
                     return;
                 }
@@ -608,9 +610,9 @@ class Controls {
 
             case "reload":
 
-                EvenMoreFish.fishFile.reload();
-                EvenMoreFish.raritiesFile.reload();
-                EvenMoreFish.baitFile.reload();
+                FishFile.getInstance().reload();
+                RaritiesFile.getInstance().reload();
+                BaitFile.getInstance().reload();
 
                 plugin.reload();
 
@@ -623,15 +625,15 @@ class Controls {
                     fishCount += EvenMoreFish.fishCollection.get(r).size();
                 }
 
-                String msgString = EvenMoreFish.msgs.getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
-                        EvenMoreFish.msgs.getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
-                        EvenMoreFish.msgs.getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
-                        EvenMoreFish.msgs.getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
-                        EvenMoreFish.msgs.getSTDPrefix() + "Loaded: Rarities(" + EvenMoreFish.fishCollection.size() + ") Fish(" +
+                String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
+                        Messages.getInstance().getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
+                        Messages.getInstance().getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
+                        Messages.getInstance().getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
+                        Messages.getInstance().getSTDPrefix() + "Loaded: Rarities(" + EvenMoreFish.fishCollection.size() + ") Fish(" +
                         fishCount + ") Baits(" + EvenMoreFish.baits.size() + ") Competitions(" + EvenMoreFish.competitionQueue.getSize() + ")\n" +
-                        EvenMoreFish.msgs.getSTDPrefix();
+                        Messages.getInstance().getSTDPrefix();
 
-                if (EvenMoreFish.mainConfig.databaseEnabled()) {
+                if (MainConfig.getInstance().databaseEnabled()) {
                     if (EvenMoreFish.databaseV3.usingVersionV2()) {
                         msgString += "Database Engine: V2";
                     } else {
@@ -669,7 +671,7 @@ class Controls {
                 if (args[2].equalsIgnoreCase("start")) {
                     // if the admin has only done /emf admin competition start
                     if (args.length < 4) {
-                        startComp(Integer.toString(EvenMoreFish.mainConfig.getCompetitionDuration() * 60), player, CompetitionType.LARGEST_FISH);
+                        startComp(Integer.toString(MainConfig.getInstance().getCompetitionDuration() * 60), player, CompetitionType.LARGEST_FISH);
                     } else {
                         if (args.length < 5) {
                             startComp(args[3], player, CompetitionType.LARGEST_FISH);
@@ -755,7 +757,7 @@ class Help {
         } else {
             for (int i = 0; i < commands.size(); i++) {
                 if (i == commands.size() - 1) escape = "";
-                out.append(FishUtils.translateHexColorCodes(EvenMoreFish.msgs.getSTDPrefix() + commands.get(i) + escape));
+                out.append(FishUtils.translateHexColorCodes(Messages.getInstance().getSTDPrefix() + commands.get(i) + escape));
             }
         }
 

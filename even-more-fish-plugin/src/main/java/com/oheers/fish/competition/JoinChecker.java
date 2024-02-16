@@ -1,6 +1,7 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
@@ -28,7 +29,7 @@ public class JoinChecker implements Listener {
      * @param userName the in-game username of the user having their data read.
      */
     public void databaseRegistration(UUID userUUID, String userName) {
-        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+        if (MainConfig.getInstance().isDatabaseOnline()) {
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
                 List<FishReport> fishReports = new ArrayList<>();
 
@@ -37,7 +38,7 @@ public class JoinChecker implements Listener {
                         fishReports = EvenMoreFish.databaseV3.getFishReports(userUUID);
                     } else {
                         fishReports = new ArrayList<>();
-                        if (EvenMoreFish.mainConfig.doDBVerbose())
+                        if (MainConfig.getInstance().doDBVerbose())
                             EvenMoreFish.logger.log(Level.INFO, userName + " has joined for the first time, creating new data handle for them.");
                     }
                 } catch (InvalidTableException exception) {
@@ -85,7 +86,7 @@ public class JoinChecker implements Listener {
             EvenMoreFish.active.getStatusBar().removePlayer(event.getPlayer());
         }
         
-        if (EvenMoreFish.mainConfig.isDatabaseOnline()) {
+        if (MainConfig.getInstance().isDatabaseOnline()) {
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
                 UUID userUUID = event.getPlayer().getUniqueId();
                 try {

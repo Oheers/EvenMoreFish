@@ -2,6 +2,7 @@ package com.oheers.fish.database.connection;
 
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.MainConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
@@ -36,14 +37,14 @@ public abstract class ConnectionFactory {
     protected abstract void configureDatabase(HikariConfig config, String address, int port, String databaseName, String username, String password);
     
     private String getDatabaseAddress() {
-        return EvenMoreFish.mainConfig.getAddress().split(":")[0];
+        return MainConfig.getInstance().getAddress().split(":")[0];
     }
     
     private int getDatabasePort() {
-        if(!EvenMoreFish.mainConfig.getAddress().contains(":"))
+        if(!MainConfig.getInstance().getAddress().contains(":"))
             return 3306;
         try {
-            return Integer.parseInt(EvenMoreFish.mainConfig.getAddress().split(":")[1]);
+            return Integer.parseInt(MainConfig.getInstance().getAddress().split(":")[1]);
         } catch (NumberFormatException e) {
             return 3306;
         }
@@ -53,7 +54,7 @@ public abstract class ConnectionFactory {
         HikariConfig config = new HikariConfig();
         config.setPoolName("evenmorefish-hikari");
         
-        configureDatabase(config, getDatabaseAddress(), getDatabasePort(), EvenMoreFish.mainConfig.getDatabase(),EvenMoreFish.mainConfig.getUsername(), EvenMoreFish.mainConfig.getPassword());
+        configureDatabase(config, getDatabaseAddress(), getDatabasePort(), MainConfig.getInstance().getDatabase(),MainConfig.getInstance().getUsername(), MainConfig.getInstance().getPassword());
         config.setInitializationFailTimeout(-1);
         
         Map<String, String> properties = new HashMap<>();

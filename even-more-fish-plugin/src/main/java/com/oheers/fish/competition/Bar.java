@@ -2,6 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
@@ -88,7 +89,7 @@ public class Bar {
     }
 
     public void createBar() {
-        BarStyle barStyle = BarStyle.valueOf(EvenMoreFish.mainConfig.getBarStyle());
+        BarStyle barStyle = BarStyle.valueOf(MainConfig.getInstance().getBarStyle());
         bar = Bukkit.getServer().createBossBar(title, BarColor.WHITE, barStyle);
     }
 

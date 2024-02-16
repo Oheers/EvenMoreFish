@@ -3,6 +3,9 @@ package com.oheers.fish.fishing.items;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.config.FishFile;
+import com.oheers.fish.config.RaritiesFile;
+import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -66,7 +69,7 @@ public class Fish implements Cloneable {
         this.length = -1F;
         this.xmasFish = isXmas2022Fish;
         this.setFishAndRarityConfig();
-        final boolean defaultRarityDisableFisherman = EvenMoreFish.raritiesFile.getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false);
+        final boolean defaultRarityDisableFisherman = RaritiesFile.getInstance().getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false);
         this.disableFisherman = this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman", defaultRarityDisableFisherman);
 
         if (rarity == null)
@@ -95,13 +98,13 @@ public class Fish implements Cloneable {
       This will allow breaking heads that have already been placed with the wrong nbt data.
      */
     private void setFishAndRarityConfig() {
-        if (this.xmasFish && EvenMoreFish.xmas2022Config.getConfig() != null) {
-            this.fishConfig = EvenMoreFish.xmas2022Config.getConfig();
-            this.rarityConfig = EvenMoreFish.xmas2022Config.getConfig();
+        if (this.xmasFish && Xmas2022Config.getInstance().getConfig() != null) {
+            this.fishConfig = Xmas2022Config.getInstance().getConfig();
+            this.rarityConfig = Xmas2022Config.getInstance().getConfig();
         } else {
             this.xmasFish = false;
-            this.fishConfig = EvenMoreFish.fishFile.getConfig();
-            this.rarityConfig = EvenMoreFish.raritiesFile.getConfig();
+            this.fishConfig = FishFile.getInstance().getConfig();
+            this.rarityConfig = RaritiesFile.getInstance().getConfig();
         }
     }
 

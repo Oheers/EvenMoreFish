@@ -1,6 +1,7 @@
 package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.config.FishFile;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +44,7 @@ public class Biome implements Requirement {
     @Override
     public void fetchData() {
         // returns the biomes found in the "biomes:" section of the fish.yml
-        for (String biome : EvenMoreFish.fishFile.getConfig().getStringList(configLocation)) {
+        for (String biome : FishFile.getInstance().getConfig().getStringList(configLocation)) {
             try {
                 this.biomes.add(org.bukkit.block.Biome.valueOf(biome));
             } catch (IllegalArgumentException iae) {
