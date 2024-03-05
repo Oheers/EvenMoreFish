@@ -10,16 +10,11 @@ public class Messages extends ConfigBase {
 
     public Messages() {
         super("messages.yml");
-        reload();
         instance = this;
     }
 
     public static Messages getInstance() {
         return instance;
-    }
-
-    public int configVersion() {
-        return getConfig().getInt("config-version");
     }
 
     public String getSTDPrefix() {

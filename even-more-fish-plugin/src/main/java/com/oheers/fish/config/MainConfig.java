@@ -13,16 +13,11 @@ public class MainConfig extends ConfigBase {
 
     public MainConfig() {
         super("config.yml");
-        reload();
         instance = this;
     }
 
     public static MainConfig getInstance() {
         return instance;
-    }
-
-    public int configVersion() {
-        return getConfig().getInt("config-version");
     }
 
     public String getLocale() {

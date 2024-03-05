@@ -32,7 +32,6 @@ public class GUIConfig extends ConfigBase {
 
     public GUIConfig() {
         super("guis.yml");
-        reload();
         instance = this;
     }
     

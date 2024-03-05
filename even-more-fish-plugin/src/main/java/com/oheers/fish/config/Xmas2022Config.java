@@ -13,7 +13,6 @@ public class Xmas2022Config extends ConfigBase {
 
     public Xmas2022Config() {
         super("xmas2022.yml");
-        reload();
         instance = this;
     }
 

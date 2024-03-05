@@ -12,7 +12,6 @@ public class CompetitionConfig extends ConfigBase {
 
     public CompetitionConfig() {
         super("competitions.yml");
-        reload();
         instance = this;
     }
 

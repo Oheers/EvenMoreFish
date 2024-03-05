@@ -6,7 +6,6 @@ public class RaritiesFile extends ConfigBase {
 
     public RaritiesFile() {
         super("rarities.yml");
-        reload();
         instance = this;
     }
 

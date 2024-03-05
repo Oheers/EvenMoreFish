@@ -8,7 +8,6 @@ public class BaitFile extends ConfigBase {
 
     public BaitFile() {
         super("baits.yml");
-        reload();
         instance = this;
     }
     
