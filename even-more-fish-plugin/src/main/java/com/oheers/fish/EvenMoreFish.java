@@ -485,6 +485,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             CompetitionConfig.getInstance().reload();
         }
 
+        // Clean up the temp directory
+        File tempDir = new File(getDataFolder(), "temp");
+        if (tempDir.exists()) {
+            tempDir.delete();
+        }
+
     }
 
     /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
