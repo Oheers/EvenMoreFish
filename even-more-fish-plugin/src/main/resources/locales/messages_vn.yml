@@ -224,6 +224,3 @@ admin:
   update-available: "&rĐã có cập nhật mới tại https://www.spigotmc.org/resources/evenmorefish.91310/updates"
   #When the plugin is reloaded
   reload: "&rĐã tải lại plugin hoàn tất."
-#ATTENTION ATTENTION ATTENTION
-#DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 12

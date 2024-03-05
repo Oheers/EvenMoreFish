@@ -179,7 +179,3 @@ emf-competition-size-null: true
 emf-competition-fish-null: true
 # How should the %emf_competition_place_fish_*% be formatted?
 emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
-
-# ATTENTION ATTENTION ATTENTION
-# DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE MESSAGES.
-config-version: 8

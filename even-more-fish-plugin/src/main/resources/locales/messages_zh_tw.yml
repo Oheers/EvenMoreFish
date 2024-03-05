@@ -241,7 +241,3 @@ admin:
   update-available: "&a釣魚大賽插件更新啦！還不來看看嗎https://www.spigotmc.org/resources/evenmorefish.91310/updates"
   # 重啟插件信息
   reload: "&a成功地重新加載了插件，由Kyle翻譯。"
-
-# 注意注意注意
-# 不要編輯這個值，除非你要更新信息。
-config-version: 12
