@@ -124,7 +124,3 @@ place-head-fish: false
 
 # Switch between custom fish or vanilla fishing
 vanilla-fishing: true
-
-# ATTENTION ATTENTION ATTENTION
-# DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 15

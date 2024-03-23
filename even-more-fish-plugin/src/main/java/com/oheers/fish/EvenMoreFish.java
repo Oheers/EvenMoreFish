@@ -59,8 +59,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private Random random = new Random();
 
     public static final int METRIC_ID = 11054;
-    public static final int MSG_CONFIG_VERSION = 16;
-    public static final int MAIN_CONFIG_VERSION = 15;
     public static final int COMP_CONFIG_VERSION = 1;
 
     public static Permission permission = null;
@@ -186,14 +184,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         competitionQueue.load();
 
         // async check for updates on the spigot page
-        getScheduler().runTaskAsynchronously(() -> {
-            isUpdateAvailable = checkUpdate();
-            try {
-                checkConfigVers();
-            } catch (IOException exception) {
-                logger.log(Level.WARNING, "Could not update messages.yml");
-            }
-        });
+        getScheduler().runTaskAsynchronously(() -> isUpdateAvailable = checkUpdate());
+
+        checkConfigVers();
 
         listeners();
         commands();
@@ -479,17 +472,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return false;
     }
 
-    private void checkConfigVers() throws IOException {
+    private void checkConfigVers() {
 
-        if (Messages.getInstance().configVersion() < MSG_CONFIG_VERSION) {
-            ConfigUpdater.updateMessages(Messages.getInstance().configVersion());
-            Messages.getInstance().reload();
-        }
-
-        if (MainConfig.getInstance().configVersion() < MAIN_CONFIG_VERSION) {
-            ConfigUpdater.updateConfig(MainConfig.getInstance().configVersion());
-            reloadConfig();
-        }
+        // ConfigBase#updateConfig() will make sure these configs have the newest options
+        MainConfig.getInstance().updateConfig();
+        Messages.getInstance().updateConfig();
 
         if (CompetitionConfig.getInstance().configVersion() < COMP_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
@@ -498,7 +485,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             CompetitionConfig.getInstance().reload();
         }
 
-        ConfigUpdater.clearUpdaters();
+        // Clean up the temp directory
+        File tempDir = new File(getDataFolder(), "temp");
+        if (tempDir.exists()) {
+            tempDir.delete();
+        }
+
     }
 
     /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it

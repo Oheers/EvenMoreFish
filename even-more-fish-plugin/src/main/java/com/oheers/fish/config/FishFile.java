@@ -6,7 +6,6 @@ public class FishFile extends ConfigBase {
 
     public FishFile() {
         super("fish.yml");
-        reload();
         instance = this;
     }
 
