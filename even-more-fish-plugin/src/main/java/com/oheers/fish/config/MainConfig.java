@@ -240,4 +240,5 @@ public class MainConfig extends ConfigBase {
     public boolean useAdditionalAddons() {
         return getConfig().getBoolean("addons.additional-addons", true);
     }
+
 }

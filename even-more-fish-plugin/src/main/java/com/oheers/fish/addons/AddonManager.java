@@ -2,7 +2,7 @@ package com.oheers.fish.addons;
 
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.addons.impl.Head64ItemAddon;;
+import com.oheers.fish.addons.impl.Head64ItemAddon;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.addons.FileUtil;
 import com.oheers.fish.api.addons.Futures;
@@ -101,7 +101,7 @@ public class AddonManager {
                     return Optional.empty();
                 }
             } catch (JavaVersionException | RequiredPluginException e) {
-                EvenMoreFish.getInstance().getLogger().warning(e.getMessage());
+                EvenMoreFish.debug(Level.WARNING, e.getMessage());
                 this.loadingMap.put(addonInstance.getPrefix(), true);
                 return Optional.empty();
             }
