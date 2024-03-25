@@ -183,6 +183,10 @@ public class Competition {
             else message.setFishCaught(selectedFish.getName());
         } else if (competitionType == CompetitionType.SPECIFIC_RARITY) {
             message.setAmount(Integer.toString(numberNeeded));
+            if (selectedRarity == null) {
+                EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");
+                return message;
+            }
             message.setRarityColour(selectedRarity.getColour());
 
             if (selectedRarity.getDisplayName() != null) message.setRarity(selectedRarity.getDisplayName());
@@ -237,7 +241,7 @@ public class Competition {
                     return;
                 }
             } else if (competitionType == CompetitionType.SPECIFIC_RARITY) {
-                if (!fish.getRarity().getValue().equals(this.selectedRarity.getValue())) {
+                if (this.selectedRarity != null && !fish.getRarity().getValue().equals(this.selectedRarity.getValue())) {
                     return;
                 }
             }
