@@ -646,66 +646,36 @@ public class Competition {
     }
 
     private void handleRewards() {
+        boolean databaseEnabled = MainConfig.getInstance().databaseEnabled();
         if (leaderboard.getSize() != 0) {
-            Iterator<CompetitionEntry> iterator = leaderboard.getIterator();
-            int i = 1;
+            Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
+            int rewardPlace = 1;
             CompetitionEntry topEntry = leaderboard.getTopEntry();
-            if (topEntry != null) {
-                if (MainConfig.getInstance().databaseEnabled()) {
-                    UserReport report = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
-                    if (report != null) {
-                        report.incrementCompetitionsWon(1);
-                    } else {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
-                    }
+            if (topEntry != null && databaseEnabled) {
+                UserReport topReport = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
+                if (topReport == null) {
+                    EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
+                } else {
+                    topReport.incrementCompetitionsWon(1);
                 }
             }
 
-            while (iterator.hasNext()) {
-                if (i <= rewards.size()) {
-                    CompetitionEntry entry = iterator.next();
-                    for (Reward reward : rewards.get(i)) {
-                        reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null);
-                    }
-                    i++;
-                    if (MainConfig.getInstance().databaseEnabled() && entry != null) {
-                        UserReport report = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
-                        if (report != null) {
-                            report.incrementCompetitionsJoined(1);
-                            DataManager.getInstance().putUserReportCache(entry.getPlayer(), report);
-                        }
-                        else {
-                            EvenMoreFish.logger.log(Level.SEVERE, "Could not increment competitions won for " + entry.getPlayer());
-                        }
-                    }
+            while (competitionEntryIterator.hasNext()) {
+                if (rewardPlace <= rewards.size()) {
+                    CompetitionEntry entry = competitionEntryIterator.next();
+                    rewards.get(rewardPlace).forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
+                    rewardPlace++;
+                    incrementCompetitionsJoined(entry);
                 } else {
-                    if (participationRewards != null) {
-                        iterator.forEachRemaining(competitionEntry -> {
-                            for (Reward reward : participationRewards) {
-                                reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()), null);
-                            }
-
-                            if (MainConfig.getInstance().databaseEnabled()) {
-                                UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
-                                if (report != null) {
-                                    report.incrementCompetitionsJoined(1);
-                                    DataManager.getInstance().putUserReportCache(competitionEntry.getPlayer(), report);
-                                } else {
-                                    EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. ");
-                                }
-                            }
-                        });
-                    } else if (MainConfig.getInstance().databaseEnabled()) {
-                        iterator.forEachRemaining(competitionEntry -> {
-                            UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
-                            if (report != null) {
-                                report.incrementCompetitionsJoined(1);
-                                DataManager.getInstance().putUserReportCache(competitionEntry.getPlayer(), report);
-                            } else {
-                                EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. ");
-                            }
-                        });
-                    }
+                    boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
+                    competitionEntryIterator.forEachRemaining(entry -> {
+                        if (participationRewardsExist) {
+                            participationRewards.forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
+                        }
+                        if (databaseEnabled) {
+                            incrementCompetitionsJoined(entry);
+                        }
+                    });
                 }
             }
 
@@ -826,4 +796,15 @@ public class Competition {
     private static int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
         return (10080 - currentTime) + competitionStartTime;
     }
+
+    private void incrementCompetitionsJoined(CompetitionEntry entry) {
+        UserReport report = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
+        if (report != null) {
+            report.incrementCompetitionsJoined(1);
+            DataManager.getInstance().putUserReportCache(entry.getPlayer(), report);
+        } else {
+            EvenMoreFish.logger.log(Level.SEVERE, "User " + entry.getPlayer() + " does not exist in cache. ");
+        }
+    }
+
 }
