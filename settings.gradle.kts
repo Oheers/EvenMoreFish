@@ -30,7 +30,7 @@ dependencyResolutionManagement {
             library("caffeine", "com.github.ben-manes.caffeine:caffeine:2.9.3")//We must use 2.9.3 until we upgrade to java 17
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.5.0b")
-            library("nbt-api", "de.tr7zw:item-nbt-api:2.12.2")
+            library("nbt-api", "de.tr7zw:item-nbt-api:2.12.3")
             library("denizen-api", "com.denizenscript:denizen:1.3.0-SNAPSHOT") // Java 17 addon
             library("oraxen", "com.github.oraxen:oraxen:1.159.0")
 
