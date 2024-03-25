@@ -80,7 +80,7 @@ public class Message {
     private void configMessageToString(@NotNull final ConfigMessage message) {
         if (message.isListForm()) {
             this.message = "";
-            List<String> list = getStringList(message.getNormalList(), message.getIds());
+            List<String> list = getStringList(message.getNormalList(), message.getId());
             for (String line : list) {
 
                 if (this.canHidePrefix && line.startsWith("[noPrefix]"))
@@ -90,7 +90,7 @@ public class Message {
                 if (!Objects.equals(line, list.get(list.size() - 1))) this.message = this.message.concat("\n");
             }
         } else {
-            String line = getString(message.getNormal(), message.getIds());
+            String line = getString(message.getNormal(), message.getId());
 
             if (this.canHidePrefix && line.startsWith("[noPrefix]")) this.message = line.substring(10);
             else this.message = message.getPrefixType().getPrefix() + line;
@@ -186,17 +186,13 @@ public class Message {
      *
      * @return The string from config that matches the value of id.
      */
-    public String getString(String normal, String... ids) {
-        for (String id : ids) {
-            if (!Messages.getInstance().getConfig().contains(id)) continue;
-            String returning = Messages.getInstance().getConfig().getString(id);
-            if (returning != null) return returning;
-            else {
-                EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
-                return normal;
-            }
+    public String getString(String normal, String id) {
+        String string = Messages.getInstance().getConfig().getString(id, null);
+        if (string == null) {
+            EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
+            return normal;
         }
-        return normal;
+        return string;
     }
 
     /**
@@ -206,17 +202,13 @@ public class Message {
      *
      * @return The string list from config that matches the value of id.
      */
-    public List<String> getStringList(List<String> normal, String... ids) {
-        for (String id : ids) {
-            if (!Messages.getInstance().getConfig().contains(id)) continue;
-            List<String> returning = Messages.getInstance().getConfig().getStringList(id);
-            if (!returning.isEmpty()) return returning;
-            else {
-                EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
-                return normal;
-            }
+    public List<String> getStringList(List<String> normal, String id) {
+        List<String> list = Messages.getInstance().getConfig().getStringList(id);
+        if (list.isEmpty()) {
+            EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
+            return normal;
         }
-        return normal;
+        return list;
     }
 
     /**
