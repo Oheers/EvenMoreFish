@@ -646,66 +646,34 @@ public class Competition {
     }
 
     private void handleRewards() {
+        boolean databaseEnabled = MainConfig.getInstance().databaseEnabled();
         if (leaderboard.getSize() != 0) {
-            Iterator<CompetitionEntry> iterator = leaderboard.getIterator();
-            int i = 1;
+            int rewardPlace = 1;
             CompetitionEntry topEntry = leaderboard.getTopEntry();
-            if (topEntry != null) {
-                if (MainConfig.getInstance().databaseEnabled()) {
-                    UserReport report = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
-                    if (report != null) {
-                        report.incrementCompetitionsWon(1);
-                    } else {
-                        EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
-                    }
+            if (topEntry != null && databaseEnabled) {
+                UserReport topReport = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
+                if (topReport == null) {
+                    EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
+                } else {
+                    topReport.incrementCompetitionsWon(1);
                 }
             }
 
-            while (iterator.hasNext()) {
-                if (i <= rewards.size()) {
-                    CompetitionEntry entry = iterator.next();
-                    for (Reward reward : rewards.get(i)) {
-                        reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null);
-                    }
-                    i++;
-                    if (MainConfig.getInstance().databaseEnabled() && entry != null) {
-                        UserReport report = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
-                        if (report != null) {
-                            report.incrementCompetitionsJoined(1);
-                            DataManager.getInstance().putUserReportCache(entry.getPlayer(), report);
-                        }
-                        else {
-                            EvenMoreFish.logger.log(Level.SEVERE, "Could not increment competitions won for " + entry.getPlayer());
-                        }
-                    }
-                } else {
-                    if (participationRewards != null) {
-                        iterator.forEachRemaining(competitionEntry -> {
-                            for (Reward reward : participationRewards) {
-                                reward.run(Bukkit.getOfflinePlayer(competitionEntry.getPlayer()), null);
-                            }
+            boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
+            Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
 
-                            if (MainConfig.getInstance().databaseEnabled()) {
-                                UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
-                                if (report != null) {
-                                    report.incrementCompetitionsJoined(1);
-                                    DataManager.getInstance().putUserReportCache(competitionEntry.getPlayer(), report);
-                                } else {
-                                    EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. ");
-                                }
-                            }
-                        });
-                    } else if (MainConfig.getInstance().databaseEnabled()) {
-                        iterator.forEachRemaining(competitionEntry -> {
-                            UserReport report = DataManager.getInstance().getUserReportIfExists(competitionEntry.getPlayer());
-                            if (report != null) {
-                                report.incrementCompetitionsJoined(1);
-                                DataManager.getInstance().putUserReportCache(competitionEntry.getPlayer(), report);
-                            } else {
-                                EvenMoreFish.logger.log(Level.SEVERE, "User " + competitionEntry.getPlayer() + " does not exist in cache. ");
-                            }
-                        });
+            while (competitionEntryIterator.hasNext()) {
+                CompetitionEntry entry = competitionEntryIterator.next();
+                if (rewardPlace <= rewards.size()) {
+                    rewards.get(rewardPlace).forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
+                    rewardPlace++;
+                } else {
+                    if (participationRewardsExist) {
+                        participationRewards.forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
                     }
+                }
+                if (databaseEnabled) {
+                    incrementCompetitionsJoined(entry);
                 }
             }
 
@@ -826,4 +794,15 @@ public class Competition {
     private static int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
         return (10080 - currentTime) + competitionStartTime;
     }
+
+    private void incrementCompetitionsJoined(CompetitionEntry entry) {
+        UserReport report = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
+        if (report != null) {
+            report.incrementCompetitionsJoined(1);
+            DataManager.getInstance().putUserReportCache(entry.getPlayer(), report);
+        } else {
+            EvenMoreFish.logger.log(Level.SEVERE, "User " + entry.getPlayer() + " does not exist in cache. ");
+        }
+    }
+
 }
