@@ -648,6 +648,7 @@ public class Competition {
     private void handleRewards() {
         boolean databaseEnabled = MainConfig.getInstance().databaseEnabled();
         if (leaderboard.getSize() != 0) {
+            boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
             Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
             int rewardPlace = 1;
             CompetitionEntry topEntry = leaderboard.getTopEntry();
@@ -661,21 +662,17 @@ public class Competition {
             }
 
             while (competitionEntryIterator.hasNext()) {
+                CompetitionEntry entry = competitionEntryIterator.next();
                 if (rewardPlace <= rewards.size()) {
-                    CompetitionEntry entry = competitionEntryIterator.next();
                     rewards.get(rewardPlace).forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
                     rewardPlace++;
-                    incrementCompetitionsJoined(entry);
                 } else {
-                    boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
-                    competitionEntryIterator.forEachRemaining(entry -> {
-                        if (participationRewardsExist) {
-                            participationRewards.forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
-                        }
-                        if (databaseEnabled) {
-                            incrementCompetitionsJoined(entry);
-                        }
-                    });
+                    if (participationRewardsExist) {
+                        participationRewards.forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
+                    }
+                }
+                if (databaseEnabled) {
+                    incrementCompetitionsJoined(entry);
                 }
             }
 
