@@ -32,7 +32,7 @@ dependencyResolutionManagement {
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.12.3")
             library("denizen-api", "com.denizenscript:denizen:1.3.0-SNAPSHOT") // Java 17 addon
-            library("oraxen", "com.github.oraxen:oraxen:1.159.0")
+            library("oraxen", "com.github.oraxen:oraxen:1.171.0")
 
             library("ecoitems-api", "com.willfp:EcoItems:5.6.1")
             library("ecoitems-libreforge", "com.willfp:libreforge:4.21.1")
