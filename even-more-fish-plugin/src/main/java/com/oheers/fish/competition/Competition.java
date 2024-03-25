@@ -184,7 +184,7 @@ public class Competition {
         } else if (competitionType == CompetitionType.SPECIFIC_RARITY) {
             message.setAmount(Integer.toString(numberNeeded));
             if (selectedRarity == null) {
-                EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Null rarity found. Please check your config files.");
+                EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");
                 return message;
             }
             message.setRarityColour(selectedRarity.getColour());

@@ -189,7 +189,7 @@ public class Message {
     public String getString(String normal, String id) {
         String string = Messages.getInstance().getConfig().getString(id, null);
         if (string == null) {
-            EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
+            EvenMoreFish.getInstance().getLogger().severe("No valid value in messages.yml for: " + id + " using default value instead.");
             return normal;
         }
         return string;
@@ -205,7 +205,7 @@ public class Message {
     public List<String> getStringList(List<String> normal, String id) {
         List<String> list = Messages.getInstance().getConfig().getStringList(id);
         if (list.isEmpty()) {
-            EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
+            EvenMoreFish.getInstance().getLogger().severe("No valid value in messages.yml for: " + id + " using default value instead.");
             return normal;
         }
         return list;
