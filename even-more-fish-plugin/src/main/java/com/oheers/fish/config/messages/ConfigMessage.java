@@ -107,12 +107,12 @@ public enum ConfigMessage {
     PLACEHOLDER_FISH_LENGTHLESS_FORMAT("{rarity_colour}&l{rarity} {fish}", PrefixType.NONE, true, false, "emf-lengthless-fish-format"),
     PLACEHOLDER_FISH_MOST_FORMAT("{amount} fish", PrefixType.NONE, true, false, "emf-most-fish-format"),
     PLACEHOLDER_NO_COMPETITION_RUNNING("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running"),
-    PLACEHOLDER_NO_COMPETITION_RUNNING_FISH("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running-fish", "no-competition-running"),
-    PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running-size", "no-competition-running"),
+    PLACEHOLDER_NO_COMPETITION_RUNNING_FISH("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running-fish"),
+    PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running"),
 
     PLACEHOLDER_NO_PLAYER_IN_PLACE("Start fishing to take this place", PrefixType.NONE, true, false, "no-player-in-place"),
-    PLACEHOLDER_NO_FISH_IN_PLACE("Start fishing to take this place", PrefixType.NONE, true, false, "no-fish-in-place", "no-player-in-place"),
-    PLACEHOLDER_NO_SIZE_IN_PLACE("Start fishing to take this place", PrefixType.NONE, true, false, "no-size-in-place", "no-player-in-place"),
+    PLACEHOLDER_NO_FISH_IN_PLACE("Start fishing to take this place", PrefixType.NONE, true, false, "no-fish-in-place"),
+    PLACEHOLDER_NO_SIZE_IN_PLACE("Start fishing to take this place", PrefixType.NONE, true, false, "no-size-in-place"),
     PLACEHOLDER_SIZE_DURING_MOST_FISH("N/A", PrefixType.NONE, true, false, "emf-size-during-most-fish"),
     PLACEHOLDER_TIME_REMAINING("Time left until next competition: {days}d, {hours}h, {minutes}m.", PrefixType.NONE, true, false, "emf-time-remaining"),
     PLACEHOLDER_TIME_REMAINING_DURING_COMP("There is a competition running right now.", PrefixType.NONE, true, false, "emf-time-remaining-during-comp"),
@@ -168,7 +168,7 @@ public enum ConfigMessage {
             "&7» (Right-click) cancel."
     ), PrefixType.NONE, false, false, "sell-gui-lore");
 
-    private final String[] id;
+    private final String id;
     private final boolean canSilent, canHidePrefix;
     private final PrefixType prefixType;
     private String normal;
@@ -185,7 +185,7 @@ public enum ConfigMessage {
      * @param canSilent     If the message can be sent silently (not sent).
      * @param canHidePrefix If the message can have the [noPrefix] applied to remove the prefix.
      */
-    ConfigMessage(String normal, PrefixType prefixType, boolean canSilent, boolean canHidePrefix, String... id) {
+    ConfigMessage(String normal, PrefixType prefixType, boolean canSilent, boolean canHidePrefix, String id) {
         this.id = id;
         this.normal = normal;
         this.canSilent = canSilent;
@@ -205,7 +205,7 @@ public enum ConfigMessage {
      * @param canSilent     If the message can be sent silently (not sent).
      * @param canHidePrefix If the message can have the [noPrefix] applied to remove the prefix.
      */
-    ConfigMessage(List<String> normalList, PrefixType prefixType, boolean canSilent, boolean canHidePrefix, String... id) {
+    ConfigMessage(List<String> normalList, PrefixType prefixType, boolean canSilent, boolean canHidePrefix, String id) {
         this.id = id;
         this.normalList = normalList;
         this.canSilent = canSilent;
@@ -214,7 +214,7 @@ public enum ConfigMessage {
     }
 
 
-    public String[] getIds() {
+    public String getId() {
         return this.id;
     }
 
