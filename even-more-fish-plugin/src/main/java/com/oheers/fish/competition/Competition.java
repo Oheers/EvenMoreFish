@@ -648,8 +648,6 @@ public class Competition {
     private void handleRewards() {
         boolean databaseEnabled = MainConfig.getInstance().databaseEnabled();
         if (leaderboard.getSize() != 0) {
-            boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
-            Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
             int rewardPlace = 1;
             CompetitionEntry topEntry = leaderboard.getTopEntry();
             if (topEntry != null && databaseEnabled) {
@@ -660,6 +658,9 @@ public class Competition {
                     topReport.incrementCompetitionsWon(1);
                 }
             }
+
+            boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
+            Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
 
             while (competitionEntryIterator.hasNext()) {
                 CompetitionEntry entry = competitionEntryIterator.next();
