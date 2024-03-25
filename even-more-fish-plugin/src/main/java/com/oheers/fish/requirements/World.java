@@ -34,7 +34,7 @@ public class World implements Requirement {
         if (context.getWorld() != null) {
             return worlds.contains(context.getWorld().getName());
         }
-        EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + configLocation + ", returning false by " +
+        EvenMoreFish.getInstance().getLogger().severe("Could not get world for " + configLocation + ", returning false by " +
                 "default. The player may not have been given a fish if you see this message multiple times.");
         return false;
     }

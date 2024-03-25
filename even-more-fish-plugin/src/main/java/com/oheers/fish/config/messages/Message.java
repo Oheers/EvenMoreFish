@@ -138,7 +138,7 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.usingPAPI) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendMessage(this.message);
@@ -157,7 +157,7 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.usingPAPI) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         player.sendMessage(this.message);
     }
@@ -175,7 +175,7 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.usingPAPI) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         sender.sendMessage(this.message);
     }
@@ -223,7 +223,7 @@ public class Message {
         if (doVariables) variableFormat();
         if (doColour) colourFormat();
 
-        if (relevantPlayer != null && EvenMoreFish.usingPAPI) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         if (this.canSilent && this.message.endsWith(" -s")) return "";
         else return this.message;

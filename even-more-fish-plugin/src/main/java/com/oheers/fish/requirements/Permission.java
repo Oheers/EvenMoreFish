@@ -31,7 +31,7 @@ public class Permission implements Requirement {
 
     @Override
     public boolean requirementMet(RequirementContext context) {
-        if (EvenMoreFish.permission != null && permissionNodes != null) {
+        if (EvenMoreFish.getInstance().getPermission() != null && permissionNodes != null) {
             return context.getPlayer() == null || hasAllPermissions(context.getPlayer());
         }
         
@@ -40,7 +40,7 @@ public class Permission implements Requirement {
     
     private boolean hasAllPermissions(final Player player) {
         for(final String permissionNode: permissionNodes) {
-            if(!EvenMoreFish.permission.has(player,permissionNode)) {
+            if(!EvenMoreFish.getInstance().getPermission().has(player,permissionNode)) {
                 return false;
             }
         }

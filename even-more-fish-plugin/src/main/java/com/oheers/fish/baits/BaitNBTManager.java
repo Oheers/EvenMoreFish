@@ -109,7 +109,7 @@ public class BaitNBTManager {
                     item.setItemMeta(meta);
                 }
             } catch (IndexOutOfBoundsException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Failed to apply bait: " + bait.getName() + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
+                EvenMoreFish.getInstance().getLogger().severe("Failed to apply bait: " + bait.getName() + " to a user's fishing rod. This is likely caused by a change in format in the baits.yml config.");
                 return null;
             }
 
@@ -216,7 +216,7 @@ public class BaitNBTManager {
         for (String baitName : baitNameList) {
 
             Bait bait;
-            if ((bait = EvenMoreFish.baits.get(baitName.split(":")[0])) != null) {
+            if ((bait = EvenMoreFish.getInstance().getBaits().get(baitName.split(":")[0])) != null) {
                 baitList.add(bait);
             }
 
@@ -247,7 +247,7 @@ public class BaitNBTManager {
     public static Bait randomBaitCatch() {
         double totalWeight = 0;
 
-        List<Bait> baitList = new ArrayList<>(EvenMoreFish.baits.values());
+        List<Bait> baitList = new ArrayList<>(EvenMoreFish.getInstance().getBaits().values());
 
         // Weighted random logic (nabbed from stackoverflow)
         for (Bait bait : baitList) {
@@ -255,7 +255,7 @@ public class BaitNBTManager {
         }
 
         int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < EvenMoreFish.baits.size() - 1; ++idx) {
+        for (double r = Math.random() * totalWeight; idx < EvenMoreFish.getInstance().getBaits().size() - 1; ++idx) {
             r -= baitList.get(idx).getCatchWeight();
             if (r <= 0.0) break;
         }
@@ -412,7 +412,7 @@ public class BaitNBTManager {
      * @return How the bait should look in the lore of the fishing rod, for example.
      */
     private static String getBaitFormatted(String baitID) {
-        Bait bait = EvenMoreFish.baits.get(baitID);
+        Bait bait = EvenMoreFish.getInstance().getBaits().get(baitID);
         if (Objects.equals(bait.getDisplayName(), null)) return baitID;
         else return FishUtils.translateHexColorCodes(bait.getDisplayName());
     }

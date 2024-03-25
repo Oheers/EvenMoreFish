@@ -28,7 +28,7 @@ public class UpdateChecker {
         try (final Scanner scanner = new Scanner(new URL("https://api.spigotmc.org/simple/0.1/index.php?action=getResource&id=" + resourceID).openStream())) {
             return ((JSONObject) new JSONParser().parse(scanner.nextLine())).get("current_version").toString();
         } catch (Exception ignored) {
-            EvenMoreFish.logger.log(Level.WARNING, "EvenMoreFish failed to check for updates against the spigot website, to check manually go to https://www.spigotmc.org/resources/evenmorefish.91310/updates");
+            EvenMoreFish.getInstance().getLogger().warning("EvenMoreFish failed to check for updates against the spigot website, to check manually go to https://www.spigotmc.org/resources/evenmorefish.91310/updates");
             return plugin.getDescription().getVersion();
         }
 
@@ -40,12 +40,11 @@ class UpdateNotify implements Listener {
     @EventHandler
     // informs admins with emf.admin permission that the plugin needs updating
     public void playerJoin(PlayerJoinEvent event) {
-        if (!EvenMoreFish.isUpdateAvailable) {
+        if (!EvenMoreFish.getInstance().isUpdateAvailable()) {
             return;
         }
 
-
-        if (EvenMoreFish.permission.playerHas(event.getPlayer(), AdminPerms.UPDATE_NOTIFY)) {
+        if (EvenMoreFish.getInstance().getPermission().playerHas(event.getPlayer(), AdminPerms.UPDATE_NOTIFY)) {
             new Message(ConfigMessage.ADMIN_UPDATE_AVAILABLE).broadcast(event.getPlayer(), true, false);
         }
 

@@ -36,7 +36,7 @@ public class EMFAPI {
     }
 
     public Optional<Fish> getFish(String rarity, String name) {
-        for (Entry<Rarity, List<Fish>> e : EvenMoreFish.fishCollection.entrySet()) {
+        for (Entry<Rarity, List<Fish>> e : EvenMoreFish.getInstance().getFishCollection().entrySet()) {
             if (e.getKey().getValue().equalsIgnoreCase(rarity)) {
                 Optional<Fish> optFish = e.getValue().stream().filter(f -> f.getName().equalsIgnoreCase(name)).findFirst();
                 if (optFish.isPresent()) {

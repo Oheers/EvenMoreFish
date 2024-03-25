@@ -97,14 +97,14 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
         // we've already checked that that args exist
         switch (args[0].toLowerCase()) {
             case "top":
-                if (EvenMoreFish.permission.has(sender, UserPerms.TOP)) {
+                if (EvenMoreFish.getInstance().getPermission().has(sender, UserPerms.TOP)) {
                     if (!Competition.isActive()) {
                         new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
                     } else {
                         if (sender instanceof Player) {
-                            EvenMoreFish.active.sendPlayerLeaderboard((Player) sender);
+                            EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard((Player) sender);
                         } else if (sender instanceof ConsoleCommandSender) {
-                            EvenMoreFish.active.sendConsoleLeaderboard((ConsoleCommandSender) sender);
+                            EvenMoreFish.getInstance().getActiveCompetition().sendConsoleLeaderboard((ConsoleCommandSender) sender);
                         }
                     }
                 } else {
@@ -114,8 +114,8 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
             case "shop":
                 if (sender instanceof Player || args.length > 1) {
                     if (MainConfig.getInstance().isEconomyEnabled()) {
-                        if (EvenMoreFish.permission.has(sender, UserPerms.SHOP)) {
-                            if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN) && args.length == 2) {
+                        if (EvenMoreFish.getInstance().getPermission().has(sender, UserPerms.SHOP)) {
+                            if (EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN) && args.length == 2) {
                                 Player p = Bukkit.getPlayer(args[1]);
                                 if (p != null) {
                                     new SellGUI(p, true);
@@ -156,7 +156,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 Player p = (Player) sender;
                 if (MainConfig.getInstance().isEconomyEnabled()) {
-                    if (EvenMoreFish.permission.has(p, UserPerms.SELL_ALL)) {
+                    if (EvenMoreFish.getInstance().getPermission().has(p, UserPerms.SELL_ALL)) {
                         SellGUI gui = new SellGUI(p, false);
                         gui.sell(true);
                     } else {
@@ -177,36 +177,36 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                     break;
                 }
 
-                if (!(EvenMoreFish.permission.has(sender, UserPerms.TOGGLE))) {
+                if (!(EvenMoreFish.getInstance().getPermission().has(sender, UserPerms.TOGGLE))) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                     break;
                 }
 
-                if (EvenMoreFish.disabledPlayers.contains(((Player) sender).getUniqueId())) {
-                    EvenMoreFish.disabledPlayers.remove(((Player) sender).getUniqueId());
+                if (EvenMoreFish.getInstance().getDisabledPlayers().contains(((Player) sender).getUniqueId())) {
+                    EvenMoreFish.getInstance().getDisabledPlayers().remove(((Player) sender).getUniqueId());
                     new Message(ConfigMessage.TOGGLE_ON).broadcast(sender, true, false);
                 } else {
-                    EvenMoreFish.disabledPlayers.add(((Player) sender).getUniqueId());
+                    EvenMoreFish.getInstance().getDisabledPlayers().add(((Player) sender).getUniqueId());
                     new Message(ConfigMessage.TOGGLE_OFF).broadcast(sender, true, false);
                 }
                 break;
             case "admin":
-                if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
+                if (EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
                     Controls.adminControl(this.plugin, args, sender);
                 } else {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 }
                 break;
             case "migrate":
-                if (!EvenMoreFish.permission.has(sender, AdminPerms.MIGRATE)) {
+                if (!EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.MIGRATE)) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
-                    EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.databaseV3.migrateLegacy(sender));
+                    EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
                 }
                 break;
             case "xmas":
                 if (!Xmas2022Config.getInstance().isAvailable()) break;
-                if (!EvenMoreFish.permission.has(sender, UserPerms.XMAS)) {
+                if (!EvenMoreFish.getInstance().getPermission().has(sender, UserPerms.XMAS)) {
                     new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
                 } else {
                     new XmasGUI(((Player) sender).getUniqueId()).display((Player) sender);
@@ -222,7 +222,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         if (args.length > 2 && args[args.length - 1].startsWith("-p:")) {
             if (args[1].equalsIgnoreCase("fish") || args[1].equalsIgnoreCase("bait")) {
-                if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
+                if (EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
                     List<String> playerNames = new ArrayList<>();
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         playerNames.add("-p:" + p.getName());
@@ -234,7 +234,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
 
         switch (args.length) {
             case 1:
-                if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
+                if (EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
 
                     // creates a temp version of tablist where only the qualified completes go through
                     List<String> TEMP_townTabCompletes = l(args[args.length - 1], emfTabs);
@@ -248,32 +248,32 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
             case 2:
                 // checks player has admin perms and has actually used "/emf admin" prior to the 2nd arg
-                if (args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
+                if (args[0].equalsIgnoreCase("admin") && EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
                     return l(args[args.length - 1], adminTabs);
                 } else {
                     return empty;
                 }
             case 3:
-                if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
+                if (args[1].equalsIgnoreCase("competition") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
                     return l(args[args.length - 1], compTabs);
-                } else if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
+                } else if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
                     List<String> returning = new ArrayList<>();
-                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                    for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                         returning.add(r.getValue().replace(" ", "_"));
                     }
 
                     return l(args[args.length - 1], returning);
-                } else if (args[1].equalsIgnoreCase("bait") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
-                    return l(args[args.length - 1], new ArrayList<>(EvenMoreFish.baits.keySet()));
+                } else if (args[1].equalsIgnoreCase("bait") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
+                    return l(args[args.length - 1], new ArrayList<>(EvenMoreFish.getInstance().getBaits().keySet()));
                 } else {
                     return empty;
                 }
             case 4:
-                if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.permission.has(sender, AdminPerms.ADMIN)) {
-                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                if (args[1].equalsIgnoreCase("fish") && args[0].equalsIgnoreCase("admin") && EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
+                    for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                         if (r.getValue().equalsIgnoreCase(args[2].replace("_", " "))) {
                             List<String> fish = new ArrayList<>();
-                            for (Fish f : EvenMoreFish.fishCollection.get(r)) {
+                            for (Fish f : EvenMoreFish.getInstance().getFishCollection().get(r)) {
                                 fish.add(f.getName().replace(" ", "_"));
                             }
                             return l(args[args.length - 1], fish);
@@ -283,7 +283,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 }
                 return empty;
             case 5:
-                if (EvenMoreFish.permission.has(sender, AdminPerms.ADMIN) && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
+                if (EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN) && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("competition") && args[2].equalsIgnoreCase("start")) {
                     return l(args[args.length - 1], compTypes);
                 } else {
                     return empty;
@@ -330,7 +330,7 @@ class Controls {
                     for (String word : args[2].split("_")) {
                         args2.append(word).append(" ");
                     }
-                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                    for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                         String rarityName = args2.substring(0, args2.length() - 1);
                         if (rarityName.equalsIgnoreCase(r.getValue())) {
                             ComponentBuilder builder = new ComponentBuilder();
@@ -340,7 +340,7 @@ class Controls {
                             else
                                 builder.append(FishUtils.translateHexColorCodes(r.getColour() + "&l" + r.getValue() + ": "), ComponentBuilder.FormatRetention.NONE);
 
-                            for (Fish fish : EvenMoreFish.fishCollection.get(r)) {
+                            for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(r)) {
                                 if (fish.getDisplayName() != null)
                                     builder.append(FishUtils.translateHexColorCodes(r.getColour() + "[" + fish.getDisplayName() + "] "));
                                 else
@@ -355,7 +355,7 @@ class Controls {
                         }
                     }
                     ComponentBuilder builder = new ComponentBuilder();
-                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                    for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
 
                         if (r.getDisplayName() != null) {
                             builder.append(FishUtils.translateHexColorCodes("&r[" + r.getDisplayName() + "] "));
@@ -414,9 +414,9 @@ class Controls {
                         }
                         String fishName = args3.substring(0, args3.length() - 1);
 
-                        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                             if (rarityName.equalsIgnoreCase(r.getValue())) {
-                                for (Fish f : EvenMoreFish.fishCollection.get(r)) {
+                                for (Fish f : EvenMoreFish.getInstance().getFishCollection().get(r)) {
                                     if (fishName.equalsIgnoreCase(f.getName())) {
 
                                         if (player == null) {
@@ -454,7 +454,7 @@ class Controls {
 
                 } else {
                     BaseComponent baseComponent = new TextComponent("");
-                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                    for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                         BaseComponent tC;
                         if (r.getDisplayName() != null) {
                             tC = new TextComponent(FishUtils.translateHexColorCodes("&r[" + r.getDisplayName() + "] "));
@@ -496,7 +496,7 @@ class Controls {
                     player = (Player) sender;
                 }
 
-                FishUtils.giveItems(Collections.singletonList(EvenMoreFish.customNBTRod), player);
+                FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
                 giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
                 giveMessage.setPlayer(player.getName());
                 giveMessage.broadcast(sender, true, true);
@@ -541,9 +541,9 @@ class Controls {
                     }
 
                     // Finding the bait and giving it to the (presumably) admin.
-                    for (String baitID : EvenMoreFish.baits.keySet()) {
+                    for (String baitID : EvenMoreFish.getInstance().getBaits().keySet()) {
                         if (baitID.equalsIgnoreCase(builtName.toString())) {
-                            Bait bait = EvenMoreFish.baits.get(baitID);
+                            Bait bait = EvenMoreFish.getInstance().getBaits().get(baitID);
                             if (player == null) {
                                 if (sender instanceof Player) {
                                     ItemStack baitItem = bait.create(Bukkit.getOfflinePlayer(((Player) sender).getUniqueId()));
@@ -621,20 +621,20 @@ class Controls {
 
             case "version":
                 int fishCount = 0;
-                for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
-                    fishCount += EvenMoreFish.fishCollection.get(r).size();
+                for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+                    fishCount += EvenMoreFish.getInstance().getFishCollection().get(r).size();
                 }
 
                 String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
                         Messages.getInstance().getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                         Messages.getInstance().getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
                         Messages.getInstance().getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
-                        Messages.getInstance().getSTDPrefix() + "Loaded: Rarities(" + EvenMoreFish.fishCollection.size() + ") Fish(" +
-                        fishCount + ") Baits(" + EvenMoreFish.baits.size() + ") Competitions(" + EvenMoreFish.competitionQueue.getSize() + ")\n" +
+                        Messages.getInstance().getSTDPrefix() + "Loaded: Rarities(" + EvenMoreFish.getInstance().getFishCollection().size() + ") Fish(" +
+                        fishCount + ") Baits(" + EvenMoreFish.getInstance().getBaits().size() + ") Competitions(" + EvenMoreFish.getInstance().getCompetitionQueue().getSize() + ")\n" +
                         Messages.getInstance().getSTDPrefix();
 
                 if (MainConfig.getInstance().databaseEnabled()) {
-                    if (EvenMoreFish.databaseV3.usingVersionV2()) {
+                    if (EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2()) {
                         msgString += "Database Engine: V2";
                     } else {
                         msgString += "Database Engine: V3";
@@ -685,7 +685,7 @@ class Controls {
                     }
                 } else if (args[2].equalsIgnoreCase("end")) {
                     if (Competition.isActive()) {
-                        EvenMoreFish.active.end();
+                        EvenMoreFish.getInstance().getActiveCompetition().end();
                     } else {
                         new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true, true);
                     }
@@ -716,7 +716,7 @@ class Controls {
                 comp.initGetNumbersNeeded(null);
                 comp.initStartSound(null);
 
-                EvenMoreFish.active = comp;
+                EvenMoreFish.getInstance().setActiveCompetition(comp);
                 comp.begin(true);
             } else {
                 Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
@@ -741,17 +741,17 @@ class Help {
         List<String> commands = Arrays.asList(new Message(ConfigMessage.HELP_GENERAL).getRawMessage(true, false).split("\n"));
 
         String escape = "\n";
-        if (EvenMoreFish.permission != null && user != null) {
+        if (EvenMoreFish.getInstance().getPermission() != null && user != null) {
             for (int i = 0; i < commands.size(); i++) {
                 if (i == commands.size() - 1) escape = "";
                 if (commands.get(i).contains("/emf admin")) {
-                    if (EvenMoreFish.permission.has(user, AdminPerms.ADMIN)) out.append(commands.get(i)).append(escape);
+                    if (EvenMoreFish.getInstance().getPermission().has(user, AdminPerms.ADMIN)) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf top")) {
-                    if (EvenMoreFish.permission.has(user, UserPerms.TOP)) out.append(commands.get(i)).append(escape);
+                    if (EvenMoreFish.getInstance().getPermission().has(user, UserPerms.TOP)) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf shop")) {
-                    if (EvenMoreFish.permission.has(user, UserPerms.SHOP)) out.append(commands.get(i)).append(escape);
+                    if (EvenMoreFish.getInstance().getPermission().has(user, UserPerms.SHOP)) out.append(commands.get(i)).append(escape);
                 } else if (commands.get(i).contains("/emf toggle")) {
-                    if (EvenMoreFish.permission.has(user, UserPerms.TOGGLE)) out.append(commands.get(i)).append(escape);
+                    if (EvenMoreFish.getInstance().getPermission().has(user, UserPerms.TOGGLE)) out.append(commands.get(i)).append(escape);
                 } else out.append(commands.get(i)).append(escape);
             }
         } else {

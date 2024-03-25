@@ -36,7 +36,7 @@ public class Weather implements Requirement {
             if (context.getWorld().isClearWeather()) return allowedWeather == WeatherType.CLEAR;
             else return allowedWeather == WeatherType.DOWNFALL;
         }
-        EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + configLocation + ", returning false by " +
+        EvenMoreFish.getInstance().getLogger().severe("Could not get world for " + configLocation + ", returning false by " +
                 "default. The player may not have been given a fish if you see this message multiple times.");
         return false;
     }
@@ -46,7 +46,7 @@ public class Weather implements Requirement {
         try {
             this.allowedWeather = WeatherType.valueOf(fileConfig.getString(configLocation));
         } catch (IllegalArgumentException | NullPointerException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, fileConfig.getString(configLocation) + " is not a valid weather type.");
+            EvenMoreFish.getInstance().getLogger().severe(fileConfig.getString(configLocation) + " is not a valid weather type.");
         }
     }
 }

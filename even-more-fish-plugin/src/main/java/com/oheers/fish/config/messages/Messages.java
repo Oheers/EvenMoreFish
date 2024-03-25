@@ -2,7 +2,6 @@ package com.oheers.fish.config.messages;
 
 import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +14,6 @@ public class Messages extends ConfigBase {
 
     private static Messages instance = null;
     private String localeFileName = null;
-    public FileConfiguration config;
 
     public Messages() {
         super("messages.yml");
@@ -56,6 +54,6 @@ public class Messages extends ConfigBase {
     }
 
     public String getSTDPrefix() {
-        return getConfig().getString("prefix-regular") + config.getString("prefix") + "&r";
+        return getConfig().getString("prefix-regular") + getConfig().getString("prefix") + "&r";
     }
 }

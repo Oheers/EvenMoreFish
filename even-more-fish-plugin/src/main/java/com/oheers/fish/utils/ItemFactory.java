@@ -192,11 +192,11 @@ public class ItemFactory {
      */
     private @Nullable ItemStack checkHeadDB() {
         // The fish has item: headdb selected
-        if (!EvenMoreFish.usingHeadsDB) return null;
+        if (!EvenMoreFish.getInstance().isUsingHeadsDB()) return null;
 
         int headID = this.configurationFile.getInt(configLocation + ".item.headdb", -1);
         if (headID != -1) {
-            return EvenMoreFish.HDBapi.getItemHead(Integer.toString(headID));
+            return EvenMoreFish.getInstance().getHDBapi().getItemHead(Integer.toString(headID));
         }
 
         return null;
@@ -218,7 +218,7 @@ public class ItemFactory {
         if (material == null) {
             ItemStack customItemStack = checkMaterial(mValue);
             if (customItemStack != null) { return customItemStack; }
-            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
+            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
             material = Material.COD;
         }
 
@@ -236,7 +236,7 @@ public class ItemFactory {
             if (customItemStack != null) {
                 return customItemStack;
             }
-            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
+            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
             material = Material.COD;
         }
 
@@ -254,7 +254,7 @@ public class ItemFactory {
         try {
             return getItem(materialID);
         } catch (Exception e) {
-            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s",
+            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s",
                     configLocation,
                     materialID));
             rawMaterial = false;
@@ -284,7 +284,7 @@ public class ItemFactory {
             itemRandom = true;
 
             if (customItemStack == null) {
-                EvenMoreFish.logger.log(Level.SEVERE, configLocation + "'s has an incorrect material name in its materials list.");
+                EvenMoreFish.getInstance().getLogger().severe(configLocation + "'s has an incorrect material name in its materials list.");
                 for (String material : lValues) {
                     ItemStack item = checkMaterial(material);
                     if (item != null) {
@@ -330,7 +330,7 @@ public class ItemFactory {
 
     private ItemStack checkRandomHeadDB(int randomIndex) {
         // The fish has item: headdb selected
-        if (!EvenMoreFish.usingHeadsDB) return null;
+        if (!EvenMoreFish.getInstance().isUsingHeadsDB()) return null;
 
         List<Integer> headIDs = this.configurationFile.getIntegerList(configLocation + ".item.multiple-headdb");
         if (!headIDs.isEmpty()) {
@@ -345,7 +345,7 @@ public class ItemFactory {
             int headID = headIDs.get(randomIndex);
             itemRandom = true;
 
-            return EvenMoreFish.HDBapi.getItemHead(Integer.toString(headID));
+            return EvenMoreFish.getInstance().getHDBapi().getItemHead(Integer.toString(headID));
         }
 
         return null;
@@ -382,7 +382,7 @@ public class ItemFactory {
                 skull.setItemMeta(meta);
                 return skull;
             } catch (IllegalArgumentException illegalArgumentException) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not load uuid: " + uuid + " as a multiple-head-uuid option for the config location" + configLocation);
+                EvenMoreFish.getInstance().getLogger().severe("Could not load uuid: " + uuid + " as a multiple-head-uuid option for the config location" + configLocation);
                 return new ItemStack(Material.COD);
             }
         }
@@ -444,7 +444,7 @@ public class ItemFactory {
 
         Material material = Material.matchMaterial(materialString);
         if (material == null) {
-            EvenMoreFish.logger.severe(() -> String.format("%s has an incorrect assigned material: %s",
+            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s",
                     configLocation,
                     materialString));
             return new ItemStack(Material.COD);
@@ -483,7 +483,7 @@ public class ItemFactory {
 
                 product.setItemMeta(meta);
             } catch (ClassCastException exception) {
-                EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch hex value: " + dyeColour + " from config location + " + configLocation + ". Item is likely not a leather material.");
+                EvenMoreFish.getInstance().getLogger().severe("Could not fetch hex value: " + dyeColour + " from config location + " + configLocation + ". Item is likely not a leather material.");
             }
         }
     }
@@ -573,16 +573,16 @@ public class ItemFactory {
 
         String[] split = potionSettings.split(":");
         if (split.length != 3) {
-            EvenMoreFish.logger.log(Level.SEVERE, configLocation + ".item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\".");
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + ".item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\".");
         }
 
         PotionMeta meta = ((PotionMeta) product.getItemMeta());
         try {
             meta.addCustomEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(split[0])), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2]) - 1, false), true);
         } catch (NumberFormatException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, configLocation + ".item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\", where duration & amplifier are integer values.");
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + ".item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\", where duration & amplifier are integer values.");
         } catch (NullPointerException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, configLocation + ".item.potion: " + split[0] + " is not a valid potion name. A list can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html");
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + ".item.potion: " + split[0] + " is not a valid potion name. A list can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html");
         }
 
         product.setItemMeta(meta);
@@ -614,7 +614,7 @@ public class ItemFactory {
         } else if (this.configLocation.startsWith("nbt-rod-item")) {
             return MainConfig.getInstance().getConfig();
         }else {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not fetch file configuration for: " + this.configLocation);
+            EvenMoreFish.getInstance().getLogger().severe("Could not fetch file configuration for: " + this.configLocation);
             return null;
         }
     }

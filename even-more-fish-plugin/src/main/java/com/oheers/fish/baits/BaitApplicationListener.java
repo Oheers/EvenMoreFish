@@ -40,7 +40,7 @@ public class BaitApplicationListener implements Listener {
         }
 
         ApplicationResult result = null;
-        Bait bait = EvenMoreFish.baits.get(BaitNBTManager.getBaitName(event.getCursor()));
+        Bait bait = EvenMoreFish.getInstance().getBaits().get(BaitNBTManager.getBaitName(event.getCursor()));
 
         ItemStack fishingRod = clickedItem;
         NbtUtils.NbtVersion nbtVersion = NbtUtils.getNbtVersion(clickedItem);
@@ -51,10 +51,10 @@ public class BaitApplicationListener implements Listener {
         try {
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                 result = BaitNBTManager.applyBaitedRodNBT(fishingRod, bait, event.getCursor().getAmount());
-                EvenMoreFish.metric_baitsApplied += event.getCursor().getAmount();
+                EvenMoreFish.getInstance().incrementMetricBaitsApplied(event.getCursor().getAmount());
             } else {
                 result = BaitNBTManager.applyBaitedRodNBT(fishingRod, bait, 1);
-                EvenMoreFish.metric_baitsApplied++;
+                EvenMoreFish.getInstance().incrementMetricBaitsApplied(1);
             }
 
         } catch (MaxBaitsReachedException exception) {

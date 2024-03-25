@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Xmas2022Config extends ConfigBase {
 
-    private boolean isAvailable = true;
+    private boolean isAvailable = false;
     public HashMap<Integer, Material> fillerDefault = null;
     private static Xmas2022Config instance = null;
 

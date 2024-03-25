@@ -31,7 +31,7 @@ public class Economy {
                 return;
             case PLAYER_POINTS:
                 emf.getLogger().log(Level.INFO, "Attempting to hook into PlayerPoints for Economy Handling.");
-                if (EvenMoreFish.usingPlayerPoints) {
+                if (EvenMoreFish.getInstance().isUsingPlayerPoints()) {
                     this.playerPointsEconomy = PlayerPoints.getInstance().getAPI();
                     economyType = type;
                     enabled = true;

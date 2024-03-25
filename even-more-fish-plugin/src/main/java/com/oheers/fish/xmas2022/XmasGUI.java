@@ -89,7 +89,7 @@ public class XmasGUI implements InventoryHolder {
                 try {
                     if (fishReportList == null) this.inventory.setItem(i, new ItemStack(Xmas2022Config.getInstance().getLockedFishMaterial()));
 
-                    Fish currentDay = EvenMoreFish.xmasFish.get(day);
+                    Fish currentDay = EvenMoreFish.getInstance().getXmasFish().get(day);
                     for (FishReport fishReport : fishReportList) {
                         if (fishReport.getName().equals(currentDay.getName()) && fishReport.getRarity().equals("Christmas 2022")) {
                             this.inventory.setItem(i, createItem(true, day, currentDay, fishReport));
@@ -99,7 +99,7 @@ public class XmasGUI implements InventoryHolder {
                     this.inventory.setItem(i, createItem(false, day, currentDay, null));
 
                 } catch (NullPointerException exception) {
-                    EvenMoreFish.logger.log(Level.SEVERE, "No fish found for day (" + day + ") in xmas2022.yml config file.");
+                    EvenMoreFish.getInstance().getLogger().severe("No fish found for day (" + day + ") in xmas2022.yml config file.");
                 }
             }
     }
@@ -116,7 +116,7 @@ public class XmasGUI implements InventoryHolder {
 
     private ItemStack createItem(final boolean unlocked, final int day, @NotNull final Fish fish, final FishReport fishReport) {
         if (unlocked) {
-            ItemStack itemStack = EvenMoreFish.xmasFish.get(day).give(-1);
+            ItemStack itemStack = EvenMoreFish.getInstance().getXmasFish().get(day).give(-1);
             ItemMeta meta = itemStack.getItemMeta();
             Message fishName = new Message(Xmas2022Config.getInstance().getFoundFishName());
             fishName.setDay(Integer.toString(day));

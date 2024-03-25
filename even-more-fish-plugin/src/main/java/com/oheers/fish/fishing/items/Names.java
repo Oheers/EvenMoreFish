@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 public class Names {
 
@@ -57,7 +56,9 @@ public class Names {
 
             // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
-            if (xmasRarity) EvenMoreFish.xmasRarity = r;
+            if (xmasRarity) {
+                EvenMoreFish.getInstance().setXmasRarity(r);
+            }
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
             r.setRequirements(getRequirements(null, rarity, RaritiesFile.getInstance().getConfig()));
@@ -81,19 +82,19 @@ public class Names {
 
                 if (xmasRarity) {
                     canvas.setDay(getDay(fish));
-                    EvenMoreFish.xmasFish.put(canvas.getDay(), canvas);
+                    EvenMoreFish.getInstance().getXmasFish().put(canvas.getDay(), canvas);
                 }
 
                 if (compCheckExempt(fish, rarity)) {
                     r.setHasCompExemptFish(true);
                     canvas.setCompExemptFish(true);
-                    EvenMoreFish.raritiesCompCheckExempt = true;
+                    EvenMoreFish.getInstance().setRaritiesCompCheckExempt(true);
                 }
 
             }
 
             // puts the collection of fish and their rarities into the main class
-            EvenMoreFish.fishCollection.put(r, fishQueue);
+            EvenMoreFish.getInstance().getFishCollection().put(r, fishQueue);
 
             // memory saving or something
             fishList.clear();
@@ -112,7 +113,7 @@ public class Names {
             if (!(rarityList = baitConfiguration.getStringList("baits." + s + ".rarities")).isEmpty()) {
                 for (String rarityString : rarityList) {
                     boolean foundRarity = false;
-                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                    for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                         if (r.getValue().equalsIgnoreCase(rarityString)) {
                             bait.addRarity(r);
                             foundRarity = true;
@@ -120,14 +121,14 @@ public class Names {
                         }
                     }
                     if (!foundRarity)
-                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
+                        EvenMoreFish.getInstance().getLogger().severe(rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
                 }
             }
 
             if (baitConfiguration.getConfigurationSection("baits." + s + ".fish") != null) {
                 for (String rarityString : baitConfiguration.getConfigurationSection("baits." + s + ".fish").getKeys(false)) {
                     Rarity rarity = null;
-                    for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+                    for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                         if (r.getValue().equalsIgnoreCase(rarityString)) {
                             rarity = r;
                             break;
@@ -135,11 +136,11 @@ public class Names {
                     }
 
                     if (rarity == null) {
-                        EvenMoreFish.logger.log(Level.SEVERE, rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
+                        EvenMoreFish.getInstance().getLogger().severe(rarityString + " is not a loaded rarity value. It was not added to the " + s + " bait.");
                     } else {
                         for (String fishString : baitConfiguration.getStringList("baits." + s + ".fish." + rarityString)) {
                             boolean foundFish = false;
-                            for (Fish f : EvenMoreFish.fishCollection.get(rarity)) {
+                            for (Fish f : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
                                 if (f.getName().equalsIgnoreCase(fishString)) {
                                     bait.addFish(f);
                                     foundFish = true;
@@ -147,13 +148,13 @@ public class Names {
                                 }
                             }
                             if (!foundFish)
-                                EvenMoreFish.logger.log(Level.SEVERE, fishString + " could not be found in the " + rarity.getValue() + " config. It was not added to the " + s + " bait.");
+                                EvenMoreFish.getInstance().getLogger().severe(fishString + " could not be found in the " + rarity.getValue() + " config. It was not added to the " + s + " bait.");
                         }
                     }
                 }
             }
 
-            EvenMoreFish.baits.put(s, bait);
+            EvenMoreFish.getInstance().getBaits().put(s, bait);
         }
     }
 

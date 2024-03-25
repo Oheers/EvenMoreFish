@@ -67,7 +67,7 @@ public class GUIConfig extends ConfigBase {
         if (section == null) return buttons;
         for (String value : section.getKeys(false)) {
             Message materialIcon = new Message(getConfig().getString("main-menu." + value + ".item", "BARRIER"));
-            materialIcon.setToggleIcon(getMaterial(!EvenMoreFish.disabledPlayers.contains(uuid)));
+            materialIcon.setToggleIcon(getMaterial(!EvenMoreFish.getInstance().getDisabledPlayers().contains(uuid)));
             Button button = new Button(
                     value,
                     uuid,
@@ -91,7 +91,7 @@ public class GUIConfig extends ConfigBase {
         try {
             return FillerStyle.valueOf(getConfig().getString(menuID + ".filler-layout", "DEFAULT").toUpperCase());
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, getConfig().getString(menuID + ".filler-layout") + " is not a valid filler layout for the " + menuID);
+            EvenMoreFish.getInstance().getLogger().severe(getConfig().getString(menuID + ".filler-layout") + " is not a valid filler layout for the " + menuID);
             return FillerStyle.DEFAULT;
         }
     }

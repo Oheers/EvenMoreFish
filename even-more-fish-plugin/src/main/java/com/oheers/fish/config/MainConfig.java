@@ -37,7 +37,7 @@ public class MainConfig extends ConfigBase {
     }
 
     public boolean isDatabaseOnline() {
-        return databaseEnabled() && !EvenMoreFish.databaseV3.usingVersionV2();
+        return databaseEnabled() && !EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2();
     }
 
     public boolean isCompetitionUnique() {
@@ -153,7 +153,7 @@ public class MainConfig extends ConfigBase {
         try {
             return Material.valueOf(s);
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item.");
+            EvenMoreFish.getInstance().getLogger().severe(s + " is not a valid material type in config.yml gui.sell-all-item.");
         }
         return Material.COD_BUCKET;
     }
@@ -163,7 +163,7 @@ public class MainConfig extends ConfigBase {
         try {
             return Material.valueOf(s);
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
+            EvenMoreFish.getInstance().getLogger().severe(s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
         }
         return Material.TROPICAL_FISH_BUCKET;
     }
@@ -173,7 +173,7 @@ public class MainConfig extends ConfigBase {
         try {
             return Material.valueOf(s);
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
+            EvenMoreFish.getInstance().getLogger().severe(s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
         }
         return Material.SALMON_BUCKET;
     }
