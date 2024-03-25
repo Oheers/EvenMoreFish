@@ -138,7 +138,7 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.usingPAPI) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendMessage(this.message);
@@ -157,7 +157,7 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.usingPAPI) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         player.sendMessage(this.message);
     }
@@ -175,7 +175,7 @@ public class Message {
         if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.usingPAPI) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         sender.sendMessage(this.message);
     }
@@ -192,7 +192,7 @@ public class Message {
             String returning = Messages.getInstance().getConfig().getString(id);
             if (returning != null) return returning;
             else {
-                EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
+                EvenMoreFish.getInstance().getLogger().severe("No valid value in messages.yml for: " + id + " using default value instead.");
                 return normal;
             }
         }
@@ -212,7 +212,7 @@ public class Message {
             List<String> returning = Messages.getInstance().getConfig().getStringList(id);
             if (!returning.isEmpty()) return returning;
             else {
-                EvenMoreFish.logger.log(Level.SEVERE, "No valid value in messages.yml for: " + id + " using default value instead.");
+                EvenMoreFish.getInstance().getLogger().severe("No valid value in messages.yml for: " + id + " using default value instead.");
                 return normal;
             }
         }
@@ -231,7 +231,7 @@ public class Message {
         if (doVariables) variableFormat();
         if (doColour) colourFormat();
 
-        if (relevantPlayer != null && EvenMoreFish.usingPAPI) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
         if (this.canSilent && this.message.endsWith(" -s")) return "";
         else return this.message;

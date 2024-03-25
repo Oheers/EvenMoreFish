@@ -32,7 +32,7 @@ public class InGameTime implements Requirement {
         if (context.getWorld() != null) {
             return context.getWorld().getTime() <= maxTime && context.getWorld().getTime() >= minTime;
         }
-        EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + configLocation + ", returning false by " +
+        EvenMoreFish.getInstance().getLogger().severe("Could not get world for " + configLocation + ", returning false by " +
                 "default. The player may not have been given a fish if you see this message multiple times.");
         return false;
     }

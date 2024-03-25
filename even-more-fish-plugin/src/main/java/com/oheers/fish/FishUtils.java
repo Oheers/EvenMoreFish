@@ -75,7 +75,7 @@ public class FishUtils {
         // Generating an empty rarity
         Rarity rarity = null;
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
             if (r.getValue().equals(rarityString)) {
                 rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.overridenLore);
             }
@@ -94,7 +94,7 @@ public class FishUtils {
 
             return fish;
         } catch (InvalidFishException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
+            EvenMoreFish.getInstance().getLogger().severe("Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
                     "deleted the fish since this fish was caught.");
         }
 
@@ -123,7 +123,7 @@ public class FishUtils {
         // Generating an empty rarity
         Rarity rarity = null;
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : EvenMoreFish.fishCollection.keySet()) {
+        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
             if (r.getValue().equals(rarityString)) {
                 rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.overridenLore);
             }
@@ -160,7 +160,7 @@ public class FishUtils {
 
     public static boolean checkRegion(Location l, List<String> whitelistedRegions) {
         // if there's any region plugin installed
-        if (EvenMoreFish.guardPL == null) {
+        if (EvenMoreFish.getInstance().getGuardPL() == null) {
             return true;
         }
         // if the user has defined a region whitelist
@@ -168,7 +168,7 @@ public class FishUtils {
             return true;
         }
 
-        if (EvenMoreFish.guardPL.equals("worldguard")) {
+        if (EvenMoreFish.getInstance().getGuardPL().equals("worldguard")) {
 
             // Creates a query for whether the player is stood in a protectedregion defined by the user
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -182,7 +182,7 @@ public class FishUtils {
                 }
             }
             return false;
-        } else if (EvenMoreFish.guardPL.equals("redprotect")) {
+        } else if (EvenMoreFish.getInstance().getGuardPL().equals("redprotect")) {
             Region r = RedProtect.get().getAPI().getRegion(l);
             // if the hook is in any redprotect region
             if (r != null) {
@@ -192,7 +192,7 @@ public class FishUtils {
             return false;
         } else {
             // the user has defined a region whitelist but doesn't have a region plugin.
-            EvenMoreFish.logger.log(Level.WARNING, "Please install WorldGuard or RedProtect to enable region-specific fishing.");
+            EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to enable region-specific fishing.");
             return true;
         }
     }

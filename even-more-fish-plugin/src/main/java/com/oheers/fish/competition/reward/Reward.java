@@ -38,7 +38,7 @@ public class Reward {
         String[] split = value.split(":");
 
         if (split.length < 2) {
-            EvenMoreFish.logger.log(Level.WARNING, value + " is not formatted correctly. It won't be given as a reward");
+            EvenMoreFish.getInstance().getLogger().warning(value + " is not formatted correctly. It won't be given as a reward");
             this.type = RewardType.BAD_FORMAT;
         } else {
             try {
@@ -74,7 +74,7 @@ public class Reward {
             case COMMAND:
                 String inputCommand = this.action
                         .replace("{player}", player.getName());
-                if (EvenMoreFish.usingPAPI) inputCommand = PlaceholderAPI.setPlaceholders(p, inputCommand);
+                if (EvenMoreFish.getInstance().isUsingPAPI()) inputCommand = PlaceholderAPI.setPlaceholders(p, inputCommand);
                 if (hookLocation != null) {
                     inputCommand = inputCommand
                             .replace("{x}", Double.toString(hookLocation.getX()))
@@ -129,17 +129,17 @@ public class Reward {
 
                 break;
             case MONEY:
-                Economy economy = EvenMoreFish.economy;
+                Economy economy = EvenMoreFish.getInstance().getEconomy();
                 if (economy.isEnabled()) { economy.deposit(player, Integer.parseInt(action)); }
                 break;
             // Specifically for when using Vault but also wanting to give points
             case PLAYER_POINTS:
-                if (EvenMoreFish.usingPlayerPoints) {
+                if (EvenMoreFish.getInstance().isUsingPlayerPoints()) {
                     PlayerPoints.getInstance().getAPI().give(player.getUniqueId(), Integer.parseInt(action));
                 }
                 break;
             case PERMISSION:
-                EvenMoreFish.permission.playerAdd(player.getPlayer(), action);
+                EvenMoreFish.getInstance().getPermission().playerAdd(player.getPlayer(), action);
                 break;
             case OTHER:
                 PluginManager pM = Bukkit.getPluginManager();
@@ -147,7 +147,7 @@ public class Reward {
                 pM.callEvent(event);
                 break;
             default:
-                EvenMoreFish.logger.log(Level.SEVERE, "Error in loading a reward.");
+                EvenMoreFish.getInstance().getLogger().severe("Error in loading a reward.");
         }
     }
 

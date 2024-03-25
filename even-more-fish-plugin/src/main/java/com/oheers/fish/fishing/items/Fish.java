@@ -211,7 +211,7 @@ public class Fish implements Cloneable {
         // if it's formatted wrong, it'll just give the player this as a stock effect
         if (separated.length < 3) {
             Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
-            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Invalid potion effect specified. Defaulting to Speed 2 for 5 seconds.");
+            EvenMoreFish.getInstance().getLogger().warning("Invalid potion effect specified. Defaulting to Speed 2 for 5 seconds.");
             return;
         }
 
@@ -281,7 +281,7 @@ public class Fish implements Cloneable {
         else newLoreLine.setRarity(this.rarity.getLorePrep());
 
         List<String> newLore = Arrays.asList(newLoreLine.getRawMessage(true, true).split("\n"));
-        if (getFishermanPlayer() != null && EvenMoreFish.usingPAPI) {
+        if (getFishermanPlayer() != null && EvenMoreFish.getInstance().isUsingPAPI()) {
             return newLore.stream().map(l -> PlaceholderAPI.setPlaceholders(getFishermanPlayer(), l)).collect(Collectors.toList());
         }
 
@@ -297,7 +297,7 @@ public class Fish implements Cloneable {
         // Checks if the player has actually set rewards for an eat event
         if (!configRewards.isEmpty()) {
             // Informs the main class to load up an PlayerItemConsumeEvent listener
-            EvenMoreFish.checkingEatEvent = true;
+            EvenMoreFish.getInstance().setCheckingEatEvent(true);
             this.eventType = "eat";
             actionRewards = new ArrayList<>();
 
@@ -323,7 +323,7 @@ public class Fish implements Cloneable {
         // Checks if the player has actually set rewards for an interact event
         if (!configRewards.isEmpty()) {
             // Informs the main class to load up an PlayerItemConsumeEvent listener
-            EvenMoreFish.checkingIntEvent = true;
+            EvenMoreFish.getInstance().setCheckingIntEvent(true);
             this.eventType = "int";
             actionRewards = new ArrayList<>();
 

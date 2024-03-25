@@ -35,13 +35,13 @@ public class Button {
         try {
             this.material = Material.valueOf(materialString);
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.logger.log(Level.SEVERE, "Invalid material ("  + materialString + ") for gui button: " + identifier);
+            EvenMoreFish.getInstance().getLogger().severe("Invalid material ("  + materialString + ") for gui button: " + identifier);
             this.material = Material.BARRIER;
         }
 
         if (name != null) {
             Message toggleVAR = new Message(name);
-            toggleVAR.setToggleMSG(GUIConfig.getInstance().getToggle(!EvenMoreFish.disabledPlayers.contains(viewer)));
+            toggleVAR.setToggleMSG(GUIConfig.getInstance().getToggle(!EvenMoreFish.getInstance().getDisabledPlayers().contains(viewer)));
             this.name = toggleVAR.getRawMessage(true, true);
         }
 

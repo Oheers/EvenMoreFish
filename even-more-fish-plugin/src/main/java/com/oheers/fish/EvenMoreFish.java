@@ -48,7 +48,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -56,48 +55,47 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
-    private Random random = new Random();
+    private final Random random = new Random();
 
-    public static final int METRIC_ID = 11054;
-    public static final int COMP_CONFIG_VERSION = 1;
-
-    public static Permission permission = null;
-    public static Economy economy;
-    public static Map<Integer, Set<String>> fish = new HashMap<>();
-    public static Map<String, Bait> baits = new HashMap<>();
-    public static Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
-    public static Rarity xmasRarity;
-    public static final Map<Integer, Fish> xmasFish = new HashMap<>();
-    public static List<UUID> disabledPlayers = new ArrayList<>();
-    public static ItemStack customNBTRod;
-    public static boolean checkingEatEvent;
-    public static boolean checkingIntEvent;
+    private Permission permission = null;
+    private Economy economy;
+    private Map<Integer, Set<String>> fish = new HashMap<>();
+    private Map<String, Bait> baits = new HashMap<>();
+    private Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
+    private Rarity xmasRarity;
+    private final Map<Integer, Fish> xmasFish = new HashMap<>();
+    private List<UUID> disabledPlayers = new ArrayList<>();
+    private ItemStack customNBTRod;
+    private boolean checkingEatEvent;
+    private boolean checkingIntEvent;
     // Do some fish in some rarities have the comp-check-exempt: true.
-    public static boolean raritiesCompCheckExempt = false;
-    public static Competition active;
-    public static CompetitionQueue competitionQueue;
-    public static Logger logger;
-    public static PluginManager pluginManager;
-    public static List<SellGUI> guis;
-    public static int metric_fishCaught = 0;
-    public static int metric_baitsUsed = 0;
-    public static int metric_baitsApplied = 0;
+    private boolean raritiesCompCheckExempt = false;
+    private Competition active;
+    private CompetitionQueue competitionQueue;
+    private Logger logger;
+    private PluginManager pluginManager;
+    private List<SellGUI> guis;
+    private int metric_fishCaught = 0;
+    private int metric_baitsUsed = 0;
+    private int metric_baitsApplied = 0;
+    
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
-    public static Map<UUID, Rarity> decidedRarities;
-    public static boolean isUpdateAvailable;
-    public static boolean usingPAPI;
-    public static boolean usingMcMMO;
-    public static boolean usingHeadsDB;
-    public static boolean usingPlayerPoints;
+    private Map<UUID, Rarity> decidedRarities;
+    private boolean isUpdateAvailable;
+    private boolean usingPAPI;
+    private boolean usingMcMMO;
+    private boolean usingHeadsDB;
+    private boolean usingPlayerPoints;
 
-    public static WorldGuardPlugin wgPlugin;
-    public static String guardPL;
-    public static DatabaseV3 databaseV3;
-    public static HeadDatabaseAPI HDBapi;
+    private WorldGuardPlugin wgPlugin;
+    private String guardPL;
+    private DatabaseV3 databaseV3;
+    private HeadDatabaseAPI HDBapi;
+
     private static EvenMoreFish instance;
     private static TaskScheduler scheduler;
-    public static FillerStyle guiFillerStyle;
+    private FillerStyle guiFillerStyle;
     private EMFAPI api;
 
     private AddonManager addonManager;
@@ -156,7 +154,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (MainConfig.getInstance().isEconomyEnabled()) {
             // could not set up economy.
             if (!setupEconomy()) {
-                EvenMoreFish.logger.log(Level.WARNING, "EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
+                EvenMoreFish.getInstance().getLogger().warning("EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
             }
         }
 
@@ -206,11 +204,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             databaseV3 = new DatabaseV3(this);
             //load user reports into cache
             getScheduler().runTaskAsynchronously(() -> {
-                EvenMoreFish.databaseV3.createTables(false);
+                EvenMoreFish.getInstance().getDatabaseV3().createTables(false);
                 for (Player player : getServer().getOnlinePlayers()) {
                     UserReport playerReport = databaseV3.readUserReport(player.getUniqueId());
                     if (playerReport == null) {
-                        EvenMoreFish.logger.warning("Could not read report for player (" + player.getUniqueId() + ")");
+                        EvenMoreFish.getInstance().getLogger().warning("Could not read report for player (" + player.getUniqueId() + ")");
                         continue;
                     }
                     DataManager.getInstance().putUserReportCache(player.getUniqueId(), playerReport);
@@ -315,7 +313,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private void metrics() {
-        Metrics metrics = new Metrics(this, METRIC_ID);
+        Metrics metrics = new Metrics(this, 11054);
 
         metrics.addCustomChart(new SingleLineChart("fish_caught", () -> {
             int returning = metric_fishCaught;
@@ -480,6 +478,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         MainConfig.getInstance().updateConfig();
         Messages.getInstance().updateConfig();
 
+        int COMP_CONFIG_VERSION = 1;
         if (CompetitionConfig.getInstance().configVersion() < COMP_CONFIG_VERSION) {
             getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
                     " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
@@ -519,11 +518,167 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return (pWG != null);
     }
 
-    public EMFAPI getAPI() {
-        return this.api;
-    }
-
     public Random getRandom() {
         return random;
     }
+
+    public Permission getPermission() {
+        return permission;
+    }
+
+    public Economy getEconomy() {
+        return economy;
+    }
+
+    public Map<Integer, Set<String>> getFish() {
+        return fish;
+    }
+
+    public Map<String, Bait> getBaits() {
+        return baits;
+    }
+
+    public Map<Rarity, List<Fish>> getFishCollection() {
+        return fishCollection;
+    }
+
+    public Rarity getXmasRarity() {
+        return xmasRarity;
+    }
+
+    public void setXmasRarity(Rarity rarity) {
+        this.xmasRarity = rarity;
+    }
+
+    public Map<Integer, Fish> getXmasFish() {
+        return xmasFish;
+    }
+
+    public List<UUID> getDisabledPlayers() {
+        return disabledPlayers;
+    }
+
+    public ItemStack getCustomNBTRod() {
+        return customNBTRod;
+    }
+
+    public boolean isCheckingEatEvent() {
+        return checkingEatEvent;
+    }
+    public void setCheckingEatEvent(boolean bool) {
+        this.checkingEatEvent = bool;
+    }
+
+    public boolean isCheckingIntEvent() {
+        return checkingIntEvent;
+    }
+
+    public void setCheckingIntEvent(boolean bool) {
+        this.checkingIntEvent = bool;
+    }
+
+    public boolean isRaritiesCompCheckExempt() {
+        return raritiesCompCheckExempt;
+    }
+
+    public void setRaritiesCompCheckExempt(boolean bool) {
+        this.raritiesCompCheckExempt = bool;
+    }
+
+    public Competition getActiveCompetition() {
+        return active;
+    }
+
+    public void setActiveCompetition(Competition competition) {
+        this.active = competition;
+    }
+
+    public CompetitionQueue getCompetitionQueue() {
+        return competitionQueue;
+    }
+
+    public PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    public List<SellGUI> getGuis() {
+        return guis;
+    }
+
+    public int getMetricFishCaught() {
+        return metric_fishCaught;
+    }
+
+    public void incrementMetricFishCaught(int value) {
+        this.metric_fishCaught = (metric_fishCaught + value);
+    }
+
+    public int getMetricBaitsUsed() {
+        return metric_baitsUsed;
+    }
+
+    public void incrementMetricBaitsUsed(int value) {
+        this.metric_baitsUsed = (metric_baitsUsed + value);
+    }
+
+    public int getMetricBaitsApplied() {
+        return metric_baitsApplied;
+    }
+
+    public void incrementMetricBaitsApplied(int value) {
+        this.metric_baitsApplied = (metric_baitsApplied + value);
+    }
+
+    public Map<UUID, Rarity> getDecidedRarities() {
+        return decidedRarities;
+    }
+
+    public boolean isUpdateAvailable() {
+        return isUpdateAvailable;
+    }
+
+    public boolean isUsingPAPI() {
+        return usingPAPI;
+    }
+
+    public boolean isUsingMcMMO() {
+        return usingMcMMO;
+    }
+
+    public boolean isUsingHeadsDB() {
+        return usingHeadsDB;
+    }
+
+    public boolean isUsingPlayerPoints() {
+        return usingPlayerPoints;
+    }
+
+    public WorldGuardPlugin getWgPlugin() {
+        return wgPlugin;
+    }
+
+    public String getGuardPL() {
+        return guardPL;
+    }
+
+    public DatabaseV3 getDatabaseV3() {
+        return databaseV3;
+    }
+
+    public HeadDatabaseAPI getHDBapi() {
+        return HDBapi;
+    }
+
+    public void setHDBapi(HeadDatabaseAPI api) {
+        this.HDBapi = api;
+    }
+
+    public FillerStyle getGuiFillerStyle() {
+        return guiFillerStyle;
+    }
+
+    public EMFAPI getApi() {
+        return api;
+    }
+
 }

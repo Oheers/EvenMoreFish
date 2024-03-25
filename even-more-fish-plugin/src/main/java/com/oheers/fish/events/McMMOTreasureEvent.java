@@ -24,7 +24,7 @@ public class McMMOTreasureEvent implements Listener {
     public void mcmmoTreasure(McMMOReplaceVanillaTreasureEvent event) {
         if (MainConfig.getInstance().disableMcMMOTreasure()) {
             if (MainConfig.getInstance().isCompetitionUnique()) {
-                if (EvenMoreFish.active != null) {
+                if (EvenMoreFish.getInstance().getActiveCompetition() != null) {
                     event.setReplacementItemStack(event.getOriginalItem().getItemStack());
                 }
             } else {

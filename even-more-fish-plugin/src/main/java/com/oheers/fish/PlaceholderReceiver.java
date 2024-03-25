@@ -112,7 +112,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(true, false);
             }
             
-            return EvenMoreFish.active.getCompetitionType().name();
+            return EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().name();
         }
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
@@ -127,7 +127,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            UUID uuid = EvenMoreFish.active.getLeaderboard().getPlayer(place);
+            UUID uuid = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getPlayer(place);
             if (uuid != null) {
                 // To be in the leaderboard the player must have joined
                 return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
@@ -137,8 +137,8 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             if (!Competition.isActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE).getRawMessage(true, false);
             }
-            if (!(EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH ||
-                EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_TOTAL)) {
+            if (!(EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_FISH ||
+                EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_TOTAL)) {
                 return new Message(ConfigMessage.PLACEHOLDER_SIZE_DURING_MOST_FISH).getRawMessage(true, false);
             }
             
@@ -149,7 +149,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            float value = EvenMoreFish.active.getLeaderboard().getPlaceValue(place);
+            float value = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getPlaceValue(place);
             
             if (value != -1.0f) return Float.toString(Math.round(value * 10f) / 10f);
             else return "";
@@ -160,7 +160,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_FISH).getRawMessage(true, false);
             }
             
-            if (EvenMoreFish.active.getCompetitionType() == CompetitionType.LARGEST_FISH) {
+            if (EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_FISH) {
                 // checking the leaderboard actually contains the value of place
                 int place = Integer.parseInt(identifier.substring(23));
                 if (!leaderboardContainsPlace(place)) {
@@ -168,7 +168,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 }
                 
                 // getting "place" place in the competition
-                Fish fish = EvenMoreFish.active.getLeaderboard().getPlaceFish(place);
+                Fish fish = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getPlaceFish(place);
                 if (fish != null) {
                     Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
                     if (fish.getLength() == -1)
@@ -240,6 +240,6 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
     }
     
     private boolean leaderboardContainsPlace(int place) {
-        return EvenMoreFish.active.getLeaderboardSize() >= place;
+        return EvenMoreFish.getInstance().getActiveCompetition().getLeaderboardSize() >= place;
     }
 }

@@ -36,7 +36,7 @@ public class Biome implements Requirement {
         if (context.getWorld() != null) {
             return biomes.contains(context.getWorld().getBiome(context.getLocation().getBlockX(), context.getLocation().getBlockY(), context.getLocation().getBlockZ()));
         }
-        EvenMoreFish.logger.log(Level.SEVERE, "Could not get world for " + configLocation + ", returning false by " +
+        EvenMoreFish.getInstance().getLogger().severe("Could not get world for " + configLocation + ", returning false by " +
                 "default. The player may not have been given a fish if you see this message multiple times.");
         return false;
     }
@@ -48,7 +48,7 @@ public class Biome implements Requirement {
             try {
                 this.biomes.add(org.bukkit.block.Biome.valueOf(biome));
             } catch (IllegalArgumentException iae) {
-                EvenMoreFish.logger.log(Level.SEVERE, biome + " is not a valid biome, found when loading in one of your fish.");
+                EvenMoreFish.getInstance().getLogger().severe(biome + " is not a valid biome, found when loading in one of your fish.");
             }
         }
     }

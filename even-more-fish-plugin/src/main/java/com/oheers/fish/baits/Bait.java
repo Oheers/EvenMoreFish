@@ -158,14 +158,14 @@ public class Bait {
         Set<Rarity> boostedRarities = new HashSet<>(getRarityList());
         boostedRarities.addAll(fishListRarities);
 
-        Rarity fishRarity = FishingProcessor.randomWeightedRarity(player, getBoostRate(), boostedRarities, EvenMoreFish.fishCollection.keySet());
+        Rarity fishRarity = FishingProcessor.randomWeightedRarity(player, getBoostRate(), boostedRarities, EvenMoreFish.getInstance().getFishCollection().keySet());
         Fish fish;
 
         if (!getFishList().isEmpty()) {
             // The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
             // the method isn't given an empty list.
             if (!fishListRarities.contains(fishRarity)) {
-                fish = FishingProcessor.getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), EvenMoreFish.fishCollection.get(fishRarity), true);
+                fish = FishingProcessor.getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), EvenMoreFish.getInstance().getFishCollection().get(fishRarity), true);
             } else {
                 fish = FishingProcessor.getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFishList(), true);
             }
