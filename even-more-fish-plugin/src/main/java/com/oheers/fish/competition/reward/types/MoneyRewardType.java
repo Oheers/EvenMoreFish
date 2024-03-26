@@ -21,7 +21,6 @@ public class MoneyRewardType implements RewardType {
             return;
         }
         if (economy.isEnabled()) {
-            System.out.println(amount);
             economy.deposit(player, amount);
         }
     }

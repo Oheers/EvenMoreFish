@@ -19,7 +19,6 @@ public class HungerRewardType implements RewardType {
             EvenMoreFish.getInstance().getLogger().warning("Invalid number specified for RewardType " + getIdentifier() + ": " + value);
             return;
         }
-        System.out.println(rewardHunger);
         player.setFoodLevel(player.getFoodLevel() + rewardHunger);
     }
 

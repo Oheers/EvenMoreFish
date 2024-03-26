@@ -11,7 +11,6 @@ public class PermissionRewardType implements RewardType {
 
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
-        System.out.println(value);
         EvenMoreFish.getInstance().getPermission().playerAdd(player.getPlayer(), value);
     }
 

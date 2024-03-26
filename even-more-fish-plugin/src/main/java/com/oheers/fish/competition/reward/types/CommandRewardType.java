@@ -25,7 +25,6 @@ public class CommandRewardType implements RewardType {
 
         // running the command
         String finalCommand = inputCommand;
-        System.out.println(finalCommand);
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
     }
 

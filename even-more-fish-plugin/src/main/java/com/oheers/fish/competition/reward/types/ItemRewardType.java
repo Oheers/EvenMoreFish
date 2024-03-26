@@ -35,7 +35,6 @@ public class ItemRewardType implements RewardType {
             }
             item = new ItemStack(material, quantity);
         }
-        System.out.println(item);
         FishUtils.giveItems(Collections.singletonList(item), player);
     }
 

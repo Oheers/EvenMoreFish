@@ -12,7 +12,6 @@ public class MessageRewardType implements RewardType {
 
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
-        System.out.println(value);
         player.sendMessage(new OldMessage().setMSG(value).setReceiver(player).toString());
     }
 

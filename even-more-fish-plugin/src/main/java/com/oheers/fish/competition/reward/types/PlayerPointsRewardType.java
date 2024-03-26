@@ -19,7 +19,6 @@ public class PlayerPointsRewardType implements RewardType {
             EvenMoreFish.getInstance().getLogger().warning("Invalid number specified for RewardType " + getIdentifier() + ": " + value);
             return;
         }
-        System.out.println(amount);
         if (EvenMoreFish.getInstance().isUsingPlayerPoints()) {
             PlayerPoints.getInstance().getAPI().give(player.getUniqueId(), amount);
         }

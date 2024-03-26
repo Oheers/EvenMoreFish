@@ -20,7 +20,6 @@ public class EffectRewardType implements RewardType {
             EvenMoreFish.getInstance().getLogger().warning("Invalid effect specified for RewardType " + getIdentifier() + ": " + value);
             return;
         }
-        System.out.println(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2]) * 20, Integer.parseInt(parsedEffect[1])));
         // Adds a potion effect in accordance to the config.yml "EFFECT:" value
         EvenMoreFish.getScheduler().runTask(player, () -> player.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(parsedEffect[0])), Integer.parseInt(parsedEffect[2]) * 20, Integer.parseInt(parsedEffect[1]))));
     }
