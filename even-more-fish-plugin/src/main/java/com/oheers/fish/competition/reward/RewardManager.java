@@ -31,6 +31,7 @@ public class RewardManager {
             new MoneyRewardType().register();
             new PermissionRewardType().register();
             new PlayerPointsRewardType().register();
+            new EXPRewardType().register();
             loaded = true;
         }
     }
