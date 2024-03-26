@@ -6,14 +6,15 @@ import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
+import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
-import com.oheers.fish.competition.reward.RewardManager;
-import com.oheers.fish.competition.reward.RewardType;
+import com.oheers.fish.api.reward.RewardManager;
+import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.*;
@@ -42,7 +43,10 @@ import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -56,7 +60,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
+public class EvenMoreFish extends JavaPlugin implements EMFPlugin, Listener {
     private final Random random = new Random();
 
     private Permission permission = null;
@@ -129,6 +133,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         
         getConfig().options().copyDefaults();
         saveDefaultConfig();
+
+        loadRewardManager();
 
         RewardManager.getInstance().load();
 
@@ -234,6 +240,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (Competition.isActive()) {
             active.end();
         }
+
+        RewardManager.getInstance().unload();
 
         if (MainConfig.getInstance().databaseEnabled()) {
             databaseV3.shutdown();
@@ -683,6 +691,28 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public EMFAPI getApi() {
         return api;
+    }
+
+    private void loadRewardManager() {
+        // Load RewardManager
+        RewardManager.getInstance().load();
+
+        // Load RewardTypes
+        new CommandRewardType().register();
+        new EffectRewardType().register();
+        new HealthRewardType().register();
+        new HungerRewardType().register();
+        new ItemRewardType().register();
+        new MessageRewardType().register();
+        new MoneyRewardType().register();
+        new PermissionRewardType().register();
+        new PlayerPointsRewardType().register();
+        new EXPRewardType().register();
+    }
+
+    @EventHandler
+    public void onServerLoad(ServerLoadEvent event) {
+        Bukkit.getPluginManager().callEvent(new EMFRewardsLoadEvent());
     }
 
 }

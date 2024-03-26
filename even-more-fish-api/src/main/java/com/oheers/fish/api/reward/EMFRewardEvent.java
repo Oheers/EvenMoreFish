@@ -1,6 +1,5 @@
-package com.oheers.fish.api;
+package com.oheers.fish.api.reward;
 
-import com.oheers.fish.competition.reward.Reward;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

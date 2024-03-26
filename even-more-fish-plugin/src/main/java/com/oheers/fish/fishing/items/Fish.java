@@ -2,7 +2,7 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.Xmas2022Config;

@@ -1,33 +1,30 @@
-package com.oheers.fish.competition.reward.types;
+package com.oheers.fish.competition.rewardtypes;
 
-import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.competition.reward.RewardType;
+import com.oheers.fish.api.reward.RewardType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public class MoneyRewardType implements RewardType {
+public class HungerRewardType implements RewardType {
+
 
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
-        Economy economy = EvenMoreFish.getInstance().getEconomy();
-        int amount;
+        int rewardHunger;
         try {
-            amount = Integer.parseInt(value);
+            rewardHunger = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
             EvenMoreFish.getInstance().getLogger().warning("Invalid number specified for RewardType " + getIdentifier() + ": " + value);
             return;
         }
-        if (economy.isEnabled()) {
-            economy.deposit(player, amount);
-        }
+        player.setFoodLevel(player.getFoodLevel() + rewardHunger);
     }
 
     @Override
     public @NotNull String getIdentifier() {
-        return "MONEY";
+        return "HUNGER";
     }
 
     @Override
@@ -39,5 +36,4 @@ public class MoneyRewardType implements RewardType {
     public @NotNull JavaPlugin getPlugin() {
         return EvenMoreFish.getInstance();
     }
-
 }

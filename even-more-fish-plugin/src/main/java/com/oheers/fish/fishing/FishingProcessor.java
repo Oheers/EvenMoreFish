@@ -9,7 +9,7 @@ import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;

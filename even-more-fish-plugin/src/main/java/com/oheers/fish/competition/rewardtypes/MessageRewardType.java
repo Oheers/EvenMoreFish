@@ -1,34 +1,28 @@
-package com.oheers.fish.competition.reward.types;
+package com.oheers.fish.competition.rewardtypes;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.competition.reward.RewardType;
+import com.oheers.fish.api.reward.RewardType;
+import com.oheers.fish.config.messages.OldMessage;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public class EXPRewardType implements RewardType {
+public class MessageRewardType implements RewardType {
 
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
-        int experience;
-        try {
-            experience = Integer.parseInt(value);
-        } catch (NumberFormatException ex) {
-            EvenMoreFish.getInstance().getLogger().warning("Invalid number specified for RewardType " + getIdentifier() + ": " + value);
-            return;
-        }
-        player.giveExp(experience);
+        player.sendMessage(new OldMessage().setMSG(value).setReceiver(player).toString());
     }
 
     @Override
     public @NotNull String getIdentifier() {
-        return "EXP";
+        return "MESSAGE";
     }
 
     @Override
     public @NotNull String getAuthor() {
-        return "FireML";
+        return "Oheers";
     }
 
     @Override

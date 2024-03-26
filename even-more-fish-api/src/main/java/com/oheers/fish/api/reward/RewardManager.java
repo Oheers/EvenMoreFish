@@ -1,10 +1,15 @@
-package com.oheers.fish.competition.reward;
+package com.oheers.fish.api.reward;
 
-import com.oheers.fish.competition.reward.types.*;
+import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
-public class RewardManager {
+public class RewardManager implements Listener {
 
     private static RewardManager instance = null;
 
@@ -22,17 +27,16 @@ public class RewardManager {
 
     public void load() {
         if (!isLoaded()) {
-            new CommandRewardType().register();
-            new EffectRewardType().register();
-            new HealthRewardType().register();
-            new HungerRewardType().register();
-            new ItemRewardType().register();
-            new MessageRewardType().register();
-            new MoneyRewardType().register();
-            new PermissionRewardType().register();
-            new PlayerPointsRewardType().register();
-            new EXPRewardType().register();
+            Bukkit.getPluginManager().callEvent(new EMFRewardsLoadEvent());
             loaded = true;
+        }
+    }
+
+    public void unload() {
+        if (isLoaded()) {
+            this.rewardTypes.clear();
+            loaded = false;
+            getLogger().info("Unloaded RewardManager");
         }
     }
 
@@ -55,6 +59,10 @@ public class RewardManager {
 
     public List<RewardType> getRegisteredRewardTypes() {
         return new ArrayList<>(rewardTypes.values());
+    }
+
+    public Logger getLogger() {
+        return Logger.getLogger("EvenMoreFish");
     }
 
 }

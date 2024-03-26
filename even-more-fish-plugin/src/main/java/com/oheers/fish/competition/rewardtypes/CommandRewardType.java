@@ -1,7 +1,7 @@
-package com.oheers.fish.competition.reward.types;
+package com.oheers.fish.competition.rewardtypes;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.competition.reward.RewardType;
+import com.oheers.fish.api.reward.RewardType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
