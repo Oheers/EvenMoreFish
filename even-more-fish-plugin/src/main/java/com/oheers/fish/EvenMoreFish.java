@@ -227,6 +227,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin, Listener {
 
         }
 
+        getServer().getPluginManager().registerEvents(this, this);
+
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
     }
 
