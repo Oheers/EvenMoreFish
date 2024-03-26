@@ -36,7 +36,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
 
@@ -201,7 +200,7 @@ public class FishingProcessor implements Listener {
 
         if (runRewards && fish.hasFishRewards()) {
             for (Reward fishReward : fish.getFishRewards()) {
-                fishReward.run(player, location);
+                fishReward.rewardPlayer(player, location);
             }
         }
 

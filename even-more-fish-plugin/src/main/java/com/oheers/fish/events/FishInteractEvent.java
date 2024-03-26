@@ -40,7 +40,7 @@ public class FishInteractEvent implements Listener {
                 event.getPlayer().getInventory().getItemInMainHand().setAmount(itemInHand.getAmount() - 1);
                 // Runs through each eat-event
                 for (Reward r : fish.getActionRewards()) {
-                    r.run(event.getPlayer(), null);
+                    r.rewardPlayer(event.getPlayer(), null);
                 }
             }
         }

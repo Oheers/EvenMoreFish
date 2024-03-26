@@ -25,7 +25,6 @@ import org.bukkit.entity.Player;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.logging.Level;
 
 public class Competition {
 
@@ -669,11 +668,11 @@ public class Competition {
             while (competitionEntryIterator.hasNext()) {
                 CompetitionEntry entry = competitionEntryIterator.next();
                 if (rewardPlace <= rewards.size()) {
-                    rewards.get(rewardPlace).forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
+                    rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(Objects.requireNonNull(Bukkit.getPlayer(entry.getPlayer())), null));
                     rewardPlace++;
                 } else {
                     if (participationRewardsExist) {
-                        participationRewards.forEach(reward -> reward.run(Bukkit.getOfflinePlayer(entry.getPlayer()), null));
+                        participationRewards.forEach(reward -> reward.rewardPlayer(Objects.requireNonNull(Bukkit.getPlayer(entry.getPlayer())), null));
                     }
                 }
                 if (databaseEnabled) {
@@ -697,21 +696,21 @@ public class Competition {
 
         if (!rewards.isEmpty()) {
             for (Reward reward : rewards.get(1)) {
-                reward.run(player, null);
+                reward.rewardPlayer(player, null);
             }
         }
     }
 
-    public void initBar(String competionName) {
+    public void initBar(String competitionName) {
         this.statusBar = new Bar();
 
         try {
-            this.statusBar.setColour(BarColor.valueOf(CompetitionConfig.getInstance().getBarColour(competionName)));
+            this.statusBar.setColour(BarColor.valueOf(CompetitionConfig.getInstance().getBarColour(competitionName)));
         } catch (IllegalArgumentException iae) {
-            EvenMoreFish.getInstance().getLogger().severe(CompetitionConfig.getInstance().getBarColour(competionName) + " is not a valid bossbar colour, check ");
+            EvenMoreFish.getInstance().getLogger().severe(CompetitionConfig.getInstance().getBarColour(competitionName) + " is not a valid bossbar colour, check ");
         }
 
-        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competionName)));
+        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)));
     }
 
     public void initGetNumbersNeeded(String competitionName) {

@@ -12,6 +12,8 @@ import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
+import com.oheers.fish.competition.reward.RewardManager;
+import com.oheers.fish.competition.reward.RewardType;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.*;
@@ -127,6 +129,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         
         getConfig().options().copyDefaults();
         saveDefaultConfig();
+
+        RewardManager.getInstance().load();
 
         new MainConfig();
         new Messages();

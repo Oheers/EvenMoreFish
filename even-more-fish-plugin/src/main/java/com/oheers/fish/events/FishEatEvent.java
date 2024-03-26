@@ -29,7 +29,7 @@ public class FishEatEvent implements Listener {
                 if (fish.hasEatRewards()) {
                     // Runs through each eat-event
                     for (Reward r : fish.getActionRewards()) {
-                        r.run(event.getPlayer(), null);
+                        r.rewardPlayer(event.getPlayer(), null);
                     }
                 }
             }
