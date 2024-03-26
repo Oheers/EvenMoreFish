@@ -2,9 +2,7 @@ package com.oheers.fish.competition.reward;
 
 import com.oheers.fish.competition.reward.types.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class RewardManager {
 
@@ -54,8 +52,8 @@ public class RewardManager {
         return true;
     }
 
-    public Collection<RewardType> getRegisteredRewardTypes() {
-        return rewardTypes.values();
+    public List<RewardType> getRegisteredRewardTypes() {
+        return new ArrayList<>(rewardTypes.values());
     }
 
 }
