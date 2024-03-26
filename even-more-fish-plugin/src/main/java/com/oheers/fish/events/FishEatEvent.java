@@ -1,7 +1,7 @@
 package com.oheers.fish.events;
 
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +29,7 @@ public class FishEatEvent implements Listener {
                 if (fish.hasEatRewards()) {
                     // Runs through each eat-event
                     for (Reward r : fish.getActionRewards()) {
-                        r.run(event.getPlayer(), null);
+                        r.rewardPlayer(event.getPlayer(), null);
                     }
                 }
             }

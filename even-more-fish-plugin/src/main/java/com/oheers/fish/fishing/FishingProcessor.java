@@ -9,7 +9,7 @@ import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.competition.reward.Reward;
+import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
@@ -36,7 +36,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
 
@@ -201,7 +200,7 @@ public class FishingProcessor implements Listener {
 
         if (runRewards && fish.hasFishRewards()) {
             for (Reward fishReward : fish.getFishRewards()) {
-                fishReward.run(player, location);
+                fishReward.rewardPlayer(player, location);
             }
         }
 
