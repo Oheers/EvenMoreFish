@@ -707,7 +707,7 @@ class Controls {
             int duration = Integer.parseInt(argsDuration);
             // I've just discovered /emf admin competition start -1 causes some funky stuff - so this prevents that.
             if (duration > 0) {
-                Competition comp = new Competition(duration, type);
+                Competition comp = new Competition(duration, type, new ArrayList<>());
 
                 comp.setCompetitionName("[admin_started]");
                 comp.setAdminStarted(true);
