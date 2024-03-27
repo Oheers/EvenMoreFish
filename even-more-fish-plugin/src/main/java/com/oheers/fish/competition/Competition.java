@@ -49,12 +49,14 @@ public class Competition {
     Sound startSound;
     MyScheduledTask timingSystem;
     List<UUID> leaderboardMembers = new ArrayList<>();
+    private List<String> beginCommands;
 
-    public Competition(final Integer duration, final CompetitionType type) {
+    public Competition(final Integer duration, final CompetitionType type, List<String> beginCommands) {
         this.maxDuration = duration;
         this.alertTimes = new ArrayList<>();
         this.rewards = new HashMap<>();
         this.competitionType = type;
+        this.beginCommands = beginCommands;
     }
 
     public static boolean isActive() {
@@ -89,9 +91,10 @@ public class Competition {
             statusBar.show();
             initTimer();
             announceBegin();
-            EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(new Competition(Long.valueOf(this.maxDuration).intValue(), this.competitionType));
+            EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(this);
             Bukkit.getServer().getPluginManager().callEvent(startEvent);
             epochStartTime = Instant.now().getEpochSecond();
+            this.beginCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
 
             // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
             EvenMoreFish.getInstance().getDecidedRarities().clear();
@@ -105,7 +108,7 @@ public class Competition {
         // print leaderboard
         this.timingSystem.cancel();
         statusBar.hide();
-        EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(new Competition(Long.valueOf(this.maxDuration).intValue(), this.competitionType));
+        EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(this);
         Bukkit.getServer().getPluginManager().callEvent(endEvent);
         for (Player player : Bukkit.getOnlinePlayers()) {
             new Message(ConfigMessage.COMPETITION_END).broadcast(player, true, true);

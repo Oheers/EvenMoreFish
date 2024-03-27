@@ -1,6 +1,5 @@
 package com.oheers.fish.competition;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.CompetitionConfig;
 
 import java.util.*;
@@ -12,12 +11,13 @@ public class CompetitionQueue {
 
     public void load() {
         competitions = new TreeMap<>();
+        CompetitionConfig competitionConfig = CompetitionConfig.getInstance();
         // Competitions exist in the competitions.yml
-        if (CompetitionConfig.getInstance().getCompetitions() != null) {
-            for (String comp : CompetitionConfig.getInstance().getCompetitions()) {
+        if (competitionConfig.getCompetitions() != null) {
+            for (String comp : competitionConfig.getCompetitions()) {
 
-                CompetitionType type = CompetitionConfig.getInstance().getCompetitionType(comp);
-                Competition competition = new Competition(CompetitionConfig.getInstance().getCompetitionDuration(comp) * 60, type);
+                CompetitionType type = competitionConfig.getCompetitionType(comp);
+                Competition competition = new Competition(competitionConfig.getCompetitionDuration(comp) * 60, type, competitionConfig.getCompetitionStartCommands(comp));
 
                 competition.setCompetitionName(comp);
                 competition.setAdminStarted(false);
@@ -27,16 +27,16 @@ public class CompetitionQueue {
                 competition.initGetNumbersNeeded(comp);
                 competition.initStartSound(comp);
 
-                if (CompetitionConfig.getInstance().specificDayTimes(comp)) {
-                    for (String day : CompetitionConfig.getInstance().activeDays(comp)) {
-                        for (String time : CompetitionConfig.getInstance().getDayTimes(comp, day)) {
+                if (competitionConfig.specificDayTimes(comp)) {
+                    for (String day : competitionConfig.activeDays(comp)) {
+                        for (String time : competitionConfig.getDayTimes(comp, day)) {
                             competitions.put(generateTimeCode(day, time), competition);
                         }
                     }
-                } else if (CompetitionConfig.getInstance().doingRepeatedTiming(comp)) {
-                    if (CompetitionConfig.getInstance().hasBlacklistedDays(comp)) {
-                        List<String> blacklistedDays = CompetitionConfig.getInstance().getBlacklistedDays(comp);
-                        for (String time : CompetitionConfig.getInstance().getRepeatedTiming(comp)) {
+                } else if (competitionConfig.doingRepeatedTiming(comp)) {
+                    if (competitionConfig.hasBlacklistedDays(comp)) {
+                        List<String> blacklistedDays = competitionConfig.getBlacklistedDays(comp);
+                        for (String time : competitionConfig.getRepeatedTiming(comp)) {
                             for (String day : days) {
                                 if (!blacklistedDays.contains(day)) {
                                     competitions.put(generateTimeCode(day, time), competition);
@@ -44,7 +44,7 @@ public class CompetitionQueue {
                             }
                         }
                     } else {
-                        for (String time : CompetitionConfig.getInstance().getRepeatedTiming(comp)) {
+                        for (String time : competitionConfig.getRepeatedTiming(comp)) {
                             for (String day : days) {
                                 competitions.put(generateTimeCode(day, time), competition);
                             }
@@ -92,7 +92,7 @@ public class CompetitionQueue {
      * @return The next competition starting timecode.
      */
     public int getNextCompetition() {
-        Competition competition = new Competition(-1, CompetitionType.LARGEST_FISH);
+        Competition competition = new Competition(-1, CompetitionType.LARGEST_FISH, new ArrayList<>());
         int currentTimeCode = AutoRunner.getCurrentTimeCode();
         if (this.competitions.containsKey(currentTimeCode)) return currentTimeCode;
         this.competitions.put(currentTimeCode, competition);

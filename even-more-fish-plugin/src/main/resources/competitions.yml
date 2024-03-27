@@ -17,6 +17,10 @@ competitions:
       - "06:00"
       - "12:00"
       - "18:00"
+    # Allows you to run commands when the competition starts. Uncomment to use
+    #start-commands:
+    #  - "command 1"
+    #  - "command 2"
     # Sets days that this competition type won't run on, this is useful if you want one day to be dominated by another competition type
     blacklisted-days:
       - "Sunday"
