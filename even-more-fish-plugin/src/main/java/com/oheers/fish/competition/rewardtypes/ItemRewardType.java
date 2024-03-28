@@ -17,9 +17,9 @@ public class ItemRewardType implements RewardType {
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
         String[] parsedItem = value.split(",");
-        Material material = Material.getMaterial(parsedItem[0]);
+        Material material = Material.getMaterial(parsedItem[0].toUpperCase());
         if (material == null) {
-            EvenMoreFish.getInstance().getLogger().warning("Invalid material specified for RewardType " + getIdentifier() + ": " + value);
+            EvenMoreFish.getInstance().getLogger().warning("Invalid material specified for RewardType " + getIdentifier() + ": " + parsedItem[0]);
             return;
         }
         ItemStack item;
