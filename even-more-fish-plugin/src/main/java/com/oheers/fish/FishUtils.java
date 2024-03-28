@@ -158,6 +158,26 @@ public class FishUtils {
                 .forEach(item -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), item)));
     }
 
+    public static void giveItems(ItemStack[] items, Player player) {
+        if (items.length == 0) {
+            return;
+        }
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
+        player.getInventory().addItem(items)
+                .values()
+                .forEach(item -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), item)));
+    }
+
+    public static void giveItem(ItemStack item, Player player) {
+        if (item == null) {
+            return;
+        }
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
+        player.getInventory().addItem(item)
+                .values()
+                .forEach(loopItem -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), loopItem)));
+    }
+
     public static boolean checkRegion(Location l, List<String> whitelistedRegions) {
         // if there's any region plugin installed
         if (EvenMoreFish.getInstance().getGuardPL() == null) {

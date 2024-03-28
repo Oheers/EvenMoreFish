@@ -17,25 +17,24 @@ public class ItemRewardType implements RewardType {
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
         String[] parsedItem = value.split(",");
-        Material material = Material.getMaterial(parsedItem[0]);
+        Material material = Material.getMaterial(parsedItem[0].toUpperCase());
         if (material == null) {
-            EvenMoreFish.getInstance().getLogger().warning("Invalid material specified for RewardType " + getIdentifier() + ": " + value);
+            EvenMoreFish.getInstance().getLogger().warning("Invalid material specified for RewardType " + getIdentifier() + ": " + parsedItem[0]);
             return;
         }
-        ItemStack item;
-        if (parsedItem.length == 1) {
-            item = new ItemStack(material);
-        } else {
-            int quantity;
+        ItemStack item = new ItemStack(material);
+        int quantity = 1;
+        if (parsedItem.length > 1) {
             try {
                 quantity = Integer.parseInt(parsedItem[1]);
             } catch (NumberFormatException ex) {
                 EvenMoreFish.getInstance().getLogger().warning("Invalid quantity specified for RewardType " + getIdentifier() + ": " + parsedItem[1]);
                 return;
             }
-            item = new ItemStack(material, quantity);
         }
-        FishUtils.giveItems(Collections.singletonList(item), player);
+        for (int i = 0; i < quantity; ++i) {
+            FishUtils.giveItem(item, player);
+        }
     }
 
     @Override
