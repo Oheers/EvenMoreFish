@@ -49,7 +49,7 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public int getCompetitionDuration(String competitionName) {
-        return getConfig().getInt("competitions." + competitionName + ".duration");
+        return Math.max(1, getConfig().getInt("competitions." + competitionName + ".duration"));
     }
 
     public List<String> getCompetitionStartCommands(String competitionName) {
