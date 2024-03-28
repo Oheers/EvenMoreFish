@@ -52,7 +52,7 @@ public class RewardManager implements Listener {
         if (rewardTypes.containsKey(identifier.toUpperCase())) {
             return false;
         }
-        rewardType.getPlugin().getLogger().info("Registered " + rewardType.getIdentifier() + " RewardType by " + rewardType.getAuthor());
+        getLogger().info("Registered " + rewardType.getIdentifier() + " RewardType by " + rewardType.getAuthor() + " from the plugin " + rewardType.getPlugin().getName());
         rewardTypes.put(identifier.toUpperCase(), rewardType);
         return true;
     }
