@@ -298,33 +298,53 @@ public class FishUtils {
         return returning;
     }
 
-    public static void broadcastFishMessage(Message message, boolean actionBar) {
+    public static void broadcastFishMessage(Message message, Player referencePlayer, boolean actionBar) {
+        int rangeSquared = CompetitionConfig.getInstance().getBroadcastRange(); // 10 blocks squared
+
         if (CompetitionConfig.getInstance().broadcastOnlyRods()) {
             // sends it to all players holding ords
             if (actionBar) {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true, true)));
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
+                        continue;
+                    }
+                    if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || player.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true, true)));
                     }
                 }
             } else {
                 String formatted = message.getRawMessage(true, true);
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || p.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        p.sendMessage(formatted);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
+                        continue;
+                    }
+                    if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || player.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
+                        player.sendMessage(formatted);
                     }
                 }
             }
             // sends it to everyone
         } else {
             if (actionBar) {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true, true)));
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
+                        continue;
+                    }
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true, true)));
                 }
             } else {
-                message.broadcast(true, true);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
+                        continue;
+                    }
+                    player.sendMessage(message.getRawMessage(true, true));
+                }
             }
         }
+    }
+
+    private static boolean isWithinRange(Player player1, Player player2, int rangeSquared) {
+        return player1.getWorld() == player2.getWorld() && player1.getLocation().distanceSquared(player2.getLocation()) <= rangeSquared;
     }
 
     /**

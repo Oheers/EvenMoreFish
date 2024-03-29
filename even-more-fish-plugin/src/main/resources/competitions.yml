@@ -97,6 +97,9 @@ general:
   # Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
   broadcast-only-rods: true
 
+  # Broadcast range, in blocks squared, for example value 100 means 10 blocks in each direction. Set to -1 to disable.
+  broadcast-range: 100
+
   # This is the allowed-rarities value used for /emf admin competition start <time> specific_fish
   allowed-rarities:
     - "Uncommon"

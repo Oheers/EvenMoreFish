@@ -267,7 +267,7 @@ public class Competition {
                         message.setRarity(fish.getRarity().getValue());
                         message.setPlayer(fisher.getName());
 
-                        FishUtils.broadcastFishMessage(message, isDoingFirstPlaceActionBar());
+                        FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
                     }
 
                     try {
@@ -309,7 +309,7 @@ public class Competition {
                         message.setRarity(fish.getRarity().getValue());
                         message.setPlayer(fisher.getName());
 
-                        FishUtils.broadcastFishMessage(message, isDoingFirstPlaceActionBar());
+                        FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
                     }
 
                     leaderboard.removeEntry(entry);
@@ -328,7 +328,7 @@ public class Competition {
                         message.setRarity(fish.getRarity().getValue());
                         message.setPlayer(fisher.getName());
 
-                        FishUtils.broadcastFishMessage(message, isDoingFirstPlaceActionBar());
+                        FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
                     }
                 }
 

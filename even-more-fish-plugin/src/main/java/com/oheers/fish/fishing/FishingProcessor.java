@@ -237,7 +237,7 @@ public class FishingProcessor implements Listener {
             // Gets whether it's a serverwide announce or not
             if (fish.getRarity().getAnnounce()) {
                 // should we only broadcast this information to rod holders?
-                FishUtils.broadcastFishMessage(message, false);
+                FishUtils.broadcastFishMessage(message, player, false);
             } else {
                 // sends it to just the fisher
                 message.broadcast(player, true, true);
