@@ -103,6 +103,10 @@ public class CompetitionConfig extends ConfigBase {
         return getConfig().getBoolean("general.broadcast-only-rods");
     }
 
+    public int getBroadcastRange() {
+        return getConfig().getInt("general.broadcast-range", 0);
+    }
+
     public List<String> getPositionColours() {
         List<String> returning = getConfig().getStringList("leaderboard.position-colours");
 
