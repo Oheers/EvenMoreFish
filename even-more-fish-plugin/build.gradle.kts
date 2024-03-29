@@ -187,7 +187,8 @@ tasks {
         archiveClassifier.set("shadow")
 
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbt")
-        relocate("org.bstats", "com.oheers.evenmorefish.bstats")
+        relocate("org.bstats", "com.oheers.fish.libs.bstats")
+        relocate("com.github.Anon8281.universalScheduler", "com.oheers.fish.libs.universalScheduler")
     }
 
 }
