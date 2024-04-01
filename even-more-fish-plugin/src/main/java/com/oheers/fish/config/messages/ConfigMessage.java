@@ -18,6 +18,7 @@ public enum ConfigMessage {
     ADMIN_NUMBER_RANGE_ERROR("&r{amount} is not a number between 1-64.", PrefixType.ERROR, false, true, "admin.number-range-error"),
     ADMIN_UNKNOWN_PLAYER("&r{player} could not be found.", PrefixType.ERROR, false, true, "admin.player-not-found"),
     ADMIN_UPDATE_AVAILABLE("&rThere is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates", PrefixType.ADMIN, false, false, "admin.update-available"),
+    ADMIN_LIST_REWARD_TYPES("&rRegistered Reward Types: ", PrefixType.ADMIN, false, false, "admin.list-reward-types"),
 
     BAITS_CLEARED("&rYou have removed all {amount} baits from your fishing rod.", PrefixType.ADMIN, true, false, "admin.all-baits-cleared"),
     BAIT_CAUGHT("&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.NONE, true, false, "bait-catch"),
