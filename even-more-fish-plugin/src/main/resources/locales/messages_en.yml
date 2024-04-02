@@ -279,3 +279,5 @@ admin:
   update-available: "&rThere is an update available: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
   # When the plugin is reloaded
   reload: "&rSuccessfully reloaded the plugin."
+  # When checking the list of RewardTypes. The actual list is added to the end of this message.
+  list-reward-types: "&rRegistered Reward Types: "

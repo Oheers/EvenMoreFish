@@ -2,6 +2,7 @@ package com.oheers.fish;
 
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.api.addons.Addon;
+import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
@@ -13,7 +14,6 @@ import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.gui.FishingGUI;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellGUI;
@@ -48,7 +48,8 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 "nbt-rod",
                 "reload",
                 "addons",
-                "version"
+                "version",
+                "rewardtypes"
         );
 
         compTabs = Arrays.asList(
@@ -656,6 +657,23 @@ class Controls {
                 }
 
                 new Message(messageList).broadcast(sender,true,false);
+                break;
+            }
+            case "rewardtypes": {
+                TextComponent message = new TextComponent(new Message(ConfigMessage.ADMIN_LIST_REWARD_TYPES).getRawMessage(true, false));
+                ComponentBuilder builder = new ComponentBuilder(message);
+
+                RewardManager.getInstance().getRegisteredRewardTypes().forEach(rewardType -> {
+                    TextComponent component = new TextComponent(rewardType.getIdentifier());
+                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            TextComponent.fromLegacyText(
+                                    "Author: " + rewardType.getAuthor() + "\n" +
+                                    "Registered Plugin: " + rewardType.getPlugin().getName()
+                            )
+                    ));
+                    builder.append(component).append(", ");
+                });
+                sender.spigot().sendMessage(builder.create());
                 break;
             }
             default:
