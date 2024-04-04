@@ -4,8 +4,6 @@ import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.logging.Level;
-
 public class InGameTime implements Requirement {
 
     public final String configLocation;

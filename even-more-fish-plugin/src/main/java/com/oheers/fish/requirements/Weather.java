@@ -5,8 +5,6 @@ import org.bukkit.WeatherType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.logging.Level;
-
 public class Weather implements Requirement {
 
     public final String configLocation;

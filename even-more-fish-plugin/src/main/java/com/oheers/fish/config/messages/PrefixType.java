@@ -1,7 +1,5 @@
 package com.oheers.fish.config.messages;
 
-import com.oheers.fish.EvenMoreFish;
-
 public enum PrefixType {
 
     NONE(null, null),
