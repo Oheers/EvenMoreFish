@@ -9,7 +9,6 @@ import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.Table;
 import com.oheers.fish.database.UserReport;
 import com.oheers.fish.exceptions.InvalidTableException;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -18,7 +17,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class JoinChecker implements Listener {
     

@@ -5,7 +5,6 @@ import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
 
 import java.util.List;
-import java.util.logging.Level;
 
 public class MainConfig extends ConfigBase {
 

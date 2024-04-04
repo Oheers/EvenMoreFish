@@ -1,7 +1,9 @@
 package com.oheers.fish.api.reward;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,6 +65,11 @@ public class RewardManager implements Listener {
 
     public Logger getLogger() {
         return Logger.getLogger("EvenMoreFish");
+    }
+
+    @EventHandler
+    public void onServerLoad(ServerLoadEvent event) {
+        Bukkit.getPluginManager().callEvent(new EMFRewardsLoadEvent());
     }
 
 }

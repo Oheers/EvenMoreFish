@@ -5,7 +5,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
-import java.util.logging.Level;
 
 public class IRLTime implements Requirement {
 

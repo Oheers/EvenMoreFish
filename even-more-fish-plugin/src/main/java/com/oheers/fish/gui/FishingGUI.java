@@ -1,6 +1,5 @@
 package com.oheers.fish.gui;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;

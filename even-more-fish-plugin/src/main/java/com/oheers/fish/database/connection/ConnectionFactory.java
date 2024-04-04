@@ -1,7 +1,6 @@
 package com.oheers.fish.database.connection;
 
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

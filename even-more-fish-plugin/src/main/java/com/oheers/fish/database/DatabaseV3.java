@@ -20,10 +20,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.logging.Level;
 
 public class DatabaseV3 {
     private boolean usingV2;
