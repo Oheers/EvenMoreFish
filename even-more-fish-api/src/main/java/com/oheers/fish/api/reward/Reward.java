@@ -7,6 +7,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public class Reward {
 
     private @NotNull String key;
@@ -22,7 +24,7 @@ public class Reward {
             this.value = "";
         } else {
             this.key = split[0];
-            this.value = split[1];
+            this.value = String.join(":", Arrays.copyOfRange(split, 1, split.length));
         }
         for (RewardType rewardType : RewardManager.getInstance().getRegisteredRewardTypes()) {
             if (rewardType.isApplicable(this.key)) {
@@ -38,9 +40,8 @@ public class Reward {
 
     public void rewardPlayer(@NotNull Player player, Location hookLocation) {
         if (getRewardType() == null) {
-            PluginManager pM = Bukkit.getPluginManager();
             EMFRewardEvent event = new EMFRewardEvent(this, player, fishVelocity, hookLocation);
-            pM.callEvent(event);
+            Bukkit.getPluginManager().callEvent(event);
             return;
         }
         getRewardType().doReward(player, this.key, this.value, hookLocation);
