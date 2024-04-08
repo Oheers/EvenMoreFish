@@ -25,6 +25,8 @@ repositories {
     maven("https://repo.essentialsx.net/releases/")
     maven("https://repo.auxilor.io/repository/maven-public/")
     maven("https://repo.rosewooddev.io/repository/public/")
+    maven("https://repo.firedev.uk/repository/maven-public/")
+    maven("https://repo.essentialsx.net/releases/")
 }
 
 dependencies {
@@ -59,6 +61,8 @@ dependencies {
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
     compileOnly(libs.playerpoints)
+    compileOnly(libs.cmi.api)
+    compileOnly(libs.essx.api)
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
