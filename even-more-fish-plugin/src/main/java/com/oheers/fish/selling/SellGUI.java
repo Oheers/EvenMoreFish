@@ -5,10 +5,12 @@ import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
+import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
+import com.oheers.fish.fishing.items.Fish;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.PlayerData;
@@ -413,13 +415,23 @@ public class SellGUI implements InventoryHolder {
 
         if (sellAll) {
             for (ItemStack item : this.player.getInventory()) {
-                if (FishUtils.isFish(item)) this.player.getInventory().remove(item);
+                if (FishUtils.isFish(item)) {
+                    Fish fish = FishUtils.getFish(item);
+                    if (fish != null) {
+                        fish.getSellRewards().forEach(reward -> reward.rewardPlayer(player, null));
+                    }
+                    this.player.getInventory().remove(item);
+                }
             }
         } else {
             // Remove sold items
             for (int i = 0; i < guiSize - 9; i++) {
                 ItemStack item = menu.getItem(i);
                 if (WorthNBT.getValue(item) != -1.0) {
+                    Fish fish = FishUtils.getFish(item);
+                    if (fish != null) {
+                        fish.getSellRewards().forEach(reward -> reward.rewardPlayer(player, null));
+                    }
                     menu.setItem(i, null);
                 }
             }

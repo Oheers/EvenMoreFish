@@ -38,6 +38,7 @@ public class Fish implements Cloneable {
 
     List<Reward> actionRewards;
     List<Reward> fishRewards;
+    List<Reward> sellRewards;
     String eventType;
 
     List<Requirement> requirements = new ArrayList<>();
@@ -91,6 +92,9 @@ public class Fish implements Cloneable {
 
         fishRewards = new ArrayList<>();
         checkFishEvent();
+
+        sellRewards = new ArrayList<>();
+        checkSellEvent();
     }
     
     /*
@@ -181,6 +185,10 @@ public class Fish implements Cloneable {
 
     public boolean hasFishRewards() {
         return !fishRewards.isEmpty();
+    }
+
+    public boolean hasSellRewards() {
+        return !sellRewards.isEmpty();
     }
 
     public boolean hasIntRewards() {
@@ -318,6 +326,13 @@ public class Fish implements Cloneable {
         }
     }
 
+    public void checkSellEvent() {
+        List<String> configRewards = this.fishConfig.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".sell-event");
+        if (!configRewards.isEmpty())  {
+            configRewards.forEach(reward -> this.sellRewards.add(new Reward(reward)));
+        }
+    }
+
     public void checkIntEvent() {
         List<String> configRewards = this.fishConfig.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".interact-event");
         // Checks if the player has actually set rewards for an interact event
@@ -389,6 +404,8 @@ public class Fish implements Cloneable {
     public List<Reward> getFishRewards() {
         return fishRewards;
     }
+
+    public List<Reward> getSellRewards() { return sellRewards; }
 
     public double getWeight() {
         return weight;
