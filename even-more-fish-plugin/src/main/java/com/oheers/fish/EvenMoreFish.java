@@ -1,5 +1,11 @@
 package com.oheers.fish;
 
+import com.Zrips.CMI.Containers.CMIUser;
+import com.Zrips.CMI.Modules.Vanish.VanishManager;
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.EssentialsPlayerListener;
+import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.User;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.oheers.fish.addons.AddonManager;
@@ -709,6 +715,35 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new PermissionRewardType().register();
         new PlayerPointsRewardType().register();
         new EXPRewardType().register();
+    }
+
+    /**
+     * Retrieves online players excluding those who are vanished.
+     * @return A list of online players excluding those who are vanished.
+     */
+    public List<Player> getOnlinePlayersExcludingVanish() {
+        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+
+        // Check Essentials
+        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+            Plugin plugin = Bukkit.getPluginManager().getPlugin("Essentials");
+            if (plugin instanceof Essentials) {
+                Essentials essentials = (Essentials) plugin;
+                players = players.stream().filter(player -> !essentials.getUser(player).isVanished()).collect(Collectors.toList());
+            }
+        }
+
+        // Check CMI
+        if (Bukkit.getPluginManager().isPluginEnabled("CMI")) {
+            players = players.stream().filter(player -> !CMIUser.getUser(player).isVanished()).collect(Collectors.toList());
+        }
+
+        return players;
+    }
+
+    @EventHandler
+    public void onServerLoad(ServerLoadEvent event) {
+        Bukkit.getPluginManager().callEvent(new EMFRewardsLoadEvent());
     }
 
 }

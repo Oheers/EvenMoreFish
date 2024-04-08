@@ -68,7 +68,7 @@ public class Competition {
     }
 
     public void begin(boolean adminStart) {
-        if (Bukkit.getOnlinePlayers().size() >= playersNeeded || adminStart) {
+        if (EvenMoreFish.getInstance().getOnlinePlayersExcludingVanish().size() >= playersNeeded || adminStart) {
             active = true;
 
             if (competitionType == CompetitionType.RANDOM) {
