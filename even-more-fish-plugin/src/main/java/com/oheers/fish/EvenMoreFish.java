@@ -724,6 +724,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public List<Player> getOnlinePlayersExcludingVanish() {
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
 
+        if (!MainConfig.getInstance().shouldRespectVanish()) {
+            return players;
+        }
+
         // Check Essentials
         if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("Essentials");
