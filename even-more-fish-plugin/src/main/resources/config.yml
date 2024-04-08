@@ -13,6 +13,10 @@ fish-only-in-competition: false
 # may not work on all servers.
 experimental-features: false
 
+# Should competition player requirements respect vanished players?
+# Supports EssentialsX and CMI.
+respect-vanished: true
+
 # The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
 # of this feature.
 # ATTENTION: Toggling this requires a full server restart.

@@ -74,6 +74,8 @@ public class MainConfig extends ConfigBase {
                 return Economy.EconomyType.NONE;
         }
     }
+
+    public boolean shouldRespectVanish() { return getConfig().getBoolean("respect-vanished", true); }
     
     public boolean isVanillaFishing() {
         return getConfig().getBoolean("vanilla-fishing", true);
