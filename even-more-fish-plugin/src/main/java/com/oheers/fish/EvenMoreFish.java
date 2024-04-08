@@ -723,13 +723,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
      */
     public List<Player> getOnlinePlayersExcludingVanish() {
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-        System.out.println(players.size());
 
         // Check Essentials
-        System.out.println("Essentials: " + Bukkit.getPluginManager().isPluginEnabled("Essentials"));
         if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("Essentials");
-            System.out.println("Essentials Found? " + (plugin instanceof Essentials));
             if (plugin instanceof Essentials) {
                 Essentials essentials = (Essentials) plugin;
                 players = players.stream().filter(player -> !essentials.getUser(player).isVanished()).collect(Collectors.toList());
@@ -737,12 +734,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         // Check CMI
-        System.out.println("CMI: " + Bukkit.getPluginManager().isPluginEnabled("CMI"));
         if (Bukkit.getPluginManager().isPluginEnabled("CMI")) {
             players = players.stream().filter(player -> !CMIUser.getUser(player).isVanished()).collect(Collectors.toList());
         }
 
-        System.out.println(players.size());
         return players;
     }
 
