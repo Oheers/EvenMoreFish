@@ -99,6 +99,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private boolean usingMcMMO;
     private boolean usingHeadsDB;
     private boolean usingPlayerPoints;
+    private boolean usingGriefPrevention;
 
     private WorldGuardPlugin wgPlugin;
     private String guardPL;
@@ -135,6 +136,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         logger = getLogger();
         pluginManager = getServer().getPluginManager();
 
+        usingGriefPrevention = Bukkit.getPluginManager().isPluginEnabled("GriefPrevention");
         usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
         
         getConfig().options().copyDefaults();
@@ -524,7 +526,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             usingPAPI = true;
             new PlaceholderReceiver(this).register();
         }
-
     }
 
     private boolean checkRP() {
@@ -671,6 +672,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public boolean isUsingPlayerPoints() {
         return usingPlayerPoints;
     }
+
+    public boolean isUsingGriefPrevention() { return usingGriefPrevention; }
 
     public WorldGuardPlugin getWgPlugin() {
         return wgPlugin;

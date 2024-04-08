@@ -102,7 +102,8 @@ bukkit {
         "Denizen",
         "EcoItems",
         "Oraxen",
-        "HeadDatabase"
+        "HeadDatabase",
+        "GriefPrevention"
     )
     loadBefore = listOf("AntiAC")
     apiVersion = "1.16"
