@@ -70,6 +70,8 @@ public class MainConfig extends ConfigBase {
                 return Economy.EconomyType.VAULT;
             case "PlayerPoints":
                 return Economy.EconomyType.PLAYER_POINTS;
+            case "GriefPrevention":
+                return Economy.EconomyType.GRIEF_PREVENTION;
             default:
                 return Economy.EconomyType.NONE;
         }
@@ -80,8 +82,6 @@ public class MainConfig extends ConfigBase {
     public boolean isVanillaFishing() {
         return getConfig().getBoolean("vanilla-fishing", true);
     }
-
-    public String getSellType() {return getConfig().getString("sell-type", "money");}
 
     public String getFiller() {
         return getConfig().getString("gui.filler", "GRAY_STAINED_GLASS_PANE");

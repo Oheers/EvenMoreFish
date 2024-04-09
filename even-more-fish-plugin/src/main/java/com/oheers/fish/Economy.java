@@ -1,5 +1,7 @@
 package com.oheers.fish;
 
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.OfflinePlayer;
@@ -14,6 +16,7 @@ public class Economy {
     private boolean enabled = false;
     private net.milkbowl.vault.economy.Economy vaultEconomy = null;
     private PlayerPointsAPI playerPointsEconomy = null;
+    private GriefPrevention griefPreventionEconomy = null;
 
     public Economy(EconomyType type) {
         EvenMoreFish emf = EvenMoreFish.getInstance();
@@ -38,6 +41,14 @@ public class Economy {
                     emf.getLogger().log(Level.INFO, "Hooked into PlayerPoints for Economy Handling.");
                 }
                 return;
+            case GRIEF_PREVENTION:
+                emf.getLogger().log(Level.INFO, "Attempting to hook into GriefPrevention for Economy Handling.");
+                if (EvenMoreFish.getInstance().isUsingGriefPrevention()) {
+                    this.griefPreventionEconomy = GriefPrevention.instance;
+                    economyType = type;
+                    enabled = true;
+                    emf.getLogger().info("Hooked into GriefPrevention for Economy Handling.");
+                }
         }
     }
 
@@ -54,6 +65,9 @@ public class Economy {
                 // PlayerPoints doesn't support doubles, so we need to cast to int
                 playerPointsEconomy.give(player.getUniqueId(), (int) amount);
                 return;
+            case GRIEF_PREVENTION:
+                PlayerData data = griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId());
+                data.setBonusClaimBlocks(data.getBonusClaimBlocks() + (int) amount);
         }
     }
 
@@ -64,6 +78,15 @@ public class Economy {
             case PLAYER_POINTS:
                 // PlayerPoints doesn't support doubles, so we need to cast to int
                 return playerPointsEconomy.take(player.getUniqueId(), (int) amount);
+            case GRIEF_PREVENTION:
+                PlayerData data = griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId());
+                int total = data.getBonusClaimBlocks();
+                int finalTotal = total - (int) amount;
+                if (finalTotal < 0) {
+                    return false;
+                }
+                data.setBonusClaimBlocks(finalTotal);
+                return true;
             default:
                 return true;
         }
@@ -76,6 +99,8 @@ public class Economy {
             case PLAYER_POINTS:
                 // PlayerPoints doesn't seem to have a method to check this
                 return playerPointsEconomy.look(player.getUniqueId()) >= amount;
+            case GRIEF_PREVENTION:
+                return griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId()).getBonusClaimBlocks() >= amount;
             default:
                 return true;
         }
@@ -88,6 +113,8 @@ public class Economy {
             case PLAYER_POINTS:
                 // PlayerPoints doesn't seem to have a method to check this
                 return playerPointsEconomy.look(player.getUniqueId());
+            case GRIEF_PREVENTION:
+                return griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId()).getBonusClaimBlocks();
             default:
                 return 0;
         }
@@ -98,6 +125,7 @@ public class Economy {
             case VAULT:
                 return value;
             case PLAYER_POINTS:
+            case GRIEF_PREVENTION:
                 return Math.floor(value);
             default:
                 return 0;
@@ -107,6 +135,7 @@ public class Economy {
     public enum EconomyType {
         PLAYER_POINTS,
         VAULT,
+        GRIEF_PREVENTION,
         NONE
     }
 

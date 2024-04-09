@@ -44,7 +44,7 @@ random-durability: true
 enable-economy: true
 
 # Choose which economy plugin you wish to use
-# Supported values are: Vault, PlayerPoints, None
+# Supported values are: Vault, PlayerPoints, GriefPrevention, None
 economy-type: Vault
 
 # Setting this to change the boosbar style
@@ -118,10 +118,6 @@ disable-mcmmo-loot: true
 
 # Prevents AureliumSkills from overriding fishing loot, this means treasure won't appear when fish can.
 disable-aureliumskills-loot: true
-
-# Should the shop give you money or claim blocks?
-# Currently: money, claimblocks
-sell-type: money
 
 # When set to true, players won't be able to place fish that are heads, like head-64 or head-uuid.
 place-head-fish: false

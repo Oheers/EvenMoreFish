@@ -334,11 +334,25 @@ public class SellGUI implements InventoryHolder {
     }
 
     public String formatWorth(double totalWorth) {
-        if (MainConfig.getInstance().getSellType().equals("money")) {
-            DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false, false));
-            return format.format(totalWorth);
-        } else {
-            return (int) totalWorth + " Claim Blocks";
+        switch (EvenMoreFish.getInstance().getEconomy().getEconomyType()) {
+            case GRIEF_PREVENTION:
+                if ((int) totalWorth == 1) {
+                    return (int) totalWorth + " Claim Block";
+                } else {
+                    return (int) totalWorth + " Claim Blocks";
+                }
+            case PLAYER_POINTS:
+                if ((int) totalWorth == 1) {
+                    return (int) totalWorth + " Player Point";
+                } else {
+                    return (int) totalWorth + " Player Points";
+                }
+            case VAULT:
+                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false, false));
+                return format.format(totalWorth);
+            // Includes NONE type
+            default:
+                return String.valueOf(totalWorth);
         }
     }
 
@@ -390,17 +404,11 @@ public class SellGUI implements InventoryHolder {
     public boolean sell(boolean sellAll) {
         List<SoldFish> soldFish = getTotalSoldFish(sellAll);
         double totalWorth = getTotalWorth(soldFish);
-        String sellType = MainConfig.getInstance().getSellType();
         double sellPrice = Math.floor(totalWorth * 10) / 10;
 
-        if (sellType.equals("money")) {
-            Economy economy = EvenMoreFish.getInstance().getEconomy();
-            if (economy != null && economy.isEnabled()) {
-                economy.deposit(this.player, totalWorth);
-            }
-        } else if (sellType.equals("claimblocks")) {
-            PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(this.player.getUniqueId());
-            playerData.setBonusClaimBlocks((int) (playerData.getBonusClaimBlocks() + sellPrice));
+        Economy economy = EvenMoreFish.getInstance().getEconomy();
+        if (economy != null && economy.isEnabled()) {
+            economy.deposit(this.player, totalWorth);
         }
 
         // sending the sell message to the player
