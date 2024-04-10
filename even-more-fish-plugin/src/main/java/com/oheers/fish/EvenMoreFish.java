@@ -748,9 +748,4 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return players;
     }
 
-    @EventHandler
-    public void onServerLoad(ServerLoadEvent event) {
-        Bukkit.getPluginManager().callEvent(new EMFRewardsLoadEvent());
-    }
-
 }
