@@ -12,6 +12,7 @@ description = "A fishing extension bringing an exciting new experience to fishin
 
 repositories {
     mavenCentral()
+    maven("https://repo.firedev.uk/repository/maven-public/")
     maven("https://hub.spigotmc.org/nexus/content/groups/public/")
     maven("https://github.com/deanveloper/SkullCreator/raw/mvn-repo/")
     maven("https://jitpack.io")
@@ -25,7 +26,6 @@ repositories {
     maven("https://repo.essentialsx.net/releases/")
     maven("https://repo.auxilor.io/repository/maven-public/")
     maven("https://repo.rosewooddev.io/repository/public/")
-    maven("https://repo.firedev.uk/repository/maven-public/")
     maven("https://repo.essentialsx.net/releases/")
 }
 
@@ -61,12 +61,11 @@ dependencies {
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
     compileOnly(libs.playerpoints)
-    compileOnly(libs.cmi.api)
-    compileOnly(libs.essx.api)
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
     implementation(libs.universalscheduler)
+    implementation(libs.vanishchecker)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -194,6 +193,7 @@ tasks {
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbt")
         relocate("org.bstats", "com.oheers.fish.libs.bstats")
         relocate("com.github.Anon8281.universalScheduler", "com.oheers.fish.libs.universalScheduler")
+        relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
     }
 
 }

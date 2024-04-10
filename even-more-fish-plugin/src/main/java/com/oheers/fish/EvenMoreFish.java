@@ -1,25 +1,18 @@
 package com.oheers.fish;
 
-import com.Zrips.CMI.Containers.CMIUser;
-import com.Zrips.CMI.Modules.Vanish.VanishManager;
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.EssentialsPlayerListener;
-import com.earth2me.essentials.IEssentials;
-import com.earth2me.essentials.User;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
-import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
+import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
-import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
@@ -49,15 +42,13 @@ import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import uk.firedev.vanishchecker.VanishChecker;
 
 import java.io.File;
 import java.util.*;
@@ -725,27 +716,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
      * @return A list of online players excluding those who are vanished.
      */
     public List<Player> getOnlinePlayersExcludingVanish() {
-        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-
         if (!MainConfig.getInstance().shouldRespectVanish()) {
-            return players;
+            return new ArrayList<>(Bukkit.getOnlinePlayers());
         }
 
-        // Check Essentials
-        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
-            Plugin plugin = Bukkit.getPluginManager().getPlugin("Essentials");
-            if (plugin instanceof Essentials) {
-                Essentials essentials = (Essentials) plugin;
-                players = players.stream().filter(player -> !essentials.getUser(player).isVanished()).collect(Collectors.toList());
-            }
-        }
-
-        // Check CMI
-        if (Bukkit.getPluginManager().isPluginEnabled("CMI")) {
-            players = players.stream().filter(player -> !CMIUser.getUser(player).isVanished()).collect(Collectors.toList());
-        }
-
-        return players;
+        return VanishChecker.getUnvanishedOnlinePlayers();
     }
 
 }
