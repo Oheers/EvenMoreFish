@@ -54,6 +54,8 @@ dependencyResolutionManagement {
             library("playerpoints", "org.black_ixx:playerpoints:3.2.6")
             library("cmi-api", "CMI-API:CMI-API:9.7.0.1")
             library("essx-api", "net.essentialsx:EssentialsX:2.20.1")
+
+            library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
         }
     }
 }

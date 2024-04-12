@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.nbt.api)
     implementation(libs.bstats)
     implementation(libs.universalscheduler)
+    implementation(libs.acf)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -176,7 +177,7 @@ tasks {
 
     clean {
         doFirst {
-            for (file in File(project.projectDir ,"src/main/resources/addons").listFiles()!!) {
+            for (file in File(project.projectDir, "src/main/resources/addons").listFiles()!!) {
                 file.delete()
             }
         }
@@ -194,6 +195,8 @@ tasks {
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbt")
         relocate("org.bstats", "com.oheers.fish.libs.bstats")
         relocate("com.github.Anon8281.universalScheduler", "com.oheers.fish.libs.universalScheduler")
+        relocate("co.aikar.commands", "com.oheers.fish.libs.acf")
+        relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
     }
 
 }
