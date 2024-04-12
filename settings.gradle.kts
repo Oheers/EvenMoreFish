@@ -52,7 +52,7 @@ dependencyResolutionManagement {
 
             library("universalscheduler", "com.github.Anon8281:UniversalScheduler:0.1.6")
             library("playerpoints", "org.black_ixx:playerpoints:3.2.6")
-            library("vanishchecker", "uk.firedev:VanishChecker:1.0")
+            library("vanishchecker", "uk.firedev:VanishChecker:1.1.0")
         }
     }
 }
