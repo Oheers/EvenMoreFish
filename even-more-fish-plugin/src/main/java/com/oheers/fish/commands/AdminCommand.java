@@ -37,7 +37,7 @@ import java.util.Map;
 @CommandAlias(CommandUtil.ADMIN_COMMAND)
 public class AdminCommand extends BaseCommand {
     @Subcommand("fish")
-    public static class FishSubCommand extends BaseCommand {
+    public void onFish(final CommandSender sender, final String rarityId, final String fishId, @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional Player player) {
 
     }
 
