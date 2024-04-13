@@ -380,9 +380,13 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             if (c.hasConfig("min") && c.getConfigValue("min", 0) > value) {
                 throw new ConditionFailedException("Min value must be " + c.getConfigValue("min", 0));
             }
+
+            if (c.hasConfig("max") && c.getConfigValue("max", 0) < value) {
+                throw new ConditionFailedException("Max value must be " + c.getConfigValue("max", 0));
+            }
         });
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
-        manager.getCommandCompletions().registerCompletion("baits", (c) -> EvenMoreFish.getInstance().getBaits().keySet());
+        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet());
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
     }
