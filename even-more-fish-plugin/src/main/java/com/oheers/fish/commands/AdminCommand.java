@@ -1,13 +1,13 @@
 package com.oheers.fish.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.reward.RewardManager;
+import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @CommandAlias(CommandUtil.ADMIN_COMMAND)
-public class AdminCommand {
-
+public class AdminCommand extends BaseCommand {
     @Subcommand("fish")
     public static class FishSubCommand extends BaseCommand {
 
@@ -37,6 +36,42 @@ public class AdminCommand {
     @Subcommand("comp")
     public static class CompetitionSubCommand extends BaseCommand {
 
+        @Subcommand("start")
+        public void onStart(final CommandSender sender, @Default("%duration") @Conditions("limits:min=1") Integer duration, @Default("LARGEST_FISH") @Optional CompetitionType type) {
+            if (Competition.isActive()) {
+                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender, true, false);
+                return;
+            }
+
+
+            Competition comp = new Competition(duration, type, new ArrayList<>());
+
+            comp.setCompetitionName("[admin_started]");
+            comp.setAdminStarted(true);
+            comp.initRewards(null, true);
+            comp.initBar(null);
+            comp.initGetNumbersNeeded(null);
+            comp.initStartSound(null);
+
+            EvenMoreFish.getInstance().setActiveCompetition(comp);
+            comp.begin(true);
+        }
+
+        @Subcommand("end")
+        public void onEnd(final CommandSender sender) {
+            if (Competition.isActive()) {
+                EvenMoreFish.getInstance().getActiveCompetition().end();
+                return;
+            }
+
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
+        }
+
+        @Default
+        @Subcommand("help")
+        public void onHelp(final CommandSender sender) {
+            new Message(ConfigMessage.HELP_COMPETITION).broadcast(sender, true, false);
+        }
     }
 
     @Subcommand("nbt-rod")
@@ -87,7 +122,7 @@ public class AdminCommand {
             fishCount += EvenMoreFish.getInstance().getFishCollection().get(r).size();
         }
 
-        String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + plugin.getDescription().getVersion() + "\n" +
+        String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
@@ -95,18 +130,22 @@ public class AdminCommand {
                 fishCount + ") Baits(" + EvenMoreFish.getInstance().getBaits().size() + ") Competitions(" + EvenMoreFish.getInstance().getCompetitionQueue().getSize() + ")\n" +
                 Messages.getInstance().getSTDPrefix();
 
-        if (MainConfig.getInstance().databaseEnabled()) {
-            if (EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2()) {
-                msgString += "Database Engine: V2";
-            } else {
-                msgString += "Database Engine: V3";
-            }
-        } else {
-            msgString += "Database Engine: None";
-        }
+        msgString += "Database Engine: " + getDatabaseVersion();
 
         Message msg = new Message(msgString);
         msg.broadcast(sender, true, false);
+    }
+
+    private String getDatabaseVersion() {
+        if (!MainConfig.getInstance().databaseEnabled()) {
+            return "None";
+        }
+
+        if (EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2()) {
+            return "V2";
+        }
+
+        return "V3";
     }
 
     @Subcommand("rewardtypes")

@@ -1,5 +1,6 @@
 package com.oheers.fish;
 
+import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import com.Zrips.CMI.Containers.CMIUser;
 import com.earth2me.essentials.Essentials;
@@ -13,6 +14,7 @@ import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
+import com.oheers.fish.commands.AdminCommand;
 import com.oheers.fish.commands.EMFCommand;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
@@ -360,7 +362,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private void loadCommandManager() {
-        PaperCommandManager paperCommandManager = new PaperCommandManager(this);
+        PaperCommandManager manager = new PaperCommandManager(this);
 
         /*
         TODO,
@@ -369,9 +371,20 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         figure out how to add - syntax
          */
-        paperCommandManager.enableUnstableAPI("brigadier");
+        manager.enableUnstableAPI("brigadier");
 
-        paperCommandManager.registerCommand(new EMFCommand());
+        manager.getCommandConditions().addCondition(Integer.class, "limits", (c, exec, value) -> {
+            if (value == null) {
+                return;
+            }
+            if (c.hasConfig("min") && c.getConfigValue("min", 0) > value) {
+                throw new ConditionFailedException("Min value must be " + c.getConfigValue("min", 0));
+            }
+        });
+        manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
+
+        manager.registerCommand(new EMFCommand());
+        manager.registerCommand(new AdminCommand());
     }
 
     private boolean setupPermissions() {
