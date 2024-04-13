@@ -94,5 +94,18 @@ public class EMFCommand extends BaseCommand {
         }
     }
 
+    @Subcommand("sellall")
+    @CommandPermission(UserPerms.SELL_ALL)
+    public void onSellAll(final Player sender) {
+        if (MainConfig.getInstance().isEconomyDisabled()) {
+            new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
+            return;
+        }
+
+
+        SellGUI gui = new SellGUI(sender, false);
+        gui.sell(true);
+    }
+
 
 }
