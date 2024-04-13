@@ -7,6 +7,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.reward.RewardManager;
+import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.BaitFile;
@@ -21,8 +22,11 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,14 +108,39 @@ public class AdminCommand extends BaseCommand {
 
 
     @Subcommand("bait")
+    @CommandCompletion("@baits @online-players @range:100-1000")
     public void onBait() {
 
     }
 
     @Subcommand("clearbaits")
-    public void onClearBaits() {
+    public void onClearBaits(final CommandSender sender, @Optional Player player) {
+        if (player == null && !(sender instanceof Player)) {
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+            return;
+        }
 
+        if (player == null) {
+            player = (Player) sender;
+        }
 
+        if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
+            new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player, true, false);
+            return;
+        }
+
+        ItemStack fishingRod = player.getInventory().getItemInMainHand();
+        if (!BaitNBTManager.isBaitedRod(fishingRod)) {
+            new Message(ConfigMessage.NO_BAITS).broadcast(player, true, false);
+            return;
+        }
+
+        ItemMeta meta = fishingRod.getItemMeta();
+        meta.setLore(BaitNBTManager.deleteOldLore(fishingRod));
+        fishingRod.setItemMeta(meta);
+        Message message = new Message(ConfigMessage.BAITS_CLEARED);
+        message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
+        message.broadcast(player, true, true);
     }
 
 
