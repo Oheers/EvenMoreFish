@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    `java-library`
     id("maven-publish")
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -27,11 +27,13 @@ repositories {
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://repo.firedev.uk/repository/maven-public/")
     maven("https://repo.essentialsx.net/releases/")
+    maven("https://repo.aikar.co/content/groups/aikar/")
 }
 
 dependencies {
+    api(project(":even-more-fish-api"))
+
     compileOnly(libs.spigot.api)
-    implementation(project(":even-more-fish-api"))
     compileOnly(libs.vault.api)
     compileOnly(libs.placeholder.api)
     compileOnly(libs.authlib)
@@ -56,7 +58,10 @@ dependencies {
         exclude("com.sk89q.worldedit", "worldedit-bukkit")
         exclude("com.sk89q.worldguard", "worldguard-bukkit")
     }
-    compileOnly(libs.aurelium.skills)
+    compileOnly(libs.aurelium.skills) {
+        exclude(libs.acf.get().group, libs.acf.get().name)
+    }
+
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
@@ -199,8 +204,11 @@ tasks {
         relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
     }
 
+    compileJava {
+        options.compilerArgs.add("-parameters")
+        options.isFork = true
+    }
 }
-
 
 java {
     toolchain {
