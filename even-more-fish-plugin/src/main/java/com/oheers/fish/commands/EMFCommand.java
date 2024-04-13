@@ -41,8 +41,8 @@ public class EMFCommand extends BaseCommand {
 
     @Subcommand("migrate")
     @CommandPermission(AdminPerms.MIGRATE)
-    public void onMigrate() {
-
+    public void onMigrate(final CommandSender sender) {
+        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
     }
 
     @Default
