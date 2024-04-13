@@ -382,7 +382,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             }
         });
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
-
+        manager.getCommandCompletions().registerCompletion("baits", (c) -> EvenMoreFish.getInstance().getBaits().keySet());
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
     }

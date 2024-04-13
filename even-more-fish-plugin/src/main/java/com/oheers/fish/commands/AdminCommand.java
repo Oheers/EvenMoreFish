@@ -7,6 +7,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.reward.RewardManager;
+import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
@@ -108,9 +109,45 @@ public class AdminCommand extends BaseCommand {
 
 
     @Subcommand("bait")
-    @CommandCompletion("@baits @online-players @range:100-1000")
-    public void onBait() {
+    @CommandCompletion("@baits @range:1-64 @online-players")
+    public void onBait(final CommandSender sender, String baitName, @Default("1") @Conditions("limits:min=1,max=64") int quantity, @Optional Player player) {
+        final String baitId = getBaitIdFromName(baitName);
+        final Bait bait = EvenMoreFish.getInstance().getBaits().get(baitId);
+        if (baitId == null || bait == null) {
+            //could not get bait for some reason.
+            return;
+        }
 
+
+        if (player == null) {
+            if (!(sender instanceof Player)) {
+                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                return;
+            }
+
+            ItemStack baitItem = bait.create(Bukkit.getOfflinePlayer(((Player) sender).getUniqueId()));
+            baitItem.setAmount(quantity);
+            FishUtils.giveItems(Collections.singletonList(baitItem), (Player) sender);
+            return;
+        }
+
+        ItemStack baitItem = bait.create(player);
+        baitItem.setAmount(quantity);
+        FishUtils.giveItems(Collections.singletonList(baitItem), player);
+        Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
+        message.setPlayer(player.getName());
+        message.setBait(baitId);
+        message.broadcast(sender, true, true);
+    }
+
+    private String getBaitIdFromName(final String baitName) {
+        for (String baitID : EvenMoreFish.getInstance().getBaits().keySet()) {
+            if (baitID.equalsIgnoreCase(baitName) || baitID.equalsIgnoreCase(baitName.replace("_", " "))) {
+                return baitID;
+            }
+        }
+
+        return null;
     }
 
     @Subcommand("clearbaits")
