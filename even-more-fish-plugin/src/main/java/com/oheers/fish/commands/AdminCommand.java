@@ -3,6 +3,7 @@ package com.oheers.fish.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.reward.RewardManager;
@@ -21,8 +22,10 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +78,28 @@ public class AdminCommand extends BaseCommand {
     }
 
     @Subcommand("nbt-rod")
-    public void onNbtRod() {
+    public void onNbtRod(final CommandSender sender, @Optional Player player) {
+        if (!MainConfig.getInstance().requireNBTRod()) {
+            new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender, true, false);
+            return;
+        }
+
+
+        Message giveMessage;
+        if (player == null) {
+            if (!(sender instanceof Player)) {
+                Message errorMessage = new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE);
+                errorMessage.broadcast(sender, false, false);
+                return;
+            }
+
+            player = (Player) sender;
+        }
+
+        FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
+        giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
+        giveMessage.setPlayer(player.getName());
+        giveMessage.broadcast(sender, true, true);
     }
 
 
@@ -103,6 +127,7 @@ public class AdminCommand extends BaseCommand {
     }
 
 
+    @Subcommand("addons")
     public void onAddons(final CommandSender sender) {
         final AddonManager addonManager = EvenMoreFish.getInstance().getAddonManager();
         final String messageFormat = "Addon: %s, Loading: %b";
