@@ -1,6 +1,7 @@
 package com.oheers.fish;
 
 import co.aikar.commands.ConditionFailedException;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
 import com.Zrips.CMI.Containers.CMIUser;
 import com.earth2me.essentials.Essentials;
@@ -89,7 +90,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private int metric_fishCaught = 0;
     private int metric_baitsUsed = 0;
     private int metric_baitsApplied = 0;
-    
+
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
     private Map<UUID, Rarity> decidedRarities;
@@ -116,7 +117,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return instance;
     }
 
-    public static TaskScheduler getScheduler() { return scheduler; }
+    public static TaskScheduler getScheduler() {return scheduler;}
 
     public AddonManager getAddonManager() {
         return addonManager;
@@ -137,7 +138,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         usingGriefPrevention = Bukkit.getPluginManager().isPluginEnabled("GriefPrevention");
         usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
-        
+
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
@@ -387,6 +388,31 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
         manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet());
+        manager.getCommandContexts().registerContext(Rarity.class, c -> {
+            final String rarityId = c.popFirstArg();
+            Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream().filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId)).findAny();
+            if (!potentialRarity.isPresent()) {
+                throw new InvalidCommandArgument("No such rarity.");
+            }
+
+            return potentialRarity.get();
+        });
+        manager.getCommandContexts().registerContext(Fish.class, c -> {
+            final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
+            final String fishId = c.popFirstArg();
+
+            Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().filter(f -> f.getName().equalsIgnoreCase(fishId)).findFirst();
+            if (!potentialFish.isPresent()) {
+                throw new InvalidCommandArgument("No such fish.");
+            }
+
+            return potentialFish.get();
+        });
+        manager.getCommandCompletions().registerCompletion("rarities", c -> EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
+        manager.getCommandCompletions().registerCompletion("fish", c -> {
+            final Rarity rarity = c.getContextValue(Rarity.class);
+            return EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().map(Fish::getName).collect(Collectors.toList());
+        });
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
     }
@@ -614,6 +640,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public boolean isCheckingEatEvent() {
         return checkingEatEvent;
     }
+
     public void setCheckingEatEvent(boolean bool) {
         this.checkingEatEvent = bool;
     }
@@ -702,7 +729,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return usingPlayerPoints;
     }
 
-    public boolean isUsingGriefPrevention() { return usingGriefPrevention; }
+    public boolean isUsingGriefPrevention() {return usingGriefPrevention;}
 
     public WorldGuardPlugin getWgPlugin() {
         return wgPlugin;
@@ -752,6 +779,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     /**
      * Retrieves online players excluding those who are vanished.
+     *
      * @return A list of online players excluding those who are vanished.
      */
     public List<Player> getOnlinePlayersExcludingVanish() {
