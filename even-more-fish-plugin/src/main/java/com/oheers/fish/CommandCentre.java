@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+@Deprecated
 public class CommandCentre implements TabCompleter, CommandExecutor {
 
     private static final List<String> empty = new ArrayList<>();

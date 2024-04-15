@@ -206,7 +206,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         checkConfigVers();
 
         listeners();
-        commands();
+        loadCommandManager();
+//        commands();
 
         if (!MainConfig.getInstance().debugSession()) {
             metrics();
@@ -357,6 +358,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         metrics.addCustomChart(new SimplePie("experimental_features", () -> MainConfig.getInstance().doingExperimentalFeatures() ? "true" : "false"));
     }
 
+    @Deprecated
     private void commands() {
         getCommand("evenmorefish").setExecutor(new CommandCentre(this));
         CommandCentre.loadTabCompletes();
@@ -365,15 +367,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private void loadCommandManager() {
         PaperCommandManager manager = new PaperCommandManager(this);
 
-        /*
-        TODO,
-        register context for fish, rarity
-        register completion for fish, rarity
-
-        figure out how to add - syntax
-         */
         manager.enableUnstableAPI("brigadier");
 
+        manager.getCommandReplacements().addReplacement("main","emf|evenmorefish");
+        manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
         manager.getCommandConditions().addCondition(Integer.class, "limits", (c, exec, value) -> {
             if (value == null) {
                 return;
@@ -386,8 +383,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                 throw new ConditionFailedException("Max value must be " + c.getConfigValue("max", 0));
             }
         });
-        manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
-        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet());
         manager.getCommandContexts().registerContext(Rarity.class, c -> {
             final String rarityId = c.popFirstArg();
             Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream().filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId)).findAny();
@@ -408,11 +403,13 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
             return potentialFish.get();
         });
+        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet());
         manager.getCommandCompletions().registerCompletion("rarities", c -> EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
             return EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().map(Fish::getName).collect(Collectors.toList());
         });
+
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
     }

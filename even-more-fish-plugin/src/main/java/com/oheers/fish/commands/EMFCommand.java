@@ -17,7 +17,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 
-@CommandAlias(CommandUtil.MAIN_COMMAND)
+@CommandAlias("%main")
 public class EMFCommand extends BaseCommand {
 
     @Subcommand("next")

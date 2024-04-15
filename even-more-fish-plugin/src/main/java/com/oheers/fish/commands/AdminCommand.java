@@ -33,7 +33,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@CommandAlias(CommandUtil.ADMIN_COMMAND)
+@CommandAlias("%main")
+@Subcommand("admin")
 public class AdminCommand extends BaseCommand {
     @Subcommand("fish")
     public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional Player target) {
@@ -60,8 +61,13 @@ public class AdminCommand extends BaseCommand {
         //give fish to target
     }
 
+    /**
+     * We must suppress InnerClassMayBeStatic
+     * If this class is static it will not work properly with ACF
+     */
+    @SuppressWarnings("InnerClassMayBeStatic")
     @Subcommand("list")
-    public static class ListSubCommand extends BaseCommand {
+    public class ListSubCommand extends BaseCommand {
 
         @Subcommand("fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
@@ -93,8 +99,13 @@ public class AdminCommand extends BaseCommand {
         }
     }
 
+    /**
+     * We must suppress InnerClassMayBeStatic
+     * If this class is static it will not work properly with ACF
+     */
+    @SuppressWarnings("InnerClassMayBeStatic")
     @Subcommand("comp")
-    public static class CompetitionSubCommand extends BaseCommand {
+    public class CompetitionSubCommand extends BaseCommand {
 
         @Subcommand("start")
         public void onStart(final CommandSender sender, @Default("%duration") @Conditions("limits:min=1") Integer duration, @Default("LARGEST_FISH") @Optional CompetitionType type) {

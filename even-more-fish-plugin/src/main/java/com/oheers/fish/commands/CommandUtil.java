@@ -14,8 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandUtil {
-    public static final String MAIN_COMMAND = "emf|evenmorefish";
-    public static final String ADMIN_COMMAND = "emf|evenmorefish admin";
+    private CommandUtil(){
+        throw new UnsupportedOperationException();
+    }
     public static String formGeneralHelp(CommandSender user) {
 
         //return new Message(ConfigMessage.HELP_GENERAL).getRawMessage(true, false);
