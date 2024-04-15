@@ -1,11 +1,7 @@
 package com.oheers.fish;
 
 import com.Zrips.CMI.Containers.CMIUser;
-import com.Zrips.CMI.Modules.Vanish.VanishManager;
 import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.EssentialsPlayerListener;
-import com.earth2me.essentials.IEssentials;
-import com.earth2me.essentials.User;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.oheers.fish.addons.AddonManager;
@@ -13,13 +9,13 @@ import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
+import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitApplicationListener;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
-import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
@@ -51,7 +47,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -178,7 +173,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         if (!setupPermissions()) {
-            Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
             getServer().getPluginManager().disablePlugin(this);
         }
 

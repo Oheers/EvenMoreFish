@@ -12,7 +12,6 @@ import com.oheers.fish.database.connection.SqliteConnectionFactory;
 import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
-import org.apache.logging.log4j.core.config.Loggers;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

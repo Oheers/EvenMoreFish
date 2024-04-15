@@ -11,7 +11,6 @@ import org.json.simple.parser.JSONParser;
 
 import java.net.URL;
 import java.util.Scanner;
-import java.util.logging.Level;
 
 public class UpdateChecker {
 
