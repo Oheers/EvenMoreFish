@@ -18,10 +18,9 @@ import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -37,8 +36,61 @@ import java.util.Map;
 @CommandAlias(CommandUtil.ADMIN_COMMAND)
 public class AdminCommand extends BaseCommand {
     @Subcommand("fish")
-    public void onFish(final CommandSender sender, final String rarityId, final String fishId, @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional Player player) {
+    public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional Player target) {
+        if (target == null && !(sender instanceof Player)) {
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+            return;
+        }
 
+        if (target == null) {
+            target = (Player) sender;
+        }
+
+        fish.init();
+
+        final ItemStack fishItem = fish.give(-1);
+        fishItem.setAmount(quantity);
+
+        FishUtils.giveItems(Collections.singletonList(fishItem), target);
+
+        Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_FISH);
+        message.setPlayer(target.getName());
+        message.setFishCaught(fish.getName());
+        message.broadcast(sender, true, true);
+        //give fish to target
+    }
+
+    @Subcommand("list")
+    public static class ListSubCommand extends BaseCommand {
+
+        @Subcommand("fish")
+        public void onFish(final CommandSender sender, final Rarity rarity) {
+            ComponentBuilder builder = new ComponentBuilder();
+
+            builder.append(FishUtils.translateHexColorCodes(rarity.getDisplayName()), ComponentBuilder.FormatRetention.NONE);
+
+            for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
+                builder.append(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + "] "));
+
+                builder.event(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
+                builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName()));
+            }
+
+            sender.spigot().sendMessage(builder.create());
+        }
+
+
+        @Subcommand("rarities")
+        public void onRarity(final CommandSender sender) {
+            BaseComponent baseComponent = new TextComponent("");
+            for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+                BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
+                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish.")));
+                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
+                baseComponent.addExtra(textComponent);
+            }
+            sender.spigot().sendMessage(baseComponent);
+        }
     }
 
     @Subcommand("comp")
