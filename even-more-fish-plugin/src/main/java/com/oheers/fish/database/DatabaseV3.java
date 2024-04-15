@@ -705,7 +705,7 @@ public class DatabaseV3 {
                 prep.setString(4, fish.getName());
                 prep.execute();
             } catch (SQLException exception) {
-                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not update for " + fish.getName() + "'s largest fish size.", exception)
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not update for " + fish.getName() + "'s largest fish size.", exception);
             }
         });
     }
