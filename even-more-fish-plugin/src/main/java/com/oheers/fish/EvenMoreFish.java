@@ -358,12 +358,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         metrics.addCustomChart(new SimplePie("experimental_features", () -> MainConfig.getInstance().doingExperimentalFeatures() ? "true" : "false"));
     }
 
-    @Deprecated
-    private void commands() {
-        getCommand("evenmorefish").setExecutor(new CommandCentre(this));
-        CommandCentre.loadTabCompletes();
-    }
-
     private void loadCommandManager() {
         PaperCommandManager manager = new PaperCommandManager(this);
 
@@ -384,21 +378,27 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             }
         });
         manager.getCommandContexts().registerContext(Rarity.class, c -> {
-            final String rarityId = c.popFirstArg();
-            Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream().filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId)).findAny();
+            final String rarityId = c.popFirstArg().replace("\"","");
+            final String secondId = c.popFirstArg().replace("\"", "");
+            Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream()
+                    .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId) || rarity.getValue().equalsIgnoreCase(rarityId + " " + secondId))
+                    .findFirst();
             if (!potentialRarity.isPresent()) {
-                throw new InvalidCommandArgument("No such rarity.");
+                throw new InvalidCommandArgument("No such rarity: " + rarityId);
             }
 
             return potentialRarity.get();
         });
         manager.getCommandContexts().registerContext(Fish.class, c -> {
             final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
-            final String fishId = c.popFirstArg();
+            final String fishId = c.popFirstArg().replace("\"","");
+            final String secondId = c.popFirstArg().replace("\"",""); //Accounts for when fish names have spaces...
+            Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream()
+                    .filter(f -> f.getName().equalsIgnoreCase(fishId) || f.getName().equalsIgnoreCase(fishId + " " + secondId))
+                    .findFirst();
 
-            Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().filter(f -> f.getName().equalsIgnoreCase(fishId)).findFirst();
             if (!potentialFish.isPresent()) {
-                throw new InvalidCommandArgument("No such fish.");
+                throw new InvalidCommandArgument("No such fish: " + fishId);
             }
 
             return potentialFish.get();
