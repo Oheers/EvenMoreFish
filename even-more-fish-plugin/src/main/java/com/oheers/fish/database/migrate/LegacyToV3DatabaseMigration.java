@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  * @author sarhatabaot
@@ -47,7 +48,7 @@ public class LegacyToV3DatabaseMigration {
                 try (PreparedStatement preparedStatement = c.prepareStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";")) {
                     preparedStatement.execute();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
                 }
             });
             return;
@@ -57,7 +58,7 @@ public class LegacyToV3DatabaseMigration {
             try (PreparedStatement preparedStatement = c.prepareStatement(Table.EMF_FISH.creationCode)) {
                 preparedStatement.execute();
             } catch (SQLException e) {
-                e.printStackTrace();
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
             }
         });
         
@@ -104,8 +105,7 @@ public class LegacyToV3DatabaseMigration {
                     prep.setFloat(6, report.getLargestLength());
                     prep.executeUpdate();
                 } catch (SQLException exception) {
-                    EvenMoreFish.getInstance().getLogger().severe(() -> "Could not add " + uuid + " in the table: Users.");
-                    exception.printStackTrace();
+                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.", exception);
                 }
             });
             // starts a field for the new fish for the user that's been fished for the first time
@@ -128,8 +128,7 @@ public class LegacyToV3DatabaseMigration {
                 
                 prep.executeUpdate();
             } catch (SQLException exception) {
-                EvenMoreFish.getInstance().getLogger().severe(() -> "Could not add " + uuid + " in the table: emf_users.");
-                exception.printStackTrace();
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not add " + uuid + " in the table: emf_users.", exception);
             }
         });
     }
@@ -196,15 +195,13 @@ public class LegacyToV3DatabaseMigration {
             }
             
         } catch (NullPointerException | FileNotFoundException exception) {
-            exception.printStackTrace();
             Message message = new Message("Fatal error whilst upgrading to V3 database engine.");
             message.usePrefix(PrefixType.ERROR);
             message.broadcast(initiator, true, false);
             
-            EvenMoreFish.getInstance().getLogger().severe("Critical SQL/interruption error whilst upgrading to v3 engine.");
-            exception.printStackTrace();
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.", exception);
         } catch (IOException e) {
-            e.printStackTrace();
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
             throw new RuntimeException(e);
         }
         

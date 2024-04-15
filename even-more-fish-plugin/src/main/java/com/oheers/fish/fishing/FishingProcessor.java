@@ -36,6 +36,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
 
@@ -183,7 +184,7 @@ public class FishingProcessor implements Listener {
                     fishingRod.setItemMeta(newMeta);
                     EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
                 } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
-                    exception.printStackTrace();
+                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
                 }
             } else {
                 fish = chooseNonBaitFish(player, location);
@@ -247,8 +248,7 @@ public class FishingProcessor implements Listener {
         try {
             competitionCheck(fish.clone(), player, location);
         } catch (CloneNotSupportedException e) {
-            EvenMoreFish.getInstance().getLogger().severe("Failed to create a clone of: " + fish);
-            e.printStackTrace();
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed to create a clone of: " + fish, e);
         }
 
         if (MainConfig.getInstance().isDatabaseOnline()) {
@@ -269,8 +269,7 @@ public class FishingProcessor implements Listener {
                 EvenMoreFish.getInstance().getDatabaseV3().handleFishCatch(player.getUniqueId(), finalFish);
 
 //                    catch (SQLException exception) {
-//                        EvenMoreFish.getInstance().getLogger().severe("Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.");
-//                        exception.printStackTrace();
+//                        EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.", exception);
 //                    }
             });
         }
