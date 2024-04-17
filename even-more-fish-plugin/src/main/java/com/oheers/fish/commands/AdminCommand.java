@@ -1,7 +1,6 @@
 package com.oheers.fish.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.oheers.fish.EvenMoreFish;
@@ -115,7 +114,7 @@ public class AdminCommand extends BaseCommand {
      * If this class is static it will not work properly with ACF
      */
     @SuppressWarnings("InnerClassMayBeStatic")
-    @Subcommand("comp")
+    @Subcommand("competition")
     public class CompetitionSubCommand extends BaseCommand {
 
         @Subcommand("start")
