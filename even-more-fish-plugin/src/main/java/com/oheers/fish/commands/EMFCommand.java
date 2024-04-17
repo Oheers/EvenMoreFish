@@ -1,6 +1,7 @@
 package com.oheers.fish.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.oheers.fish.EvenMoreFish;
@@ -21,6 +22,7 @@ import org.bukkit.entity.Player;
 public class EMFCommand extends BaseCommand {
 
     @Subcommand("next")
+    @Description("%desc_general_next")
     public void onNext(final CommandSender sender) {
         Message message = Competition.getNextCompetitionMessage();
         message.usePrefix(PrefixType.DEFAULT);
@@ -28,6 +30,7 @@ public class EMFCommand extends BaseCommand {
     }
 
     @Subcommand("toggle")
+    @Description("%desc_general_toggle")
     @CommandPermission(UserPerms.TOGGLE)
     public void onToggle(final Player player) {
         if (EvenMoreFish.getInstance().getDisabledPlayers().contains(player.getUniqueId())) {
@@ -40,20 +43,17 @@ public class EMFCommand extends BaseCommand {
         new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, true, false);
     }
 
-    @Subcommand("migrate")
-    @CommandPermission(AdminPerms.MIGRATE)
-    public void onMigrate(final CommandSender sender) {
-        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
-    }
 
-    @Default
-    @Subcommand("help")
-    public void onHelp(final CommandSender sender) {
-        sender.sendMessage(CommandUtil.formGeneralHelp(sender));
+
+    @HelpCommand
+    public void onHelp(final CommandHelp help, final CommandSender sender) {
+        new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender, true, false);
+        help.showHelp();
     }
 
     @Subcommand("top")
     @CommandPermission(UserPerms.TOP)
+    @Description("%desc_general_top")
     public void onTop(final CommandSender sender) {
         if (!Competition.isActive()) {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
@@ -72,6 +72,7 @@ public class EMFCommand extends BaseCommand {
 
     @Subcommand("shop")
     @CommandPermission(UserPerms.SHOP)
+    @Description("%desc_general_shop")
     public void onShop(final CommandSender sender, @Optional final OnlinePlayer onlinePlayer) {
         if (MainConfig.getInstance().isEconomyDisabled()) {
             new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
@@ -94,6 +95,7 @@ public class EMFCommand extends BaseCommand {
 
     @Subcommand("sellall")
     @CommandPermission(UserPerms.SELL_ALL)
+    @Description("%desc_general_sellall")
     public void onSellAll(final Player sender) {
         if (MainConfig.getInstance().isEconomyDisabled()) {
             new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);

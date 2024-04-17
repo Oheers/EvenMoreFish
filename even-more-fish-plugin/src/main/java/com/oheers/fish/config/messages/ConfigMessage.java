@@ -10,7 +10,13 @@ public enum ConfigMessage {
     ADMIN_GIVE_PLAYER_BAIT("&rYou have given {player} a {bait}.", PrefixType.ADMIN, true, true, "admin.given-player-bait"),
     ADMIN_GIVE_PLAYER_FISH("&rYou have given {player} a {fish}.", PrefixType.ADMIN, true, true, "admin.given-player-fish"),
     ADMIN_OPEN_FISH_SHOP("&rOpened a shop inventory for {player}.", PrefixType.ADMIN, true, true, "admin.open-fish-shop"),
-    ADMIN_NBT_ROD_GIVEN("&rYou have given {player} a NBT rod, make sure \"require-nbt-rod\" is set to &atrue &rfor this to be different from any other fishing rod.", PrefixType.ADMIN, true, true, "admin.nbt-rod-given"),
+    ADMIN_NBT_ROD_GIVEN(
+            "&rYou have given {player} a NBT rod, make sure \"require-nbt-rod\" is set to &atrue &rfor this to be different from any other fishing rod.",
+            PrefixType.ADMIN,
+            true,
+            true,
+            "admin.nbt-rod-given"
+    ),
     ADMIN_NBT_NOT_REQUIRED("&rChange \"require-nbt-rod\" to true in order to use this feature.", PrefixType.ERROR, false, true, "admin.nbt-not-required"),
     ADMIN_NO_BAIT_SPECIFIED("&rYou must specify a bait name.", PrefixType.ERROR, false, true, "admin.no-bait-specified"),
     ADMIN_NOT_HOLDING_ROD("&rYou need to be holding a fishing rod to run that command.", PrefixType.ERROR, false, false, "admin.must-be-holding-rod"),
@@ -65,31 +71,62 @@ public enum ConfigMessage {
             "&fMeasures {length}cm"
     ), PrefixType.NONE, false, false, "length-lore"),
     FISH_SALE("&rYou've sold &a{amount} &ffish for &a{sell-price}&f.", PrefixType.DEFAULT, true, true, "fish-sale"),
-
-    HELP_GENERAL(Arrays.asList(
+    HELP_GENERAL_TITLE(
             "&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f",
-            "&f/emf top - Shows an ongoing competition's leaderboard.",
-            "&f/emf help - Shows you this page.",
-            "&f/emf shop - Opens a shop to sell your fish.",
-            "&f/emf toggle - Toggles whether or not you receive custom fish.",
-            "&f/emf admin - Admin command help page."
-    ), PrefixType.DEFAULT, false, true, "help-general"),
-    HELP_ADMIN(Arrays.asList(
+            PrefixType.DEFAULT,
+            false,
+            true,
+            "help-general-title"
+    ),
+    HELP_GENERAL_TOP("Shows an ongoing competition's leaderboard.", PrefixType.DEFAULT, false, true, "help-general-tope"),
+    HELP_GENERAL_HELP("Shows you this page.", PrefixType.DEFAULT, false, true, "help-general-help"),
+    HELP_GENERAL_SHOP("Opens a shop to sell your fish.", PrefixType.DEFAULT, false, true, "help-general-shop"),
+    HELP_GENERAL_TOGGLE("Toggles whether or not you receive custom fish.", PrefixType.DEFAULT, false, true, "help-general-toggle"),
+    HELP_GENERAL_ADMIN("Admin command help page.", PrefixType.DEFAULT, false, true, "help-general-admin"),
+    HELP_GENERAL_NEXT("Show how much time is until the next competition.", PrefixType.DEFAULT, false, true, "help-general-next"),
+    HELP_GENERAL_SELLALL("Sell all the fish in your inventory.", PrefixType.DEFAULT, false, true, "help-general-sellall"),
+    HELP_ADMIN_TITLE(
             "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f",
-            "&f/emf admin competition <start/end> <duration> <type> - Starts or stops a competition",
-            "&f/emf admin clearbait - Removes all applied baits from a fishing rod.",
-            "&f/emf admin reload - Reloads the plugin's config files",
-            "&f/emf admin version - Displays plugin information."
-    ), PrefixType.ADMIN, false, true, "help-admin"),
-    HELP_COMPETITION(Arrays.asList(
+            PrefixType.ADMIN,
+            false,
+            true,
+            "help-admin-title"
+    ),
+    HELP_ADMIN_BAIT("Gives baits to a player.", PrefixType.ADMIN, false, true, "help-admin-bait"),
+    HELP_ADMIN_COMPETITION("Starts or stops a competition", PrefixType.ADMIN, false, true, "help-admin-compeition"),
+    HELP_ADMIN_CLEARBAITS("Removes all applied baits from a fishing rod.", PrefixType.ADMIN, false, true, "help-admin-clearbait"),
+    HELP_ADMIN_FISH("Gives a fish to a player.", PrefixType.ADMIN, false, true, "help-admin-fish"),
+    HELP_ADMIN_NBTROD("Gives a custom NBT rod to a player required for catching EMF fish.", PrefixType.ADMIN, false, true, "help-admin-nbtrod"),
+    HELP_ADMIN_RELOAD("Reloads the plugin's config files", PrefixType.ADMIN, false, true, "help-admin-reload"),
+    HELP_ADMIN_VERSION("Displays plugin information.", PrefixType.ADMIN, false, true, "help-admin-version"),
+    HELP_ADMIN_MIGRATE("Migrate the database from Legacy (V2) to V3", PrefixType.ADMIN, false, true, "help-admin-migrate"),
+    HELP_LIST_TITLE(
             "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f",
-            "&f/emf admin competition start <duration> <type> - Starts a competition of a specified duration",
-            "&f/emf admin competition end - Ends the current competition (if there is one)"
-    ), PrefixType.ADMIN, false, true, "help-competition"),
-
+            PrefixType.ADMIN,
+            false,
+            true,
+            "help-list-title"
+    ),
+    HELP_LIST_FISH("Display all fish in a specific rarity.", PrefixType.ADMIN, false, true, "help-list-fish"),
+    HELP_LIST_RARITIES("Display all rarities.", PrefixType.ADMIN, false, true, "help-list-rarities"),
+    HELP_COMPETITION_TITLE(
+            "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f",
+            PrefixType.ADMIN,
+            false,
+            true,
+            "help-competition-title"
+    ),
+    HELP_COMPETITION_START("Starts a competition of a specified duration", PrefixType.ADMIN, false, true, "help-competition-start"),
+    HELP_COMPETITION_END("Ends the current competition (if there is one)", PrefixType.ADMIN, false, true, "help-competition-end"),
     INVALID_COMPETITION_TYPE("&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH", PrefixType.ADMIN, false, false, "admin.competition-type-invalid"),
 
-    LEADERBOARD_LARGEST_FISH("&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)", PrefixType.DEFAULT, false, true, "leaderboard-largest-fish"),
+    LEADERBOARD_LARGEST_FISH(
+            "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)",
+            PrefixType.DEFAULT,
+            false,
+            true,
+            "leaderboard-largest-fish"
+    ),
     LEADERBOARD_LARGEST_TOTAL("&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)", PrefixType.DEFAULT, false, true, "leaderboard-largest-total"),
     LEADERBOARD_MOST_FISH("&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)", PrefixType.DEFAULT, false, true, "leaderboard-most-fish"),
     LEADERBOARD_TOTAL_PLAYERS("&rThere are a total of {amount} player(s) in the leaderboard.", PrefixType.DEFAULT, true, true, "total-players"),

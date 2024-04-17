@@ -23,6 +23,8 @@ import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.config.*;
+import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.*;
 import com.oheers.fish.events.AureliumSkillsFishingEvent;
@@ -207,7 +209,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         listeners();
         loadCommandManager();
-//        commands();
 
         if (!MainConfig.getInstance().debugSession()) {
             metrics();
@@ -362,9 +363,38 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         PaperCommandManager manager = new PaperCommandManager(this);
 
         manager.enableUnstableAPI("brigadier");
+        manager.enableUnstableAPI("help");
 
-        manager.getCommandReplacements().addReplacement("main","emf|evenmorefish");
+        manager.getCommandReplacements().addReplacement("main", "emf|evenmorefish");
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
+
+        //desc_admin_<command>_<id>
+        manager.getCommandReplacements().addReplacements(
+                "desc_admin_bait", new Message(ConfigMessage.HELP_ADMIN_BAIT).getRawMessage(true, true),
+                "desc_admin_competition", new Message(ConfigMessage.HELP_ADMIN_COMPETITION).getRawMessage(true, true),
+                "desc_admin_clearbaits", new Message(ConfigMessage.HELP_ADMIN_CLEARBAITS).getRawMessage(true, true),
+                "desc_admin_fish", new Message(ConfigMessage.HELP_ADMIN_FISH).getRawMessage(true, true),
+                "desc_admin_nbtrod", new Message(ConfigMessage.HELP_ADMIN_NBTROD).getRawMessage(true, true),
+                "desc_admin_reload", new Message(ConfigMessage.HELP_ADMIN_RELOAD).getRawMessage(true, true),
+                "desc_admin_version", new Message(ConfigMessage.HELP_ADMIN_VERSION).getRawMessage(true, true),
+                "desc_admin_migrate", new Message(ConfigMessage.HELP_ADMIN_MIGRATE).getRawMessage(true, true),
+
+                "desc_list_fish", new Message(ConfigMessage.HELP_LIST_FISH).getRawMessage(true, true),
+                "desc_list_rarities", new Message(ConfigMessage.HELP_LIST_RARITIES).getRawMessage(true, true),
+
+                "desc_competition_start", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true, true),
+                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true, true),
+
+                "desc_general_top", new Message(ConfigMessage.HELP_GENERAL_TOP).getRawMessage(true, true),
+                "desc_general_help", new Message(ConfigMessage.HELP_GENERAL_HELP).getRawMessage(true, true),
+                "desc_general_shop", new Message(ConfigMessage.HELP_GENERAL_SHOP).getRawMessage(true, true),
+                "desc_general_toggle", new Message(ConfigMessage.HELP_GENERAL_TOGGLE).getRawMessage(true, true),
+                "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(true, true),
+                "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(true,true),
+                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(true,true)
+        );
+
+
         manager.getCommandConditions().addCondition(Integer.class, "limits", (c, exec, value) -> {
             if (value == null) {
                 return;
@@ -378,9 +408,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             }
         });
         manager.getCommandContexts().registerContext(Rarity.class, c -> {
-            final String rarityId = c.popFirstArg().replace("\"","");
+            final String rarityId = c.popFirstArg().replace("\"", "");
             Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream()
-                    .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId) )
+                    .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId))
                     .findFirst();
             if (!potentialRarity.isPresent()) {
                 throw new InvalidCommandArgument("No such rarity: " + rarityId);
@@ -390,9 +420,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
         manager.getCommandContexts().registerContext(Fish.class, c -> {
             final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
-            final String firstId = c.popFirstArg().replace("\"","");
+            final String firstId = c.popFirstArg().replace("\"", "");
             final String secondId = replaceOrEmpty(c.popFirstArg()); //Accounts for when fish names have spaces...
-            final String fishId = getFinalId(firstId,secondId);
+            final String fishId = getFinalId(firstId, secondId);
             Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream()
                     .filter(f -> f.getName().equalsIgnoreCase(fishId))
                     .findFirst();
@@ -421,12 +451,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return id + " " + secondId;
     }
 
-    private String replaceOrEmpty(final String string){
+    private String replaceOrEmpty(final String string) {
         if (string == null) {
             return "";
         }
 
-        return string.replace("\"","");
+        return string.replace("\"", "");
     }
 
 

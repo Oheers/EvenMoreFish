@@ -1,6 +1,7 @@
 package com.oheers.fish.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
@@ -20,6 +21,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.permissions.AdminPerms;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -38,7 +40,7 @@ import java.util.Map;
 public class AdminCommand extends BaseCommand {
     @Subcommand("fish")
     @CommandCompletion("@rarities @fish")
-    @Description("Give a fish to a player. Optionally set the quantity & target player.")
+    @Description("%desc_admin_fish")
     public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Optional @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional Player target) {
         if (target == null && !(sender instanceof Player)) {
             new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
@@ -73,13 +75,13 @@ public class AdminCommand extends BaseCommand {
 
         @Subcommand("fish")
         @CommandCompletion("@rarities")
-        @Description("Display all fish in a specific rarity.")
+        @Description("%desc_list_fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
             BaseComponent baseComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
             for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour()+ "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to receive fish")));
-                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + CommandUtil.wrapped(rarity.getValue()) + " " + CommandUtil.wrapped(fish.getName())));
+                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + wrapped(rarity.getValue()) + " " + wrapped(fish.getName())));
                 baseComponent.addExtra(textComponent);
             }
             sender.spigot().sendMessage(baseComponent);
@@ -87,13 +89,13 @@ public class AdminCommand extends BaseCommand {
 
 
         @Subcommand("rarities")
-        @Description("Display all rarities.")
+        @Description("%desc_list_rarities")
         public void onRarity(final CommandSender sender) {
             BaseComponent baseComponent = new TextComponent("");
             for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish.")));
-                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + CommandUtil.wrapped(rarity.getValue())));
+                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + wrapped(rarity.getValue())));
                 baseComponent.addExtra(textComponent);
             }
             sender.spigot().sendMessage(baseComponent);
@@ -114,6 +116,7 @@ public class AdminCommand extends BaseCommand {
     public class CompetitionSubCommand extends BaseCommand {
 
         @Subcommand("start")
+        @Description("%desc_competition_start")
         public void onStart(final CommandSender sender, @Optional @Default("%duration") @Conditions("limits:min=1") Integer duration, @Default("LARGEST_FISH") @Optional CompetitionType type) {
             if (Competition.isActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender, true, false);
@@ -135,6 +138,7 @@ public class AdminCommand extends BaseCommand {
         }
 
         @Subcommand("end")
+        @Description("%desc_competition_end")
         public void onEnd(final CommandSender sender) {
             if (Competition.isActive()) {
                 EvenMoreFish.getInstance().getActiveCompetition().end();
@@ -144,14 +148,15 @@ public class AdminCommand extends BaseCommand {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
         }
 
-        @Default
-        @Subcommand("help")
-        public void onHelp(final CommandSender sender) {
-            new Message(ConfigMessage.HELP_COMPETITION).broadcast(sender, true, false);
+        @HelpCommand
+        public void onHelp(final CommandHelp help, final CommandSender sender) {
+            new Message(ConfigMessage.HELP_COMPETITION_TITLE).broadcast(sender,true,false);
+            help.showHelp();
         }
     }
 
     @Subcommand("nbt-rod")
+    @Description("%desc_admin_nbtrod")
     public void onNbtRod(final CommandSender sender, @Optional Player player) {
         if (!MainConfig.getInstance().requireNBTRod()) {
             new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender, true, false);
@@ -179,6 +184,7 @@ public class AdminCommand extends BaseCommand {
 
     @Subcommand("bait")
     @CommandCompletion("@baits @range:1-64 @online-players")
+    @Description("%desc_admin_bait")
     public void onBait(final CommandSender sender, String baitName, @Default("1") @Conditions("limits:min=1,max=64") int quantity, @Optional Player player) {
         final String baitId = getBaitIdFromName(baitName);
         final Bait bait = EvenMoreFish.getInstance().getBaits().get(baitId);
@@ -220,6 +226,7 @@ public class AdminCommand extends BaseCommand {
     }
 
     @Subcommand("clearbaits")
+    @Description("%desc_admin_clearbaits")
     public void onClearBaits(final CommandSender sender, @Optional Player player) {
         if (player == null && !(sender instanceof Player)) {
             new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
@@ -251,7 +258,7 @@ public class AdminCommand extends BaseCommand {
 
 
     @Subcommand("reload")
-    @Description("Reloads the plugin's config files.")
+    @Description("%desc_admin_reload")
     public void onReload(final CommandSender sender) {
         FishFile.getInstance().reload();
         RaritiesFile.getInstance().reload();
@@ -264,6 +271,7 @@ public class AdminCommand extends BaseCommand {
 
 
     @Subcommand("addons")
+    @Description("%desc_admin_addons")
     public void onAddons(final CommandSender sender) {
         final AddonManager addonManager = EvenMoreFish.getInstance().getAddonManager();
         final String messageFormat = "Addon: %s, Loading: %b";
@@ -277,6 +285,7 @@ public class AdminCommand extends BaseCommand {
     }
 
     @Subcommand("version")
+    @Description("%desc_admin_version")
     public void onVersion(final CommandSender sender) {
         int fishCount = 0;
         for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
@@ -310,6 +319,7 @@ public class AdminCommand extends BaseCommand {
     }
 
     @Subcommand("rewardtypes")
+    @Description("%desc_admin_rewardtypes")
     public void onRewardTypes(final CommandSender sender) {
         TextComponent message = new TextComponent(new Message(ConfigMessage.ADMIN_LIST_REWARD_TYPES).getRawMessage(true, false));
         ComponentBuilder builder = new ComponentBuilder(message);
@@ -328,9 +338,21 @@ public class AdminCommand extends BaseCommand {
         sender.spigot().sendMessage(builder.create());
     }
 
-    @Default
-    @Subcommand("help")
-    public void onHelp(final CommandSender sender) {
-        new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, true, false);
+    @Subcommand("migrate")
+    @Description("%desc_general_migrate")
+    @CommandPermission(AdminPerms.MIGRATE)
+    public void onMigrate(final CommandSender sender) {
+        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
+    }
+
+
+    @HelpCommand
+    public void onHelp(final CommandHelp help, final CommandSender sender) {
+        new Message(ConfigMessage.HELP_ADMIN_TITLE).broadcast(sender, true, false);
+        help.showHelp();
+    }
+
+    private String wrapped(final String string) {
+        return "\"" + string + "\"";
     }
 }
