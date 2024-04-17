@@ -3,6 +3,7 @@ package com.oheers.fish.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.addons.AddonManager;
@@ -37,19 +38,18 @@ import java.util.Map;
 
 @CommandAlias("%main")
 @Subcommand("admin")
+@CommandPermission(AdminPerms.ADMIN)
 public class AdminCommand extends BaseCommand {
     @Subcommand("fish")
-    @CommandCompletion("@rarities @fish")
+    @CommandCompletion("@rarities @fish @range:1-64 @players")
     @Description("%desc_admin_fish")
-    public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Optional @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional Player target) {
-        if (target == null && !(sender instanceof Player)) {
+    public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Optional @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional OnlinePlayer player) {
+        if (player == null && !(sender instanceof Player)) {
             new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
             return;
         }
 
-        if (target == null) {
-            target = (Player) sender;
-        }
+        Player target = getPlayerFromOnlinePlayerAndSender(sender, player);
 
         fish.init();
 
@@ -63,6 +63,13 @@ public class AdminCommand extends BaseCommand {
         message.setFishCaught(fish.getName());
         message.broadcast(sender, true, true);
         //give fish to target
+    }
+
+    private Player getPlayerFromOnlinePlayerAndSender(final CommandSender sender, final OnlinePlayer player) {
+        if (player == null) {
+            return (Player) sender;
+        }
+        return player.player;
     }
 
     /**
@@ -81,7 +88,7 @@ public class AdminCommand extends BaseCommand {
             for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour()+ "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to receive fish")));
-                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + wrapped(rarity.getValue()) + " " + wrapped(fish.getName())));
+                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName().replace(" ","_")));
                 baseComponent.addExtra(textComponent);
             }
             sender.spigot().sendMessage(baseComponent);
@@ -95,7 +102,7 @@ public class AdminCommand extends BaseCommand {
             for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish.")));
-                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + wrapped(rarity.getValue())));
+                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
                 baseComponent.addExtra(textComponent);
             }
             sender.spigot().sendMessage(baseComponent);
@@ -330,15 +337,9 @@ public class AdminCommand extends BaseCommand {
     }
 
     @Subcommand("migrate")
-    @Description("%desc_general_migrate")
+    @Description("%desc_admin_migrate")
     @CommandPermission(AdminPerms.MIGRATE)
     public void onMigrate(final CommandSender sender) {
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
-    }
-
-
-
-    private String wrapped(final String string) {
-        return "\"" + string + "\"";
     }
 }

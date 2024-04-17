@@ -376,6 +376,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                 "desc_admin_reload", new Message(ConfigMessage.HELP_ADMIN_RELOAD).getRawMessage(true, true),
                 "desc_admin_version", new Message(ConfigMessage.HELP_ADMIN_VERSION).getRawMessage(true, true),
                 "desc_admin_migrate", new Message(ConfigMessage.HELP_ADMIN_MIGRATE).getRawMessage(true, true),
+                "desc_admin_rewardtypes", new Message(ConfigMessage.HELP_ADMIN_REWARDTYPES).getRawMessage(true,true),
+                "desc_admin_addons", new Message(ConfigMessage.HELP_ADMIN_ADDONS).getRawMessage(true,true),
 
                 "desc_list_fish", new Message(ConfigMessage.HELP_LIST_FISH).getRawMessage(true, true),
                 "desc_list_rarities", new Message(ConfigMessage.HELP_LIST_RARITIES).getRawMessage(true, true),
@@ -388,8 +390,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                 "desc_general_shop", new Message(ConfigMessage.HELP_GENERAL_SHOP).getRawMessage(true, true),
                 "desc_general_toggle", new Message(ConfigMessage.HELP_GENERAL_TOGGLE).getRawMessage(true, true),
                 "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(true, true),
-                "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(true,true),
-                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(true,true)
+                "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(true, true),
+                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(true, true)
         );
 
 
@@ -418,9 +420,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
         manager.getCommandContexts().registerContext(Fish.class, c -> {
             final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
-            final String firstId = c.popFirstArg().replace("\"", "");
-            final String secondId = replaceOrEmpty(c.popFirstArg()); //Accounts for when fish names have spaces...
-            final String fishId = getFinalId(firstId, secondId);
+            final String fishId = c.popFirstArg().replace("_", " ");
             Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream()
                     .filter(f -> f.getName().equalsIgnoreCase(fishId))
                     .findFirst();
@@ -435,35 +435,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         manager.getCommandCompletions().registerCompletion("rarities", c -> EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
-            return EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().map(Fish::getName).collect(Collectors.toList());
+            return EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().map(f -> f.getName().replace(" ","_")).collect(Collectors.toList());
         });
 
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
-    }
-
-    private String getFinalId(final String id, final String secondId) {
-        if (secondId.isEmpty() || isNumeric(secondId)) {
-            return id;
-        }
-        return id + " " + secondId;
-    }
-
-    private boolean isNumeric(final String id) {
-        try {
-            Integer.parseInt(id);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private String replaceOrEmpty(final String string) {
-        if (string == null) {
-            return "";
-        }
-
-        return string.replace("\"", "");
     }
 
 
