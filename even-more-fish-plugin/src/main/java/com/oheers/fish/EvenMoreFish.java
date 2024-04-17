@@ -1,8 +1,6 @@
 package com.oheers.fish;
 
-import co.aikar.commands.ConditionFailedException;
-import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.PaperCommandManager;
+import co.aikar.commands.*;
 import com.Zrips.CMI.Containers.CMIUser;
 import com.earth2me.essentials.Essentials;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
@@ -51,6 +49,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -367,7 +366,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         manager.getCommandReplacements().addReplacement("main", "emf|evenmorefish");
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
-
         //desc_admin_<command>_<id>
         manager.getCommandReplacements().addReplacements(
                 "desc_admin_bait", new Message(ConfigMessage.HELP_ADMIN_BAIT).getRawMessage(true, true),
@@ -445,10 +443,19 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private String getFinalId(final String id, final String secondId) {
-        if (secondId.isEmpty()) {
+        if (secondId.isEmpty() || isNumeric(secondId)) {
             return id;
         }
         return id + " " + secondId;
+    }
+
+    private boolean isNumeric(final String id) {
+        try {
+            Integer.parseInt(id);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private String replaceOrEmpty(final String string) {

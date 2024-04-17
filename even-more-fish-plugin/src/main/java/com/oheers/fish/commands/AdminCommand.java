@@ -101,10 +101,6 @@ public class AdminCommand extends BaseCommand {
             sender.spigot().sendMessage(baseComponent);
         }
 
-        @Default
-        public void onHelp() {
-            //todo add help for list command
-        }
     }
 
     /**
@@ -148,11 +144,6 @@ public class AdminCommand extends BaseCommand {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
         }
 
-        @HelpCommand
-        public void onHelp(final CommandHelp help, final CommandSender sender) {
-            new Message(ConfigMessage.HELP_COMPETITION_TITLE).broadcast(sender,true,false);
-            help.showHelp();
-        }
     }
 
     @Subcommand("nbt-rod")
@@ -346,11 +337,6 @@ public class AdminCommand extends BaseCommand {
     }
 
 
-    @HelpCommand
-    public void onHelp(final CommandHelp help, final CommandSender sender) {
-        new Message(ConfigMessage.HELP_ADMIN_TITLE).broadcast(sender, true, false);
-        help.showHelp();
-    }
 
     private String wrapped(final String string) {
         return "\"" + string + "\"";

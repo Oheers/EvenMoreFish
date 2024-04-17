@@ -45,6 +45,7 @@ public class EMFCommand extends BaseCommand {
 
 
 
+    @Default
     @HelpCommand
     public void onHelp(final CommandHelp help, final CommandSender sender) {
         new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender, true, false);
