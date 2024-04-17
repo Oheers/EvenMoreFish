@@ -75,8 +75,7 @@ public class AdminCommand extends BaseCommand {
         @CommandCompletion("@rarities")
         @Description("Display all fish in a specific rarity.")
         public void onFish(final CommandSender sender, final Rarity rarity) {
-            BaseComponent baseComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + rarity.getDisplayName()));
-            baseComponent.addExtra("\n");
+            BaseComponent baseComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
             for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to receive fish")));
@@ -252,6 +251,7 @@ public class AdminCommand extends BaseCommand {
 
 
     @Subcommand("reload")
+    @Description("Reloads the plugin's config files.")
     public void onReload(final CommandSender sender) {
         FishFile.getInstance().reload();
         RaritiesFile.getInstance().reload();
