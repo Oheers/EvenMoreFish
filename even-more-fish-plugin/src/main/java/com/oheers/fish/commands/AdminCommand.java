@@ -37,7 +37,9 @@ import java.util.Map;
 @Subcommand("admin")
 public class AdminCommand extends BaseCommand {
     @Subcommand("fish")
-    public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional Player target) {
+    @CommandCompletion("@rarities @fish")
+    @Description("Give a fish to a player. Optionally set the quantity & target player.")
+    public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Optional @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional Player target) {
         if (target == null && !(sender instanceof Player)) {
             new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
             return;
@@ -70,32 +72,37 @@ public class AdminCommand extends BaseCommand {
     public class ListSubCommand extends BaseCommand {
 
         @Subcommand("fish")
+        @CommandCompletion("@rarities")
+        @Description("Display all fish in a specific rarity.")
         public void onFish(final CommandSender sender, final Rarity rarity) {
-            ComponentBuilder builder = new ComponentBuilder();
-
-            builder.append(FishUtils.translateHexColorCodes(rarity.getDisplayName()), ComponentBuilder.FormatRetention.NONE);
-
+            BaseComponent baseComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + rarity.getDisplayName()));
+            baseComponent.addExtra("\n");
             for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
-                builder.append(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + "] "));
-
-                builder.event(new HoverEvent(HoverEvent.Action.SHOW_ITEM, TextComponent.fromLegacyText("Click to receive fish"))); // The only element of the hover events basecomponents is the item json
-                builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName()));
+                BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + "] "));
+                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to receive fish")));
+                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + CommandUtil.wrapped(rarity.getValue()) + " " + CommandUtil.wrapped(fish.getName())));
+                baseComponent.addExtra(textComponent);
             }
-
-            sender.spigot().sendMessage(builder.create());
+            sender.spigot().sendMessage(baseComponent);
         }
 
 
         @Subcommand("rarities")
+        @Description("Display all rarities.")
         public void onRarity(final CommandSender sender) {
             BaseComponent baseComponent = new TextComponent("");
             for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish.")));
-                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
+                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + CommandUtil.wrapped(rarity.getValue())));
                 baseComponent.addExtra(textComponent);
             }
             sender.spigot().sendMessage(baseComponent);
+        }
+
+        @Default
+        public void onHelp() {
+            //todo add help for list command
         }
     }
 
@@ -108,7 +115,7 @@ public class AdminCommand extends BaseCommand {
     public class CompetitionSubCommand extends BaseCommand {
 
         @Subcommand("start")
-        public void onStart(final CommandSender sender, @Default("%duration") @Conditions("limits:min=1") Integer duration, @Default("LARGEST_FISH") @Optional CompetitionType type) {
+        public void onStart(final CommandSender sender, @Optional @Default("%duration") @Conditions("limits:min=1") Integer duration, @Default("LARGEST_FISH") @Optional CompetitionType type) {
             if (Competition.isActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender, true, false);
                 return;
