@@ -48,4 +48,8 @@ public class CommandUtil {
         return out.toString();
 
     }
+
+    public static String wrapped(final String string) {
+        return "\"" + string + "\"";
+    }
 }
