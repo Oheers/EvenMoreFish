@@ -379,9 +379,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
         manager.getCommandContexts().registerContext(Rarity.class, c -> {
             final String rarityId = c.popFirstArg().replace("\"","");
-            final String secondId = replaceOrEmpty(c.popFirstArg());
             Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream()
-                    .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId) || rarity.getValue().equalsIgnoreCase(rarityId + " " + secondId))
+                    .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId) )
                     .findFirst();
             if (!potentialRarity.isPresent()) {
                 throw new InvalidCommandArgument("No such rarity: " + rarityId);
@@ -391,10 +390,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
         manager.getCommandContexts().registerContext(Fish.class, c -> {
             final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
-            final String fishId = c.popFirstArg().replace("\"","");
+            final String firstId = c.popFirstArg().replace("\"","");
             final String secondId = replaceOrEmpty(c.popFirstArg()); //Accounts for when fish names have spaces...
+            final String fishId = getFinalId(firstId,secondId);
             Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream()
-                    .filter(f -> f.getName().equalsIgnoreCase(fishId) || f.getName().equalsIgnoreCase(fishId + " " + secondId))
+                    .filter(f -> f.getName().equalsIgnoreCase(fishId))
                     .findFirst();
 
             if (!potentialFish.isPresent()) {
@@ -412,6 +412,13 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
+    }
+
+    private String getFinalId(final String id, final String secondId) {
+        if (secondId.isEmpty()) {
+            return id;
+        }
+        return id + " " + secondId;
     }
 
     private String replaceOrEmpty(final String string){
