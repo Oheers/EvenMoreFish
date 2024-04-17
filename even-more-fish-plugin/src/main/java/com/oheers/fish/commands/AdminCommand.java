@@ -77,7 +77,7 @@ public class AdminCommand extends BaseCommand {
         public void onFish(final CommandSender sender, final Rarity rarity) {
             BaseComponent baseComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
             for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
-                BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + "] "));
+                BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour()+ "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to receive fish")));
                 textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + CommandUtil.wrapped(rarity.getValue()) + " " + CommandUtil.wrapped(fish.getName())));
                 baseComponent.addExtra(textComponent);
