@@ -1,6 +1,8 @@
 package com.oheers.fish;
 
-import co.aikar.commands.*;
+import co.aikar.commands.ConditionFailedException;
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.PaperCommandManager;
 import com.Zrips.CMI.Containers.CMIUser;
 import com.earth2me.essentials.Essentials;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
@@ -49,7 +51,6 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
