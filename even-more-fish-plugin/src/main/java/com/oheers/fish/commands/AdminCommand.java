@@ -119,7 +119,7 @@ public class AdminCommand extends BaseCommand {
 
         @Subcommand("start")
         @Description("%desc_competition_start")
-        public void onStart(final CommandSender sender, @Optional @Default("%duration") @Conditions("limits:min=1") Integer duration, @Default("LARGEST_FISH") @Optional CompetitionType type) {
+        public void onStart(final CommandSender sender, @Optional @Default("%duration") @Conditions("limits:min=1") Integer duration, @Default("LARGEST_FISH") @Optional CompetitionType type,@Default("1") @Conditions("limits:min=1") @Optional Integer amount) {
             if (Competition.isActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender, true, false);
                 return;
