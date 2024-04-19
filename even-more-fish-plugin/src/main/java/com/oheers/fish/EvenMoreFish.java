@@ -432,7 +432,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
             return potentialFish.get();
         });
-        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet());
+        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet().stream().map(s -> s.replace(" ","_")).collect(Collectors.toList()));
         manager.getCommandCompletions().registerCompletion("rarities", c -> EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
