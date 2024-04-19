@@ -421,9 +421,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
         manager.getCommandContexts().registerContext(Fish.class, c -> {
             final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
-            final String fishId = c.popFirstArg().replace("_", " ");
+            final String fishId = c.popFirstArg();
             Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream()
-                    .filter(f -> f.getName().equalsIgnoreCase(fishId))
+                    .filter(f -> f.getName().equalsIgnoreCase(fishId.replace("_", " ")) || f.getName().equalsIgnoreCase(fishId))
                     .findFirst();
 
             if (!potentialFish.isPresent()) {
