@@ -180,9 +180,9 @@ public class AdminCommand extends BaseCommand {
 
 
     @Subcommand("bait")
-    @CommandCompletion("@baits @range:1-64 @online-players")
+    @CommandCompletion("@baits @range:1-64 @players")
     @Description("%desc_admin_bait")
-    public void onBait(final CommandSender sender, String baitName, @Default("1") @Conditions("limits:min=1,max=64") int quantity, @Optional Player player) {
+    public void onBait(final CommandSender sender, String baitName, @Default("1") @Conditions("limits:min=1,max=64") int quantity, @Optional OnlinePlayer player) {
         final String baitId = getBaitIdFromName(baitName);
         final Bait bait = EvenMoreFish.getInstance().getBaits().get(baitId);
         if (baitId == null || bait == null) {
@@ -203,11 +203,11 @@ public class AdminCommand extends BaseCommand {
             return;
         }
 
-        ItemStack baitItem = bait.create(player);
+        ItemStack baitItem = bait.create(player.player);
         baitItem.setAmount(quantity);
-        FishUtils.giveItems(Collections.singletonList(baitItem), player);
+        FishUtils.giveItems(Collections.singletonList(baitItem), player.player);
         Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
-        message.setPlayer(player.getName());
+        message.setPlayer(player.player.getName());
         message.setBait(baitId);
         message.broadcast(sender, true, true);
     }
