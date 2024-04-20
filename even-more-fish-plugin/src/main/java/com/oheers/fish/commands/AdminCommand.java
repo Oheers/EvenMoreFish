@@ -116,7 +116,7 @@ public class AdminCommand extends BaseCommand {
     @SuppressWarnings("InnerClassMayBeStatic")
     @Subcommand("competition")
     public class CompetitionSubCommand extends BaseCommand {
-        
+
         @Subcommand("start")
         @Description("%desc_competition_start")
         public void onStart(final CommandSender sender,
