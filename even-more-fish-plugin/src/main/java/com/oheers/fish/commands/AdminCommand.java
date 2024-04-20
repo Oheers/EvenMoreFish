@@ -116,10 +116,14 @@ public class AdminCommand extends BaseCommand {
     @SuppressWarnings("InnerClassMayBeStatic")
     @Subcommand("competition")
     public class CompetitionSubCommand extends BaseCommand {
-
+        
         @Subcommand("start")
         @Description("%desc_competition_start")
-        public void onStart(final CommandSender sender, @Optional @Default("%duration") @Conditions("limits:min=1") Integer duration, @Default("LARGEST_FISH") @Optional CompetitionType type,@Default("1") @Conditions("limits:min=1") @Optional Integer amount) {
+        public void onStart(final CommandSender sender,
+                            @Default("%duration") @Conditions("limits:min=1") @Optional Integer duration,
+                            @Default("LARGEST_FISH") @Optional CompetitionType type,
+                            @Default("1") @Conditions("limits:min=1") @Optional Integer amount
+        ) {
             if (Competition.isActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender, true, false);
                 return;
@@ -132,7 +136,7 @@ public class AdminCommand extends BaseCommand {
             comp.setAdminStarted(true);
             comp.initRewards(null, true);
             comp.initBar(null);
-            comp.initGetNumbersNeeded(null);
+            comp.setNumberNeeded(amount);
             comp.initStartSound(null);
 
             EvenMoreFish.getInstance().setActiveCompetition(comp);
@@ -182,7 +186,7 @@ public class AdminCommand extends BaseCommand {
     @Subcommand("bait")
     @CommandCompletion("@baits @range:1-64 @players")
     @Description("%desc_admin_bait")
-    public void onBait(final CommandSender sender, String baitName, @Default("1") @Conditions("limits:min=1,max=64") int quantity, @Optional OnlinePlayer player) {
+    public void onBait(final CommandSender sender, String baitName, @Default("1") @Conditions("limits:min=1,max=64") Integer quantity, @Optional OnlinePlayer player) {
         final String baitId = getBaitIdFromName(baitName);
         final Bait bait = EvenMoreFish.getInstance().getBaits().get(baitId);
         if (baitId == null || bait == null) {

@@ -49,7 +49,7 @@ public class Competition {
     Sound startSound;
     MyScheduledTask timingSystem;
     List<UUID> leaderboardMembers = new ArrayList<>();
-    private List<String> beginCommands;
+    private final List<String> beginCommands;
 
     public Competition(final Integer duration, final CompetitionType type, List<String> beginCommands) {
         this.maxDuration = duration;
@@ -620,7 +620,9 @@ public class Competition {
             }
         }
 
-        setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
+        if (this.numberNeeded == 0) {
+            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
+        }
 
         try {
             this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
