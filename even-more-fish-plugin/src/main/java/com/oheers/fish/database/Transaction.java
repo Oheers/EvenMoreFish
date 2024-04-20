@@ -2,9 +2,6 @@ package com.oheers.fish.database;
 
 import java.sql.Timestamp;
 
-/**
- * @author sarhatabaot
- */
 public class Transaction {
     private final String id; //special class for this
     private final int userId;
