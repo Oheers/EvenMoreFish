@@ -393,7 +393,7 @@ public class SellGUI implements InventoryHolder {
     private void glowify(ItemStack i) {
 
         // plops on the unbreaking 1 enchantment to make it glow
-        i.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        i.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
         ItemMeta meta = i.getItemMeta();
 
         // hides the unbreaking 1 enchantment from showing in the lore
