@@ -10,7 +10,7 @@ public class AuraSkillsFishingEvent implements Listener {
 
     @EventHandler
     public void fishCatch(LootDropEvent event) {
-        if (event.getCause() == LootDropEvent.Cause.FISHING_LUCK || event.getCause() == LootDropEvent.Cause.FISHING_OTHER_LOOT || event.getCause() == LootDropEvent.Cause.EPIC_CATCH) {
+        if (event.getCause() == LootDropEvent.Cause.FISHING_LUCK || event.getCause() == LootDropEvent.Cause.TREASURE_HUNTER || event.getCause() == LootDropEvent.Cause.FISHING_OTHER_LOOT || event.getCause() == LootDropEvent.Cause.EPIC_CATCH) {
             if (MainConfig.getInstance().disableAureliumSkills()) {
                 if (MainConfig.getInstance().isCompetitionUnique()) {
                     if (EvenMoreFish.getInstance().getActiveCompetition() != null) {
