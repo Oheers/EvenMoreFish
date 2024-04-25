@@ -57,6 +57,7 @@ dependencies {
         exclude("com.sk89q.worldguard", "worldguard-bukkit")
     }
     compileOnly(libs.aurelium.skills)
+    compileOnly(libs.aura.skills)
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)

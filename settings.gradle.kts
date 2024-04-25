@@ -25,6 +25,7 @@ dependencyResolutionManagement {
             library("redprotect-spigot", "br.net.fabiozumbi12.RedProtect","RedProtect-Spigot-1.13").versionRef("redprotect")
             library("mcmmo", "com.gmail.nossr50.mcMMO:mcMMO:2.1.196")
             library("aurelium-skills", "com.github.Archy-X:AureliumSkills:Beta1.2.8")
+            library("aura-skills", "dev.aurelium:auraskills-api-bukkit:2.0.7")
             library("headdatabase-api", "com.arcaniax:HeadDatabase-API:1.3.1")
             library("griefprevention", "com.github.TechFortress:GriefPrevention:16.17.1")//We must use 16.17.1 until we upgrade to java 17
             library("caffeine", "com.github.ben-manes.caffeine:caffeine:2.9.3")//We must use 2.9.3 until we upgrade to java 17

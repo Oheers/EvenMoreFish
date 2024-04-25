@@ -24,10 +24,7 @@ import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.*;
-import com.oheers.fish.events.AureliumSkillsFishingEvent;
-import com.oheers.fish.events.FishEatEvent;
-import com.oheers.fish.events.FishInteractEvent;
-import com.oheers.fish.events.McMMOTreasureEvent;
+import com.oheers.fish.events.*;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
@@ -328,7 +325,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         if (Bukkit.getPluginManager().getPlugin("AureliumSkills") != null) {
             if (MainConfig.getInstance().disableAureliumSkills()) {
-                getServer().getPluginManager().registerEvents(AureliumSkillsFishingEvent.getInstance(), this);
+                getServer().getPluginManager().registerEvents(new AureliumSkillsFishingEvent(), this);
+            }
+        }
+        if (Bukkit.getPluginManager().getPlugin("AuraSkills") != null) {
+            if (MainConfig.getInstance().disableAureliumSkills()) {
+                getServer().getPluginManager().registerEvents(new AuraSkillsFishingEvent(), this);
             }
         }
     }
