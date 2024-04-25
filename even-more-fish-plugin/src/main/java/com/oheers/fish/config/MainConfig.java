@@ -78,6 +78,8 @@ public class MainConfig extends ConfigBase {
     }
 
     public boolean shouldRespectVanish() { return getConfig().getBoolean("respect-vanished", true); }
+
+    public boolean shouldProtectBaitedRods() { return getConfig().getBoolean("protect-baited-rods", true); }
     
     public boolean isVanillaFishing() {
         return getConfig().getBoolean("vanilla-fishing", true);

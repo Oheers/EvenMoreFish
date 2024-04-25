@@ -3,6 +3,7 @@ package com.oheers.fish.baits;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
@@ -27,7 +28,7 @@ public class BaitListener implements Listener {
             return;
         }
 
-        if (anvilCheck(event)) {
+        if (MainConfig.getInstance().shouldProtectBaitedRods() && anvilCheck(event)) {
             return;
         }
 

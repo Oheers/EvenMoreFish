@@ -124,3 +124,6 @@ place-head-fish: false
 
 # Switch between custom fish or vanilla fishing
 vanilla-fishing: true
+
+# Whether to protect baited fishing rods in an anvil.
+protect-baited-rods: true
