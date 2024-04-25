@@ -99,6 +99,7 @@ bukkit {
         "RedProtect",
         "mcMMO",
         "AureliumSkills",
+        "AuraSkills",
         "ItemsAdder",
         "Denizen",
         "EcoItems",
