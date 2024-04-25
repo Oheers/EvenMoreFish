@@ -66,7 +66,7 @@ public class GUIConfig extends ConfigBase {
             Button button = new Button(
                     value,
                     uuid,
-                    materialIcon.getRawMessage(false, true),
+                    materialIcon.getRawMessage(true),
                     getConfig().getString("main-menu." + value + ".name"),
                     getConfig().getStringList("main-menu." + value + ".lore"),
                     getConfig().getInt("main-menu." + value + ".slot", -1)

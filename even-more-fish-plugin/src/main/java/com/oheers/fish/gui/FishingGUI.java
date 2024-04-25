@@ -28,7 +28,7 @@ public class FishingGUI implements InventoryHolder {
      * @param viewer The UUID of the player who will open the GUI.
      */
     public FishingGUI(@NotNull final UUID viewer, @NotNull final FillerStyle fillerStyle) {
-        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(GUIConfig.getInstance().getGUIName("main-menu")).getRawMessage(true, false));
+        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(GUIConfig.getInstance().getGUIName("main-menu")).getRawMessage(false));
         loadFiller();
         this.viewer = viewer;
         loadButtons();

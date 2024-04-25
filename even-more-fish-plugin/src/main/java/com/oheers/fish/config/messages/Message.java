@@ -129,34 +129,33 @@ public class Message {
      * Sends a global message to all online users, formatting the message for each user and applying placeholders where
      * necessary, where the placeholder acts on the user being sent the message.
      *
-     * @param doColour    If the method should format for colours or not.
      * @param doVariables If variables should be formatted or not.
      */
-    public void broadcast(final boolean doColour, final boolean doVariables) {
+    public void broadcast(final boolean doVariables) {
         if (doVariables) variableFormat();
-        if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
         if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(this.message);
-        }
+        colourFormat();
+
+        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(this.message));
+
     }
 
     /**
      * Sends a message to just one player, the message is formatted and the placeholder is directed to them.
      *
      * @param player      The player receiving the message.
-     * @param doColour    If the method should format for colours or not.
      * @param doVariables If variables should be formatted or not.
      */
-    public void broadcast(@NotNull final Player player, final boolean doColour, final boolean doVariables) {
+    public void broadcast(@NotNull final Player player, final boolean doVariables) {
         if (doVariables) variableFormat();
-        if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
         if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+
+        colourFormat();
 
         player.sendMessage(this.message);
     }
@@ -166,15 +165,15 @@ public class Message {
      * is directed to them.
      *
      * @param sender      The console sender.
-     * @param doColour    If the method should format for colours or not.
      * @param doVariables If variables should be formatted or not.
      */
-    public void broadcast(@NotNull final CommandSender sender, final boolean doColour, final boolean doVariables) {
+    public void broadcast(@NotNull final CommandSender sender, final boolean doVariables) {
         if (doVariables) variableFormat();
-        if (doColour) colourFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
         if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+
+        colourFormat();
 
         sender.sendMessage(this.message);
     }
@@ -214,15 +213,15 @@ public class Message {
      * This fetches the message straight from the messages.yml file and sends it back. It won't have been formatted unless
      * specified.
      *
-     * @param doColour    If the method should format for colours or not.
      * @param doVariables If variables should be formatted or not.
      * @return The raw value from messages.yml or the raw value passed through.
      */
-    public String getRawMessage(final boolean doColour, final boolean doVariables) {
+    public String getRawMessage(final boolean doVariables) {
         if (doVariables) variableFormat();
-        if (doColour) colourFormat();
 
         if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+
+        colourFormat();
 
         if (this.canSilent && this.message.endsWith(" -s")) return "";
         else return this.message;
@@ -233,13 +232,12 @@ public class Message {
      * the existing "message" string by \n characters to make a list which is then returned as a colour/variable formatted
      * list of strings (if requested to be formatted).
      *
-     * @param doColour    If the method should format for colours or not.
      * @param doVariables If variables should be formatted or not.
      * @return A list of formatted strings in the form of an ArrayList.
      */
-    public List<String> getRawListMessage(final boolean doColour, final boolean doVariables) {
+    public List<String> getRawListMessage(final boolean doVariables) {
         if (doVariables) variableFormat();
-        if (doColour) colourFormat();
+        colourFormat();
 
         String[] list = this.message.split("\n");
         return Arrays.asList(list);
@@ -515,18 +513,18 @@ public class Message {
     public void setCompetitionType(@NotNull final CompetitionType type) {
         switch (type) {
             case MOST_FISH:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage(false, false));
+                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage(false));
                 break;
             case SPECIFIC_FISH:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false, false));
+                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false));
                 break;
             case SPECIFIC_RARITY:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false, false));
+                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false));
                 break;
             case LARGEST_TOTAL:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage(false, false));
+                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage(false));
                 break;
-            default: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false, false));
+            default: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false));
         }
     }
 

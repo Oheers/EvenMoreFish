@@ -100,7 +100,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
             case "top":
                 if (EvenMoreFish.getInstance().getPermission().has(sender, UserPerms.TOP)) {
                     if (!Competition.isActive()) {
-                        new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
+                        new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true);
                     } else {
                         if (sender instanceof Player) {
                             EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard((Player) sender);
@@ -109,7 +109,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         }
                     }
                 } else {
-                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, false);
                 }
                 break;
             case "shop":
@@ -122,11 +122,11 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                                     new SellGUI(p, true);
                                     Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
                                     message.setPlayer(p.getName());
-                                    message.broadcast(sender, true, true);
+                                    message.broadcast(sender, true);
                                 } else {
                                     Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
                                     message.setPlayer(args[1]);
-                                    message.broadcast(sender, true, true);
+                                    message.broadcast(sender, true);
                                 }
                             } else {
                                 if (sender instanceof Player) {
@@ -134,14 +134,14 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                                 }
                             }
                         } else {
-                            new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                            new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, false);
                         }
                     } else {
-                        new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
+                        new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, false);
                     }
                 }
                 if (sender instanceof ConsoleCommandSender) {
-                    /*new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);*/
+                    /*new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);*/
                     if (args.length == 2) {
                         Player p = Bukkit.getPlayer(args[1]);
                         if (p != null) {
@@ -152,7 +152,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                 break;
             case "sellall":
                 if (!(sender instanceof Player)) {
-                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
                     break;
                 }
                 Player p = (Player) sender;
@@ -161,46 +161,46 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
                         SellGUI gui = new SellGUI(p, false);
                         gui.sell(true);
                     } else {
-                        new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                        new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, false);
                     }
                 } else {
-                    new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
+                    new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, false);
                 }
                 break;
             case "next":
                 Message message = Competition.getNextCompetitionMessage();
                 message.usePrefix(PrefixType.DEFAULT);
-                message.broadcast(sender, true, true);
+                message.broadcast(sender, true);
                 break;
             case "toggle":
                 if (!(sender instanceof Player)) {
-                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
                     break;
                 }
 
                 if (!(EvenMoreFish.getInstance().getPermission().has(sender, UserPerms.TOGGLE))) {
-                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, false);
                     break;
                 }
 
                 if (EvenMoreFish.getInstance().getDisabledPlayers().contains(((Player) sender).getUniqueId())) {
                     EvenMoreFish.getInstance().getDisabledPlayers().remove(((Player) sender).getUniqueId());
-                    new Message(ConfigMessage.TOGGLE_ON).broadcast(sender, true, false);
+                    new Message(ConfigMessage.TOGGLE_ON).broadcast(sender, false);
                 } else {
                     EvenMoreFish.getInstance().getDisabledPlayers().add(((Player) sender).getUniqueId());
-                    new Message(ConfigMessage.TOGGLE_OFF).broadcast(sender, true, false);
+                    new Message(ConfigMessage.TOGGLE_OFF).broadcast(sender, false);
                 }
                 break;
             case "admin":
                 if (EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
                     Controls.adminControl(this.plugin, args, sender);
                 } else {
-                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, false);
                 }
                 break;
             case "migrate":
                 if (!EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.MIGRATE)) {
-                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, false);
                 } else {
                     EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
                 }
@@ -208,7 +208,7 @@ public class CommandCentre implements TabCompleter, CommandExecutor {
             case "xmas":
                 if (!Xmas2022Config.getInstance().isAvailable()) break;
                 if (!EvenMoreFish.getInstance().getPermission().has(sender, UserPerms.XMAS)) {
-                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, true, false);
+                    new Message(ConfigMessage.NO_PERMISSION).broadcast(sender, false);
                 } else {
                     new XmasGUI(((Player) sender).getUniqueId()).display((Player) sender);
                 }
@@ -313,7 +313,7 @@ class Controls {
 
         // will only proceed after this if at least args[1] exists
         if (args.length == 1) {
-            new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, true, false);
+            new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, false);
             return;
         }
 
@@ -378,7 +378,7 @@ class Controls {
                                 if ((player = Bukkit.getPlayer(args[section].substring(3))) == null) {
                                     Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
                                     message.setPlayer(args[section].substring(3));
-                                    message.broadcast(sender, true, true);
+                                    message.broadcast(sender, true);
                                     return;
                                 }
                             } else if (args[section].startsWith("-q:")) {
@@ -387,14 +387,14 @@ class Controls {
                                 } catch (NumberFormatException exception) {
                                     Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
                                     message.setAmount(args[section].substring(3));
-                                    message.broadcast(sender, true, true);
+                                    message.broadcast(sender, true);
                                     return;
                                 }
 
                                 if (quantity <= 0 || quantity > 64) {
                                     Message message = new Message(ConfigMessage.ADMIN_NUMBER_RANGE_ERROR);
                                     message.setAmount(args[section].substring(3));
-                                    message.broadcast(sender, true, true);
+                                    message.broadcast(sender, true);
                                     return;
                                 }
                             }
@@ -440,7 +440,7 @@ class Controls {
                                             Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_FISH);
                                             message.setPlayer(player.getName());
                                             message.setFishCaught(f.getName());
-                                            message.broadcast(sender, true, true);
+                                            message.broadcast(sender, true);
                                         }
 
                                         break;
@@ -450,7 +450,7 @@ class Controls {
                             }
                         }
                     } else {
-                        new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                        new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
                     }
 
                 } else {
@@ -474,7 +474,7 @@ class Controls {
 
             case "nbt-rod": {
                 if (!MainConfig.getInstance().requireNBTRod()) {
-                    new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender, true, false);
+                    new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender, false);
                     return;
                 }
                 Player player;
@@ -483,7 +483,7 @@ class Controls {
                     if ((player = Bukkit.getPlayer(args[2].substring(3))) == null) {
                         Message errorMessage = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
                         errorMessage.setPlayer(args[2].substring(3));
-                        errorMessage.broadcast(sender, true, true);
+                        errorMessage.broadcast(sender, true);
                         return;
                     }
                     giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
@@ -491,7 +491,7 @@ class Controls {
                 } else {
                     if (!(sender instanceof Player)) {
                         Message errorMessage = new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE);
-                        errorMessage.broadcast(sender, false, false);
+                        errorMessage.broadcast(sender, false);
                         return;
                     }
                     player = (Player) sender;
@@ -500,7 +500,7 @@ class Controls {
                 FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
                 giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
                 giveMessage.setPlayer(player.getName());
-                giveMessage.broadcast(sender, true, true);
+                giveMessage.broadcast(sender, true);
                 break; }
             case "bait":
                 if (args.length >= 3) {
@@ -515,7 +515,7 @@ class Controls {
                             if ((player = Bukkit.getPlayer(args[i].substring(3))) == null) {
                                 Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
                                 message.setPlayer(args[i].substring(3));
-                                message.broadcast(sender, true, true);
+                                message.broadcast(sender, true);
                                 return;
                             }
                         } else if (args[i].startsWith("-q:")) {
@@ -524,14 +524,14 @@ class Controls {
                             } catch (NumberFormatException exception) {
                                 Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
                                 message.setAmount(args[i].substring(3));
-                                message.broadcast(sender, true, true);
+                                message.broadcast(sender, true);
                                 return;
                             }
 
                             if (quantity <= 0 || quantity > 64) {
                                 Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
                                 message.setAmount(args[i].substring(3));
-                                message.broadcast(sender, true, true);
+                                message.broadcast(sender, true);
                                 return;
                             }
                         } else {
@@ -551,7 +551,7 @@ class Controls {
                                     baitItem.setAmount(quantity);
                                     FishUtils.giveItems(Collections.singletonList(baitItem), (Player) sender);
                                 } else {
-                                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
                                 }
                             } else {
                                 ItemStack baitItem = bait.create(player);
@@ -560,12 +560,12 @@ class Controls {
                                 Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
                                 message.setPlayer(player.getName());
                                 message.setBait(baitID);
-                                message.broadcast(sender, true, true);
+                                message.broadcast(sender, true);
                             }
                         }
                     }
                 } else {
-                    new Message(ConfigMessage.ADMIN_NO_BAIT_SPECIFIED).broadcast(sender, true, false);
+                    new Message(ConfigMessage.ADMIN_NO_BAIT_SPECIFIED).broadcast(sender, false);
                 }
 
                 break;
@@ -578,20 +578,20 @@ class Controls {
                         if ((player = Bukkit.getPlayer(args[i].substring(3))) == null) {
                             Message message = new Message(ConfigMessage.ADMIN_UNKNOWN_PLAYER);
                             message.setPlayer(args[i].substring(3));
-                            message.broadcast(sender, true, true);
+                            message.broadcast(sender, true);
                             return;
                         }
                     }
                 }
 
                 if (player == null && !(sender instanceof Player)) {
-                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                    new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
                     return;
                 }
 
                 if (player == null) player = (Player) sender;
                 if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
-                    new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player, true, false);
+                    new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player, false);
                     return;
                 }
 
@@ -602,9 +602,9 @@ class Controls {
                     fishingRod.setItemMeta(meta);
                     Message message = new Message(ConfigMessage.BAITS_CLEARED);
                     message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
-                    message.broadcast(player, true, true);
+                    message.broadcast(player, true);
                 } else {
-                    new Message(ConfigMessage.NO_BAITS).broadcast(player, true, false);
+                    new Message(ConfigMessage.NO_BAITS).broadcast(player, false);
                 }
 
                 break;
@@ -617,7 +617,7 @@ class Controls {
 
                 plugin.reload();
 
-                new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, true, false);
+                new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
                 break;
 
             case "version":
@@ -645,7 +645,7 @@ class Controls {
                 }
 
                 Message msg = new Message(msgString);
-                msg.broadcast(sender, true, false);
+                msg.broadcast(sender, false);
                 break;
             case "addons": {
                 final AddonManager addonManager = EvenMoreFish.getInstance().getAddonManager();
@@ -656,11 +656,11 @@ class Controls {
                     messageList.add(String.format(messageFormat,prefix,addonManager.isLoading(prefix)));
                 }
 
-                new Message(messageList).broadcast(sender,true,false);
+                new Message(messageList).broadcast(sender, false);
                 break;
             }
             case "rewardtypes": {
-                TextComponent message = new TextComponent(new Message(ConfigMessage.ADMIN_LIST_REWARD_TYPES).getRawMessage(true, false));
+                TextComponent message = new TextComponent(new Message(ConfigMessage.ADMIN_LIST_REWARD_TYPES).getRawMessage(false));
                 ComponentBuilder builder = new ComponentBuilder(message);
 
                 RewardManager.getInstance().getRegisteredRewardTypes().forEach(rewardType -> {
@@ -677,13 +677,13 @@ class Controls {
                 break;
             }
             default:
-                new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, true, false);
+                new Message(ConfigMessage.HELP_ADMIN).broadcast(sender, false);
         }
     }
 
     protected static void competitionControl(String[] args, CommandSender player) {
         if (args.length == 2) {
-            new Message(ConfigMessage.HELP_COMPETITION).broadcast(player, true, false);
+            new Message(ConfigMessage.HELP_COMPETITION).broadcast(player, false);
         } else {
 
                 if (args[2].equalsIgnoreCase("start")) {
@@ -697,7 +697,7 @@ class Controls {
                             try {
                                 startComp(args[3], player, CompetitionType.valueOf(args[4].toUpperCase()));
                             } catch (IllegalArgumentException iae) {
-                                new Message(ConfigMessage.INVALID_COMPETITION_TYPE).broadcast(player, true, false);
+                                new Message(ConfigMessage.INVALID_COMPETITION_TYPE).broadcast(player, false);
                             }
                         }
                     }
@@ -705,10 +705,10 @@ class Controls {
                     if (Competition.isActive()) {
                         EvenMoreFish.getInstance().getActiveCompetition().end();
                     } else {
-                        new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true, true);
+                        new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true);
                     }
                 } else {
-                    new Message(ConfigMessage.HELP_COMPETITION).broadcast(player, true, false);
+                    new Message(ConfigMessage.HELP_COMPETITION).broadcast(player, false);
                 }
 
         }
@@ -716,7 +716,7 @@ class Controls {
 
     protected static void startComp(String argsDuration, CommandSender player, CompetitionType type) {
         if (Competition.isActive()) {
-            new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(player, true, false);
+            new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(player, false);
             return;
         }
 
@@ -739,12 +739,12 @@ class Controls {
             } else {
                 Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
                 message.setAmount(Integer.toString(duration));
-                message.broadcast(player, true, true);
+                message.broadcast(player, true);
             }
         } catch (NumberFormatException nfe) {
             Message message = new Message(ConfigMessage.ADMIN_NUMBER_FORMAT_ERROR);
             message.setAmount(argsDuration);
-            message.broadcast(player, true, true);
+            message.broadcast(player, true);
         }
     }
 }
@@ -753,10 +753,10 @@ class Help {
 
     public static String formGeneralHelp(CommandSender user) {
 
-        //return new Message(ConfigMessage.HELP_GENERAL).getRawMessage(true, false);
+        //return new Message(ConfigMessage.HELP_GENERAL).getRawMessage(false);
 
         StringBuilder out = new StringBuilder();
-        List<String> commands = Arrays.asList(new Message(ConfigMessage.HELP_GENERAL).getRawMessage(true, false).split("\n"));
+        List<String> commands = Arrays.asList(new Message(ConfigMessage.HELP_GENERAL).getRawMessage(false).split("\n"));
 
         String escape = "\n";
         if (EvenMoreFish.getInstance().getPermission() != null && user != null) {

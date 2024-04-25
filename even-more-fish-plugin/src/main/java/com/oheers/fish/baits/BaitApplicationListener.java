@@ -35,7 +35,7 @@ public class BaitApplicationListener implements Listener {
 
 
         if (!event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL)) {
-            new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), true, false);
+            new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), false);
             return;
         }
 
@@ -58,14 +58,14 @@ public class BaitApplicationListener implements Listener {
             }
 
         } catch (MaxBaitsReachedException exception) {
-            new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked(), true, false);
+            new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked(), false);
             result = exception.getRecoveryResult();
         } catch (MaxBaitReachedException exception) {
             result = exception.getRecoveryResult();
             Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
             message.setBaitTheme(bait.getTheme());
             message.setBait(bait.getName());
-            message.broadcast(event.getWhoClicked(), true, true);
+            message.broadcast(event.getWhoClicked(), true);
         }
 
         if (result == null || result.getFishingRod() == null)

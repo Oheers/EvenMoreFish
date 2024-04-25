@@ -99,7 +99,7 @@ public class Competition {
             // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
             EvenMoreFish.getInstance().getDecidedRarities().clear();
         } else {
-            new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast(true, true);
+            new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast(true);
             active = false;
         }
     }
@@ -111,7 +111,7 @@ public class Competition {
         EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(this);
         Bukkit.getServer().getPluginManager().callEvent(endEvent);
         for (Player player : Bukkit.getOnlinePlayers()) {
-            new Message(ConfigMessage.COMPETITION_END).broadcast(player, true, true);
+            new Message(ConfigMessage.COMPETITION_END).broadcast(player, true);
             sendPlayerLeaderboard(player);
         }
         active = false;
@@ -150,7 +150,7 @@ public class Competition {
     private boolean processCompetitionSecond(long timeLeft) {
         if (alertTimes.contains(timeLeft)) {
             Message message = getTypeFormat(ConfigMessage.TIME_ALERT);
-            message.broadcast(true, true);
+            message.broadcast(true);
 
         } else if (timeLeft <= 0) {
             end();
@@ -351,7 +351,7 @@ public class Competition {
 
         boolean doingNoise = startSound != null;
 
-        message.broadcast(true, true);
+        message.broadcast(true);
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (doingNoise) player.playSound(player.getLocation(), startSound, 10f, 1f);
         }
@@ -412,7 +412,7 @@ public class Competition {
                             }
 
                         }
-                        builder.append(message.getRawMessage(true, true));
+                        builder.append(message.getRawMessage(true));
 
                         if (pos == Messages.getInstance().getConfig().getInt("leaderboard-count")) {
                             if (Messages.getInstance().getConfig().getBoolean("always-show-pos")) {
@@ -449,19 +449,19 @@ public class Competition {
                                 else message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
                             }
 
-                            builder.append("\n").append(message.getRawMessage(true, true));
+                            builder.append("\n").append(message.getRawMessage(true));
                         }
                     }
                 }
                 player.sendMessage(builder.toString());
                 Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
                 message.setAmount(Integer.toString(leaderboard.getSize()));
-                message.broadcast(player, true, true);
+                message.broadcast(player, true);
             } else {
-                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(player, true, false);
+                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(player, false);
             }
         } else {
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true, true);
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true);
         }
     }
 
@@ -519,18 +519,18 @@ public class Competition {
                         }
 
                     }
-                    builder.append(message.getRawMessage(true, true));
+                    builder.append(message.getRawMessage(true));
 
                 }
                 console.sendMessage(builder.toString());
                 Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
                 message.setAmount(Integer.toString(leaderboard.getSize()));
-                message.broadcast(console, true, true);
+                message.broadcast(console, true);
             } else {
-                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console, true, false);
+                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console, false);
             }
         } else {
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console, true, true);
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console, true);
         }
     }
 
@@ -685,7 +685,7 @@ public class Competition {
 
         } else {
             if (!((competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY) && numberNeeded == 1)) {
-                new Message(ConfigMessage.NO_WINNERS).broadcast(true, false);
+                new Message(ConfigMessage.NO_WINNERS).broadcast(false);
             }
         }
     }
@@ -695,7 +695,7 @@ public class Competition {
         message.setPlayer(player.getName());
         message.setCompetitionType(competitionType);
 
-        message.broadcast(true, true);
+        message.broadcast(true);
 
         if (!rewards.isEmpty()) {
             for (Reward reward : rewards.get(1)) {

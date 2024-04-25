@@ -37,7 +37,7 @@ public class XmasGUI implements InventoryHolder {
      * @param viewer The UUID of the player who will open the GUI.
      */
     public XmasGUI(@NotNull final UUID viewer) {
-        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(Xmas2022Config.getInstance().getGUIName()).getRawMessage(true, false));
+        this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(Xmas2022Config.getInstance().getGUIName()).getRawMessage(false));
         this.viewer = viewer;
         loadFiller();
         setFish();
@@ -120,7 +120,7 @@ public class XmasGUI implements InventoryHolder {
             Message fishName = new Message(Xmas2022Config.getInstance().getFoundFishName());
             fishName.setDay(Integer.toString(day));
             fishName.setName(fish.getName());
-            meta.setDisplayName(fishName.getRawMessage(true, true));
+            meta.setDisplayName(fishName.getRawMessage(true));
             Message fishLore = new Message(Xmas2022Config.getInstance().getFoundFishLore());
             fishLore.setName(fish.getName());
             fishLore.setNumCaught(Integer.toString(fishReport.getNumCaught()));
@@ -128,7 +128,7 @@ public class XmasGUI implements InventoryHolder {
             LocalDateTime dateTime = LocalDateTime.ofEpochSecond(fishReport.getTimeEpoch(), 0, ZoneOffset.UTC);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM, yyyy", Locale.ENGLISH);
             fishLore.setFirstCaught(dateTime.format(formatter));
-            meta.setLore(fishLore.getRawListMessage(true, true));
+            meta.setLore(fishLore.getRawListMessage(true));
             itemStack.setItemMeta(meta);
             return itemStack;
         } else {
@@ -136,10 +136,10 @@ public class XmasGUI implements InventoryHolder {
             ItemMeta meta = itemStack.getItemMeta();
             Message lockedName = new Message(Xmas2022Config.getInstance().getLockedFishName());
             lockedName.setDay(Integer.toString(day));
-            meta.setDisplayName(lockedName.getRawMessage(true, true));
+            meta.setDisplayName(lockedName.getRawMessage(true));
             Message lockedLore = new Message(Xmas2022Config.getInstance().getLockedFishLore());
             lockedLore.setTimeRemaining("(never)");
-            meta.setLore(lockedLore.getRawListMessage(true, true));
+            meta.setLore(lockedLore.getRawListMessage(true));
             itemStack.setItemMeta(meta);
             return itemStack;
         }
