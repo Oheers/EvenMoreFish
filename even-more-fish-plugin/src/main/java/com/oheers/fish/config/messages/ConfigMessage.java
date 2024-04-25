@@ -26,6 +26,7 @@ public enum ConfigMessage {
     BAIT_WRONG_GAMEMODE("&rYou must be in &nsurvival&r to apply baits to fishing rods.", PrefixType.ERROR, false, false, "bait-survival-limited"),
     BAITS_MAXED("&rYou have reached the maximum number of types of baits for this fishing rod.", PrefixType.DEFAULT, false, true, "max-baits-reached"),
     BAITS_MAXED_ON_ROD("&rYou have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.", PrefixType.ERROR, false, false, "max-baits-reached"),
+    BAIT_ROD_PROTECTION("&rProtected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead.", PrefixType.ERROR, false, false, "bait-rod-protection"),
 
     BAR_SECOND("s", PrefixType.NONE, true, false, "bossbar.second"),
     BAR_MINUTE("m", PrefixType.NONE, true, false, "bossbar.minute"),

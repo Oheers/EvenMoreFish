@@ -1,6 +1,7 @@
 package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -10,18 +11,25 @@ import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 
-public class BaitApplicationListener implements Listener {
+public class BaitListener implements Listener {
 
     @EventHandler
     public void onClickEvent(InventoryClickEvent event) {
-        if (event.getCurrentItem() == null || event.getCursor() == null)
+        if (event.getCurrentItem() == null || event.getCursor() == null) {
             return;
+        }
+
+        if (anvilCheck(event)) {
+            return;
+        }
 
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
@@ -107,4 +115,20 @@ public class BaitApplicationListener implements Listener {
         emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, appliedBaitString);
         return nbtFishingRod.getItem();
     }
+
+    private boolean anvilCheck(InventoryClickEvent event) {
+        if (!(event.getClickedInventory() instanceof AnvilInventory) || !(event.getWhoClicked() instanceof Player)) {
+            return false;
+        }
+        Player player = (Player) event.getWhoClicked();
+        AnvilInventory inv = (AnvilInventory) event.getClickedInventory();
+        if (event.getSlot() == 2 && BaitNBTManager.isBaitedRod(inv.getItem(1))) {
+            event.setCancelled(true);
+            player.closeInventory();
+            new Message(ConfigMessage.BAIT_ROD_PROTECTION).broadcast(player, false);
+            return true;
+        }
+        return false;
+    }
+
 }

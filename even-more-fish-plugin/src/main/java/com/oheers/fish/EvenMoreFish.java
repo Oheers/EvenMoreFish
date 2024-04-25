@@ -1,11 +1,7 @@
 package com.oheers.fish;
 
 import com.Zrips.CMI.Containers.CMIUser;
-import com.Zrips.CMI.Modules.Vanish.VanishManager;
 import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.EssentialsPlayerListener;
-import com.earth2me.essentials.IEssentials;
-import com.earth2me.essentials.User;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.oheers.fish.addons.AddonManager;
@@ -14,7 +10,7 @@ import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
 import com.oheers.fish.baits.Bait;
-import com.oheers.fish.baits.BaitApplicationListener;
+import com.oheers.fish.baits.BaitListener;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
@@ -51,7 +47,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -296,7 +291,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
         getServer().getPluginManager().registerEvents(new SkullSaver(), this);
-        getServer().getPluginManager().registerEvents(new BaitApplicationListener(), this);
+        getServer().getPluginManager().registerEvents(new BaitListener(), this);
 
         optionalListeners();
     }
