@@ -38,9 +38,9 @@ public class Reward {
         return this.rewardType;
     }
 
-    public String getKey() { return this.key; }
+    public @NotNull String getKey() { return this.key; }
 
-    public String getValue() { return this.value; }
+    public @NotNull String getValue() { return this.value; }
 
     public void rewardPlayer(@NotNull Player player, Location hookLocation) {
         if (getRewardType() == null) {
