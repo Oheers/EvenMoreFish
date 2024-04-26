@@ -38,13 +38,17 @@ public class Reward {
         return this.rewardType;
     }
 
+    public String getKey() { return this.key; }
+
+    public String getValue() { return this.value; }
+
     public void rewardPlayer(@NotNull Player player, Location hookLocation) {
         if (getRewardType() == null) {
             EMFRewardEvent event = new EMFRewardEvent(this, player, fishVelocity, hookLocation);
             Bukkit.getPluginManager().callEvent(event);
             return;
         }
-        getRewardType().doReward(player, this.key, this.value, hookLocation);
+        getRewardType().doReward(player, getKey(), getValue(), hookLocation);
     }
 
     public void setFishVelocity(Vector fishVelocity) {
