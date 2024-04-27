@@ -167,30 +167,35 @@ fish-sale: "&rYou've sold &a{amount} &ffish for &a{sell-price}&f."
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
 help-general:
-  - "&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f"
-  - "&f/emf top - Shows an ongoing competition's leaderboard."
-  - "&f/emf help - Shows you this page."
-  - "&f/emf shop - Opens a shop to sell your fish."
-  - "&f/emf toggle - Toggles whether or not you receive custom fish."
-  - "&f/emf admin - Admin command help page."
+  title: "[noPrefix]&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f"
+  top: "[noPrefix]Shows an ongoing competition's leaderboard."
+  help: "[noPrefix]Shows you this page."
+  shop: "[noPrefix]Opens a shop to sell your fish."
+  toggle: "[noPrefix]Toggles whether or not you receive custom fish."
+  admin: "[noPrefix]Admin command help page."
+  sellall: "[noPrefix]Sell all the fish in your inventory."
+  next: "[noPrefix]Show how much time is until the next competition."
+
+help-list:
+  fish: "[noPrefix]Display all fish in a specific rarity."
+  rarities: "[noPrefix]Display all rarities."
 
 # Competition help (/emf admin competition help)
 help-competition:
-  - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
-  - "&f/emf admin competition start <duration> <type> - Starts a competition of a specified duration"
-  - "&f/emf admin competition end - Ends the current competition (if there is one)"
-
+  start: "[noPrefix]Starts a competition of a specified duration"
+  end: "[noPrefix]Ends the current competition (if there is one)"
 # Admin help (/emf admin help)
 help-admin:
-  - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
-  - "&f/emf admin bait <baitname> (-q:amount) (-p:playername) - Gives baits to a player."
-  - "&f/emf admin clearbait (-p:playername) - Clears all baits from a player's fishing rod."
-  - "&f/emf admin competition <start/end> <duration> <type> - Starts or stops a competition"
-  - "&f/emf admin clearbait - Removes all applied baits from a fishing rod."
-  - "&f/emf admin fish <rarity> <fishname> (-q:amount) (-p:playername) - Gives a fish to a player."
-  - "&f/emf admin nbt-rod - Gives a custom NBT rod to a player required for catching EMF fish."
-  - "&f/emf admin reload - Reloads the plugin's config files."
-  - "&f/emf admin version - Displays plugin information."
+  bait: "[noPrefix]Gives baits to a player."
+  competition: "[noPrefix]Starts or stops a competition"
+  clearbaits: "[noPrefix]Removes all applied baits from a fishing rod."
+  fish: "[noPrefix]Gives a fish to a player."
+  nbt-rod: "[noPrefix]Gives a custom NBT rod to a player required for catching EMF fish."
+  reload: "[noPrefix]Reloads the plugin's config files."
+  migrate: "[noPrefix]Migrate the database from Legacy (V2) to V3"
+  addons: "[noPrefix]Display all addons."
+  rewardtypes: "[noPrefix]Display all reward types."
+  version: "[noPrefix]Displays plugin information."
 
 # Shown when the emf %emf_competition_place_player_*% placeholder requests a position in the leaderboard that doesn't exist
 no-player-in-place: "Start fishing to take this place"

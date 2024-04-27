@@ -23,9 +23,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * @author sarhatabaot
- */
 public class LegacyToV3DatabaseMigration {
     private final DatabaseV3 database;
     

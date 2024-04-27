@@ -416,6 +416,9 @@ public class Fish implements Cloneable {
     }
 
     public String getDisplayName() {
+        if (displayName == null) {
+            return name;
+        }
         return displayName;
     }
 
