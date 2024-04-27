@@ -1,17 +1,16 @@
 package com.oheers.fish.events;
-
-import com.archyx.aureliumskills.api.event.LootDropCause;
-import com.archyx.aureliumskills.api.event.PlayerLootDropEvent;
+;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
+import dev.aurelium.auraskills.api.event.loot.LootDropEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class AureliumSkillsFishingEvent implements Listener {
+public class AuraSkillsFishingEvent implements Listener {
 
     @EventHandler
-    public void fishCatch(PlayerLootDropEvent event) {
-        if (event.getCause() == LootDropCause.LUCKY_CATCH || event.getCause() == LootDropCause.TREASURE_HUNTER || event.getCause() == LootDropCause.EPIC_CATCH || event.getCause() == LootDropCause.FISHING_OTHER_LOOT) {
+    public void fishCatch(LootDropEvent event) {
+        if (event.getCause() == LootDropEvent.Cause.FISHING_LUCK || event.getCause() == LootDropEvent.Cause.TREASURE_HUNTER || event.getCause() == LootDropEvent.Cause.FISHING_OTHER_LOOT || event.getCause() == LootDropEvent.Cause.EPIC_CATCH) {
             if (MainConfig.getInstance().disableAureliumSkills()) {
                 if (MainConfig.getInstance().isCompetitionUnique()) {
                     if (EvenMoreFish.getInstance().getActiveCompetition() != null) {
@@ -23,4 +22,5 @@ public class AureliumSkillsFishingEvent implements Listener {
             }
         }
     }
+
 }

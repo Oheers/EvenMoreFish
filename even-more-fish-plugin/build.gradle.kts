@@ -58,10 +58,11 @@ dependencies {
         exclude("com.sk89q.worldedit", "worldedit-bukkit")
         exclude("com.sk89q.worldguard", "worldguard-bukkit")
     }
+    compileOnly(libs.aura.skills)
     compileOnly(libs.aurelium.skills) {
         exclude(libs.acf.get().group, libs.acf.get().name)
     }
-
+   
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
@@ -104,6 +105,7 @@ bukkit {
         "RedProtect",
         "mcMMO",
         "AureliumSkills",
+        "AuraSkills",
         "ItemsAdder",
         "Denizen",
         "EcoItems",
