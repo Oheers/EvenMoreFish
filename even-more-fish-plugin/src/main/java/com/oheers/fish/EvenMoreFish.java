@@ -177,7 +177,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         if (!setupPermissions()) {
-            Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
             getServer().getPluginManager().disablePlugin(this);
         }
 

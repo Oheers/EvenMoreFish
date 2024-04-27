@@ -22,7 +22,6 @@
 package com.oheers.fish.api.addons;
 
 
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +36,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.logging.Logger;
 
 public class FileUtil {
     private FileUtil() {
@@ -64,9 +64,10 @@ public class FileUtil {
                                         }
                                     }
                                 } catch (final VerifyError ex) {
+                                    Logger logger = Logger.getLogger("EvenMoreFish");
                                     //todo, this can't be here it's blocking
-                                    Bukkit.getLogger().severe(() -> String.format("Failed to load addon class %s", file.getName()));
-                                    Bukkit.getLogger().severe(() -> String.format("Cause: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
+                                    logger.severe(() -> String.format("Failed to load addon class %s", file.getName()));
+                                    logger.severe(() -> String.format("Cause: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
                                     return null;
                                 } catch (IOException | ClassNotFoundException e) {
                                     throw new CompletionException(e.getCause());
