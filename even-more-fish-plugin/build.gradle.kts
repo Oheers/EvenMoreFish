@@ -1,12 +1,12 @@
 plugins {
-    id("java")
+    `java-library`
     id("maven-publish")
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.oheers.evenmorefish"
-version = "1.6.11.17"
+version = "1.6.12.0"
 
 description = "A fishing extension bringing an exciting new experience to fishing."
 
@@ -27,11 +27,13 @@ repositories {
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://repo.firedev.uk/repository/maven-public/")
     maven("https://repo.essentialsx.net/releases/")
+    maven("https://repo.aikar.co/content/groups/aikar/")
 }
 
 dependencies {
+    api(project(":even-more-fish-api"))
+
     compileOnly(libs.spigot.api)
-    implementation(project(":even-more-fish-api"))
     compileOnly(libs.vault.api)
     compileOnly(libs.placeholder.api)
     compileOnly(libs.authlib)
@@ -56,7 +58,11 @@ dependencies {
         exclude("com.sk89q.worldedit", "worldedit-bukkit")
         exclude("com.sk89q.worldguard", "worldguard-bukkit")
     }
-    compileOnly(libs.aurelium.skills)
+    compileOnly(libs.aura.skills)
+    compileOnly(libs.aurelium.skills) {
+        exclude(libs.acf.get().group, libs.acf.get().name)
+    }
+   
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
@@ -67,6 +73,7 @@ dependencies {
     implementation(libs.nbt.api)
     implementation(libs.bstats)
     implementation(libs.universalscheduler)
+    implementation(libs.acf)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -98,6 +105,7 @@ bukkit {
         "RedProtect",
         "mcMMO",
         "AureliumSkills",
+        "AuraSkills",
         "ItemsAdder",
         "Denizen",
         "EcoItems",
@@ -176,7 +184,7 @@ tasks {
 
     clean {
         doFirst {
-            for (file in File(project.projectDir ,"src/main/resources/addons").listFiles()!!) {
+            for (file in File(project.projectDir, "src/main/resources/addons").listFiles()!!) {
                 file.delete()
             }
         }
@@ -194,10 +202,15 @@ tasks {
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbt")
         relocate("org.bstats", "com.oheers.fish.libs.bstats")
         relocate("com.github.Anon8281.universalScheduler", "com.oheers.fish.libs.universalScheduler")
+        relocate("co.aikar.commands", "com.oheers.fish.libs.acf")
+        relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
     }
 
+    compileJava {
+        options.compilerArgs.add("-parameters")
+        options.isFork = true
+    }
 }
-
 
 java {
     toolchain {

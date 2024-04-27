@@ -56,9 +56,9 @@ public class CompetitionConfig extends ConfigBase {
         String key = "competitions." + competitionName + ".start-commands";
         if (getConfig().isString(key)) {
             return Collections.singletonList(getConfig().getString(key));
-        } else {
-            return getConfig().getStringList(key);
         }
+
+        return getConfig().getStringList(key);
     }
 
     public CompetitionType getCompetitionType(String competitionName) {
@@ -84,19 +84,25 @@ public class CompetitionConfig extends ConfigBase {
     public List<String> allowedRarities(String competitionName, boolean adminStart) {
         if (adminStart) {
             return getConfig().getStringList("general.allowed-rarities");
-        } else {
-            return getConfig().getStringList("competitions." + competitionName + ".allowed-rarities");
         }
+
+        return getConfig().getStringList("competitions." + competitionName + ".allowed-rarities");
     }
 
     public int getNumberFishNeeded(String competitionName, boolean adminStart) {
         int returning;
 
-        if (adminStart) returning = getConfig().getInt("general.number-needed");
-        else returning = getConfig().getInt("competitions." + competitionName + ".number-needed", getConfig().getInt("general.number-needed"));
+        if (adminStart) {
+            returning = getConfig().getInt("general.number-needed");
+        } else {
+            returning = getConfig().getInt("competitions." + competitionName + ".number-needed", getConfig().getInt("general.number-needed"));
+        }
 
-        if (returning != 0) return returning;
-        else return 1;
+        if (returning != 0) {
+            return returning;
+        } else {
+            return 1;
+        }
     }
 
     public boolean broadcastOnlyRods() {
@@ -110,10 +116,11 @@ public class CompetitionConfig extends ConfigBase {
     public List<String> getPositionColours() {
         List<String> returning = getConfig().getStringList("leaderboard.position-colours");
 
-        if (!returning.isEmpty()) return returning;
-        else {
+        if (returning.isEmpty()) {
             return Arrays.asList("&6", "&e", "&7", "&7", "&8");
         }
+
+        return returning;
     }
 
     public List<String> getAlertTimes(String competitionName) {
@@ -122,64 +129,82 @@ public class CompetitionConfig extends ConfigBase {
 
     public Set<String> getRewardPositions(String competitionName) {
         ConfigurationSection returning = getConfig().getConfigurationSection("competitions." + competitionName + ".rewards");
-        if (returning != null) return returning.getKeys(false);
-        else return new HashSet<>();
+        if (returning != null) {
+            return returning.getKeys(false);
+        }
+
+        return new HashSet<>();
     }
 
     public Set<String> getRewardPositions() {
         ConfigurationSection returning = getConfig().getConfigurationSection("rewards");
-        if (returning != null) return returning.getKeys(false);
-        else return new HashSet<>();
+        if (returning != null) {
+            return returning.getKeys(false);
+        }
+
+        return new HashSet<>();
     }
 
     public String getBarColour(String competitionName) {
-        if (competitionName != null) {
-            if (getConfig().getString("competitions." + competitionName + ".bossbar-colour") != null) {
-                return Objects.requireNonNull(getConfig().getString("competitions." + competitionName + ".bossbar-colour")).toUpperCase();
-            } else if (getConfig().getString("general.bossbar-colour") != null) {
-                return Objects.requireNonNull(getConfig().getString("general.bossbar-colour")).toUpperCase();
-            } else {
-                return "GREEN";
-            }
-        } else {
+        if (competitionName == null) {
             if (getConfig().getString("general.bossbar-colour") != null) {
                 return Objects.requireNonNull(getConfig().getString("general.bossbar-colour")).toUpperCase();
-            } else {
-                return "GREEN";
             }
+
+            return "GREEN";
         }
+
+        if (getConfig().getString("competitions." + competitionName + ".bossbar-colour") != null) {
+            return Objects.requireNonNull(getConfig().getString("competitions." + competitionName + ".bossbar-colour")).toUpperCase();
+        }
+        if (getConfig().getString("general.bossbar-colour") != null) {
+            return Objects.requireNonNull(getConfig().getString("general.bossbar-colour")).toUpperCase();
+        }
+
+        return "GREEN";
+
+
     }
 
     public String getBarPrefix(String competitionName) {
-        if (competitionName != null) {
-            if (getConfig().getString("competitions." + competitionName + ".bossbar-prefix") != null) {
-                return getConfig().getString("competitions." + competitionName + ".bossbar-prefix");
-            } else if (getConfig().getString("general.bossbar-prefix") != null) {
-                return getConfig().getString("general.bossbar-prefix");
-            } else {
-                return "&a&lFishing Contest: ";
-            }
-        } else {
+        if (competitionName == null) {
             if (getConfig().getString("general.bossbar-prefix") != null) {
                 return getConfig().getString("general.bossbar-prefix");
-            } else {
-                return "&a&lFishing Contest: ";
             }
+
+            return "&a&lFishing Contest: ";
         }
+
+        if (getConfig().getString("competitions." + competitionName + ".bossbar-prefix") != null) {
+            return getConfig().getString("competitions." + competitionName + ".bossbar-prefix");
+        }
+
+        if (getConfig().getString("general.bossbar-prefix") != null) {
+            return getConfig().getString("general.bossbar-prefix");
+        }
+
+        return "&a&lFishing Contest: ";
     }
 
     public int getPlayersNeeded(String competitionName) {
-        if (competitionName != null) {
-            if (getConfig().getInt("competitions." + competitionName + ".minimum-players") != 0) {
-                return getConfig().getInt("competitions." + competitionName + ".minimum-players");
-            } else if (getConfig().getInt("general.minimum-players") != 0) {
-                return getConfig().getInt("general.minimum-players");
-            } else return 1;
-        } else {
+        if (competitionName == null) {
             if (getConfig().getInt("general.minimum-players") != 0) {
                 return getConfig().getInt("general.minimum-players");
-            } else return 1;
+            }
+
+            return 1;
         }
+
+
+        if (getConfig().getInt("competitions." + competitionName + ".minimum-players") != 0) {
+            return getConfig().getInt("competitions." + competitionName + ".minimum-players");
+        }
+
+        if (getConfig().getInt("general.minimum-players") != 0) {
+            return getConfig().getInt("general.minimum-players");
+        }
+
+        return 1;
     }
 
     public Sound getStartNoise(String competitionName) {

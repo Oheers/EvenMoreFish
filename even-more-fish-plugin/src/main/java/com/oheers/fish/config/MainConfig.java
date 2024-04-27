@@ -63,6 +63,10 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("enable-economy", true);
     }
 
+    public boolean isEconomyDisabled() {
+        return !isEconomyEnabled();
+    }
+
     public Economy.EconomyType economyType() {
         String economyString = getConfig().getString("economy-type", "Vault");
         switch (economyString) {

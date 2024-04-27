@@ -1,5 +1,8 @@
 package com.oheers.fish;
 
+import co.aikar.commands.ConditionFailedException;
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.PaperCommandManager;
 import com.Zrips.CMI.Containers.CMIUser;
 import com.earth2me.essentials.Essentials;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
@@ -9,21 +12,22 @@ import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
+import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitListener;
+import com.oheers.fish.commands.AdminCommand;
+import com.oheers.fish.commands.EMFCommand;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
-import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.config.*;
+import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.*;
-import com.oheers.fish.events.AureliumSkillsFishingEvent;
-import com.oheers.fish.events.FishEatEvent;
-import com.oheers.fish.events.FishInteractEvent;
-import com.oheers.fish.events.McMMOTreasureEvent;
+import com.oheers.fish.events.*;
 import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
@@ -67,11 +71,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private Permission permission = null;
     private Economy economy;
     private Map<Integer, Set<String>> fish = new HashMap<>();
-    private Map<String, Bait> baits = new HashMap<>();
+    private final Map<String, Bait> baits = new HashMap<>();
     private Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
     private Rarity xmasRarity;
     private final Map<Integer, Fish> xmasFish = new HashMap<>();
-    private List<UUID> disabledPlayers = new ArrayList<>();
+    private final List<UUID> disabledPlayers = new ArrayList<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
     private boolean checkingIntEvent;
@@ -85,7 +89,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private int metric_fishCaught = 0;
     private int metric_baitsUsed = 0;
     private int metric_baitsApplied = 0;
-    
+
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
     private Map<UUID, Rarity> decidedRarities;
@@ -112,7 +116,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return instance;
     }
 
-    public static TaskScheduler getScheduler() { return scheduler; }
+    public static TaskScheduler getScheduler() {return scheduler;}
 
     public AddonManager getAddonManager() {
         return addonManager;
@@ -133,7 +137,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         usingGriefPrevention = Bukkit.getPluginManager().isPluginEnabled("GriefPrevention");
         usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
-        
+
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
@@ -173,7 +177,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         if (!setupPermissions()) {
-            Bukkit.getServer().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
             getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -201,7 +205,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         checkConfigVers();
 
         listeners();
-        commands();
+        loadCommandManager();
 
         if (!MainConfig.getInstance().debugSession()) {
             metrics();
@@ -323,7 +327,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         if (Bukkit.getPluginManager().getPlugin("AureliumSkills") != null) {
             if (MainConfig.getInstance().disableAureliumSkills()) {
-                getServer().getPluginManager().registerEvents(AureliumSkillsFishingEvent.getInstance(), this);
+                getServer().getPluginManager().registerEvents(new AureliumSkillsFishingEvent(), this);
+            }
+        }
+        if (Bukkit.getPluginManager().getPlugin("AuraSkills") != null) {
+            if (MainConfig.getInstance().disableAureliumSkills()) {
+                getServer().getPluginManager().registerEvents(new AuraSkillsFishingEvent(), this);
             }
         }
     }
@@ -352,10 +361,90 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         metrics.addCustomChart(new SimplePie("experimental_features", () -> MainConfig.getInstance().doingExperimentalFeatures() ? "true" : "false"));
     }
 
-    private void commands() {
-        getCommand("evenmorefish").setExecutor(new CommandCentre(this));
-        CommandCentre.loadTabCompletes();
+    private void loadCommandManager() {
+        PaperCommandManager manager = new PaperCommandManager(this);
+
+        manager.enableUnstableAPI("brigadier");
+        manager.enableUnstableAPI("help");
+
+        manager.getCommandReplacements().addReplacement("main", "emf|evenmorefish");
+        manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
+        //desc_admin_<command>_<id>
+        manager.getCommandReplacements().addReplacements(
+                "desc_admin_bait", new Message(ConfigMessage.HELP_ADMIN_BAIT).getRawMessage(true),
+                "desc_admin_competition", new Message(ConfigMessage.HELP_ADMIN_COMPETITION).getRawMessage(true),
+                "desc_admin_clearbaits", new Message(ConfigMessage.HELP_ADMIN_CLEARBAITS).getRawMessage(true),
+                "desc_admin_fish", new Message(ConfigMessage.HELP_ADMIN_FISH).getRawMessage(true),
+                "desc_admin_nbtrod", new Message(ConfigMessage.HELP_ADMIN_NBTROD).getRawMessage(true),
+                "desc_admin_reload", new Message(ConfigMessage.HELP_ADMIN_RELOAD).getRawMessage(true),
+                "desc_admin_version", new Message(ConfigMessage.HELP_ADMIN_VERSION).getRawMessage(true),
+                "desc_admin_migrate", new Message(ConfigMessage.HELP_ADMIN_MIGRATE).getRawMessage(true),
+                "desc_admin_rewardtypes", new Message(ConfigMessage.HELP_ADMIN_REWARDTYPES).getRawMessage(true),
+                "desc_admin_addons", new Message(ConfigMessage.HELP_ADMIN_ADDONS).getRawMessage(true),
+
+                "desc_list_fish", new Message(ConfigMessage.HELP_LIST_FISH).getRawMessage(true),
+                "desc_list_rarities", new Message(ConfigMessage.HELP_LIST_RARITIES).getRawMessage(true),
+
+                "desc_competition_start", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true),
+                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true),
+
+                "desc_general_top", new Message(ConfigMessage.HELP_GENERAL_TOP).getRawMessage(true),
+                "desc_general_help", new Message(ConfigMessage.HELP_GENERAL_HELP).getRawMessage(true),
+                "desc_general_shop", new Message(ConfigMessage.HELP_GENERAL_SHOP).getRawMessage(true),
+                "desc_general_toggle", new Message(ConfigMessage.HELP_GENERAL_TOGGLE).getRawMessage(true),
+                "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(true),
+                "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(true),
+                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(true)
+        );
+
+
+        manager.getCommandConditions().addCondition(Integer.class, "limits", (c, exec, value) -> {
+            if (value == null) {
+                return;
+            }
+            if (c.hasConfig("min") && c.getConfigValue("min", 0) > value) {
+                throw new ConditionFailedException("Min value must be " + c.getConfigValue("min", 0));
+            }
+
+            if (c.hasConfig("max") && c.getConfigValue("max", 0) < value) {
+                throw new ConditionFailedException("Max value must be " + c.getConfigValue("max", 0));
+            }
+        });
+        manager.getCommandContexts().registerContext(Rarity.class, c -> {
+            final String rarityId = c.popFirstArg().replace("\"", "");
+            Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream()
+                    .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId))
+                    .findFirst();
+            if (!potentialRarity.isPresent()) {
+                throw new InvalidCommandArgument("No such rarity: " + rarityId);
+            }
+
+            return potentialRarity.get();
+        });
+        manager.getCommandContexts().registerContext(Fish.class, c -> {
+            final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
+            final String fishId = c.popFirstArg();
+            Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream()
+                    .filter(f -> f.getName().equalsIgnoreCase(fishId.replace("_", " ")) || f.getName().equalsIgnoreCase(fishId))
+                    .findFirst();
+
+            if (!potentialFish.isPresent()) {
+                throw new InvalidCommandArgument("No such fish: " + fishId);
+            }
+
+            return potentialFish.get();
+        });
+        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet().stream().map(s -> s.replace(" ","_")).collect(Collectors.toList()));
+        manager.getCommandCompletions().registerCompletion("rarities", c -> EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
+        manager.getCommandCompletions().registerCompletion("fish", c -> {
+            final Rarity rarity = c.getContextValue(Rarity.class);
+            return EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().map(f -> f.getName().replace(" ","_")).collect(Collectors.toList());
+        });
+
+        manager.registerCommand(new EMFCommand());
+        manager.registerCommand(new AdminCommand());
     }
+
 
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
@@ -580,6 +669,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public boolean isCheckingEatEvent() {
         return checkingEatEvent;
     }
+
     public void setCheckingEatEvent(boolean bool) {
         this.checkingEatEvent = bool;
     }
@@ -668,7 +758,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return usingPlayerPoints;
     }
 
-    public boolean isUsingGriefPrevention() { return usingGriefPrevention; }
+    public boolean isUsingGriefPrevention() {return usingGriefPrevention;}
 
     public WorldGuardPlugin getWgPlugin() {
         return wgPlugin;
@@ -698,6 +788,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return api;
     }
 
+
     private void loadRewardManager() {
         // Load RewardManager
         RewardManager.getInstance().load();
@@ -717,6 +808,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     /**
      * Retrieves online players excluding those who are vanished.
+     *
      * @return A list of online players excluding those who are vanished.
      */
     public List<Player> getOnlinePlayersExcludingVanish() {

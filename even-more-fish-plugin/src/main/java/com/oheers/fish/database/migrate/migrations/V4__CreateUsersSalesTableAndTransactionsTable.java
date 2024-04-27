@@ -8,9 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.PreparedStatement;
 
-/**
- * @author sarhatabaot
- */
 public class V4__CreateUsersSalesTableAndTransactionsTable extends BaseJavaMigration {
     
     @Override

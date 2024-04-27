@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class JoinChecker implements Listener {
     
@@ -40,8 +41,7 @@ public class JoinChecker implements Listener {
                             EvenMoreFish.getInstance().getLogger().info(userName + " has joined for the first time, creating new data handle for them.");
                     }
                 } catch (InvalidTableException exception) {
-                    EvenMoreFish.getInstance().getLogger().severe("Failed to check database existence of user " + userUUID);
-                    exception.printStackTrace();
+                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed to check database existence of user " + userUUID, exception);
                 }
 
                 UserReport userReport;
@@ -92,8 +92,7 @@ public class JoinChecker implements Listener {
                         EvenMoreFish.getInstance().getDatabaseV3().createUser(userUUID);
                     }
                 } catch (InvalidTableException exception) {
-                    EvenMoreFish.getInstance().getLogger().severe("Fatal error when running database checks for " + event.getPlayer().getName() + ", deleting data in primary storage.");
-                    exception.printStackTrace();
+                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Fatal error when running database checks for " + event.getPlayer().getName() + ", deleting data in primary storage.", exception);
                     return;
                 }
 

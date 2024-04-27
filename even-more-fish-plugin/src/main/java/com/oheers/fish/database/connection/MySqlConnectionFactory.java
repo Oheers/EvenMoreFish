@@ -5,9 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-/**
- * @author sarhatabaot
- */
 public class MySqlConnectionFactory extends ConnectionFactory{
     @Override
     protected void configureDatabase(@NotNull HikariConfig config, String address, int port, String databaseName, String username, String password) {
