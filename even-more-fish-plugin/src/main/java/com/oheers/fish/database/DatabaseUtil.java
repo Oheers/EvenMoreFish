@@ -6,9 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * @author sarhatabaot
- */
 public class DatabaseUtil {
     public static @NotNull String determineDbVendor(final @NotNull Connection connection) throws SQLException {
         if(connection.getMetaData().getURL().contains("mysql"))

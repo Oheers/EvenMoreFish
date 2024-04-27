@@ -49,7 +49,7 @@ public class Competition {
     Sound startSound;
     MyScheduledTask timingSystem;
     List<UUID> leaderboardMembers = new ArrayList<>();
-    private List<String> beginCommands;
+    private final List<String> beginCommands;
 
     public Competition(final Integer duration, final CompetitionType type, List<String> beginCommands) {
         this.maxDuration = duration;
@@ -68,40 +68,47 @@ public class Competition {
     }
 
     public void begin(boolean adminStart) {
-        if (EvenMoreFish.getInstance().getOnlinePlayersExcludingVanish().size() >= playersNeeded || adminStart) {
-            active = true;
-
-            if (competitionType == CompetitionType.RANDOM) {
-                competitionType = getRandomType();
-                originallyRandom = true;
-            }
-
-            if (competitionType == CompetitionType.SPECIFIC_FISH) {
-                if (!chooseFish(competitionName, adminStart)) return;
-            }
-
-            if (competitionType == CompetitionType.SPECIFIC_RARITY) {
-                if (!chooseRarity(competitionName, adminStart)) return;
-            }
-
-            this.timeLeft = this.maxDuration;
-
-            leaderboard = new Leaderboard(competitionType);
-            statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
-            statusBar.show();
-            initTimer();
-            announceBegin();
-            EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(this);
-            Bukkit.getServer().getPluginManager().callEvent(startEvent);
-            epochStartTime = Instant.now().getEpochSecond();
-            this.beginCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
-
-            // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
-            EvenMoreFish.getInstance().getDecidedRarities().clear();
-        } else {
+        if (!adminStart && EvenMoreFish.getInstance().getOnlinePlayersExcludingVanish().size() < playersNeeded) {
             new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast(true, true);
             active = false;
+            return;
         }
+
+
+        active = true;
+
+        if (competitionType == CompetitionType.RANDOM) {
+            competitionType = getRandomType();
+            originallyRandom = true;
+        }
+
+        if (competitionType == CompetitionType.SPECIFIC_FISH) {
+            if (!chooseFish(competitionName, adminStart)) {
+                return;
+            }
+        }
+
+        if (competitionType == CompetitionType.SPECIFIC_RARITY) {
+            if (!chooseRarity(competitionName, adminStart)) {
+                return;
+            }
+        }
+
+        this.timeLeft = this.maxDuration;
+
+        leaderboard = new Leaderboard(competitionType);
+        statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
+        statusBar.show();
+        initTimer();
+        announceBegin();
+        EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(this);
+        Bukkit.getServer().getPluginManager().callEvent(startEvent);
+        epochStartTime = Instant.now().getEpochSecond();
+        this.beginCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
+
+        // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
+        EvenMoreFish.getInstance().getDecidedRarities().clear();
+
     }
 
     public void end() {
@@ -116,7 +123,9 @@ public class Competition {
         }
         active = false;
         handleRewards();
-        if (originallyRandom) competitionType = CompetitionType.RANDOM;
+        if (originallyRandom) {
+            competitionType = CompetitionType.RANDOM;
+        }
         if (MainConfig.getInstance().databaseEnabled()) {
             Competition competitionRef = this;
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
@@ -134,7 +143,9 @@ public class Competition {
             @Override
             public void run() {
                 statusBar.timerUpdate(timeLeft, maxDuration);
-                if (decreaseTime()) cancel();
+                if (decreaseTime()) {
+                    cancel();
+                }
                 //timeLeft--;
             }
         }.runTaskTimer(EvenMoreFish.getInstance(), 0, 20);
@@ -177,12 +188,17 @@ public class Competition {
             message.setAmount(Integer.toString(numberNeeded));
             message.setRarityColour(selectedFish.getRarity().getColour());
 
-            if (selectedFish.getRarity().getDisplayName() != null)
+            if (selectedFish.getRarity().getDisplayName() != null) {
                 message.setRarity(selectedFish.getRarity().getDisplayName());
-            else message.setRarity(selectedFish.getRarity().getValue());
+            } else {
+                message.setRarity(selectedFish.getRarity().getValue());
+            }
 
-            if (selectedFish.getDisplayName() != null) message.setFishCaught(selectedFish.getDisplayName());
-            else message.setFishCaught(selectedFish.getName());
+            if (selectedFish.getDisplayName() != null) {
+                message.setFishCaught(selectedFish.getDisplayName());
+            } else {
+                message.setFishCaught(selectedFish.getName());
+            }
         } else if (competitionType == CompetitionType.SPECIFIC_RARITY) {
             message.setAmount(Integer.toString(numberNeeded));
             if (selectedRarity == null) {
@@ -191,8 +207,11 @@ public class Competition {
             }
             message.setRarityColour(selectedRarity.getColour());
 
-            if (selectedRarity.getDisplayName() != null) message.setRarity(selectedRarity.getDisplayName());
-            else message.setRarity(selectedRarity.getValue());
+            if (selectedRarity.getDisplayName() != null) {
+                message.setRarity(selectedRarity.getDisplayName());
+            } else {
+                message.setRarity(selectedRarity.getValue());
+            }
         }
 
         return message;
@@ -211,7 +230,9 @@ public class Competition {
         // +1 to counteract the seconds starting on 0 (or something like that)
         if ((lagDif = (current - epochStartTime) + 1) != maxDuration - timeLeft) {
             for (long i = maxDuration - timeLeft; i < lagDif; i++) {
-                if (processCompetitionSecond(timeLeft)) return true;
+                if (processCompetitionSecond(timeLeft)) {
+                    return true;
+                }
                 timeLeft--;
             }
         }
@@ -225,7 +246,10 @@ public class Competition {
      */
     public boolean isDoingFirstPlaceActionBar() {
         boolean a = Messages.getInstance().getConfig().getBoolean("action-bar-message");
-        boolean b = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance().getConfig().getStringList("action-bar-types").contains(EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().toString());
+        boolean b = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance()
+                .getConfig()
+                .getStringList("action-bar-types")
+                .contains(EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().toString());
         return a && b;
     }
 
@@ -255,8 +279,11 @@ public class Competition {
                 CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
 
                 float increaseAmount;
-                if (this.competitionType == CompetitionType.LARGEST_TOTAL) increaseAmount = fish.getLength();
-                else increaseAmount = 1.0f;
+                if (this.competitionType == CompetitionType.LARGEST_TOTAL) {
+                    increaseAmount = fish.getLength();
+                } else {
+                    increaseAmount = 1.0f;
+                }
 
                 if (entry != null) {
                     if (entry.getValue() + increaseAmount >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
@@ -285,15 +312,18 @@ public class Competition {
 
                 } else {
                     CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
-                    if (this.competitionType == CompetitionType.LARGEST_TOTAL)
+                    if (this.competitionType == CompetitionType.LARGEST_TOTAL) {
                         newEntry.incrementValue(fish.getLength() - 1);
+                    }
                     leaderboard.addEntry(newEntry);
                 }
             }
         } else {
 
             // If a fish has no size it shouldn't be able to join the competition
-            if (fish.getLength() <= 0) return;
+            if (fish.getLength() <= 0) {
+                return;
+            }
 
             CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
 
@@ -353,7 +383,9 @@ public class Competition {
 
         message.broadcast(true, true);
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (doingNoise) player.playSound(player.getLocation(), startSound, 10f, 1f);
+            if (doingNoise) {
+                player.playSound(player.getLocation(), startSound, 10f, 1f);
+            }
         }
     }
 
@@ -388,19 +420,26 @@ public class Competition {
                                     break;
                             }
 
-                        } else message.setPositionColour(competitionColours.get(pos - 1));
+                        } else {
+                            message.setPositionColour(competitionColours.get(pos - 1));
+                        }
 
                         if (competitionType == CompetitionType.LARGEST_FISH) {
                             Fish fish = entry.getFish();
                             message.setRarityColour(fish.getRarity().getColour());
                             message.setLength(Float.toString(entry.getValue()));
 
-                            if (fish.getRarity().getDisplayName() != null)
+                            if (fish.getRarity().getDisplayName() != null) {
                                 message.setRarity(fish.getRarity().getDisplayName());
-                            else message.setRarity(fish.getRarity().getValue());
+                            } else {
+                                message.setRarity(fish.getRarity().getValue());
+                            }
 
-                            if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
-                            else message.setFishCaught(fish.getName());
+                            if (fish.getDisplayName() != null) {
+                                message.setFishCaught(fish.getDisplayName());
+                            } else {
+                                message.setFishCaught(fish.getName());
+                            }
                         } else {
                             if (competitionType == CompetitionType.LARGEST_TOTAL) {
                                 message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
@@ -416,8 +455,11 @@ public class Competition {
 
                         if (pos == Messages.getInstance().getConfig().getInt("leaderboard-count")) {
                             if (Messages.getInstance().getConfig().getBoolean("always-show-pos")) {
-                                if (leaderboardMembers.contains(player.getUniqueId())) break;
-                                else reachingCount = false;
+                                if (leaderboardMembers.contains(player.getUniqueId())) {
+                                    break;
+                                } else {
+                                    reachingCount = false;
+                                }
                             } else {
                                 break;
                             }
@@ -436,17 +478,24 @@ public class Competition {
                                 message.setRarityColour(fish.getRarity().getColour());
                                 message.setLength(Float.toString(entry.getValue()));
 
-                                if (fish.getRarity().getDisplayName() != null)
+                                if (fish.getRarity().getDisplayName() != null) {
                                     message.setRarity(fish.getRarity().getDisplayName());
-                                else message.setRarity(fish.getRarity().getValue());
+                                } else {
+                                    message.setRarity(fish.getRarity().getValue());
+                                }
 
-                                if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
-                                else message.setFishCaught(fish.getName());
+                                if (fish.getDisplayName() != null) {
+                                    message.setFishCaught(fish.getDisplayName());
+                                } else {
+                                    message.setFishCaught(fish.getName());
+                                }
                             } else {
                                 message.setAmount(Integer.toString((int) entry.getValue()));
-                                if (competitionType == CompetitionType.LARGEST_TOTAL)
+                                if (competitionType == CompetitionType.LARGEST_TOTAL) {
                                     message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-                                else message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                                } else {
+                                    message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                                }
                             }
 
                             builder.append("\n").append(message.getRawMessage(true, true));
@@ -495,19 +544,26 @@ public class Competition {
                                 break;
                         }
 
-                    } else message.setPositionColour(competitionColours.get(pos - 1));
+                    } else {
+                        message.setPositionColour(competitionColours.get(pos - 1));
+                    }
 
                     if (competitionType == CompetitionType.LARGEST_FISH) {
                         Fish fish = entry.getFish();
                         message.setRarityColour(fish.getRarity().getColour());
                         message.setLength(Float.toString(entry.getValue()));
 
-                        if (fish.getRarity().getDisplayName() != null)
+                        if (fish.getRarity().getDisplayName() != null) {
                             message.setRarity(fish.getRarity().getDisplayName());
-                        else message.setRarity(fish.getRarity().getValue());
+                        } else {
+                            message.setRarity(fish.getRarity().getValue());
+                        }
 
-                        if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
-                        else message.setFishCaught(fish.getName());
+                        if (fish.getDisplayName() != null) {
+                            message.setFishCaught(fish.getDisplayName());
+                        } else {
+                            message.setFishCaught(fish.getName());
+                        }
                     } else {
                         if (competitionType == CompetitionType.LARGEST_TOTAL) {
                             message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
@@ -559,16 +615,22 @@ public class Competition {
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
             r -= allowedRarities.get(idx).getWeight();
-            if (r <= 0.0) break;
+            if (r <= 0.0) {
+                break;
+            }
         }
 
-        setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
+        if (this.numberNeeded == 0) {
+            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
+        }
 
         try {
             this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
             return true;
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.getInstance().getLogger().severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
+            EvenMoreFish.getInstance()
+                    .getLogger()
+                    .severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
             EvenMoreFish.getInstance().getLogger().severe("fish.size(): " + fish.size());
             EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + configRarities.size());
             return false;
@@ -596,7 +658,9 @@ public class Competition {
             this.selectedRarity = FishingProcessor.randomWeightedRarity(null, 0, null, EvenMoreFish.getInstance().getFishCollection().keySet());
             return true;
         } catch (IllegalArgumentException exception) {
-            EvenMoreFish.getInstance().getLogger().severe("Could not load: " + competitionName + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
+            EvenMoreFish.getInstance()
+                    .getLogger()
+                    .severe("Could not load: " + competitionName + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
             EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + EvenMoreFish.getInstance().getFishCollection().keySet().size());
             EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + configRarities.size());
             return false;
@@ -611,7 +675,9 @@ public class Competition {
                 try {
                     alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
                 } catch (NumberFormatException nfe) {
-                    EvenMoreFish.getInstance().getLogger().severe("Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
+                    EvenMoreFish.getInstance()
+                            .getLogger()
+                            .severe("Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
                 }
             } else {
                 EvenMoreFish.getInstance().getLogger().severe(s + " is not formatted correctly. Use MM:SS");
@@ -645,8 +711,11 @@ public class Competition {
                     addingRewards.add(reward);
                 }
 
-                if (Objects.equals(i, "participation")) this.participationRewards = addingRewards;
-                else this.rewards.put(Integer.parseInt(i), addingRewards);
+                if (Objects.equals(i, "participation")) {
+                    this.participationRewards = addingRewards;
+                } else {
+                    this.rewards.put(Integer.parseInt(i), addingRewards);
+                }
             }
         }
     }
@@ -793,7 +862,7 @@ public class Competition {
             return competitionStartTime - currentTime;
         }
 
-        return getRemainingTimeOverWeek(competitionStartTime,currentTime);
+        return getRemainingTimeOverWeek(competitionStartTime, currentTime);
     }
 
     // time left of the current week + the time next week until next competition

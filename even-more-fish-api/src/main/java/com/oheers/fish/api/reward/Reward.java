@@ -3,7 +3,6 @@ package com.oheers.fish.api.reward;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 

@@ -18,7 +18,7 @@ public class FishingGUI implements InventoryHolder {
     final int INV_SIZE = 54;
     List<Button> guiButtons = new ArrayList<>();
     final UUID viewer;
-    private FillerStyle fillerStyle = FillerStyle.DEFAULT;
+    private final FillerStyle fillerStyle = FillerStyle.DEFAULT;
 
     /**
      * Creates a fishing GUI object to render the "/emf" gui. A new one needs to be made for each user otherwise it can
