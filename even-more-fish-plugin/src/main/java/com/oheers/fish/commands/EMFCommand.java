@@ -26,7 +26,7 @@ public class EMFCommand extends BaseCommand {
     public void onNext(final CommandSender sender) {
         Message message = Competition.getNextCompetitionMessage();
         message.usePrefix(PrefixType.DEFAULT);
-        message.broadcast(sender, true, true);
+        message.broadcast(sender, true);
     }
 
     @Subcommand("toggle")
@@ -35,12 +35,12 @@ public class EMFCommand extends BaseCommand {
     public void onToggle(final Player player) {
         if (EvenMoreFish.getInstance().getDisabledPlayers().contains(player.getUniqueId())) {
             EvenMoreFish.getInstance().getDisabledPlayers().remove(player.getUniqueId());
-            new Message(ConfigMessage.TOGGLE_ON).broadcast(player, true, false);
+            new Message(ConfigMessage.TOGGLE_ON).broadcast(player, false);
             return;
         }
 
         EvenMoreFish.getInstance().getDisabledPlayers().add(player.getUniqueId());
-        new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, true, false);
+        new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, false);
     }
 
 
@@ -48,7 +48,7 @@ public class EMFCommand extends BaseCommand {
     @Default
     @HelpCommand
     public void onHelp(final CommandHelp help, final CommandSender sender) {
-        new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender, true, false);
+        new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender, false);
         help.showHelp();
     }
 
@@ -57,7 +57,7 @@ public class EMFCommand extends BaseCommand {
     @Description("%desc_general_top")
     public void onTop(final CommandSender sender) {
         if (!Competition.isActive()) {
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true);
             return;
         }
 
@@ -76,13 +76,13 @@ public class EMFCommand extends BaseCommand {
     @Description("%desc_general_shop")
     public void onShop(final CommandSender sender, @Optional final OnlinePlayer onlinePlayer) {
         if (MainConfig.getInstance().isEconomyDisabled()) {
-            new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
+            new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, false);
             return;
         }
 
         if (onlinePlayer == null) {
             if (!(sender instanceof Player)) {
-                new Message("&cYou must specify a player when running from console.").broadcast(sender,true,false);
+                new Message("&cYou must specify a player when running from console.").broadcast(sender, false);
                 return;
             }
             new SellGUI((Player) sender, true);
@@ -93,7 +93,7 @@ public class EMFCommand extends BaseCommand {
             new SellGUI(onlinePlayer.player, true);
             Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
             message.setPlayer(onlinePlayer.player.getName());
-            message.broadcast(sender, true, true);
+            message.broadcast(sender, true);
         }
     }
 
@@ -102,7 +102,7 @@ public class EMFCommand extends BaseCommand {
     @Description("%desc_general_sellall")
     public void onSellAll(final Player sender) {
         if (MainConfig.getInstance().isEconomyDisabled()) {
-            new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, true, false);
+            new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender, false);
             return;
         }
 

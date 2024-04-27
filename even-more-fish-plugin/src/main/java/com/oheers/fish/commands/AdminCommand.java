@@ -44,7 +44,7 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_fish")
     public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Optional @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional OnlinePlayer player) {
         if (player == null && !(sender instanceof Player)) {
-            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
             return;
         }
 
@@ -60,7 +60,7 @@ public class AdminCommand extends BaseCommand {
         Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_FISH);
         message.setPlayer(target.getName());
         message.setFishCaught(fish.getName());
-        message.broadcast(sender, true, true);
+        message.broadcast(sender, true);
         //give fish to target
     }
 
@@ -125,7 +125,7 @@ public class AdminCommand extends BaseCommand {
                             @Default("1") @Conditions("limits:min=1") @Optional Integer amount
         ) {
             if (Competition.isActive()) {
-                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender, true, false);
+                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender, false);
                 return;
             }
 
@@ -151,7 +151,7 @@ public class AdminCommand extends BaseCommand {
                 return;
             }
 
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true, true);
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true);
         }
 
     }
@@ -160,7 +160,7 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_nbtrod")
     public void onNbtRod(final CommandSender sender, @Optional Player player) {
         if (!MainConfig.getInstance().requireNBTRod()) {
-            new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender, true, false);
+            new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender, false);
             return;
         }
 
@@ -169,7 +169,7 @@ public class AdminCommand extends BaseCommand {
         if (player == null) {
             if (!(sender instanceof Player)) {
                 Message errorMessage = new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE);
-                errorMessage.broadcast(sender, false, false);
+                errorMessage.broadcast(sender, false);
                 return;
             }
 
@@ -179,7 +179,7 @@ public class AdminCommand extends BaseCommand {
         FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
         giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
         giveMessage.setPlayer(player.getName());
-        giveMessage.broadcast(sender, true, true);
+        giveMessage.broadcast(sender, true);
     }
 
 
@@ -197,7 +197,7 @@ public class AdminCommand extends BaseCommand {
 
         if (player == null) {
             if (!(sender instanceof Player)) {
-                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
                 return;
             }
 
@@ -213,7 +213,7 @@ public class AdminCommand extends BaseCommand {
         Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
         message.setPlayer(player.player.getName());
         message.setBait(baitId);
-        message.broadcast(sender, true, true);
+        message.broadcast(sender, true);
     }
 
     private String getBaitIdFromName(final String baitName) {
@@ -230,7 +230,7 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_clearbaits")
     public void onClearBaits(final CommandSender sender, @Optional Player player) {
         if (player == null && !(sender instanceof Player)) {
-            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, true, false);
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
             return;
         }
 
@@ -239,13 +239,13 @@ public class AdminCommand extends BaseCommand {
         }
 
         if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
-            new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player, true, false);
+            new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player, false);
             return;
         }
 
         ItemStack fishingRod = player.getInventory().getItemInMainHand();
         if (!BaitNBTManager.isBaitedRod(fishingRod)) {
-            new Message(ConfigMessage.NO_BAITS).broadcast(player, true, false);
+            new Message(ConfigMessage.NO_BAITS).broadcast(player, false);
             return;
         }
 
@@ -254,7 +254,7 @@ public class AdminCommand extends BaseCommand {
         fishingRod.setItemMeta(meta);
         Message message = new Message(ConfigMessage.BAITS_CLEARED);
         message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
-        message.broadcast(player, true, true);
+        message.broadcast(player, true);
     }
 
 
@@ -267,7 +267,7 @@ public class AdminCommand extends BaseCommand {
 
         EvenMoreFish.getInstance().reload();
 
-        new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, true, false);
+        new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
     }
 
 
@@ -282,7 +282,7 @@ public class AdminCommand extends BaseCommand {
             messageList.add(String.format(messageFormat, prefix, addonManager.isLoading(prefix)));
         }
 
-        new Message(messageList).broadcast(sender, true, false);
+        new Message(messageList).broadcast(sender, false);
     }
 
     @Subcommand("version")
@@ -304,7 +304,7 @@ public class AdminCommand extends BaseCommand {
         msgString += "Database Engine: " + getDatabaseVersion();
 
         Message msg = new Message(msgString);
-        msg.broadcast(sender, true, false);
+        msg.broadcast(sender, false);
     }
 
     private String getDatabaseVersion() {
@@ -322,7 +322,7 @@ public class AdminCommand extends BaseCommand {
     @Subcommand("rewardtypes")
     @Description("%desc_admin_rewardtypes")
     public void onRewardTypes(final CommandSender sender) {
-        TextComponent message = new TextComponent(new Message(ConfigMessage.ADMIN_LIST_REWARD_TYPES).getRawMessage(true, false));
+        TextComponent message = new TextComponent(new Message(ConfigMessage.ADMIN_LIST_REWARD_TYPES).getRawMessage(false));
         ComponentBuilder builder = new ComponentBuilder(message);
 
         RewardManager.getInstance().getRegisteredRewardTypes().forEach(rewardType -> {
