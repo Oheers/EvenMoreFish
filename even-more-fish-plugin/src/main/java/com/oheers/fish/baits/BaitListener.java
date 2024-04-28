@@ -1,7 +1,9 @@
 package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
@@ -10,18 +12,25 @@ import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 
-public class BaitApplicationListener implements Listener {
+public class BaitListener implements Listener {
 
     @EventHandler
     public void onClickEvent(InventoryClickEvent event) {
-        if (event.getCurrentItem() == null || event.getCursor() == null)
+        if (event.getCurrentItem() == null || event.getCursor() == null) {
             return;
+        }
+
+        if (MainConfig.getInstance().shouldProtectBaitedRods() && anvilCheck(event)) {
+            return;
+        }
 
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
@@ -35,7 +44,7 @@ public class BaitApplicationListener implements Listener {
 
 
         if (!event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL)) {
-            new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), true, false);
+            new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), false);
             return;
         }
 
@@ -58,14 +67,14 @@ public class BaitApplicationListener implements Listener {
             }
 
         } catch (MaxBaitsReachedException exception) {
-            new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked(), true, false);
+            new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked(), false);
             result = exception.getRecoveryResult();
         } catch (MaxBaitReachedException exception) {
             result = exception.getRecoveryResult();
             Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
             message.setBaitTheme(bait.getTheme());
             message.setBait(bait.getName());
-            message.broadcast(event.getWhoClicked(), true, true);
+            message.broadcast(event.getWhoClicked(), true);
         }
 
         if (result == null || result.getFishingRod() == null)
@@ -107,4 +116,20 @@ public class BaitApplicationListener implements Listener {
         emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, appliedBaitString);
         return nbtFishingRod.getItem();
     }
+
+    private boolean anvilCheck(InventoryClickEvent event) {
+        if (!(event.getClickedInventory() instanceof AnvilInventory) || !(event.getWhoClicked() instanceof Player)) {
+            return false;
+        }
+        Player player = (Player) event.getWhoClicked();
+        AnvilInventory inv = (AnvilInventory) event.getClickedInventory();
+        if (event.getSlot() == 2 && BaitNBTManager.isBaitedRod(inv.getItem(1))) {
+            event.setCancelled(true);
+            player.closeInventory();
+            new Message(ConfigMessage.BAIT_ROD_PROTECTION).broadcast(player, false);
+            return true;
+        }
+        return false;
+    }
+
 }

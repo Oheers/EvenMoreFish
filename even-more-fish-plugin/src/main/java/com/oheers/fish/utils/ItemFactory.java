@@ -535,7 +535,7 @@ public class ItemFactory {
         ItemMeta meta = product.getItemMeta();
         if (meta == null) return;
 
-        meta.setLore(lore.getRawListMessage(true, false));
+        meta.setLore(lore.getRawListMessage(false));
         product.setItemMeta(meta);
     }
 

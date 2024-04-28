@@ -265,16 +265,16 @@ public class FishUtils {
         long seconds = timeLeft % 60;
 
         if (hours > 0) {
-            returning += hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false, false) + " ";
+            returning += hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false) + " ";
         }
 
         if (minutes > 0) {
-            returning += minutes + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false, false) + " ";
+            returning += minutes + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false) + " ";
         }
 
         // Shows remaining seconds if seconds > 0 or hours and minutes are 0, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
         if (seconds > 0 | (minutes == 0 & hours == 0)) {
-            returning += seconds + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false, false) + " ";
+            returning += seconds + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false) + " ";
         }
 
         return returning;
@@ -308,11 +308,11 @@ public class FishUtils {
                         continue;
                     }
                     if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || player.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true, true)));
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true)));
                     }
                 }
             } else {
-                String formatted = message.getRawMessage(true, true);
+                String formatted = message.getRawMessage(true);
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
                         continue;
@@ -329,14 +329,14 @@ public class FishUtils {
                     if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
                         continue;
                     }
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true, true)));
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true)));
                 }
             } else {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
                         continue;
                     }
-                    player.sendMessage(message.getRawMessage(true, true));
+                    player.sendMessage(message.getRawMessage(true));
                 }
             }
         }

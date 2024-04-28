@@ -234,6 +234,8 @@ bait-catch: "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!"
 bait-use: "&rYou have used one of your rod's {bait_theme}&l{bait} &rbait."
 # Sent when someone tries to use a bait in creative
 bait-survival-limited: "&rYou must be in &nsurvival&r to apply baits to fishing rods."
+# Sent when someone tries to merge a baited rod into an unbaited rod
+bait-rod-protection: "&rProtected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead."
 
 # Shown when /emf toggle is run, to turn off and on respectively.
 toggle-off: "&rYou will no longer catch custom fish."

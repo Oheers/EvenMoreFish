@@ -41,13 +41,13 @@ public class Button {
         if (name != null) {
             Message toggleVAR = new Message(name);
             toggleVAR.setToggleMSG(GUIConfig.getInstance().getToggle(!EvenMoreFish.getInstance().getDisabledPlayers().contains(viewer)));
-            this.name = toggleVAR.getRawMessage(true, true);
+            this.name = toggleVAR.getRawMessage(true);
         }
 
         if (!unformattedLore.isEmpty()) {
             this.lore = unformattedLore;
             for (int i = 0; i < unformattedLore.size(); i++) {
-                this.lore.set(i, new Message(unformattedLore.get(i)).getRawMessage(true, false));
+                this.lore.set(i, new Message(unformattedLore.get(i)).getRawMessage(false));
             }
         }
 
@@ -58,8 +58,8 @@ public class Button {
         ItemStack item = new ItemStack(this.material);
         if (item.getItemMeta() != null) {
             ItemMeta itemMeta = item.getItemMeta();
-            if (this.name != null) itemMeta.setDisplayName(new Message(this.name).getRawMessage(true, false));
-            if (!this.lore.isEmpty()) itemMeta.setLore(new Message(this.lore).getRawListMessage(true, false));
+            if (this.name != null) itemMeta.setDisplayName(new Message(this.name).getRawMessage(false));
+            if (!this.lore.isEmpty()) itemMeta.setLore(new Message(this.lore).getRawListMessage(false));
             item.setItemMeta(itemMeta);
             return WorthNBT.attributeDefault(item);
         }

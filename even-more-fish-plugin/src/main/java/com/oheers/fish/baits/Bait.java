@@ -198,7 +198,7 @@ public class Bait {
         Message message = new Message(ConfigMessage.BAIT_USED);
         message.setBait(this.name);
         message.setBaitTheme(this.theme);
-        message.broadcast(player, true, true);
+        message.broadcast(player, true);
     }
 
     /**

@@ -76,7 +76,7 @@ public class SkullSaver implements Listener {
         if (FishUtils.isFish(stack)) {
             if (MainConfig.getInstance().blockPlacingHeads()) {
                 event.setCancelled(true);
-                new Message(ConfigMessage.FISH_CANT_BE_PLACED).broadcast(event.getPlayer(), true, false);
+                new Message(ConfigMessage.FISH_CANT_BE_PLACED).broadcast(event.getPlayer(), false);
                 return;
             }
             

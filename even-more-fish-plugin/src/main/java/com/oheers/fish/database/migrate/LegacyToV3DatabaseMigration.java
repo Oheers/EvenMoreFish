@@ -142,14 +142,14 @@ public class LegacyToV3DatabaseMigration {
         if (!database.usingVersionV2()) {
             Message msg = new Message("EvenMoreFish is already using the latest V3 database engine.");
             msg.usePrefix(PrefixType.ERROR);
-            msg.broadcast(initiator, true, false);
+            msg.broadcast(initiator, false);
             return;
         }
         
         EvenMoreFish.getInstance().getLogger().info(() -> initiator.getName() + " has begun the migration to EMF database V3 from V2.");
         Message msg = new Message("Beginning conversion to V3 database engine.");
         msg.usePrefix(PrefixType.ADMIN);
-        msg.broadcast(initiator, true, false);
+        msg.broadcast(initiator, false);
         
         File oldDataFolder = new File(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data/");
         File dataFolder = new File(JavaPlugin.getProvidingPlugin(DatabaseV3.class).getDataFolder() + "/data-archived/");
@@ -157,17 +157,17 @@ public class LegacyToV3DatabaseMigration {
         if (oldDataFolder.renameTo(dataFolder)) {
             Message message = new Message("Archived /data/ folder.");
             message.usePrefix(PrefixType.ADMIN);
-            message.broadcast(initiator, true, false);
+            message.broadcast(initiator, false);
         } else {
             Message message = new Message("Failed to archive /data/ folder. Cancelling migration. [No further information]");
             message.usePrefix(PrefixType.ADMIN);
-            message.broadcast(initiator, true, false);
+            message.broadcast(initiator, false);
             return;
         }
         
         Message fishReportMSG = new Message("Beginning FishReport migrations. This may take a while.");
         fishReportMSG.usePrefix(PrefixType.ADMIN);
-        fishReportMSG.broadcast(initiator, true, false);
+        fishReportMSG.broadcast(initiator, false);
         
         try {
             translateFishDataV2();
@@ -188,13 +188,13 @@ public class LegacyToV3DatabaseMigration {
                 
                 Message migratedMSG = new Message("Migrated " + reports.size() + " fish for: " + playerUUID);
                 migratedMSG.usePrefix(PrefixType.ADMIN);
-                migratedMSG.broadcast(initiator, true, false);
+                migratedMSG.broadcast(initiator, false);
             }
             
         } catch (NullPointerException | FileNotFoundException exception) {
             Message message = new Message("Fatal error whilst upgrading to V3 database engine.");
             message.usePrefix(PrefixType.ERROR);
-            message.broadcast(initiator, true, false);
+            message.broadcast(initiator, false);
             
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Critical SQL/interruption error whilst upgrading to v3 engine.", exception);
         } catch (IOException e) {
@@ -205,12 +205,12 @@ public class LegacyToV3DatabaseMigration {
         Message migratedMSG = new Message("Migration completed. Your database is now using the V3 database engine: you do" +
             " not need to restart or reload your server to complete the process.");
         migratedMSG.usePrefix(PrefixType.ERROR);
-        migratedMSG.broadcast(initiator, true, false);
+        migratedMSG.broadcast(initiator, false);
         
         Message thankyou = new Message("Now that migration is complete, you will be able to use functionality in upcoming" +
             " updates such as quests, deliveries and a fish log. - Oheers");
         thankyou.usePrefix(PrefixType.ERROR);
-        thankyou.broadcast(initiator, true, false);
+        thankyou.broadcast(initiator, false);
     
         database.setUsingV2(false);
     }

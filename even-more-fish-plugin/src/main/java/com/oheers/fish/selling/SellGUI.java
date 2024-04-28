@@ -51,7 +51,7 @@ public class SellGUI implements InventoryHolder {
         this.guiSize = (MainConfig.getInstance().getGUISize() + 1) * 9;
         this.player = p;
         this.modified = false;
-        this.menu = Bukkit.createInventory(this, guiSize, new Message(ConfigMessage.WORTH_GUI_NAME).getRawMessage(true, true));
+        this.menu = Bukkit.createInventory(this, guiSize, new Message(ConfigMessage.WORTH_GUI_NAME).getRawMessage(true));
         setFiller();
         addFiller(filler);
         setSellItem();
@@ -96,7 +96,7 @@ public class SellGUI implements InventoryHolder {
         ItemStack saIcon = new ItemStack(MainConfig.getInstance().getSellAllMaterial());
 
         ItemMeta saMeta = saIcon.getItemMeta();
-        saMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_NAME).getRawMessage(true, false));
+        saMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_NAME).getRawMessage(false));
 
         saIcon.setItemMeta(saMeta);
         glowify(saIcon);
@@ -114,7 +114,7 @@ public class SellGUI implements InventoryHolder {
         Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
         message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(true))));
 
-        saMeta.setLore(Arrays.asList(message.getRawMessage(true, true).split("\n")));
+        saMeta.setLore(Arrays.asList(message.getRawMessage(true).split("\n")));
 
         this.sellAllIcon.setItemMeta(saMeta);
         menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.sellAllIcon);
@@ -124,7 +124,7 @@ public class SellGUI implements InventoryHolder {
         ItemStack sIcon = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItem()));
 
         ItemMeta sellMeta = sIcon.getItemMeta();
-        sellMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_NAME).getRawMessage(true, false));
+        sellMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_NAME).getRawMessage(false));
 
         sIcon.setItemMeta(sellMeta);
 
@@ -143,7 +143,7 @@ public class SellGUI implements InventoryHolder {
         Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
         message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
 
-        sellMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
+        sellMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
 
         this.sellIcon.setItemMeta(sellMeta);
         menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.sellIcon);
@@ -192,18 +192,18 @@ public class SellGUI implements InventoryHolder {
             ItemMeta errorMeta = error.getItemMeta();
 
             if (sellAll)
-                errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_ALL_BUTTON_NAME).getRawMessage(true, false));
+                errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_ALL_BUTTON_NAME).getRawMessage(false));
             else
-                errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_NAME).getRawMessage(true, false));
+                errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_NAME).getRawMessage(false));
 
             if (sellAll) {
                 Message message = new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_LORE);
                 message.setSellPrice(formatWorth(0.0));
-                errorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
+                errorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
             } else {
                 Message message = new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_LORE);
                 message.setSellPrice(formatWorth(0.0));
-                errorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
+                errorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
             }
 
             error.setItemMeta(errorMeta);
@@ -219,21 +219,21 @@ public class SellGUI implements InventoryHolder {
 
             ItemMeta cMeta = confirm.getItemMeta();
             if (sellAll)
-                cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_ALL_BUTTON_NAME).getRawMessage(true, false));
+                cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_ALL_BUTTON_NAME).getRawMessage(false));
             else
-                cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_BUTTON_NAME).getRawMessage(true, false));
+                cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_BUTTON_NAME).getRawMessage(false));
             // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
             List<String> lore = new ArrayList<>();
 
             if (sellAll) {
                 Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
                 message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(true))));
-                cMeta.setLore(Arrays.asList(message.getRawMessage(true, true).split("\n")));
+                cMeta.setLore(Arrays.asList(message.getRawMessage(true).split("\n")));
             } else {
                 Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
                 message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
 
-                cMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true, true).split("\n"))));
+                cMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
             }
 
             confirm.setItemMeta(cMeta);
@@ -345,7 +345,7 @@ public class SellGUI implements InventoryHolder {
                     return (int) totalWorth + " Player Points";
                 }
             case VAULT:
-                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false, false));
+                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false));
                 return format.format(totalWorth);
             // Includes NONE type
             default:
@@ -414,7 +414,7 @@ public class SellGUI implements InventoryHolder {
         message.setSellPrice(formatWorth(sellPrice));
         message.setAmount(Integer.toString(fishCount));
         message.setPlayer(this.player.toString());
-        message.broadcast(player, true, true);
+        message.broadcast(player, true);
 
         this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
 

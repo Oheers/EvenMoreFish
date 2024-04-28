@@ -44,7 +44,7 @@ class UpdateNotify implements Listener {
         }
 
         if (EvenMoreFish.getInstance().getPermission().playerHas(event.getPlayer(), AdminPerms.UPDATE_NOTIFY)) {
-            new Message(ConfigMessage.ADMIN_UPDATE_AVAILABLE).broadcast(event.getPlayer(), true, false);
+            new Message(ConfigMessage.ADMIN_UPDATE_AVAILABLE).broadcast(event.getPlayer(), false);
         }
 
     }
