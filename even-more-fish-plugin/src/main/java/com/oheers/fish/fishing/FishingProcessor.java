@@ -198,11 +198,10 @@ public class FishingProcessor implements Listener {
         }
 
         fish.init();
+        fish.checkFishEvent();
 
         if (runRewards && fish.hasFishRewards()) {
-            for (Reward fishReward : fish.getFishRewards()) {
-                fishReward.rewardPlayer(player, location);
-            }
+            fish.getFishRewards().forEach(fishReward -> fishReward.rewardPlayer(player, location));
         }
 
         EMFFishEvent cEvent = new EMFFishEvent(fish, player);
