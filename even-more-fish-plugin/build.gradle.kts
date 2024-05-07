@@ -180,6 +180,11 @@ bukkit {
 tasks {
     build {
         dependsOn(shadowJar)
+
+        doLast {
+            val file = project.layout.buildDirectory.file("libs/even-more-fish-plugin-${version}.jar").get()
+            file.asFile.delete()
+        }
     }
 
     clean {
