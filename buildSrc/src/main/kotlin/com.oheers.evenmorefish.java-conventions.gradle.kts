@@ -32,7 +32,8 @@ tasks {
         build {
             doLast {
                 copy {
-                    val sourceFolder = project.buildDir.resolve("libs/${addonName}")
+
+                    val sourceFolder = project.layout.buildDirectory.dir("libs/${addonName}").get()
                     val targetFolder = File(rootProject.project(":even-more-fish-plugin").projectDir, "src/main/resources/addons")
                     from(sourceFolder)
                     into(targetFolder)
