@@ -6,7 +6,6 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.NbtUtils;
 import com.oheers.fish.api.EMFFishEvent;
-import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
