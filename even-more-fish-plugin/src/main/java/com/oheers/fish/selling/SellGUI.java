@@ -423,6 +423,7 @@ public class SellGUI implements InventoryHolder {
                 if (FishUtils.isFish(item)) {
                     Fish fish = FishUtils.getFish(item);
                     if (fish != null) {
+                        fish.checkSellEvent();
                         fish.getSellRewards().forEach(reward -> reward.rewardPlayer(player, null));
                     }
                     this.player.getInventory().remove(item);
@@ -435,6 +436,7 @@ public class SellGUI implements InventoryHolder {
                 if (WorthNBT.getValue(item) != -1.0) {
                     Fish fish = FishUtils.getFish(item);
                     if (fish != null) {
+                        fish.checkSellEvent();
                         fish.getSellRewards().forEach(reward -> reward.rewardPlayer(player, null));
                     }
                     menu.setItem(i, null);

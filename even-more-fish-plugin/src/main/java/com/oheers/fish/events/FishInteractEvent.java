@@ -32,6 +32,7 @@ public class FishInteractEvent implements Listener {
         // Creates a replica of the fish we can use
         Fish fish = FishUtils.getFish(event.getItem());
         if (fish != null) {
+            fish.checkIntEvent();
             if (fish.hasIntRewards()) {
                 // Cancel the interact event
                 event.setCancelled(true);
@@ -39,9 +40,7 @@ public class FishInteractEvent implements Listener {
                 ItemStack itemInHand = event.getItem();
                 event.getPlayer().getInventory().getItemInMainHand().setAmount(itemInHand.getAmount() - 1);
                 // Runs through each eat-event
-                for (Reward r : fish.getActionRewards()) {
-                    r.rewardPlayer(event.getPlayer(), null);
-                }
+                fish.getActionRewards().forEach(r -> r.rewardPlayer(event.getPlayer(), null));
             }
         }
     }

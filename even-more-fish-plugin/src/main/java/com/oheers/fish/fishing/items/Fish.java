@@ -2,6 +2,7 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.NbtUtils;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
@@ -12,6 +13,7 @@ import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -90,10 +92,8 @@ public class Fish implements Cloneable {
         checkDisplayName();
         checkSilent();
 
-        fishRewards = new ArrayList<>();
         checkFishEvent();
 
-        sellRewards = new ArrayList<>();
         checkSellEvent();
     }
     
@@ -310,26 +310,33 @@ public class Fish implements Cloneable {
             actionRewards = new ArrayList<>();
 
             // Translates all the rewards into Reward objects and adds them to the fish.
-            for (String reward : configRewards) {
+            configRewards.forEach(reward -> {
+                reward = parseEventPlaceholders(reward);
                 this.actionRewards.add(new Reward(reward));
-            }
+            });
         }
     }
 
     public void checkFishEvent() {
+        fishRewards = new ArrayList<>();
         List<String> configRewards = this.fishConfig.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".catch-event");
         if (!configRewards.isEmpty()) {
             // Translates all the rewards into Reward objects and adds them to the fish.
-            for (String reward : configRewards) {
+            configRewards.forEach(reward -> {
+                reward = parseEventPlaceholders(reward);
                 this.fishRewards.add(new Reward(reward));
-            }
+            });
         }
     }
 
     public void checkSellEvent() {
+        sellRewards = new ArrayList<>();
         List<String> configRewards = this.fishConfig.getStringList("fish." + this.rarity.getValue() + "." + this.name + ".sell-event");
         if (!configRewards.isEmpty())  {
-            configRewards.forEach(reward -> this.sellRewards.add(new Reward(reward)));
+            configRewards.forEach(reward -> {
+                reward = parseEventPlaceholders(reward);
+                this.sellRewards.add(new Reward(reward));
+            });
         }
     }
 
@@ -343,9 +350,10 @@ public class Fish implements Cloneable {
             actionRewards = new ArrayList<>();
 
             // Translates all the rewards into Reward objects and adds them to the fish.
-            for (String reward : configRewards) {
+            configRewards.forEach(reward -> {
+                reward = parseEventPlaceholders(reward);
                 this.actionRewards.add(new Reward(reward));
-            }
+            });
         }
     }
 
@@ -465,4 +473,34 @@ public class Fish implements Cloneable {
     public void setSilent(boolean silent) {
         this.silent = silent;
     }
+
+    public String parseEventPlaceholders(String rewardString) {
+
+        // {length} Placeholder
+        rewardString = rewardString.replace("{length}", String.valueOf(length));
+
+        // {rarity} Placeholder
+        String rarityReplacement = "";
+        if (rarity != null) {
+            rarityReplacement = rarity.getValue();
+        }
+        rewardString = rewardString.replace("{rarity}", rarityReplacement);
+
+        // {displayname} Placeholder
+        String displayNameReplacement = "";
+        if (displayName != null) {
+            displayNameReplacement = displayName;
+        }
+        rewardString = rewardString.replace("{displayname}", displayNameReplacement);
+
+        // {name} Placeholder
+        String nameReplacement = "";
+        if (name != null) {
+            nameReplacement = name;
+        }
+        rewardString = rewardString.replace("{name}", nameReplacement);
+
+        return rewardString;
+    }
+
 }
