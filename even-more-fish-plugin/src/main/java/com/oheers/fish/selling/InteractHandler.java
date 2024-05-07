@@ -37,10 +37,8 @@ public class InteractHandler implements Listener {
         SellGUI gui = (SellGUI) holder;
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) {
-            EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                gui.setSellItem();
-                gui.setSellAllItem();
-            });
+            gui.setSellItem();
+            gui.setSellAllItem();
         } else {
             // determines what the player has clicked, or if they've just added an item
             // to the menu
@@ -92,14 +90,12 @@ public class InteractHandler implements Listener {
             } else if (clickedItem.isSimilar(gui.getFiller()) || clickedItem.isSimilar(gui.getErrorFiller())) {
                 event.setCancelled(true);
             } else {
-                EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                    gui.updateSellItem();
-                    gui.updateSellAllItem();
-                    gui.setModified(true);
-                    gui.resetGlassColour();
+                gui.updateSellItem();
+                gui.updateSellAllItem();
+                gui.setModified(true);
+                gui.resetGlassColour();
 
-                    gui.error = false;
-                });
+                gui.error = false;
             }
         }
     }
