@@ -2,6 +2,8 @@ package com.oheers.fish;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -22,9 +24,12 @@ import org.bukkit.*;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -249,13 +254,18 @@ public class FishUtils {
     //gets the item with a custom texture
     public static ItemStack get(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        NBTItem nbtItem = new NBTItem(skull);
-        NBTCompound nbtCompound = nbtItem.addCompound("SkullOwner");
-        nbtCompound.setString("Id", "8667ba71-b85a-4004-af54-457a9734eed7");
-
-        NBTListCompound texture = nbtCompound.addCompound("Properties").getCompoundList("textures").addCompound();
-        texture.setString("Value", base64EncodedString);
-        return nbtItem.getItem();
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "EMFFish");
+        gameProfile.getProperties().put("textures", new Property("textures", base64EncodedString));
+        try {
+            Field profileField = meta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(meta, gameProfile);
+        } catch (NullPointerException | NoSuchFieldException | IllegalAccessException ex) {
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+        }
+        skull.setItemMeta(meta);
+        return skull;
     }
 
     public static String timeFormat(long timeLeft) {
