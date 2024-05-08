@@ -22,6 +22,8 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.rewardtypes.*;
+import com.oheers.fish.competition.rewardtypes.external.GPClaimBlocksRewardType;
+import com.oheers.fish.competition.rewardtypes.external.PlayerPointsRewardType;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;

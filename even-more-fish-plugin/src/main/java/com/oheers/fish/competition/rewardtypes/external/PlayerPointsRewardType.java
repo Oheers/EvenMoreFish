@@ -1,33 +1,32 @@
-package com.oheers.fish.competition.rewardtypes;
+package com.oheers.fish.competition.rewardtypes.external;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.reward.RewardType;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import me.ryanhamshire.GriefPrevention.PlayerData;
+import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public class GPClaimBlocksRewardType implements RewardType {
+public class PlayerPointsRewardType implements RewardType {
 
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
-        int rewardBlocks;
+        int amount;
         try {
-            rewardBlocks = Integer.parseInt(value);
+            amount = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
             EvenMoreFish.getInstance().getLogger().warning("Invalid number specified for RewardType " + getIdentifier() + ": " + value);
             return;
         }
-        PlayerData data = GriefPrevention.instance.dataStore.getPlayerData(player.getUniqueId());
-        int currentBonus = data.getBonusClaimBlocks();
-        data.setBonusClaimBlocks(currentBonus + rewardBlocks);
+        if (EvenMoreFish.getInstance().isUsingPlayerPoints()) {
+            PlayerPoints.getInstance().getAPI().give(player.getUniqueId(), amount);
+        }
     }
 
     @Override
     public @NotNull String getIdentifier() {
-        return "GP_CLAIM_BLOCKS";
+        return "PLAYER_POINTS";
     }
 
     @Override
