@@ -313,24 +313,24 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             getServer().getPluginManager().registerEvents(new AntiCraft(), this);
         }
 
-        if (Bukkit.getPluginManager().getPlugin("mcMMO") != null) {
+        if (Bukkit.getPluginManager().isPluginEnabled("mcMMO")) {
             usingMcMMO = true;
             if (MainConfig.getInstance().disableMcMMOTreasure()) {
                 getServer().getPluginManager().registerEvents(McMMOTreasureEvent.getInstance(), this);
             }
         }
 
-        if (Bukkit.getPluginManager().getPlugin("HeadDatabase") != null) {
+        if (Bukkit.getPluginManager().isPluginEnabled("HeadDatabase")) {
             usingHeadsDB = true;
             getServer().getPluginManager().registerEvents(new HeadDBIntegration(), this);
         }
 
-        if (Bukkit.getPluginManager().getPlugin("AureliumSkills") != null) {
+        if (Bukkit.getPluginManager().isPluginEnabled("AureliumSkills")) {
             if (MainConfig.getInstance().disableAureliumSkills()) {
                 getServer().getPluginManager().registerEvents(new AureliumSkillsFishingEvent(), this);
             }
         }
-        if (Bukkit.getPluginManager().getPlugin("AuraSkills") != null) {
+        if (Bukkit.getPluginManager().isPluginEnabled("AuraSkills")) {
             if (MainConfig.getInstance().disableAureliumSkills()) {
                 getServer().getPluginManager().registerEvents(new AuraSkillsFishingEvent(), this);
             }
@@ -606,20 +606,18 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private void checkPapi() {
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             usingPAPI = true;
             new PlaceholderReceiver(this).register();
         }
     }
 
     private boolean checkRP() {
-        Plugin pRP = Bukkit.getPluginManager().getPlugin("RedProtect");
-        return (pRP != null);
+        return Bukkit.getPluginManager().isPluginEnabled("RedProtect");
     }
 
     private boolean checkWG() {
-        Plugin pWG = Bukkit.getPluginManager().getPlugin("WorldGuard");
-        return (pWG != null);
+        return Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
     }
 
     public Random getRandom() {
