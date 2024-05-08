@@ -35,7 +35,7 @@ public interface Addon {
         if(!hasRequiredJavaVersion) {
             throw new JavaVersionException(getPluginName(), getRequiredJavaVersion());
         }
-        return (Bukkit.getPluginManager().getPlugin(getPluginName()) != null) && SystemUtils.isJavaVersionAtLeast(getRequiredJavaVersion());
+        return (Bukkit.getPluginManager().isPluginEnabled(getPluginName())) && SystemUtils.isJavaVersionAtLeast(getRequiredJavaVersion());
     }
 
     /**
