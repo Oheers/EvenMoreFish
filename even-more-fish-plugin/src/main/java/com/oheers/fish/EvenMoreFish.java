@@ -809,6 +809,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (pm.isPluginEnabled("PlayerPoints")) {
             new PlayerPointsRewardType().register();
         }
+        if (pm.isPluginEnabled("GriefPrevention")) {
+            new GPClaimBlocksRewardType().register();
+        }
     }
 
     /**
