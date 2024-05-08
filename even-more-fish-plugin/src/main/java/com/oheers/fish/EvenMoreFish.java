@@ -22,7 +22,9 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.rewardtypes.*;
+import com.oheers.fish.competition.rewardtypes.external.AuraSkillsXPRewardType;
 import com.oheers.fish.competition.rewardtypes.external.GPClaimBlocksRewardType;
+import com.oheers.fish.competition.rewardtypes.external.McMMOXPRewardType;
 import com.oheers.fish.competition.rewardtypes.external.PlayerPointsRewardType;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -813,6 +815,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
         if (pm.isPluginEnabled("GriefPrevention")) {
             new GPClaimBlocksRewardType().register();
+        }
+        if (pm.isPluginEnabled("AuraSkills")) {
+            new AuraSkillsXPRewardType().register();
+        }
+        if (pm.isPluginEnabled("mcMMO")) {
+            new McMMOXPRewardType().register();
         }
     }
 
