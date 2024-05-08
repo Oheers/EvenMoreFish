@@ -800,8 +800,15 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new MessageRewardType().register();
         new MoneyRewardType().register();
         new PermissionRewardType().register();
-        new PlayerPointsRewardType().register();
         new EXPRewardType().register();
+        loadExternalRewardTypes();
+    }
+
+    private void loadExternalRewardTypes() {
+        PluginManager pm = Bukkit.getPluginManager();
+        if (pm.isPluginEnabled("PlayerPoints")) {
+            new PlayerPointsRewardType().register();
+        }
     }
 
     /**
