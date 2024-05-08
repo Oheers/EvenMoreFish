@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.oheers.evenmorefish"
-version = "1.6.12.0"
+version = "1.7"
 
 description = "A fishing extension bringing an exciting new experience to fishing."
 
@@ -180,6 +180,11 @@ bukkit {
 tasks {
     build {
         dependsOn(shadowJar)
+
+        doLast {
+            val file = project.layout.buildDirectory.file("libs/even-more-fish-plugin-${version}.jar").get()
+            file.asFile.delete()
+        }
     }
 
     clean {
