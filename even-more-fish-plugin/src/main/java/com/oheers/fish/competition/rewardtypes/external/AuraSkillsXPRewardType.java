@@ -5,6 +5,7 @@ import com.oheers.fish.api.reward.RewardType;
 import dev.aurelium.auraskills.api.AuraSkillsApi;
 import dev.aurelium.auraskills.api.registry.NamespacedId;
 import dev.aurelium.auraskills.api.skill.Skill;
+import dev.aurelium.auraskills.api.skill.Skills;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,9 +33,20 @@ public class AuraSkillsXPRewardType implements RewardType {
 
         // Handle reward
         AuraSkillsApi api = AuraSkillsApi.get();
-        Skill skill = api.getGlobalRegistry().getSkill(NamespacedId.fromString(name));
+        Skill skill;
+        // I hate this code, but I don't know a better way.
+        try {
+            skill = Skills.valueOf(name);
+        } catch (IllegalArgumentException ex) {
+            try {
+                skill = api.getGlobalRegistry().getSkill(NamespacedId.fromString(name));
+            } catch (IllegalArgumentException ex2) {
+                EvenMoreFish.getInstance().getLogger().warning("Invalid skill specified for RewardType " + getIdentifier() + ": " + name);
+                return;
+            }
+        }
         if (skill == null) {
-            EvenMoreFish.getInstance().getLogger().warning("Invalid stat specified for RewardType " + getIdentifier() + ": " + name);
+            EvenMoreFish.getInstance().getLogger().warning("Invalid skill specified for RewardType " + getIdentifier() + ": " + name);
             return;
         }
         api.getUser(player.getUniqueId()).addSkillXp(skill, amount);
