@@ -31,7 +31,8 @@ public class McMMOXPRewardType implements RewardType {
 
         // Handle reward
         try {
-            ExperienceAPI.addXP(player, name, amount, "EvenMoreFish Reward");
+            // The reason is unknown here as mcMMO doesn't have any relevant reasons.
+            ExperienceAPI.addXP(player, name, amount, "unknown");
         } catch (InvalidSkillException ex) {
             EvenMoreFish.getInstance().getLogger().warning("Invalid skill specified for RewardType " + getIdentifier() + ": " + name);
         }
