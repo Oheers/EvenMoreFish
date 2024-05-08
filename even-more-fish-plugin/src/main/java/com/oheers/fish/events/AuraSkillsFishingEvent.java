@@ -1,5 +1,4 @@
 package com.oheers.fish.events;
-;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
 import dev.aurelium.auraskills.api.event.loot.LootDropEvent;
