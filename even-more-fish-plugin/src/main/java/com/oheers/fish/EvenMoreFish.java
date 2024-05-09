@@ -22,6 +22,10 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.rewardtypes.*;
+import com.oheers.fish.competition.rewardtypes.external.AuraSkillsXPRewardType;
+import com.oheers.fish.competition.rewardtypes.external.GPClaimBlocksRewardType;
+import com.oheers.fish.competition.rewardtypes.external.McMMOXPRewardType;
+import com.oheers.fish.competition.rewardtypes.external.PlayerPointsRewardType;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -800,8 +804,24 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new MessageRewardType().register();
         new MoneyRewardType().register();
         new PermissionRewardType().register();
-        new PlayerPointsRewardType().register();
         new EXPRewardType().register();
+        loadExternalRewardTypes();
+    }
+
+    private void loadExternalRewardTypes() {
+        PluginManager pm = Bukkit.getPluginManager();
+        if (pm.isPluginEnabled("PlayerPoints")) {
+            new PlayerPointsRewardType().register();
+        }
+        if (pm.isPluginEnabled("GriefPrevention")) {
+            new GPClaimBlocksRewardType().register();
+        }
+        if (pm.isPluginEnabled("AuraSkills")) {
+            new AuraSkillsXPRewardType().register();
+        }
+        if (pm.isPluginEnabled("mcMMO")) {
+            new McMMOXPRewardType().register();
+        }
     }
 
     /**

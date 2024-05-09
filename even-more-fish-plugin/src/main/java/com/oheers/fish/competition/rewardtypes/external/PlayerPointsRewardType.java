@@ -1,4 +1,4 @@
-package com.oheers.fish.competition.rewardtypes;
+package com.oheers.fish.competition.rewardtypes.external;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.reward.RewardType;
