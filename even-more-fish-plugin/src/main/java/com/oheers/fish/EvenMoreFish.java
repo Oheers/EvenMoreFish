@@ -57,6 +57,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -849,6 +850,15 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("CMI")) {
             players = players.stream().filter(player -> !CMIUser.getUser(player).isVanished()).collect(Collectors.toList());
         }
+
+        // Metadata check - A more generic way of checking if a player is vanished.
+        // SuperVanish, PremiumVanish, and VanishNoPacket support this according to the SuperVanish Spigot page.
+        players = players.stream().filter(player -> {
+            for (MetadataValue meta : player.getMetadata("vanished")) {
+                if (meta.asBoolean()) return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
 
         return players;
     }
