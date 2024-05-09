@@ -2,8 +2,6 @@ package com.oheers.fish;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -27,11 +25,14 @@ import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 
-import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -257,16 +258,20 @@ public class FishUtils {
     public static ItemStack get(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "EMFFish");
-        gameProfile.getProperties().put("textures", new Property("textures", base64EncodedString));
-        try {
-            Field profileField = meta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(meta, gameProfile);
-        } catch (NullPointerException | NoSuchFieldException | IllegalAccessException ex) {
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+        if (meta != null) {
+            try {
+                String decodedBase64 = new String(Base64.getDecoder().decode(base64EncodedString));
+                URL url = new URL(decodedBase64.substring("{\"textures\":{\"SKIN\":{\"url\":\"".length(), decodedBase64.length() - "\"}}}".length()));
+                PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID(), "EMFFish");
+                PlayerTextures textures = profile.getTextures();
+                textures.setSkin(url);
+                profile.setTextures(textures);
+                meta.setOwnerProfile(profile);
+            } catch (MalformedURLException ignored) {
+                // If it's malformed, just don't set it.
+            }
+            skull.setItemMeta(meta);
         }
-        skull.setItemMeta(meta);
         return skull;
     }
 
