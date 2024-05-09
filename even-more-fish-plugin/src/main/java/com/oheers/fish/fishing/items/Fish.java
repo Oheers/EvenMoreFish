@@ -64,6 +64,9 @@ public class Fish implements Cloneable {
     private int day = -1;
 
     public Fish(Rarity rarity, String name, boolean isXmas2022Fish) throws InvalidFishException {
+        if (rarity == null) {
+            throw new InvalidFishException(name + " could not be fetched from the config.");
+        }
         this.rarity = rarity;
         this.name = name;
         this.weight = 0;
@@ -72,9 +75,6 @@ public class Fish implements Cloneable {
         this.setFishAndRarityConfig();
         final boolean defaultRarityDisableFisherman = RaritiesFile.getInstance().getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false);
         this.disableFisherman = this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman", defaultRarityDisableFisherman);
-
-        if (rarity == null)
-            throw new InvalidFishException(name + " could not be fetched from the config.");
 
         this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name, this.xmasFish);
         checkDisplayName();
