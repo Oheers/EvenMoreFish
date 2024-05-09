@@ -277,16 +277,16 @@ public class FishUtils {
         long seconds = timeLeft % 60;
 
         if (hours > 0) {
-            returning += hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false) + " ";
+            returning += new Message(ConfigMessage.BAR_HOUR_COLOR).getRawMessage(false) + hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false) + " ";
         }
 
         if (minutes > 0) {
-            returning += minutes + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false) + " ";
+            returning += new Message(ConfigMessage.BAR_MINUTE_COLOR).getRawMessage(false) + minutes + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false) + " ";
         }
 
         // Shows remaining seconds if seconds > 0 or hours and minutes are 0, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
         if (seconds > 0 | (minutes == 0 & hours == 0)) {
-            returning += seconds + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false) + " ";
+            returning += new Message(ConfigMessage.BAR_SECOND_COLOR).getRawMessage(false) + seconds + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false) + " ";
         }
 
         return returning;
