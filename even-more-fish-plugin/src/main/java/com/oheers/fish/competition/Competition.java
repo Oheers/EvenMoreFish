@@ -777,7 +777,7 @@ public class Competition {
         this.statusBar = new Bar();
 
         try {
-            this.statusBar.setColour(BarColor.valueOf(CompetitionConfig.getInstance().getBarColour(competitionName)));
+            this.statusBar.setColour(BarColor.valueOf(CompetitionConfig.getInstance().getBarColour(competitionName).toUpperCase()));
         } catch (IllegalArgumentException iae) {
             EvenMoreFish.getInstance().getLogger().severe(CompetitionConfig.getInstance().getBarColour(competitionName) + " is not a valid bossbar colour, check ");
         }

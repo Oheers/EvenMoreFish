@@ -34,8 +34,11 @@ public enum ConfigMessage {
     BAITS_MAXED_ON_ROD("&rYou have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.", PrefixType.ERROR, false, false, "max-baits-reached"),
     BAIT_ROD_PROTECTION("&rProtected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead.", PrefixType.ERROR, false, false, "bait-rod-protection"),
 
+    BAR_SECOND_COLOR("&r", PrefixType.NONE, true, false, "bossbar.second-color"),
     BAR_SECOND("s", PrefixType.NONE, true, false, "bossbar.second"),
+    BAR_MINUTE_COLOR("&r", PrefixType.NONE, true, false, "bossbar.minute-color"),
     BAR_MINUTE("m", PrefixType.NONE, true, false, "bossbar.minute"),
+    BAR_HOUR_COLOR("&r", PrefixType.NONE, true, false, "bossbar.hour-color"),
     BAR_HOUR("h", PrefixType.NONE, true, false, "bossbar.hour"),
     BAR_REMAINING("left", PrefixType.NONE, true, false, "bossbar.remaining"),
 

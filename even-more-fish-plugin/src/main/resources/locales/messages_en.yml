@@ -36,8 +36,11 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
+  hour-color: "&r"
   hour: "h"
+  minute-color: "&r"
   minute: "m"
+  second-color: "&r"
   second: "s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "left"
