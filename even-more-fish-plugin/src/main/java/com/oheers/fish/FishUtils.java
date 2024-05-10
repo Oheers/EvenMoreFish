@@ -315,13 +315,14 @@ public class FishUtils {
     }
 
     public static void broadcastFishMessage(Message message, Player referencePlayer, boolean actionBar) {
-        int rangeSquared = CompetitionConfig.getInstance().getBroadcastRange(); // 10 blocks squared
 
         String formatted = message.getRawMessage(true);
 
         if (formatted.isEmpty()) {
             return;
         }
+
+        int rangeSquared = CompetitionConfig.getInstance().getBroadcastRange(); // 10 blocks squared
 
         if (CompetitionConfig.getInstance().broadcastOnlyRods()) {
             // sends it to all players holding ords
