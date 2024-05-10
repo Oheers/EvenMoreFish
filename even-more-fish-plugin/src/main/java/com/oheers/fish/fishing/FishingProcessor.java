@@ -140,7 +140,6 @@ public class FishingProcessor implements Listener {
         for (List<Fish> fishList : EvenMoreFish.getInstance().getFishCollection().values()) {
             maxChecked += fishList.size();
         }
-        System.out.println("Max: " + maxChecked);
 
         // Keep looping until you've checked every single fish, or you find a valid fish.
         while (true) {
@@ -149,7 +148,6 @@ public class FishingProcessor implements Listener {
                 return null;
             }
             checked++;
-            System.out.println("Checked: " + checked);
             if (fish.hasFishingPermission(player)) {
                 fish.setFisherman(player.getUniqueId());
                 return fish;
