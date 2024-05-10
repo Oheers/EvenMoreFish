@@ -135,8 +135,31 @@ public class FishingProcessor implements Listener {
             EvenMoreFish.getInstance().getLogger().severe("Could not determine a fish for " + player.getName());
             return null;
         }
-        fish.setFisherman(player.getUniqueId());
-        return fish;
+        int checked = 0;
+        int maxChecked = 0;
+        for (List<Fish> fishList : EvenMoreFish.getInstance().getFishCollection().values()) {
+            maxChecked += fishList.size();
+        }
+        System.out.println("Max: " + maxChecked);
+
+        // Keep looping until you've checked every single fish, or you find a valid fish.
+        while (true) {
+            if (checked == maxChecked) {
+                EvenMoreFish.getInstance().getLogger().severe("Could not determine a fish for " + player.getName() + ". The player doesn't have permission to catch any fish! (See fish.yml)");
+                return null;
+            }
+            checked++;
+            System.out.println("Checked: " + checked);
+            if (fish.hasFishingPermission(player)) {
+                fish.setFisherman(player.getUniqueId());
+                return fish;
+            }
+            fish = getFish(fishRarity, location, player, 1, null, true);
+            if (fish == null) {
+                EvenMoreFish.getInstance().getLogger().severe("Could not determine a fish for " + player.getName());
+                return null;
+            }
+        }
     }
 
     public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {

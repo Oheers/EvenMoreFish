@@ -9,6 +9,7 @@ import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
+import com.oheers.fish.requirements.Permission;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
@@ -16,11 +17,14 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.profile.PlayerTextures;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -63,6 +67,8 @@ public class Fish implements Cloneable {
 
     private int day = -1;
 
+    private String permission = "";
+
     public Fish(Rarity rarity, String name, boolean isXmas2022Fish) throws InvalidFishException {
         if (rarity == null) {
             throw new InvalidFishException(name + " could not be fetched from the config.");
@@ -75,6 +81,7 @@ public class Fish implements Cloneable {
         this.setFishAndRarityConfig();
         final boolean defaultRarityDisableFisherman = RaritiesFile.getInstance().getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false);
         this.disableFisherman = this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman", defaultRarityDisableFisherman);
+        this.permission = this.fishConfig.getString("fish." + this.rarity.getValue() + "." + this.name + ".permission", "");
 
         this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name, this.xmasFish);
         checkDisplayName();
@@ -93,6 +100,13 @@ public class Fish implements Cloneable {
         checkFishEvent();
 
         checkSellEvent();
+    }
+
+    public boolean hasFishingPermission(@NotNull Player player) {
+        if (permission.isEmpty()) {
+            return true;
+        }
+        return player.hasPermission(permission);
     }
     
     /*
