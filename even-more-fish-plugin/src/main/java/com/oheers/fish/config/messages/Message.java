@@ -132,6 +132,9 @@ public class Message {
      * @param doVariables If variables should be formatted or not.
      */
     public void broadcast(final boolean doVariables) {
+        if (this.message.isEmpty()) {
+            return;
+        }
         if (doVariables) variableFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
@@ -150,6 +153,9 @@ public class Message {
      * @param doVariables If variables should be formatted or not.
      */
     public void broadcast(@NotNull final Player player, final boolean doVariables) {
+        if (this.message.isEmpty()) {
+            return;
+        }
         if (doVariables) variableFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
@@ -168,6 +174,9 @@ public class Message {
      * @param doVariables If variables should be formatted or not.
      */
     public void broadcast(@NotNull final CommandSender sender, final boolean doVariables) {
+        if (this.message.isEmpty()) {
+            return;
+        }
         if (doVariables) variableFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 

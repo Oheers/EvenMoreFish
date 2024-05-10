@@ -317,6 +317,12 @@ public class FishUtils {
     public static void broadcastFishMessage(Message message, Player referencePlayer, boolean actionBar) {
         int rangeSquared = CompetitionConfig.getInstance().getBroadcastRange(); // 10 blocks squared
 
+        String formatted = message.getRawMessage(true);
+
+        if (formatted.isEmpty()) {
+            return;
+        }
+
         if (CompetitionConfig.getInstance().broadcastOnlyRods()) {
             // sends it to all players holding ords
             if (actionBar) {
@@ -325,11 +331,10 @@ public class FishUtils {
                         continue;
                     }
                     if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || player.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true)));
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(formatted));
                     }
                 }
             } else {
-                String formatted = message.getRawMessage(true);
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
                         continue;
@@ -346,14 +351,14 @@ public class FishUtils {
                     if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
                         continue;
                     }
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.getRawMessage(true)));
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(formatted));
                 }
             } else {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
                         continue;
                     }
-                    player.sendMessage(message.getRawMessage(true));
+                    player.sendMessage(formatted);
                 }
             }
         }
