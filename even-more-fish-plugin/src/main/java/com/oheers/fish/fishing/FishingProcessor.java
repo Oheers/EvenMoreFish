@@ -143,7 +143,7 @@ public class FishingProcessor implements Listener {
 
         // Keep looping until you've checked every single fish, or you find a valid fish.
         while (true) {
-            if (checked == maxChecked) {
+            if (checked >= maxChecked) {
                 EvenMoreFish.getInstance().getLogger().severe("Could not determine a fish for " + player.getName() + ". The player doesn't have permission to catch any fish! (See fish.yml)");
                 return null;
             }
