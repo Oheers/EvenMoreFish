@@ -26,7 +26,7 @@ public class GUIConfig extends ConfigBase {
     public FillerStyle guiFillerStyle;
 
     public GUIConfig() {
-        super("guis.yml");
+        super("guis.yml", EvenMoreFish.getInstance());
         instance = this;
     }
     

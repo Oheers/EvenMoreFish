@@ -11,7 +11,7 @@ public class MainConfig extends ConfigBase {
     private static MainConfig instance = null;
 
     public MainConfig() {
-        super("config.yml");
+        super("config.yml", EvenMoreFish.getInstance());
         instance = this;
     }
 

@@ -1,5 +1,6 @@
 package com.oheers.fish.config.messages;
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
 
@@ -16,7 +17,7 @@ public class Messages extends ConfigBase {
     private String localeFileName = null;
 
     public Messages() {
-        super("messages.yml");
+        super("messages.yml", EvenMoreFish.getInstance());
         instance = this;
     }
 

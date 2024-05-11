@@ -16,14 +16,14 @@ import java.util.logging.Level;
 public class ConfigBase {
 
     private final String fileName;
-    private final EvenMoreFish plugin;
+    private final JavaPlugin plugin;
 
     private FileConfiguration config = null;
     private File file = null;
 
-    public ConfigBase(String fileName) {
+    public ConfigBase(String fileName, JavaPlugin plugin) {
         this.fileName = fileName;
-        this.plugin = EvenMoreFish.getInstance();
+        this.plugin = plugin;
         reload();
     }
 
