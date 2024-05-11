@@ -1,5 +1,6 @@
 package com.oheers.fish.config;
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.CompetitionType;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,7 +12,7 @@ public class CompetitionConfig extends ConfigBase {
     private static CompetitionConfig instance;
 
     public CompetitionConfig() {
-        super("competitions.yml");
+        super("competitions.yml", EvenMoreFish.getInstance());
         instance = this;
     }
 

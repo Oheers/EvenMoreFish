@@ -1,6 +1,5 @@
 package com.oheers.fish.config;
 
-import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,14 +15,14 @@ import java.util.logging.Level;
 public class ConfigBase {
 
     private final String fileName;
-    private final EvenMoreFish plugin;
+    private final JavaPlugin plugin;
 
     private FileConfiguration config = null;
     private File file = null;
 
-    public ConfigBase(String fileName) {
+    public ConfigBase(String fileName, JavaPlugin plugin) {
         this.fileName = fileName;
-        this.plugin = EvenMoreFish.getInstance();
+        this.plugin = plugin;
         reload();
     }
 

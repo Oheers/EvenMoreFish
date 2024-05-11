@@ -1,5 +1,6 @@
 package com.oheers.fish.config;
 
+import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ public class Xmas2022Config extends ConfigBase {
     private static Xmas2022Config instance = null;
 
     public Xmas2022Config() {
-        super("xmas2022.yml");
+        super("xmas2022.yml", EvenMoreFish.getInstance());
         instance = this;
     }
 
