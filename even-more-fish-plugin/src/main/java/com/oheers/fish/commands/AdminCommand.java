@@ -52,6 +52,12 @@ public class AdminCommand extends BaseCommand {
 
         fish.init();
 
+        fish.checkFishEvent();
+
+        if (fish.hasFishRewards()) {
+            fish.getFishRewards().forEach(fishReward -> fishReward.rewardPlayer(target, target.getLocation()));
+        }
+
         final ItemStack fishItem = fish.give(-1);
         fishItem.setAmount(quantity);
 
