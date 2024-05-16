@@ -28,6 +28,7 @@ repositories {
     maven("https://repo.firedev.uk/repository/maven-public/")
     maven("https://repo.essentialsx.net/releases/")
     maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://repo.minebench.de/")
 }
 
 dependencies {
@@ -74,6 +75,7 @@ dependencies {
     implementation(libs.bstats)
     implementation(libs.universalscheduler)
     implementation(libs.acf)
+    implementation(libs.inventorygui)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -209,6 +211,7 @@ tasks {
         relocate("com.github.Anon8281.universalScheduler", "com.oheers.fish.libs.universalScheduler")
         relocate("co.aikar.commands", "com.oheers.fish.libs.acf")
         relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
+        relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
     }
 
     compileJava {
