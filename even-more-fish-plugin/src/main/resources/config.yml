@@ -78,6 +78,15 @@ block-crafting: true
 
 # For customizing the /emf shop GUI
 gui:
+  # i = item (fish)
+  # f = filler
+  # s = sell item
+  # a = sell all item
+  layout:
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "fffsfafff"
   # Fills the empty slots of a normal /emf shop
   filler: GRAY_STAINED_GLASS_PANE
   # Fills the empty slots of /emf shop when there's an error (i.e. the player trying to sell nothing)
