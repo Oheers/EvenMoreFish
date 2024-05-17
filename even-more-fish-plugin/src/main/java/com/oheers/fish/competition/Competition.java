@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Competition {
 
@@ -611,6 +612,13 @@ public class Competition {
                 allowedRarities.add(r);
                 totalWeight += (r.getWeight());
             }
+        }
+
+        if (allowedRarities.isEmpty()) {
+            EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competitionName + " competition config contains no loaded rarities!");
+            EvenMoreFish.getInstance().getLogger().severe("Configured Rarities: " + configRarities);
+            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
+            return false;
         }
 
         int idx = 0;
