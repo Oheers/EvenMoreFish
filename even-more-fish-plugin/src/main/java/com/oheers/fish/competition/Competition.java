@@ -113,7 +113,9 @@ public class Competition {
 
     public void end() {
         // print leaderboard
-        this.timingSystem.cancel();
+        if (this.timingSystem != null) {
+            this.timingSystem.cancel();
+        }
         statusBar.hide();
         EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(this);
         Bukkit.getServer().getPluginManager().callEvent(endEvent);
@@ -610,8 +612,6 @@ public class Competition {
             }
         }
 
-        configRarities = null;
-
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
             r -= allowedRarities.get(idx).getWeight();
@@ -625,14 +625,19 @@ public class Competition {
         }
 
         try {
-            this.selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
+            Fish selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
+            if (selectedFish == null) {
+                // For the catch block to catch.
+                throw new IllegalArgumentException();
+            }
+            this.selectedFish = selectedFish;
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
                     .severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
             EvenMoreFish.getInstance().getLogger().severe("fish.size(): " + fish.size());
-            EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + configRarities.size());
+            EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + allowedRarities.size());
             return false;
         }
     }
