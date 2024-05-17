@@ -1,6 +1,7 @@
 package com.oheers.fish.selling;
 
 import com.devskiller.friendly_id.FriendlyId;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
@@ -10,16 +11,18 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.utils.ItemUtils;
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiStorageElement;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -30,247 +33,255 @@ import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.*;
 
-public class SellGUI implements InventoryHolder {
+public class SellGUI extends InventoryGui {
 
     private final Player player;
-    private final Inventory menu;
+    private final Inventory fishInventory;
+    private SellState sellState = SellState.NORMAL;
+    private double value;
+    private int fishCount;
+    private MyScheduledTask task;
 
-    public boolean modified;
+    public SellGUI(Player player) {
+        super(EvenMoreFish.getInstance(), new Message(ConfigMessage.WORTH_GUI_NAME).getRawMessage(true), MainConfig.getInstance().getSellGUILayout());
+        this.player = player;
+        this.fishInventory = Bukkit.createInventory(null, 54);
+        // GUI Filler Element
+        addElement(getGUIFiller());
+        // Sell Item Element
+        addElement(getSellItem());
+        // Sell All Item Element
+        addElement(getSellAllItem());
+        setCloseAction(close -> {
+            task.cancel();
+            task = null;
+            if (MainConfig.getInstance().sellOverDrop()) {
+                sell(false);
+            }
+            doRescue();
+            return false;
+        });
+        addElement(new GuiStorageElement('i', fishInventory));
+        task = EvenMoreFish.getScheduler().runTaskTimer(this::draw, 5L, 5L);
+    }
 
-    public double value;
+    public void open() {
+        show(player);
+    }
 
-    public boolean error;
-
-    public int fishCount;
-
-    public int guiSize;
-
-    private ItemStack sellIcon, sellAllIcon, filler, errorFiller, confirmIcon, confirmSellAllIcon, noValueIcon, sellAllErrorIcon;
-
-    public SellGUI(Player p, boolean open) {
-        this.guiSize = (MainConfig.getInstance().getGUISize() + 1) * 9;
-        this.player = p;
-        this.modified = false;
-        this.menu = Bukkit.createInventory(this, guiSize, new Message(ConfigMessage.WORTH_GUI_NAME).getRawMessage(true));
-        setFiller();
-        addFiller(filler);
-        setSellItem();
-        setSellAllItem();
-        if (open) {
-            this.player.openInventory(menu);
-        }
+    private void setSellState(SellState state) {
+        this.sellState = state;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public void setFiller() {
+    public DynamicGuiElement getGUIFiller() {
         // the gray glass panes at the bottom
-        ItemStack fill = new ItemStack(Material.valueOf(MainConfig.getInstance().getFiller())), error = new ItemStack(Material.valueOf(MainConfig.getInstance().getFillerError()));
-        ItemMeta fillMeta = fill.getItemMeta(), errMeta = error.getItemMeta();
+        ItemStack fill = new ItemStack(ItemUtils.getMaterial(MainConfig.getInstance().getFiller(), Material.GRAY_STAINED_GLASS_PANE));
+        ItemStack error = new ItemStack(ItemUtils.getMaterial(MainConfig.getInstance().getFillerError(), Material.RED_STAINED_GLASS_PANE));
+        ItemMeta fillMeta = fill.getItemMeta();
+        ItemMeta errMeta = error.getItemMeta();
+
         if (fillMeta != null) {
             fillMeta.setDisplayName(ChatColor.RESET + "");
             fill.setItemMeta(fillMeta);
-            this.filler = WorthNBT.attributeDefault(fill);
         }
 
         if (errMeta != null) {
             errMeta.setDisplayName(ChatColor.RESET + "");
             error.setItemMeta(errMeta);
-            this.errorFiller = WorthNBT.attributeDefault(error);
+        }
+
+        return new DynamicGuiElement('f', (viewer) -> {
+            if (isError()) {
+                return new StaticGuiElement('f', WorthNBT.attributeDefault(error));
+            } else {
+                return new StaticGuiElement('f', WorthNBT.attributeDefault(fill));
+            }
+        });
+
+    }
+
+    public boolean isError() {
+        return sellState.equals(SellState.ERROR);
+    }
+
+
+    public DynamicGuiElement getSellAllItem() {
+        // Dynamic since this can change.
+        return new DynamicGuiElement('a', (viewer) -> getSellAllItemFromState());
+    }
+
+    public StaticGuiElement getSellAllItemFromState() {
+        switch (sellState) {
+            case NORMAL:
+                ItemStack snIcon = new ItemStack(MainConfig.getInstance().getSellAllMaterial());
+                ItemMeta sellNormalMeta = snIcon.getItemMeta();
+                if (sellNormalMeta != null) {
+                    // Display
+                    sellNormalMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_NAME).getRawMessage(false));
+
+                    // Lore
+                    Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
+                    message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(true))));
+                    sellNormalMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
+
+                    snIcon.setItemMeta(sellNormalMeta);
+                }
+                ItemUtils.glowify(snIcon);
+                return new StaticGuiElement('a', WorthNBT.attributeDefault(snIcon), click -> {
+                    if (getTotalSoldFish(true).isEmpty()) {
+                        setSellState(SellState.ERROR);
+                    } else {
+                        setSellState(SellState.CONFIRM);
+                    }
+                    draw();
+                    return true;
+                });
+
+            case CONFIRM:
+                ItemStack scIcon = new ItemStack(MainConfig.getInstance().getSellAllConfirmMaterial());
+                ItemMeta sellConfirmMeta = scIcon.getItemMeta();
+                if (sellConfirmMeta != null) {
+                    // Display
+                    sellConfirmMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_ALL_BUTTON_NAME).getRawMessage(false));
+
+                    // Lore
+                    Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
+                    message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
+                    sellConfirmMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
+
+                    scIcon.setItemMeta(sellConfirmMeta);
+                }
+                ItemUtils.glowify(scIcon);
+
+                return new StaticGuiElement('a', WorthNBT.attributeDefault(scIcon), click -> {
+                    sell(true);
+                    close();
+                    return true;
+                });
+
+            case ERROR:
+                ItemStack seIcon = new ItemStack(MainConfig.getInstance().getSellAllErrorMaterial());
+                ItemMeta sellErrorMeta = seIcon.getItemMeta();
+                if (sellErrorMeta != null) {
+                    // Display
+                    sellErrorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_ALL_BUTTON_NAME).getRawMessage(false));
+
+                    // Lore
+                    Message message = new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_LORE);
+                    message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
+                    sellErrorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
+
+                    seIcon.setItemMeta(sellErrorMeta);
+                }
+                ItemUtils.glowify(seIcon);
+
+                return new StaticGuiElement('a', WorthNBT.attributeDefault(seIcon), click -> {
+                    close();
+                    return true;
+                });
+            // This should NEVER happen, but the code won't compile without it.
+            default:
+                return null;
         }
     }
 
-    public void addFiller(ItemStack fill) {
-        for (int i = guiSize - 9; i < guiSize; i++) {
-            ItemStack item = menu.getItem(i);
-            if (item == null || item.isSimilar(filler) || item.isSimilar(errorFiller)) {
-                menu.setItem(i, fill);
-            }
+    public DynamicGuiElement getSellItem() {
+        // Dynamic since this can change.
+        return new DynamicGuiElement('s', (viewer) -> getSellItemFromState());
+    }
+
+    private StaticGuiElement getSellItemFromState() {
+        switch (sellState) {
+            case NORMAL:
+                ItemStack snIcon = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItem()));
+                ItemMeta sellNormalMeta = snIcon.getItemMeta();
+                if (sellNormalMeta != null) {
+                    // Display
+                    sellNormalMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_NAME).getRawMessage(false));
+
+                    // Lore
+                    Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
+                    message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
+                    sellNormalMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
+
+                    snIcon.setItemMeta(sellNormalMeta);
+                }
+                ItemUtils.glowify(snIcon);
+                return new StaticGuiElement('s', WorthNBT.attributeDefault(snIcon), click -> {
+                    if (click.getType().isRightClick()) {
+                        close();
+                        return true;
+                    }
+                    if (getTotalSoldFish(false).isEmpty()) {
+                        setSellState(SellState.ERROR);
+                    } else {
+                        setSellState(SellState.CONFIRM);
+                    }
+                    draw();
+                    return true;
+                });
+
+            case CONFIRM:
+                ItemStack scIcon = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItemConfirm()));
+                ItemMeta sellConfirmMeta = scIcon.getItemMeta();
+                if (sellConfirmMeta != null) {
+                    // Display
+                    sellConfirmMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_NAME).getRawMessage(false));
+
+                    // Lore
+                    Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
+                    message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
+                    sellConfirmMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
+
+                    scIcon.setItemMeta(sellConfirmMeta);
+                }
+                ItemUtils.glowify(scIcon);
+
+                return new StaticGuiElement('s', WorthNBT.attributeDefault(scIcon), click -> {
+                    if (click.getType().isRightClick()) {
+                        close();
+                        return true;
+                    }
+                    sell(false);
+                    close();
+                    return true;
+                });
+
+            case ERROR:
+                ItemStack seIcon = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItemError()));
+                ItemMeta sellErrorMeta = seIcon.getItemMeta();
+                if (sellErrorMeta != null) {
+                    // Display
+                    sellErrorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_NAME).getRawMessage(false));
+
+                    // Lore
+                    Message message = new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_LORE);
+                    message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
+                    sellErrorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
+
+                    seIcon.setItemMeta(sellErrorMeta);
+                }
+                ItemUtils.glowify(seIcon);
+
+                return new StaticGuiElement('s', WorthNBT.attributeDefault(seIcon), click -> {
+                    close();
+                    return true;
+                });
+            // This should NEVER happen, but the code won't compile without it.
+            default:
+                return null;
         }
     }
 
-
-    public void setSellAllItem() {
-        ItemStack saIcon = new ItemStack(MainConfig.getInstance().getSellAllMaterial());
-
-        ItemMeta saMeta = saIcon.getItemMeta();
-        saMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_NAME).getRawMessage(false));
-
-        saIcon.setItemMeta(saMeta);
-        glowify(saIcon);
-
-        this.sellAllIcon = WorthNBT.attributeDefault(saIcon);
-        menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.sellAllIcon);
-
-        updateSellAllItem();
-    }
-
-    public void updateSellAllItem() {
-        ItemMeta saMeta = this.sellAllIcon.getItemMeta();
-
-        // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
-        Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
-        message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(true))));
-
-        saMeta.setLore(Arrays.asList(message.getRawMessage(true).split("\n")));
-
-        this.sellAllIcon.setItemMeta(saMeta);
-        menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.sellAllIcon);
-    }
-
-    public void setSellItem() {
-        ItemStack sIcon = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItem()));
-
-        ItemMeta sellMeta = sIcon.getItemMeta();
-        sellMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_NAME).getRawMessage(false));
-
-        sIcon.setItemMeta(sellMeta);
-
-        glowify(sIcon);
-
-        this.sellIcon = WorthNBT.attributeDefault(sIcon);
-        menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.sellIcon);
-
-        updateSellItem();
-    }
-
-    public void updateSellItem() {
-        ItemMeta sellMeta = this.sellIcon.getItemMeta();
-
-        // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
-        Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
-        message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
-
-        sellMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
-
-        this.sellIcon.setItemMeta(sellMeta);
-        menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.sellIcon);
-    }
-
-    /**
-     * Resets the glass colour to the default one after the error glass has been used due to a value of $0 in the shop.
-     * This prevents the red from hanging when the gold ingot / raw fish cod have returned.
-     */
-    public void resetGlassColour() {
-        addFiller(this.filler);
-    }
-
-    public ItemStack getSellIcon() {
-        return this.sellIcon;
-    }
-
-    public ItemStack getSellAllIcon() {
-        return this.sellAllIcon;
-    }
-
-    public ItemStack getConfirmIcon() {
-        return this.confirmIcon;
-    }
-
-    public ItemStack getConfirmSellAllIcon() {
-        return this.confirmSellAllIcon;
-    }
-
-    public ItemStack getErrorIcon() {
-        return this.noValueIcon;
-    }
-
-    public ItemStack getSellAllErrorIcon() {
-        return this.sellAllErrorIcon;
-    }
-
-    public void createIcon(boolean sellAll) {
-        double totalWorth = getTotalWorth(sellAll);
-        if (totalWorth == 0.0) {
-
-            ItemStack error;
-            if (sellAll) error = new ItemStack(MainConfig.getInstance().getSellAllErrorMaterial());
-            else error = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItemError()));
-
-            ItemMeta errorMeta = error.getItemMeta();
-
-            if (sellAll)
-                errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_ALL_BUTTON_NAME).getRawMessage(false));
-            else
-                errorMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_NAME).getRawMessage(false));
-
-            if (sellAll) {
-                Message message = new Message(ConfigMessage.WORTH_GUI_SELL_BUTTON_LORE);
-                message.setSellPrice(formatWorth(0.0));
-                errorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
-            } else {
-                Message message = new Message(ConfigMessage.WORTH_GUI_NO_VAL_BUTTON_LORE);
-                message.setSellPrice(formatWorth(0.0));
-                errorMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
-            }
-
-            error.setItemMeta(errorMeta);
-            glowify(error);
-            if (sellAll) this.sellAllErrorIcon = WorthNBT.attributeDefault(error);
-            else this.noValueIcon = WorthNBT.attributeDefault(error);
-            this.error = true;
-        } else {
-
-            ItemStack confirm;
-            if (sellAll) confirm = new ItemStack(MainConfig.getInstance().getSellAllConfirmMaterial());
-            else confirm = new ItemStack(Material.valueOf(MainConfig.getInstance().getSellItemConfirm()));
-
-            ItemMeta cMeta = confirm.getItemMeta();
-            if (sellAll)
-                cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_ALL_BUTTON_NAME).getRawMessage(false));
-            else
-                cMeta.setDisplayName(new Message(ConfigMessage.WORTH_GUI_CONFIRM_BUTTON_NAME).getRawMessage(false));
-            // Generates the lore, looping through each line in messages.yml lore thingy, and generating it
-            List<String> lore = new ArrayList<>();
-
-            if (sellAll) {
-                Message message = new Message(ConfigMessage.WORTH_GUI_SELL_ALL_BUTTON_LORE);
-                message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(true))));
-                cMeta.setLore(Arrays.asList(message.getRawMessage(true).split("\n")));
-            } else {
-                Message message = new Message(ConfigMessage.WORTH_GUI_SELL_LORE);
-                message.setSellPrice(String.valueOf(formatWorth(getTotalWorth(false))));
-
-                cMeta.setLore(new ArrayList<>(Arrays.asList(message.getRawMessage(true).split("\n"))));
-            }
-
-            confirm.setItemMeta(cMeta);
-            glowify(confirm);
-
-            if (sellAll) this.confirmSellAllIcon = WorthNBT.attributeDefault(confirm);
-            else this.confirmIcon = WorthNBT.attributeDefault(confirm);
-
-            this.error = false;
-        }
-    }
-
-    public void setIcon(boolean sellAll) {
-        if (this.error) {
-            if (sellAll) {
-                this.menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.sellAllErrorIcon);
-            } else {
-                this.menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.noValueIcon);
-            }
-
-            this.addFiller(errorFiller);
-            this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1.0f, 0.0f);
-        } else {
-            if (sellAll) {
-                this.menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellAllSlot()), this.confirmSellAllIcon);
-            } else {
-                this.menu.setItem(guiSize - (10 - MainConfig.getInstance().getSellSlot()), this.confirmIcon);
-            }
-
-            this.addFiller(filler);
-            this.player.playSound(this.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.75f);
-        }
-
-    }
     public List<SoldFish> getTotalSoldFish(boolean inventory) {
-        if (this.menu == null)
+
+        if (this.fishInventory == null) {
             return Collections.emptyList();
+        }
         
         List<SoldFish> soldFish = new ArrayList<>();
         
@@ -278,15 +289,15 @@ public class SellGUI implements InventoryHolder {
             for (ItemStack item : player.getInventory().getStorageContents()) {
                 // -1.0 is given when there's no worth NBT value
                 SoldFish fish = getSoldFish(item);
-                if(fish != null) {
+                if (fish != null) {
                     soldFish.add(fish);
                 }
             }
         } else {
-            for (ItemStack item : this.menu.getContents()) {
+            for (ItemStack item : this.fishInventory.getContents()) {
                 // -1.0 is given when there's no worth NBT value
                 SoldFish fish = getSoldFish(item);
-                if(fish != null) {
+                if (fish != null) {
                     soldFish.add(fish);
                 }
             }
@@ -361,7 +372,7 @@ public class SellGUI implements InventoryHolder {
     // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
     public void doRescue() {
         List<ItemStack> throwing = new ArrayList<>();
-        for (ItemStack i : this.menu.getContents()) {
+        for (ItemStack i : this.fishInventory.getContents()) {
             if (i != null) {
                 if (!WorthNBT.isDefault(i)) {
                     throwing.add(i);
@@ -369,33 +380,6 @@ public class SellGUI implements InventoryHolder {
             }
         }
         FishUtils.giveItems(throwing, this.player);
-    }
-
-    public ItemStack getFiller() {
-        return this.filler;
-    }
-
-    public ItemStack getErrorFiller() {
-        return this.errorFiller;
-    }
-
-    public boolean getModified() {
-        return this.modified;
-    }
-
-    public void setModified(boolean mod) {
-        this.modified = mod;
-    }
-
-    private void glowify(ItemStack i) {
-
-        // plops on the unbreaking 1 enchantment to make it glow
-        i.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
-        ItemMeta meta = i.getItemMeta();
-
-        // hides the unbreaking 1 enchantment from showing in the lore
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        i.setItemMeta(meta);
     }
 
     public boolean sell(boolean sellAll) {
@@ -431,15 +415,14 @@ public class SellGUI implements InventoryHolder {
             }
         } else {
             // Remove sold items
-            for (int i = 0; i < guiSize - 9; i++) {
-                ItemStack item = menu.getItem(i);
+            for (ItemStack item : fishInventory.getContents()) {
                 if (WorthNBT.getValue(item) != -1.0) {
                     Fish fish = FishUtils.getFish(item);
                     if (fish != null) {
                         fish.checkSellEvent();
                         fish.getSellRewards().forEach(reward -> reward.rewardPlayer(player, null));
                     }
-                    menu.setItem(i, null);
+                    fishInventory.remove(item);
                 }
             }
         }
@@ -467,8 +450,10 @@ public class SellGUI implements InventoryHolder {
         return soldFish.stream().mapToInt(SoldFish::getAmount).sum();
     }
 
-    @Override
-    public @NotNull Inventory getInventory() {
-        return menu;
+    private enum SellState {
+        NORMAL,
+        CONFIRM,
+        ERROR
     }
+
 }

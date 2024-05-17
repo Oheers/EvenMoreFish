@@ -78,6 +78,7 @@ block-crafting: true
 
 # For customizing the /emf shop GUI
 gui:
+  # Allows full control over the layout of the shop GUI.
   # i = item (fish)
   # f = filler
   # s = sell item
