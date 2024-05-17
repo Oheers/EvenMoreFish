@@ -53,8 +53,10 @@ public class SellGUI extends InventoryGui {
         // Sell All Item Element
         addElement(getSellAllItem());
         setCloseAction(close -> {
-            task.cancel();
-            task = null;
+            if (task != null) {
+                task.cancel();
+                task = null;
+            }
             if (MainConfig.getInstance().sellOverDrop()) {
                 sell(false);
             }
@@ -62,11 +64,12 @@ public class SellGUI extends InventoryGui {
             return false;
         });
         addElement(new GuiStorageElement('i', fishInventory));
-        task = EvenMoreFish.getScheduler().runTaskTimer(this::draw, 5L, 5L);
     }
 
     public void open() {
         show(player);
+        // Only start the task when the GUI is opened
+        task = EvenMoreFish.getScheduler().runTaskTimer(this::draw, 5L, 5L);
     }
 
     private void setSellState(SellState state) {
