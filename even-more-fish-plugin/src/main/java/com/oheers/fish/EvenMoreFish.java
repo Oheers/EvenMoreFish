@@ -251,7 +251,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         // Ends the current competition in case the plugin is being disabled when the server will continue running
         if (Competition.isActive()) {
-            active.end();
+            active.end(false);
         }
 
         RewardManager.getInstance().unload();
