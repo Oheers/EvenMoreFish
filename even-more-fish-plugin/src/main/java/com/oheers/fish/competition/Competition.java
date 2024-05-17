@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
 
 public class Competition {
 
@@ -638,6 +639,8 @@ public class Competition {
                     .severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
             EvenMoreFish.getInstance().getLogger().severe("fish.size(): " + fish.size());
             EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + allowedRarities.size());
+            // Also log the exception
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
             return false;
         }
     }
