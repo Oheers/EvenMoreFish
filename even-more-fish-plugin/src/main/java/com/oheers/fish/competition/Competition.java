@@ -87,12 +87,14 @@ public class Competition {
 
             if (competitionType == CompetitionType.SPECIFIC_FISH) {
                 if (!chooseFish(competitionName, adminStart)) {
+                    active = false;
                     return;
                 }
             }
 
             if (competitionType == CompetitionType.SPECIFIC_RARITY) {
                 if (!chooseRarity(competitionName, adminStart)) {
+                    active = false;
                     return;
                 }
             }
