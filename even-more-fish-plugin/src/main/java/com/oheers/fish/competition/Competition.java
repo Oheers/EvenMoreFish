@@ -633,7 +633,7 @@ public class Competition {
             }
             this.selectedFish = selectedFish;
             return true;
-        } catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException|IndexOutOfBoundsException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
                     .severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
