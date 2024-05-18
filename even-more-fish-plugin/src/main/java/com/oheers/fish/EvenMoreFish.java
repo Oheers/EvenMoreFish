@@ -800,7 +800,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new HungerRewardType().register();
         new ItemRewardType().register();
         new MessageRewardType().register();
-        new MoneyRewardType().register();
         new EXPRewardType().register();
         loadExternalRewardTypes();
     }
@@ -822,6 +821,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // Only enable the PERMISSION type if Vault perms is found.
         if (getPermission() != null) {
             new PermissionRewardType().register();
+        }
+        // Only enable the MONEY type if the economy is loaded.
+        if (getEconomy() != null && getEconomy().isEnabled()) {
+            new MoneyRewardType().register();
         }
     }
 
