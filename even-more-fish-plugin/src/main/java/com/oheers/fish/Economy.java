@@ -23,14 +23,16 @@ public class Economy {
         switch (type) {
             case VAULT:
                 emf.getLogger().log(Level.INFO, "Attempting to hook into Vault for Economy Handling.");
-                RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = emf.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                if (rsp == null) {
-                    return;
+                if (EvenMoreFish.getInstance().isUsingVault()) {
+                    RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = emf.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+                    if (rsp == null) {
+                        return;
+                    }
+                    vaultEconomy = rsp.getProvider();
+                    economyType = type;
+                    enabled = true;
+                    emf.getLogger().log(Level.INFO, "Hooked into Vault for Economy Handling.");
                 }
-                vaultEconomy = rsp.getProvider();
-                economyType = type;
-                enabled = true;
-                emf.getLogger().log(Level.INFO, "Hooked into Vault for Economy Handling.");
                 return;
             case PLAYER_POINTS:
                 emf.getLogger().log(Level.INFO, "Attempting to hook into PlayerPoints for Economy Handling.");

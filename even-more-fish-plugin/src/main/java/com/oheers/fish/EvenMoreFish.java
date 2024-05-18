@@ -96,6 +96,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     // it's a work-in-progress solution and probably won't stick.
     private Map<UUID, Rarity> decidedRarities;
     private boolean isUpdateAvailable;
+    private boolean usingVault;
     private boolean usingPAPI;
     private boolean usingMcMMO;
     private boolean usingHeadsDB;
@@ -137,6 +138,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         logger = getLogger();
         pluginManager = getServer().getPluginManager();
 
+        usingVault = Bukkit.getPluginManager().isPluginEnabled("Vault");
         usingGriefPrevention = Bukkit.getPluginManager().isPluginEnabled("GriefPrevention");
         usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
 
@@ -741,6 +743,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     public boolean isUpdateAvailable() {
         return isUpdateAvailable;
     }
+
+    public boolean isUsingVault() { return usingVault; }
 
     public boolean isUsingPAPI() {
         return usingPAPI;
