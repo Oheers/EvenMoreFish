@@ -22,10 +22,7 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.rewardtypes.*;
-import com.oheers.fish.competition.rewardtypes.external.AuraSkillsXPRewardType;
-import com.oheers.fish.competition.rewardtypes.external.GPClaimBlocksRewardType;
-import com.oheers.fish.competition.rewardtypes.external.McMMOXPRewardType;
-import com.oheers.fish.competition.rewardtypes.external.PlayerPointsRewardType;
+import com.oheers.fish.competition.rewardtypes.external.*;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -804,7 +801,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new ItemRewardType().register();
         new MessageRewardType().register();
         new MoneyRewardType().register();
-        new PermissionRewardType().register();
         new EXPRewardType().register();
         loadExternalRewardTypes();
     }
@@ -822,6 +818,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
         if (pm.isPluginEnabled("mcMMO")) {
             new McMMOXPRewardType().register();
+        }
+        // Only enable the PERMISSION type if Vault perms is found.
+        if (getPermission() != null) {
+            new PermissionRewardType().register();
         }
     }
 

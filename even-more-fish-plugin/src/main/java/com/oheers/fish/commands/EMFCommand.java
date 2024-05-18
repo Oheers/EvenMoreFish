@@ -89,7 +89,7 @@ public class EMFCommand extends BaseCommand {
             return;
         }
 
-        if (EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
+        if (sender.hasPermission(AdminPerms.ADMIN)) {
             new SellGUI(onlinePlayer.player, true);
             Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
             message.setPlayer(onlinePlayer.player.getName());
