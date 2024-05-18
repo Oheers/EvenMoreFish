@@ -143,11 +143,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
-        loadRewardManager();
-
-        RewardManager.getInstance().load();
-        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
-
         new MainConfig();
         new Messages();
 
@@ -236,6 +231,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             });
 
         }
+
+        loadRewardManager();
+
+        RewardManager.getInstance().load();
+        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
     }
