@@ -13,12 +13,13 @@ import java.util.logging.Level;
 public class Economy {
 
     private static EconomyType economyType = EconomyType.NONE;
-    private boolean enabled = false;
+    private boolean enabled;
     private net.milkbowl.vault.economy.Economy vaultEconomy = null;
     private PlayerPointsAPI playerPointsEconomy = null;
     private GriefPrevention griefPreventionEconomy = null;
 
     public Economy(EconomyType type) {
+        enabled = false;
         EvenMoreFish emf = EvenMoreFish.getInstance();
         switch (type) {
             case VAULT:

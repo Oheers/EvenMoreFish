@@ -1,5 +1,6 @@
 package com.oheers.fish.competition.rewardtypes.external;
 
+import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.reward.RewardType;
 import org.bukkit.Location;
@@ -11,6 +12,7 @@ public class MoneyRewardType implements RewardType {
 
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
+        Economy economy = EvenMoreFish.getInstance().getEconomy();
         int amount;
         try {
             amount = Integer.parseInt(value);
@@ -18,7 +20,9 @@ public class MoneyRewardType implements RewardType {
             EvenMoreFish.getInstance().getLogger().warning("Invalid number specified for RewardType " + getIdentifier() + ": " + value);
             return;
         }
-        EvenMoreFish.getInstance().getEconomy().deposit(player, amount);
+        if (economy.isEnabled()) {
+            economy.deposit(player, amount);
+        }
     }
 
     @Override
