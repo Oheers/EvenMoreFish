@@ -175,10 +175,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             }
         }
 
-        if (!setupPermissions()) {
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
-            getServer().getPluginManager().disablePlugin(this);
-        }
+        setupPermissions();
 
         // checks against both support region plugins and sets an active plugin (worldguard is priority)
         if (checkWG()) {
@@ -451,6 +448,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
 
     private boolean setupPermissions() {
+        if (!usingVault) {
+            return false;
+        }
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         permission = rsp.getProvider();
         return permission != null;
