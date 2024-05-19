@@ -153,7 +153,7 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_competition_end")
         public void onEnd(final CommandSender sender) {
             if (Competition.isActive()) {
-                EvenMoreFish.getInstance().getActiveCompetition().end();
+                EvenMoreFish.getInstance().getActiveCompetition().end(false);
                 return;
             }
 
