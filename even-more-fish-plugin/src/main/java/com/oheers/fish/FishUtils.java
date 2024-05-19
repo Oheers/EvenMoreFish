@@ -84,7 +84,7 @@ public class FishUtils {
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
         for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
             if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.overridenLore);
+                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
             }
         }
 
@@ -132,7 +132,7 @@ public class FishUtils {
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
         for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
             if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.overridenLore);
+                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
             }
         }
 
