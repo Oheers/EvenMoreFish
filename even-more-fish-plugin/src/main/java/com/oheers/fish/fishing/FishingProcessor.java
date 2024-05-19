@@ -59,7 +59,7 @@ public class FishingProcessor implements Listener {
 
         if (MainConfig.getInstance().requireFishingPermission()) {
             //check if player have permssion to fish emf fishes
-            if (!EvenMoreFish.getInstance().getPermission().has(event.getPlayer(), UserPerms.USE_ROD)) {
+            if (!event.getPlayer().hasPermission(UserPerms.USE_ROD)) {
                 if (event.getState() == PlayerFishEvent.State.FISHING) {//send msg only when throw the lure
                     new Message(ConfigMessage.NO_PERMISSION_FISHING).broadcast(event.getPlayer(), false);
                 }
@@ -290,14 +290,14 @@ public class FishingProcessor implements Listener {
         /* If allowed rarities has objects, it means we've run through and removed the Christmas rarity. Don't run
            through again */
         if (allowedRarities.isEmpty()) {
-            if (fisher != null && EvenMoreFish.getInstance().getPermission() != null) {
+            if (fisher != null) {
                 rarityLoop:
                 for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                     if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
                         continue;
                     }
 
-                    if (!(rarity.getPermission() == null || EvenMoreFish.getInstance().getPermission().has(fisher, rarity.getPermission()))) {
+                    if (!(rarity.getPermission() == null || fisher.hasPermission(rarity.getPermission()))) {
                         continue;
                     }
 

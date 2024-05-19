@@ -22,10 +22,7 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.rewardtypes.*;
-import com.oheers.fish.competition.rewardtypes.external.AuraSkillsXPRewardType;
-import com.oheers.fish.competition.rewardtypes.external.GPClaimBlocksRewardType;
-import com.oheers.fish.competition.rewardtypes.external.McMMOXPRewardType;
-import com.oheers.fish.competition.rewardtypes.external.PlayerPointsRewardType;
+import com.oheers.fish.competition.rewardtypes.external.*;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -99,6 +96,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     // it's a work-in-progress solution and probably won't stick.
     private Map<UUID, Rarity> decidedRarities;
     private boolean isUpdateAvailable;
+    private boolean usingVault;
     private boolean usingPAPI;
     private boolean usingMcMMO;
     private boolean usingHeadsDB;
@@ -140,16 +138,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         logger = getLogger();
         pluginManager = getServer().getPluginManager();
 
+        usingVault = Bukkit.getPluginManager().isPluginEnabled("Vault");
         usingGriefPrevention = Bukkit.getPluginManager().isPluginEnabled("GriefPrevention");
         usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();
-
-        loadRewardManager();
-
-        RewardManager.getInstance().load();
-        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         new MainConfig();
         new Messages();
@@ -181,10 +175,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             }
         }
 
-        if (!setupPermissions()) {
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "EvenMoreFish couldn't hook into Vault permissions. Disabling to prevent serious problems.");
-            getServer().getPluginManager().disablePlugin(this);
-        }
+        setupPermissions();
 
         // checks against both support region plugins and sets an active plugin (worldguard is priority)
         if (checkWG()) {
@@ -239,6 +230,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             });
 
         }
+
+        loadRewardManager();
+
+        RewardManager.getInstance().load();
+        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
     }
@@ -452,6 +448,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
 
     private boolean setupPermissions() {
+        if (!usingVault) {
+            return false;
+        }
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         permission = rsp.getProvider();
         return permission != null;
@@ -745,6 +744,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return isUpdateAvailable;
     }
 
+    public boolean isUsingVault() { return usingVault; }
+
     public boolean isUsingPAPI() {
         return usingPAPI;
     }
@@ -803,8 +804,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new HungerRewardType().register();
         new ItemRewardType().register();
         new MessageRewardType().register();
-        new MoneyRewardType().register();
-        new PermissionRewardType().register();
         new EXPRewardType().register();
         loadExternalRewardTypes();
     }
@@ -822,6 +821,14 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
         if (pm.isPluginEnabled("mcMMO")) {
             new McMMOXPRewardType().register();
+        }
+        // Only enable the PERMISSION type if Vault perms is found.
+        if (getPermission() != null) {
+            new PermissionRewardType().register();
+        }
+        // Only enable the MONEY type if the economy is loaded.
+        if (getEconomy() != null && getEconomy().isEnabled()) {
+            new MoneyRewardType().register();
         }
     }
 
