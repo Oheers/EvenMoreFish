@@ -2,6 +2,7 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.requirements.Requirement;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ public class Rarity {
         this.fishWeighted = fishWeighted;
     }
 
-    public String getDisplayName() {
+    public @Nullable String getDisplayName() {
         return displayName;
     }
 

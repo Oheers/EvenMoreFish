@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Message {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '\u00A7';
+    private static final char COLOR_CHAR = '§';
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     public String message;
     private boolean canSilent, canHidePrefix;

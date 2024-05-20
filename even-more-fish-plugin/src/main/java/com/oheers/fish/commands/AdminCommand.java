@@ -89,7 +89,13 @@ public class AdminCommand extends BaseCommand {
         @CommandCompletion("@rarities")
         @Description("%desc_list_fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
-            BaseComponent baseComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
+            String rarityName;
+            if (rarity.getDisplayName() != null) {
+                rarityName = rarity.getDisplayName();
+            } else {
+                rarityName = rarity.getValue();
+            }
+            BaseComponent baseComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + rarityName) + " ");
             for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour()+ "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to receive fish")));
@@ -105,8 +111,14 @@ public class AdminCommand extends BaseCommand {
         public void onRarity(final CommandSender sender) {
             BaseComponent baseComponent = new TextComponent("");
             for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
-                BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
-                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish.")));
+                String rarityName;
+                if (rarity.getDisplayName() != null) {
+                    rarityName = rarity.getDisplayName();
+                } else {
+                    rarityName = rarity.getValue();
+                }
+                BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + rarityName + "] "));
+                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + rarityName + " fish.")));
                 textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
                 baseComponent.addExtra(textComponent);
             }
