@@ -55,9 +55,6 @@ public class Rarity {
     }
 
     public String getDisplayName() {
-        if (displayName == null) {
-            return value;
-        }
         return displayName;
     }
 
