@@ -238,6 +238,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         // was provided
         return null;
     }
+
     
     private boolean leaderboardContainsPlace(int place) {
         return EvenMoreFish.getInstance().getActiveCompetition().getLeaderboardSize() >= place;
