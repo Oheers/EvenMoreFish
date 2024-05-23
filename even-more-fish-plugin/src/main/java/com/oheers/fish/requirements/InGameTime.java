@@ -8,7 +8,8 @@ public class InGameTime implements Requirement {
 
     public final String configLocation;
     public final FileConfiguration fileConfig;
-    public int minTime, maxTime;
+    public int minTime;
+    public int maxTime;
 
     /**
      * Similar to IRLTime but it uses the in-game time, using the hour * 1000 tick time. If the time is between minTime (inclusively)
