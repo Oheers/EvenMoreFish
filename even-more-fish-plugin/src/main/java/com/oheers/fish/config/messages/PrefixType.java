@@ -27,10 +27,12 @@ public enum PrefixType {
      * @return The unformatted prefix, unless the type is NONE.
      */
     public String getPrefix() {
-        if (id == null) return "";
-        else {
-            return new Message(Messages.getInstance().getConfig().getString(id, normal)).getRawMessage(false)
-                    + new Message(Messages.getInstance().getConfig().getString("prefix", "[EvenMoreFish]") + "&r").getRawMessage(false);
+        if (id == null) {
+            return "";
         }
+        final Messages messages = Messages.getInstance();
+        return new Message(messages.getConfig().getString(id, normal)).getRawMessage(false)
+                    + new Message(messages.getConfig().getString("prefix", "[EvenMoreFish]") + "&r").getRawMessage(false);
+        
     }
 }
