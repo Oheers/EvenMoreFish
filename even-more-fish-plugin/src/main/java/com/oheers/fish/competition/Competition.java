@@ -65,6 +65,10 @@ public class Competition {
         return active;
     }
 
+    public static boolean isNotActive() {
+        return !active;
+    }
+
     public static void setOriginallyRandom(boolean originallyRandom) {
         Competition.originallyRandom = originallyRandom;
     }

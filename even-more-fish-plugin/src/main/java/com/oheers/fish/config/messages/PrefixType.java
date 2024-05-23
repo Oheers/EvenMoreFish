@@ -7,7 +7,8 @@ public enum PrefixType {
     DEFAULT("prefix-regular", "&a"),
     ERROR("prefix-error", "&c");
 
-    private final String id, normal;
+    private final String id;
+    private final String normal;
 
     /**
      * This contains the id and normal reference to the prefixes. These can be obtained through the getPrefix() method.
@@ -33,6 +34,6 @@ public enum PrefixType {
         final Messages messages = Messages.getInstance();
         return new Message(messages.getConfig().getString(id, normal)).getRawMessage(false)
                     + new Message(messages.getConfig().getString("prefix", "[EvenMoreFish]") + "&r").getRawMessage(false);
-        
+
     }
 }

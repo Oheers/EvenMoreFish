@@ -149,26 +149,22 @@ public class FishingProcessor implements Listener {
             return null;
         }
 
-        if (EvenMoreFish.getInstance().isUsingMcMMO()) {
-            if (ExperienceConfig.getInstance().isFishingExploitingPrevented()) {
-                if (UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector())) {
-                    return null;
-                }
-            }
+        if (EvenMoreFish.getInstance().isUsingMcMMO() && ExperienceConfig.getInstance().isFishingExploitingPrevented() && UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector())) {
+            return null;
         }
 
-        if (BaitFile.getInstance().getBaitCatchPercentage() > 0) {
-            if (new Random().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
-                Bait caughtBait = BaitNBTManager.randomBaitCatch();
-                Message message = new Message(ConfigMessage.BAIT_CAUGHT);
-                message.setBaitTheme(caughtBait.getTheme());
-                message.setBait(caughtBait.getName());
-                message.setPlayer(player.getName());
-                message.broadcast(player, true);
 
-                return caughtBait.create(player);
-            }
+        if (BaitFile.getInstance().getBaitCatchPercentage() > 0 && EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
+            Bait caughtBait = BaitNBTManager.randomBaitCatch();
+            Message message = new Message(ConfigMessage.BAIT_CAUGHT);
+            message.setBaitTheme(caughtBait.getTheme());
+            message.setBait(caughtBait.getName());
+            message.setPlayer(player.getName());
+            message.broadcast(player, true);
+
+            return caughtBait.create(player);
         }
+
 
         Fish fish;
 
@@ -265,10 +261,6 @@ public class FishingProcessor implements Listener {
                 }
 
                 EvenMoreFish.getInstance().getDatabaseV3().handleFishCatch(player.getUniqueId(), finalFish);
-
-//                    catch (SQLException exception) {
-//                        EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.", exception);
-//                    }
             });
         }
 
@@ -352,24 +344,10 @@ public class FishingProcessor implements Listener {
     }
 
     private static Fish randomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
-        double totalWeight = 0;
-
-        for (Fish fish : fishList) {
-            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
-            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
-            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
-
-                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
-                else
-                    totalWeight += fish.getWeight() * boostRate;
-            } else {
-                if (fish.getWeight() == 0.0d) totalWeight += 1;
-                else totalWeight += fish.getWeight();
-            }
-        }
+        double totalWeight = getTotalWeight(fishList, boostRate, boostedFish);
 
         int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < fishList.size() - 1; ++idx) {
+        for (double r = EvenMoreFish.getInstance().getRandom().nextInt() * totalWeight; idx < fishList.size() - 1; ++idx) {
 
             if (fishList.get(idx).getWeight() == 0.0d) {
                 if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
@@ -391,15 +369,37 @@ public class FishingProcessor implements Listener {
         return fishList.get(idx);
     }
 
+    private static double getTotalWeight(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
+        double totalWeight = 0;
+
+        for (Fish fish : fishList) {
+            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
+            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
+            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
+
+                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
+                else
+                    totalWeight += fish.getWeight() * boostRate;
+            } else {
+                if (fish.getWeight() == 0.0d) totalWeight += 1;
+                else totalWeight += fish.getWeight();
+            }
+        }
+        return totalWeight;
+    }
+
     public static Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish, boolean doRequirementChecks) {
-        if (r == null) return null;
+        if (r == null) {
+            return null;
+        }
         // will store all the fish that match the player's biome or don't discriminate biomes
 
         List<Fish> available = new ArrayList<>();
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (EvenMoreFish.getInstance().getFishCollection().get(r) == null)
+        if (EvenMoreFish.getInstance().getFishCollection().get(r) == null) {
             r = randomWeightedRarity(p, 1, null, EvenMoreFish.getInstance().getFishCollection().keySet());
+        }
 
         if (doRequirementChecks) {
             RequirementContext context = new RequirementContext();
@@ -447,34 +447,37 @@ public class FishingProcessor implements Listener {
 
         if (Competition.isActive() || !MainConfig.getInstance().isCompetitionUnique() || (EvenMoreFish.getInstance().isRaritiesCompCheckExempt() && returningFish.isCompExemptFish())) {
             return returningFish;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
     public static boolean competitionOnlyCheck() {
         if (MainConfig.getInstance().isCompetitionUnique()) {
             return Competition.isActive();
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     public static void competitionCheck(Fish fish, Player fisherman, Location location) {
-        if (Competition.isActive()) {
-            List<String> competitionWorlds = CompetitionConfig.getInstance().getRequiredWorlds();
-            if (!competitionWorlds.isEmpty()) {
-                if (location.getWorld() != null) {
-                    if (!competitionWorlds.contains(location.getWorld().getName())) {
-                        return;
-                    }
-                } else {
-                    EvenMoreFish.getInstance().getLogger().severe(fisherman.getName() + " was unable to be checked for \"general.required-worlds\" in competitions.yml because their world is null.");
-                }
-            }
-
-            EvenMoreFish.getInstance().getActiveCompetition().applyToLeaderboard(fish, fisherman);
+        if (Competition.isNotActive()) {
+            return;
         }
+
+        final List<String> competitionWorlds = CompetitionConfig.getInstance().getRequiredWorlds();
+        if (!competitionWorlds.isEmpty()) {
+            if (location.getWorld() != null) {
+                if (!competitionWorlds.contains(location.getWorld().getName())) {
+                    return;
+                }
+            } else {
+                EvenMoreFish.getInstance().getLogger().severe(fisherman.getName() + " was unable to be checked for \"general.required-worlds\" in competitions.yml because their world is null.");
+            }
+        }
+
+        EvenMoreFish.getInstance().getActiveCompetition().applyToLeaderboard(fish, fisherman);
+
     }
 }
