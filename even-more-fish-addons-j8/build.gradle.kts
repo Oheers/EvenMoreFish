@@ -11,7 +11,17 @@ dependencies {
     compileOnly(libs.headdatabase.api)
 
     compileOnly(project(":even-more-fish-api"))
+
+    testCompileOnly(project(":even-more-fish-api"))
+    testCompileOnly(libs.spigot.api)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 
 java {
     toolchain {

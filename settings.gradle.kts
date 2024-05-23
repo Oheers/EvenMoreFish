@@ -57,6 +57,10 @@ dependencyResolutionManagement {
             library("essx-api", "net.essentialsx:EssentialsX:2.20.1")
 
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
+
+            library("junit-jupiter-api", "org.junit.jupiter:junit-jupiter-api:5.8.1")
+            library("junit-jupiter-engine", "org.junit.jupiter:junit-jupiter-engine:5.8.1")
+
         }
     }
 }
