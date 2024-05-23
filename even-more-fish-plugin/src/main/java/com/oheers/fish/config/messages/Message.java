@@ -20,7 +20,8 @@ public class Message {
     private static final char COLOR_CHAR = '\u00A7';
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     public String message;
-    private boolean canSilent, canHidePrefix;
+    private boolean canSilent;
+    private boolean canHidePrefix;
     private Player relevantPlayer;
 
     /**
