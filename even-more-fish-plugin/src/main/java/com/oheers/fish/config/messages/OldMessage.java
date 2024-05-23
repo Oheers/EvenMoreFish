@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class OldMessage {
 
     // msg is the string got from the messages.yml file
@@ -20,9 +21,6 @@ public class OldMessage {
     // the list of variables loaded
     List<Map.Entry<String, String>> variableMap = new ArrayList<>();
 
-    public OldMessage() {
-
-    }
 
     public OldMessage setMSG(String msg) {
         this.msg = msg;
