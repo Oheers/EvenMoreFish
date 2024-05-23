@@ -46,7 +46,7 @@ This plugin is *highly* customisable, pretty much everything can be modified to 
 to the messages (`messages.yml`). There is a detailed explanation for each line in the config to guide you through the
 process.
 
---- 
+---
 
 ## ⚙ Contributing ⚙
 
@@ -58,4 +58,3 @@ To contribute to translations, please create a pull request with a new messages.
 or `messages.fr.yml`
 
 Cheers, Oheers 
-
