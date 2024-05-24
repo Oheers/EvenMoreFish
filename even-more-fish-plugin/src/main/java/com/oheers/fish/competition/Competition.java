@@ -41,7 +41,8 @@ public class Competition {
     public boolean adminStarted;
     public String competitionID;
     public Message startMessage;
-    long maxDuration, timeLeft;
+    long maxDuration;
+    long timeLeft;
     Bar statusBar;
     long epochStartTime;
     List<Long> alertTimes;
@@ -532,7 +533,6 @@ public class Competition {
     }
 
     public void sendConsoleLeaderboard(ConsoleCommandSender console) {
-        boolean reachingCount = true;
         if (active) {
             if (leaderboard.getSize() != 0) {
 
