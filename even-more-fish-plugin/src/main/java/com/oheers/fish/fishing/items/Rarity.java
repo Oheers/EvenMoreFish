@@ -83,8 +83,8 @@ public class Rarity {
     public String getLorePrep() {
         if (overridenLore != null) return FishUtils.translateHexColorCodes(overridenLore);
         else {
-            if (this.getDisplayName() != null) {
-                return this.getDisplayName();
+            if (this.displayName != null) {
+                return this.displayName;
             } else {
                 String finalName = this.getValue();
                 if (!useConfigCasing) {
