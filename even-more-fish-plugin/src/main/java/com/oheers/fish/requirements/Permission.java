@@ -1,6 +1,5 @@
 package com.oheers.fish.requirements;
 
-import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

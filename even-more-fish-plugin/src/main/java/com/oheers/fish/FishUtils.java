@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 public class FishUtils {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '\u00A7';
+    private static final char COLOR_CHAR = '§';
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
@@ -84,7 +84,7 @@ public class FishUtils {
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
         for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
             if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.overridenLore);
+                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
             }
         }
 
@@ -132,7 +132,7 @@ public class FishUtils {
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
         for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
             if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.overridenLore);
+                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
             }
         }
 

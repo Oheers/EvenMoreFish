@@ -111,7 +111,7 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public int getBroadcastRange() {
-        return getConfig().getInt("general.broadcast-range", 0);
+        return getConfig().getInt("general.broadcast-range", -1);
     }
 
     public List<String> getPositionColours() {
