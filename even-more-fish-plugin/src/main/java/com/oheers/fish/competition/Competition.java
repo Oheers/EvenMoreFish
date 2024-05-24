@@ -423,7 +423,7 @@ public class Competition {
                             int s = r.nextInt(3);
                             switch (s) {
                                 case 0:
-                                    message.setPositionColour("&c\u00bb &r");
+                                    message.setPositionColour("&c» &r");
                                     break;
                                 case 1:
                                     message.setPositionColour("&c_ &r");
@@ -547,7 +547,7 @@ public class Competition {
                         int s = r.nextInt(3);
                         switch (s) {
                             case 0:
-                                message.setPositionColour("&c\u00bb &r");
+                                message.setPositionColour("&c» &r");
                                 break;
                             case 1:
                                 message.setPositionColour("&c_ &r");
@@ -767,7 +767,12 @@ public class Competition {
             while (competitionEntryIterator.hasNext()) {
                 CompetitionEntry entry = competitionEntryIterator.next();
                 if (rewardPlace <= rewards.size()) {
-                    rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(Objects.requireNonNull(Bukkit.getPlayer(entry.getPlayer())), null));
+                    rewards.get(rewardPlace).forEach(reward -> {
+                        Player player = Bukkit.getPlayer(entry.getPlayer());
+                        if (player != null) {
+                            reward.rewardPlayer(player, null);
+                        }
+                    });
                     rewardPlace++;
                 } else {
                     if (participationRewardsExist) {
