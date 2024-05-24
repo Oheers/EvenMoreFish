@@ -52,6 +52,11 @@ public class Economy {
                     enabled = true;
                     emf.getLogger().info("Hooked into GriefPrevention for Economy Handling.");
                 }
+                return;
+            default:
+                economyType = EconomyType.NONE;
+                emf.getLogger().warning(() -> "Not using any economy.");
+                return;
         }
     }
 
@@ -71,6 +76,10 @@ public class Economy {
             case GRIEF_PREVENTION:
                 PlayerData data = griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId());
                 data.setBonusClaimBlocks(data.getBonusClaimBlocks() + (int) amount);
+                return;
+            default:
+                //do nothing
+                return;
         }
     }
 
