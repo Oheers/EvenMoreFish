@@ -533,78 +533,83 @@ public class Competition {
     }
 
     public void sendConsoleLeaderboard(ConsoleCommandSender console) {
-        if (active) {
-            if (leaderboard.getSize() != 0) {
-
-                List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
-                StringBuilder builder = new StringBuilder();
-                int pos = 0;
-
-                for (CompetitionEntry entry : leaderboard.getEntries()) {
-                    pos++;
-                    leaderboardMembers.add(entry.getPlayer());
-                    Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                    message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
-                    message.setPosition(Integer.toString(pos));
-                    if (pos > competitionColours.size()) {
-                        Random r = new Random();
-                        int s = r.nextInt(3);
-                        switch (s) {
-                            case 0:
-                                message.setPositionColour("&c» &r");
-                                break;
-                            case 1:
-                                message.setPositionColour("&c_ &r");
-                                break;
-                            case 2:
-                                message.setPositionColour("&c&ko &r");
-                                break;
-                        }
-
-                    } else {
-                        message.setPositionColour(competitionColours.get(pos - 1));
-                    }
-
-                    if (competitionType == CompetitionType.LARGEST_FISH) {
-                        Fish fish = entry.getFish();
-                        message.setRarityColour(fish.getRarity().getColour());
-                        message.setLength(Float.toString(entry.getValue()));
-
-                        if (fish.getRarity().getDisplayName() != null) {
-                            message.setRarity(fish.getRarity().getDisplayName());
-                        } else {
-                            message.setRarity(fish.getRarity().getValue());
-                        }
-
-                        if (fish.getDisplayName() != null) {
-                            message.setFishCaught(fish.getDisplayName());
-                        } else {
-                            message.setFishCaught(fish.getName());
-                        }
-                    } else {
-                        if (competitionType == CompetitionType.LARGEST_TOTAL) {
-                            message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-                            // Clearing floating point .00000003 error not-cool stuff.
-                            message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
-                        } else {
-                            message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
-                            message.setAmount(Integer.toString((int) entry.getValue()));
-                        }
-
-                    }
-                    builder.append(message.getRawMessage(true));
-
-                }
-                console.sendMessage(builder.toString());
-                Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
-                message.setAmount(Integer.toString(leaderboard.getSize()));
-                message.broadcast(console, true);
-            } else {
-                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console, false);
-            }
-        } else {
+        if (!active) {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console, true);
+            return;
         }
+
+        if (leaderboard.getSize() == 0) {
+            new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console, false);
+            return;
+        }
+
+
+        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
+        StringBuilder builder = new StringBuilder();
+        int pos = 0;
+
+        for (CompetitionEntry entry : leaderboard.getEntries()) {
+            pos++;
+            leaderboardMembers.add(entry.getPlayer());
+            Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
+            message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+            message.setPosition(Integer.toString(pos));
+            if (pos > competitionColours.size()) {
+                int s = EvenMoreFish.getInstance().getRandom().nextInt(3);
+                switch (s) {
+                    case 0:
+                        message.setPositionColour("&c» &r");
+                        break;
+                    case 1:
+                        message.setPositionColour("&c_ &r");
+                        break;
+                    case 2:
+                        message.setPositionColour("&c&ko &r");
+                        break;
+                    default:
+                        break;
+                }
+
+            } else {
+                message.setPositionColour(competitionColours.get(pos - 1));
+            }
+
+            if (competitionType == CompetitionType.LARGEST_FISH) {
+                Fish fish = entry.getFish();
+                message.setRarityColour(fish.getRarity().getColour());
+                message.setLength(Float.toString(entry.getValue()));
+
+                if (fish.getRarity().getDisplayName() != null) {
+                    message.setRarity(fish.getRarity().getDisplayName());
+                } else {
+                    message.setRarity(fish.getRarity().getValue());
+                }
+
+                if (fish.getDisplayName() != null) {
+                    message.setFishCaught(fish.getDisplayName());
+                } else {
+                    message.setFishCaught(fish.getName());
+                }
+            } else {
+                if (competitionType == CompetitionType.LARGEST_TOTAL) {
+                    message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                    // Clearing floating point .00000003 error not-cool stuff.
+                    message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+                } else {
+                    message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                    message.setAmount(Integer.toString((int) entry.getValue()));
+                }
+
+            }
+            builder.append(message.getRawMessage(true));
+
+        }
+        console.sendMessage(builder.toString());
+        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+        message.setAmount(Integer.toString(leaderboard.getSize()));
+        message.broadcast(console, true);
+
+
     }
 
     public boolean chooseFish(String competitionName, boolean adminStart) {
@@ -654,7 +659,7 @@ public class Competition {
             }
             this.selectedFish = selectedFish;
             return true;
-        } catch (IllegalArgumentException|IndexOutOfBoundsException exception) {
+        } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
                     .severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
