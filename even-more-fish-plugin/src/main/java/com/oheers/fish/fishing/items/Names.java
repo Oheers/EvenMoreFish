@@ -55,7 +55,7 @@ public class Names {
             fishList.addAll(fishSet);
 
             // creates a rarity object and a fish queue
-            Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityOverridenLore(rarity));
+            Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityUseConfigCasing(rarity), rarityOverridenLore(rarity));
             if (xmasRarity) {
                 EvenMoreFish.getInstance().setXmasRarity(r);
             }
@@ -174,6 +174,10 @@ public class Names {
 
     private String rarityOverridenLore(String rarity) {
         return this.rarityConfiguration.getString("rarities." + rarity + ".override-lore");
+    }
+
+    private boolean rarityUseConfigCasing(String rarity) {
+        return this.rarityConfiguration.getBoolean("rarities." + rarity + ".use-this-casing");
     }
 
     private String rarityDisplayName(String rarity) {

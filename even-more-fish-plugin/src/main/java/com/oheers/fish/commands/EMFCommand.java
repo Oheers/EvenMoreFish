@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 public class EMFCommand extends BaseCommand {
 
     @Subcommand("next")
-    @Description("%desc_general_next")
+    @Description("%desc_general_next")<<<<<<< inventorygui
     public void onNext(final CommandSender sender) {
         Message message = Competition.getNextCompetitionMessage();
         message.usePrefix(PrefixType.DEFAULT);
@@ -89,7 +89,7 @@ public class EMFCommand extends BaseCommand {
             return;
         }
 
-        if (EvenMoreFish.getInstance().getPermission().has(sender, AdminPerms.ADMIN)) {
+        if (sender.hasPermission(AdminPerms.ADMIN)) {
             new SellGUI(onlinePlayer.player).open();
             Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
             message.setPlayer(onlinePlayer.player.getName());

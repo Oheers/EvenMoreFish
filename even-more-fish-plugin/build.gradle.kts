@@ -97,10 +97,9 @@ bukkit {
     website = "https://github.com/Oheers/EvenMoreFish"
     foliaSupported = true
 
-    depend = listOf(
-        "Vault"
-    )
+    depend = listOf()
     softDepend = listOf(
+        "Vault",
         "PlayerPoints",
         "WorldGuard",
         "PlaceholderAPI",

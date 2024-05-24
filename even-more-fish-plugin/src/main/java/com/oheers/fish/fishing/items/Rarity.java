@@ -15,15 +15,17 @@ public class Rarity {
     boolean announce;
     boolean fishWeighted;
     boolean hasCompExemptFish;
+    boolean useConfigCasing;
     String displayName;
     List<Requirement> requirements = new ArrayList<>();
 
-    public Rarity(String value, String colour, double weight, boolean announce, String overridenLore) {
+    public Rarity(String value, String colour, double weight, boolean announce, boolean useConfigCasing, String overridenLore) {
         this.value = value;
         this.colour = colour;
         this.weight = weight;
         this.announce = announce;
         this.overridenLore = overridenLore;
+        this.useConfigCasing = useConfigCasing;
     }
 
     public String getValue() {
@@ -41,6 +43,8 @@ public class Rarity {
     public boolean getAnnounce() {
         return this.announce;
     }
+
+    public boolean getUseConfigCasing() { return this.useConfigCasing; }
 
     public boolean isFishWeighted() {
         return fishWeighted;
@@ -79,10 +83,14 @@ public class Rarity {
     public String getLorePrep() {
         if (overridenLore != null) return FishUtils.translateHexColorCodes(overridenLore);
         else {
-            if (this.getDisplayName() != null) {
-                return this.getDisplayName();
+            if (this.displayName != null) {
+                return this.displayName;
             } else {
-                return this.getColour() + "&l" + this.getValue().toUpperCase();
+                String finalName = this.getValue();
+                if (!useConfigCasing) {
+                    finalName = finalName.toUpperCase();
+                }
+                return this.getColour() + "&l" + finalName;
             }
 
         }

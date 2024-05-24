@@ -283,8 +283,7 @@ public class Fish implements Cloneable {
 
         if (length > 0) newLoreLine.setLength(Float.toString(length));
 
-        if (rarity.getDisplayName() != null) newLoreLine.setRarity(rarity.getDisplayName());
-        else newLoreLine.setRarity(this.rarity.getLorePrep());
+        newLoreLine.setRarity(this.rarity.getLorePrep());
 
         List<String> newLore = Arrays.asList(newLoreLine.getRawMessage(true).split("\n"));
         if (getFishermanPlayer() != null && EvenMoreFish.getInstance().isUsingPAPI()) {

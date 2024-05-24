@@ -1,6 +1,5 @@
 package com.oheers.fish.requirements;
 
-import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +30,7 @@ public class Permission implements Requirement {
 
     @Override
     public boolean requirementMet(RequirementContext context) {
-        if (EvenMoreFish.getInstance().getPermission() != null && permissionNodes != null) {
+        if (permissionNodes != null) {
             return context.getPlayer() == null || hasAllPermissions(context.getPlayer());
         }
         
@@ -40,7 +39,7 @@ public class Permission implements Requirement {
     
     private boolean hasAllPermissions(final Player player) {
         for(final String permissionNode: permissionNodes) {
-            if(!EvenMoreFish.getInstance().getPermission().has(player,permissionNode)) {
+            if (!player.hasPermission(permissionNode)) {
                 return false;
             }
         }
