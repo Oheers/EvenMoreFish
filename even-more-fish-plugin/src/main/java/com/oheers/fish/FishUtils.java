@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 public class FishUtils {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '\u00A7';
+    private static final char COLOR_CHAR = '§';
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {

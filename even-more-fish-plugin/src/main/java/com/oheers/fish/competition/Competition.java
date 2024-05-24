@@ -423,7 +423,7 @@ public class Competition {
                             int s = r.nextInt(3);
                             switch (s) {
                                 case 0:
-                                    message.setPositionColour("&c\u00bb &r");
+                                    message.setPositionColour("&c» &r");
                                     break;
                                 case 1:
                                     message.setPositionColour("&c_ &r");
@@ -547,7 +547,7 @@ public class Competition {
                         int s = r.nextInt(3);
                         switch (s) {
                             case 0:
-                                message.setPositionColour("&c\u00bb &r");
+                                message.setPositionColour("&c» &r");
                                 break;
                             case 1:
                                 message.setPositionColour("&c_ &r");
