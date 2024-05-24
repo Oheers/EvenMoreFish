@@ -55,7 +55,7 @@ public class Economy {
                 return;
             default:
                 economyType = EconomyType.NONE;
-                emf.getLogger().warning(() -> "Not using any economy.");
+                emf.getLogger().info(() -> "Not using any economy.");
                 return;
         }
     }
