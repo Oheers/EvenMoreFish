@@ -110,7 +110,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private static EvenMoreFish instance;
     private static TaskScheduler scheduler;
-    private FillerStyle guiFillerStyle;
     private EMFAPI api;
 
     private AddonManager addonManager;
@@ -564,8 +563,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     // Checks for updates, surprisingly
     private boolean checkUpdate() {
-
-
         String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
         String[] serverVersion = getDescription().getVersion().split("\\.");
 
@@ -782,10 +779,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public void setHDBapi(HeadDatabaseAPI api) {
         this.HDBapi = api;
-    }
-
-    public FillerStyle getGuiFillerStyle() {
-        return guiFillerStyle;
     }
 
     public EMFAPI getApi() {
