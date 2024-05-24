@@ -806,12 +806,14 @@ public class Competition {
         message.setCompetitionType(competitionType);
 
         message.broadcast(true);
-
-        if (!rewards.isEmpty()) {
-            for (Reward reward : rewards.get(1)) {
-                reward.rewardPlayer(player, null);
-            }
+        if (rewards.isEmpty()) {
+            return;
         }
+
+        for (Reward reward : rewards.get(1)) {
+            reward.rewardPlayer(player, null);
+        }
+
     }
 
     public void initBar(String competitionName) {
@@ -841,7 +843,7 @@ public class Competition {
 
     private CompetitionType getRandomType() {
         // -1 from the length so that the RANDOM isn't chosen as the random value.
-        int type = new Random().nextInt(CompetitionType.values().length - 1);
+        int type = EvenMoreFish.getInstance().getRandom().nextInt(CompetitionType.values().length - 1);
         return CompetitionType.values()[type];
     }
 
