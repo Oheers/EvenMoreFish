@@ -127,3 +127,9 @@ vanilla-fishing: true
 
 # Whether to protect baited fishing rods in an anvil.
 protect-baited-rods: true
+
+# Requirement configs
+requirements:
+  nearby-players:
+    # How far should the plugin check in blocks? Large values may cause lag.
+    range: 20

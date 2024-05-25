@@ -247,4 +247,7 @@ public class MainConfig extends ConfigBase {
     public boolean useAdditionalAddons() {
         return getConfig().getBoolean("addons.additional-addons", true);
     }
+
+    public int getNearbyPlayersRequirementRange() { return getConfig().getInt("requirements.nearby-players.range", 0); }
+
 }
