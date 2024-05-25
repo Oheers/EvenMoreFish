@@ -247,4 +247,12 @@ public class MainConfig extends ConfigBase {
     public boolean useAdditionalAddons() {
         return getConfig().getBoolean("addons.additional-addons", true);
     }
+
+    public String getMainCommandName() {
+        return getConfig().getString("command.main", "emf");
+    }
+
+    public List<String> getMainCommandAliases() {
+        return getConfig().getStringList("command.aliases");
+    }
 }

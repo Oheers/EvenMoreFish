@@ -127,3 +127,11 @@ vanilla-fishing: true
 
 # Whether to protect baited fishing rods in an anvil.
 protect-baited-rods: true
+
+# Customize the plugin's command. Requires a server restart to take effect.
+command:
+  # The plugin's main command
+  main: "emf"
+  # Aliases for the main command
+  aliases:
+    - "evenmorefish"
