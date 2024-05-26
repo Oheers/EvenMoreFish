@@ -1,5 +1,6 @@
 package com.oheers.fish.api.reward;
 
+import com.oheers.fish.api.plugin.EMFPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ public class Reward {
     public Reward(@NotNull String identifier) {
         String[] split = identifier.split(":");
         if (split.length < 2) {
-            RewardManager.getInstance().getLogger().warning(value + " is not formatted correctly. It won't be given as a reward");
+            EMFPlugin.getLogger().warning(value + " is not formatted correctly. It won't be given as a reward");
             this.key = "";
             this.value = "";
         } else {
