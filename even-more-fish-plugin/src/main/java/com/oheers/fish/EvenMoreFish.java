@@ -363,7 +363,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         manager.enableUnstableAPI("brigadier");
         manager.enableUnstableAPI("help");
 
-        manager.getCommandReplacements().addReplacement("main", "emf|evenmorefish");
+        StringBuilder main = new StringBuilder(MainConfig.getInstance().getMainCommandName());
+        List<String> aliases = MainConfig.getInstance().getMainCommandAliases();
+        if (!aliases.isEmpty()) {
+            aliases.forEach(alias -> main.append("|").append(alias));
+        }
+        manager.getCommandReplacements().addReplacement("main", main.toString());
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
         //desc_admin_<command>_<id>
         manager.getCommandReplacements().addReplacements(

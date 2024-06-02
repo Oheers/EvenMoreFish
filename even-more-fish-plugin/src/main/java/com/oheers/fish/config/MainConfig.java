@@ -251,6 +251,14 @@ public class MainConfig extends ConfigBase {
 
     public int getNearbyPlayersRequirementRange() { return getConfig().getInt("requirements.nearby-players.range", 0); }
 
+    public String getMainCommandName() {
+        return getConfig().getString("command.main", "emf");
+    }
+
+    public List<String> getMainCommandAliases() {
+        return getConfig().getStringList("command.aliases");
+    }
+
     public String[] getSellGUILayout() {
         List<String> layout = getConfig().getStringList("gui.layout");
 
