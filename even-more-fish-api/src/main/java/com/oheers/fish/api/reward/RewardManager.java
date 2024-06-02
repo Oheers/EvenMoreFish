@@ -1,5 +1,6 @@
 package com.oheers.fish.api.reward;
 
+import com.oheers.fish.api.plugin.EMFPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class RewardManager implements Listener {
 
@@ -31,6 +31,7 @@ public class RewardManager implements Listener {
         if (!isLoaded()) {
             Bukkit.getPluginManager().callEvent(new EMFRewardsLoadEvent());
             loaded = true;
+            EMFPlugin.getLogger().info("Loaded RewardManager");
         }
     }
 
@@ -38,7 +39,7 @@ public class RewardManager implements Listener {
         if (isLoaded()) {
             this.rewardTypes.clear();
             loaded = false;
-            getLogger().info("Unloaded RewardManager");
+            EMFPlugin.getLogger().info("Unloaded RewardManager");
         }
     }
 
@@ -50,21 +51,21 @@ public class RewardManager implements Listener {
      * @return Whether the reward type was added or not
      */
     public boolean registerRewardType(RewardType rewardType) {
+        // Don't allow registration if the manager's load() method was not called.
+        if (!isLoaded()) {
+            return false;
+        }
         String identifier = rewardType.getIdentifier();
         if (rewardTypes.containsKey(identifier.toUpperCase())) {
             return false;
         }
-        getLogger().info("Registered " + rewardType.getIdentifier() + " RewardType by " + rewardType.getAuthor() + " from the plugin " + rewardType.getPlugin().getName());
+        EMFPlugin.getLogger().info("Registered " + rewardType.getIdentifier() + " RewardType by " + rewardType.getAuthor() + " from the plugin " + rewardType.getPlugin().getName());
         rewardTypes.put(identifier.toUpperCase(), rewardType);
         return true;
     }
 
     public List<RewardType> getRegisteredRewardTypes() {
         return new ArrayList<>(rewardTypes.values());
-    }
-
-    public Logger getLogger() {
-        return Logger.getLogger("EvenMoreFish");
     }
 
     @EventHandler

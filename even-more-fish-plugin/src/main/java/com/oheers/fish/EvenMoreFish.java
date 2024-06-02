@@ -11,7 +11,6 @@ import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
-import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitListener;
@@ -35,7 +34,6 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.FillerStyle;
-import com.oheers.fish.selling.InteractHandler;
 import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
@@ -50,9 +48,7 @@ import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -293,7 +289,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);
         getServer().getPluginManager().registerEvents(new FishingProcessor(), this);
-        getServer().getPluginManager().registerEvents(new InteractHandler(this), this);
         getServer().getPluginManager().registerEvents(new UpdateNotify(), this);
         getServer().getPluginManager().registerEvents(new SkullSaver(), this);
         getServer().getPluginManager().registerEvents(new BaitListener(), this);
@@ -368,7 +363,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         manager.enableUnstableAPI("brigadier");
         manager.enableUnstableAPI("help");
 
-        manager.getCommandReplacements().addReplacement("main", "emf|evenmorefish");
+        StringBuilder main = new StringBuilder(MainConfig.getInstance().getMainCommandName());
+        List<String> aliases = MainConfig.getInstance().getMainCommandAliases();
+        if (!aliases.isEmpty()) {
+            aliases.forEach(alias -> main.append("|").append(alias));
+        }
+        manager.getCommandReplacements().addReplacement("main", main.toString());
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
         //desc_admin_<command>_<id>
         manager.getCommandReplacements().addReplacements(
