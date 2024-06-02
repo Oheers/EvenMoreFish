@@ -77,7 +77,6 @@ public class Competition {
                 return;
             }
 
-
             active = true;
 
             if (competitionType == CompetitionType.RANDOM) {
@@ -126,28 +125,33 @@ public class Competition {
         if (statusBar != null) {
             statusBar.hide();
         }
-        if (!startFail) {
-            EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(this);
-            Bukkit.getServer().getPluginManager().callEvent(endEvent);
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                new Message(ConfigMessage.COMPETITION_END).broadcast(player, true);
-                sendPlayerLeaderboard(player);
-            }
-            handleRewards();
-            if (originallyRandom) {
-                competitionType = CompetitionType.RANDOM;
-            }
-            if (MainConfig.getInstance().databaseEnabled()) {
-                Competition competitionRef = this;
-                EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                    EvenMoreFish.getInstance().getDatabaseV3().createCompetitionReport(competitionRef);
+        try {
+            if (!startFail) {
+                EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(this);
+                Bukkit.getServer().getPluginManager().callEvent(endEvent);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    new Message(ConfigMessage.COMPETITION_END).broadcast(player, true);
+                    sendPlayerLeaderboard(player);
+                }
+                handleRewards();
+                if (originallyRandom) {
+                    competitionType = CompetitionType.RANDOM;
+                }
+                if (MainConfig.getInstance().databaseEnabled()) {
+                    Competition competitionRef = this;
+                    EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
+                        EvenMoreFish.getInstance().getDatabaseV3().createCompetitionReport(competitionRef);
+                        leaderboard.clear();
+                    });
+                } else {
                     leaderboard.clear();
-                });
-            } else {
-                leaderboard.clear();
+                }
             }
+        } catch (Exception exception) {
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "An exception was thrown while the competition was being ended!", exception);
+        } finally {
+            active = false;
         }
-        active = false;
     }
 
     // Starts a runnable to decrease the time left by 1s each second
