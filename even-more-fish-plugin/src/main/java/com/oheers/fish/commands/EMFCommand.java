@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 public class EMFCommand extends BaseCommand {
 
     @Subcommand("next")
-    @Description("%desc_general_next")<<<<<<< inventorygui
+    @Description("%desc_general_next")
     public void onNext(final CommandSender sender) {
         Message message = Competition.getNextCompetitionMessage();
         message.usePrefix(PrefixType.DEFAULT);
