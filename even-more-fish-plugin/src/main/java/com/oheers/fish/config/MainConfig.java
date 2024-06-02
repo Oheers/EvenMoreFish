@@ -248,6 +248,15 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("addons.additional-addons", true);
     }
 
+
+    public String getMainCommandName() {
+        return getConfig().getString("command.main", "emf");
+    }
+
+    public List<String> getMainCommandAliases() {
+        return getConfig().getStringList("command.aliases");
+    }
+
     public String[] getSellGUILayout() {
         List<String> layout = getConfig().getStringList("gui.layout");
 

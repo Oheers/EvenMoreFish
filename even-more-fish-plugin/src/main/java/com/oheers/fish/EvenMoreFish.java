@@ -11,7 +11,6 @@ import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
-import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitListener;
@@ -366,7 +365,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         manager.enableUnstableAPI("brigadier");
         manager.enableUnstableAPI("help");
 
-        manager.getCommandReplacements().addReplacement("main", "emf|evenmorefish");
+        StringBuilder main = new StringBuilder(MainConfig.getInstance().getMainCommandName());
+        List<String> aliases = MainConfig.getInstance().getMainCommandAliases();
+        if (!aliases.isEmpty()) {
+            aliases.forEach(alias -> main.append("|").append(alias));
+        }
+        manager.getCommandReplacements().addReplacement("main", main.toString());
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
         //desc_admin_<command>_<id>
         manager.getCommandReplacements().addReplacements(
