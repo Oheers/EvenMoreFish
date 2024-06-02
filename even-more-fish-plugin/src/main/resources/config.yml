@@ -132,6 +132,13 @@ vanilla-fishing: true
 # Whether to protect baited fishing rods in an anvil.
 protect-baited-rods: true
 
+
+# Requirement configs
+requirements:
+  nearby-players:
+    # How far should the plugin check in blocks? Large values may cause lag.
+    range: 20
+
 # Customize the plugin's command. Requires a server restart to take effect.
 command:
   # The plugin's main command
@@ -139,3 +146,4 @@ command:
   # Aliases for the main command
   aliases:
     - "evenmorefish"
+

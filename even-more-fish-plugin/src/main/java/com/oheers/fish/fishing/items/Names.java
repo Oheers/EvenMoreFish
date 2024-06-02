@@ -230,6 +230,9 @@ public class Names {
                     case "world":
                         currentRequirements.add(new World(configLocator + ".requirements.world", config));
                         break;
+                    case "nearby-players":
+                        currentRequirements.add(new NearbyPlayers(configLocator + ".requirements.nearby-players", config));
+                        break;
                 }
             }
         }
