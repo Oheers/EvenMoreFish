@@ -118,7 +118,7 @@ error-sell-all-gui-name: "&c&lCan't Sell"
 # # – prints a digit if provided, nothing otherwise
 # . – indicate where to put the decimal separator
 # , – indicate where to put the grouping separator
-sell-price-format: "#,##0.0"
+sell-price-format: "$#,##0.0"
 
 # The lore found on the selling/confirmation item in /emf shop
 sell-gui-lore:
