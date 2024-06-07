@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 public abstract class ItemAddon implements Addon{
 
     /**
-     * @param id id of the ItemStack
+     * @param id id of the ItemStack without the prefix.
      * @return The ItemStack via the id
      */
     public abstract ItemStack getItemStack(final String id);

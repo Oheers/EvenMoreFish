@@ -2,6 +2,8 @@ package com.oheers.fish.utils;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.addons.exceptions.IncorrectAssignedMaterialException;
+import com.oheers.fish.api.addons.exceptions.NoPrefixException;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
@@ -235,28 +237,24 @@ public class ItemFactory {
             if (customItemStack != null) {
                 return customItemStack;
             }
-            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
             material = Material.COD;
         }
 
         return new ItemStack(material);
     }
 
-    //Need to impl oraxen, ecoitems, denizen & ItemsAdder addons
-    private ItemStack checkItem(final String materialID) {
-        if (materialID == null) {
+    private ItemStack checkItem(final String materialId) {
+        if (materialId == null) {
             return null;
         }
 
         rawMaterial = true;
 
         try {
-            return getItem(materialID);
-        } catch (Exception e) {
-            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s",
-                    configLocation,
-                    materialID));
+            return getItem(materialId);
+        } catch (NoPrefixException | IncorrectAssignedMaterialException e) {
             rawMaterial = false;
+            EvenMoreFish.getInstance().getLogger().warning(e::getMessage);
             return new ItemStack(Material.COD);
         }
     }
@@ -431,7 +429,7 @@ public class ItemFactory {
         return checkItem(materialID);
     }
 
-    public @NotNull ItemStack getItem(final @NotNull String materialString) throws Exception{
+    public ItemStack getItem(final @NotNull String materialString) throws IncorrectAssignedMaterialException, NoPrefixException {
         if (materialString.contains(":")) {
             //assume this is an addon string
             final String[] split = materialString.split(":", 2);
@@ -443,10 +441,7 @@ public class ItemFactory {
 
         Material material = Material.matchMaterial(materialString);
         if (material == null) {
-            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s",
-                    configLocation,
-                    materialString));
-            return new ItemStack(Material.COD);
+            throw new IncorrectAssignedMaterialException(configLocation, materialString);
         }
 
         return new ItemStack(material);
