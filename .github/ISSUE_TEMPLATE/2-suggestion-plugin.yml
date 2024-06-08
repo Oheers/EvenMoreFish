@@ -1,0 +1,11 @@
+name: Suggestion (Plugin)
+description: Suggest a feature or an improvement.
+title: "[Suggestion (Plugin)]: "
+labels: [ "suggestion: plugin" ]
+body:
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggestion
+    validations:
+      required: true
