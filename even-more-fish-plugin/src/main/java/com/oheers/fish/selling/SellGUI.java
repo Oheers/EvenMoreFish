@@ -5,7 +5,8 @@ import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -315,9 +316,9 @@ public class SellGUI extends InventoryGui {
         }
         
         NBTItem nbtItem = new NBTItem(item);
-        final String fishName = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_NAME);
-        final String fishRarity = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_RARITY);
-        Float floatLength = NbtUtils.getFloat(item, NbtUtils.Keys.EMF_FISH_LENGTH);
+        final String fishName = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
+        final String fishRarity = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
+        Float floatLength = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
         final double fishLength = floatLength == null ? -1.0 : floatLength;
         final double fishValue = WorthNBT.getValue(item);
         

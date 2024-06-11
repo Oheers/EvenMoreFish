@@ -2,7 +2,8 @@ package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
@@ -32,7 +33,7 @@ public class BaitNBTManager {
         if (itemStack == null) return false;
 
         if (itemStack.hasItemMeta()) {
-            return NbtUtils.hasKey(itemStack, NbtUtils.Keys.EMF_BAIT);
+            return NbtUtils.hasKey(itemStack, NbtKeys.EMF_BAIT);
         } else return false;
     }
 
@@ -42,7 +43,7 @@ public class BaitNBTManager {
      */
     public static @Nullable String getBaitName(@NotNull ItemStack itemStack) {
         if (itemStack.hasItemMeta()) {
-            return NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_BAIT);
+            return NbtUtils.getString(itemStack, NbtKeys.EMF_BAIT);
         }
         return null;
     }
@@ -58,8 +59,8 @@ public class BaitNBTManager {
     public static ItemStack applyBaitNBT(ItemStack item, String bait) {
         if (item == null) return null;
         NBTItem nbtItem = new NBTItem(item);
-        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
-        emfCompound.setString(NbtUtils.Keys.EMF_BAIT, bait);
+        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+        emfCompound.setString(NbtKeys.EMF_BAIT, bait);
         return nbtItem.getItem();
     }
 
@@ -74,7 +75,7 @@ public class BaitNBTManager {
         if (itemStack.getType() != Material.FISHING_ROD) return false;
 
         if (itemStack.hasItemMeta()) {
-            return NbtUtils.hasKey(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT);
+            return NbtUtils.hasKey(itemStack, NbtKeys.EMF_APPLIED_BAIT);
         }
 
         return false;
@@ -113,7 +114,7 @@ public class BaitNBTManager {
             }
 
             nbtItem = new NBTItem(item);
-            String[] baitList = NbtUtils.getString(item, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+            String[] baitList = NbtUtils.getString(item, NbtKeys.EMF_APPLIED_BAIT).split(",");
 
             boolean foundBait = false;
 
@@ -162,23 +163,23 @@ public class BaitNBTManager {
                     combined.deleteCharAt(combined.length() - 1);
                 }
             }
-            NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+            NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
             if (combined.length() > 0) {
-                emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, combined.toString());
+                emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
             } else {
-                emfCompound.removeKey(NbtUtils.Keys.EMF_APPLIED_BAIT);
+                emfCompound.removeKey(NbtKeys.EMF_APPLIED_BAIT);
             }
         } else {
             nbtItem = new NBTItem(item);
-            NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+            NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
             if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
                 combined.append(bait.getName()).append(":").append(bait.getMaxApplications());
-                emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, combined.toString());
+                emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
                 cursorModifier = -bait.getMaxApplications();
                 maxBait = true;
             } else {
                 combined.append(bait.getName()).append(":").append(quantity);
-                emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, combined.toString());
+                emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
                 cursorModifier = -quantity;
             }
         }
@@ -208,7 +209,7 @@ public class BaitNBTManager {
     public static Bait randomBaitApplication(ItemStack fishingRod) {
         if (fishingRod.getItemMeta() == null) return null;
 
-        String[] baitNameList = NbtUtils.getString(fishingRod, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+        String[] baitNameList = NbtUtils.getString(fishingRod, NbtKeys.EMF_APPLIED_BAIT).split(",");
         List<Bait> baitList = new ArrayList<>();
 
         for (String baitName : baitNameList) {
@@ -272,7 +273,7 @@ public class BaitNBTManager {
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return false;
 
-        String[] baitList = NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+        String[] baitList = NbtUtils.getString(itemStack, NbtKeys.EMF_APPLIED_BAIT).split(",");
 
         for (String appliedBait : baitList) {
             if (appliedBait.split(":")[0].equals(bait)) return true;
@@ -292,17 +293,17 @@ public class BaitNBTManager {
      */
     public static int deleteAllBaits(ItemStack itemStack) {
         NBTItem nbtItem = new NBTItem(itemStack);
-        if (Boolean.FALSE.equals(NbtUtils.hasKey(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT)))
+        if (Boolean.FALSE.equals(NbtUtils.hasKey(itemStack, NbtKeys.EMF_APPLIED_BAIT)))
             return 0;
 
         int totalDeleted = 0;
-        String[] baitList = NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+        String[] baitList = NbtUtils.getString(itemStack, NbtKeys.EMF_APPLIED_BAIT).split(",");
         for (String appliedBait : baitList) {
             totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
         }
 
-        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
-        nbtCompound.removeKey(NbtUtils.Keys.EMF_APPLIED_BAIT);
+        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+        nbtCompound.removeKey(NbtKeys.EMF_APPLIED_BAIT);
 
         itemStack.setItemMeta(nbtItem.getItem().getItemMeta());
         return totalDeleted;
@@ -319,7 +320,7 @@ public class BaitNBTManager {
         List<String> format = BaitFile.getInstance().getRodLoreFormat();
         for (String lineAddition : format) {
             if (lineAddition.equals("{baits}")) {
-                String rodNBT = NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT);
+                String rodNBT = NbtUtils.getString(itemStack, NbtKeys.EMF_APPLIED_BAIT);
 
                 if (rodNBT == null || rodNBT.isEmpty())
                     return lore;
@@ -391,7 +392,7 @@ public class BaitNBTManager {
      * @return How many baits have been applied to this fishing rod.
      */
     private static int getNumBaitsApplied(ItemStack itemStack) {
-        String rodNBT = NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT);
+        String rodNBT = NbtUtils.getString(itemStack, NbtKeys.EMF_APPLIED_BAIT);
         if (rodNBT == null) return 1;
 
         return rodNBT.split(",").length;

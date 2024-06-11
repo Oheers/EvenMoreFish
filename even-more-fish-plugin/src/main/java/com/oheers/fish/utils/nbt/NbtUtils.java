@@ -1,4 +1,4 @@
-package com.oheers.fish;
+package com.oheers.fish.utils.nbt;
 
 import com.oheers.fish.config.MainConfig;
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -9,8 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Locale;
 
 public class NbtUtils {
 
@@ -26,8 +24,8 @@ public class NbtUtils {
                 });
             case LEGACY:
                 return NBT.get(item, nbt -> {
-                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
-                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES)
+                    if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES)
                                 .hasTag(namespacedKey.toString());
                     }
                     return false;
@@ -52,8 +50,8 @@ public class NbtUtils {
                 });
             case LEGACY:
                 return NBT.get(skull, nbt -> {
-                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
-                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES)
+                    if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES)
                                 .hasTag(namespacedKey.toString());
                     }
                     return false;
@@ -101,8 +99,8 @@ public class NbtUtils {
             }
             case LEGACY:{
                 return NBT.get(item,nbt -> {
-                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
-                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES).getString(namespacedKey.toString());
+                    if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getString(namespacedKey.toString());
                     }
                     return null;
                 });
@@ -131,8 +129,8 @@ public class NbtUtils {
             }
             case LEGACY:{
                 return NBT.get(item,nbt -> {
-                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
-                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES).getFloat(namespacedKey.toString());
+                    if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getFloat(namespacedKey.toString());
                     }
                     return null;
                 });
@@ -161,8 +159,8 @@ public class NbtUtils {
             }
             case LEGACY:{
                 return NBT.get(item,nbt -> {
-                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
-                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES).getInteger(namespacedKey.toString());
+                    if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getInteger(namespacedKey.toString());
                     }
                     return null;
                 });
@@ -178,79 +176,4 @@ public class NbtUtils {
         return new NamespacedKey(JavaPlugin.getProvidingPlugin(NbtUtils.class), key);
     }
 
-
-    /**
-     * Enum representing the different versions of NBT (Named Binary Tag) data.
-     *
-     * @author Your Name
-     */
-    public enum NbtVersion {
-        /**
-         * Represents the legacy version of NBT data.
-         */
-        LEGACY,
-
-        /**
-         * Represents the version of NBT data that uses the nbt-api.
-         */
-        NBTAPI,
-
-        /**
-         * Represents the compatible version of NBT data.
-         */
-        COMPAT;
-
-        /**
-         * Returns the version of NBT data associated with the given ItemStack.
-         *
-         * @param itemStack The ItemStack to check.
-         * @return The NbtVersion representing the version of the NBT data.
-         */
-        public static NbtVersion getVersion(final ItemStack itemStack) {
-            return NBT.get(itemStack, nbt -> {
-                if (Boolean.TRUE.equals(nbt.hasTag(Keys.EMF_COMPOUND))) {
-                    return NbtVersion.COMPAT; //def an emf item
-                }
-                if (Boolean.TRUE.equals(nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
-                    return NbtVersion.LEGACY;
-                }
-                return NbtVersion.NBTAPI;
-            });
-        }
-
-        /**
-         * Returns the version of NBT data associated with the given BlockState.
-         *
-         * @param state The BlockState to check.
-         * @return The NbtVersion representing the version of the NBT data.
-         */
-        public static NbtVersion getVersion(final BlockState state) {
-            return NBT.get(state, nbt -> {
-                if (Boolean.TRUE.equals(nbt.hasTag(Keys.EMF_COMPOUND))) {
-                    return NbtVersion.COMPAT; //def an emf item
-                }
-                if (Boolean.TRUE.equals(nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
-                    return NbtVersion.LEGACY;
-                }
-                return NbtVersion.NBTAPI;
-            });
-        }
-    }
-
-    public static class Keys {
-        public static final String EMF_COMPOUND = JavaPlugin.getProvidingPlugin(NbtUtils.class).getName().toLowerCase(Locale.ROOT);
-        public static final String EMF_FISH_PLAYER = "emf-fish-player";
-        public static final String EMF_FISH_RARITY = "emf-fish-rarity";
-        public static final String EMF_FISH_LENGTH = "emf-fish-length";
-        public static final String EMF_FISH_NAME = "emf-fish-name";
-        public static final String EMF_XMAS_FISH = "emf-xmas-fish";
-        public static final String EMF_FISH_RANDOM_INDEX = "emf-fish-random-index";
-        public static final String EMF_BAIT = "emf-bait";
-        public static final String EMF_APPLIED_BAIT = "emf-applied-bait";
-
-        public static final String EMF_ROD_NBT = "emf-rod-nbt";
-
-        public static final String PUBLIC_BUKKIT_VALUES = "PublicBukkitValues";
-        public static final String DEFAULT_GUI_ITEM = "default-gui-item";
-    }
 }

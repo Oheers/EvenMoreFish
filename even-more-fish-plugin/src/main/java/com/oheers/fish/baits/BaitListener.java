@@ -1,12 +1,14 @@
 package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
+import com.oheers.fish.utils.nbt.NbtVersion;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.GameMode;
@@ -51,8 +53,8 @@ public class BaitListener implements Listener {
         Bait bait = EvenMoreFish.getInstance().getBaits().get(BaitNBTManager.getBaitName(event.getCursor()));
 
         ItemStack fishingRod = clickedItem;
-        NbtUtils.NbtVersion nbtVersion = NbtUtils.NbtVersion.getVersion(clickedItem);
-        if (nbtVersion != NbtUtils.NbtVersion.COMPAT) {
+        NbtVersion nbtVersion = NbtVersion.getVersion(clickedItem);
+        if (nbtVersion != NbtVersion.COMPAT) {
             fishingRod = convertToCompatNbtItem(nbtVersion, fishingRod);
         }
 
@@ -93,13 +95,13 @@ public class BaitListener implements Listener {
         }
     }
 
-    private ItemStack convertToCompatNbtItem(final NbtUtils.NbtVersion nbtVersion, final ItemStack fishingRod) {
+    private ItemStack convertToCompatNbtItem(final NbtVersion nbtVersion, final ItemStack fishingRod) {
         NBTItem nbtFishingRod = new NBTItem(fishingRod);
-        final String appliedBaitString = NbtUtils.getString(fishingRod, NbtUtils.Keys.EMF_APPLIED_BAIT);
+        final String appliedBaitString = NbtUtils.getString(fishingRod, NbtKeys.EMF_APPLIED_BAIT);
 
-        if (nbtVersion == NbtUtils.NbtVersion.LEGACY) {
-            final String namespacedKey = NbtUtils.Keys.EMF_COMPOUND + ":" + NbtUtils.Keys.EMF_APPLIED_BAIT;
-            nbtFishingRod.getCompound(NbtUtils.Keys.PUBLIC_BUKKIT_VALUES).removeKey(namespacedKey);
+        if (nbtVersion == NbtVersion.LEGACY) {
+            final String namespacedKey = NbtKeys.EMF_COMPOUND + ":" + NbtKeys.EMF_APPLIED_BAIT;
+            nbtFishingRod.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).removeKey(namespacedKey);
 
             if (Boolean.TRUE.equals(nbtFishingRod.hasKey(namespacedKey))) { //bugged version
                 nbtFishingRod.removeKey(namespacedKey);
@@ -107,12 +109,12 @@ public class BaitListener implements Listener {
             }
         }
 
-        if (nbtVersion == NbtUtils.NbtVersion.NBTAPI) {
-            nbtFishingRod.removeKey(NbtUtils.Keys.EMF_COMPOUND + ":" + NbtUtils.Keys.EMF_APPLIED_BAIT);
+        if (nbtVersion == NbtVersion.NBTAPI) {
+            nbtFishingRod.removeKey(NbtKeys.EMF_COMPOUND + ":" + NbtKeys.EMF_APPLIED_BAIT);
         }
 
-        NBTCompound emfCompound = nbtFishingRod.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
-        emfCompound.setString(NbtUtils.Keys.EMF_APPLIED_BAIT, appliedBaitString);
+        NBTCompound emfCompound = nbtFishingRod.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+        emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, appliedBaitString);
         return nbtFishingRod.getItem();
     }
 

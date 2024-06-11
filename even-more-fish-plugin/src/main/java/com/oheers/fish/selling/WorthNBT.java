@@ -1,7 +1,8 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.Xmas2022Config;
@@ -20,26 +21,26 @@ public class WorthNBT {
         // creates key and plops in the value of "value"
         NBTItem nbtItem = new NBTItem(fishItem);
 
-        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
+        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
         if (fish.getLength() > 0)
-            emfCompound.setFloat(NbtUtils.Keys.EMF_FISH_LENGTH, fish.getLength());
+            emfCompound.setFloat(NbtKeys.EMF_FISH_LENGTH, fish.getLength());
         if (!fish.hasFishermanDisabled() && fish.getFisherman() != null)
-            emfCompound.setString(NbtUtils.Keys.EMF_FISH_PLAYER, fish.getFisherman().toString());
-        emfCompound.setString(NbtUtils.Keys.EMF_FISH_NAME, fish.getName());
-        emfCompound.setString(NbtUtils.Keys.EMF_FISH_RARITY, fish.getRarity().getValue());
-        emfCompound.setInteger(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX, fish.getFactory().getChosenRandomIndex());
-        emfCompound.setBoolean(NbtUtils.Keys.EMF_XMAS_FISH, fish.isXmasFish());
+            emfCompound.setString(NbtKeys.EMF_FISH_PLAYER, fish.getFisherman().toString());
+        emfCompound.setString(NbtKeys.EMF_FISH_NAME, fish.getName());
+        emfCompound.setString(NbtKeys.EMF_FISH_RARITY, fish.getRarity().getValue());
+        emfCompound.setInteger(NbtKeys.EMF_FISH_RANDOM_INDEX, fish.getFactory().getChosenRandomIndex());
+        emfCompound.setBoolean(NbtKeys.EMF_XMAS_FISH, fish.isXmasFish());
 
         return nbtItem.getItem();
     }
 
     public static void setNBT(Skull fishSkull, Fish fish) {
-        NamespacedKey nbtlength = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_LENGTH);
-        NamespacedKey nbtplayer = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_PLAYER);
-        NamespacedKey nbtrarity = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RARITY);
-        NamespacedKey nbtname = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_NAME);
-        NamespacedKey nbtrandomIndex = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
-        NamespacedKey nbtxmasfish = NbtUtils.getNamespacedKey(NbtUtils.Keys.EMF_XMAS_FISH);
+        NamespacedKey nbtlength = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_LENGTH);
+        NamespacedKey nbtplayer = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_PLAYER);
+        NamespacedKey nbtrarity = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RARITY);
+        NamespacedKey nbtname = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_NAME);
+        NamespacedKey nbtrandomIndex = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RANDOM_INDEX);
+        NamespacedKey nbtxmasfish = NbtUtils.getNamespacedKey(NbtKeys.EMF_XMAS_FISH);
 
         PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
 
@@ -60,10 +61,10 @@ public class WorthNBT {
         }
 
         // it's a fish so it'll definitely have these NBT values
-        Float length = NbtUtils.getFloat(item, NbtUtils.Keys.EMF_FISH_LENGTH);
-        String rarity = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_RARITY);
-        String name = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_NAME);
-        Integer xmasINT = NbtUtils.getInteger(item, NbtUtils.Keys.EMF_XMAS_FISH);
+        Float length = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
+        String rarity = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
+        String name = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
+        Integer xmasINT = NbtUtils.getInteger(item, NbtKeys.EMF_XMAS_FISH);
         boolean isXmasFish = false;
 
         if (xmasINT != null) {
@@ -87,13 +88,13 @@ public class WorthNBT {
 
     public static ItemStack attributeDefault(ItemStack defaultGUIItem) {
         NBTItem nbtItem = new NBTItem(defaultGUIItem);
-        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
-        emfCompound.setByte(NbtUtils.Keys.DEFAULT_GUI_ITEM, Byte.MAX_VALUE);
+        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+        emfCompound.setByte(NbtKeys.DEFAULT_GUI_ITEM, Byte.MAX_VALUE);
         return nbtItem.getItem();
     }
 
     public static boolean isDefault(ItemStack is) {
-        return NbtUtils.hasKey(is, NbtUtils.Keys.DEFAULT_GUI_ITEM);
+        return NbtUtils.hasKey(is, NbtKeys.DEFAULT_GUI_ITEM);
     }
 
     private static double getMultipliedValue(Float length, String rarity, String name, boolean isXmasFish) {

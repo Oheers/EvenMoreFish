@@ -38,6 +38,7 @@ import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
+import com.oheers.fish.utils.nbt.NbtKeys;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
@@ -521,8 +522,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         itemFactory.setItemDisplayNameCheck(true);
         itemFactory.setItemLoreCheck(true);
         NBTItem nbtItem = new NBTItem(itemFactory.createItem(null, 0));
-        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtUtils.Keys.EMF_COMPOUND);
-        emfCompound.setBoolean(NbtUtils.Keys.EMF_ROD_NBT, true);
+        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+        emfCompound.setBoolean(NbtKeys.EMF_ROD_NBT, true);
         return nbtItem.getItem();
     }
 
