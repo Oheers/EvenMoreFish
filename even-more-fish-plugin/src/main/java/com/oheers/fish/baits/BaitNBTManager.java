@@ -32,7 +32,7 @@ public class BaitNBTManager {
         if (itemStack == null) return false;
 
         if (itemStack.hasItemMeta()) {
-            return NbtUtils.hasKey(new NBTItem(itemStack), NbtUtils.Keys.EMF_BAIT);
+            return NbtUtils.hasKey(itemStack, NbtUtils.Keys.EMF_BAIT);
         } else return false;
     }
 
@@ -42,7 +42,7 @@ public class BaitNBTManager {
      */
     public static @Nullable String getBaitName(@NotNull ItemStack itemStack) {
         if (itemStack.hasItemMeta()) {
-            return NbtUtils.getString(new NBTItem(itemStack), NbtUtils.Keys.EMF_BAIT);
+            return NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_BAIT);
         }
         return null;
     }
@@ -74,7 +74,7 @@ public class BaitNBTManager {
         if (itemStack.getType() != Material.FISHING_ROD) return false;
 
         if (itemStack.hasItemMeta()) {
-            return NbtUtils.hasKey(new NBTItem(itemStack), NbtUtils.Keys.EMF_APPLIED_BAIT);
+            return NbtUtils.hasKey(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT);
         }
 
         return false;
@@ -113,7 +113,7 @@ public class BaitNBTManager {
             }
 
             nbtItem = new NBTItem(item);
-            String[] baitList = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+            String[] baitList = NbtUtils.getString(item, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
 
             boolean foundBait = false;
 
@@ -208,8 +208,7 @@ public class BaitNBTManager {
     public static Bait randomBaitApplication(ItemStack fishingRod) {
         if (fishingRod.getItemMeta() == null) return null;
 
-        NBTItem nbtItem = new NBTItem(fishingRod);
-        String[] baitNameList = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+        String[] baitNameList = NbtUtils.getString(fishingRod, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
         List<Bait> baitList = new ArrayList<>();
 
         for (String baitName : baitNameList) {
@@ -273,8 +272,7 @@ public class BaitNBTManager {
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return false;
 
-        NBTItem nbtItem = new NBTItem(itemStack);
-        String[] baitList = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+        String[] baitList = NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
 
         for (String appliedBait : baitList) {
             if (appliedBait.split(":")[0].equals(bait)) return true;
@@ -294,11 +292,11 @@ public class BaitNBTManager {
      */
     public static int deleteAllBaits(ItemStack itemStack) {
         NBTItem nbtItem = new NBTItem(itemStack);
-        if (Boolean.FALSE.equals(NbtUtils.hasKey(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT)))
+        if (Boolean.FALSE.equals(NbtUtils.hasKey(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT)))
             return 0;
 
         int totalDeleted = 0;
-        String[] baitList = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
+        String[] baitList = NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT).split(",");
         for (String appliedBait : baitList) {
             totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
         }
@@ -321,9 +319,7 @@ public class BaitNBTManager {
         List<String> format = BaitFile.getInstance().getRodLoreFormat();
         for (String lineAddition : format) {
             if (lineAddition.equals("{baits}")) {
-                NBTItem nbtItem = new NBTItem(itemStack);
-
-                String rodNBT = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT);
+                String rodNBT = NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT);
 
                 if (rodNBT == null || rodNBT.isEmpty())
                     return lore;
@@ -395,9 +391,7 @@ public class BaitNBTManager {
      * @return How many baits have been applied to this fishing rod.
      */
     private static int getNumBaitsApplied(ItemStack itemStack) {
-        NBTItem nbtItem = new NBTItem(itemStack);
-
-        String rodNBT = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_APPLIED_BAIT);
+        String rodNBT = NbtUtils.getString(itemStack, NbtUtils.Keys.EMF_APPLIED_BAIT);
         if (rodNBT == null) return 1;
 
         return rodNBT.split(",").length;

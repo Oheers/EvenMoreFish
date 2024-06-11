@@ -49,8 +49,7 @@ public class FishingProcessor implements Listener {
             //check if player is using the fishing rod with correct nbt value.
             ItemStack rodInHand = event.getPlayer().getInventory().getItemInMainHand();
             if (rodInHand.getType() != Material.AIR) {
-                NBTItem nbtItem = new NBTItem(rodInHand);
-                if (Boolean.FALSE.equals(NbtUtils.hasKey(nbtItem, NbtUtils.Keys.EMF_ROD_NBT))) {
+                if (Boolean.FALSE.equals(NbtUtils.hasKey(rodInHand, NbtUtils.Keys.EMF_ROD_NBT))) {
                     //tag is null or tag is false
                     return;
                 }

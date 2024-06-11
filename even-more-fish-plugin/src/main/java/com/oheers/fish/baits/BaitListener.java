@@ -51,7 +51,7 @@ public class BaitListener implements Listener {
         Bait bait = EvenMoreFish.getInstance().getBaits().get(BaitNBTManager.getBaitName(event.getCursor()));
 
         ItemStack fishingRod = clickedItem;
-        NbtUtils.NbtVersion nbtVersion = NbtUtils.getNbtVersion(clickedItem);
+        NbtUtils.NbtVersion nbtVersion = NbtUtils.NbtVersion.getVersion(clickedItem);
         if (nbtVersion != NbtUtils.NbtVersion.COMPAT) {
             fishingRod = convertToCompatNbtItem(nbtVersion, fishingRod);
         }
@@ -95,7 +95,7 @@ public class BaitListener implements Listener {
 
     private ItemStack convertToCompatNbtItem(final NbtUtils.NbtVersion nbtVersion, final ItemStack fishingRod) {
         NBTItem nbtFishingRod = new NBTItem(fishingRod);
-        final String appliedBaitString = NbtUtils.getString(nbtFishingRod, NbtUtils.Keys.EMF_APPLIED_BAIT);
+        final String appliedBaitString = NbtUtils.getString(fishingRod, NbtUtils.Keys.EMF_APPLIED_BAIT);
 
         if (nbtVersion == NbtUtils.NbtVersion.LEGACY) {
             final String namespacedKey = NbtUtils.Keys.EMF_COMPOUND + ":" + NbtUtils.Keys.EMF_APPLIED_BAIT;

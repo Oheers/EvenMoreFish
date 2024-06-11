@@ -1,8 +1,9 @@
 package com.oheers.fish;
 
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import com.oheers.fish.config.MainConfig;
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
@@ -12,134 +13,228 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 
 public class NbtUtils {
-    public static boolean hasKey(final @NotNull NBTCompound nbtCompound, final String key) {
-        NamespacedKey namespacedKey = getNamespacedKey(key);
-        //Pre NBT-API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
-            NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if (Boolean.TRUE.equals(publicBukkitValues.hasTag(namespacedKey.toString())))
-                return true;
+
+
+    public static boolean hasKey(final ItemStack item, final String key) {
+        final NbtVersion nbtVersion = NbtVersion.getVersion(item);
+        final NamespacedKey namespacedKey = getNamespacedKey(key);
+
+        switch (nbtVersion) {
+            case NBTAPI:
+                return NBT.get(item, nbt -> {
+                    return nbt.hasTag(namespacedKey.toString());
+                });
+            case LEGACY:
+                return NBT.get(item, nbt -> {
+                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES)
+                                .hasTag(namespacedKey.toString());
+                    }
+                    return false;
+                });
+            case COMPAT:
+                return NBT.get(item, nbt -> {
+                    return nbt.getCompound(namespacedKey.getNamespace()).hasTag(namespacedKey.getKey());
+                });
+            default:
+                return false;
         }
-
-        //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString())))
-            return true;
-
-        //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.getNamespace()))) {
-            NBTCompound emfCompound = nbtCompound.getCompound(namespacedKey.getNamespace());
-            return Boolean.TRUE.equals(emfCompound.hasTag(namespacedKey.getKey()));
-        }
-
-        return false;
     }
-    
-    public static @Nullable String getString(final @NotNull NBTCompound nbtCompound, final String key) {
-        NamespacedKey namespacedKey = getNamespacedKey(key);
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
-            NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if (Boolean.TRUE.equals(publicBukkitValues.hasTag(namespacedKey.toString()))) {
-                return publicBukkitValues.getString(namespacedKey.toString());
+
+    public static boolean hasKey(final BlockState skull, final String key) {
+        final NbtVersion nbtVersion = NbtVersion.getVersion(skull);
+        final NamespacedKey namespacedKey = getNamespacedKey(key);
+
+        switch (nbtVersion) {
+            case NBTAPI:
+                return NBT.get(skull, nbt -> {
+                    return nbt.hasTag(namespacedKey.toString());
+                });
+            case LEGACY:
+                return NBT.get(skull, nbt -> {
+                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES)
+                                .hasTag(namespacedKey.toString());
+                    }
+                    return false;
+                });
+            case COMPAT:
+                return NBT.get(skull, nbt -> {
+                    return nbt.getCompound(namespacedKey.getNamespace()).hasTag(namespacedKey.getKey());
+                });
+            default:
+                return false;
+        }
+    }
+
+    private static @Nullable String getNbtApiString(final ItemStack item, final String key) {
+        //todo, might be compat version instead
+        final NamespacedKey namespacedKey = NbtUtils.getNamespacedKey(key);
+        return NBT.get(item, nbt -> {
+            if (nbt.hasTag(namespacedKey.toString())) {
+                return nbt.getString(namespacedKey.toString());
             }
+            return null;
+        });
+    }
+    @Nullable
+    public static String getString(final ItemStack item, final String key) {
+        if (MainConfig.getInstance().getNbtMode().equalsIgnoreCase("optimized")) {
+            return getNbtApiString(item,key);
         }
 
-        //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString()))) {
-            return nbtCompound.getString(namespacedKey.toString());
-        }
-
-        //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.getNamespace()))) {
-            NBTCompound emfCompound = nbtCompound.getCompound(namespacedKey.getNamespace());
-            if (Boolean.TRUE.equals(emfCompound.hasTag(namespacedKey.getKey()))) {
-                return emfCompound.getString(namespacedKey.getKey());
+        final NbtVersion nbtVersion = NbtVersion.getVersion(item);
+        final NamespacedKey namespacedKey = NbtUtils.getNamespacedKey(key);
+        switch (nbtVersion) {
+            case NBTAPI: {
+                return NBT.get(item, nbt -> {
+                    if (nbt.hasTag(namespacedKey.toString())) {
+                        return nbt.getString(namespacedKey.toString());
+                    }
+                    return null;
+                });
             }
+            case COMPAT: {
+                return NBT.get(item, nbt -> {
+                    return nbt.getCompound(namespacedKey.getNamespace()).getString(namespacedKey.getKey());
+                });
+            }
+            case LEGACY:{
+                return NBT.get(item,nbt -> {
+                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES).getString(namespacedKey.toString());
+                    }
+                    return null;
+                });
+            }
+            default:
+                return null;
         }
-
-        return null;
     }
 
-    public static @Nullable Float getFloat(final @NotNull NBTCompound nbtCompound, final String key) {
-        NamespacedKey namespacedKey = getNamespacedKey(key);
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
-            NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if (Boolean.TRUE.equals(publicBukkitValues.hasTag(namespacedKey.toString())))
-                return publicBukkitValues.getFloat(namespacedKey.toString());
+    public static @Nullable Float getFloat(final ItemStack item, final String key) {
+        final NbtVersion nbtVersion = NbtVersion.getVersion(item);
+        final NamespacedKey namespacedKey = NbtUtils.getNamespacedKey(key);
+        switch (nbtVersion) {
+            case NBTAPI: {
+                return NBT.get(item, nbt -> {
+                    if (nbt.hasTag(namespacedKey.toString())) {
+                        return nbt.getFloat(namespacedKey.toString());
+                    }
+                    return null;
+                });
+            }
+            case COMPAT: {
+                return NBT.get(item, nbt -> {
+                    return nbt.getCompound(namespacedKey.getNamespace()).getFloat(namespacedKey.getKey());
+                });
+            }
+            case LEGACY:{
+                return NBT.get(item,nbt -> {
+                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES).getFloat(namespacedKey.toString());
+                    }
+                    return null;
+                });
+            }
+            default:
+                return null;
         }
-
-        //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString())))
-            return nbtCompound.getFloat(namespacedKey.toString());
-
-        //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.EMF_COMPOUND))) {
-            NBTCompound emfCompound = nbtCompound.getCompound(Keys.EMF_COMPOUND);
-            if (Boolean.TRUE.equals(emfCompound.hasTag(key)))
-                return emfCompound.getFloat(key);
-        }
-
-        return null;
     }
 
-    public static @Nullable Integer getInteger(final @NotNull NBTCompound nbtCompound, final String key) {
-        NamespacedKey namespacedKey = getNamespacedKey(key);
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
-            NBTCompound publicBukkitValues = nbtCompound.getCompound(Keys.PUBLIC_BUKKIT_VALUES);
-            if (Boolean.TRUE.equals(publicBukkitValues.hasTag(namespacedKey.toString())))
-                return publicBukkitValues.getInteger(namespacedKey.toString());
+    public static @Nullable Integer getInteger(final ItemStack item, final String key) {
+        final NbtVersion nbtVersion = NbtVersion.getVersion(item);
+        final NamespacedKey namespacedKey = NbtUtils.getNamespacedKey(key);
+        switch (nbtVersion) {
+            case NBTAPI: {
+                return NBT.get(item, nbt -> {
+                    if (nbt.hasTag(namespacedKey.toString())) {
+                        return nbt.getInteger(namespacedKey.toString());
+                    }
+                    return null;
+                });
+            }
+            case COMPAT: {
+                return NBT.get(item, nbt -> {
+                    return nbt.getCompound(namespacedKey.getNamespace()).getInteger(namespacedKey.getKey());
+                });
+            }
+            case LEGACY:{
+                return NBT.get(item,nbt -> {
+                    if (nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES)) {
+                        return nbt.getCompound(Keys.PUBLIC_BUKKIT_VALUES).getInteger(namespacedKey.toString());
+                    }
+                    return null;
+                });
+            }
+            default:
+                return null;
         }
-
-        //NBT API PR
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(namespacedKey.toString())))
-            return nbtCompound.getInteger(namespacedKey.toString());
-
-        //NBT COMPAT
-        if (Boolean.TRUE.equals(nbtCompound.hasTag(Keys.EMF_COMPOUND))) {
-            NBTCompound emfCompound = nbtCompound.getCompound(Keys.EMF_COMPOUND);
-            if (Boolean.TRUE.equals(emfCompound.hasTag(key)))
-                return emfCompound.getInteger(key);
-        }
-
-        return null;
     }
 
-    /**
-     * Returns the NBT Version of the item
-     * It does not mean that this is an emf item.
-     *
-     * @param compound compound
-     * @return nbt version
-     */
-    public static NbtVersion getNbtVersion(final NBTCompound compound) {
-        if (Boolean.TRUE.equals(compound.hasTag(Keys.EMF_COMPOUND)))
-            return NbtVersion.COMPAT; //def an emf item
-        if (Boolean.TRUE.equals(compound.hasTag(Keys.PUBLIC_BUKKIT_VALUES)))
-            return NbtVersion.LEGACY;
-        return NbtVersion.NBTAPI;
-    }
-
-    public static NbtVersion getNbtVersion(final ItemStack itemStack) {
-        return getNbtVersion(new NBTItem(itemStack));
-    }
 
     @Contract("_ -> new")
     public static @NotNull NamespacedKey getNamespacedKey(final String key) {
         return new NamespacedKey(JavaPlugin.getProvidingPlugin(NbtUtils.class), key);
     }
 
-    public static NBTItem getNBTItem(ItemStack item) {
-        try {
-            return new NBTItem(item);
-        } catch (NullPointerException ex) {
-            return null;
-        }
-    }
 
-
+    /**
+     * Enum representing the different versions of NBT (Named Binary Tag) data.
+     *
+     * @author Your Name
+     */
     public enum NbtVersion {
-        LEGACY, //pre nbt-api pr
-        NBTAPI, //nbt-api pr
-        COMPAT //compatible with everything :)
+        /**
+         * Represents the legacy version of NBT data.
+         */
+        LEGACY,
+
+        /**
+         * Represents the version of NBT data that uses the nbt-api.
+         */
+        NBTAPI,
+
+        /**
+         * Represents the compatible version of NBT data.
+         */
+        COMPAT;
+
+        /**
+         * Returns the version of NBT data associated with the given ItemStack.
+         *
+         * @param itemStack The ItemStack to check.
+         * @return The NbtVersion representing the version of the NBT data.
+         */
+        public static NbtVersion getVersion(final ItemStack itemStack) {
+            return NBT.get(itemStack, nbt -> {
+                if (Boolean.TRUE.equals(nbt.hasTag(Keys.EMF_COMPOUND))) {
+                    return NbtVersion.COMPAT; //def an emf item
+                }
+                if (Boolean.TRUE.equals(nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
+                    return NbtVersion.LEGACY;
+                }
+                return NbtVersion.NBTAPI;
+            });
+        }
+
+        /**
+         * Returns the version of NBT data associated with the given BlockState.
+         *
+         * @param state The BlockState to check.
+         * @return The NbtVersion representing the version of the NBT data.
+         */
+        public static NbtVersion getVersion(final BlockState state) {
+            return NBT.get(state, nbt -> {
+                if (Boolean.TRUE.equals(nbt.hasTag(Keys.EMF_COMPOUND))) {
+                    return NbtVersion.COMPAT; //def an emf item
+                }
+                if (Boolean.TRUE.equals(nbt.hasTag(Keys.PUBLIC_BUKKIT_VALUES))) {
+                    return NbtVersion.LEGACY;
+                }
+                return NbtVersion.NBTAPI;
+            });
+        }
     }
 
     public static class Keys {

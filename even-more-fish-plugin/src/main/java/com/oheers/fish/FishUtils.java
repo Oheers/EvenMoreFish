@@ -47,7 +47,7 @@ public class FishUtils {
             return false;
         }
 
-        return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_FISH_NAME);
+        return NbtUtils.hasKey(item, NbtUtils.Keys.EMF_FISH_NAME);
     }
 
     public static boolean isFish(Skull skull) {
@@ -55,19 +55,19 @@ public class FishUtils {
             return false;
         }
 
-        return NbtUtils.hasKey(new NBTTileEntity(skull), NbtUtils.Keys.EMF_FISH_NAME);
+        return NbtUtils.hasKey(skull, NbtUtils.Keys.EMF_FISH_NAME);
     }
 
     public static Fish getFish(ItemStack item) {
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         NBTItem nbtItem = new NBTItem(item);
 
-        String nameString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
-        String playerString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_PLAYER);
-        String rarityString = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
-        Float lengthFloat = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
-        Integer randomIndex = NbtUtils.getInteger(nbtItem, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
-        Integer xmasINT = NbtUtils.getInteger(nbtItem, NbtUtils.Keys.EMF_XMAS_FISH);
+        String nameString = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_NAME);
+        String playerString = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_PLAYER);
+        String rarityString = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_RARITY);
+        Float lengthFloat = NbtUtils.getFloat(item, NbtUtils.Keys.EMF_FISH_LENGTH);
+        Integer randomIndex = NbtUtils.getInteger(item, NbtUtils.Keys.EMF_FISH_RANDOM_INDEX);
+        Integer xmasINT = NbtUtils.getInteger(item, NbtUtils.Keys.EMF_XMAS_FISH);
         boolean isXmasFish = false;
 
         if (xmasINT != null) {
@@ -378,7 +378,7 @@ public class FishUtils {
      */
     public static boolean isBaitObject(ItemStack item) {
         if (item.getItemMeta() != null) {
-            return NbtUtils.hasKey(new NBTItem(item), NbtUtils.Keys.EMF_BAIT);
+            return NbtUtils.hasKey(item, NbtUtils.Keys.EMF_BAIT);
         }
 
         return false;

@@ -315,9 +315,9 @@ public class SellGUI extends InventoryGui {
         }
         
         NBTItem nbtItem = new NBTItem(item);
-        final String fishName = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
-        final String fishRarity = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
-        Float floatLength = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
+        final String fishName = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_NAME);
+        final String fishRarity = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_RARITY);
+        Float floatLength = NbtUtils.getFloat(item, NbtUtils.Keys.EMF_FISH_LENGTH);
         final double fishLength = floatLength == null ? -1.0 : floatLength;
         final double fishValue = WorthNBT.getValue(item);
         

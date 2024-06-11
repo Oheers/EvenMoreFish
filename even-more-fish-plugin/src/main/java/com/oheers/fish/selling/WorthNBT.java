@@ -54,19 +54,16 @@ public class WorthNBT {
     }
 
     public static double getValue(ItemStack item) {
-
-        NBTItem nbtItem = NbtUtils.getNBTItem(item);
-
         // creating the key to check for
-        if (nbtItem == null || !FishUtils.isFish(item)) {
+        if (!FishUtils.isFish(item)) {
             return -1.0;
         }
 
         // it's a fish so it'll definitely have these NBT values
-        Float length = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
-        String rarity = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
-        String name = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
-        Integer xmasINT = NbtUtils.getInteger(nbtItem, NbtUtils.Keys.EMF_XMAS_FISH);
+        Float length = NbtUtils.getFloat(item, NbtUtils.Keys.EMF_FISH_LENGTH);
+        String rarity = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_RARITY);
+        String name = NbtUtils.getString(item, NbtUtils.Keys.EMF_FISH_NAME);
+        Integer xmasINT = NbtUtils.getInteger(item, NbtUtils.Keys.EMF_XMAS_FISH);
         boolean isXmasFish = false;
 
         if (xmasINT != null) {
@@ -96,7 +93,7 @@ public class WorthNBT {
     }
 
     public static boolean isDefault(ItemStack is) {
-        return NbtUtils.hasKey(new NBTItem(is), NbtUtils.Keys.DEFAULT_GUI_ITEM);
+        return NbtUtils.hasKey(is, NbtUtils.Keys.DEFAULT_GUI_ITEM);
     }
 
     private static double getMultipliedValue(Float length, String rarity, String name, boolean isXmasFish) {
