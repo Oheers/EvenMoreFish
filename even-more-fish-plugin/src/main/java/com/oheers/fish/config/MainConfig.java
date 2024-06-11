@@ -276,4 +276,8 @@ public class MainConfig extends ConfigBase {
         return layout.toArray(new String[0]);
     }
 
+    public String getNbtMode() {
+        return getConfig().getString("nbt.mode","compat");
+    }
+
 }
