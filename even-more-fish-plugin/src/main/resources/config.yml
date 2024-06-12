@@ -147,14 +147,3 @@ command:
   aliases:
     - "evenmorefish"
 
-# WIP
-# Requires a server restart to take effect.
-nbt:
-  # modes: compat (default), optimized
-  # compat:
-  #   Will attempt to convert broken items. Will check for old nbt values, and for the latest ones as well.
-  # optimized:
-  #   Will not attempt to convert broken items. Will not check for old nbt values, and only for the latest ones.
-  #   Use this for slightly better performance.
-  mode: compat
-
