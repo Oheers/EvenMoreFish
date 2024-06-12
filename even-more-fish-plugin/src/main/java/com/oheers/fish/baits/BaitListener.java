@@ -9,6 +9,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.utils.nbt.NbtVersion;
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.GameMode;
@@ -101,16 +102,24 @@ public class BaitListener implements Listener {
 
         if (nbtVersion == NbtVersion.LEGACY) {
             final String namespacedKey = NbtKeys.EMF_COMPOUND + ":" + NbtKeys.EMF_APPLIED_BAIT;
-            nbtFishingRod.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).removeKey(namespacedKey);
+            NBT.modify(fishingRod,nbt -> {
+                nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).removeKey(namespacedKey);
+            });
 
-            if (Boolean.TRUE.equals(nbtFishingRod.hasKey(namespacedKey))) { //bugged version
-                nbtFishingRod.removeKey(namespacedKey);
-                nbtFishingRod.getCompound("display").setObject("Lore", null);
+            if (NBT.get(fishingRod, nbt -> {
+                return nbt.hasTag(namespacedKey);
+            })) {
+                NBT.modify(fishingRod, nbt -> {
+                    nbt.removeKey(namespacedKey);
+                    nbt.getCompound("display").getStringList("Lore").clear();
+                });
             }
         }
 
         if (nbtVersion == NbtVersion.NBTAPI) {
-            nbtFishingRod.removeKey(NbtKeys.EMF_COMPOUND + ":" + NbtKeys.EMF_APPLIED_BAIT);
+            NBT.modify(fishingRod, nbt -> {
+                nbt.removeKey(NbtKeys.EMF_COMPOUND + ":" + NbtKeys.EMF_APPLIED_BAIT);
+            });
         }
 
         NBTCompound emfCompound = nbtFishingRod.getOrCreateCompound(NbtKeys.EMF_COMPOUND);

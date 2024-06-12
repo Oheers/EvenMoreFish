@@ -4,10 +4,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Locale;
 
-/**
- * @author sarhatabaot
- */
 public class NbtKeys {
+    private NbtKeys() {
+        throw new UnsupportedOperationException();
+    }
+
     public static final String EMF_COMPOUND = JavaPlugin.getProvidingPlugin(NbtUtils.class).getName().toLowerCase(Locale.ROOT);
     public static final String EMF_FISH_PLAYER = "emf-fish-player";
     public static final String EMF_FISH_RARITY = "emf-fish-rarity";

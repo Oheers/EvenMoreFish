@@ -147,6 +147,8 @@ command:
   aliases:
     - "evenmorefish"
 
+# WIP
+# Requires a server restart to take effect.
 nbt:
   # modes: compat (default), optimized
   # compat:
