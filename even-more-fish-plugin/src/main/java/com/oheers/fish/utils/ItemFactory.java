@@ -248,12 +248,12 @@ public class ItemFactory {
             return null;
         }
 
-        rawMaterial = true;
+        rawMaterial = false;
 
         try {
             return getItem(materialId);
         } catch (NoPrefixException | IncorrectAssignedMaterialException e) {
-            rawMaterial = false;
+            rawMaterial = true;
             EvenMoreFish.getInstance().getLogger().warning(e::getMessage);
             return new ItemStack(Material.COD);
         }
