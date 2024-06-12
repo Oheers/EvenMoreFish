@@ -10,8 +10,6 @@ import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.utils.nbt.NbtVersion;
 import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -97,7 +95,6 @@ public class BaitListener implements Listener {
     }
 
     private ItemStack convertToCompatNbtItem(final NbtVersion nbtVersion, final ItemStack fishingRod) {
-        NBTItem nbtFishingRod = new NBTItem(fishingRod);
         final String appliedBaitString = NbtUtils.getString(fishingRod, NbtKeys.EMF_APPLIED_BAIT);
 
         if (nbtVersion == NbtVersion.LEGACY) {
@@ -122,9 +119,11 @@ public class BaitListener implements Listener {
             });
         }
 
-        NBTCompound emfCompound = nbtFishingRod.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
-        emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, appliedBaitString);
-        return nbtFishingRod.getItem();
+        NBT.modify(fishingRod, nbt -> {
+            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setString(NbtKeys.EMF_APPLIED_BAIT, appliedBaitString);
+        });
+
+        return fishingRod;
     }
 
     private boolean anvilCheck(InventoryClickEvent event) {

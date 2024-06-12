@@ -17,7 +17,6 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -314,8 +313,7 @@ public class SellGUI extends InventoryGui {
         if (itemValue == -1.0) {
             return null;
         }
-        
-        NBTItem nbtItem = new NBTItem(item);
+
         final String fishName = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
         final String fishRarity = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
         Float floatLength = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
@@ -369,6 +367,7 @@ public class SellGUI extends InventoryGui {
     }
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
+    @Override
     public void close() {
         player.closeInventory();
     }

@@ -8,8 +8,10 @@ import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BaitNBTManager {
 
@@ -58,10 +62,10 @@ public class BaitNBTManager {
      */
     public static ItemStack applyBaitNBT(ItemStack item, String bait) {
         if (item == null) return null;
-        NBTItem nbtItem = new NBTItem(item);
-        NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
-        emfCompound.setString(NbtKeys.EMF_BAIT, bait);
-        return nbtItem.getItem();
+        NBT.modify(item, nbt -> {
+            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setString(NbtKeys.EMF_BAIT, bait);
+        });
+        return item;
     }
 
     /**
@@ -94,12 +98,10 @@ public class BaitNBTManager {
      */
     public static ApplicationResult applyBaitedRodNBT(ItemStack item, Bait bait, int quantity) throws MaxBaitsReachedException, MaxBaitReachedException {
         boolean doingLoreStuff = BaitFile.getInstance().doRodLore();
-        boolean maxBait = false;
-        int cursorModifier = 0;
+        AtomicBoolean maxBait = new AtomicBoolean(false);
+        AtomicInteger cursorModifier = new AtomicInteger();
 
         StringBuilder combined = new StringBuilder();
-
-        NBTItem nbtItem;
         if (isBaitedRod(item)) {
 
             try {
@@ -113,8 +115,7 @@ public class BaitNBTManager {
                 return null;
             }
 
-            nbtItem = new NBTItem(item);
-            String[] baitList = NbtUtils.getString(item, NbtKeys.EMF_APPLIED_BAIT).split(",");
+            String[] baitList = NbtUtils.getBaitArray(item);
 
             boolean foundBait = false;
 
@@ -125,11 +126,11 @@ public class BaitNBTManager {
                     if (newQuantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
                         combined.append(baitName.split(":")[0]).append(":").append(bait.getMaxApplications()).append(",");
                         // new cursor amt = -(max app - old app)
-                        cursorModifier = -bait.getMaxApplications() + (newQuantity - quantity);
-                        maxBait = true;
+                        cursorModifier.set(-bait.getMaxApplications() + (newQuantity - quantity));
+                        maxBait.set(true);
                     } else if (newQuantity != 0) {
                         combined.append(baitName.split(":")[0]).append(":").append(Integer.parseInt(baitName.split(":")[1]) + quantity).append(",");
-                        cursorModifier = -quantity;
+                        cursorModifier.set(-quantity);
                     }
                     foundBait = true;
                 } else {
@@ -147,44 +148,45 @@ public class BaitNBTManager {
                         rodMeta.setLore(newApplyLore(item));
                         item.setItemMeta(rodMeta);
                     }
-                    throw new MaxBaitsReachedException("Max baits reached.", new ApplicationResult(item, cursorModifier));
+                    throw new MaxBaitsReachedException("Max baits reached.", new ApplicationResult(item, cursorModifier.get()));
                 }
 
                 if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
-                    cursorModifier = -bait.getMaxApplications();
+                    cursorModifier.set(-bait.getMaxApplications());
                     combined.append(bait.getName()).append(":").append(bait.getMaxApplications());
-                    maxBait = true;
+                    maxBait.set(true);
                 } else {
                     combined.append(bait.getName()).append(":").append(quantity);
-                    cursorModifier = -quantity;
+                    cursorModifier.set(-quantity);
                 }
             } else {
                 if (combined.length() > 0) {
                     combined.deleteCharAt(combined.length() - 1);
                 }
             }
-            NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
-            if (combined.length() > 0) {
-                emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
-            } else {
-                emfCompound.removeKey(NbtKeys.EMF_APPLIED_BAIT);
-            }
+            NBT.modify(item,nbt -> {
+                ReadWriteNBT emfCompound = nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+                if (combined.length() > 0) {
+                    emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
+                } else {
+                    emfCompound.removeKey(NbtKeys.EMF_APPLIED_BAIT);
+                }
+            });
         } else {
-            nbtItem = new NBTItem(item);
-            NBTCompound emfCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
-            if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
-                combined.append(bait.getName()).append(":").append(bait.getMaxApplications());
-                emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
-                cursorModifier = -bait.getMaxApplications();
-                maxBait = true;
-            } else {
-                combined.append(bait.getName()).append(":").append(quantity);
-                emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
-                cursorModifier = -quantity;
-            }
+            NBT.modify(item,nbt -> {
+                ReadWriteNBT compound = nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+                if (quantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
+                    combined.append(bait.getName()).append(":").append(bait.getMaxApplications());
+                    compound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
+                    cursorModifier.set(-bait.getMaxApplications());
+                    maxBait.set(true);
+                } else {
+                    combined.append(bait.getName()).append(":").append(quantity);
+                    compound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
+                    cursorModifier.set(-quantity);
+                }
+            });
         }
-
-        item = nbtItem.getItem();
 
         if (doingLoreStuff && combined.length() >= 1) {
             ItemMeta meta = item.getItemMeta();
@@ -192,11 +194,11 @@ public class BaitNBTManager {
             item.setItemMeta(meta);
         }
 
-        if (maxBait) {
-            throw new MaxBaitReachedException(bait.getName() + " has reached its maximum number of uses on the fishing rod.", new ApplicationResult(item, cursorModifier));
+        if (maxBait.get()) {
+            throw new MaxBaitReachedException(bait.getName() + " has reached its maximum number of uses on the fishing rod.", new ApplicationResult(item, cursorModifier.get()));
         }
 
-        return new ApplicationResult(item, cursorModifier);
+        return new ApplicationResult(item, cursorModifier.get());
     }
 
     /**
@@ -292,20 +294,19 @@ public class BaitNBTManager {
      * @return The number of baits that were deleted in total.
      */
     public static int deleteAllBaits(ItemStack itemStack) {
-        NBTItem nbtItem = new NBTItem(itemStack);
-        if (Boolean.FALSE.equals(NbtUtils.hasKey(itemStack, NbtKeys.EMF_APPLIED_BAIT)))
+        if (NbtUtils.hasKey(itemStack, NbtKeys.EMF_APPLIED_BAIT))
             return 0;
 
         int totalDeleted = 0;
-        String[] baitList = NbtUtils.getString(itemStack, NbtKeys.EMF_APPLIED_BAIT).split(",");
+        String[] baitList = NbtUtils.getBaitArray(itemStack);
         for (String appliedBait : baitList) {
             totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
         }
+        NBT.modify(itemStack, nbt -> {
+            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).removeKey(NbtKeys.EMF_APPLIED_BAIT);
+        });
 
-        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
-        nbtCompound.removeKey(NbtKeys.EMF_APPLIED_BAIT);
-
-        itemStack.setItemMeta(nbtItem.getItem().getItemMeta());
+        itemStack.setItemMeta(itemStack.getItemMeta()); //we can modify meta via nbtapi
         return totalDeleted;
     }
 

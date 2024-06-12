@@ -83,6 +83,12 @@ public class NbtUtils {
         });
     }
 
+    public static String[] getBaitArray(final ItemStack item) {
+        final String appliedBait = NbtUtils.getString(item, NbtKeys.EMF_APPLIED_BAIT);
+        if (appliedBait == null) return new String[0];
+        return appliedBait.split(",");
+    }
+
     public static @Nullable Float getFloat(final ItemStack item, final String key) {
         final NbtVersion nbtVersion = NbtVersion.getVersion(item);
         final NamespacedKey namespacedKey = NbtUtils.getNamespacedKey(key);

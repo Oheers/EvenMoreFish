@@ -18,7 +18,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -61,7 +60,6 @@ public class FishUtils {
 
     public static Fish getFish(ItemStack item) {
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
-        NBTItem nbtItem = new NBTItem(item);
 
         String nameString = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
         String playerString = NbtUtils.getString(item, NbtKeys.EMF_FISH_PLAYER);
