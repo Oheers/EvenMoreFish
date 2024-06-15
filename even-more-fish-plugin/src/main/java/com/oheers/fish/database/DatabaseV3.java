@@ -137,7 +137,7 @@ public class DatabaseV3 {
      */
     public void createTables(final boolean overrideV2Check)  {
         if (!overrideV2Check && usingVersionV2()) {
-            EvenMoreFish.getInstance().getLogger().severe("Your server is running EMF database V2. To continue using database functionality you need to run /emf migrate.");
+            EvenMoreFish.getInstance().getLogger().severe("Your server is running EMF database V2. To continue using database functionality you need to run /emf admin migrate.");
             return;
         }
 
