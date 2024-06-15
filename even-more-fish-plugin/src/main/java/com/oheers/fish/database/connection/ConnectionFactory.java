@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class ConnectionFactory {
     protected HikariDataSource dataSource;
     private final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
-    
+
     /**
      * This may be different with every database type.
      *
@@ -34,81 +34,89 @@ public abstract class ConnectionFactory {
      * @param password     password
      */
     protected abstract void configureDatabase(HikariConfig config, String address, int port, String databaseName, String username, String password);
-    
+
     private String getDatabaseAddress() {
         return MainConfig.getInstance().getAddress().split(":")[0];
     }
-    
+
     private int getDatabasePort() {
-        if(!MainConfig.getInstance().getAddress().contains(":"))
+        if (!MainConfig.getInstance().getAddress().contains(":")) {
             return 3306;
+        }
         try {
             return Integer.parseInt(MainConfig.getInstance().getAddress().split(":")[1]);
         } catch (NumberFormatException e) {
             return 3306;
         }
     }
-    
+
     public void init() {
         HikariConfig config = new HikariConfig();
         config.setPoolName("evenmorefish-hikari");
-        
-        configureDatabase(config, getDatabaseAddress(), getDatabasePort(), MainConfig.getInstance().getDatabase(),MainConfig.getInstance().getUsername(), MainConfig.getInstance().getPassword());
+
+        configureDatabase(config, getDatabaseAddress(), getDatabasePort(), MainConfig.getInstance().getDatabase(), MainConfig.getInstance().getUsername(), MainConfig.getInstance().getPassword());
         config.setInitializationFailTimeout(-1);
-        
+
         Map<String, String> properties = new HashMap<>();
-        
+
         overrideProperties(properties);
         setProperties(config, properties);
-        
+
         this.dataSource = new HikariDataSource(config);
         logger.info("Connected to database!");
-    
+    }
+
+    public void initAndMigrate() {
+        init();
+        flywayMigration();
+    }
+
+    public void flywayMigration() {
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
-            .dataSource(dataSource)
-            .baselineOnMigrate(true)
-            .baselineVersion("3")
-            .locations("classpath:com/oheers/fish/database/migrate/migrations")
-            .table("emf_flyway_schema_history")
-            .load();
-    
+                .dataSource(dataSource)
+                .baselineOnMigrate(true)
+                .baselineVersion("3")
+                .locations("classpath:com/oheers/fish/database/migrate/migrations")
+                .table("emf_flyway_schema_history")
+                .load();
+
         try {
             flyway.migrate();
         } catch (FlywayException e) {
             logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
         }
     }
-    
+
     //LP
     protected void overrideProperties(@NotNull Map<String, String> properties) {
         properties.putIfAbsent("socketTimeout", String.valueOf(TimeUnit.SECONDS.toMillis(30)));
     }
-    
+
     //LP
     protected void setProperties(HikariConfig config, @NotNull Map<String, String> properties) {
         for (Map.Entry<String, String> property : properties.entrySet()) {
             config.addDataSourceProperty(property.getKey(), property.getValue());
         }
     }
-    
+
     public void shutdown() {
         if (this.dataSource != null) {
             this.dataSource.close();
         }
     }
-    
+
     public abstract String getType();
-    
+
     public Connection getConnection() throws SQLException {
         if (this.dataSource == null) {
             throw new SQLException("Null data source");
         }
-        
+
         Connection connection = this.dataSource.getConnection();
         if (connection == null) {
             throw new SQLException("Null connection");
         }
-        
+
         return connection;
     }
 }

@@ -51,15 +51,24 @@ public class DatabaseV3 {
      * @param plugin An instance of the JavaPlugin extended main class.
      */
     public DatabaseV3(@NotNull EvenMoreFish plugin) {
-        this.usingV2 = Files.isDirectory(Paths.get(plugin.getDataFolder() + "/data/"));
-    
         if (MainConfig.getInstance().isMysql() && hasCredentials()) {
             this.connectionFactory = new MySqlConnectionFactory();
         } else {
             this.connectionFactory = new SqliteConnectionFactory();
         }
-    
+
         this.connectionFactory.init();
+
+        this.usingV2 = checkV2(plugin);
+        if (!this.usingV2) {
+            this.connectionFactory.flywayMigration();
+        }
+    }
+
+    private boolean checkV2(@NotNull EvenMoreFish plugin) {
+        boolean dataFolder = Files.isDirectory(Paths.get(plugin.getDataFolder() + "/data/"));
+        boolean doesNotExist = !queryTableExistence("flyway_schema_history");
+        return dataFolder || !doesNotExist;
     }
     
     private boolean hasCredentials() {
@@ -223,7 +232,7 @@ public class DatabaseV3 {
      *
      */
     public void migrateLegacy(CommandSender initiator) {
-        LegacyToV3DatabaseMigration legacy = new LegacyToV3DatabaseMigration(this);
+        LegacyToV3DatabaseMigration legacy = new LegacyToV3DatabaseMigration(this, connectionFactory);
         legacy.migrate(initiator);
     }
 
