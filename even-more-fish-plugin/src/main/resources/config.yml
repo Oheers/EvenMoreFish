@@ -26,7 +26,10 @@ database:
   address: localhost
   # The name of the database to store fish data in
   database: evenmorefish
-  # The table prefix for the database (WIP)
+  # The table prefix for the database.
+  # WARNING: Changing this will create new tables in the database.
+  # Only use this during first setup or before migrations.
+  # (Or after, but only if you know what you're doing).
   table-prefix: "emf_"
   # Login information
   username: root
