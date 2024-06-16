@@ -222,32 +222,28 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("debug-session", false);
     }
 
-    private ConfigurationSection getDatabaseSection() {
-        return getConfig().getConfigurationSection("database");
-    }
-
     public boolean databaseEnabled() {
-        return getDatabaseSection().getBoolean("enabled", false);
+        return getConfig().getBoolean("database.enabled", false);
     }
 
     public String getAddress() {
-        return getDatabaseSection().getString("address", "localhost");
+        return getConfig().getString("database.address", "localhost");
     }
 
     public String getDatabase() {
-        return getDatabaseSection().getString("database", "evenmorefish");
+        return getConfig().getString("database.database", "evenmorefish");
     }
 
     public String getUsername() {
-        return getDatabaseSection().getString("username", "root");
+        return getConfig().getString("database.username", "root");
     }
 
     public String getPassword() {
-        return getDatabaseSection().getString("password", "");
+        return getConfig().getString("database.password", "");
     }
 
     public String getPrefix() {
-        return getDatabaseSection().getString("prefix", "emf_");
+        return getConfig().getString("database.prefix", "emf_");
     }
 
     /**
@@ -260,7 +256,7 @@ public class MainConfig extends ConfigBase {
     }
 
     public String getDatabaseType() {
-        return getDatabaseSection().getString("type", "sqlite");
+        return getConfig().getString("database.type", "sqlite");
     }
 
 
