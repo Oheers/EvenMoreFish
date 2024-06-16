@@ -12,6 +12,7 @@ import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
+import de.tr7zw.changeme.nbtapi.NBT;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -122,23 +123,22 @@ public class Fish implements Cloneable {
 
         ItemStack fish = factory.createItem(getFishermanPlayer(), randomIndex);
         if (factory.isRawMaterial()) return fish;
-        ItemMeta fishMeta;
+        ItemMeta fishMeta = fish.getItemMeta();
 
-        if ((fishMeta = fish.getItemMeta()) != null) {
-            if (displayName != null) fishMeta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
-            else fishMeta.setDisplayName(FishUtils.translateHexColorCodes(rarity.getColour() + name));
+        if (fishMeta != null) {
+            NBT.modify(fish, nbt -> {
+                nbt.modifyMeta((readOnlyNbt, meta) -> {
+                    meta.setDisplayName(FishUtils.translateHexColorCodes(getDisplayName()));
+                    if (!this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-lore", false)) {
+                        meta.setLore(getFishLore());
+                    }
+                    meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                });
+            });
 
-            if (!this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-lore", false)) {
-                fishMeta.setLore(getFishLore());
-            }
-
-            fishMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-            fishMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            fishMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-
-            fish.setItemMeta(fishMeta);
-
-            fish = WorthNBT.setNBT(fish, this);
+            WorthNBT.setNBT(fish, this);
         }
 
         return fish;
@@ -422,7 +422,7 @@ public class Fish implements Cloneable {
 
     public String getDisplayName() {
         if (displayName == null) {
-            return name;
+            return rarity.getColour() + name;
         }
         return displayName;
     }

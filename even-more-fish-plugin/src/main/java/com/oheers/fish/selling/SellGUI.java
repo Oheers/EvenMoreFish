@@ -5,7 +5,8 @@ import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -16,7 +17,6 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -313,11 +313,10 @@ public class SellGUI extends InventoryGui {
         if (itemValue == -1.0) {
             return null;
         }
-        
-        NBTItem nbtItem = new NBTItem(item);
-        final String fishName = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_NAME);
-        final String fishRarity = NbtUtils.getString(nbtItem, NbtUtils.Keys.EMF_FISH_RARITY);
-        Float floatLength = NbtUtils.getFloat(nbtItem, NbtUtils.Keys.EMF_FISH_LENGTH);
+
+        final String fishName = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
+        final String fishRarity = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
+        Float floatLength = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
         final double fishLength = floatLength == null ? -1.0 : floatLength;
         final double fishValue = WorthNBT.getValue(item);
         
@@ -368,6 +367,7 @@ public class SellGUI extends InventoryGui {
     }
 
     // will drop only non-fish items if the method is called from selling, and everything if it's just a gui close
+    @Override
     public void close() {
         player.closeInventory();
     }

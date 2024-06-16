@@ -282,6 +282,9 @@ public class Bait {
      * @return The displayname setting for the bait.
      */
     public String getDisplayName() {
+        if (displayName == null) {
+            return name;
+        }
         return displayName;
     }
 }

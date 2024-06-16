@@ -4,7 +4,8 @@ import com.gmail.nossr50.config.experience.ExperienceConfig;
 import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.NbtUtils;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
@@ -21,7 +22,6 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.requirements.RequirementContext;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -49,8 +49,7 @@ public class FishingProcessor implements Listener {
             //check if player is using the fishing rod with correct nbt value.
             ItemStack rodInHand = event.getPlayer().getInventory().getItemInMainHand();
             if (rodInHand.getType() != Material.AIR) {
-                NBTItem nbtItem = new NBTItem(rodInHand);
-                if (Boolean.FALSE.equals(NbtUtils.hasKey(nbtItem, NbtUtils.Keys.EMF_ROD_NBT))) {
+                if (Boolean.FALSE.equals(NbtUtils.hasKey(rodInHand, NbtKeys.EMF_ROD_NBT))) {
                     //tag is null or tag is false
                     return;
                 }
