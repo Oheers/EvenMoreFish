@@ -349,6 +349,10 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_migrate")
     @CommandPermission(AdminPerms.MIGRATE)
     public void onMigrate(final CommandSender sender) {
+        if (!MainConfig.getInstance().databaseEnabled()) {
+            new Message("You cannot run migrations when the database is disabled. Please set experimental-features: true. And restart the server.").broadcast(sender, false);
+            return;
+        }
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
     }
 }
