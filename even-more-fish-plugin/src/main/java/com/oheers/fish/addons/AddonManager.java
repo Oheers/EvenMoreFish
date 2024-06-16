@@ -8,6 +8,7 @@ import com.oheers.fish.api.addons.FileUtil;
 import com.oheers.fish.api.addons.Futures;
 import com.oheers.fish.api.addons.ItemAddon;
 import com.oheers.fish.api.addons.exceptions.JavaVersionException;
+import com.oheers.fish.api.addons.exceptions.NoPrefixException;
 import com.oheers.fish.api.addons.exceptions.RequiredPluginException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -41,12 +42,12 @@ public class AddonManager {
         }
     }
 
-
-    public ItemStack getItemStack(final String prefix, final String id) {
+    @Nullable
+    public ItemStack getItemStack(final String prefix, final String id) throws NoPrefixException {
         if (!addonMap.containsKey(prefix)) {
 
             if (!loadingMap.getOrDefault(prefix, true)) {
-                plugin.getLogger().warning(() -> String.format("No such prefix %s, did you install the addon?", prefix));
+                throw new NoPrefixException(prefix);
             }
             return null;
         }

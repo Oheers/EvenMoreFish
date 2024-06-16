@@ -37,8 +37,8 @@ public class ItemsAdderItemAddon extends ItemAddon implements Listener {
         }
 
         String[] splitMaterialValue = id.split(":");
-        if (splitMaterialValue.length != 2) {
-            getLogger().severe(() -> String.format("Incorrect format for ItemsAdderItemAddon, use %s:namespace:id. Got %s",getPrefix(), id));
+        if (!verifyItemsFormat(splitMaterialValue)) {
+            getLogger().severe(() -> String.format("Incorrect format for ItemsAdderItemAddon, use %s:namespace:id. Got %s",getPrefix(), String.join(":", splitMaterialValue)));
             return null;
         }
 
@@ -59,5 +59,18 @@ public class ItemsAdderItemAddon extends ItemAddon implements Listener {
         this.itemsAdderLoaded = true;
 
         ((EMFPlugin) Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish"))).reload();
+    }
+
+    /**
+     * Verifies the format of the given item id for the ItemsAdderItemAddon.
+     *
+     * @param splitMaterialValue The item id to verify.
+     * @return {@code true} if the id is in the correct format, {@code false} otherwise.
+     * The expected format is: "itemsadder:namespace:id".
+     * This method is used to ensure that the item id provided by the user is in the correct format
+     * before attempting to retrieve the corresponding ItemStack from ItemsAdder.
+     */
+    public boolean verifyItemsFormat(final String[] splitMaterialValue) {
+        return splitMaterialValue.length == 2;
     }
 }
