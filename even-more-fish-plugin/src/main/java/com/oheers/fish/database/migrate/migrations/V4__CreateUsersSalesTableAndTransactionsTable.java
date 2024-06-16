@@ -12,7 +12,7 @@ public class V4__CreateUsersSalesTableAndTransactionsTable extends BaseJavaMigra
     
     @Override
     public void migrate(@NotNull Context context) throws Exception {
-        String createEmfTransactionSql = "CREATE TABLE emf_transactions ( " +
+        String createEmfTransactionSql = "CREATE TABLE ${table.prefix}transactions ( " +
             "id VARCHAR(22) NOT NULL, " +
             "user_id INTEGER NOT NULL, " +
             "timestamp TIMESTAMP NOT NULL, " +
@@ -23,7 +23,7 @@ public class V4__CreateUsersSalesTableAndTransactionsTable extends BaseJavaMigra
         )) {
             statement.execute();
         }
-        String createEmfUserSalesSql = "CREATE TABLE emf_users_sales ( " +
+        String createEmfUserSalesSql = "CREATE TABLE ${table.prefix}users_sales ( " +
             "id INTEGER NOT NULL${auto.increment}, " +
             "transaction_id VARCHAR(22) NOT NULL, " +
             "fish_name VARCHAR(256) NOT NULL," +

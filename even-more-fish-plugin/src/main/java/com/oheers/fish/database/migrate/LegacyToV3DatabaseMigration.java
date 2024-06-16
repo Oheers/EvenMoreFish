@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
+import com.oheers.fish.database.DatabaseUtil;
 import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.Table;
@@ -96,8 +97,8 @@ public class LegacyToV3DatabaseMigration {
             
             totalFish += report.getNumCaught();
             database.executeStatement(c -> {
-                String emfFishLogSQL = "INSERT INTO emf_fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (?,?,?,?,?,?)";
-                try (PreparedStatement prep = c.prepareStatement(emfFishLogSQL)) {
+                String emfFishLogSQL = "INSERT INTO ${table.prefix}fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (?,?,?,?,?,?)";
+                try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(emfFishLogSQL, c))) {
                     prep.setInt(1, database.getUserID(uuid));
                     prep.setString(2, report.getRarity());
                     prep.setString(3, report.getName());
@@ -117,10 +118,10 @@ public class LegacyToV3DatabaseMigration {
     }
     
     private void createFieldForFishFirstTimeFished(final UUID uuid, final String firstFishID, final String largestFishID, int totalFish, float largestSize) {
-        String emfUsersSQL = "UPDATE emf_users SET first_fish = ?, largest_fish = ?, num_fish_caught = ?, largest_length = ? WHERE uuid = ?;";
+        String emfUsersSQL = "UPDATE ${table.prefix}users SET first_fish = ?, largest_fish = ?, num_fish_caught = ?, largest_length = ? WHERE uuid = ?;";
         // starts a field for the new fish that's been fished for the first time
         database.executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(emfUsersSQL)) {
+            try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(emfUsersSQL,c))) {
                 prep.setString(1, firstFishID);
                 prep.setString(2, largestFishID);
                 prep.setInt(3, totalFish);

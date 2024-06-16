@@ -250,7 +250,7 @@ public class DatabaseV3 {
      */
     public int getUserID(@NotNull final UUID uuid) {
         Integer userId = getStatement(f -> {
-            try (PreparedStatement statement = f.prepareStatement("SELECT id FROM emf_users WHERE uuid = ?;")) {
+            try (PreparedStatement statement = f.prepareStatement("SELECT id FROM ${table.prefix}users WHERE uuid = ?;")) {
                 statement.setString(1, uuid.toString());
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
@@ -275,12 +275,12 @@ public class DatabaseV3 {
      */
     public void createCompetitionReport(@NotNull final Competition competition) {
         final String none = "\"None\"";
-        final String sql = "INSERT INTO emf_competitions (competition_name, winner_uuid, winner_fish, winner_score, contestants) " +
+        final String sql = "INSERT INTO ${table.prefix}competitions (competition_name, winner_uuid, winner_fish, winner_score, contestants) " +
                 "VALUES (?, ?, ?, ?, ?);";
 
         // starts a field for the new fish that's been fished for the first time
         executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(sql)) {
+            try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 Leaderboard leaderboard = competition.getLeaderboard();
                 prep.setString(1, competition.getCompetitionName());
                 if (leaderboard.getSize() > 0) {
@@ -323,12 +323,12 @@ public class DatabaseV3 {
      * @param uuid The user field to be created.
      */
     public void createUser(UUID uuid) {
-        String sql = "INSERT INTO emf_users (uuid, first_fish, last_fish, largest_fish, largest_length, num_fish_caught, total_fish_length," +
+        String sql = "INSERT INTO ${table.prefix}users (uuid, first_fish, last_fish, largest_fish, largest_length, num_fish_caught, total_fish_length," +
                 "competitions_won, competitions_joined) VALUES (?, \"None\",\"None\",\"None\", 0, 0, 0, 0, 0);";
 
         // starts a field for the new fish that's been fished for the first time
         executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(sql)) {
+            try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 prep.setString(1, uuid.toString());
                 prep.executeUpdate();
 
@@ -358,7 +358,7 @@ public class DatabaseV3 {
 
             int userID = getUserID(uuid);
             return Boolean.TRUE.equals(getStatement(c -> {
-                try (PreparedStatement prep = c.prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?;")) {
+                try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ?;", c))) {
                     prep.setInt(1, userID);
                     return prep.executeQuery().next();
                 } catch (SQLException e) {
@@ -369,7 +369,7 @@ public class DatabaseV3 {
 
         if (table == Table.EMF_USERS) {
             return Boolean.TRUE.equals(getStatement(c -> {
-                try (PreparedStatement prep = getConnection().prepareStatement("SELECT * FROM emf_users WHERE uuid = ?;")) {
+                try (PreparedStatement prep = getConnection().prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}users WHERE uuid = ?;", c))) {
                     prep.setString(1, uuid.toString());
                     return prep.executeQuery().next();
                 } catch (SQLException e) {
@@ -393,7 +393,7 @@ public class DatabaseV3 {
         int userID = getUserID(uuid);
 
         return getStatement(f -> {
-            try (PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM emf_fish_log WHERE id = ?")) {
+            try (PreparedStatement statement = getConnection().prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ?", f))) {
                 statement.setInt(1, userID);
 
                 List<FishReport> reports = new ArrayList<>();
@@ -433,7 +433,8 @@ public class DatabaseV3 {
      */
     public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id) {
         return Boolean.TRUE.equals(getStatement(f -> {
-            try (PreparedStatement statement = this.getConnection().prepareStatement("SELECT * FROM emf_fish_log WHERE id = ? AND rarity = ? AND fish = ?")) {
+            try (PreparedStatement statement = this.getConnection()
+                    .prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ? AND rarity = ? AND fish = ?", f))) {
                 statement.setInt(1, id);
                 statement.setString(2, rarity);
                 statement.setString(3, fish);
@@ -454,8 +455,8 @@ public class DatabaseV3 {
      */
     public void addUserFish(@NotNull final FishReport report, final int userID) {
         executeStatement(c -> {
-            try (PreparedStatement statement = c.prepareStatement("INSERT INTO emf_fish_log (id, rarity, fish, quantity, " +
-                    "first_catch_time, largest_length) VALUES (?,?,?,?,?,?);")) {
+            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString("INSERT INTO ${table.prefix}fish_log (id, rarity, fish, quantity, " +
+                    "first_catch_time, largest_length) VALUES (?,?,?,?,?,?);", c))) {
                 statement.setInt(1, userID);
                 statement.setString(2, report.getRarity());
                 statement.setString(3, report.getName());
@@ -483,8 +484,8 @@ public class DatabaseV3 {
      */
     public void updateUserFish(@NotNull final FishReport report, final int userID) {
         executeStatement(c -> {
-            try (PreparedStatement statement = c.prepareStatement("UPDATE emf_fish_log SET quantity = ?, largest_length = ? " +
-                    "WHERE id = ? AND rarity = ? AND fish = ?;")) {
+            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString("UPDATE ${table.prefix}fish_log SET quantity = ?, largest_length = ? " +
+                    "WHERE id = ? AND rarity = ? AND fish = ?;", c))) {
                 statement.setInt(1, report.getNumCaught());
                 statement.setFloat(2, report.getLargestLength());
                 statement.setInt(3, userID);
@@ -531,10 +532,10 @@ public class DatabaseV3 {
      */
     public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) {
         executeStatement(c -> {
-            try (PreparedStatement statement = c.prepareStatement("UPDATE emf_users SET first_fish = ?, last_fish = ?, " +
+            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString("UPDATE ${table.prefix}users SET first_fish = ?, last_fish = ?, " +
                     "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, " +
                     "competitions_joined = ?, fish_sold = ?, money_earned = ? " +
-                    "WHERE uuid = ?;")) {
+                    "WHERE uuid = ?;", c))) {
 
                 statement.setString(1, report.getFirstFish());
                 statement.setString(2, report.getRecentFish());
@@ -573,7 +574,7 @@ public class DatabaseV3 {
      */
     public UserReport readUserReport(@NotNull final UUID uuid) {
         return getStatement(f -> {
-            try (PreparedStatement statement = f.prepareStatement("SELECT * FROM emf_users WHERE uuid = ?")) {
+            try (PreparedStatement statement = f.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}users WHERE uuid = ?", f))) {
                 statement.setString(1, uuid.toString());
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
@@ -616,10 +617,10 @@ public class DatabaseV3 {
      * @param uuid The first person to have caught this fish.
      */
     public void createFishData(@NotNull final Fish fish, @NotNull final UUID uuid) {
-        String sql = "INSERT INTO emf_fish (fish_name, fish_rarity, first_fisher, total_caught, largest_fish, largest_fisher, first_catch_time) VALUES (?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO ${table.prefix}fish (fish_name, fish_rarity, first_fisher, total_caught, largest_fish, largest_fisher, first_catch_time) VALUES (?,?,?,?,?,?,?);";
         // starts a field for the new fish that's been fished for the first time
         executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(sql)) {
+            try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 prep.setString(1, fish.getName());
                 prep.setString(2, fish.getRarity().getValue());
                 prep.setString(3, uuid.toString());
@@ -644,7 +645,7 @@ public class DatabaseV3 {
      */
     public boolean hasFishData(@NotNull final Fish fish) {
         return Boolean.TRUE.equals(getStatement(f -> {
-            try (PreparedStatement statement = f.prepareStatement("SELECT * FROM emf_fish WHERE fish_name = ? AND fish_rarity = ?")) {
+            try (PreparedStatement statement = f.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish WHERE fish_name = ? AND fish_rarity = ?", f))) {
                 statement.setString(1, fish.getName());
                 statement.setString(2, fish.getRarity().getValue());
                 return statement.executeQuery().next();
@@ -662,9 +663,9 @@ public class DatabaseV3 {
      * @param fish The fish to be increased.
      */
     public void incrementFish(@NotNull final Fish fish) {
-        String sql = "UPDATE emf_fish SET total_caught = total_caught + 1 WHERE fish_rarity = ? AND fish_name = ?;";
+        String sql = "UPDATE ${table.prefix}fish SET total_caught = total_caught + 1 WHERE fish_rarity = ? AND fish_name = ?;";
         executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(sql)) {
+            try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 prep.setString(1, fish.getRarity().getValue());
                 prep.setString(2, fish.getName());
                 prep.execute();
@@ -683,10 +684,10 @@ public class DatabaseV3 {
      * max float value is returned.
      */
     public float getLargestFishSize(@NotNull final Fish fish) {
-        String sql = "SELECT largest_fish FROM emf_fish WHERE fish_rarity = ? AND fish_name = ?;";
+        String sql = "SELECT largest_fish FROM ${table.prefix}fish WHERE fish_rarity = ? AND fish_name = ?;";
         Float largestFishSize;
         largestFishSize = getStatement(f -> {
-            try (PreparedStatement prep = f.prepareStatement(sql)) {
+            try (PreparedStatement prep = f.prepareStatement(DatabaseUtil.parseSqlString(sql, f))) {
                 prep.setString(1, fish.getRarity().getValue());
                 prep.setString(2, fish.getName());
                 try (ResultSet resultSet = prep.executeQuery()) {
@@ -708,11 +709,11 @@ public class DatabaseV3 {
      * @param uuid The uuid of the player who caught the fish.
      */
     public void updateLargestFish(@NotNull final Fish fish, @NotNull final UUID uuid) {
-        String sql = "UPDATE emf_fish SET largest_fish = ?, largest_fisher = ? WHERE fish_rarity = ? AND fish_name = ?;";
+        String sql = "UPDATE ${table.prefix}fish SET largest_fish = ?, largest_fisher = ? WHERE fish_rarity = ? AND fish_name = ?;";
 
         float roundedFloatLength = Math.round(fish.getLength() * 10f) / 10f;
         executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(sql)) {
+            try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 prep.setFloat(1, roundedFloatLength);
                 prep.setString(2, uuid.toString());
                 prep.setString(3, fish.getRarity().getValue());
@@ -727,11 +728,11 @@ public class DatabaseV3 {
     //Used a single transaction with multiple sales, optionally.
     public void createSale(final String transactionId, final Timestamp timestamp, final int userId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
         final String sql =
-                "INSERT INTO emf_users_sales (transaction_id, fish_name, fish_rarity, fish_amount, fish_length, price_sold) " +
+                "INSERT INTO ${table.prefix}users_sales (transaction_id, fish_name, fish_rarity, fish_amount, fish_length, price_sold) " +
                         "VALUES (?,?,?,?,?,?);";
 
         executeStatement(c -> {
-            try (PreparedStatement statement = c.prepareStatement(sql)) {
+            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 statement.setString(1, transactionId);
                 statement.setString(2, fishName);
                 statement.setString(3, fishRarity);
@@ -761,10 +762,10 @@ public class DatabaseV3 {
      */
     public void createTransaction(final String transactionId, final int userId, final Timestamp timestamp) {
         final String sql =
-                "INSERT INTO emf_transactions (id, user_id, timestamp) " +
+                "INSERT INTO ${table.prefix}transactions (id, user_id, timestamp) " +
                         "VALUES (?,?,?);";
         executeStatement(c -> {
-            try (PreparedStatement statement = c.prepareStatement(sql)) {
+            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 statement.setString(1, transactionId);
                 statement.setInt(2, userId);
                 statement.setTimestamp(3, timestamp);

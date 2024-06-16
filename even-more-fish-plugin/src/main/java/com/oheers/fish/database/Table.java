@@ -1,10 +1,11 @@
 package com.oheers.fish.database;
 
+import com.oheers.fish.config.MainConfig;
 import org.jetbrains.annotations.NotNull;
 
 public enum Table {
 
-    EMF_COMPETITIONS("emf_competitions",
+    EMF_COMPETITIONS("competitions",
             "CREATE TABLE emf_competitions (\n" +
                     "	 id INTEGER NOT NULL, \n" +
                     " 	 competition_name VARCHAR(256) NOT NULL, \n" +
@@ -16,7 +17,7 @@ public enum Table {
                     ");", false
     ),
 
-    EMF_COMPETITIONS_MYSQL("emf_competitions",
+    EMF_COMPETITIONS_MYSQL("competitions",
             "CREATE TABLE emf_competitions (\n" +
                     "	 id INTEGER NOT NULL AUTO_INCREMENT, \n" +
                     " 	 competition_name VARCHAR(256) NOT NULL, \n" +
@@ -27,7 +28,7 @@ public enum Table {
                     "    PRIMARY KEY(id) \n" +
                     ");", true
     ),
-    EMF_FISH("emf_fish",
+    EMF_FISH("fish",
             "CREATE TABLE emf_fish (\n" +
                     "    fish_name VARCHAR(100) NOT NULL,\n" +
                     "    fish_rarity VARCHAR(100) NOT NULL,\n" +
@@ -38,7 +39,7 @@ public enum Table {
                     "    first_catch_time LONGBLOB NOT NULL\n" +
                     ");", true
     ),
-    EMF_FISH_LOG("emf_fish_log",
+    EMF_FISH_LOG("fish_log",
             "CREATE TABLE emf_fish_log (\n" +
                     "    id INT NOT NULL,\n" +
                     "    rarity VARCHAR(128) NOT NULL,\n" +
@@ -48,7 +49,7 @@ public enum Table {
                     "    largest_length REAL NOT NULL\n" +
                     ");", true
     ),
-    EMF_USERS("emf_users",
+    EMF_USERS("users",
             "CREATE TABLE emf_users (\n" +
                     "	 id INTEGER NOT NULL, \n" +
                     "    uuid VARCHAR(128) NOT NULL, \n" +
@@ -63,7 +64,7 @@ public enum Table {
                     "    PRIMARY KEY(id AUTOINCREMENT) \n" +
                     ");", false),
 
-    EMF_USERS_MYSQL("emf_users",
+    EMF_USERS_MYSQL("users",
             "CREATE TABLE emf_users (\n" +
                     "	 id INTEGER NOT NULL AUTO_INCREMENT, \n" +
                     "    uuid VARCHAR(128) NOT NULL, \n" +
@@ -76,14 +77,15 @@ public enum Table {
                     "    competitions_won INT NOT NULL, \n" +
                     "    competitions_joined INT NOT NULL,\n" +
                     "    PRIMARY KEY(id) \n" +
-                    ");", true);
+                    ");", true
+    );
 
     public final String tableID;
     public final String creationCode;
     public final boolean isMySQLCompatible;
 
     Table(@NotNull final String tableID, final String creationCode, final boolean mySQLCompatible) {
-        this.tableID = tableID;
+        this.tableID = MainConfig.getInstance().getPrefix() + tableID;
         this.creationCode = creationCode;
         this.isMySQLCompatible = mySQLCompatible;
     }
