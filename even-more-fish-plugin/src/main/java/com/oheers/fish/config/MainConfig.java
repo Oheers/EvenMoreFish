@@ -3,6 +3,7 @@ package com.oheers.fish.config;
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 
@@ -31,9 +32,7 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("random-durability", true);
     }
 
-    public boolean databaseEnabled() {
-        return doingExperimentalFeatures() && getConfig().getBoolean("database", true);
-    }
+
 
     public boolean isDatabaseOnline() {
         return databaseEnabled() && !EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2();
@@ -197,29 +196,12 @@ public class MainConfig extends ConfigBase {
         else return returning;
     }
 
-    public boolean isMysql() {
-        return getConfig().getBoolean("mysql.use-mysql", false);
-    }
 
     public boolean doDBVerbose() {
         return !getConfig().getBoolean("disable-db-verbose", false);
     }
 
-    public String getAddress() {
-        return getConfig().getString("mysql.address", "localhost");
-    }
 
-    public String getDatabase() {
-        return getConfig().getString("mysql.database", "evenmorefish");
-    }
-
-    public String getUsername() {
-        return getConfig().getString("mysql.username", "root");
-    }
-
-    public String getPassword() {
-        return getConfig().getString("mysql.password", "");
-    }
 
     public boolean blockPlacingHeads() {
         return getConfig().getBoolean("place-head-fish", false);
@@ -240,9 +222,47 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("debug-session", false);
     }
 
-    public boolean doingExperimentalFeatures() {
-        return getConfig().getBoolean("experimental-features", false);
+    private ConfigurationSection getDatabaseSection() {
+        return getConfig().getConfigurationSection("database");
     }
+
+    public boolean databaseEnabled() {
+        return getDatabaseSection().getBoolean("enabled", false);
+    }
+
+    public String getAddress() {
+        return getDatabaseSection().getString("address", "localhost");
+    }
+
+    public String getDatabase() {
+        return getDatabaseSection().getString("database", "evenmorefish");
+    }
+
+    public String getUsername() {
+        return getDatabaseSection().getString("username", "root");
+    }
+
+    public String getPassword() {
+        return getDatabaseSection().getString("password", "");
+    }
+
+    public String getPrefix() {
+        return getDatabaseSection().getString("prefix", "emf_");
+    }
+
+    /**
+     * @deprecated use {@link #getDatabaseType()} instead
+     * @return
+     */
+    @Deprecated
+    public boolean isMysql() {
+        return getDatabaseType().equalsIgnoreCase("mysql");
+    }
+
+    public String getDatabaseType() {
+        return getDatabaseSection().getString("type", "sqlite");
+    }
+
 
     public boolean useAdditionalAddons() {
         return getConfig().getBoolean("addons.additional-addons", true);

@@ -354,7 +354,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             return returning;
         }));
 
-        metrics.addCustomChart(new SimplePie("experimental_features", () -> MainConfig.getInstance().doingExperimentalFeatures() ? "true" : "false"));
+        metrics.addCustomChart(new SimplePie("database", () -> MainConfig.getInstance().databaseEnabled() ? "true" : "false"));
     }
 
     private void loadCommandManager() {
