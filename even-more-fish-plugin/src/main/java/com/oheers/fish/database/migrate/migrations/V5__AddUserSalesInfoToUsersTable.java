@@ -6,6 +6,7 @@ import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class V5__AddUserSalesInfoToUsersTable extends BaseJavaMigration {
@@ -14,14 +15,16 @@ public class V5__AddUserSalesInfoToUsersTable extends BaseJavaMigration {
      */
     @Override
     public void migrate(@NotNull Context context) throws Exception {
+        final Connection connection = context.getConnection();
         String sql = "ALTER TABLE ${table.prefix}users " +
             "ADD fish_sold INTEGER DEFAULT 0;";
-        String sql2 = "ALTER TABLE ${table.prefix}users " +
-            "ADD money_earned DOUBLE DEFAULT 0;";
-        try (PreparedStatement statement = context.getConnection().prepareStatement(DatabaseUtil.parseSqlString(sql, context.getConnection()))){
+        try (PreparedStatement statement = connection.prepareStatement(DatabaseUtil.parseSqlString(sql, context.getConnection()))){
             statement.execute();
         }
-        try (PreparedStatement statement = context.getConnection().prepareStatement(DatabaseUtil.parseSqlString(sql2, context.getConnection()))){
+
+        String sql2 = "ALTER TABLE ${table.prefix}users " +
+                "ADD money_earned DOUBLE DEFAULT 0;";
+        try (PreparedStatement statement = connection.prepareStatement(DatabaseUtil.parseSqlString(sql2, context.getConnection()))){
             statement.execute();
         }
     }

@@ -369,7 +369,7 @@ public class DatabaseV3 {
 
         if (table == Table.EMF_USERS) {
             return Boolean.TRUE.equals(getStatement(c -> {
-                try (PreparedStatement prep = getConnection().prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}users WHERE uuid = ?;", c))) {
+                try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}users WHERE uuid = ?;", c))) {
                     prep.setString(1, uuid.toString());
                     return prep.executeQuery().next();
                 } catch (SQLException e) {
@@ -393,7 +393,7 @@ public class DatabaseV3 {
         int userID = getUserID(uuid);
 
         return getStatement(f -> {
-            try (PreparedStatement statement = getConnection().prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ?", f))) {
+            try (PreparedStatement statement = f.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ?", f))) {
                 statement.setInt(1, userID);
 
                 List<FishReport> reports = new ArrayList<>();
@@ -433,8 +433,7 @@ public class DatabaseV3 {
      */
     public boolean userHasFish(@NotNull final String rarity, @NotNull final String fish, final int id) {
         return Boolean.TRUE.equals(getStatement(f -> {
-            try (PreparedStatement statement = this.getConnection()
-                    .prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ? AND rarity = ? AND fish = ?", f))) {
+            try (PreparedStatement statement = f.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ? AND rarity = ? AND fish = ?", f))) {
                 statement.setInt(1, id);
                 statement.setString(2, rarity);
                 statement.setString(3, fish);

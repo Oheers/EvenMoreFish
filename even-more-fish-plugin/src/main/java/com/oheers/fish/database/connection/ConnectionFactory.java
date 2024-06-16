@@ -65,7 +65,7 @@ public abstract class ConnectionFactory {
         this.dataSource = new HikariDataSource(config);
         logger.info("Connected to database!");
     }
-    
+
     public void flywayMigration() {
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(dataSource)
