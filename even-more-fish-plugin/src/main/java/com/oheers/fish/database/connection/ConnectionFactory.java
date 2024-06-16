@@ -65,22 +65,18 @@ public abstract class ConnectionFactory {
         this.dataSource = new HikariDataSource(config);
         logger.info("Connected to database!");
     }
-
-    public void initAndMigrate() {
-        init();
-        flywayMigration();
-    }
-
+    
     public void flywayMigration() {
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(dataSource)
                 .baselineOnMigrate(true)
                 .baselineVersion("3")
                 .locations("classpath:com/oheers/fish/database/migrate/migrations")
-                .table("emf_flyway_schema_history")
+                .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history")
                 .load();
 
         try {
+            flyway.baseline();
             flyway.migrate();
         } catch (FlywayException e) {
             logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
