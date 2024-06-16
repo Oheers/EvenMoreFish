@@ -1,0 +1,11 @@
+name: Suggestion (Documentation)
+description: Suggest a documentation change or an improvement.
+title: "[Suggestion (Documentation)]: "
+labels: ["suggestion: documentation"]
+body:
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggestion
+    validations:
+      required: true
