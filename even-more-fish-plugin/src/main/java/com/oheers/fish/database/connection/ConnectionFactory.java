@@ -25,17 +25,6 @@ import java.util.concurrent.TimeUnit;
 public abstract class ConnectionFactory {
     protected HikariDataSource dataSource;
     private final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
-    private final FluentConfiguration baseFlywayConfig = Flyway.configure(getClass().getClassLoader())
-            .dataSource(dataSource)
-            .placeholders(ImmutableMap.of(
-                    "table.prefix", MainConfig.getInstance().getPrefix(),
-                    "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
-                    "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)"
-            ))
-            .locations("classpath:com/oheers/fish/database/migrate/migrations")
-            .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history")
-            ;
-
 
 
     /**
@@ -82,7 +71,7 @@ public abstract class ConnectionFactory {
     }
 
     public void latestFlywayMigration() {
-        Flyway flyway = baseFlywayConfig
+        Flyway flyway = getBaseFlywayConfiguration()
                 .baselineVersion("6")
                 .load();
 
@@ -94,9 +83,26 @@ public abstract class ConnectionFactory {
         }
     }
 
+    public void legacyFlywayBaseline() {
+        Flyway flyway = getBaseFlywayConfiguration()
+                .target("3.1")
+                .load();
+
+        flyway.migrate();
+    }
+
+    public void legacyInitVersion() {
+        Flyway flyway = getBaseFlywayConfiguration()
+                .target("3.0")
+                .load();
+
+        flyway.migrate();
+    }
+
     public void flywayMigration() {
-        Flyway flyway = baseFlywayConfig
+        Flyway flyway = getBaseFlywayConfiguration()
                 .baselineVersion("3")
+                .target("6.1")
                 .load();
 
 
@@ -149,5 +155,25 @@ public abstract class ConnectionFactory {
         }
 
         return connection;
+    }
+
+    private FluentConfiguration getBaseFlywayConfiguration() {
+        return Flyway.configure(getClass().getClassLoader())
+                .dataSource(dataSource)
+                .placeholders(ImmutableMap.of(
+                        "table.prefix", MainConfig.getInstance().getPrefix(),
+                        "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
+                        "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)",
+                        "v6.alter.columns", !MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("sqlite") ?
+                                        "ALTER TABLE `${table.prefix}competitions` ALTER COLUMN contestants text;" +
+                                        "ALTER TABLE `${table.prefix}fish` ADD PRIMARY KEY (fish_name);" +
+                                        "ALTER TABLE `${table.prefix}fish_log` ADD CONSTRAINT FK_FishLog_User FOREIGN KEY(id) REFERENCES `${table.prefix}users(id)`;" +
+                                        "ALTER TABLE `${table.prefix}users_sales` ADD CONSTRAINT FK_UsersSales_Transaction FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`;"
+                                : ""
+                ))
+                .validateMigrationNaming(true)
+                .createSchemas(true)
+                .baselineOnMigrate(true)
+                .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history");
     }
 }

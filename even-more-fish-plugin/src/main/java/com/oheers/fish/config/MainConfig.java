@@ -231,7 +231,7 @@ public class MainConfig extends ConfigBase {
     }
 
     public String getDatabase() {
-        return getConfig().getString("database.database", "evenmorefish");
+        return getConfig().getString("database.database", "database");
     }
 
     public String getUsername() {

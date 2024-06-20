@@ -52,26 +52,7 @@ public class LegacyToV3DatabaseMigration {
             });
             return;
         }
-        
-        database.executeStatement(c -> {
-            try (PreparedStatement preparedStatement = c.prepareStatement(DatabaseUtil.parseSqlString(
-                    "CREATE TABLE ${table.prefix}fish (\n" +
-                            "    fish_name VARCHAR(100) NOT NULL,\n" +
-                            "    fish_rarity VARCHAR(100) NOT NULL,\n" +
-                            "    first_fisher VARCHAR(36) NOT NULL, \n" +
-                            "    total_caught INTEGER NOT NULL,\n" +
-                            "    largest_fish REAL NOT NULL,\n" +
-                            "    largest_fisher VARCHAR(36) NOT NULL,\n" +
-                            "    first_catch_time LONGBLOB NOT NULL\n" +
-                            ");",
-                    c
-            ))) {
-                preparedStatement.execute();
-            } catch (SQLException e) {
-                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
-            }
-        });
-        
+        connectionFactory.legacyInitVersion();
     }
     
     /**
@@ -184,7 +165,7 @@ public class LegacyToV3DatabaseMigration {
         
         try {
             translateFishDataV2();
-            database.createTables(true);
+            this.connectionFactory.legacyFlywayBaseline();
             
             for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
                 Type fishReportList = new TypeToken<List<LegacyFishReport>>() {

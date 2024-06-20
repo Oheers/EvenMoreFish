@@ -9,7 +9,6 @@ import com.oheers.fish.database.connection.ConnectionFactory;
 import com.oheers.fish.database.connection.MySqlConnectionFactory;
 import com.oheers.fish.database.connection.SqliteConnectionFactory;
 import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
-import com.oheers.fish.exceptions.InvalidTableException;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -59,8 +58,16 @@ public class DatabaseV3 {
         this.connectionFactory.init();
 
         this.usingV2 = checkV2(plugin);
-        if (!this.usingV2) {
+        if (this.usingV2) {
+            return;
+        }
+
+        if (queryTableExistence("${table.prefix}flyway_schema_history")) {
+            // old install
             this.connectionFactory.flywayMigration();
+        } else {
+            // New install
+            this.connectionFactory.latestFlywayMigration();
         }
     }
 
@@ -136,6 +143,7 @@ public class DatabaseV3 {
      * @param overrideV2Check Whether the plugin should override checking for the /data/ folder - this should only be
      *                        done when migrating
      */
+    @Deprecated
     public void createTables(final boolean overrideV2Check) {
         if (!overrideV2Check && usingVersionV2()) {
             EvenMoreFish.getInstance().getLogger().severe("Your server is running EMF database V2. To continue using database functionality you need to run /emf admin migrate.");
