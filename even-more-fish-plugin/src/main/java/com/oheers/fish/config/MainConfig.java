@@ -3,7 +3,6 @@ package com.oheers.fish.config;
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 
@@ -244,15 +243,6 @@ public class MainConfig extends ConfigBase {
 
     public String getPrefix() {
         return getConfig().getString("database.prefix", "emf_");
-    }
-
-    /**
-     * @deprecated use {@link #getDatabaseType()} instead
-     * @return
-     */
-    @Deprecated
-    public boolean isMysql() {
-        return getDatabaseType().equalsIgnoreCase("mysql");
     }
 
     public String getDatabaseType() {
