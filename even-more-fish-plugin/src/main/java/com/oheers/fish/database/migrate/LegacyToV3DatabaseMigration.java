@@ -208,6 +208,6 @@ public class LegacyToV3DatabaseMigration {
 
         database.setUsingV2(false);
         //Run the rest of the migrations, and ensure it's properly setup.
-        connectionFactory.flywayMigration();
+        connectionFactory.flyway5toLatest();
     }
 }

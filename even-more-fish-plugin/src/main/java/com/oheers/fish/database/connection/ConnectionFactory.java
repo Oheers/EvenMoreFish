@@ -3,18 +3,20 @@ package com.oheers.fish.database.connection;
 
 import com.google.common.collect.ImmutableMap;
 import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.database.DatabaseUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
+import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -70,13 +72,12 @@ public abstract class ConnectionFactory {
         logger.info("Connected to database!");
     }
 
-    public void latestFlywayMigration() {
+    public void flyway6toLatest() {
         Flyway flyway = getBaseFlywayConfiguration()
                 .baselineVersion("6")
                 .load();
 
         try {
-            flyway.baseline();
             flyway.migrate();
         } catch (FlywayException e) {
             logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
@@ -99,28 +100,33 @@ public abstract class ConnectionFactory {
         flyway.migrate();
     }
 
-    public void flywayMigration() {
+    /*
+    We may use .ignoreMigrationPatterns("versioned:missing") to ignore the missing migrations 3.0, 3.1 (FlywayTeams)
+    Instead we use baselineVersion 5, which assumes you were running experimental-features: true before using this version.
+    This is caused since we added some initial migrations that weren't there prior to 1.7.0 #67
+     */
+    public void flyway5toLatest() {
         Flyway flyway = getBaseFlywayConfiguration()
-                .baselineVersion("3")
-                .target("6.1")
+                .baselineVersion("5")
                 .load();
 
 
         try {
+            dropFlywaySchemaHistory();
+
             flyway.migrate();
         } catch (FlywayException e) {
-            if (flyway.info().current().getVersion().getMajorAsString().equalsIgnoreCase("4")) {
-                logger.info("The database has been migrated to version 4. This is a known issue. Attempting a fix.");
-                this.dataSource.getHikariPoolMXBean().softEvictConnections();
-                logger.info("If the issue persists, please restart your server.");
-                try {
-                    flyway.migrate();
-                } catch (FlywayException ex) {
-                    logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
-                }
-            } else {
-                logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
+            logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
+        }
+    }
+
+    private void dropFlywaySchemaHistory() {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement prepStatement = connection.prepareStatement(DatabaseUtil.parseSqlString("DROP TABLE IF EXISTS`${table.prefix}flyway_schema_history`", connection))) {
+                prepStatement.execute();
             }
+        } catch (SQLException e) {
+            logger.error("Failed to drop flyway_schema_history table", e);
         }
     }
 
@@ -165,7 +171,7 @@ public abstract class ConnectionFactory {
                         "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
                         "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)",
                         "v6.alter.columns", !MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("sqlite") ?
-                                        "ALTER TABLE `${table.prefix}competitions` ALTER COLUMN contestants text;" +
+                                "ALTER TABLE `${table.prefix}competitions` ALTER COLUMN contestants text;" +
                                         "ALTER TABLE `${table.prefix}fish` ADD PRIMARY KEY (fish_name);" +
                                         "ALTER TABLE `${table.prefix}fish_log` ADD CONSTRAINT FK_FishLog_User FOREIGN KEY(id) REFERENCES `${table.prefix}users(id)`;" +
                                         "ALTER TABLE `${table.prefix}users_sales` ADD CONSTRAINT FK_UsersSales_Transaction FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`;"
@@ -175,5 +181,9 @@ public abstract class ConnectionFactory {
                 .createSchemas(true)
                 .baselineOnMigrate(true)
                 .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history");
+    }
+
+    public MigrationVersion getDatabaseVersion() {
+        return getBaseFlywayConfiguration().load().info().current().getVersion();
     }
 }

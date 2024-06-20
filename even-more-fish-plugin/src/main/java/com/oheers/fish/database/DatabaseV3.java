@@ -11,6 +11,7 @@ import com.oheers.fish.database.connection.SqliteConnectionFactory;
 import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
+import org.flywaydb.core.api.MigrationVersion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,12 +63,10 @@ public class DatabaseV3 {
             return;
         }
 
-        if (queryTableExistence("${table.prefix}flyway_schema_history")) {
-            // old install
-            this.connectionFactory.flywayMigration();
+        if (this.connectionFactory.getDatabaseVersion().equals(MigrationVersion.fromVersion("5"))) {
+            this.connectionFactory.flyway5toLatest();
         } else {
-            // New install
-            this.connectionFactory.latestFlywayMigration();
+            this.connectionFactory.flyway6toLatest();
         }
     }
 
@@ -133,40 +132,6 @@ public class DatabaseV3 {
      */
     public boolean usingVersionV2() {
         return this.usingV2;
-    }
-
-    /**
-     * This creates all tables that don't exist within the database. If the table does exist however it is skipped, to prevent
-     * duplicate tables (if that's even possible). If the server is using V2 then the tables won't be created to prevent
-     * data duplication. The server should use the /emf migrate command to move over their data to the new V3 engine.
-     *
-     * @param overrideV2Check Whether the plugin should override checking for the /data/ folder - this should only be
-     *                        done when migrating
-     */
-    @Deprecated
-    public void createTables(final boolean overrideV2Check) {
-        if (!overrideV2Check && usingVersionV2()) {
-            EvenMoreFish.getInstance().getLogger().severe("Your server is running EMF database V2. To continue using database functionality you need to run /emf admin migrate.");
-            return;
-        }
-
-
-        //should be done via flyway possibly?
-        //        for (Table table : Table.values()) {
-        //            if (queryTableExistence(table.getTableID()) ||
-        //                    table.getCreationCode() == null ||
-        //                    (MainConfig.getInstance().isMysql() && !table.isMySQLCompatible)) {
-        //                continue;
-        //            }
-        //
-        //            executeStatement(c -> {
-        //                try (PreparedStatement statement = c.prepareStatement(table.getCreationCode())) {
-        //                    statement.execute();
-        //                } catch (SQLException e) {
-        //                    EvenMoreFish.getInstance().getLogger().warning("There was a problem creating the table.");
-        //                }
-        //            });
-        //        }
     }
 
     private List<FishReport> getCachedReportsOrReports(final UUID uuid, final Fish fish) {

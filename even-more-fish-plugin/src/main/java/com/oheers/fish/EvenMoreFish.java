@@ -214,7 +214,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             databaseV3 = new DatabaseV3(this);
             //load user reports into cache
             getScheduler().runTaskAsynchronously(() -> {
-                EvenMoreFish.getInstance().getDatabaseV3().createTables(false);
                 for (Player player : getServer().getOnlinePlayers()) {
                     UserReport playerReport = databaseV3.readUserReport(player.getUniqueId());
                     if (playerReport == null) {
