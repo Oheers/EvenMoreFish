@@ -7,8 +7,6 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.database.DatabaseUtil;
 import com.oheers.fish.database.DatabaseV3;
-import com.oheers.fish.database.FishReport;
-import com.oheers.fish.database.Table;
 import com.oheers.fish.database.connection.ConnectionFactory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +19,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,13 +38,13 @@ public class LegacyToV3DatabaseMigration {
      * format for all the tables and to have a more descriptive name for this stuff.
      */
     private void translateFishDataV2() {
-        if (database.queryTableExistence(Table.EMF_FISH.getTableID())) {
+        if (database.queryTableExistence("${table.prefix}fish")) {
             return;
         }
         
         if (database.queryTableExistence("Fish2")) {
             database.executeStatement(c -> {
-                try (PreparedStatement preparedStatement = c.prepareStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";")) {
+                try (PreparedStatement preparedStatement = c.prepareStatement(DatabaseUtil.parseSqlString("ALTER TABLE Fish2 RENAME TO ${table.prefix}fish;", c))) {
                     preparedStatement.execute();
                 } catch (SQLException e) {
                     EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
@@ -57,7 +54,18 @@ public class LegacyToV3DatabaseMigration {
         }
         
         database.executeStatement(c -> {
-            try (PreparedStatement preparedStatement = c.prepareStatement(Table.EMF_FISH.creationCode)) {
+            try (PreparedStatement preparedStatement = c.prepareStatement(DatabaseUtil.parseSqlString(
+                    "CREATE TABLE ${table.prefix}fish (\n" +
+                            "    fish_name VARCHAR(100) NOT NULL,\n" +
+                            "    fish_rarity VARCHAR(100) NOT NULL,\n" +
+                            "    first_fisher VARCHAR(36) NOT NULL, \n" +
+                            "    total_caught INTEGER NOT NULL,\n" +
+                            "    largest_fish REAL NOT NULL,\n" +
+                            "    largest_fisher VARCHAR(36) NOT NULL,\n" +
+                            "    first_catch_time LONGBLOB NOT NULL\n" +
+                            ");",
+                    c
+            ))) {
                 preparedStatement.execute();
             } catch (SQLException e) {
                 EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);

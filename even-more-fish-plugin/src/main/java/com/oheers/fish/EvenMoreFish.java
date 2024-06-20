@@ -435,11 +435,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
             return potentialFish.get();
         });
-        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet().stream().map(s -> s.replace(" ","_")).collect(Collectors.toList()));
+        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet().stream().map(s -> s.replace(" ", "_")).collect(Collectors.toList()));
         manager.getCommandCompletions().registerCompletion("rarities", c -> EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
-            return EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().map(f -> f.getName().replace(" ","_")).collect(Collectors.toList());
+            return EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().map(f -> f.getName().replace(" ", "_")).collect(Collectors.toList());
         });
 
         manager.registerCommand(new EMFCommand());
@@ -498,13 +498,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
             databaseV3.writeFishReports(entry.getKey(), entry.getValue());
 
-            try {
-                if (!databaseV3.hasUser(entry.getKey(), Table.EMF_USERS)) {
-                    databaseV3.createUser(entry.getKey());
-                }
-            } catch (InvalidTableException exception) {
-                logger.log(Level.SEVERE, "Fatal error when storing data for " + entry.getKey() + ", their data in primary storage has been deleted.");
+
+            if (!databaseV3.hasUser(entry.getKey())) {
+                databaseV3.createUser(entry.getKey());
             }
+
         }
     }
 
@@ -744,7 +742,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return isUpdateAvailable;
     }
 
-    public boolean isUsingVault() { return usingVault; }
+    public boolean isUsingVault() {return usingVault;}
 
     public boolean isUsingPAPI() {
         return usingPAPI;
@@ -862,7 +860,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // SuperVanish, PremiumVanish, and VanishNoPacket support this according to the SuperVanish Spigot page.
         players = players.stream().filter(player -> {
             for (MetadataValue meta : player.getMetadata("vanished")) {
-                if (meta.asBoolean()) return false;
+                if (meta.asBoolean()) {
+                    return false;
+                }
             }
             return true;
         }).collect(Collectors.toList());

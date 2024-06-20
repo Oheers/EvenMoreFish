@@ -1,17 +1,20 @@
 package com.oheers.fish.database.connection;
 
 
+import com.google.common.collect.ImmutableMap;
 import com.oheers.fish.config.MainConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +25,18 @@ import java.util.concurrent.TimeUnit;
 public abstract class ConnectionFactory {
     protected HikariDataSource dataSource;
     private final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
+    private final FluentConfiguration baseFlywayConfig = Flyway.configure(getClass().getClassLoader())
+            .dataSource(dataSource)
+            .placeholders(ImmutableMap.of(
+                    "table.prefix", MainConfig.getInstance().getPrefix(),
+                    "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
+                    "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)"
+            ))
+            .locations("classpath:com/oheers/fish/database/migrate/migrations")
+            .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history")
+            ;
+
+
 
     /**
      * This may be different with every database type.
@@ -66,13 +81,9 @@ public abstract class ConnectionFactory {
         logger.info("Connected to database!");
     }
 
-    public void flywayMigration() {
-        Flyway flyway = Flyway.configure(getClass().getClassLoader())
-                .dataSource(dataSource)
-                .baselineOnMigrate(true)
-                .baselineVersion("3")
-                .locations("classpath:com/oheers/fish/database/migrate/migrations")
-                .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history")
+    public void latestFlywayMigration() {
+        Flyway flyway = baseFlywayConfig
+                .baselineVersion("6")
                 .load();
 
         try {
@@ -80,6 +91,30 @@ public abstract class ConnectionFactory {
             flyway.migrate();
         } catch (FlywayException e) {
             logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
+        }
+    }
+
+    public void flywayMigration() {
+        Flyway flyway = baseFlywayConfig
+                .baselineVersion("3")
+                .load();
+
+
+        try {
+            flyway.migrate();
+        } catch (FlywayException e) {
+            if (flyway.info().current().getVersion().getMajorAsString().equalsIgnoreCase("4")) {
+                logger.info("The database has been migrated to version 4. This is a known issue. Attempting a fix.");
+                this.dataSource.getHikariPoolMXBean().softEvictConnections();
+                logger.info("If the issue persists, please restart your server.");
+                try {
+                    flyway.migrate();
+                } catch (FlywayException ex) {
+                    logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
+                }
+            } else {
+                logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
+            }
         }
     }
 

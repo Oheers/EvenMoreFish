@@ -1,6 +1,5 @@
 package com.oheers.fish.database;
 
-import com.devskiller.friendly_id.FriendlyId;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
@@ -67,9 +66,9 @@ public class DatabaseV3 {
 
     private boolean checkV2(@NotNull EvenMoreFish plugin) {
         boolean dataFolder = Files.isDirectory(Paths.get(plugin.getDataFolder() + "/data/"));
-        boolean doesNotExist = !queryTableExistence("flyway_schema_history");
-        return dataFolder || !doesNotExist;
+        return dataFolder || queryTableExistence("Fish2");
     }
+
 
     private boolean hasCredentials() {
         return MainConfig.getInstance().getUsername() != null &&
@@ -109,7 +108,7 @@ public class DatabaseV3 {
         return Boolean.TRUE.equals(getStatement(f -> {
             try {
                 DatabaseMetaData dbMetaData = f.getMetaData();
-                try (ResultSet resultSet = dbMetaData.getTables(null, null, tableID, null)) {
+                try (ResultSet resultSet = dbMetaData.getTables(null, null, DatabaseUtil.parseSqlString(tableID, f), null)) {
                     return resultSet.next();
                 }
             } catch (SQLException e) {
@@ -143,22 +142,23 @@ public class DatabaseV3 {
             return;
         }
 
-        //should be done via flyway possibly?
-        for (Table table : Table.values()) {
-            if (queryTableExistence(table.getTableID()) ||
-                    table.getCreationCode() == null ||
-                    (MainConfig.getInstance().isMysql() && !table.isMySQLCompatible)) {
-                continue;
-            }
 
-            executeStatement(c -> {
-                try (PreparedStatement statement = c.prepareStatement(table.getCreationCode())) {
-                    statement.execute();
-                } catch (SQLException e) {
-                    EvenMoreFish.getInstance().getLogger().warning("There was a problem creating the table.");
-                }
-            });
-        }
+        //should be done via flyway possibly?
+        //        for (Table table : Table.values()) {
+        //            if (queryTableExistence(table.getTableID()) ||
+        //                    table.getCreationCode() == null ||
+        //                    (MainConfig.getInstance().isMysql() && !table.isMySQLCompatible)) {
+        //                continue;
+        //            }
+        //
+        //            executeStatement(c -> {
+        //                try (PreparedStatement statement = c.prepareStatement(table.getCreationCode())) {
+        //                    statement.execute();
+        //                } catch (SQLException e) {
+        //                    EvenMoreFish.getInstance().getLogger().warning("There was a problem creating the table.");
+        //                }
+        //            });
+        //        }
     }
 
     private List<FishReport> getCachedReportsOrReports(final UUID uuid, final Fish fish) {
@@ -342,45 +342,46 @@ public class DatabaseV3 {
     }
 
     /**
-     * Queries the database to find out whether the user is present within the table provided as a parameter. Only
-     * the emf_users and emf_fish_log can be passed through, otherwise InvalidTableException will be thrown.
+     * Checks if a user with the given UUID exists in the database.
      *
-     * @param uuid  The user being queried.
-     * @param table The table being queried.
-     * @return If the database contains the user.
-     * @throws InvalidTableException The table specified is not emf_users or emf_fish_log
+     * @param uuid the UUID of the user to check for.
+     * @return true if the user exists, false otherwise.
      */
-    public boolean hasUser(@NotNull final UUID uuid, @NotNull final Table table) throws InvalidTableException {
-        if (table == Table.EMF_FISH_LOG) {
-            if (!hasUser(uuid, Table.EMF_USERS)) {
+    public boolean hasUser(@NotNull final UUID uuid) {
+        return Boolean.TRUE.equals(getStatement(c -> {
+            try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}users WHERE uuid = ?;", c))) {
+                prep.setString(1, uuid.toString());
+                return prep.executeQuery().next();
+            } catch (SQLException e) {
                 return false;
             }
-
-            int userID = getUserID(uuid);
-            return Boolean.TRUE.equals(getStatement(c -> {
-                try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ?;", c))) {
-                    prep.setInt(1, userID);
-                    return prep.executeQuery().next();
-                } catch (SQLException e) {
-                    return false;
-                }
-            }));
-        }
-
-        if (table == Table.EMF_USERS) {
-            return Boolean.TRUE.equals(getStatement(c -> {
-                try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}users WHERE uuid = ?;", c))) {
-                    prep.setString(1, uuid.toString());
-                    return prep.executeQuery().next();
-                } catch (SQLException e) {
-                    return false;
-                }
-            }));
-
-        }
-
-        throw new InvalidTableException(table.tableID + " is not an allowed table type to query user existence.");
+        }));
     }
+
+    /**
+     * Checks if there is a log entry for a given user identified by their UUID.
+     *
+     * @param uuid the UUID of the user to check for a log entry.
+     * @return true if there is a log entry for the user, false otherwise.
+     */
+    public boolean hasUserLog(final UUID uuid) {
+        if (!hasUser(uuid)) {
+            return false;
+        }
+
+        int userID = getUserID(uuid);
+
+        return Boolean.TRUE.equals(getStatement(c -> {
+            try (PreparedStatement prep = c.prepareStatement(
+                    DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish_log WHERE id = ?;", c))) {
+                prep.setInt(1, userID);
+                return prep.executeQuery().next();
+            } catch (SQLException e) {
+                return false;
+            }
+        }));
+    }
+
 
     /**
      * Obtains fish report objects from the database. There must have been prior checks to make sure that the player does
@@ -725,7 +726,7 @@ public class DatabaseV3 {
     }
 
     //Used a single transaction with multiple sales, optionally.
-    public void createSale(final String transactionId, final Timestamp timestamp, final int userId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
+    public void createSale(final String transactionId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
         final String sql =
                 "INSERT INTO ${table.prefix}users_sales (transaction_id, fish_name, fish_rarity, fish_amount, fish_length, price_sold) " +
                         "VALUES (?,?,?,?,?,?);";
@@ -745,11 +746,6 @@ public class DatabaseV3 {
                 EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
             }
         });
-    }
-
-    //Used for single sales.
-    public void createSale(final int userId, final String fishName, final String fishRarity, final int fishAmount, final double fishLength, final double priceSold) {
-        createSale(FriendlyId.createFriendlyId(), Timestamp.from(Instant.now()), userId, fishName, fishRarity, fishAmount, fishLength, priceSold);
     }
 
     /**
