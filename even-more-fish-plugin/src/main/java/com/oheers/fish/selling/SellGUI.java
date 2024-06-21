@@ -440,7 +440,7 @@ public class SellGUI extends InventoryGui {
 
         EvenMoreFish.getInstance().getDatabaseV3().createTransaction(transactionId, userId, timestamp);
         for(final SoldFish fish: soldFish) {
-            EvenMoreFish.getInstance().getDatabaseV3().createSale(transactionId, timestamp, userId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());
+            EvenMoreFish.getInstance().getDatabaseV3().createSale(transactionId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());
         }
         
         double moneyEarned = getTotalWorth(soldFish);

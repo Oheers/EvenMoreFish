@@ -9,31 +9,35 @@ locale: en
 # Should EMF fish only be given during a competition?
 fish-only-in-competition: false
 
-# Would you like to test out new experimental features? These are partially working features such as the database that
-# may not work on all servers.
-experimental-features: false
-
 # Should competition player requirements respect vanished players?
 # Supports EssentialsX and CMI.
 respect-vanished: true
 
+# WARNING EXPERIMENTAL: This feature is experimental and may not work properly.
 # The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
 # of this feature.
 # ATTENTION: Toggling this requires a full server restart.
-database: true
-# Prevents verbose output when the plugin interacts with the database.
-disable-db-verbose: true
-# Info for connecting to a mysql database:
-mysql:
-  # Set to false if you're using a standard SQLITE .db file
-  use-mysql: false
-  # The address of the database (the port 3306 is automatically added in by default, if different: specify with address:port)
+database:
+  enabled: false
+  # Available option are: mysql, sqlite
+  type: sqlite
+  # The address of the database
+  # (the port 3306 is automatically added in by default, if different: specify with address:port)
   address: localhost
   # The name of the database to store fish data in
   database: evenmorefish
+  # The table prefix for the database.
+  # WARNING: Changing this will create new tables in the database.
+  # Only use this during first setup or before migrations.
+  # (Or after, but only if you know what you're doing).
+  table-prefix: "emf_"
   # Login information
   username: root
   password: ''
+
+# Prevents verbose output when the plugin interacts with the database.
+disable-db-verbose: true
+
 
 # When dropping tool items (e.g. fishing rod) should they be dropped with a random durability
 # instead of always full durability?

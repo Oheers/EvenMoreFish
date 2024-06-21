@@ -5,9 +5,9 @@ import com.google.gson.Gson;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
+import com.oheers.fish.database.DatabaseUtil;
 import com.oheers.fish.database.DatabaseV3;
-import com.oheers.fish.database.FishReport;
-import com.oheers.fish.database.Table;
+import com.oheers.fish.database.connection.ConnectionFactory;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +26,11 @@ import java.util.logging.Level;
 
 public class LegacyToV3DatabaseMigration {
     private final DatabaseV3 database;
+    private final ConnectionFactory connectionFactory;
     
-    public LegacyToV3DatabaseMigration(final DatabaseV3 database) {
+    public LegacyToV3DatabaseMigration(final DatabaseV3 database, final ConnectionFactory connectionFactory) {
         this.database = database;
+        this.connectionFactory = connectionFactory;
     }
     
     /**
@@ -36,13 +38,13 @@ public class LegacyToV3DatabaseMigration {
      * format for all the tables and to have a more descriptive name for this stuff.
      */
     private void translateFishDataV2() {
-        if (database.queryTableExistence(Table.EMF_FISH.getTableID())) {
+        if (database.queryTableExistence("${table.prefix}fish")) {
             return;
         }
         
         if (database.queryTableExistence("Fish2")) {
             database.executeStatement(c -> {
-                try (PreparedStatement preparedStatement = c.prepareStatement("ALTER TABLE Fish2 RENAME TO " + Table.EMF_FISH.getTableID() + ";")) {
+                try (PreparedStatement preparedStatement = c.prepareStatement(DatabaseUtil.parseSqlString("ALTER TABLE Fish2 RENAME TO ${table.prefix}fish;", c))) {
                     preparedStatement.execute();
                 } catch (SQLException e) {
                     EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
@@ -50,29 +52,21 @@ public class LegacyToV3DatabaseMigration {
             });
             return;
         }
-        
-        database.executeStatement(c -> {
-            try (PreparedStatement preparedStatement = c.prepareStatement(Table.EMF_FISH.creationCode)) {
-                preparedStatement.execute();
-            } catch (SQLException e) {
-                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
-            }
-        });
-        
+        connectionFactory.legacyInitVersion();
     }
     
     /**
      * Loops through each fish report passed through and sets all the default values for the user in the database. Note
      * that the user must already have a field within the database. All data regarding competitions and the total size does
      * not exist within the V2 and V1 recording system so are set to 0 by default, as this lost data cannot be recovered.
-     * Similarly, the latest fish cannot be retrieved so the "None" fish is left, to reference there is no value here yet.
+     * Similarly, the latest fish cannot be retrieved, so the "None" fish is left, to reference there is no value here yet.
      * <p>
      * This should only be used during the V1/2 -> V3 migration process.
      *
      * @param uuid    The user
      * @param reports The V2 fish reports associated with the user.
      */
-    private void translateFishReportsV2(final UUID uuid, final @NotNull List<FishReport> reports) {
+    private void translateFishReportsV2(final UUID uuid, final @NotNull List<LegacyFishReport> reports) {
         String firstFishID = "";
         long epochFirst = Long.MAX_VALUE;
         String largestFishID = "";
@@ -80,7 +74,7 @@ public class LegacyToV3DatabaseMigration {
         
         int totalFish = 0;
         
-        for (FishReport report : reports) {
+        for (LegacyFishReport report : reports) {
             if (report.getTimeEpoch() < epochFirst) {
                 epochFirst = report.getTimeEpoch();
                 firstFishID = report.getRarity() + ":" + report.getName();
@@ -92,8 +86,8 @@ public class LegacyToV3DatabaseMigration {
             
             totalFish += report.getNumCaught();
             database.executeStatement(c -> {
-                String emfFishLogSQL = "INSERT INTO emf_fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (?,?,?,?,?,?)";
-                try (PreparedStatement prep = c.prepareStatement(emfFishLogSQL)) {
+                String emfFishLogSQL = "INSERT INTO ${table.prefix}fish_log (id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (?,?,?,?,?,?)";
+                try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(emfFishLogSQL, c))) {
                     prep.setInt(1, database.getUserID(uuid));
                     prep.setString(2, report.getRarity());
                     prep.setString(3, report.getName());
@@ -113,10 +107,10 @@ public class LegacyToV3DatabaseMigration {
     }
     
     private void createFieldForFishFirstTimeFished(final UUID uuid, final String firstFishID, final String largestFishID, int totalFish, float largestSize) {
-        String emfUsersSQL = "UPDATE emf_users SET first_fish = ?, largest_fish = ?, num_fish_caught = ?, largest_length = ? WHERE uuid = ?;";
+        String emfUsersSQL = "UPDATE ${table.prefix}users SET first_fish = ?, largest_fish = ?, num_fish_caught = ?, largest_length = ? WHERE uuid = ?;";
         // starts a field for the new fish that's been fished for the first time
         database.executeStatement(c -> {
-            try (PreparedStatement prep = c.prepareStatement(emfUsersSQL)) {
+            try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(emfUsersSQL,c))) {
                 prep.setString(1, firstFishID);
                 prep.setString(2, largestFishID);
                 prep.setInt(3, totalFish);
@@ -171,17 +165,18 @@ public class LegacyToV3DatabaseMigration {
         
         try {
             translateFishDataV2();
-            database.createTables(true);
+            this.connectionFactory.legacyFlywayBaseline();
             
             for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
-                Type fishReportList = new TypeToken<List<FishReport>>() {
+                Type fishReportList = new TypeToken<List<LegacyFishReport>>() {
                 }.getType();
                 
                 Gson gson = new Gson();
-                List<FishReport> reports;
+                List<LegacyFishReport> reports;
                 try(FileReader reader = new FileReader(file)) {
                     reports = gson.fromJson(reader, fishReportList);
                 }
+
                 UUID playerUUID = UUID.fromString(file.getName().substring(0, file.getName().lastIndexOf(".")));
                 database.createUser(playerUUID);
                 translateFishReportsV2(playerUUID, reports);
@@ -202,8 +197,7 @@ public class LegacyToV3DatabaseMigration {
             throw new RuntimeException(e);
         }
         
-        Message migratedMSG = new Message("Migration completed. Your database is now using the V3 database engine: you do" +
-            " not need to restart or reload your server to complete the process.");
+        Message migratedMSG = new Message("Migration completed. Your database is now using the V3 database engine: to complete the migration, it is recommended to restart your server.");
         migratedMSG.usePrefix(PrefixType.ERROR);
         migratedMSG.broadcast(initiator, false);
         
@@ -211,7 +205,9 @@ public class LegacyToV3DatabaseMigration {
             " updates such as quests, deliveries and a fish log. - Oheers");
         thankyou.usePrefix(PrefixType.ERROR);
         thankyou.broadcast(initiator, false);
-    
+
         database.setUsingV2(false);
+        //Run the rest of the migrations, and ensure it's properly setup.
+        connectionFactory.flyway5toLatest();
     }
 }

@@ -31,9 +31,7 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("random-durability", true);
     }
 
-    public boolean databaseEnabled() {
-        return doingExperimentalFeatures() && getConfig().getBoolean("database", true);
-    }
+
 
     public boolean isDatabaseOnline() {
         return databaseEnabled() && !EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2();
@@ -197,29 +195,12 @@ public class MainConfig extends ConfigBase {
         else return returning;
     }
 
-    public boolean isMysql() {
-        return getConfig().getBoolean("mysql.use-mysql", false);
-    }
 
     public boolean doDBVerbose() {
         return !getConfig().getBoolean("disable-db-verbose", false);
     }
 
-    public String getAddress() {
-        return getConfig().getString("mysql.address", "localhost");
-    }
 
-    public String getDatabase() {
-        return getConfig().getString("mysql.database", "evenmorefish");
-    }
-
-    public String getUsername() {
-        return getConfig().getString("mysql.username", "root");
-    }
-
-    public String getPassword() {
-        return getConfig().getString("mysql.password", "");
-    }
 
     public boolean blockPlacingHeads() {
         return getConfig().getBoolean("place-head-fish", false);
@@ -240,9 +221,34 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("debug-session", false);
     }
 
-    public boolean doingExperimentalFeatures() {
-        return getConfig().getBoolean("experimental-features", false);
+    public boolean databaseEnabled() {
+        return getConfig().getBoolean("database.enabled", false);
     }
+
+    public String getAddress() {
+        return getConfig().getString("database.address", "localhost");
+    }
+
+    public String getDatabase() {
+        return getConfig().getString("database.database", "database");
+    }
+
+    public String getUsername() {
+        return getConfig().getString("database.username", "root");
+    }
+
+    public String getPassword() {
+        return getConfig().getString("database.password", "");
+    }
+
+    public String getPrefix() {
+        return getConfig().getString("database.prefix", "emf_");
+    }
+
+    public String getDatabaseType() {
+        return getConfig().getString("database.type", "sqlite");
+    }
+
 
     public boolean useAdditionalAddons() {
         return getConfig().getBoolean("addons.additional-addons", true);

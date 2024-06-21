@@ -64,6 +64,6 @@ public class FishReport {
 
     @Override
     public String toString() {
-        return "FishReport=[name:" + name + ", rarity:" + rarity + ", largestLength:" + size + ", numCaught:" + numCaught;
+        return "FishReport=[name:" + name + ", rarity:" + rarity + ", largestLength:" + size + ", numCaught:" + numCaught + "]";
     }
 }
