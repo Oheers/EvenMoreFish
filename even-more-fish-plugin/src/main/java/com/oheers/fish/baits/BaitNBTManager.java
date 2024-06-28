@@ -2,10 +2,10 @@ package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.config.BaitFile;
-import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -357,11 +357,10 @@ public class BaitNBTManager {
 
                 for (String bait : rodNBT.split(",")) {
                     baitCount++;
-                    lore.add(new OldMessage()
-                            .setMSG(BaitFile.getInstance().getBaitFormat())
-                            .setAmount(bait.split(":")[1])
-                            .setBait(getBaitFormatted(bait.split(":")[0]))
-                            .toString());
+                    Message message = new Message(BaitFile.getInstance().getBaitFormat());
+                    message.setAmount(bait.split(":")[1]);
+                    message.setBait(getBaitFormatted(bait.split(":")[0]));
+                    lore.add(message.getRawMessage(true));
                 }
 
                 if (BaitFile.getInstance().showUnusedBaitSlots()) {
@@ -370,11 +369,10 @@ public class BaitNBTManager {
                     }
                 }
             } else {
-                lore.add(new OldMessage()
-                        .setMSG(lineAddition)
-                        .setCurrBaits(Integer.toString(getNumBaitsApplied(itemStack)))
-                        .setMaxBaits(Integer.toString(BaitFile.getInstance().getMaxBaits()))
-                        .toString());
+                Message message = new Message(lineAddition);
+                message.setCurrentBaits(Integer.toString(getNumBaitsApplied(itemStack)));
+                message.setMaxBaits(Integer.toString(BaitFile.getInstance().getMaxBaits()));
+                lore.add(message.getRawMessage(true));
             }
         }
 

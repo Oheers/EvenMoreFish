@@ -5,7 +5,6 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.config.messages.OldMessage;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
@@ -116,25 +115,33 @@ public class Bait {
             if (lineAddition.equals("{boosts}")) {
 
                 if (!rarityList.isEmpty()) {
-                    if (rarityList.size() > 1)
-                        lore.add(new OldMessage().setMSG(BaitFile.getInstance().getBoostRaritiesFormat()).setAmount(Integer.toString(rarityList.size())).setBaitTheme(theme).toString());
-                    else
-                        lore.add(new OldMessage().setMSG(BaitFile.getInstance().getBoostRarityFormat()).setAmount(Integer.toString(1)).setBaitTheme(theme).toString());
+                    Message message;
+                    if (rarityList.size() > 1) {
+                        message = new Message(BaitFile.getInstance().getBoostRaritiesFormat());
+                    } else {
+                        message = new Message(BaitFile.getInstance().getBoostRarityFormat());
+                    }
+                    message.setAmount(Integer.toString(rarityList.size()));
+                    message.setBaitTheme(theme);
+                    lore.add(message.getRawMessage(true));
                 }
 
                 if (!fishList.isEmpty()) {
-                    lore.add(new OldMessage().setMSG(BaitFile.getInstance().getBoostFishFormat()).setAmount(Integer.toString(fishList.size())).setBaitTheme(theme).toString());
+                    Message message = new Message(BaitFile.getInstance().getBoostFishFormat());
+                    message.setAmount(Integer.toString(fishList.size()));
+                    message.setBaitTheme(theme);
+                    lore.add(message.getRawMessage(true));
                 }
 
             } else if (lineAddition.equals("{lore}")) {
-                BaitFile.getInstance().getLore(this.name).forEach(line -> lore.add(new OldMessage()
-                        .setMSG(line)
-                        .toString()));
+                BaitFile.getInstance().getLore(this.name).forEach(line -> {
+                    Message message = new Message(line);
+                    lore.add(message.getRawMessage(true));
+                });
             } else {
-                lore.add(new OldMessage()
-                        .setMSG(lineAddition)
-                        .setBaitTheme(theme)
-                        .toString());
+                Message message = new Message(lineAddition);
+                message.setBaitTheme(theme);
+                lore.add(message.getRawMessage(true));
             }
         }
 

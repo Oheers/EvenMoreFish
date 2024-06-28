@@ -538,6 +538,24 @@ public class Message {
     }
 
     /**
+     * The amount of baits currently applied to the item.
+     *
+     * @param currentBaits The amount of baits.
+     */
+    public void setCurrentBaits(String currentBaits) {
+        setVariable("{current_baits}", currentBaits);
+    }
+
+    /**
+     * The max amount of baits that can be applied to the item.
+     *
+     * @param maxBaits The max amount of baits.
+     */
+    public void setMaxBaits(String maxBaits) {
+        setVariable("{max_baits}", maxBaits);
+    }
+
+    /**
      * Will replace the variable in the lore with
      * a new lore with multiple lines if wanted
      *
