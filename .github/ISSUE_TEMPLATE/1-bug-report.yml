@@ -37,7 +37,7 @@ body:
     attributes:
       label: Development Version
       description: What development version are you running?
-      placeholder: "ex. 1.7#50"
+      placeholder: "ex. 1.7.2#50"
     validations:
       required: false
   - type: input
