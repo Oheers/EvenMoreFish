@@ -1,5 +1,6 @@
 package com.oheers.fish.config;
 
+import com.oheers.fish.EvenMoreFish;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -69,7 +70,13 @@ public class ConfigBase {
         return configFile;
     }
 
-    public FileConfiguration getConfig() { return this.config; }
+    public FileConfiguration getConfig() {
+        if (this.config == null) {
+            EvenMoreFish.getInstance().getLogger().warning(getFileName() + " has not loaded properly. Please check for earlier errors.");
+            return new YamlConfiguration();
+        }
+        return this.config;
+    }
 
     public File getFile() { return file; }
 
