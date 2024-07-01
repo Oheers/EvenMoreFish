@@ -45,7 +45,7 @@ public class GUIBuilder {
      * @param section The ConfigurationSection for this GUI
      */
     public GUIBuilder(@NotNull ConfigurationSection section) {
-        this.title = new Message(section.getString("title", "Inventory")).getRawMessage(false);
+        this.title = new Message(section.getString("title", "EvenMoreFish Inventory")).getRawMessage(false);
         this.layout = section.getStringList("layout").toArray(new String[0]);
         this.elements = new ArrayList<>();
         this.fillerItem = ItemUtils.getMaterial(section.getString("filler"), Material.GRAY_STAINED_GLASS_PANE);
