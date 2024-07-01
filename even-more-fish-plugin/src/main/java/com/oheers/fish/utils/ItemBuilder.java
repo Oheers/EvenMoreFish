@@ -1,5 +1,6 @@
 package com.oheers.fish.utils;
 
+import com.oheers.fish.config.messages.Message;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -93,10 +94,10 @@ public class ItemBuilder {
             return stack;
         }
         if (this.display != null) {
-            meta.setDisplayName(this.display);
+            meta.setDisplayName(new Message(this.display).getRawMessage(false));
         }
         if (!this.lore.isEmpty()) {
-            meta.setLore(this.lore);
+            meta.setLore(new Message(this.lore).getRawListMessage(false));
         }
         stack.setItemMeta(meta);
         if (this.glowing) {
