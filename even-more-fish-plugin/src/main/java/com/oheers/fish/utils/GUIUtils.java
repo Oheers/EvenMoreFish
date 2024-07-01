@@ -73,6 +73,15 @@ public class GUIUtils {
         );
     }
 
+    public static GuiPageElement[] getPageElements() {
+        return new GuiPageElement[]{
+                getFirstPageButton(),
+                getPreviousPageButton(),
+                getNextPageButton(),
+                getLastPageButton()
+        };
+    }
+
     public static ItemStack createItemStack(@NotNull String materialName, @NotNull Material defaultMaterial, @NotNull String display, @NotNull List<String> lore) {
         return new ItemBuilder(materialName, defaultMaterial)
                 .withDisplay(display)
