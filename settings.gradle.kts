@@ -57,7 +57,7 @@ dependencyResolutionManagement {
             library("essx-api", "net.essentialsx:EssentialsX:2.20.1")
 
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
-            library("inventorygui", "de.themoep:inventorygui:1.6.1-SNAPSHOT")
+            library("inventorygui", "de.themoep:inventorygui:1.6.2-SNAPSHOT")
         }
     }
 }
