@@ -1,8 +1,10 @@
 package com.oheers.fish.gui;
 
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.utils.ItemUtils;
 import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.InventoryGui;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -31,7 +33,7 @@ public class GUIBuilder {
      * @param fillerItem The GUI's Filler Item
      */
     public GUIBuilder(@NotNull String title, @NotNull String[] layout, @NotNull Material fillerItem, @Nullable InventoryGui.CloseAction closeAction) {
-        this.title = title;
+        this.title = new Message(title).getRawMessage(false);
         this.layout = layout;
         this.elements = new ArrayList<>();
         this.fillerItem = fillerItem;
@@ -43,7 +45,7 @@ public class GUIBuilder {
      * @param section The ConfigurationSection for this GUI
      */
     public GUIBuilder(@NotNull ConfigurationSection section) {
-        this.title = section.getString("title", "Inventory");
+        this.title = new Message(section.getString("title", "Inventory")).getRawMessage(false);
         this.layout = section.getStringList("layout").toArray(new String[0]);
         this.elements = new ArrayList<>();
         this.fillerItem = ItemUtils.getMaterial(section.getString("filler"), Material.GRAY_STAINED_GLASS_PANE);
