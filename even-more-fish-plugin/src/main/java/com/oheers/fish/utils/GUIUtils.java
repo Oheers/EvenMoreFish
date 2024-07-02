@@ -109,4 +109,16 @@ public class GUIUtils {
         );
     }
 
+    public static ItemStack getFillerItem(@Nullable String materialName, @NotNull Material defaultMaterial) {
+        Material material = ItemUtils.getMaterial(materialName, defaultMaterial);
+        ItemStack stack = new ItemStack(material);
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null) {
+            return stack;
+        }
+        meta.setDisplayName("");
+        stack.setItemMeta(meta);
+        return stack;
+    }
+
 }
