@@ -12,6 +12,7 @@ import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -31,7 +32,7 @@ import java.util.UUID;
 public class ItemFactory {
 
     private final String configLocation;
-    private final FileConfiguration configurationFile;
+    private final ConfigurationSection configurationFile;
     private ItemStack product;
     private int chosenRandomIndex = -1;
     private boolean itemRandom;
@@ -46,7 +47,21 @@ public class ItemFactory {
     private boolean xmas2022Item;
     private String displayName;
 
-    public ItemFactory(String configLocation, boolean xmas2022Item) {
+    /**
+     * Creates an instance of ItemFactory based on the provided ConfigurationSection
+     * Defaults to raw materials.
+     * @param configLocation The location of the item config
+     * @param configurationFile The config to check
+     */
+    public ItemFactory(@NotNull String configLocation, @NotNull ConfigurationSection configurationFile) {
+        this.xmas2022Item = false;
+        this.configLocation = configLocation;
+        this.configurationFile = configurationFile;
+        this.rawMaterial = false;
+        this.product = getType(null);
+    }
+
+    public ItemFactory(@NotNull String configLocation, boolean xmas2022Item) {
         this.xmas2022Item = xmas2022Item;
         this.configLocation = configLocation;
         this.configurationFile = getConfiguration();
@@ -618,6 +633,16 @@ public class ItemFactory {
         setItemDamageCheck(true);
         setItemDyeCheck(true);
         setItemGlowCheck(true);
+        setPotionMetaCheck(true);
+    }
+
+    public void enableAllChecks() {
+        setItemDisplayNameCheck(true);
+        setItemLoreCheck(true);
+        setItemDamageCheck(true);
+        setItemDyeCheck(true);
+        setItemGlowCheck(true);
+        setItemModelDataCheck(true);
         setPotionMetaCheck(true);
     }
 
