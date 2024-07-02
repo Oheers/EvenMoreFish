@@ -1,11 +1,16 @@
 package com.oheers.fish.utils;
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.GUIConfig;
+import com.oheers.fish.config.messages.Message;
 import de.themoep.inventorygui.GuiPageElement;
+import de.themoep.inventorygui.InventoryGui;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -87,6 +92,21 @@ public class GUIUtils {
                 .withDisplay(display)
                 .withLore(lore)
                 .build();
+    }
+
+    public static InventoryGui createGUI(@Nullable ConfigurationSection section) {
+        if (section == null) {
+            return new InventoryGui(
+                    EvenMoreFish.getInstance(),
+                    new Message("&cBroken GUI! Please tell an admin!").getRawMessage(false),
+                    new String[0]
+            );
+        }
+        return new InventoryGui(
+                EvenMoreFish.getInstance(),
+                new Message(section.getString("title", "EvenMoreFish Inventory")).getRawMessage(false),
+                section.getStringList("layout").toArray(new String[0])
+        );
     }
 
 }
