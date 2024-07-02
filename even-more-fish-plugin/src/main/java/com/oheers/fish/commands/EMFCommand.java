@@ -43,6 +43,12 @@ public class EMFCommand extends BaseCommand {
         new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, false);
     }
 
+    @Subcommand("gui")
+    @Description("%desc_general_gui%")
+    @CommandPermission(UserPerms.GUI)
+    public void onGui(final Player player) {
+    }
+
 
 
     @Default

@@ -175,6 +175,7 @@ help-general:
   help: "[noPrefix]Shows you this page."
   shop: "[noPrefix]Opens a shop to sell your fish."
   toggle: "[noPrefix]Toggles whether or not you receive custom fish."
+  gui: "[noPrefix]Opens the Main Menu GUI."
   admin: "[noPrefix]Admin command help page."
   sellall: "[noPrefix]Sell all the fish in your inventory."
   next: "[noPrefix]Show how much time is until the next competition."
