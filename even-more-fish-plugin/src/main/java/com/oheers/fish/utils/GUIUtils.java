@@ -2,17 +2,27 @@ package com.oheers.fish.utils;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.GUIConfig;
+import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.gui.MainMenuGUI;
+import com.oheers.fish.selling.SellGUI;
+import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiPageElement;
 import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GUIUtils {
 
@@ -121,6 +131,19 @@ public class GUIUtils {
         meta.setDisplayName("");
         stack.setItemMeta(meta);
         return stack;
+    }
+
+    public static StaticGuiElement getElement(@NotNull String configLocation, @NotNull ConfigurationSection section) {
+        ItemFactory factory = new ItemFactory(configLocation, section);
+        factory.enableAllChecks();
+        // Get ItemStack
+        ItemStack item = factory.createItem(null, -1);
+        // Get Character
+        char character = section.getString("character", "#").toCharArray()[0];
+        // Get Click Action
+        GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
+        // Create Element
+        return new StaticGuiElement(character, item, action);
     }
 
     public static Map<String, GuiElement.Action> getActionMap() {
