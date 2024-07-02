@@ -16,6 +16,8 @@ import java.util.List;
 
 public class GUIUtils {
 
+    private static Map<String, GuiElement.Action> actionMap = null;
+
     public static ItemStack getExitItem() {
         FileConfiguration config = GUIConfig.getInstance().getConfig();
         return createItemStack(
@@ -119,6 +121,47 @@ public class GUIUtils {
         meta.setDisplayName("");
         stack.setItemMeta(meta);
         return stack;
+    }
+
+    public static Map<String, GuiElement.Action> getActionMap() {
+        if (actionMap != null) {
+            return actionMap;
+        }
+        Map<String, GuiElement.Action> newActionMap = new HashMap<>();
+        // Exiting the main menu should close the GUI
+        newActionMap.put("main-menu-exit", click -> {
+            click.getGui().close();
+            return true;
+        });
+        // Exiting a sub-menu should open the main menu
+        newActionMap.put("sub-menu-exit", click -> {
+            new MainMenuGUI(click.getWhoClicked()).open();
+            return true;
+        });
+        // Toggling custom fish should redraw the GUI and leave it at that
+        newActionMap.put("fish_toggle", click -> {
+            HumanEntity humanEntity = click.getWhoClicked();
+            if (EvenMoreFish.getInstance().getDisabledPlayers().contains(humanEntity.getUniqueId())) {
+                EvenMoreFish.getInstance().getDisabledPlayers().remove(humanEntity.getUniqueId());
+                new Message(ConfigMessage.TOGGLE_ON).broadcast(humanEntity, false);
+            } else {
+                EvenMoreFish.getInstance().getDisabledPlayers().add(humanEntity.getUniqueId());
+                new Message(ConfigMessage.TOGGLE_OFF).broadcast(humanEntity, false);
+            }
+            click.getGui().draw();
+            return true;
+        });
+        // The shop action should just open the shop menu
+        newActionMap.put("open_shop", click -> {
+            HumanEntity humanEntity = click.getWhoClicked();
+            if (humanEntity instanceof Player) {
+                Player player = (Player) humanEntity;
+                new SellGUI(player).open();
+            }
+            return true;
+        });
+        actionMap = newActionMap;
+        return newActionMap;
     }
 
 }
