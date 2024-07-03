@@ -630,7 +630,7 @@ public class Competition {
         if (allowedRarities.isEmpty()) {
             EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competitionName + " competition config contains no loaded rarities!");
             EvenMoreFish.getInstance().getLogger().severe("Configured Rarities: " + configRarities);
-            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
+            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).toList());
             return false;
         }
 

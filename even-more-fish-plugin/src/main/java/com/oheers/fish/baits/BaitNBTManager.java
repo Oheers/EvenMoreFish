@@ -171,13 +171,13 @@ public class BaitNBTManager {
                     cursorModifier.set(-quantity);
                 }
             } else {
-                if (combined.length() > 0) {
+                if (!combined.isEmpty()) {
                     combined.deleteCharAt(combined.length() - 1);
                 }
             }
             NBT.modify(item, nbt -> {
                 ReadWriteNBT emfCompound = nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
-                if (combined.length() > 0) {
+                if (!combined.isEmpty()) {
                     emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
                 } else {
                     emfCompound.removeKey(NbtKeys.EMF_APPLIED_BAIT);
@@ -199,7 +199,7 @@ public class BaitNBTManager {
             });
         }
 
-        if (doingLoreStuff && combined.length() >= 1) {
+        if (doingLoreStuff && !combined.isEmpty()) {
             ItemMeta meta = item.getItemMeta();
             meta.setLore(newApplyLore(item));
             item.setItemMeta(meta);

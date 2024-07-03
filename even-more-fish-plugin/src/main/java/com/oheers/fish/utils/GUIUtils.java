@@ -1,6 +1,5 @@
 package com.oheers.fish.utils;
 
-import co.aikar.commands.CommandHelp;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -218,8 +217,7 @@ public class GUIUtils {
         // The shop action should just open the shop menu
         newActionMap.put("open-shop", click -> {
             HumanEntity humanEntity = click.getWhoClicked();
-            if (humanEntity instanceof Player) {
-                Player player = (Player) humanEntity;
+            if (humanEntity instanceof Player player) {
                 new SellGUI(player).open();
             }
             return true;

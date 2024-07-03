@@ -261,7 +261,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         for (final String fileName : Arrays.stream(DefaultAddons.values())
                 .map(DefaultAddons::getFullFileName)
-                .collect(Collectors.toList())) {
+                .toList()) {
             final File addonFile = new File(getDataFolder(), "addons/" + fileName);
             final File jarFile = new File(getDataFolder(), "addons/" + fileName.replace(".addon", ".jar"));
             if (!jarFile.exists()) {
@@ -417,7 +417,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream()
                     .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId))
                     .findFirst();
-            if (!potentialRarity.isPresent()) {
+            if (potentialRarity.isEmpty()) {
                 throw new InvalidCommandArgument("No such rarity: " + rarityId);
             }
 
@@ -430,7 +430,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                     .filter(f -> f.getName().equalsIgnoreCase(fishId.replace("_", " ")) || f.getName().equalsIgnoreCase(fishId))
                     .findFirst();
 
-            if (!potentialFish.isPresent()) {
+            if (potentialFish.isEmpty()) {
                 throw new InvalidCommandArgument("No such fish: " + fishId);
             }
 
@@ -848,8 +848,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // Check Essentials
         if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("Essentials");
-            if (plugin instanceof Essentials) {
-                Essentials essentials = (Essentials) plugin;
+            if (plugin instanceof Essentials essentials) {
                 players = players.stream().filter(player -> !essentials.getUser(player).isVanished()).collect(Collectors.toList());
             }
         }

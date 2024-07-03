@@ -19,7 +19,7 @@ public class DataManager {
     private Cache<UUID, List<FishReport>> fishReportCache;
 
     private void setup() {
-        Expiry<? super UUID, UserReport> userReportExpiry = new Expiry<UUID, UserReport>() {
+        Expiry<? super UUID, UserReport> userReportExpiry = new Expiry<>() {
             @Override
             public long expireAfterCreate(@NotNull UUID uuid, @NotNull UserReport userReport, long l) {
                 return getCacheDuration(uuid);
@@ -38,7 +38,7 @@ public class DataManager {
 
         userReportCache = Caffeine.newBuilder().expireAfter(userReportExpiry).build();
 
-        Expiry<? super UUID, List<FishReport>> fishReportExpiry = new Expiry<UUID, List<FishReport>>() {
+        Expiry<? super UUID, List<FishReport>> fishReportExpiry = new Expiry<>() {
             @Override
             public long expireAfterCreate(@NotNull UUID uuid, @NotNull List<FishReport> fishReports, long l) {
                 return getCacheDuration(uuid);

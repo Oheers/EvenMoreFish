@@ -53,10 +53,9 @@ public class AddonManager {
         }
 
         final Addon addon = addonMap.get(prefix);
-        if (!(addon instanceof ItemAddon)) {
+        if (!(addon instanceof ItemAddon itemAddon)) {
             return new ItemStack(Material.AIR);
         }
-        ItemAddon itemAddon = (ItemAddon) addon;
         return itemAddon.getItemStack(id);
     }
 
@@ -76,8 +75,7 @@ public class AddonManager {
 
         this.loadingMap.put(prefix, false);
         this.addonMap.put(prefix, addon);
-        if (addon instanceof Listener) {
-            Listener listener = (Listener) addon;
+        if (addon instanceof Listener listener) {
             Bukkit.getPluginManager().registerEvents(listener, plugin);
         }
         return true;
@@ -107,8 +105,7 @@ public class AddonManager {
                 return Optional.empty();
             }
 
-            if (addonInstance instanceof Listener) {
-                final Listener listener = (Listener) addonInstance;
+            if (addonInstance instanceof Listener listener) {
                 Bukkit.getPluginManager().registerEvents(listener, plugin);
             }
 
@@ -174,7 +171,7 @@ public class AddonManager {
                     .map(this::registerAddon)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .collect(Collectors.toList());
+                    .toList();
 
 
             final String message = String.format("%s new addons registered! (%s total)", registered.size(), addonMap.keySet().size());
@@ -190,8 +187,7 @@ public class AddonManager {
         registerAll();
 
         for (Map.Entry<String, Addon> entry : addonMap.entrySet()) {
-            if (entry.getValue() instanceof Listener) {
-                final Listener listener = (Listener) entry.getValue();
+            if (entry.getValue() instanceof Listener listener) {
                 Bukkit.getPluginManager().registerEvents(listener, plugin);
             }
         }

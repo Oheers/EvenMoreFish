@@ -102,7 +102,7 @@ public class Message {
      */
     private void colourFormat() {
         Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+        StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
         while (matcher.find()) {
             String group = matcher.group(1);
             matcher.appendReplacement(buffer, COLOR_CHAR + "x"

@@ -48,7 +48,7 @@ public class BaitListener implements Listener {
             return;
         }
 
-        ApplicationResult result = null;
+        ApplicationResult result;
         Bait bait = EvenMoreFish.getInstance().getBaits().get(BaitNBTManager.getBaitName(event.getCursor()));
 
         ItemStack fishingRod = clickedItem;
@@ -127,11 +127,9 @@ public class BaitListener implements Listener {
     }
 
     private boolean anvilCheck(InventoryClickEvent event) {
-        if (!(event.getClickedInventory() instanceof AnvilInventory) || !(event.getWhoClicked() instanceof Player)) {
+        if (!(event.getClickedInventory() instanceof AnvilInventory inv) || !(event.getWhoClicked() instanceof Player player)) {
             return false;
         }
-        Player player = (Player) event.getWhoClicked();
-        AnvilInventory inv = (AnvilInventory) event.getClickedInventory();
         if (event.getSlot() == 2 && BaitNBTManager.isBaitedRod(inv.getItem(1))) {
             event.setCancelled(true);
             player.closeInventory();

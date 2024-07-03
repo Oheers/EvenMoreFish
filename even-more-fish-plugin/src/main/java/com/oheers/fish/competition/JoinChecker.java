@@ -27,7 +27,7 @@ public class JoinChecker implements Listener {
     public void databaseRegistration(UUID userUUID, String userName) {
         if (MainConfig.getInstance().isDatabaseOnline()) {
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                List<FishReport> fishReports = new ArrayList<>();
+                List<FishReport> fishReports;
 
 
                 if (EvenMoreFish.getInstance().getDatabaseV3().hasUserLog(userUUID)) {
