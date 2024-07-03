@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemUtils {
 
-    public static @NotNull Material getMaterial(@NotNull String materialName, @NotNull Material defaultMaterial) {
+    public static @NotNull Material getMaterial(@Nullable String materialName, @NotNull Material defaultMaterial) {
         Material material = getMaterial(materialName);
         if (material == null) {
             return defaultMaterial;
@@ -18,7 +18,10 @@ public class ItemUtils {
         return material;
     }
 
-    public static @Nullable Material getMaterial(@NotNull String materialName) {
+    public static @Nullable Material getMaterial(@Nullable String materialName) {
+        if (materialName == null) {
+            return null;
+        }
         try {
             return Material.valueOf(materialName.toUpperCase());
         } catch (IllegalArgumentException ex) {
@@ -26,7 +29,7 @@ public class ItemUtils {
         }
     }
 
-    public static boolean isValidMaterial(String materialName) {
+    public static boolean isValidMaterial(@Nullable String materialName) {
         if (materialName == null || materialName.isEmpty()) {
             return false;
         }
@@ -38,7 +41,7 @@ public class ItemUtils {
         }
     }
 
-    public static void glowify(ItemStack i) {
+    public static void glowify(@NotNull ItemStack i) {
         // plops on the unbreaking 1 enchantment to make it glow
         i.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = i.getItemMeta();

@@ -11,4 +11,5 @@ public class UserPerms {
     public static final String TOP = "emf.top";
     public static final String SELL_ALL = "emf.sellall";
     public static final String XMAS = "emf.xmas";
+    public static final String GUI = "emf.gui";
 }

@@ -10,6 +10,7 @@ import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
+import com.oheers.fish.gui.MainMenuGUI;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellGUI;
@@ -41,6 +42,13 @@ public class EMFCommand extends BaseCommand {
 
         EvenMoreFish.getInstance().getDisabledPlayers().add(player.getUniqueId());
         new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, false);
+    }
+
+    @Subcommand("gui")
+    @Description("%desc_general_gui%")
+    @CommandPermission(UserPerms.GUI)
+    public void onGui(final Player player) {
+        new MainMenuGUI(player).open();
     }
 
 

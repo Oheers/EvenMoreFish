@@ -9,7 +9,7 @@ include(":even-more-fish-plugin")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("spigot-api", "org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
+            library("spigot-api", "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("placeholder-api", "me.clip:placeholderapi:2.11.3")
             library("authlib", "com.mojang:authlib:1.5.21")
@@ -57,7 +57,7 @@ dependencyResolutionManagement {
             library("essx-api", "net.essentialsx:EssentialsX:2.20.1")
 
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
-            library("inventorygui", "de.themoep:inventorygui:1.6.1-SNAPSHOT")
+            library("inventorygui", "de.themoep:inventorygui:1.6.2-SNAPSHOT")
         }
     }
 }
