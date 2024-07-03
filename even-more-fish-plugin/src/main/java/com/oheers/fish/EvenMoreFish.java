@@ -156,10 +156,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new CompetitionConfig();
         new Xmas2022Config();
 
-        if (true || MainConfig.getInstance().debugSession()) {
-            new GUIConfig();
-            new GUIFillerConfig();
-        }
+        new GUIConfig();
+        new GUIFillerConfig();
 
         checkPapi();
 
@@ -554,10 +552,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         Messages.getInstance().reload();
         CompetitionConfig.getInstance().reload();
         Xmas2022Config.getInstance().reload();
-        if (true || MainConfig.getInstance().debugSession()) {
-            GUIConfig.getInstance().reload();
-            GUIFillerConfig.getInstance().reload();
-        }
+        GUIConfig.getInstance().reload();
+        GUIFillerConfig.getInstance().reload();
 
         if (MainConfig.getInstance().requireNBTRod()) {
             customNBTRod = createCustomNBTRod();
