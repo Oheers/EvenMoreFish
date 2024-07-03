@@ -49,7 +49,6 @@ public class ItemFactory {
 
     /**
      * Creates an instance of ItemFactory based on the provided ConfigurationSection
-     * Defaults to raw materials.
      * @param configLocation The location of the item config
      * @param configurationFile The config to check
      */
