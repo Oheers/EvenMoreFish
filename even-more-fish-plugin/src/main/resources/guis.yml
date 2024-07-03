@@ -1,7 +1,99 @@
 # This file is for the 1.7 release of EvenMoreFish, if you are using this before your plugin is using version 1.7.2 there
 # will likely be a few issues or changes to the file won't take effect on the plugin.
 
+# These elements are available in every gui.
+# They will only show up when pages are needed.
+general:
+  # Character: f
+  first-page:
+    item:
+      material: arrow
+    displayname: "&bFirst Page"
+    lore:
+      - "&eGo to the first page"
+  # Character: p
+  previous-page:
+    item:
+      material: paper
+    displayname: "&bPrevious Page"
+    lore:
+      - "&eGo to the previous page"
+  # Character: n
+  next-page:
+    item:
+      material: paper
+    displayname: "&bNext Page"
+    lore:
+      - "&eGo to the next page"
+  # Character: l
+  last-page:
+    item:
+      material: arrow
+    displayname: "&bLast Page"
+    lore:
+      - "&eGo to the last page"
+
 main-menu:
+  title: "&1EvenMoreFish"
+  layout:
+    - 1265i5621
+    - 23     32
+    - 4 t s h 4
+    - 23     32
+    - 1265x5621
+  # This should be the most used filler item.
+  filler: black_stained_glass_pane
+
+  fish-toggle:
+    item:
+      material: tropical_fish
+      displayname: "&6»     Toggle Custom Fish"
+    lore:
+      - "&f&m                                 "
+      - "&7Click this button to"
+      - "&7toggle custom fish."
+      - "&f&m                                 "
+    character: "t"
+    click-action: "fish-toggle"
+
+  open-shop:
+    item:
+      material: gold_ingot
+      displayname: "&6»     Open Fish Shop"
+    lore:
+      - "&f&m                                 "
+      - "&7Sell the fish you catch to"
+      - "&7earn a bit of extra money."
+      - "&f&m                                 "
+    character: "s"
+    click-action: "open-shop"
+
+  help-button:
+    item:
+      material: COMPASS
+      displayname: "&6»           Command Help"
+    lore:
+      - "&f&m                                 "
+      - "&7Shows a list of commands"
+      - "&7that can be used to use"
+      - "&7this plugin."
+      - "&f&m                                 "
+    character: "h"
+    click-action: "show-command-help"
+
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
+    lore:
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "full-exit"
+
+# TODO All of these are outdated and unused.
+
+main-menu-old:
   title: "&1EvenMoreFish"
 
   # Which layout should the filler background for the GUI show? View this link to see examples of the available layouts: https://www.bbc.co.uk/

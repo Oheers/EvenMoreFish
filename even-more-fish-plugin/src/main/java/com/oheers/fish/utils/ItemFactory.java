@@ -565,7 +565,11 @@ public class ItemFactory {
             ItemMeta meta = product.getItemMeta();
 
             if (meta != null) {
-                meta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
+                if (displayName.isEmpty()) {
+                    meta.setDisplayName("");
+                } else {
+                    meta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
+                }
             }
 
             product.setItemMeta(meta);

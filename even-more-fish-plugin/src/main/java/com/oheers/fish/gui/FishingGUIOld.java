@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FishingGUI implements InventoryHolder {
+public class FishingGUIOld implements InventoryHolder {
 
     final Inventory inventory;
     final int INV_SIZE = 54;
@@ -27,7 +27,7 @@ public class FishingGUI implements InventoryHolder {
      *
      * @param viewer The UUID of the player who will open the GUI.
      */
-    public FishingGUI(@NotNull final UUID viewer, @NotNull final FillerStyle fillerStyle) {
+    public FishingGUIOld(@NotNull final UUID viewer, @NotNull final FillerStyle fillerStyle) {
         this.inventory = Bukkit.createInventory(this, INV_SIZE, new Message(GUIConfig.getInstance().getGUIName("main-menu")).getRawMessage(false));
         loadFiller();
         this.viewer = viewer;
@@ -59,6 +59,6 @@ public class FishingGUI implements InventoryHolder {
     }
 
     public void loadFiller() {
-        GUIConfig.getInstance().fillerDefault.forEach(this.inventory::setItem);
+        //GUIConfig.getInstance().fillerDefault.forEach(this.inventory::setItem);
     }
 }

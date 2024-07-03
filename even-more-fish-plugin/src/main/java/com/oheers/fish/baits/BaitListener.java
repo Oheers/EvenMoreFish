@@ -1,13 +1,13 @@
 package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.utils.nbt.NbtKeys;
-import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.utils.nbt.NbtVersion;
 import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.GameMode;

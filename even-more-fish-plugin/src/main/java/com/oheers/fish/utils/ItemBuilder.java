@@ -2,12 +2,12 @@ package com.oheers.fish.utils;
 
 import com.oheers.fish.config.messages.Message;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemBuilder {
 
@@ -24,28 +24,6 @@ public class ItemBuilder {
         this.material = ItemUtils.getMaterial(materialName, defaultMaterial);
     }
 
-    /**
-     * Build an ItemBuilder from a ConfigurationSection object.
-     * @param section The ConfigurationSection for the item.
-     * @param defaultMaterial The default material to use, if the configured material is invalid.
-     */
-    public ItemBuilder(@NotNull ConfigurationSection section, @NotNull Material defaultMaterial) {
-        // Material
-        this.material = ItemUtils.getMaterial(section.getString("material", defaultMaterial.toString()), defaultMaterial);
-
-        // Display
-        String display = section.getString("display");
-        if (display != null) {
-            this.display = display;
-        }
-
-        // Lore
-        this.lore = section.getStringList("lore");
-
-        // Glowing
-        this.glowing = section.getBoolean("glowing");
-    }
-
     public ItemBuilder withMaterial(@NotNull Material material) {
         this.material = material;
         return this;
@@ -57,9 +35,6 @@ public class ItemBuilder {
     }
 
     public ItemBuilder withDisplay(@NotNull String display) {
-        if (replacer != null) {
-            display = replacer.replace(display);
-        }
         this.display = display;
         return this;
     }

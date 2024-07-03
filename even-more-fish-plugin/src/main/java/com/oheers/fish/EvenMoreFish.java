@@ -26,7 +26,10 @@ import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
-import com.oheers.fish.database.*;
+import com.oheers.fish.database.DataManager;
+import com.oheers.fish.database.DatabaseV3;
+import com.oheers.fish.database.FishReport;
+import com.oheers.fish.database.UserReport;
 import com.oheers.fish.events.*;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
@@ -153,8 +156,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new CompetitionConfig();
         new Xmas2022Config();
 
-        if (MainConfig.getInstance().debugSession()) {
+        if (true || MainConfig.getInstance().debugSession()) {
             new GUIConfig();
+            new GUIFillerConfig();
         }
 
         checkPapi();
@@ -550,8 +554,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         Messages.getInstance().reload();
         CompetitionConfig.getInstance().reload();
         Xmas2022Config.getInstance().reload();
-        if (MainConfig.getInstance().debugSession()) {
+        if (true || MainConfig.getInstance().debugSession()) {
             GUIConfig.getInstance().reload();
+            GUIFillerConfig.getInstance().reload();
         }
 
         if (MainConfig.getInstance().requireNBTRod()) {
@@ -585,6 +590,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // ConfigBase#updateConfig() will make sure these configs have the newest options
         MainConfig.getInstance().updateConfig();
         Messages.getInstance().updateConfig();
+        GUIConfig.getInstance().updateConfig();
 
         int COMP_CONFIG_VERSION = 1;
         if (CompetitionConfig.getInstance().configVersion() < COMP_CONFIG_VERSION) {
