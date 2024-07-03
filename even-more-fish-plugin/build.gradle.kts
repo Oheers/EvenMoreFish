@@ -1,8 +1,8 @@
 plugins {
     `java-library`
-    id("maven-publish")
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    `maven-publish`
+    alias(libs.plugins.bukkit.yml)
+    alias(libs.plugins.shadow)
 }
 
 group = "com.oheers.evenmorefish"
@@ -221,7 +221,7 @@ tasks {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(17))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
 }
