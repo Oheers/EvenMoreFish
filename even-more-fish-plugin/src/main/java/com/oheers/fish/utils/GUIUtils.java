@@ -179,9 +179,17 @@ public class GUIUtils {
                 .collect(Collectors.toList());
     }
 
+    public static boolean addAction(@NotNull String actionKey, @NotNull GuiElement.Action action) {
+        if (actionMap.containsKey(actionKey)) {
+            return false;
+        }
+        actionMap.put(actionKey, action);
+        return true;
+    }
+
     public static Map<String, GuiElement.Action> getActionMap() {
         if (actionMap != null) {
-            return actionMap;
+            return new HashMap<>(actionMap);
         }
         Map<String, GuiElement.Action> newActionMap = new HashMap<>();
         // Exiting the main menu should close the GUI
