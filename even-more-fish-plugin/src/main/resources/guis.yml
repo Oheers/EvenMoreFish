@@ -36,11 +36,11 @@ general:
 main-menu:
   title: "&1EvenMoreFish"
   layout:
-    - 1265i5621
-    - 23     32
-    - 4 t s h 4
-    - 23     32
-    - 1265x5621
+    - "126515621"
+    - "23     32"
+    - "4 t s h 4"
+    - "23     32"
+    - "1265x5621"
   # This should be the most used filler item.
   filler: black_stained_glass_pane
 
