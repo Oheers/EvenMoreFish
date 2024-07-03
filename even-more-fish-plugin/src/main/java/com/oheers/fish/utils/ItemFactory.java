@@ -53,9 +53,13 @@ public class ItemFactory {
      * @param configLocation The location of the item config
      * @param configurationFile The config to check
      */
-    public ItemFactory(@NotNull String configLocation, @NotNull ConfigurationSection configurationFile) {
+    public ItemFactory(@Nullable String configLocation, @NotNull ConfigurationSection configurationFile) {
         this.xmas2022Item = false;
-        this.configLocation = configLocation;
+        if (configLocation != null) {
+            this.configLocation = configLocation + ".";
+        } else {
+            this.configLocation = "";
+        }
         this.configurationFile = configurationFile;
         this.rawMaterial = false;
         this.product = getType(null);
@@ -63,7 +67,7 @@ public class ItemFactory {
 
     public ItemFactory(@NotNull String configLocation, boolean xmas2022Item) {
         this.xmas2022Item = xmas2022Item;
-        this.configLocation = configLocation;
+        this.configLocation = configLocation + ".";
         this.configurationFile = getConfiguration();
         this.rawMaterial = false;
         this.product = getType(null);
@@ -167,7 +171,7 @@ public class ItemFactory {
      * @return Null if the setting doesn't exist, the head in ItemStack form if it does.
      */
     private @Nullable ItemStack checkHeadUUID() {
-        String uValue = this.configurationFile.getString(configLocation + ".item.head-uuid");
+        String uValue = this.configurationFile.getString(configLocation + "item.head-uuid");
 
         // The fish has item: uuid selected
         // note - only works for players who have joined the server previously
@@ -193,7 +197,7 @@ public class ItemFactory {
      */
     private @Nullable ItemStack checkHead64() {
         // The fish has item: 64 selected
-        String bValue = this.configurationFile.getString(configLocation + ".item.head-64");
+        String bValue = this.configurationFile.getString(configLocation + "item.head-64");
         if (bValue != null) {
             return FishUtils.get(bValue);
         }
@@ -210,7 +214,7 @@ public class ItemFactory {
         // The fish has item: headdb selected
         if (!EvenMoreFish.getInstance().isUsingHeadsDB()) return null;
 
-        int headID = this.configurationFile.getInt(configLocation + ".item.headdb", -1);
+        int headID = this.configurationFile.getInt(configLocation + "item.headdb", -1);
         if (headID != -1) {
             return EvenMoreFish.getInstance().getHDBapi().getItemHead(Integer.toString(headID));
         }
@@ -225,7 +229,7 @@ public class ItemFactory {
      */
     private ItemStack checkMaterial() {
         // The fish has item: material selected
-        String mValue = this.configurationFile.getString(configLocation + ".item.material");
+        String mValue = this.configurationFile.getString(configLocation + "item.material");
         if (mValue == null) {
             return null;
         }
@@ -282,7 +286,7 @@ public class ItemFactory {
      */
     private ItemStack checkRandomMaterial(int randomIndex) {
 
-        List<String> lValues = this.configurationFile.getStringList(configLocation + ".item.materials");
+        List<String> lValues = this.configurationFile.getStringList(configLocation + "item.materials");
         if (!lValues.isEmpty()) {
 
             final Random rand = EvenMoreFish.getInstance().getRandom();
@@ -320,7 +324,7 @@ public class ItemFactory {
      * @return Null if the setting doesn't exist, a random ItemStack representation from a list of head-64 values if it does.
      */
     private ItemStack checkRandomHead64(int randomIndex) {
-        List<String> mh64Values = this.configurationFile.getStringList(configLocation + ".item.multiple-head-64");
+        List<String> mh64Values = this.configurationFile.getStringList(configLocation + "item.multiple-head-64");
         if (!mh64Values.isEmpty()) {
 
             final Random rand = EvenMoreFish.getInstance().getRandom();
@@ -344,7 +348,7 @@ public class ItemFactory {
         // The fish has item: headdb selected
         if (!EvenMoreFish.getInstance().isUsingHeadsDB()) return null;
 
-        List<Integer> headIDs = this.configurationFile.getIntegerList(configLocation + ".item.multiple-headdb");
+        List<Integer> headIDs = this.configurationFile.getIntegerList(configLocation + "item.multiple-headdb");
         if (!headIDs.isEmpty()) {
             final Random rand = EvenMoreFish.getInstance().getRandom();
 
@@ -370,7 +374,7 @@ public class ItemFactory {
      * @return Null if the setting doesn't exist, a random ItemStack representation from a list of head-uuid values if it does.
      */
     private @Nullable ItemStack checkRandomHeadUUID(int randomIndex) {
-        List<String> mhuValues = this.configurationFile.getStringList(configLocation + ".item.multiple-head-uuid");
+        List<String> mhuValues = this.configurationFile.getStringList(configLocation + "item.multiple-head-uuid");
         if (!mhuValues.isEmpty()) {
 
             final Random rand = EvenMoreFish.getInstance().getRandom();
@@ -410,7 +414,7 @@ public class ItemFactory {
      * {@code @returns} A skull with the player's head.
      */
     private ItemStack checkOwnHead(OfflinePlayer player) {
-        boolean ownHead = this.configurationFile.getBoolean(configLocation + ".item.own-head");
+        boolean ownHead = this.configurationFile.getBoolean(configLocation + "item.own-head");
         // Causes this to run each turn the create() is called.
         itemRandom = ownHead;
 
@@ -436,7 +440,7 @@ public class ItemFactory {
      * @return A raw itemstack with the material provided after setting rawMaterial to true.
      */
     private ItemStack checkRawMaterial() {
-        String materialID = this.configurationFile.getString(configLocation + ".item.raw-material");
+        String materialID = this.configurationFile.getString(configLocation + "item.raw-material");
         if(materialID != null) {
             rawMaterial = true;
         }
@@ -468,7 +472,7 @@ public class ItemFactory {
      * This requires that the item has been set using the setType() method.
      */
     private void applyGlow() {
-        if (this.configurationFile.getBoolean(configLocation + ".glowing", false)) {
+        if (this.configurationFile.getBoolean(configLocation + "glowing", false)) {
             this.product.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         }
     }
@@ -478,7 +482,7 @@ public class ItemFactory {
      * can be dyed (leather armour). The HIDE_DYE item flag is finally applied to the product's metadata.
      */
     public void applyDyeColour() {
-        String dyeColour = this.configurationFile.getString(configLocation + ".dye-colour");
+        String dyeColour = this.configurationFile.getString(configLocation + "dye-colour");
 
         if (dyeColour != null) {
             try {
@@ -492,7 +496,7 @@ public class ItemFactory {
 
                 product.setItemMeta(meta);
             } catch (ClassCastException exception) {
-                EvenMoreFish.getInstance().getLogger().severe("Could not fetch hex value: " + dyeColour + " from config location + " + configLocation + ". Item is likely not a leather material.");
+                EvenMoreFish.getInstance().getLogger().severe("Could not fetch hex value: " + dyeColour + " from config location + " + configLocation + " Item is likely not a leather material.");
             }
         }
     }
@@ -507,7 +511,7 @@ public class ItemFactory {
         if (meta instanceof Damageable) {
             Damageable nonDamaged = (Damageable) meta;
 
-            int predefinedDamage = this.configurationFile.getInt(configLocation + ".durability");
+            int predefinedDamage = this.configurationFile.getInt(configLocation + "durability");
             if (predefinedDamage >= 0 && predefinedDamage <= 100) {
                 nonDamaged.setDamage((int) (predefinedDamage / 100.0 * product.getType().getMaxDurability()));
             } else {
@@ -525,7 +529,7 @@ public class ItemFactory {
      * Adds model data to the item for use in custom texture packs etc.,
      */
     private void applyModelData() {
-        int value = this.configurationFile.getInt(configLocation + ".item.custom-model-data");
+        int value = this.configurationFile.getInt(configLocation + "item.custom-model-data");
         if (value != 0) {
             ItemMeta meta = product.getItemMeta();
 
@@ -538,7 +542,7 @@ public class ItemFactory {
     }
 
     private void applyLore() {
-        List<String> loreConfig = this.configurationFile.getStringList(configLocation + ".lore");
+        List<String> loreConfig = this.configurationFile.getStringList(configLocation + "lore");
         if (loreConfig.isEmpty()) return;
 
         Message lore = new Message(loreConfig);
@@ -554,7 +558,7 @@ public class ItemFactory {
      * reason is.
      */
     private void applyDisplayName() {
-        String displayName = this.configurationFile.getString(configLocation + ".item.displayname");
+        String displayName = this.configurationFile.getString(configLocation + "item.displayname");
 
         if (displayName == null && this.displayName != null) displayName = this.displayName;
 
@@ -575,23 +579,23 @@ public class ItemFactory {
      * alert the admins.
      */
     private void applyPotionMeta() {
-        String potionSettings = this.configurationFile.getString(configLocation + ".item.potion");
+        String potionSettings = this.configurationFile.getString(configLocation + "item.potion");
 
         if (potionSettings == null) return;
         if (!(product.getItemMeta() instanceof PotionMeta)) return;
 
         String[] split = potionSettings.split(":");
         if (split.length != 3) {
-            EvenMoreFish.getInstance().getLogger().severe(configLocation + ".item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\".");
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + "item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\".");
         }
 
         PotionMeta meta = ((PotionMeta) product.getItemMeta());
         try {
             meta.addCustomEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(split[0])), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2]) - 1, false), true);
         } catch (NumberFormatException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(configLocation + ".item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\", where duration & amplifier are integer values.");
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + "item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\", where duration & amplifier are integer values.");
         } catch (NullPointerException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(configLocation + ".item.potion: " + split[0] + " is not a valid potion name. A list can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html");
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + "item.potion: " + split[0] + " is not a valid potion name. A list can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html");
         }
 
         product.setItemMeta(meta);
