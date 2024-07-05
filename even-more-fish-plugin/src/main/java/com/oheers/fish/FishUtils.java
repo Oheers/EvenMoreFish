@@ -94,8 +94,12 @@ public class FishUtils {
                 fish.getFactory().setType(randomIndex);
             }
             fish.setLength(lengthFloat);
-            if (playerString != null) {
-                fish.setFisherman(UUID.fromString(playerString));
+            try {
+                if (playerString != null) {
+                    fish.setFisherman(UUID.fromString(playerString));
+                }
+            } catch (Exception ex) {
+                fish.setFisherman(null);
             }
 
             return fish;
@@ -141,14 +145,18 @@ public class FishUtils {
         if (randomIndex != null) {
             fish.getFactory().setType(randomIndex);
         }
-        if (playerString != null) {
-            try {
-                fish.setFisherman(UUID.fromString(playerString));
-            } catch (IllegalArgumentException ex) {
+        try {
+            if (playerString != null) {
+                try {
+                    fish.setFisherman(UUID.fromString(playerString));
+                } catch (IllegalArgumentException ex) {
+                    fish.setFisherman(fisher.getUniqueId());
+                }
+            } else {
                 fish.setFisherman(fisher.getUniqueId());
             }
-        } else {
-            fish.setFisherman(fisher.getUniqueId());
+        } catch (IllegalArgumentException exception) {
+            fish.setFisherman(null);
         }
 
         return fish;
