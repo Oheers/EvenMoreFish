@@ -58,6 +58,12 @@ public class EMFCommand extends BaseCommand {
     public void onHelp(final CommandHelp help, final CommandSender sender) {
         new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender, false);
         help.showHelp();
+        help.getHelpEntries().forEach(helpEntry -> {
+            Message helpMessage = new Message(ConfigMessage.HELP_FORMAT);
+            helpMessage.setVariable("{command}", "/" + helpEntry.getCommand());
+            helpMessage.setVariable("{description}", helpEntry.getDescription());
+            helpMessage.broadcast(sender, true);
+        });
     }
 
     @Subcommand("top")
