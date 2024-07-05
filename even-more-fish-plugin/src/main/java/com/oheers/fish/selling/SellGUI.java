@@ -390,21 +390,6 @@ public class SellGUI extends InventoryGui {
         double totalWorth = getTotalWorth(soldFish);
         double sellPrice = Math.floor(totalWorth * 10) / 10;
 
-        Economy economy = EvenMoreFish.getInstance().getEconomy();
-        if (economy != null && economy.isEnabled()) {
-            economy.deposit(this.player, totalWorth);
-        }
-
-        // sending the sell message to the player
-
-        Message message = new Message(ConfigMessage.FISH_SALE);
-        message.setSellPrice(formatWorth(sellPrice));
-        message.setAmount(Integer.toString(fishCount));
-        message.setPlayer(this.player.toString());
-        message.broadcast(player, true);
-
-        this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
-
         if (sellAll) {
             for (ItemStack item : this.player.getInventory()) {
                 if (FishUtils.isFish(item)) {
@@ -429,8 +414,25 @@ public class SellGUI extends InventoryGui {
                 }
             }
         }
+
+        Economy economy = EvenMoreFish.getInstance().getEconomy();
+        if (economy != null && economy.isEnabled()) {
+            economy.deposit(this.player, totalWorth);
+        }
+
+        // sending the sell message to the player
+
+        Message message = new Message(ConfigMessage.FISH_SALE);
+        message.setSellPrice(formatWorth(sellPrice));
+        message.setAmount(Integer.toString(fishCount));
+        message.setPlayer(this.player.toString());
+        message.broadcast(player, true);
+
+        this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
+
         if (MainConfig.getInstance().databaseEnabled()) logSoldFish(player.getUniqueId(),soldFish);
         return totalWorth != 0.0;
+
     }
     
     private void logSoldFish(final UUID uuid, @NotNull List<SoldFish> soldFish) {
