@@ -1,6 +1,7 @@
 package com.oheers.fish.permissions;
 
 public class UserPerms {
+
     private UserPerms() {
         throw new UnsupportedOperationException();
     }
@@ -12,4 +13,7 @@ public class UserPerms {
     public static final String SELL_ALL = "emf.sellall";
     public static final String XMAS = "emf.xmas";
     public static final String GUI = "emf.gui";
+    public static final String NEXT = "emf.next";
+    public static final String HELP = "emf.help";
+
 }
