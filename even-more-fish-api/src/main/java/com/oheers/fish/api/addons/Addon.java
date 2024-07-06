@@ -44,7 +44,7 @@ public interface Addon {
     String getAuthor();
 
     default JavaVersion getRequiredJavaVersion() {
-        return JavaVersion.JAVA_1_8;
+        return JavaVersion.JAVA_17;
     }
 
     default Logger getLogger() {
