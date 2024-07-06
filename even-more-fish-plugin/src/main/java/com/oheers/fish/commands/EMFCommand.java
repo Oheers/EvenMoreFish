@@ -46,7 +46,7 @@ public class EMFCommand extends BaseCommand {
     }
 
     @Subcommand("gui")
-    @Description("%desc_general_gui%")
+    @Description("%desc_general_gui")
     @CommandPermission(UserPerms.GUI)
     public void onGui(final Player player) {
         new MainMenuGUI(player).open();
