@@ -245,7 +245,7 @@ java {
 }
 
 fun getBuildNumberOrDate(): String? {
-    if ("".equals("master", ignoreCase = true)) {
+    if (grgit.branch.current().name.equals("master", ignoreCase = true)) {
         val buildNumber: String? by project
         if (buildNumber == null)
             return "RELEASE"
