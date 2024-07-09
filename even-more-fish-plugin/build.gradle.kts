@@ -1,3 +1,7 @@
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
@@ -5,6 +9,8 @@ plugins {
     id("maven-publish")
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+
+    alias(libs.plugins.grgit)
 }
 
 group = "com.oheers.evenmorefish"
@@ -212,6 +218,15 @@ tasks {
     }
 
     shadowJar {
+        manifest {
+            val buildNumber: String? by project
+
+            attributes["Specification-Title"] = "EvenMoreFish"
+            attributes["Specification-Version"] = project.version
+            attributes["Implementation-Title"] = grgit.branch.current().name
+            attributes["Implementation-Version"] = getBuildNumberOrDate()
+        }
+
         minimize()
 
         exclude("META-INF/**")
@@ -230,6 +245,8 @@ tasks {
     compileJava {
         options.compilerArgs.add("-parameters")
         options.isFork = true
+
+
     }
 }
 
@@ -238,5 +255,21 @@ java {
         languageVersion.set(JavaLanguageVersion.of(8))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
+}
+
+fun getBuildNumberOrDate(): String? {
+    if (grgit.branch.current().name.equals("master", ignoreCase = true)) {
+        val buildNumber: String? by project
+        if (buildNumber == null)
+            return "RELEASE"
+
+        return buildNumber
+    }
+
+    val time = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm", Locale.ENGLISH)
+        .withZone(ZoneId.systemDefault())
+        .format(Instant.now())
+
+    return time
 }
 

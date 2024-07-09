@@ -58,6 +58,8 @@ dependencyResolutionManagement {
 
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("inventorygui", "de.themoep:inventorygui:1.6.2-SNAPSHOT")
+
+            plugin("grgit", "org.ajoberstar.grgit").version("5.2.2")
         }
     }
 }

@@ -30,10 +30,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 @CommandAlias("%main")
 @Subcommand("admin")
@@ -298,8 +302,10 @@ public class AdminCommand extends BaseCommand {
         for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
             fishCount += EvenMoreFish.getInstance().getFishCollection().get(r).size();
         }
-
+        
         String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +
+                Messages.getInstance().getSTDPrefix() + "Feature Branch: " + getFeatureBranchName() + "\n" +
+                Messages.getInstance().getSTDPrefix() + "Feature Build/Date: " + getFeatureBranchBuildOrDate() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
@@ -311,6 +317,40 @@ public class AdminCommand extends BaseCommand {
 
         Message msg = new Message(msgString);
         msg.broadcast(sender, false);
+    }
+
+    private String getFeatureBranchName() {
+        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
+
+            if (inputStream != null) {
+                Manifest manifest = new Manifest(inputStream);
+
+                // Access attributes from the manifest file
+                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_TITLE);
+            } else {
+                return "main";
+            }
+
+        } catch (IOException e) {
+            return "main";
+        }
+    }
+
+    private String getFeatureBranchBuildOrDate() {
+        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
+
+            if (inputStream != null) {
+                Manifest manifest = new Manifest(inputStream);
+
+                // Access attributes from the manifest file
+                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+            } else {
+                return "";
+            }
+
+        } catch (IOException e) {
+            return "";
+        }
     }
 
     private String getDatabaseVersion() {
