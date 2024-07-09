@@ -34,8 +34,4 @@ public class OraxenItemAddon extends ItemAddon {
         return item.build();
     }
 
-    @Override
-    public JavaVersion getRequiredJavaVersion() {
-        return JavaVersion.JAVA_17;
-    }
 }

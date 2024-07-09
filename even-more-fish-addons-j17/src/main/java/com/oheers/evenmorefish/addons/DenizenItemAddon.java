@@ -33,8 +33,4 @@ public class DenizenItemAddon extends ItemAddon {
         return itemTag.getItemStack();
     }
 
-    @Override
-    public JavaVersion getRequiredJavaVersion() {
-        return JavaVersion.JAVA_17;
-    }
 }

@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class Competition {
 

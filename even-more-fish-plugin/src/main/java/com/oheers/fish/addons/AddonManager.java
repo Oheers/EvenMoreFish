@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class AddonManager {
     private static final String ADDON_FOLDER = "addons";

@@ -44,7 +44,6 @@ public class NbtUtils {
                 yield false;
             }
             case COMPAT -> nbt.getCompound(namespacedKey.getNamespace()).hasTag(namespacedKey.getKey());
-            default -> false;
         };
     }
 
@@ -64,7 +63,6 @@ public class NbtUtils {
                 }
                 yield null;
             }
-            default -> null;
         };
 
     }
@@ -87,46 +85,42 @@ public class NbtUtils {
     public static @Nullable Float getFloat(final ItemStack item, final String key) {
         final NbtVersion nbtVersion = NbtVersion.getVersion(item);
         final NamespacedKey namespacedKey = NbtUtils.getNamespacedKey(key);
-        return NBT.get(item, nbt -> {
-            return switch (nbtVersion) {
-                case NBTAPI -> {
-                    if (nbt.hasTag(namespacedKey.toString())) {
-                        yield nbt.getFloat(namespacedKey.toString());
-                    }
-                    yield null;
+        return NBT.get(item, nbt -> switch (nbtVersion) {
+            case NBTAPI -> {
+                if (nbt.hasTag(namespacedKey.toString())) {
+                    yield nbt.getFloat(namespacedKey.toString());
                 }
-                case COMPAT -> nbt.getCompound(namespacedKey.getNamespace()).getFloat(namespacedKey.getKey());
-                case LEGACY -> {
-                    if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
-                        yield nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getFloat(namespacedKey.toString());
-                    }
-                    yield null;
+                yield null;
+            }
+            case COMPAT -> nbt.getCompound(namespacedKey.getNamespace()).getFloat(namespacedKey.getKey());
+            case LEGACY -> {
+                if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
+                    yield nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getFloat(namespacedKey.toString());
                 }
-                default -> null;
-            };
+                yield null;
+            }
+            default -> null;
         });
     }
 
     public static @Nullable Integer getInteger(final ItemStack item, final String key) {
         final NbtVersion nbtVersion = NbtVersion.getVersion(item);
         final NamespacedKey namespacedKey = NbtUtils.getNamespacedKey(key);
-        return NBT.get(item, nbt -> {
-            return switch (nbtVersion) {
-                case NBTAPI -> {
-                    if (nbt.hasTag(namespacedKey.toString())) {
-                        yield nbt.getInteger(namespacedKey.toString());
-                    }
-                    yield null;
+        return NBT.get(item, nbt -> switch (nbtVersion) {
+            case NBTAPI -> {
+                if (nbt.hasTag(namespacedKey.toString())) {
+                    yield nbt.getInteger(namespacedKey.toString());
                 }
-                case COMPAT -> nbt.getCompound(namespacedKey.getNamespace()).getInteger(namespacedKey.getKey());
-                case LEGACY -> {
-                    if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
-                        yield nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getInteger(namespacedKey.toString());
-                    }
-                    yield null;
+                yield null;
+            }
+            case COMPAT -> nbt.getCompound(namespacedKey.getNamespace()).getInteger(namespacedKey.getKey());
+            case LEGACY -> {
+                if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
+                    yield nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getInteger(namespacedKey.toString());
                 }
-                default -> null;
-            };
+                yield null;
+            }
+            default -> null;
         });
     }
 

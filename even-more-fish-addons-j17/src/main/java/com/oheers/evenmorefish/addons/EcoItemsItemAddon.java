@@ -34,8 +34,4 @@ public class EcoItemsItemAddon extends ItemAddon {
         return item.getItemStack();
     }
 
-    @Override
-    public JavaVersion getRequiredJavaVersion() {
-        return JavaVersion.JAVA_17;
-    }
 }

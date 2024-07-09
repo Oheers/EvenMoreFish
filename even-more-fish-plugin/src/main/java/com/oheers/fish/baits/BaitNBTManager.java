@@ -401,9 +401,6 @@ public class BaitNBTManager {
             int maxBaits = BaitFile.getInstance().getMaxBaits() + BaitFile.getInstance().getRodLoreFormat().size();
             //todo, to help this be compliant with java:S5413, we should iterate in reverse order, this should be done in another pr, left here for reference
             //compliant version
-            //            for (int i = lore.size() - 1; i >= maxBaits; i--) {
-            //                lore.remove(i);
-            //            }
             for (int i = 1; i < maxBaits; i++) {
                 lore.remove(lore.size() - 1);
             }
@@ -411,9 +408,6 @@ public class BaitNBTManager {
             // starting at 1, because at least one bait replacing {baits} is repeated.
             int numBaitsApplied = getNumBaitsApplied(itemStack) + BaitFile.getInstance().getRodLoreFormat().size();
             //compliant version
-            //            for (int i = lore.size() - 1; i >= numBaitsApplied; i--) {
-            //                lore.remove(i);
-            //            }
             for (int i = 1; i < numBaitsApplied; i++) {
                 lore.remove(lore.size() - 1);
             }
