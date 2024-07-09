@@ -45,7 +45,7 @@ public class Bait {
         this.name = name;
 
         if (BaitFile.getInstance().getBaitTheme(name) != null) {
-            this.theme = FishUtils.translateHexColorCodes(BaitFile.getInstance().getBaitTheme(name));
+            this.theme = FishUtils.translateColorCodes(BaitFile.getInstance().getBaitTheme(name));
         } else {
             this.theme = "&e";
         }
@@ -63,7 +63,7 @@ public class Bait {
         this.itemFactory.enableDefaultChecks();
         this.itemFactory.setItemDisplayNameCheck(true);
 
-        this.itemFactory.setDisplayName(FishUtils.translateHexColorCodes("&e" + name));
+        this.itemFactory.setDisplayName(FishUtils.translateColorCodes("&e" + name));
     }
 
     /**

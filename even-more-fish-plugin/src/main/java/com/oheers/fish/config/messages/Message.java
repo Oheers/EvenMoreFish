@@ -4,6 +4,10 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -11,13 +15,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Message {
 
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '\u00A7';
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     public String message;
     private boolean canSilent, canHidePrefix;
@@ -101,17 +101,7 @@ public class Message {
      * have been formatted.
      */
     private void colourFormat() {
-        Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
-        while (matcher.find()) {
-            String group = matcher.group(1);
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
-                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
-                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5)
-            );
-        }
-        this.message = ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+        this.message = FishUtils.translateColorCodes(this.message);
     }
 
     /**
@@ -570,9 +560,9 @@ public class Message {
             // does colour coding, hence why .addAll() isn't used
             for (String line : lore) {
                 if (line.equals(lore.get(lore.size() - 1))) {
-                    customLore.append(FishUtils.translateHexColorCodes(line));
+                    customLore.append(FishUtils.translateColorCodes(line));
                 }
-                else customLore.append(FishUtils.translateHexColorCodes(line)).append("\n");
+                else customLore.append(FishUtils.translateColorCodes(line)).append("\n");
             }
             // Replaces the fish lore with the value
             setVariable(variable, customLore.toString());

@@ -84,6 +84,9 @@ dependencies {
     implementation(libs.acf)
     implementation(libs.inventorygui)
 
+    library(libs.adventure.api)
+    library(libs.adventure.minimessage)
+    library(libs.adventure.legacy)
     library(libs.friendlyid)
     library(libs.flyway.core)
     library(libs.flyway.mysql)

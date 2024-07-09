@@ -211,8 +211,8 @@ public class FishingProcessor implements Listener {
 
             String length = Float.toString(fish.getLength());
             // Translating the colours because some servers store colour in their fish name
-            String name = FishUtils.translateHexColorCodes(fish.getName());
-            String rarity = FishUtils.translateHexColorCodes(fish.getRarity().getValue());
+            String name = FishUtils.translateColorCodes(fish.getName());
+            String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
 
             Message message = new Message(ConfigMessage.FISH_CAUGHT);
             message.setPlayer(player.getName());

@@ -567,7 +567,7 @@ public class ItemFactory {
                 if (displayName.isEmpty()) {
                     meta.setDisplayName("");
                 } else {
-                    meta.setDisplayName(FishUtils.translateHexColorCodes(displayName));
+                    meta.setDisplayName(FishUtils.translateColorCodes(displayName));
                 }
             }
 

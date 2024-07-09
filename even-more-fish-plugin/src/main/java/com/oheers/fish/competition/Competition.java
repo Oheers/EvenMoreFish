@@ -101,7 +101,7 @@ public class Competition {
             this.timeLeft = this.maxDuration;
 
             leaderboard = new Leaderboard(competitionType);
-            statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
+            statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
             statusBar.show();
             initTimer();
             announceBegin();
@@ -819,7 +819,7 @@ public class Competition {
             EvenMoreFish.getInstance().getLogger().severe(CompetitionConfig.getInstance().getBarColour(competitionName) + " is not a valid bossbar colour, check ");
         }
 
-        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)));
+        this.statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)));
     }
 
     public void initGetNumbersNeeded(String competitionName) {

@@ -364,7 +364,7 @@ public class BaitNBTManager {
 
                 if (BaitFile.getInstance().showUnusedBaitSlots()) {
                     for (int i = baitCount; i < BaitFile.getInstance().getMaxBaits(); i++) {
-                        lore.add(FishUtils.translateHexColorCodes(BaitFile.getInstance().unusedBaitSlotFormat()));
+                        lore.add(FishUtils.translateColorCodes(BaitFile.getInstance().unusedBaitSlotFormat()));
                     }
                 }
             } else {
@@ -446,6 +446,6 @@ public class BaitNBTManager {
      */
     private static String getBaitFormatted(String baitID) {
         Bait bait = EvenMoreFish.getInstance().getBaits().get(baitID);
-        return FishUtils.translateHexColorCodes(bait.getDisplayName());
+        return FishUtils.translateColorCodes(bait.getDisplayName());
     }
 }
