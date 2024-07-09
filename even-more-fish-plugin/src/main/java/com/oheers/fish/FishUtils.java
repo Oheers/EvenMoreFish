@@ -280,7 +280,7 @@ public class FishUtils {
     //gets the item with a custom texture
     public static ItemStack get(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        UUID headUuid = UUID.fromString("8667ba71-b85a-4004-af54-457a9734eed7");
+        UUID headUuid = UUID.randomUUID();
         // 1.20.5+ handling
         if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
             NBT.modifyComponents(skull, nbt -> {
