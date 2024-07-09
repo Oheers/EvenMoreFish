@@ -8,6 +8,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
+import org.flywaydb.core.api.MigrationInfoService;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -184,6 +185,10 @@ public abstract class ConnectionFactory {
     }
 
     public MigrationVersion getDatabaseVersion() {
+        MigrationInfoService infoService = getBaseFlywayConfiguration().load().info();
+        if (infoService.current() == null) {
+            return MigrationVersion.fromVersion("0");
+        }
         return getBaseFlywayConfiguration().load().info().current().getVersion();
     }
 }

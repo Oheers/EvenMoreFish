@@ -46,7 +46,7 @@ public class EMFCommand extends BaseCommand {
     }
 
     @Subcommand("gui")
-    @Description("%desc_general_gui%")
+    @Description("%desc_general_gui")
     @CommandPermission(UserPerms.GUI)
     public void onGui(final Player player) {
         new MainMenuGUI(player).open();
@@ -55,6 +55,7 @@ public class EMFCommand extends BaseCommand {
     @Default
     @HelpCommand
     @CommandPermission(UserPerms.HELP)
+    @Description("%desc_general_help")
     public void onHelp(final CommandHelp help, final CommandSender sender) {
         new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender, false);
         help.getHelpEntries().forEach(helpEntry -> {
