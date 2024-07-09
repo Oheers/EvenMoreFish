@@ -2,6 +2,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
     `java-library`
@@ -160,7 +161,9 @@ bukkit {
                 "emf.top",
                 "emf.shop",
                 "emf.use_rod",
-                "emf.sellall"
+                "emf.sellall",
+                "emf.help",
+                "emf.next"
             )
         }
 
@@ -182,6 +185,16 @@ bukkit {
         register("emf.use_rod") {
             description = "Allows users to use emf rods."
         }
+
+        register("emf.next") {
+            description = "Allows users to see when the next competition will be."
+        }
+
+        register("emf.help") {
+            description = "Allows users to see the help messages."
+            default = BukkitPluginDescription.Permission.Default.TRUE
+        }
+
     }
 }
 

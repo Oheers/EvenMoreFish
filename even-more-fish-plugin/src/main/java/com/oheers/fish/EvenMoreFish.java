@@ -387,7 +387,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                 "desc_list_rarities", new Message(ConfigMessage.HELP_LIST_RARITIES).getRawMessage(true),
 
                 "desc_competition_start", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true),
-                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true),
+                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_END).getRawMessage(true),
 
                 "desc_general_top", new Message(ConfigMessage.HELP_GENERAL_TOP).getRawMessage(true),
                 "desc_general_help", new Message(ConfigMessage.HELP_GENERAL_HELP).getRawMessage(true),

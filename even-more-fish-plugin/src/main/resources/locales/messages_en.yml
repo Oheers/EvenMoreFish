@@ -71,9 +71,6 @@ fisherman-lore:
 length-lore:
   - "&fMeasures {length}cm."
 
-# The format of commands in /emf help (this message doesn't support papi placeholders)
-help: "/{command} - {description}"
-
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
 leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
 leaderboard-largest-total: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)"
@@ -169,6 +166,8 @@ fish-sale: "&rYou've sold &a{amount} &ffish for &a{sell-price}&f."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
+help-format: "[noPrefix]&b{command} &e- {description}"
+
 help-general:
   title: "[noPrefix]&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f"
   top: "[noPrefix]Shows an ongoing competition's leaderboard."
