@@ -18,6 +18,10 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -247,7 +251,23 @@ public class FishUtils {
     }
 
     // credit to https://www.spigotmc.org/members/elementeral.717560/
-    public static String translateHexColorCodes(String message) {
+    public static String translateColorCodes(String message) {
+        // Replace all Section symbols with Ampersands so MiniMessage doesn't explode.
+        message = message.replace(ChatColor.COLOR_CHAR, '&');
+
+        try {
+            // Parse MiniMessage
+            LegacyComponentSerializer legacyAmpersandSerializer = LegacyComponentSerializer.builder()
+                    .hexColors()
+                    .useUnusualXRepeatedCharacterHexFormat()
+                    .build();
+            Component component = MiniMessage.builder().strict(true).build().deserialize(message);
+            // Get legacy color codes from MiniMessage
+            message = legacyAmpersandSerializer.serialize(component);
+        } catch (ParsingException exception) {
+            // Ignore. If MiniMessage throws an exception, we'll only use legacy colors.
+        }
+
         Matcher matcher = HEX_PATTERN.matcher(message);
         StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
         while (matcher.find()) {
