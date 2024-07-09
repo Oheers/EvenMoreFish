@@ -74,7 +74,7 @@ public class Bar {
     }
 
     public void setTitle(long timeLeft) {
-        bar.setTitle(prefix + ChatColor.RESET + FishUtils.translateHexColorCodes(FishUtils.timeFormat(timeLeft) + ChatColor.RESET + new Message(ConfigMessage.BAR_REMAINING).getRawMessage(false)));
+        bar.setTitle(prefix + ChatColor.RESET + FishUtils.translateColorCodes(FishUtils.timeFormat(timeLeft) + ChatColor.RESET + new Message(ConfigMessage.BAR_REMAINING).getRawMessage(false)));
     }
 
     public void show() {

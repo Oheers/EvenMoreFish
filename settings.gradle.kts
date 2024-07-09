@@ -58,6 +58,10 @@ dependencyResolutionManagement {
 
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("inventorygui", "de.themoep:inventorygui:1.6.2-SNAPSHOT")
+
+            library("adventure-api", "net.kyori:adventure-api:4.17.0")
+            library("adventure-minimessage", "net.kyori:adventure-text-minimessage:4.17.0")
+            library("adventure-legacy", "net.kyori:adventure-text-serializer-legacy:4.17.0")
         }
     }
 }

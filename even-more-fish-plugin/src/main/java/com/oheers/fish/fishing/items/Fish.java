@@ -128,7 +128,7 @@ public class Fish implements Cloneable {
         if (fishMeta != null) {
             NBT.modify(fish, nbt -> {
                 nbt.modifyMeta((readOnlyNbt, meta) -> {
-                    meta.setDisplayName(FishUtils.translateHexColorCodes(getDisplayName()));
+                    meta.setDisplayName(FishUtils.translateColorCodes(getDisplayName()));
                     if (!this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-lore", false)) {
                         meta.setLore(getFishLore());
                     }
@@ -201,7 +201,7 @@ public class Fish implements Cloneable {
 
         if (msg != null) {
             if (Bukkit.getPlayer(fisherman) != null) {
-                Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).sendMessage(FishUtils.translateHexColorCodes(msg));
+                Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).sendMessage(FishUtils.translateColorCodes(msg));
             }
         }
     }
