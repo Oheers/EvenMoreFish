@@ -1,8 +1,15 @@
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+
 plugins {
     `java-library`
     `maven-publish`
     alias(libs.plugins.bukkit.yml)
     alias(libs.plugins.shadow)
+    alias(libs.plugins.grgit)
 }
 
 group = "com.oheers.evenmorefish"
@@ -153,7 +160,9 @@ bukkit {
                 "emf.top",
                 "emf.shop",
                 "emf.use_rod",
-                "emf.sellall"
+                "emf.sellall",
+                "emf.help",
+                "emf.next"
             )
         }
 
@@ -175,6 +184,16 @@ bukkit {
         register("emf.use_rod") {
             description = "Allows users to use emf rods."
         }
+
+        register("emf.next") {
+            description = "Allows users to see when the next competition will be."
+        }
+
+        register("emf.help") {
+            description = "Allows users to see the help messages."
+            default = BukkitPluginDescription.Permission.Default.TRUE
+        }
+
     }
 }
 
@@ -198,6 +217,15 @@ tasks {
     }
 
     shadowJar {
+        manifest {
+            val buildNumber: String? by project
+
+            attributes["Specification-Title"] = "EvenMoreFish"
+            attributes["Specification-Version"] = project.version
+            attributes["Implementation-Title"] = grgit.branch.current().name
+            attributes["Implementation-Version"] = getBuildNumberOrDate()
+        }
+
         minimize()
 
         exclude("META-INF/**")
@@ -216,6 +244,8 @@ tasks {
     compileJava {
         options.compilerArgs.add("-parameters")
         options.isFork = true
+
+
     }
 }
 
@@ -224,5 +254,21 @@ java {
         languageVersion.set(JavaLanguageVersion.of(17))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
+}
+
+fun getBuildNumberOrDate(): String? {
+    if (grgit.branch.current().name.equals("master", ignoreCase = true)) {
+        val buildNumber: String? by project
+        if (buildNumber == null)
+            return "RELEASE"
+
+        return buildNumber
+    }
+
+    val time = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm", Locale.ENGLISH)
+        .withZone(ZoneId.systemDefault())
+        .format(Instant.now())
+
+    return time
 }
 

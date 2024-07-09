@@ -24,6 +24,7 @@ public class EMFCommand extends BaseCommand {
 
     @Subcommand("next")
     @Description("%desc_general_next")
+    @CommandPermission(UserPerms.NEXT)
     public void onNext(final CommandSender sender) {
         Message message = Competition.getNextCompetitionMessage();
         message.usePrefix(PrefixType.DEFAULT);
@@ -45,19 +46,24 @@ public class EMFCommand extends BaseCommand {
     }
 
     @Subcommand("gui")
-    @Description("%desc_general_gui%")
+    @Description("%desc_general_gui")
     @CommandPermission(UserPerms.GUI)
     public void onGui(final Player player) {
         new MainMenuGUI(player).open();
     }
 
-
-
     @Default
     @HelpCommand
+    @CommandPermission(UserPerms.HELP)
+    @Description("%desc_general_help")
     public void onHelp(final CommandHelp help, final CommandSender sender) {
         new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender, false);
-        help.showHelp();
+        help.getHelpEntries().forEach(helpEntry -> {
+            Message helpMessage = new Message(ConfigMessage.HELP_FORMAT);
+            helpMessage.setVariable("{command}", "/" + helpEntry.getCommand());
+            helpMessage.setVariable("{description}", helpEntry.getDescription());
+            helpMessage.broadcast(sender, true);
+        });
     }
 
     @Subcommand("top")

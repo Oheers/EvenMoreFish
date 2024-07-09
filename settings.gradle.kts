@@ -71,6 +71,7 @@ dependencyResolutionManagement {
 
             plugin("shadow", "io.github.goooler.shadow").version("8.1.7")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
+            plugin("grgit", "org.ajoberstar.grgit").version("5.2.2")
         }
     }
 }
