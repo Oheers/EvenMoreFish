@@ -1,5 +1,9 @@
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
+# These messages support the MiniMessage format. You are able to mix this with the existing legacy codes, however you MUST close the tags.
+# Here is the MiniMessage Pull Request for more info: https://github.com/Oheers/EvenMoreFish/pull/387
+# Here are the MiniMessage Docs: https://docs.advntr.dev/minimessage/format.html
+
 # Sent to players when they fish an EvenMoreFish fish
 fish-caught: "&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!"
 # By setting a fish's minimum-length to less than 0, you can create a lengthless fish. This is used when a player fishes a lengthless fish.
