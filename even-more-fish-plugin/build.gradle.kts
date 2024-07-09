@@ -50,7 +50,9 @@ dependencies {
     compileOnly(libs.worldguard.core) {
         exclude("com.sk89q.worldedit", "worldedit-core")
     }
-    compileOnly(libs.worldguard.bukkit)
+    compileOnly(libs.worldguard.bukkit) {
+        exclude("org.spigotmc", "spigot-api")
+    }
     compileOnly(libs.worldedit.core)
     compileOnly(libs.worldedit.bukkit)
 
@@ -77,7 +79,9 @@ dependencies {
     compileOnly(libs.headdatabase.api)
     compileOnly(libs.playerpoints)
     compileOnly(libs.cmi.api)
-    compileOnly(libs.essx.api)
+    compileOnly(libs.essx.api) {
+        exclude("org.spigotmc", "spigot-api")
+    }
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
