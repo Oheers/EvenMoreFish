@@ -54,7 +54,7 @@ public class BaitListener implements Listener {
         ItemStack fishingRod = clickedItem;
         NbtVersion nbtVersion = NbtVersion.getVersion(clickedItem);
         if (nbtVersion != NbtVersion.COMPAT) {
-            fishingRod = convertToCompatNbtItem(nbtVersion, fishingRod);
+            convertToCompatNbtItem(nbtVersion, fishingRod);
         }
 
         try {
@@ -94,7 +94,7 @@ public class BaitListener implements Listener {
         }
     }
 
-    private ItemStack convertToCompatNbtItem(final NbtVersion nbtVersion, final ItemStack fishingRod) {
+    private void convertToCompatNbtItem(final NbtVersion nbtVersion, final ItemStack fishingRod) {
         final String appliedBaitString = NbtUtils.getString(fishingRod, NbtKeys.EMF_APPLIED_BAIT);
 
         if (nbtVersion == NbtVersion.LEGACY) {
@@ -123,7 +123,6 @@ public class BaitListener implements Listener {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setString(NbtKeys.EMF_APPLIED_BAIT, appliedBaitString);
         });
 
-        return fishingRod;
     }
 
     private boolean anvilCheck(InventoryClickEvent event) {

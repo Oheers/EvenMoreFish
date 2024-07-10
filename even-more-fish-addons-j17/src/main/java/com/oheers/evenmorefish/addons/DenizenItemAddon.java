@@ -3,7 +3,6 @@ package com.oheers.evenmorefish.addons;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.oheers.fish.api.addons.ItemAddon;
-import org.apache.commons.lang3.JavaVersion;
 import org.bukkit.inventory.ItemStack;
 
 public class DenizenItemAddon extends ItemAddon {

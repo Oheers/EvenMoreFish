@@ -99,7 +99,6 @@ public class NbtUtils {
                 }
                 yield null;
             }
-            default -> null;
         });
     }
 
@@ -120,7 +119,6 @@ public class NbtUtils {
                 }
                 yield null;
             }
-            default -> null;
         });
     }
 
