@@ -167,7 +167,7 @@ public abstract class ConnectionFactory {
     private FluentConfiguration getBaseFlywayConfiguration() {
         return Flyway.configure(getClass().getClassLoader())
                 .dataSource(dataSource)
-                .placeholders(ImmutableMap.of(
+                .placeholders(Map.of(
                         "table.prefix", MainConfig.getInstance().getPrefix(),
                         "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
                         "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)",
