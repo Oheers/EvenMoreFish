@@ -88,10 +88,10 @@ dependencies {
     implementation(libs.universalscheduler)
     implementation(libs.acf)
     implementation(libs.inventorygui)
+    implementation(libs.adventure.api)
+    implementation(libs.adventure.minimessage)
+    implementation(libs.adventure.legacy)
 
-    library(libs.adventure.api)
-    library(libs.adventure.minimessage)
-    library(libs.adventure.legacy)
     library(libs.friendlyid)
     library(libs.flyway.core)
     library(libs.flyway.mysql)
@@ -247,6 +247,7 @@ tasks {
         relocate("co.aikar.commands", "com.oheers.fish.libs.acf")
         relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
+        relocate("net.kyori.adventure", "com.oheers.fish.libs.adventure")
     }
 
     compileJava {
