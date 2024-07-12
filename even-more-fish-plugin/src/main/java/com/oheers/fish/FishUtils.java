@@ -420,8 +420,6 @@ public class FishUtils {
      * @return The first Character from the String
      */
     public static char getCharFromString(@NotNull String string, char defaultChar) {
-        System.out.println(string);
-        System.out.println(defaultChar);
         try {
             return string.toCharArray()[0];
         } catch (ArrayIndexOutOfBoundsException ex) {

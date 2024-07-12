@@ -159,10 +159,8 @@ public class GUIUtils {
     }
 
     public static DynamicGuiElement getDynamicElement(@NotNull ConfigurationSection section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
-        System.out.println(section.getCurrentPath());
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
-        System.out.println(character);
 
         // Create Element
         return new DynamicGuiElement(character, (viewer) -> {
