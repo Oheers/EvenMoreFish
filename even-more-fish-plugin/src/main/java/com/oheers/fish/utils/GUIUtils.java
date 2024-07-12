@@ -1,16 +1,14 @@
 package com.oheers.fish.utils;
 
-import co.aikar.commands.CommandHelp;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.gui.MainMenuGUI;
 import com.oheers.fish.selling.SellGUI;
-import de.themoep.inventorygui.GuiElement;
-import de.themoep.inventorygui.GuiPageElement;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
+import com.oheers.fish.selling.SellHelper;
+import de.themoep.inventorygui.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -143,7 +141,7 @@ public class GUIUtils {
         // Get ItemStack
         ItemStack item = factory.createItem(null, -1);
         // Get Character
-        char character = section.getString("character", "#").toCharArray()[0];
+        char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
         // Get Click Action
         GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
         // Create Element
@@ -156,12 +154,7 @@ public class GUIUtils {
         // Get ItemStack
         ItemStack item = factory.createItem(null, -1);
         // Get Character
-        char character;
-        try {
-            character = section.getString("character", "#").toCharArray()[0];
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            character = '#';
-        }
+        char character = FishUtils.getCharFromString(section.getString("character"), '#');
         // Get Click Action
         GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
         // Create Element
@@ -218,14 +211,28 @@ public class GUIUtils {
         // The shop action should just open the shop menu
         newActionMap.put("open-shop", click -> {
             HumanEntity humanEntity = click.getWhoClicked();
-            if (humanEntity instanceof Player) {
-                Player player = (Player) humanEntity;
-                new SellGUI(player).open();
+            if (!(humanEntity instanceof Player)) {
+                return true;
             }
+            Player player = (Player) humanEntity;
+            new SellGUI(player).open();
             return true;
         });
         newActionMap.put("show-command-help", click -> {
             Bukkit.dispatchCommand(click.getWhoClicked(), "emf help");
+            return true;
+        });
+        newActionMap.put("sell-inventory", click -> {
+            HumanEntity humanEntity = click.getWhoClicked();
+            if (!(humanEntity instanceof Player)) {
+                return true;
+            }
+            Player player = (Player) humanEntity;
+            new SellHelper(click.getWhoClicked().getInventory(), player).sellFish();
+            return true;
+        });
+        newActionMap.put("sell-shop", click -> {
+            SellHelper.sellInventoryGui(click.getGui(), click.getWhoClicked());
             return true;
         });
         actionMap = newActionMap;
