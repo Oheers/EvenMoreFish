@@ -100,12 +100,12 @@ public class EMFCommand extends BaseCommand {
                 new Message("&cYou must specify a player when running from console.").broadcast(sender, false);
                 return;
             }
-            new SellGUI((Player) sender, null).open();
+            new SellGUI((Player) sender, SellGUI.SellState.NORMAL, null).open();
             return;
         }
 
         if (sender.hasPermission(AdminPerms.ADMIN)) {
-            new SellGUI(onlinePlayer.player, null).open();
+            new SellGUI(onlinePlayer.player, SellGUI.SellState.NORMAL, null).open();
             Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
             message.setPlayer(onlinePlayer.player.getName());
             message.broadcast(sender, true);

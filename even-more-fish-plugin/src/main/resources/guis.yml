@@ -92,7 +92,7 @@ main-menu:
     character: "x"
     click-action: "full-exit"
 
-sell-menu:
+sell-menu-normal:
   title: "&1&lSell Fish"
   layout:
     - "iiiiiiiii"
@@ -136,6 +136,51 @@ sell-menu:
       - "&e» (Left-click) sell the fish."
     character: "a"
     click-action: "sell-inventory"
+
+sell-menu-confirm:
+  title: "&6&lConfirm"
+  layout:
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "   s a   "
+  filler: lime_stained_glass_pane
+  # The character to use for the slots where players can place fish.
+  deposit-character: "i"
+
+  sell-item:
+    item:
+      material: GOLD_INGOT
+      displayname: "&6&lCONFIRM SELL"
+    lore:
+      - "&8Fish Shop"
+      - ""
+      - "&7Total Value » &e{sell-price}"
+      - ""
+      - "&7Sell your fish here to make"
+      - "&7some extra money."
+      - ""
+      - "&e» (Left-click) sell the fish."
+      - "&7» (Right-click) cancel."
+    character: "s"
+    click-action: "sell-shop-confirm"
+
+  sell-all-item:
+    item:
+      material: COD_BUCKET
+      displayname: "&6&lCONFIRM SELL ALL"
+    lore:
+      - "&8Inventory"
+      - ""
+      - "&7Total Value » &e{sell-all-price}"
+      - ""
+      - "&7Click this button to sell"
+      - "&7the fish in your inventory to"
+      - "&7make some extra money."
+      - ""
+      - "&e» (Left-click) sell the fish."
+    character: "a"
+    click-action: "sell-inventory-confirm"
 
 # TODO All of these are outdated and unused.
 

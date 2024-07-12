@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
 
-public class MainMenuGUI {
+public class MainMenuGUI implements EMFGUI {
 
     private final InventoryGui gui;
     private final HumanEntity viewer;
@@ -30,8 +30,14 @@ public class MainMenuGUI {
         gui.addElements(GUIFillerConfig.getInstance().getDefaultFillerElements());
     }
 
+    @Override
     public void open() {
         gui.show(this.viewer);
+    }
+
+    @Override
+    public InventoryGui getGui() {
+        return this.gui;
     }
 
 }

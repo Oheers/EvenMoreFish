@@ -9,8 +9,10 @@ import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.selling.SellHelper;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.GUIUtils;
+import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -23,19 +25,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.logging.Level;
 
-// TODO fix item variables
 // TODO fix confirmation and re-add sell states
 
-public class SellGUI {
+public class SellGUI implements EMFGUI {
 
     private final InventoryGui gui;
     private final Player player;
     private final Inventory fishInventory;
     private MyScheduledTask task;
+    private final SellState sellState;
 
-    public SellGUI(@NotNull Player player, @Nullable Inventory fishInventory) {
+    public SellGUI(@NotNull Player player, @NotNull SellState sellState, @Nullable Inventory fishInventory) {
+        this.sellState = sellState;
         this.player = player;
-        ConfigurationSection section = GUIConfig.getInstance().getConfig().getConfigurationSection("sell-menu");
+        ConfigurationSection section;
+        if (sellState == SellState.NORMAL) {
+            section = GUIConfig.getInstance().getConfig().getConfigurationSection("sell-menu-normal");
+        } else {
+            section = GUIConfig.getInstance().getConfig().getConfigurationSection("sell-menu-confirm");
+        }
         if (fishInventory == null) {
             this.fishInventory = Bukkit.createInventory(null, 54);
         } else {
@@ -74,6 +82,7 @@ public class SellGUI {
         });
     }
 
+    @Override
     public void open() {
         gui.show(player);
         // Only start the task when the GUI is opened
@@ -100,6 +109,20 @@ public class SellGUI {
             }
         }
         FishUtils.giveItems(throwing, this.player);
+    }
+
+    @Override
+    public InventoryGui getGui() {
+        return this.gui;
+    }
+
+    public Inventory getFishInventory() {
+        return fishInventory;
+    }
+
+    public enum SellState {
+        NORMAL,
+        CONFIRM
     }
 
 }

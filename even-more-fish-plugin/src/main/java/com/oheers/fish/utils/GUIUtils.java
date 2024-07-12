@@ -5,6 +5,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.gui.EMFGUI;
 import com.oheers.fish.gui.MainMenuGUI;
 import com.oheers.fish.gui.SellGUI;
 import com.oheers.fish.selling.SellHelper;
@@ -136,7 +137,7 @@ public class GUIUtils {
         return stack;
     }
 
-    public static GuiElement getDynamicElement(@NotNull String configLocation, @NotNull ConfigurationSection section, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static GuiElement getDynamicElement(@NotNull String configLocation, @NotNull ConfigurationSection section, @NotNull EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
@@ -152,12 +153,12 @@ public class GUIUtils {
                 item = factory.createItem(null, -1, replacementSupplier.get());
             }
             // Get Click Action
-            GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
+            GuiElement.Action action = getActionMap(gui).get(section.getString("click-action", "none"));
             return new StaticGuiElement(character, item, action);
         });
     }
 
-    public static DynamicGuiElement getDynamicElement(@NotNull ConfigurationSection section, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static DynamicGuiElement getDynamicElement(@NotNull ConfigurationSection section, @NotNull EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         System.out.println(section.getCurrentPath());
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
@@ -175,7 +176,7 @@ public class GUIUtils {
                 item = factory.createItem(null, -1, replacementSupplier.get());
             }
             // Get Click Action
-            GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
+            GuiElement.Action action = getActionMap(gui).get(section.getString("click-action", "none"));
             return new StaticGuiElement(character, item, action);
         });
     }
@@ -199,7 +200,7 @@ public class GUIUtils {
         return true;
     }
 
-    public static Map<String, GuiElement.Action> getActionMap() {
+    public static Map<String, GuiElement.Action> getActionMap(@NotNull EMFGUI gui) {
         if (actionMap != null) {
             return new HashMap<>(actionMap);
         }
@@ -234,7 +235,7 @@ public class GUIUtils {
                 return true;
             }
             Player player = (Player) humanEntity;
-            new SellGUI(player, null).open();
+            new SellGUI(player, SellGUI.SellState.NORMAL, null).open();
             return true;
         });
         newActionMap.put("show-command-help", click -> {
@@ -247,10 +248,35 @@ public class GUIUtils {
                 return true;
             }
             Player player = (Player) humanEntity;
+            if (gui instanceof SellGUI) {
+                SellGUI sellGUI = (SellGUI) gui;
+                new SellGUI(player, SellGUI.SellState.CONFIRM, sellGUI.getFishInventory()).open();
+                return true;
+            }
             new SellHelper(click.getWhoClicked().getInventory(), player).sellFish();
             return true;
         });
         newActionMap.put("sell-shop", click -> {
+            HumanEntity humanEntity = click.getWhoClicked();
+            if (gui instanceof SellGUI && humanEntity instanceof Player) {
+                SellGUI sellGUI = (SellGUI) gui;
+                Player player = (Player) humanEntity;
+                new SellGUI(player, SellGUI.SellState.CONFIRM, sellGUI.getFishInventory()).open();
+                return true;
+            }
+            SellHelper.sellInventoryGui(click.getGui(), click.getWhoClicked());
+            return true;
+        });
+        newActionMap.put("sell-inventory-confirm", click -> {
+            HumanEntity humanEntity = click.getWhoClicked();
+            if (!(humanEntity instanceof Player)) {
+                return true;
+            }
+            Player player = (Player) humanEntity;
+            new SellHelper(click.getWhoClicked().getInventory(), player).sellFish();
+            return true;
+        });
+        newActionMap.put("sell-shop-confirm", click -> {
             SellHelper.sellInventoryGui(click.getGui(), click.getWhoClicked());
             return true;
         });
