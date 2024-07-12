@@ -36,7 +36,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.FillerStyle;
-import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.gui.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
@@ -85,7 +85,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private CompetitionQueue competitionQueue;
     private Logger logger;
     private PluginManager pluginManager;
-    private List<SellGUI> guis;
     private int metric_fishCaught = 0;
     private int metric_baitsUsed = 0;
     private int metric_baitsApplied = 0;
@@ -130,7 +129,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         this.api = new EMFAPI();
 
 
-        guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
 
         logger = getLogger();
@@ -707,10 +705,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public PluginManager getPluginManager() {
         return pluginManager;
-    }
-
-    public List<SellGUI> getGuis() {
-        return guis;
     }
 
     public int getMetricFishCaught() {

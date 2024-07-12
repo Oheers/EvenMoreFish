@@ -6,7 +6,7 @@ import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.gui.MainMenuGUI;
-import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.gui.SellGUI;
 import com.oheers.fish.selling.SellHelper;
 import de.themoep.inventorygui.*;
 import org.bukkit.Bukkit;
