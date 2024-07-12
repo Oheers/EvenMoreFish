@@ -58,7 +58,7 @@ public class ItemsAdderItemAddon extends ItemAddon implements Listener {
         getLogger().info("Reloading EMF.");
         this.itemsAdderLoaded = true;
 
-        ((EMFPlugin) Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish"))).reload();
+        ((EMFPlugin) Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish"))).reload(null);
     }
 
     /**

@@ -273,10 +273,7 @@ public class AdminCommand extends BaseCommand {
     @Subcommand("reload")
     @Description("%desc_admin_reload")
     public void onReload(final CommandSender sender) {
-
-        EvenMoreFish.getInstance().reload();
-
-        new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
+        EvenMoreFish.getInstance().reload(sender);
     }
 
 

@@ -50,6 +50,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
@@ -58,6 +59,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -529,7 +531,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return customRod;
     }
 
-    public void reload() {
+    public void reload(@Nullable CommandSender sender) {
 
         terminateGUIS();
 
@@ -565,6 +567,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         competitionQueue.load();
+
+        if (sender != null) {
+            new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
+        }
+
     }
 
     // Checks for updates, surprisingly
