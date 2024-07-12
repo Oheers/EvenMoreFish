@@ -533,13 +533,23 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         terminateGUIS();
 
-        setupEconomy();
-
-        fish = new HashMap<>();
-        fishCollection = new HashMap<>();
+        fish.clear();
+        fishCollection.clear();
 
         reloadConfig();
         saveDefaultConfig();
+
+        MainConfig.getInstance().reload();
+        Messages.getInstance().reload();
+        CompetitionConfig.getInstance().reload();
+        Xmas2022Config.getInstance().reload();
+        GUIConfig.getInstance().reload();
+        GUIFillerConfig.getInstance().reload();
+        FishFile.getInstance().reload();
+        RaritiesFile.getInstance().reload();
+        BaitFile.getInstance().reload();
+
+        setupEconomy();
 
         Names names = new Names();
         names.loadRarities(FishFile.getInstance().getConfig(), RaritiesFile.getInstance().getConfig());
@@ -550,13 +560,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         HandlerList.unregisterAll(McMMOTreasureEvent.getInstance());
         optionalListeners();
 
-        MainConfig.getInstance().reload();
-        Messages.getInstance().reload();
-        CompetitionConfig.getInstance().reload();
-        Xmas2022Config.getInstance().reload();
-        GUIConfig.getInstance().reload();
-        GUIFillerConfig.getInstance().reload();
-
         if (MainConfig.getInstance().requireNBTRod()) {
             customNBTRod = createCustomNBTRod();
         }
@@ -566,7 +569,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     // Checks for updates, surprisingly
     private boolean checkUpdate() {
-
 
         String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
         String[] serverVersion = getDescription().getVersion().split("\\.");
