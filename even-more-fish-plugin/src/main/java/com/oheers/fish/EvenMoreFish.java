@@ -42,6 +42,7 @@ import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.milkbowl.vault.permission.Permission;
@@ -237,7 +238,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     @Override
     public void onDisable() {
-        terminateSellGUIS();
+        terminateGUIS();
         // Don't use the scheduler here because it will throw errors on disable
         saveUserData(false);
 
@@ -466,11 +467,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
     }
 
-    // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
-    private void terminateSellGUIS() {
+    // gets called on server shutdown to simulate all players closing their GUIs
+    private void terminateGUIS() {
         getServer().getOnlinePlayers().forEach(player -> {
-            if (player.getOpenInventory().getTopInventory().getHolder() instanceof SellGUI) {
-                player.closeInventory();
+            InventoryGui inventoryGui = InventoryGui.getOpen(player);
+            if (inventoryGui != null) {
+                inventoryGui.close();
             }
         });
     }
@@ -529,7 +531,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public void reload() {
 
-        terminateSellGUIS();
+        terminateGUIS();
 
         setupEconomy();
 
