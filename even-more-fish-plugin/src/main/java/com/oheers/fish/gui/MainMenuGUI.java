@@ -26,7 +26,7 @@ public class MainMenuGUI implements EMFGUI {
             return;
         }
         gui.setFiller(GUIUtils.getFillerItem(section.getString("filler"), Material.BLACK_STAINED_GLASS_PANE));
-        gui.addElements(GUIUtils.getElements(section, null));
+        gui.addElements(GUIUtils.getElements(section, this, null));
         gui.addElements(GUIFillerConfig.getInstance().getDefaultFillerElements());
     }
 

@@ -138,7 +138,7 @@ sell-menu-normal:
     click-action: "sell-inventory"
 
 sell-menu-confirm:
-  title: "&6&lConfirm"
+  title: "&a&lConfirm"
   layout:
     - "iiiiiiiii"
     - "iiiiiiiii"

@@ -56,7 +56,7 @@ public class SellGUI implements EMFGUI {
         }
         // Add filler and configured elements
         gui.setFiller(GUIUtils.getFillerItem(section.getString("filler"), Material.GRAY_STAINED_GLASS_PANE));
-        gui.addElements(GUIUtils.getElements(section, () -> {
+        gui.addElements(GUIUtils.getElements(section, this, () -> {
             Map<String, String> replacements = new HashMap<>();
             SellHelper playerHelper = new SellHelper(player.getInventory(), player);
             SellHelper shopHelper = new SellHelper(this.fishInventory, player);

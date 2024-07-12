@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class GUIUtils {
 
-    private static Map<String, GuiElement.Action> actionMap = null;
+    private static Map<String, GuiElement.Action> externalActionMap;
 
     public static ItemStack getExitItem() {
         FileConfiguration config = GUIConfig.getInstance().getConfig();
@@ -137,7 +137,7 @@ public class GUIUtils {
         return stack;
     }
 
-    public static GuiElement getDynamicElement(@NotNull String configLocation, @NotNull ConfigurationSection section, @NotNull EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static GuiElement getDynamicElement(@NotNull String configLocation, @NotNull ConfigurationSection section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
@@ -158,7 +158,7 @@ public class GUIUtils {
         });
     }
 
-    public static DynamicGuiElement getDynamicElement(@NotNull ConfigurationSection section, @NotNull EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static DynamicGuiElement getDynamicElement(@NotNull ConfigurationSection section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         System.out.println(section.getCurrentPath());
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
@@ -181,29 +181,29 @@ public class GUIUtils {
         });
     }
 
-    public static List<GuiElement> getElements(@NotNull ConfigurationSection section, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static List<GuiElement> getElements(@NotNull ConfigurationSection section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         return section.getKeys(false)
                 .stream()
                 .map(section::getConfigurationSection)
                 .filter(Objects::nonNull)
                 // Exclude non-item config sections, if there are any
                 .filter(loopSection -> loopSection.getKeys(false).contains("item"))
-                .map(loopSection -> GUIUtils.getDynamicElement(loopSection, replacementSupplier))
+                .map(loopSection -> GUIUtils.getDynamicElement(loopSection, gui, replacementSupplier))
                 .collect(Collectors.toList());
     }
 
     public static boolean addAction(@NotNull String actionKey, @NotNull GuiElement.Action action) {
-        if (actionMap.containsKey(actionKey)) {
+        if (externalActionMap == null) {
+            externalActionMap = new HashMap<>();
+        }
+        if (externalActionMap.containsKey(actionKey)) {
             return false;
         }
-        actionMap.put(actionKey, action);
+        externalActionMap.put(actionKey, action);
         return true;
     }
 
-    public static Map<String, GuiElement.Action> getActionMap(@NotNull EMFGUI gui) {
-        if (actionMap != null) {
-            return new HashMap<>(actionMap);
-        }
+    public static Map<String, GuiElement.Action> getActionMap(@Nullable EMFGUI gui) {
         Map<String, GuiElement.Action> newActionMap = new HashMap<>();
         // Exiting the main menu should close the GUI
         newActionMap.put("full-exit", click -> {
@@ -254,6 +254,7 @@ public class GUIUtils {
                 return true;
             }
             new SellHelper(click.getWhoClicked().getInventory(), player).sellFish();
+            click.getGui().close();
             return true;
         });
         newActionMap.put("sell-shop", click -> {
@@ -265,6 +266,7 @@ public class GUIUtils {
                 return true;
             }
             SellHelper.sellInventoryGui(click.getGui(), click.getWhoClicked());
+            click.getGui().close();
             return true;
         });
         newActionMap.put("sell-inventory-confirm", click -> {
@@ -274,13 +276,17 @@ public class GUIUtils {
             }
             Player player = (Player) humanEntity;
             new SellHelper(click.getWhoClicked().getInventory(), player).sellFish();
+            click.getGui().close();
             return true;
         });
         newActionMap.put("sell-shop-confirm", click -> {
             SellHelper.sellInventoryGui(click.getGui(), click.getWhoClicked());
+            click.getGui().close();
             return true;
         });
-        actionMap = newActionMap;
+        if (externalActionMap != null) {
+            newActionMap.putAll(externalActionMap);
+        }
         return newActionMap;
     }
 
