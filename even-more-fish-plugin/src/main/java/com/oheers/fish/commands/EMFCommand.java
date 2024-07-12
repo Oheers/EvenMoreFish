@@ -13,7 +13,8 @@ import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.gui.MainMenuGUI;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
-import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.gui.SellGUI;
+import com.oheers.fish.selling.SellHelper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -120,9 +121,7 @@ public class EMFCommand extends BaseCommand {
             return;
         }
 
-
-        SellGUI gui = new SellGUI(sender);
-        gui.sell(true);
+        new SellHelper(sender.getInventory(), sender).sellFish();
     }
 
 
