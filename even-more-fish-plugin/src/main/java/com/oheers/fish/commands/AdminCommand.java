@@ -273,9 +273,6 @@ public class AdminCommand extends BaseCommand {
     @Subcommand("reload")
     @Description("%desc_admin_reload")
     public void onReload(final CommandSender sender) {
-        FishFile.getInstance().reload();
-        RaritiesFile.getInstance().reload();
-        BaitFile.getInstance().reload();
 
         EvenMoreFish.getInstance().reload();
 
