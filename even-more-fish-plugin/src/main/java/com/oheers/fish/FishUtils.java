@@ -31,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
@@ -418,10 +419,9 @@ public class FishUtils {
      * @param defaultChar The default character to use if an exception is thrown.
      * @return The first Character from the String
      */
-    public static char getCharFromString(@Nullable String string, char defaultChar) {
-        if (string == null) {
-            return defaultChar;
-        }
+    public static char getCharFromString(@NotNull String string, char defaultChar) {
+        System.out.println(string);
+        System.out.println(defaultChar);
         try {
             return string.toCharArray()[0];
         } catch (ArrayIndexOutOfBoundsException ex) {

@@ -18,7 +18,7 @@ public class GUIFillerConfig extends ConfigBase {
     public static GUIFillerConfig getInstance() { return instance; }
 
     public List<GuiElement> getDefaultFillerElements() {
-        return GUIUtils.getElements(getConfig());
+        return GUIUtils.getElements(getConfig(), null);
     }
 
 }

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class GUIUtils {
@@ -135,40 +136,58 @@ public class GUIUtils {
         return stack;
     }
 
-    public static StaticGuiElement getStaticElement(@NotNull String configLocation, @NotNull ConfigurationSection section) {
-        ItemFactory factory = new ItemFactory(configLocation, section);
-        factory.enableAllChecks();
-        // Get ItemStack
-        ItemStack item = factory.createItem(null, -1);
+    public static GuiElement getDynamicElement(@NotNull String configLocation, @NotNull ConfigurationSection section, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
-        // Get Click Action
-        GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
+
         // Create Element
-        return new StaticGuiElement(character, item, action);
+        return new DynamicGuiElement(character, (viewer) -> {
+            ItemFactory factory = new ItemFactory(configLocation, section);
+            factory.enableAllChecks();
+            // Get ItemStack
+            ItemStack item;
+            if (replacementSupplier == null) {
+                item = factory.createItem(null, -1, null);
+            } else {
+                item = factory.createItem(null, -1, replacementSupplier.get());
+            }
+            // Get Click Action
+            GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
+            return new StaticGuiElement(character, item, action);
+        });
     }
 
-    public static StaticGuiElement getStaticElement(@NotNull ConfigurationSection section) {
-        ItemFactory factory = new ItemFactory(null, section);
-        factory.enableAllChecks();
-        // Get ItemStack
-        ItemStack item = factory.createItem(null, -1);
+    public static DynamicGuiElement getDynamicElement(@NotNull ConfigurationSection section, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+        System.out.println(section.getCurrentPath());
         // Get Character
-        char character = FishUtils.getCharFromString(section.getString("character"), '#');
-        // Get Click Action
-        GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
+        char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
+        System.out.println(character);
+
         // Create Element
-        return new StaticGuiElement(character, item, action);
+        return new DynamicGuiElement(character, (viewer) -> {
+            ItemFactory factory = new ItemFactory(null, section);
+            factory.enableAllChecks();
+            // Get ItemStack
+            ItemStack item;
+            if (replacementSupplier == null) {
+                item = factory.createItem(null, -1, null);
+            } else {
+                item = factory.createItem(null, -1, replacementSupplier.get());
+            }
+            // Get Click Action
+            GuiElement.Action action = getActionMap().get(section.getString("click-action", "none"));
+            return new StaticGuiElement(character, item, action);
+        });
     }
 
-    public static List<GuiElement> getElements(@NotNull ConfigurationSection section) {
+    public static List<GuiElement> getElements(@NotNull ConfigurationSection section, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         return section.getKeys(false)
                 .stream()
                 .map(section::getConfigurationSection)
                 .filter(Objects::nonNull)
                 // Exclude non-item config sections, if there are any
                 .filter(loopSection -> loopSection.getKeys(false).contains("item"))
-                .map(GUIUtils::getStaticElement)
+                .map(loopSection -> GUIUtils.getDynamicElement(loopSection, replacementSupplier))
                 .collect(Collectors.toList());
     }
 
@@ -215,7 +234,7 @@ public class GUIUtils {
                 return true;
             }
             Player player = (Player) humanEntity;
-            new SellGUI(player).open();
+            new SellGUI(player, null).open();
             return true;
         });
         newActionMap.put("show-command-help", click -> {

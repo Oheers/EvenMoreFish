@@ -18,9 +18,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.logging.Level;
+
+// TODO fix item variables
+// TODO fix confirmation and re-add sell states
 
 public class SellGUI {
 
@@ -29,10 +33,14 @@ public class SellGUI {
     private final Inventory fishInventory;
     private MyScheduledTask task;
 
-    public SellGUI(@NotNull Player player) {
+    public SellGUI(@NotNull Player player, @Nullable Inventory fishInventory) {
         this.player = player;
         ConfigurationSection section = GUIConfig.getInstance().getConfig().getConfigurationSection("sell-menu");
-        this.fishInventory = Bukkit.createInventory(null, 54);
+        if (fishInventory == null) {
+            this.fishInventory = Bukkit.createInventory(null, 54);
+        } else {
+            this.fishInventory = fishInventory;
+        }
         gui = GUIUtils.createGUI(section);
         if (section == null) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not find the config for the Sell Menu GUI!");
@@ -40,11 +48,18 @@ public class SellGUI {
         }
         // Add filler and configured elements
         gui.setFiller(GUIUtils.getFillerItem(section.getString("filler"), Material.GRAY_STAINED_GLASS_PANE));
-        gui.addElements(GUIUtils.getElements(section));
+        gui.addElements(GUIUtils.getElements(section, () -> {
+            Map<String, String> replacements = new HashMap<>();
+            SellHelper playerHelper = new SellHelper(player.getInventory(), player);
+            SellHelper shopHelper = new SellHelper(this.fishInventory, player);
+            replacements.put("{sell-price}", String.valueOf(shopHelper.formatWorth(shopHelper.getTotalWorth())));
+            replacements.put("{sell-all-price}", String.valueOf(playerHelper.formatWorth(playerHelper.getTotalWorth())));
+            return replacements;
+        }));
         gui.addElements(GUIFillerConfig.getInstance().getDefaultFillerElements());
 
         // Create the Inventory and Element for the fish to be processed in
-        gui.addElement(new GuiStorageElement(FishUtils.getCharFromString(section.getString("deposit-character"), 'i'), fishInventory));
+        gui.addElement(new GuiStorageElement(FishUtils.getCharFromString(section.getString("deposit-character", "i"), 'i'), this.fishInventory));
 
         gui.setCloseAction(close -> {
             if (task != null) {

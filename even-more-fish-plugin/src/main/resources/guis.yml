@@ -127,14 +127,14 @@ sell-menu:
     lore:
       - "&8Inventory"
       - ""
-      - "&7Total Value » &e{sell-price}"
+      - "&7Total Value » &e{sell-all-price}"
       - ""
       - "&7Click this button to sell"
       - "&7the fish in your inventory to"
       - "&7make some extra money."
       - ""
       - "&e» (Left-click) sell the fish."
-    character: "s"
+    character: "a"
     click-action: "sell-inventory"
 
 # TODO All of these are outdated and unused.
