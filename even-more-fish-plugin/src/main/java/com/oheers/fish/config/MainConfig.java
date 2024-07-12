@@ -87,38 +87,12 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("vanilla-fishing", true);
     }
 
-    public String getFiller() {
-        return getConfig().getString("gui.filler", "GRAY_STAINED_GLASS_PANE");
-    }
-
-    public String getFillerError() {
-        return getConfig().getString("gui.filler-error", "RED_STAINED_GLASS_PANE");
-    }
-
-    public String getSellItem() {
-        return getConfig().getString("gui.sell-item", "GOLD_INGOT");
-    }
-
-    public String getSellItemConfirm() {
-        return getConfig().getString("gui.sell-item-confirm", "GOLD_BLOCK");
-    }
-
-    public String getSellItemError() {
-        return getConfig().getString("gui.sell-item-error", "REDSTONE_BLOCK");
-    }
-
-    public Integer getGUISize() {
-        int returning = getConfig().getInt("gui.size", 3);
-        if (returning <= 0 || returning > 5) return 3;
-        else return returning;
-    }
-
     public String getBarStyle() {
         return getConfig().getString("barstyle", "SEGMENTED_10");
     }
 
     public boolean sellOverDrop() {
-        return getConfig().getBoolean("gui.sell-over-drop", false);
+        return getConfig().getBoolean("sell-gui.sell-over-drop", false);
     }
 
     public boolean disableMcMMOTreasure() {
