@@ -180,15 +180,7 @@ public class ItemFactory {
         // The fish has item: uuid selected
         // note - only works for players who have joined the server previously
         if (uValue != null) {
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) skull.getItemMeta();
-
-            if (meta != null) {
-                meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uValue)));
-            }
-
-            skull.setItemMeta(meta);
-            return skull;
+            return FishUtils.getSkullFromUUID(UUID.fromString(uValue));
         }
 
         return null;

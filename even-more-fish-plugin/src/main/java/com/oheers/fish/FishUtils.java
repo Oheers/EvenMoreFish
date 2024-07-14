@@ -293,6 +293,25 @@ public class FishUtils {
         return skull;
     }
 
+    //gets the item with a custom uuid
+    public static ItemStack getSkullFromUUID(UUID uuid) {
+        final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        // 1.20.5+ handling
+        if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
+            NBT.modifyComponents(skull, nbt -> {
+                ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
+                profileNbt.setUUID("id", uuid);
+            });
+            // 1.20.4 and below handling
+        } else {
+            NBT.modify(skull, nbt -> {
+                ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
+                skullOwnerCompound.setUUID("Id", uuid);
+            });
+        }
+        return skull;
+    }
+
     public static String timeFormat(long timeLeft) {
         String returning = "";
         long hours = timeLeft / 3600;
