@@ -7,8 +7,8 @@ import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.*;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.dejvokep.boostedyaml.YamlDocument;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,18 +20,18 @@ public class Names {
     public boolean regionCheck;
     // Gets all the fish names.
     Set<String> rarities, fishSet, fishList;
-    FileConfiguration fishConfiguration, rarityConfiguration;
+    YamlDocument fishConfiguration, rarityConfiguration;
 
     /*
      *  Goes through the fish branch of fish.yml, then for each rarity it realises on its journey,
      *  it goes down that branch looking for fish and their names. It then plops all this stuff into the
      *  main fish map. Badabing badaboom we've now populated our fish map.
      */
-    public void loadRarities(FileConfiguration fishConfiguration, FileConfiguration rarityConfiguration) {
+    public void loadRarities(YamlDocument fishConfiguration, YamlDocument rarityConfiguration) {
         fishList = new HashSet<>();
 
         // gets all the rarities - just their names, nothing else
-        rarities = fishConfiguration.getConfigurationSection("fish").getKeys(false);
+        rarities = fishConfiguration.getSection("fish").getRoutesAsStrings(false);
         rarities.add("Christmas 2022");
 
         for (String rarity : rarities) {
@@ -51,7 +51,7 @@ public class Names {
             }
 
             // gets all the fish in said rarity, again - just their names
-            fishSet = this.fishConfiguration.getConfigurationSection("fish." + rarity).getKeys(false);
+            fishSet = this.fishConfiguration.getSection("fish." + rarity).getRoutesAsStrings(false);
             fishList.addAll(fishSet);
 
             // creates a rarity object and a fish queue
@@ -101,11 +101,11 @@ public class Names {
         }
     }
 
-    public void loadBaits(FileConfiguration baitConfiguration) {
-        ConfigurationSection section = baitConfiguration.getConfigurationSection("baits.");
+    public void loadBaits(YamlDocument baitConfiguration) {
+        Section section = baitConfiguration.getSection("baits.");
         if (section == null) return;
 
-        for (String s : section.getKeys(false)) {
+        for (String s : section.getRoutesAsStrings(false)) {
             Bait bait = new Bait(s);
 
             List<String> rarityList;
@@ -125,8 +125,8 @@ public class Names {
                 }
             }
 
-            if (baitConfiguration.getConfigurationSection("baits." + s + ".fish") != null) {
-                for (String rarityString : baitConfiguration.getConfigurationSection("baits." + s + ".fish").getKeys(false)) {
+            if (baitConfiguration.getSection("baits." + s + ".fish") != null) {
+                for (String rarityString : baitConfiguration.getSection("baits." + s + ".fish").getRoutesAsStrings(false)) {
                     Rarity rarity = null;
                     for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                         if (r.getValue().equalsIgnoreCase(rarityString)) {
@@ -188,12 +188,12 @@ public class Names {
         return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
     }
 
-    private List<Requirement> getRequirements(String name, String rarity, FileConfiguration config) {
-        ConfigurationSection requirementSection;
+    private List<Requirement> getRequirements(String name, String rarity, YamlDocument config) {
+        Section requirementSection;
         if (name != null) {
-            requirementSection = this.fishConfiguration.getConfigurationSection("fish." + rarity + "." + name + ".requirements");
+            requirementSection = this.fishConfiguration.getSection("fish." + rarity + "." + name + ".requirements");
         } else {
-            requirementSection = this.rarityConfiguration.getConfigurationSection("rarities." + rarity + ".requirements");
+            requirementSection = this.rarityConfiguration.getSection("rarities." + rarity + ".requirements");
         }
         List<Requirement> currentRequirements = new ArrayList<>();
         boolean xmas2022 = false;
@@ -203,7 +203,7 @@ public class Names {
             String configLocator;
             if (name != null) configLocator = "fish." + rarity + "." + name;
             else configLocator = "rarities." + rarity;
-            for (String s : requirementSection.getKeys(false)) {
+            for (String s : requirementSection.getRoutesAsStrings(false)) {
                 switch (s.toLowerCase()) {
                     case "biome":
                         currentRequirements.add(new Biome(configLocator + ".requirements.biome", config));

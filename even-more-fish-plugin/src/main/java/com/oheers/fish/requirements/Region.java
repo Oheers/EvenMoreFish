@@ -1,7 +1,7 @@
 package com.oheers.fish.requirements;
 
 import com.oheers.fish.FishUtils;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 public class Region implements Requirement {
 
     public final String configLocation;
-    public final FileConfiguration fileConfig;
+    public final YamlDocument fileConfig;
     public List<String> regions = new ArrayList<>();
 
     /**
@@ -23,7 +23,7 @@ public class Region implements Requirement {
      * @param fileConfig The file configuration to fetch file data from, this is either the rarities or fish.yml file,
      *                   but it would be possible to use any file, as long as the configLocation is correct.
      */
-    public Region(@NotNull final String configLocation, @NotNull final FileConfiguration fileConfig) {
+    public Region(@NotNull final String configLocation, @NotNull final YamlDocument fileConfig) {
         this.configLocation = configLocation;
         this.fileConfig = fileConfig;
         fetchData();

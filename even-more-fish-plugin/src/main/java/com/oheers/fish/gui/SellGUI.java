@@ -13,7 +13,7 @@ import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -36,11 +36,11 @@ public class SellGUI implements EMFGUI {
     public SellGUI(@NotNull Player player, @NotNull SellState sellState, @Nullable Inventory fishInventory) {
         this.sellState = sellState;
         this.player = player;
-        ConfigurationSection section;
+        Section section;
         if (sellState == SellState.NORMAL) {
-            section = GUIConfig.getInstance().getConfig().getConfigurationSection("sell-menu-normal");
+            section = GUIConfig.getInstance().getConfig().getSection("sell-menu-normal");
         } else {
-            section = GUIConfig.getInstance().getConfig().getConfigurationSection("sell-menu-confirm");
+            section = GUIConfig.getInstance().getConfig().getSection("sell-menu-confirm");
         }
         this.fishInventory = Objects.requireNonNullElseGet(fishInventory, () -> Bukkit.createInventory(null, 54));
         gui = GUIUtils.createGUI(section);

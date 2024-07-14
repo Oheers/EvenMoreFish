@@ -12,8 +12,8 @@ import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +30,7 @@ import java.util.List;
 public class ItemFactory {
 
     private final String configLocation;
-    private final ConfigurationSection configurationFile;
+    private final Section configurationFile;
     private ItemStack product;
     private int chosenRandomIndex = -1;
     private boolean itemRandom;
@@ -46,11 +46,11 @@ public class ItemFactory {
     private String displayName;
 
     /**
-     * Creates an instance of ItemFactory based on the provided ConfigurationSection
+     * Creates an instance of ItemFactory based on the provided Section
      * @param configLocation The location of the item config
      * @param configurationFile The config to check
      */
-    public ItemFactory(@Nullable String configLocation, @NotNull ConfigurationSection configurationFile) {
+    public ItemFactory(@Nullable String configLocation, @NotNull Section configurationFile) {
         this.xmas2022Item = false;
         if (configLocation != null) {
             this.configLocation = configLocation + ".";
@@ -356,7 +356,7 @@ public class ItemFactory {
         // The fish has item: headdb selected
         if (!EvenMoreFish.getInstance().isUsingHeadsDB()) return null;
 
-        List<Integer> headIDs = this.configurationFile.getIntegerList(configLocation + "item.multiple-headdb");
+        List<Integer> headIDs = this.configurationFile.getIntList(configLocation + "item.multiple-headdb");
         if (!headIDs.isEmpty()) {
             final Random rand = EvenMoreFish.getInstance().getRandom();
 
@@ -631,7 +631,7 @@ public class ItemFactory {
         }
     }
 
-    private FileConfiguration getConfiguration() {
+    private YamlDocument getConfiguration() {
         if (this.xmas2022Item) return Xmas2022Config.getInstance().getConfig();
 
         if (this.configLocation.startsWith("fish.")) {

@@ -1,12 +1,12 @@
 package com.oheers.fish.requirements;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import org.jetbrains.annotations.NotNull;
 
 public class Disabled implements Requirement {
 
     private String configLocation;
-    public final FileConfiguration fileConfig;
+    public final YamlDocument fileConfig;
     private boolean isDisabled;
 
     /**
@@ -18,7 +18,7 @@ public class Disabled implements Requirement {
      * @param fileConfig The file configuration to fetch file data from, this is either the rarities or fish.yml file,
      *                   but it would be possible to use any file, as long as the configLocation is correct.
      */
-    public Disabled(String configLocation, @NotNull final FileConfiguration fileConfig) {
+    public Disabled(String configLocation, @NotNull final YamlDocument fileConfig) {
         this.configLocation = configLocation;
         this.fileConfig = fileConfig;
         fetchData();

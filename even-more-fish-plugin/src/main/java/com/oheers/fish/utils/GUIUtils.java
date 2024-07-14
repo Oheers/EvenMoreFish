@@ -12,8 +12,8 @@ import com.oheers.fish.selling.SellHelper;
 import de.themoep.inventorygui.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +33,7 @@ public class GUIUtils {
     private static Map<String, GuiElement.Action> externalActionMap;
 
     public static ItemStack getExitItem() {
-        FileConfiguration config = GUIConfig.getInstance().getConfig();
+        YamlDocument config = GUIConfig.getInstance().getConfig();
         return createItemStack(
                 config.getString("gui.global.exit.material", "structure_void"),
                 Material.STRUCTURE_VOID,
@@ -43,7 +43,7 @@ public class GUIUtils {
     }
 
     public static GuiPageElement getFirstPageButton() {
-        FileConfiguration config = GUIConfig.getInstance().getConfig();
+        YamlDocument config = GUIConfig.getInstance().getConfig();
         return new GuiPageElement('f',
                 createItemStack(
                         config.getString("gui.global.first-page.material", "arrow"),
@@ -56,7 +56,7 @@ public class GUIUtils {
     }
 
     public static GuiPageElement getNextPageButton() {
-        FileConfiguration config = GUIConfig.getInstance().getConfig();
+        YamlDocument config = GUIConfig.getInstance().getConfig();
         return new GuiPageElement('n',
                 createItemStack(
                         config.getString("gui.global.next-page.material", "paper"),
@@ -69,7 +69,7 @@ public class GUIUtils {
     }
 
     public static GuiPageElement getPreviousPageButton() {
-        FileConfiguration config = GUIConfig.getInstance().getConfig();
+        YamlDocument config = GUIConfig.getInstance().getConfig();
         return new GuiPageElement('p',
                 createItemStack(
                         config.getString("gui.global.previous-page.material", "paper"),
@@ -82,7 +82,7 @@ public class GUIUtils {
     }
 
     public static GuiPageElement getLastPageButton() {
-        FileConfiguration config = GUIConfig.getInstance().getConfig();
+        YamlDocument config = GUIConfig.getInstance().getConfig();
         return new GuiPageElement('l',
                 createItemStack(
                         config.getString("gui.global.last-page.material", "arrow"),
@@ -110,7 +110,7 @@ public class GUIUtils {
                 .build();
     }
 
-    public static InventoryGui createGUI(@Nullable ConfigurationSection section) {
+    public static InventoryGui createGUI(@Nullable Section section) {
         if (section == null) {
             return new InventoryGui(
                     EvenMoreFish.getInstance(),
@@ -137,7 +137,7 @@ public class GUIUtils {
         return stack;
     }
 
-    public static GuiElement getDynamicElement(@NotNull String configLocation, @NotNull ConfigurationSection section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static GuiElement getDynamicElement(@NotNull String configLocation, @NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
@@ -158,7 +158,7 @@ public class GUIUtils {
         });
     }
 
-    public static DynamicGuiElement getDynamicElement(@NotNull ConfigurationSection section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static DynamicGuiElement getDynamicElement(@NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
@@ -179,13 +179,13 @@ public class GUIUtils {
         });
     }
 
-    public static List<GuiElement> getElements(@NotNull ConfigurationSection section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
-        return section.getKeys(false)
+    public static List<GuiElement> getElements(@NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+        return section.getRoutesAsStrings(false)
                 .stream()
-                .map(section::getConfigurationSection)
+                .map(section::getSection)
                 .filter(Objects::nonNull)
                 // Exclude non-item config sections, if there are any
-                .filter(loopSection -> loopSection.getKeys(false).contains("item"))
+                .filter(loopSection -> loopSection.getRoutesAsStrings(false).contains("item"))
                 .map(loopSection -> GUIUtils.getDynamicElement(loopSection, gui, replacementSupplier))
                 .collect(Collectors.toList());
     }

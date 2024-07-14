@@ -195,8 +195,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // async check for updates on the spigot page
         getScheduler().runTaskAsynchronously(() -> isUpdateAvailable = checkUpdate());
 
-        checkConfigVers();
-
         listeners();
         loadCommandManager();
 
@@ -587,29 +585,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             }
         }
         return false;
-    }
-
-    private void checkConfigVers() {
-
-        // ConfigBase#updateConfig() will make sure these configs have the newest options
-        MainConfig.getInstance().updateConfig();
-        Messages.getInstance().updateConfig();
-        GUIConfig.getInstance().updateConfig();
-
-        int COMP_CONFIG_VERSION = 1;
-        if (CompetitionConfig.getInstance().configVersion() < COMP_CONFIG_VERSION) {
-            getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
-                    " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
-                    " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
-            CompetitionConfig.getInstance().reload();
-        }
-
-        // Clean up the temp directory
-        File tempDir = new File(getDataFolder(), "temp");
-        if (tempDir.exists()) {
-            tempDir.delete();
-        }
-
     }
 
     /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it

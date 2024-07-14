@@ -16,7 +16,7 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -59,8 +59,8 @@ public class Fish implements Cloneable {
     boolean disableFisherman;
 
     boolean xmasFish;
-    FileConfiguration fishConfig;
-    FileConfiguration rarityConfig;
+    YamlDocument fishConfig;
+    YamlDocument rarityConfig;
 
     private int day = -1;
 
