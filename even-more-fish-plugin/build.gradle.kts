@@ -252,8 +252,7 @@ tasks {
     compileJava {
         options.compilerArgs.add("-parameters")
         options.isFork = true
-
-
+        options.encoding = "UTF-8"
     }
 }
 
