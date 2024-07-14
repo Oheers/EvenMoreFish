@@ -82,32 +82,7 @@ public class FishingProcessor implements Listener {
                     nonCustom.setItemStack(fish);
                 }
             }
-        } /*else if (event.getState() == PlayerFishEvent.State.FISHING) {
-            if (!EvenMoreFish.decidedRarities.containsKey(event.getPlayer().getUniqueId())) {
-                EvenMoreFish.decidedRarities.put(event.getPlayer().getUniqueId(), randomWeightedRarity(event.getPlayer(), 1, null));
-            }
-
-
-            if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isXmas2021()) {
-
-                if (!Objects.equals(EvenMoreFish.xmas2021Config.getParticleMessage(), "none")) {
-                    event.getPlayer().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.xmas2021Config.getParticleMessage()));
-                }
-
-                if (EvenMoreFish.xmas2021Config.doXmas2021Particles()) {
-                    ParticleEngine.renderParticles(event.getHook());
-                }
-            }
-            - if the rarity is exposed by having particles showing
-             */
-
-        // } else if (event.getState() == PlayerFishEvent.State.REEL_IN) {
-            /* For a failed attempt the player needs to have triggered a FISHING which generates a pre-decided rarity.
-            if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isXmas2021()) {
-                EvenMoreFish.decidedRarities.remove(event.getPlayer().getUniqueId());
-            }
-
-        } */
+        }
     }
 
     public static boolean isCustomFishAllowed(UUID player) {

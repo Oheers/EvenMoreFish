@@ -75,8 +75,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private Map<Integer, Set<String>> fish = new HashMap<>();
     private final Map<String, Bait> baits = new HashMap<>();
     private Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
-    private Rarity xmasRarity;
-    private final Map<Integer, Fish> xmasFish = new HashMap<>();
     private final List<UUID> disabledPlayers = new ArrayList<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
@@ -154,7 +152,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new RaritiesFile();
         new BaitFile();
         new CompetitionConfig();
-        new Xmas2022Config();
 
         new GUIConfig();
         new GUIFillerConfig();
@@ -514,7 +511,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     public ItemStack createCustomNBTRod() {
-        ItemFactory itemFactory = new ItemFactory("nbt-rod-item", false);
+        ItemFactory itemFactory = new ItemFactory("nbt-rod-item");
         itemFactory.enableDefaultChecks();
         itemFactory.setItemDisplayNameCheck(true);
         itemFactory.setItemLoreCheck(true);
@@ -539,7 +536,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         MainConfig.getInstance().reload();
         Messages.getInstance().reload();
         CompetitionConfig.getInstance().reload();
-        Xmas2022Config.getInstance().reload();
         GUIConfig.getInstance().reload();
         GUIFillerConfig.getInstance().reload();
         FishFile.getInstance().reload();
@@ -630,18 +626,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public Map<Rarity, List<Fish>> getFishCollection() {
         return fishCollection;
-    }
-
-    public Rarity getXmasRarity() {
-        return xmasRarity;
-    }
-
-    public void setXmasRarity(Rarity rarity) {
-        this.xmasRarity = rarity;
-    }
-
-    public Map<Integer, Fish> getXmasFish() {
-        return xmasFish;
     }
 
     public List<UUID> getDisabledPlayers() {

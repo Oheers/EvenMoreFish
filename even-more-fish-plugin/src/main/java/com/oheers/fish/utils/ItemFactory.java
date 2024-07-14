@@ -7,7 +7,6 @@ import com.oheers.fish.api.addons.exceptions.NoPrefixException;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -42,7 +41,6 @@ public class ItemFactory {
     private boolean itemGlowCheck;
     private boolean itemLoreCheck;
     private boolean itemPotionMetaCheck;
-    private boolean xmas2022Item;
     private String displayName;
 
     /**
@@ -51,7 +49,6 @@ public class ItemFactory {
      * @param configurationFile The config to check
      */
     public ItemFactory(@Nullable String configLocation, @NotNull Section configurationFile) {
-        this.xmas2022Item = false;
         if (configLocation != null) {
             this.configLocation = configLocation + ".";
         } else {
@@ -62,8 +59,7 @@ public class ItemFactory {
         this.product = getType(null);
     }
 
-    public ItemFactory(@NotNull String configLocation, boolean xmas2022Item) {
-        this.xmas2022Item = xmas2022Item;
+    public ItemFactory(@NotNull String configLocation) {
         this.configLocation = configLocation + ".";
         this.configurationFile = getConfiguration();
         this.rawMaterial = false;
@@ -632,15 +628,13 @@ public class ItemFactory {
     }
 
     private YamlDocument getConfiguration() {
-        if (this.xmas2022Item) return Xmas2022Config.getInstance().getConfig();
-
         if (this.configLocation.startsWith("fish.")) {
             return FishFile.getInstance().getConfig();
         } else if (this.configLocation.startsWith("baits.")) {
             return BaitFile.getInstance().getConfig();
         } else if (this.configLocation.startsWith("nbt-rod-item")) {
             return MainConfig.getInstance().getConfig();
-        }else {
+        } else {
             EvenMoreFish.getInstance().getLogger().severe("Could not fetch file configuration for: " + this.configLocation);
             return null;
         }

@@ -4,7 +4,6 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
-import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.*;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
@@ -36,19 +35,8 @@ public class Names {
 
         for (String rarity : rarities) {
 
-            boolean xmasRarity = rarity.equals("Christmas 2022");
-
-            if (xmasRarity) {
-                if (Xmas2022Config.getInstance().isAvailable()) {
-                    this.rarityConfiguration = Xmas2022Config.getInstance().getConfig();
-                    this.fishConfiguration = Xmas2022Config.getInstance().getConfig();
-                } else {
-                    continue;
-                }
-            } else {
-                this.fishConfiguration = fishConfiguration;
-                this.rarityConfiguration = rarityConfiguration;
-            }
+            this.fishConfiguration = fishConfiguration;
+            this.rarityConfiguration = rarityConfiguration;
 
             // gets all the fish in said rarity, again - just their names
             fishSet = this.fishConfiguration.getSection("fish." + rarity).getRoutesAsStrings(false);
@@ -56,9 +44,6 @@ public class Names {
 
             // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityUseConfigCasing(rarity), rarityOverridenLore(rarity));
-            if (xmasRarity) {
-                EvenMoreFish.getInstance().setXmasRarity(r);
-            }
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
             r.setRequirements(getRequirements(null, rarity, RaritiesFile.getInstance().getConfig()));
@@ -70,7 +55,7 @@ public class Names {
 
                 // for each fish name, a fish object is made that contains the information gathered from that name
                 try {
-                    canvas = new Fish(r, fish, xmasRarity);
+                    canvas = new Fish(r, fish);
                 } catch (InvalidFishException ignored) {
                     // We're looping through the config, this isn't be an issue.
                 }
@@ -79,11 +64,6 @@ public class Names {
                 canvas.setRequirements(getRequirements(fish, rarity, FishFile.getInstance().getConfig()));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
-
-                if (xmasRarity) {
-                    canvas.setDay(getDay(fish));
-                    EvenMoreFish.getInstance().getXmasFish().put(canvas.getDay(), canvas);
-                }
 
                 if (compCheckExempt(fish, rarity)) {
                     r.setHasCompExemptFish(true);
@@ -196,10 +176,7 @@ public class Names {
             requirementSection = this.rarityConfiguration.getSection("rarities." + rarity + ".requirements");
         }
         List<Requirement> currentRequirements = new ArrayList<>();
-        boolean xmas2022 = false;
-        if (requirementSection == null) {
-            if (rarity.equals("Christmas 2022")) xmas2022 = true;
-        } else {
+        if (requirementSection != null) {
             String configLocator;
             if (name != null) configLocator = "fish." + rarity + "." + name;
             else configLocator = "rarities." + rarity;
@@ -242,8 +219,6 @@ public class Names {
         } else if (this.rarityConfiguration.getBoolean("rarities." + rarity + ".disabled", false)) {
             currentRequirements.add(new Disabled("rarities." + rarity + ".disabled", config));
         }
-
-        if (xmas2022) currentRequirements.add(new Day("fish." + rarity + "." + name + ".day", Xmas2022Config.getInstance().getConfig()));
 
         return currentRequirements;
     }
