@@ -191,7 +191,7 @@ public class Fish implements Cloneable {
         String msg = this.fishConfig.getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
 
         if (msg != null) {
-            if (Bukkit.getPlayer(fisherman) != null) {
+            if (fisherman != null && Bukkit.getPlayer(fisherman) != null) {
                 Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).sendMessage(FishUtils.translateColorCodes(msg));
             }
         }
