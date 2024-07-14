@@ -92,7 +92,7 @@ public class Names {
     }
 
     public void loadBaits(YamlDocument baitConfiguration) {
-        Section section = baitConfiguration.getSection("baits.");
+        Section section = baitConfiguration.getSection("baits");
         if (section == null) return;
 
         for (String s : section.getRoutesAsStrings(false)) {
