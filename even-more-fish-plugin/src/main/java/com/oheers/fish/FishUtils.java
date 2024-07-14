@@ -30,6 +30,11 @@ import org.bukkit.*;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -412,5 +417,19 @@ public class FishUtils {
         }
 
         return false;
+    }
+
+    /**
+     * Gets the first Character from a given String
+     * @param string The String to use.
+     * @param defaultChar The default character to use if an exception is thrown.
+     * @return The first Character from the String
+     */
+    public static char getCharFromString(@NotNull String string, char defaultChar) {
+        try {
+            return string.toCharArray()[0];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return defaultChar;
+        }
     }
 }

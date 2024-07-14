@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -283,6 +284,13 @@ public class Message {
      */
     public void setVariable(@NotNull final String code, @NotNull final String value) {
         liveVariables.put(code, value);
+    }
+
+    public void setVariables(@Nullable Map<String, String> variableMap) {
+        if (variableMap == null) {
+            return;
+        }
+        this.liveVariables.putAll(variableMap);
     }
 
     /**

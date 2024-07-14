@@ -13,7 +13,8 @@ import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.gui.MainMenuGUI;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
-import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.gui.SellGUI;
+import com.oheers.fish.selling.SellHelper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -99,12 +100,12 @@ public class EMFCommand extends BaseCommand {
                 new Message("&cYou must specify a player when running from console.").broadcast(sender, false);
                 return;
             }
-            new SellGUI((Player) sender).open();
+            new SellGUI((Player) sender, SellGUI.SellState.NORMAL, null).open();
             return;
         }
 
         if (sender.hasPermission(AdminPerms.ADMIN)) {
-            new SellGUI(onlinePlayer.player).open();
+            new SellGUI(onlinePlayer.player, SellGUI.SellState.NORMAL, null).open();
             Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
             message.setPlayer(onlinePlayer.player.getName());
             message.broadcast(sender, true);
@@ -120,9 +121,7 @@ public class EMFCommand extends BaseCommand {
             return;
         }
 
-
-        SellGUI gui = new SellGUI(sender);
-        gui.sell(true);
+        new SellHelper(sender.getInventory(), sender).sellFish();
     }
 
 

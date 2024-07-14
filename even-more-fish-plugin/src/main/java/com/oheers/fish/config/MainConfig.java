@@ -87,38 +87,12 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("vanilla-fishing", true);
     }
 
-    public String getFiller() {
-        return getConfig().getString("gui.filler", "GRAY_STAINED_GLASS_PANE");
-    }
-
-    public String getFillerError() {
-        return getConfig().getString("gui.filler-error", "RED_STAINED_GLASS_PANE");
-    }
-
-    public String getSellItem() {
-        return getConfig().getString("gui.sell-item", "GOLD_INGOT");
-    }
-
-    public String getSellItemConfirm() {
-        return getConfig().getString("gui.sell-item-confirm", "GOLD_BLOCK");
-    }
-
-    public String getSellItemError() {
-        return getConfig().getString("gui.sell-item-error", "REDSTONE_BLOCK");
-    }
-
-    public Integer getGUISize() {
-        int returning = getConfig().getInt("gui.size", 3);
-        if (returning <= 0 || returning > 5) return 3;
-        else return returning;
-    }
-
     public String getBarStyle() {
         return getConfig().getString("barstyle", "SEGMENTED_10");
     }
 
     public boolean sellOverDrop() {
-        return getConfig().getBoolean("gui.sell-over-drop", false);
+        return getConfig().getBoolean("sell-gui.sell-over-drop", false);
     }
 
     public boolean disableMcMMOTreasure() {
@@ -151,48 +125,6 @@ public class MainConfig extends ConfigBase {
 
     public String rewardCommand(String command) {
         return getConfig().getString("reward-gui.command-override." + command);
-    }
-
-    public Material getSellAllMaterial() {
-        String s = getConfig().getString("gui.sell-all-item", "COD_BUCKET");
-        try {
-            return Material.valueOf(s);
-        } catch (IllegalArgumentException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(s + " is not a valid material type in config.yml gui.sell-all-item.");
-        }
-        return Material.COD_BUCKET;
-    }
-
-    public Material getSellAllConfirmMaterial() {
-        String s = getConfig().getString("gui.sell-all-item-confirm", "TROPICAL_FISH_BUCKET");
-        try {
-            return Material.valueOf(s);
-        } catch (IllegalArgumentException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
-        }
-        return Material.TROPICAL_FISH_BUCKET;
-    }
-
-    public Material getSellAllErrorMaterial() {
-        String s = getConfig().getString("gui.sell-all-item-error", "SALMON_BUCKET");
-        try {
-            return Material.valueOf(s);
-        } catch (IllegalArgumentException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(s + " is not a valid material type in config.yml gui.sell-all-item-confirm.");
-        }
-        return Material.SALMON_BUCKET;
-    }
-
-    public int getSellAllSlot() {
-        int returning = getConfig().getInt("gui.sell-all-slot", 6);
-        if (returning > 9 || returning < 1) return 6;
-        else return returning;
-    }
-
-    public int getSellSlot() {
-        int returning = getConfig().getInt("gui.sell-slot", 4);
-        if (returning > 9 || returning < 1) return 4;
-        else return returning;
     }
 
 
@@ -263,23 +195,6 @@ public class MainConfig extends ConfigBase {
 
     public List<String> getMainCommandAliases() {
         return getConfig().getStringList("command.aliases");
-    }
-
-    public String[] getSellGUILayout() {
-        List<String> layout = getConfig().getStringList("gui.layout");
-
-        // Return default layout if the config is empty
-        if (layout.isEmpty()) {
-            return new String[]{
-                    "iiiiiiiii",
-                    "iiiiiiiii",
-                    "iiiiiiiii",
-                    "fffsfafff"
-            };
-        }
-
-        // Convert the List<String> to a String[] and return
-        return layout.toArray(new String[0]);
     }
 
 }
