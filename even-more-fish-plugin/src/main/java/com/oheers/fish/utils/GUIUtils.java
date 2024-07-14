@@ -230,10 +230,9 @@ public class GUIUtils {
         newActionMap.put("open-shop", click -> {
             HumanEntity humanEntity = click.getWhoClicked();
 
-            if (!(humanEntity instanceof Player)) {
+            if (!(humanEntity instanceof Player player)) {
                 return true;
             }
-            Player player = (Player) humanEntity;
             new SellGUI(player, SellGUI.SellState.NORMAL, null).open();
             return true;
         });
@@ -243,12 +242,10 @@ public class GUIUtils {
         });
         newActionMap.put("sell-inventory", click -> {
             HumanEntity humanEntity = click.getWhoClicked();
-            if (!(humanEntity instanceof Player)) {
+            if (!(humanEntity instanceof Player player)) {
                 return true;
             }
-            Player player = (Player) humanEntity;
-            if (gui instanceof SellGUI) {
-                SellGUI sellGUI = (SellGUI) gui;
+            if (gui instanceof SellGUI sellGUI) {
                 new SellGUI(player, SellGUI.SellState.CONFIRM, sellGUI.getFishInventory()).open();
                 return true;
             }
@@ -258,9 +255,7 @@ public class GUIUtils {
         });
         newActionMap.put("sell-shop", click -> {
             HumanEntity humanEntity = click.getWhoClicked();
-            if (gui instanceof SellGUI && humanEntity instanceof Player) {
-                SellGUI sellGUI = (SellGUI) gui;
-                Player player = (Player) humanEntity;
+            if (gui instanceof SellGUI sellGUI && humanEntity instanceof Player player) {
                 new SellGUI(player, SellGUI.SellState.CONFIRM, sellGUI.getFishInventory()).open();
                 return true;
             }
@@ -270,10 +265,9 @@ public class GUIUtils {
         });
         newActionMap.put("sell-inventory-confirm", click -> {
             HumanEntity humanEntity = click.getWhoClicked();
-            if (!(humanEntity instanceof Player)) {
+            if (!(humanEntity instanceof Player player)) {
                 return true;
             }
-            Player player = (Player) humanEntity;
             new SellHelper(click.getWhoClicked().getInventory(), player).sellFish();
             click.getGui().close();
             return true;

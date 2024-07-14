@@ -36,7 +36,6 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.FillerStyle;
-import com.oheers.fish.gui.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;

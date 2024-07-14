@@ -32,10 +32,10 @@ public class BaitListener implements Listener {
             return;
         }
 
-        ItemStack clickedItem = event.getCurrentItem();
+        ItemStack potentialFishingRod = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
 
-        if (clickedItem.getType() != Material.FISHING_ROD)
+        if (potentialFishingRod.getType() != Material.FISHING_ROD)
             return;
 
         if (!BaitNBTManager.isBaitObject(cursor)) {
@@ -51,18 +51,17 @@ public class BaitListener implements Listener {
         ApplicationResult result;
         Bait bait = EvenMoreFish.getInstance().getBaits().get(BaitNBTManager.getBaitName(event.getCursor()));
 
-        ItemStack fishingRod = clickedItem;
-        NbtVersion nbtVersion = NbtVersion.getVersion(clickedItem);
+        NbtVersion nbtVersion = NbtVersion.getVersion(potentialFishingRod);
         if (nbtVersion != NbtVersion.COMPAT) {
-            convertToCompatNbtItem(nbtVersion, fishingRod);
+            convertToCompatNbtItem(nbtVersion, potentialFishingRod);
         }
 
         try {
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                result = BaitNBTManager.applyBaitedRodNBT(fishingRod, bait, event.getCursor().getAmount());
+                result = BaitNBTManager.applyBaitedRodNBT(potentialFishingRod, bait, event.getCursor().getAmount());
                 EvenMoreFish.getInstance().incrementMetricBaitsApplied(event.getCursor().getAmount());
             } else {
-                result = BaitNBTManager.applyBaitedRodNBT(fishingRod, bait, 1);
+                result = BaitNBTManager.applyBaitedRodNBT(potentialFishingRod, bait, 1);
                 EvenMoreFish.getInstance().incrementMetricBaitsApplied(1);
             }
 

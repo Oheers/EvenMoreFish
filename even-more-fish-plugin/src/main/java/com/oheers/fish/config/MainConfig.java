@@ -2,7 +2,6 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
-import org.bukkit.Material;
 
 import java.util.List;
 
