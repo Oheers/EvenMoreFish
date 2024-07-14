@@ -20,14 +20,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.UUID;
 
 public class ItemFactory {
 
@@ -79,6 +78,17 @@ public class ItemFactory {
      * @throws NullPointerException The type has not been enabled, therefore the ItemStack was never set in the first place.
      */
     public ItemStack createItem(OfflinePlayer player, int randomIndex) {
+        return createItem(player, randomIndex, null);
+    }
+
+    /**
+     * Returns the item created, this is literally everything: NBT data, material, lore blah blah blah.
+     * Optionally provide a map of variables to parse in the display and lore.
+     *
+     * @return The completed ItemStack
+     * @throws NullPointerException The type has not been enabled, therefore the ItemStack was never set in the first place.
+     */
+    public ItemStack createItem(OfflinePlayer player, int randomIndex, @Nullable Map<String, String> replacements) {
         if (rawMaterial) return this.product;
         if (itemRandom && player != null) {
             if (randomIndex == -1) this.product = getType(player);
@@ -87,10 +97,10 @@ public class ItemFactory {
 
         if (itemModelDataCheck) applyModelData();
         if (itemDamageCheck) applyDamage();
-        if (itemDisplayNameCheck) applyDisplayName();
+        if (itemDisplayNameCheck) applyDisplayName(replacements);
         if (itemDyeCheck) applyDyeColour();
         if (itemGlowCheck) applyGlow();
-        if (itemLoreCheck) applyLore();
+        if (itemLoreCheck) applyLore(replacements);
         if (itemPotionMetaCheck) applyPotionMeta();
 
         applyFlags();
@@ -519,7 +529,7 @@ public class ItemFactory {
                 }
             }
 
-            product.setItemMeta(nonDamaged);
+            product.setItemMeta((ItemMeta) nonDamaged);
         }
     }
 
@@ -539,15 +549,17 @@ public class ItemFactory {
         }
     }
 
-    private void applyLore() {
+    private void applyLore(@Nullable Map<String, String> replacements) {
         List<String> loreConfig = this.configurationFile.getStringList(configLocation + "lore");
         if (loreConfig.isEmpty()) return;
 
-        Message lore = new Message(loreConfig);
         ItemMeta meta = product.getItemMeta();
         if (meta == null) return;
 
-        meta.setLore(lore.getRawListMessage(false));
+        Message lore = new Message(loreConfig);
+        lore.setVariables(replacements);
+
+        meta.setLore(lore.getRawListMessage(true));
         product.setItemMeta(meta);
     }
 
@@ -555,7 +567,7 @@ public class ItemFactory {
      * Applies a custom display name to the item, this is if server owners don't like the default colour or whatever their
      * reason is.
      */
-    private void applyDisplayName() {
+    private void applyDisplayName(@Nullable Map<String, String> replacements) {
         String displayName = this.configurationFile.getString(configLocation + "item.displayname");
 
         if (displayName == null && this.displayName != null) displayName = this.displayName;
@@ -567,7 +579,9 @@ public class ItemFactory {
                 if (displayName.isEmpty()) {
                     meta.setDisplayName("");
                 } else {
-                    meta.setDisplayName(FishUtils.translateColorCodes(displayName));
+                    Message display = new Message(displayName);
+                    display.setVariables(replacements);
+                    meta.setDisplayName(display.getRawMessage(true));
                 }
             }
 

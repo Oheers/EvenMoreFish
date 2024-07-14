@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
 
-public class MainMenuGUI {
+public class MainMenuGUI implements EMFGUI {
 
     private final InventoryGui gui;
     private final HumanEntity viewer;
@@ -26,12 +26,18 @@ public class MainMenuGUI {
             return;
         }
         gui.setFiller(GUIUtils.getFillerItem(section.getString("filler"), Material.BLACK_STAINED_GLASS_PANE));
-        gui.addElements(GUIUtils.getElements(section));
+        gui.addElements(GUIUtils.getElements(section, this, null));
         gui.addElements(GUIFillerConfig.getInstance().getDefaultFillerElements());
     }
 
+    @Override
     public void open() {
         gui.show(this.viewer);
+    }
+
+    @Override
+    public InventoryGui getGui() {
+        return this.gui;
     }
 
 }
