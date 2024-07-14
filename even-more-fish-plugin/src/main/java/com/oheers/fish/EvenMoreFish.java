@@ -42,6 +42,7 @@ import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.milkbowl.vault.permission.Permission;
@@ -49,6 +50,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
@@ -57,6 +59,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -235,7 +238,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     @Override
     public void onDisable() {
-        terminateSellGUIS();
+        terminateGUIS();
         // Don't use the scheduler here because it will throw errors on disable
         saveUserData(false);
 
@@ -464,11 +467,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
     }
 
-    // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
-    private void terminateSellGUIS() {
+    // gets called on server shutdown to simulate all players closing their GUIs
+    private void terminateGUIS() {
         getServer().getOnlinePlayers().forEach(player -> {
-            if (player.getOpenInventory().getTopInventory().getHolder() instanceof SellGUI) {
-                player.closeInventory();
+            InventoryGui inventoryGui = InventoryGui.getOpen(player);
+            if (inventoryGui != null) {
+                inventoryGui.close();
             }
         });
     }
@@ -525,17 +529,27 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return customRod;
     }
 
-    public void reload() {
+    public void reload(@Nullable CommandSender sender) {
 
-        terminateSellGUIS();
+        terminateGUIS();
 
-        setupEconomy();
-
-        fish = new HashMap<>();
-        fishCollection = new HashMap<>();
+        fish.clear();
+        fishCollection.clear();
 
         reloadConfig();
         saveDefaultConfig();
+
+        MainConfig.getInstance().reload();
+        Messages.getInstance().reload();
+        CompetitionConfig.getInstance().reload();
+        Xmas2022Config.getInstance().reload();
+        GUIConfig.getInstance().reload();
+        GUIFillerConfig.getInstance().reload();
+        FishFile.getInstance().reload();
+        RaritiesFile.getInstance().reload();
+        BaitFile.getInstance().reload();
+
+        setupEconomy();
 
         Names names = new Names();
         names.loadRarities(FishFile.getInstance().getConfig(), RaritiesFile.getInstance().getConfig());
@@ -546,23 +560,20 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         HandlerList.unregisterAll(McMMOTreasureEvent.getInstance());
         optionalListeners();
 
-        MainConfig.getInstance().reload();
-        Messages.getInstance().reload();
-        CompetitionConfig.getInstance().reload();
-        Xmas2022Config.getInstance().reload();
-        GUIConfig.getInstance().reload();
-        GUIFillerConfig.getInstance().reload();
-
         if (MainConfig.getInstance().requireNBTRod()) {
             customNBTRod = createCustomNBTRod();
         }
 
         competitionQueue.load();
+
+        if (sender != null) {
+            new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
+        }
+
     }
 
     // Checks for updates, surprisingly
     private boolean checkUpdate() {
-
 
         String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
         String[] serverVersion = getDescription().getVersion().split("\\.");
