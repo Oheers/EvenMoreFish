@@ -78,6 +78,8 @@ dependencyResolutionManagement {
             library("adventure-legacy", "net.kyori","adventure-text-serializer-legacy").versionRef("adventure")
             bundle("adventure", listOf("adventure-api", "adventure-minimessage", "adventure-legacy"))
 
+            library("boostedyaml", "dev.dejvokep:boosted-yaml:1.3.6")
+
             plugin("grgit", "org.ajoberstar.grgit").version("5.2.2")
 
         }
