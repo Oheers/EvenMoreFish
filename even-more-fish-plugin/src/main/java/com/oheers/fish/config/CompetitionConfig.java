@@ -2,8 +2,8 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.CompetitionType;
-import org.bukkit.Sound;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.Sound;
 
 import java.util.*;
 

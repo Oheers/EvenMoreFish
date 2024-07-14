@@ -1,8 +1,8 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
     `java-library`

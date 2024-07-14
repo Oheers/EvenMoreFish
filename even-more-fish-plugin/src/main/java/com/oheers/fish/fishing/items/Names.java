@@ -6,8 +6,8 @@ import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.*;
-import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 
 import java.util.ArrayList;
 import java.util.HashSet;

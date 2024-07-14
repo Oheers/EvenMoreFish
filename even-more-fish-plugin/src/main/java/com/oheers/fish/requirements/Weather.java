@@ -1,8 +1,8 @@
 package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
-import org.bukkit.WeatherType;
 import dev.dejvokep.boostedyaml.YamlDocument;
+import org.bukkit.WeatherType;
 import org.jetbrains.annotations.NotNull;
 
 public class Weather implements Requirement {

@@ -5,8 +5,8 @@ import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.GUIFillerConfig;
 import com.oheers.fish.utils.GUIUtils;
 import de.themoep.inventorygui.InventoryGui;
-import org.bukkit.Material;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.jetbrains.annotations.NotNull;
 

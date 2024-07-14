@@ -260,7 +260,7 @@ public class FishingProcessor implements Listener {
         List<Rarity> allowedRarities = new ArrayList<>();
 
         int idx = 0;
-        
+
         if (fisher != null) {
             rarityLoop:
             for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
