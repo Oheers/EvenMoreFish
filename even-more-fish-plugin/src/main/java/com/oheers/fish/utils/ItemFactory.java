@@ -384,15 +384,7 @@ public class ItemFactory {
             itemRandom = true;
 
             try {
-                ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta meta = (SkullMeta) skull.getItemMeta();
-
-                if (meta != null) {
-                    meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
-                }
-
-                skull.setItemMeta(meta);
-                return skull;
+                return FishUtils.getSkullFromUUID(UUID.fromString(uuid));
             } catch (IllegalArgumentException illegalArgumentException) {
                 EvenMoreFish.getInstance().getLogger().severe("Could not load uuid: " + uuid + " as a multiple-head-uuid option for the config location" + configLocation);
                 return new ItemStack(Material.COD);
@@ -415,17 +407,7 @@ public class ItemFactory {
         itemRandom = ownHead;
 
         if (ownHead && player != null) {
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) skull.getItemMeta();
-
-            if (meta != null) {
-                meta.setOwningPlayer(player);
-            } else {
-                return new ItemStack(Material.COD);
-            }
-
-            skull.setItemMeta(meta);
-            return skull;
+            return FishUtils.getSkullFromUUID(player.getUniqueId());
         } else return null;
     }
 
