@@ -103,7 +103,6 @@ public class ConfigBase {
             if (!config.isConfigurationSection(key)) {
                 tempConfig.set(key, config.get(key));
             }
-            tempConfig.setComments(key, config.getComments(key));
         });
         try {
             tempConfig.save(file);

@@ -62,6 +62,8 @@ public class AdminCommand extends BaseCommand {
             fish.getFishRewards().forEach(fishReward -> fishReward.rewardPlayer(target, target.getLocation()));
         }
 
+        fish.setFisherman(target.getUniqueId());
+
         final ItemStack fishItem = fish.give(-1);
         fishItem.setAmount(quantity);
 
@@ -271,13 +273,7 @@ public class AdminCommand extends BaseCommand {
     @Subcommand("reload")
     @Description("%desc_admin_reload")
     public void onReload(final CommandSender sender) {
-        FishFile.getInstance().reload();
-        RaritiesFile.getInstance().reload();
-        BaitFile.getInstance().reload();
-
-        EvenMoreFish.getInstance().reload();
-
-        new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
+        EvenMoreFish.getInstance().reload(sender);
     }
 
 

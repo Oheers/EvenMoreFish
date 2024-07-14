@@ -18,6 +18,8 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -28,13 +30,7 @@ import org.bukkit.*;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerProfile;
-import org.bukkit.profile.PlayerTextures;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -284,20 +280,27 @@ public class FishUtils {
     //gets the item with a custom texture
     public static ItemStack get(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        if (meta != null) {
-            try {
-                String decodedBase64 = new String(Base64.getDecoder().decode(base64EncodedString));
-                URL url = new URL(decodedBase64.substring("{\"textures\":{\"SKIN\":{\"url\":\"".length(), decodedBase64.length() - "\"}}}".length()));
-                PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID(), "EMFFish");
-                PlayerTextures textures = profile.getTextures();
-                textures.setSkin(url);
-                profile.setTextures(textures);
-                meta.setOwnerProfile(profile);
-            } catch (MalformedURLException ignored) {
-                // If it's malformed, just don't set it.
-            }
-            skull.setItemMeta(meta);
+        UUID headUuid = UUID.randomUUID();
+        // 1.20.5+ handling
+        if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
+            NBT.modifyComponents(skull, nbt -> {
+                ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
+                profileNbt.setUUID("id", headUuid);
+                ReadWriteNBT propertiesNbt = profileNbt.getCompoundList("properties").addCompound();
+                // This key is required, so we set it to an empty string.
+                propertiesNbt.setString("name", "textures");
+                propertiesNbt.setString("value", base64EncodedString);
+            });
+        // 1.20.4 and below handling
+        } else {
+            NBT.modify(skull, nbt -> {
+                ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
+                skullOwnerCompound.setUUID("Id", headUuid);
+                skullOwnerCompound.getOrCreateCompound("Properties")
+                        .getCompoundList("textures")
+                        .addCompound()
+                        .setString("Value", base64EncodedString);
+            });
         }
         return skull;
     }
