@@ -104,7 +104,6 @@ fish:
     Squid:
       item:
         # This lets you use the UUID of a user, in this example it's "MHF_Squid", you can get UUIDs by searching a username on https://www.namemc.com - make sure to copy the one with dashes in.
-        # It's disabled because the user with the UUID has to have joined the server in order to load properly, and it's safe to assume MHF_Squid won't have joined your server.
         # head-uuid: "72e64683-e313-4c36-a408-c66b64e94af5"
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTE2ZjU5ZWNmNzI3ZTEyOTNjYzY3NWNjOGMwZWMwNmMzN2Y2NmVhYTcwNTU1OTVmMjYxNGQ5YWFmNTU4NGE0NSJ9fX0="
     Coral:
