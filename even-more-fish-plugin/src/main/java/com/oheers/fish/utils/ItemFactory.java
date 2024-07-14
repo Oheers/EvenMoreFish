@@ -7,13 +7,12 @@ import com.oheers.fish.api.addons.exceptions.NoPrefixException;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.config.messages.Message;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -24,13 +23,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class ItemFactory {
 
     private final String configLocation;
-    private final ConfigurationSection configurationFile;
+    private final Section configurationFile;
     private ItemStack product;
     private int chosenRandomIndex = -1;
     private boolean itemRandom;
@@ -42,16 +41,14 @@ public class ItemFactory {
     private boolean itemGlowCheck;
     private boolean itemLoreCheck;
     private boolean itemPotionMetaCheck;
-    private boolean xmas2022Item;
     private String displayName;
 
     /**
-     * Creates an instance of ItemFactory based on the provided ConfigurationSection
+     * Creates an instance of ItemFactory based on the provided Section
      * @param configLocation The location of the item config
      * @param configurationFile The config to check
      */
-    public ItemFactory(@Nullable String configLocation, @NotNull ConfigurationSection configurationFile) {
-        this.xmas2022Item = false;
+    public ItemFactory(@Nullable String configLocation, @NotNull Section configurationFile) {
         if (configLocation != null) {
             this.configLocation = configLocation + ".";
         } else {
@@ -62,8 +59,7 @@ public class ItemFactory {
         this.product = getType(null);
     }
 
-    public ItemFactory(@NotNull String configLocation, boolean xmas2022Item) {
-        this.xmas2022Item = xmas2022Item;
+    public ItemFactory(@NotNull String configLocation) {
         this.configLocation = configLocation + ".";
         this.configurationFile = getConfiguration();
         this.rawMaterial = false;
@@ -184,15 +180,7 @@ public class ItemFactory {
         // The fish has item: uuid selected
         // note - only works for players who have joined the server previously
         if (uValue != null) {
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) skull.getItemMeta();
-
-            if (meta != null) {
-                meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uValue)));
-            }
-
-            skull.setItemMeta(meta);
-            return skull;
+            return FishUtils.getSkullFromUUID(UUID.fromString(uValue));
         }
 
         return null;
@@ -207,7 +195,7 @@ public class ItemFactory {
         // The fish has item: 64 selected
         String bValue = this.configurationFile.getString(configLocation + "item.head-64");
         if (bValue != null) {
-            return FishUtils.get(bValue);
+            return FishUtils.getSkullFromBase64(bValue);
         }
 
         return null;
@@ -346,7 +334,7 @@ public class ItemFactory {
             String base64 = mh64Values.get(randomIndex);
             itemRandom = true;
 
-            return FishUtils.get(base64);
+            return FishUtils.getSkullFromBase64(base64);
         }
 
         return null;
@@ -356,7 +344,7 @@ public class ItemFactory {
         // The fish has item: headdb selected
         if (!EvenMoreFish.getInstance().isUsingHeadsDB()) return null;
 
-        List<Integer> headIDs = this.configurationFile.getIntegerList(configLocation + "item.multiple-headdb");
+        List<Integer> headIDs = this.configurationFile.getIntList(configLocation + "item.multiple-headdb");
         if (!headIDs.isEmpty()) {
             final Random rand = EvenMoreFish.getInstance().getRandom();
 
@@ -396,15 +384,7 @@ public class ItemFactory {
             itemRandom = true;
 
             try {
-                ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta meta = (SkullMeta) skull.getItemMeta();
-
-                if (meta != null) {
-                    meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
-                }
-
-                skull.setItemMeta(meta);
-                return skull;
+                return FishUtils.getSkullFromUUID(UUID.fromString(uuid));
             } catch (IllegalArgumentException illegalArgumentException) {
                 EvenMoreFish.getInstance().getLogger().severe("Could not load uuid: " + uuid + " as a multiple-head-uuid option for the config location" + configLocation);
                 return new ItemStack(Material.COD);
@@ -427,17 +407,7 @@ public class ItemFactory {
         itemRandom = ownHead;
 
         if (ownHead && player != null) {
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) skull.getItemMeta();
-
-            if (meta != null) {
-                meta.setOwningPlayer(player);
-            } else {
-                return new ItemStack(Material.COD);
-            }
-
-            skull.setItemMeta(meta);
-            return skull;
+            return FishUtils.getSkullFromUUID(player.getUniqueId());
         } else return null;
     }
 
@@ -631,16 +601,14 @@ public class ItemFactory {
         }
     }
 
-    private FileConfiguration getConfiguration() {
-        if (this.xmas2022Item) return Xmas2022Config.getInstance().getConfig();
-
+    private YamlDocument getConfiguration() {
         if (this.configLocation.startsWith("fish.")) {
             return FishFile.getInstance().getConfig();
         } else if (this.configLocation.startsWith("baits.")) {
             return BaitFile.getInstance().getConfig();
         } else if (this.configLocation.startsWith("nbt-rod-item")) {
             return MainConfig.getInstance().getConfig();
-        }else {
+        } else {
             EvenMoreFish.getInstance().getLogger().severe("Could not fetch file configuration for: " + this.configLocation);
             return null;
         }

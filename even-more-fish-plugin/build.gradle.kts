@@ -1,8 +1,8 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
     `java-library`
@@ -96,6 +96,7 @@ dependencies {
     library(libs.caffeine)
     library(libs.commons.lang3)
     library(libs.commons.codec)
+    library(libs.boostedyaml)
 
     library(libs.json.simple)
 }
@@ -245,6 +246,7 @@ tasks {
         relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
         relocate("net.kyori.adventure", "com.oheers.fish.libs.adventure")
+
     }
 
     compileJava {

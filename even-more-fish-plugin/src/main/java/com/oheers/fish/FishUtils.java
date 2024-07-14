@@ -67,12 +67,6 @@ public class FishUtils {
         String rarityString = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
         Float lengthFloat = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
         Integer randomIndex = NbtUtils.getInteger(item, NbtKeys.EMF_FISH_RANDOM_INDEX);
-        Integer xmasINT = NbtUtils.getInteger(item, NbtKeys.EMF_XMAS_FISH);
-        boolean isXmasFish = false;
-
-        if (xmasINT != null) {
-            isXmasFish = xmasINT == 1;
-        }
 
         if (nameString == null || rarityString == null) {
             return null; //throw new InvalidFishException("NBT Error");
@@ -90,7 +84,7 @@ public class FishUtils {
 
         // setting the correct length so it's an exact replica.
         try {
-            Fish fish = new Fish(rarity, nameString, isXmasFish);
+            Fish fish = new Fish(rarity, nameString);
             if (randomIndex != null) {
                 fish.getFactory().setType(randomIndex);
             }
@@ -119,13 +113,6 @@ public class FishUtils {
         final String rarityString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RARITY).toString()));
         final Float lengthFloat = NBT.getPersistentData(skull, nbt -> nbt.getFloat(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_LENGTH).toString()));
         final Integer randomIndex = NBT.getPersistentData(skull, nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RANDOM_INDEX).toString()));
-        final Integer xmasInteger = NBT.getPersistentData(skull, nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtKeys.EMF_XMAS_FISH).toString()));
-
-        boolean isXmasFish = false;
-
-        if (xmasInteger != null) {
-            isXmasFish = xmasInteger == 1;
-        }
 
         if (nameString == null || rarityString == null) {
             throw new InvalidFishException("NBT Error");
@@ -141,7 +128,7 @@ public class FishUtils {
         }
 
         // setting the correct length and randomIndex, so it's an exact replica.
-        Fish fish = new Fish(rarity, nameString, isXmasFish);
+        Fish fish = new Fish(rarity, nameString);
         fish.setLength(lengthFloat);
         if (randomIndex != null) {
             fish.getFactory().setType(randomIndex);
@@ -279,7 +266,7 @@ public class FishUtils {
     }
 
     //gets the item with a custom texture
-    public static ItemStack get(String base64EncodedString) {
+    public static ItemStack getSkullFromBase64(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         UUID headUuid = UUID.randomUUID();
         // 1.20.5+ handling
@@ -301,6 +288,25 @@ public class FishUtils {
                         .getCompoundList("textures")
                         .addCompound()
                         .setString("Value", base64EncodedString);
+            });
+        }
+        return skull;
+    }
+
+    //gets the item with a custom uuid
+    public static ItemStack getSkullFromUUID(UUID uuid) {
+        final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        // 1.20.5+ handling
+        if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
+            NBT.modifyComponents(skull, nbt -> {
+                ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
+                profileNbt.setUUID("id", uuid);
+            });
+            // 1.20.4 and below handling
+        } else {
+            NBT.modify(skull, nbt -> {
+                ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
+                skullOwnerCompound.setUUID("Id", uuid);
             });
         }
         return skull;

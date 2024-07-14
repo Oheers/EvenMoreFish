@@ -58,7 +58,7 @@ public class Bait {
         this.displayName = BaitFile.getInstance().getDisplayName(this.name);
         this.dropQuantity = BaitFile.getInstance().getDropQuantity(this.name);
 
-        this.itemFactory = new ItemFactory("baits." + name, false);
+        this.itemFactory = new ItemFactory("baits." + name);
 
         this.itemFactory.enableDefaultChecks();
         this.itemFactory.setItemDisplayNameCheck(true);

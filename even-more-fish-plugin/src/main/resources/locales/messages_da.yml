@@ -254,3 +254,7 @@ admin:
   update-available: "&rDer er en opdatering tilgængelig: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
   # When the plugin is reloaded
   reload: "&rGenindlæste tilføjelsen korrekt."
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

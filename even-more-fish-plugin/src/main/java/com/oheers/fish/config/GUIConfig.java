@@ -3,7 +3,7 @@ package com.oheers.fish.config;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.gui.Button;
-import org.bukkit.configuration.ConfigurationSection;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class GUIConfig extends ConfigBase {
     private static GUIConfig instance = null;
 
     public GUIConfig() {
-        super("guis.yml", EvenMoreFish.getInstance());
+        super("guis.yml", "guis.yml", EvenMoreFish.getInstance(), true);
         instance = this;
     }
     
@@ -39,9 +39,9 @@ public class GUIConfig extends ConfigBase {
 
     public List<Button> getButtons(@NotNull final UUID uuid) {
         List<Button> buttons = new ArrayList<>();
-        ConfigurationSection section = getConfig().getConfigurationSection("main-menu");
+        Section section = getConfig().getSection("main-menu");
         if (section == null) return buttons;
-        for (String value : section.getKeys(false)) {
+        for (String value : section.getRoutesAsStrings(false)) {
             Message materialIcon = new Message(getConfig().getString("main-menu." + value + ".item", "BARRIER"));
             materialIcon.setToggleIcon(getMaterial(!EvenMoreFish.getInstance().getDisabledPlayers().contains(uuid)));
             Button button = new Button(

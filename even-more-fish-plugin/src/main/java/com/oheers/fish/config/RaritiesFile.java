@@ -7,7 +7,7 @@ public class RaritiesFile extends ConfigBase {
     private static RaritiesFile instance = null;
 
     public RaritiesFile() {
-        super("rarities.yml", EvenMoreFish.getInstance());
+        super("rarities.yml", "rarities.yml", EvenMoreFish.getInstance(), false);
         instance = this;
     }
 

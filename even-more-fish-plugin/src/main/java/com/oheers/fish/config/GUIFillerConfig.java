@@ -11,7 +11,7 @@ public class GUIFillerConfig extends ConfigBase {
     private static GUIFillerConfig instance;
 
     public GUIFillerConfig() {
-        super("gui-fillers.yml", EvenMoreFish.getInstance());
+        super("gui-fillers.yml", "gui-fillers.yml", EvenMoreFish.getInstance(), true);
         instance = this;
     }
 

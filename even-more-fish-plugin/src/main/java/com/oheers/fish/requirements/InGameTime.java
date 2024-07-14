@@ -1,13 +1,13 @@
 package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import org.jetbrains.annotations.NotNull;
 
 public class InGameTime implements Requirement {
 
     public final String configLocation;
-    public final FileConfiguration fileConfig;
+    public final YamlDocument fileConfig;
     public int minTime, maxTime;
 
     /**
@@ -19,7 +19,7 @@ public class InGameTime implements Requirement {
      * @param fileConfig The file configuration to fetch file data from, this is either the rarities or fish.yml file,
      *                   but it would be possible to use any file, as long as the configLocation is correct.
      */
-    public InGameTime(@NotNull final String configLocation, @NotNull final FileConfiguration fileConfig) {
+    public InGameTime(@NotNull final String configLocation, @NotNull final YamlDocument fileConfig) {
         this.configLocation = configLocation;
         this.fileConfig = fileConfig;
         fetchData();

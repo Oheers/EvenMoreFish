@@ -248,3 +248,7 @@ admin:
   update-available: "&rIl y a une mise à jour disponible: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
   # Lorsque le plugin est rechargé
   reload: "&rSuccessfully reloaded the plugin."
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

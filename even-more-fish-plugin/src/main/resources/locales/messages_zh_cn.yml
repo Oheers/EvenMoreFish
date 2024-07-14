@@ -267,3 +267,7 @@ admin:
   update-available: "&a有内容更新啦: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
   # 重启插件信息
   reload: "&a成功地重新加载了插件!"
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

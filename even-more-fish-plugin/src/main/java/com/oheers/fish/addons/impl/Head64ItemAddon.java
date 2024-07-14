@@ -30,7 +30,7 @@ public class Head64ItemAddon extends ItemAddon {
             return null;
         }
 
-        return FishUtils.get(id);
+        return FishUtils.getSkullFromBase64(id);
     }
 
     @Override

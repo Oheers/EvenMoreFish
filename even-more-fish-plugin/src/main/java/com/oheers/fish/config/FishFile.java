@@ -7,7 +7,7 @@ public class FishFile extends ConfigBase {
     private static FishFile instance = null;
 
     public FishFile() {
-        super("fish.yml", EvenMoreFish.getInstance());
+        super("fish.yml", "fish.yml", EvenMoreFish.getInstance(), false);
         instance = this;
     }
 

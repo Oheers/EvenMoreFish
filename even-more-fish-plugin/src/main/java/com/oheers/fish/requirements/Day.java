@@ -1,6 +1,6 @@
 package com.oheers.fish.requirements;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
@@ -8,7 +8,7 @@ import java.util.Calendar;
 public class Day implements Requirement {
 
     private final String configLocation;
-    public final FileConfiguration fileConfig;
+    public final YamlDocument fileConfig;
     private int day = 0;
     private final Calendar calendar = Calendar.getInstance();
 
@@ -21,7 +21,7 @@ public class Day implements Requirement {
      * @param fileConfig The file configuration to fetch file data from, for this specific requirement it should always
      *                   be the now-unused xmas2022.yml file.
      */
-    public Day(@NotNull final String configLocation, @NotNull final FileConfiguration fileConfig) {
+    public Day(@NotNull final String configLocation, @NotNull final YamlDocument fileConfig) {
         this.configLocation = configLocation;
         this.fileConfig = fileConfig;
         fetchData();

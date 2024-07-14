@@ -295,3 +295,7 @@ admin:
   reload: "&rSuccessfully reloaded the plugin."
   # When checking the list of RewardTypes. The actual list is added to the end of this message.
   list-reward-types: "&rRegistered Reward Types: "
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

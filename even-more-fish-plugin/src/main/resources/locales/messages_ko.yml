@@ -185,3 +185,7 @@ max-baits-reached: "이 낚싯대의 최대 미끼 유형 수에 도달했습니
 bait-catch: "&l{player} &r가 {bait_theme}&l{bait} &r미끼를 잡았습니다!"
 # Sent when a bait is applied and a fish is caught.
 bait-use: "{bait_theme}&l{bait} &r미끼 중 하나를 사용했습니다."
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

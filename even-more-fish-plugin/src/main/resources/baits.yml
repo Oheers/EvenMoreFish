@@ -129,4 +129,6 @@ format:
   # This is added to the lore in place of a bait if show-unused-slots is enabled in the general section.
   unused-slot: "&7► ? &oAvailable Slot"
 
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
 config-version: 1

@@ -5,7 +5,6 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
-import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -13,10 +12,10 @@ import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
 import de.tr7zw.changeme.nbtapi.NBT;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -58,13 +57,12 @@ public class Fish implements Cloneable {
 
     boolean disableFisherman;
 
-    boolean xmasFish;
-    FileConfiguration fishConfig;
-    FileConfiguration rarityConfig;
+    YamlDocument fishConfig;
+    YamlDocument rarityConfig;
 
     private int day = -1;
 
-    public Fish(Rarity rarity, String name, boolean isXmas2022Fish) throws InvalidFishException {
+    public Fish(Rarity rarity, String name) throws InvalidFishException {
         if (rarity == null) {
             throw new InvalidFishException(name + " could not be fetched from the config.");
         }
@@ -72,12 +70,11 @@ public class Fish implements Cloneable {
         this.name = name;
         this.weight = 0;
         this.length = -1F;
-        this.xmasFish = isXmas2022Fish;
         this.setFishAndRarityConfig();
         final boolean defaultRarityDisableFisherman = RaritiesFile.getInstance().getConfig().getBoolean("rarities." + this.rarity.getValue() + ".disable-fisherman", false);
         this.disableFisherman = this.fishConfig.getBoolean("fish." + this.rarity.getValue() + "." + this.name + ".disable-fisherman", defaultRarityDisableFisherman);
 
-        this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name, this.xmasFish);
+        this.factory = new ItemFactory("fish." + this.rarity.getValue() + "." + this.name);
         checkDisplayName();
 
         // These settings don't mean these will be applied, but they will be considered if the settings exist.
@@ -101,14 +98,8 @@ public class Fish implements Cloneable {
       This will allow breaking heads that have already been placed with the wrong nbt data.
      */
     private void setFishAndRarityConfig() {
-        if (this.xmasFish && Xmas2022Config.getInstance().getConfig() != null) {
-            this.fishConfig = Xmas2022Config.getInstance().getConfig();
-            this.rarityConfig = Xmas2022Config.getInstance().getConfig();
-        } else {
-            this.xmasFish = false;
-            this.fishConfig = FishFile.getInstance().getConfig();
-            this.rarityConfig = RaritiesFile.getInstance().getConfig();
-        }
+        this.fishConfig = FishFile.getInstance().getConfig();
+        this.rarityConfig = RaritiesFile.getInstance().getConfig();
     }
 
     /**
@@ -200,7 +191,7 @@ public class Fish implements Cloneable {
         String msg = this.fishConfig.getString("fish." + this.rarity.getValue() + "." + this.name + ".message");
 
         if (msg != null) {
-            if (Bukkit.getPlayer(fisherman) != null) {
+            if (fisherman != null && Bukkit.getPlayer(fisherman) != null) {
                 Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).sendMessage(FishUtils.translateColorCodes(msg));
             }
         }
@@ -457,10 +448,6 @@ public class Fish implements Cloneable {
 
     public int getDay() {
         return day;
-    }
-
-    public boolean isXmasFish() {
-        return xmasFish;
     }
 
     public boolean isSilent() {

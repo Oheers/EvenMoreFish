@@ -10,7 +10,7 @@ public class MainConfig extends ConfigBase {
     private static MainConfig instance = null;
 
     public MainConfig() {
-        super("config.yml", EvenMoreFish.getInstance());
+        super("config.yml", "config.yml", EvenMoreFish.getInstance(), true);
         instance = this;
     }
 

@@ -181,3 +181,7 @@ sell-menu-confirm:
       - "&e» (Left-click) sell the fish."
     character: "a"
     click-action: "sell-inventory-confirm"
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

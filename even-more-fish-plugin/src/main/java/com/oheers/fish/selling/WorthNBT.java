@@ -3,7 +3,6 @@ package com.oheers.fish.selling;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
-import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
@@ -33,7 +32,6 @@ public class WorthNBT {
             emfCompound.setString(NbtKeys.EMF_FISH_NAME, fish.getName());
             emfCompound.setString(NbtKeys.EMF_FISH_RARITY, fish.getRarity().getValue());
             emfCompound.setInteger(NbtKeys.EMF_FISH_RANDOM_INDEX, fish.getFactory().getChosenRandomIndex());
-            emfCompound.setBoolean(NbtKeys.EMF_XMAS_FISH, fish.isXmasFish());
         });
 
         return fishItem;
@@ -45,7 +43,6 @@ public class WorthNBT {
         NamespacedKey nbtrarity = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RARITY);
         NamespacedKey nbtname = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_NAME);
         NamespacedKey nbtrandomIndex = NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RANDOM_INDEX);
-        NamespacedKey nbtxmasfish = NbtUtils.getNamespacedKey(NbtKeys.EMF_XMAS_FISH);
 
         //TODO try with NBT-API
         PersistentDataContainer itemMeta = fishSkull.getPersistentDataContainer();
@@ -59,7 +56,6 @@ public class WorthNBT {
         itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getChosenRandomIndex());
         itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getValue());
         itemMeta.set(nbtname, PersistentDataType.STRING, fish.getName());
-        itemMeta.set(nbtxmasfish, PersistentDataType.INTEGER, (fish.isXmasFish()) ? 1 : 0);
     }
 
     public static double getValue(ItemStack item) {
@@ -72,21 +68,10 @@ public class WorthNBT {
         Float length = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
         String rarity = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
         String name = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
-        Integer xmasINT = NbtUtils.getInteger(item, NbtKeys.EMF_XMAS_FISH);
-        boolean isXmasFish = false;
-
-        if (xmasINT != null) {
-            isXmasFish = xmasINT == 1;
-        }
 
         // gets a possible set-worth in the fish.yml
         try {
-            int configValue;
-            if (!isXmasFish) {
-                configValue = FishFile.getInstance().getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
-            } else {
-                configValue = Xmas2022Config.getInstance().getConfig().getInt("fish.Christmas 2022." + name + ".set-worth");
-            }
+            int configValue = FishFile.getInstance().getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
 
             if (configValue == 0) {
                 throw new NullPointerException();
@@ -94,7 +79,7 @@ public class WorthNBT {
             return configValue;
         } catch (NullPointerException npe) {
             // there's no set-worth so we're calculating the worth ourselves
-            return length != null && length > 0 ? getMultipliedValue(length, rarity, name, isXmasFish) : 0;
+            return length != null && length > 0 ? getMultipliedValue(length, rarity, name) : 0;
         }
     }
 
@@ -109,26 +94,17 @@ public class WorthNBT {
         return NbtUtils.hasKey(is, NbtKeys.DEFAULT_GUI_ITEM);
     }
 
-    private static double getMultipliedValue(Float length, String rarity, String name, boolean isXmasFish) {
-        double worthMultiplier = getWorthMultiplier(rarity, name, isXmasFish);
+    private static double getMultipliedValue(Float length, String rarity, String name) {
+        double worthMultiplier = getWorthMultiplier(rarity, name);
         double value = multipleWorthByLength(worthMultiplier, length);
         return sortFunkyDecimals(value);
     }
 
-    private static double getWorthMultiplier(final String rarity, final String name, boolean isXmasFish) {
-        double value;
-        if (isXmasFish) {
-            value = Xmas2022Config.getInstance().getConfig().getDouble("fish.Christmas 2022." + name + ".worth-multiplier");
-        } else {
-            value = FishFile.getInstance().getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
-        }
+    private static double getWorthMultiplier(final String rarity, final String name) {
+        double value = FishFile.getInstance().getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            if (isXmasFish) {
-                return Xmas2022Config.getInstance().getConfig().getDouble("rarities.Christmas 2022.worth-multiplier");
-            } else {
-                return RaritiesFile.getInstance().getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
-            }
+            return RaritiesFile.getInstance().getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
         }
 
         return value;
