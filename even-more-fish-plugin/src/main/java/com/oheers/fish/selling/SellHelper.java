@@ -37,15 +37,13 @@ public class SellHelper {
     private int fishCount;
 
     public static void sellInventoryGui(@NotNull InventoryGui gui, @NotNull HumanEntity humanEntity) {
-        if (!(humanEntity instanceof Player)) {
+        if (!(humanEntity instanceof Player player)) {
             return;
         }
-        Player player = (Player) humanEntity;
         gui.getElements().forEach(element -> {
-            if (!(element instanceof GuiStorageElement)) {
+            if (!(element instanceof GuiStorageElement storageElement)) {
                 return;
             }
-            GuiStorageElement storageElement = (GuiStorageElement) element;
             new SellHelper(storageElement.getStorage(), player).sellFish();
         });
     }

@@ -1,7 +1,6 @@
 package com.oheers.fish.database.connection;
 
 
-import com.google.common.collect.ImmutableMap;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.DatabaseUtil;
 import com.zaxxer.hikari.HikariConfig;
@@ -167,7 +166,7 @@ public abstract class ConnectionFactory {
     private FluentConfiguration getBaseFlywayConfiguration() {
         return Flyway.configure(getClass().getClassLoader())
                 .dataSource(dataSource)
-                .placeholders(ImmutableMap.of(
+                .placeholders(Map.of(
                         "table.prefix", MainConfig.getInstance().getPrefix(),
                         "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
                         "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)",

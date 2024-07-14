@@ -96,43 +96,33 @@ public class Economy {
     }
 
     public boolean has(@NotNull OfflinePlayer player, double amount) {
-        switch (economyType) {
-            case VAULT:
-                return vaultEconomy.has(player, amount);
-            case PLAYER_POINTS:
+        return switch (economyType) {
+            case VAULT -> vaultEconomy.has(player, amount);
+            case PLAYER_POINTS ->
                 // PlayerPoints doesn't seem to have a method to check this
-                return playerPointsEconomy.look(player.getUniqueId()) >= amount;
-            case GRIEF_PREVENTION:
-                return griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId()).getBonusClaimBlocks() >= amount;
-            default:
-                return true;
-        }
+                    playerPointsEconomy.look(player.getUniqueId()) >= amount;
+            case GRIEF_PREVENTION -> griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId()).getBonusClaimBlocks() >= amount;
+            default -> true;
+        };
     }
 
     public double get(@NotNull OfflinePlayer player) {
-        switch (economyType) {
-            case VAULT:
-                return vaultEconomy.getBalance(player);
-            case PLAYER_POINTS:
+        return switch (economyType) {
+            case VAULT -> vaultEconomy.getBalance(player);
+            case PLAYER_POINTS ->
                 // PlayerPoints doesn't seem to have a method to check this
-                return playerPointsEconomy.look(player.getUniqueId());
-            case GRIEF_PREVENTION:
-                return griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId()).getBonusClaimBlocks();
-            default:
-                return 0;
-        }
+                    playerPointsEconomy.look(player.getUniqueId());
+            case GRIEF_PREVENTION -> griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId()).getBonusClaimBlocks();
+            default -> 0;
+        };
     }
 
     public static double prepareValue(double value) {
-        switch (economyType) {
-            case VAULT:
-                return value;
-            case PLAYER_POINTS:
-            case GRIEF_PREVENTION:
-                return Math.floor(value);
-            default:
-                return 0;
-        }
+        return switch (economyType) {
+            case VAULT -> value;
+            case PLAYER_POINTS, GRIEF_PREVENTION -> Math.floor(value);
+            default -> 0;
+        };
     }
 
     public enum EconomyType {

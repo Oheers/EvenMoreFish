@@ -32,10 +32,10 @@ public class BaitListener implements Listener {
             return;
         }
 
-        ItemStack clickedItem = event.getCurrentItem();
+        ItemStack potentialFishingRod = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
 
-        if (clickedItem.getType() != Material.FISHING_ROD)
+        if (potentialFishingRod.getType() != Material.FISHING_ROD)
             return;
 
         if (!BaitNBTManager.isBaitObject(cursor)) {
@@ -48,21 +48,20 @@ public class BaitListener implements Listener {
             return;
         }
 
-        ApplicationResult result = null;
+        ApplicationResult result;
         Bait bait = EvenMoreFish.getInstance().getBaits().get(BaitNBTManager.getBaitName(event.getCursor()));
 
-        ItemStack fishingRod = clickedItem;
-        NbtVersion nbtVersion = NbtVersion.getVersion(clickedItem);
+        NbtVersion nbtVersion = NbtVersion.getVersion(potentialFishingRod);
         if (nbtVersion != NbtVersion.COMPAT) {
-            fishingRod = convertToCompatNbtItem(nbtVersion, fishingRod);
+            convertToCompatNbtItem(nbtVersion, potentialFishingRod);
         }
 
         try {
             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                result = BaitNBTManager.applyBaitedRodNBT(fishingRod, bait, event.getCursor().getAmount());
+                result = BaitNBTManager.applyBaitedRodNBT(potentialFishingRod, bait, event.getCursor().getAmount());
                 EvenMoreFish.getInstance().incrementMetricBaitsApplied(event.getCursor().getAmount());
             } else {
-                result = BaitNBTManager.applyBaitedRodNBT(fishingRod, bait, 1);
+                result = BaitNBTManager.applyBaitedRodNBT(potentialFishingRod, bait, 1);
                 EvenMoreFish.getInstance().incrementMetricBaitsApplied(1);
             }
 
@@ -94,7 +93,7 @@ public class BaitListener implements Listener {
         }
     }
 
-    private ItemStack convertToCompatNbtItem(final NbtVersion nbtVersion, final ItemStack fishingRod) {
+    private void convertToCompatNbtItem(final NbtVersion nbtVersion, final ItemStack fishingRod) {
         final String appliedBaitString = NbtUtils.getString(fishingRod, NbtKeys.EMF_APPLIED_BAIT);
 
         if (nbtVersion == NbtVersion.LEGACY) {
@@ -123,15 +122,12 @@ public class BaitListener implements Listener {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setString(NbtKeys.EMF_APPLIED_BAIT, appliedBaitString);
         });
 
-        return fishingRod;
     }
 
     private boolean anvilCheck(InventoryClickEvent event) {
-        if (!(event.getClickedInventory() instanceof AnvilInventory) || !(event.getWhoClicked() instanceof Player)) {
+        if (!(event.getClickedInventory() instanceof AnvilInventory inv) || !(event.getWhoClicked() instanceof Player player)) {
             return false;
         }
-        Player player = (Player) event.getWhoClicked();
-        AnvilInventory inv = (AnvilInventory) event.getClickedInventory();
         if (event.getSlot() == 2 && BaitNBTManager.isBaitedRod(inv.getItem(1))) {
             event.setCancelled(true);
             player.closeInventory();

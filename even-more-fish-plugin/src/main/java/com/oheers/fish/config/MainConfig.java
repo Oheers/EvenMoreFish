@@ -2,7 +2,6 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
-import org.bukkit.Material;
 
 import java.util.List;
 
@@ -67,16 +66,12 @@ public class MainConfig extends ConfigBase {
 
     public Economy.EconomyType economyType() {
         String economyString = getConfig().getString("economy-type", "Vault");
-        switch (economyString) {
-            case "Vault":
-                return Economy.EconomyType.VAULT;
-            case "PlayerPoints":
-                return Economy.EconomyType.PLAYER_POINTS;
-            case "GriefPrevention":
-                return Economy.EconomyType.GRIEF_PREVENTION;
-            default:
-                return Economy.EconomyType.NONE;
-        }
+        return switch (economyString) {
+            case "Vault" -> Economy.EconomyType.VAULT;
+            case "PlayerPoints" -> Economy.EconomyType.PLAYER_POINTS;
+            case "GriefPrevention" -> Economy.EconomyType.GRIEF_PREVENTION;
+            default -> Economy.EconomyType.NONE;
+        };
     }
 
     public boolean shouldRespectVanish() { return getConfig().getBoolean("respect-vanished", true); }

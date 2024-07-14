@@ -6,15 +6,14 @@ import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
     `java-library`
-    id("maven-publish")
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-
+    `maven-publish`
+    alias(libs.plugins.bukkit.yml)
+    alias(libs.plugins.shadow)
     alias(libs.plugins.grgit)
 }
 
 group = "com.oheers.evenmorefish"
-version = "1.7.2"
+version = "1.7.3"
 
 description = "A fishing extension bringing an exciting new experience to fishing."
 
@@ -88,9 +87,7 @@ dependencies {
     implementation(libs.universalscheduler)
     implementation(libs.acf)
     implementation(libs.inventorygui)
-    implementation(libs.adventure.api)
-    implementation(libs.adventure.minimessage)
-    implementation(libs.adventure.legacy)
+    implementation(libs.bundles.adventure)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -253,14 +250,13 @@ tasks {
     compileJava {
         options.compilerArgs.add("-parameters")
         options.isFork = true
-
-
+        options.encoding = "UTF-8"
     }
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(17))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
 }

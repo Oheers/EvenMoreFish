@@ -41,27 +41,14 @@ public class Bar {
     }
 
     public void setPrefix(String prefix, CompetitionType type) {
-        String typeString = "";
-        switch (type) {
-            case SPECIFIC_RARITY:
-                typeString = "Specific Rarity";
-                break;
-            case MOST_FISH:
-                typeString = "Most Fish";
-                break;
-            case LARGEST_FISH:
-                typeString = "Largest Fish";
-                break;
-            case LARGEST_TOTAL:
-                typeString = "Largest Total";
-                break;
-            case SPECIFIC_FISH:
-                typeString = "Specific Fish";
-                break;
-            case RANDOM:
-                typeString = "Random";
-                break;
-        }
+        String typeString = switch (type) {
+            case SPECIFIC_RARITY -> "Specific Rarity";
+            case MOST_FISH -> "Most Fish";
+            case LARGEST_FISH -> "Largest Fish";
+            case LARGEST_TOTAL -> "Largest Total";
+            case SPECIFIC_FISH -> "Specific Fish";
+            case RANDOM -> "Random";
+        };
         this.prefix = prefix.replace("{type}", typeString);
     }
 

@@ -171,13 +171,13 @@ public class BaitNBTManager {
                     cursorModifier.set(-quantity);
                 }
             } else {
-                if (combined.length() > 0) {
+                if (!combined.isEmpty()) {
                     combined.deleteCharAt(combined.length() - 1);
                 }
             }
             NBT.modify(item, nbt -> {
                 ReadWriteNBT emfCompound = nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
-                if (combined.length() > 0) {
+                if (!combined.isEmpty()) {
                     emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
                 } else {
                     emfCompound.removeKey(NbtKeys.EMF_APPLIED_BAIT);
@@ -199,7 +199,7 @@ public class BaitNBTManager {
             });
         }
 
-        if (doingLoreStuff && combined.length() >= 1) {
+        if (doingLoreStuff && !combined.isEmpty()) {
             ItemMeta meta = item.getItemMeta();
             meta.setLore(newApplyLore(item));
             item.setItemMeta(meta);
@@ -401,9 +401,6 @@ public class BaitNBTManager {
             int maxBaits = BaitFile.getInstance().getMaxBaits() + BaitFile.getInstance().getRodLoreFormat().size();
             //todo, to help this be compliant with java:S5413, we should iterate in reverse order, this should be done in another pr, left here for reference
             //compliant version
-            //            for (int i = lore.size() - 1; i >= maxBaits; i--) {
-            //                lore.remove(i);
-            //            }
             for (int i = 1; i < maxBaits; i++) {
                 lore.remove(lore.size() - 1);
             }
@@ -411,9 +408,6 @@ public class BaitNBTManager {
             // starting at 1, because at least one bait replacing {baits} is repeated.
             int numBaitsApplied = getNumBaitsApplied(itemStack) + BaitFile.getInstance().getRodLoreFormat().size();
             //compliant version
-            //            for (int i = lore.size() - 1; i >= numBaitsApplied; i--) {
-            //                lore.remove(i);
-            //            }
             for (int i = 1; i < numBaitsApplied; i++) {
                 lore.remove(lore.size() - 1);
             }

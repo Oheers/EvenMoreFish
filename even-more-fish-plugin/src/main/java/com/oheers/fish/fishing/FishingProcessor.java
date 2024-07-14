@@ -351,21 +351,7 @@ public class FishingProcessor implements Listener {
     }
 
     private static Fish randomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
-        double totalWeight = 0;
-
-        for (Fish fish : fishList) {
-            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
-            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
-            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
-
-                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
-                else
-                    totalWeight += fish.getWeight() * boostRate;
-            } else {
-                if (fish.getWeight() == 0.0d) totalWeight += 1;
-                else totalWeight += fish.getWeight();
-            }
-        }
+        final double totalWeight = getTotalWeight(fishList, boostRate, boostedFish);
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < fishList.size() - 1; ++idx) {
@@ -388,6 +374,25 @@ public class FishingProcessor implements Listener {
         }
 
         return fishList.get(idx);
+    }
+
+    private static double getTotalWeight(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
+        double totalWeight = 0;
+
+        for (Fish fish : fishList) {
+            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
+            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
+            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
+
+                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
+                else
+                    totalWeight += fish.getWeight() * boostRate;
+            } else {
+                if (fish.getWeight() == 0.0d) totalWeight += 1;
+                else totalWeight += fish.getWeight();
+            }
+        }
+        return totalWeight;
     }
 
     public static Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish, boolean doRequirementChecks) {

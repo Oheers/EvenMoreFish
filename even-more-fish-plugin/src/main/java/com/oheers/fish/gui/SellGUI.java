@@ -9,10 +9,8 @@ import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.selling.SellHelper;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.GUIUtils;
-import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,11 +42,7 @@ public class SellGUI implements EMFGUI {
         } else {
             section = GUIConfig.getInstance().getConfig().getConfigurationSection("sell-menu-confirm");
         }
-        if (fishInventory == null) {
-            this.fishInventory = Bukkit.createInventory(null, 54);
-        } else {
-            this.fishInventory = fishInventory;
-        }
+        this.fishInventory = Objects.requireNonNullElseGet(fishInventory, () -> Bukkit.createInventory(null, 54));
         gui = GUIUtils.createGUI(section);
         if (section == null) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not find the config for the Sell Menu GUI!");

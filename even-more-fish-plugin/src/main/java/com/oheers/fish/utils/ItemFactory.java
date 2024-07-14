@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -517,8 +516,7 @@ public class ItemFactory {
     public void applyDamage() {
 
         ItemMeta meta = product.getItemMeta();
-        if (meta instanceof Damageable) {
-            Damageable nonDamaged = (Damageable) meta;
+        if (meta instanceof Damageable nonDamaged) {
 
             int predefinedDamage = this.configurationFile.getInt(configLocation + "durability");
             if (predefinedDamage >= 0 && predefinedDamage <= 100) {
@@ -599,14 +597,13 @@ public class ItemFactory {
         String potionSettings = this.configurationFile.getString(configLocation + "item.potion");
 
         if (potionSettings == null) return;
-        if (!(product.getItemMeta() instanceof PotionMeta)) return;
+        if (!(product.getItemMeta() instanceof PotionMeta meta)) return;
 
         String[] split = potionSettings.split(":");
         if (split.length != 3) {
             EvenMoreFish.getInstance().getLogger().severe(configLocation + "item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\".");
         }
 
-        PotionMeta meta = ((PotionMeta) product.getItemMeta());
         try {
             meta.addCustomEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(split[0])), Integer.parseInt(split[1]) * 20, Integer.parseInt(split[2]) - 1, false), true);
         } catch (NumberFormatException exception) {

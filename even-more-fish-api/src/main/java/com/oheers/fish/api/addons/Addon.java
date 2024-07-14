@@ -24,7 +24,7 @@ public interface Addon {
 
 
     /**
-     * Can this addon be registered.
+     * This should check if the addon can be registered. I.e., required java version + required plugin.
      */
     default boolean canRegister() throws JavaVersionException, RequiredPluginException {
         final boolean hasRequiredPlugin = Bukkit.getPluginManager().getPlugin(getPluginName()) != null;
@@ -44,7 +44,7 @@ public interface Addon {
     String getAuthor();
 
     default JavaVersion getRequiredJavaVersion() {
-        return JavaVersion.JAVA_1_8;
+        return JavaVersion.JAVA_17;
     }
 
     default Logger getLogger() {

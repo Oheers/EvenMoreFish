@@ -16,6 +16,8 @@ dependencies {
     compileOnly(libs.ecoitems.eco)
     compileOnly(libs.denizen.api)
     compileOnly(libs.commons.lang3)
+    compileOnly(libs.itemsadder.api)
+    compileOnly(libs.headdatabase.api)
     compileOnly(project(":even-more-fish-api"))
 }
 

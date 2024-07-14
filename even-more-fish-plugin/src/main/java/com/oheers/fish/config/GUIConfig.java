@@ -22,11 +22,6 @@ public class GUIConfig extends ConfigBase {
     public static GUIConfig getInstance() {
         return instance;
     }
-    
-    @Override
-    public void reload() {
-        super.reload();
-    }
 
     public String getToggle(boolean toggleState) {
         if (toggleState) return getConfig().getString("enabled-msg", "&a&l✔");
