@@ -87,9 +87,7 @@ dependencies {
     implementation(libs.universalscheduler)
     implementation(libs.acf)
     implementation(libs.inventorygui)
-    implementation(libs.adventure.api)
-    implementation(libs.adventure.minimessage)
-    implementation(libs.adventure.legacy)
+    implementation(libs.bundles.adventure)
 
     library(libs.friendlyid)
     library(libs.flyway.core)

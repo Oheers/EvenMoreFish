@@ -71,10 +71,12 @@ dependencyResolutionManagement {
 
             plugin("shadow", "io.github.goooler.shadow").version("8.1.7")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
-            
-            library("adventure-api", "net.kyori:adventure-api:4.17.0")
-            library("adventure-minimessage", "net.kyori:adventure-text-minimessage:4.17.0")
-            library("adventure-legacy", "net.kyori:adventure-text-serializer-legacy:4.17.0")
+
+            version("adventure", "4.17.0")
+            library("adventure-api", "net.kyori","adventure-api").versionRef("adventure")
+            library("adventure-minimessage", "net.kyori","adventure-text-minimessage").versionRef("adventure")
+            library("adventure-legacy", "net.kyori","adventure-text-serializer-legacy").versionRef("adventure")
+            bundle("adventure", listOf("adventure-api", "adventure-minimessage", "adventure-legacy"))
 
             plugin("grgit", "org.ajoberstar.grgit").version("5.2.2")
 
