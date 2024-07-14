@@ -203,7 +203,7 @@ public class ItemFactory {
         // The fish has item: 64 selected
         String bValue = this.configurationFile.getString(configLocation + "item.head-64");
         if (bValue != null) {
-            return FishUtils.get(bValue);
+            return FishUtils.getSkullFromBase64(bValue);
         }
 
         return null;
@@ -342,7 +342,7 @@ public class ItemFactory {
             String base64 = mh64Values.get(randomIndex);
             itemRandom = true;
 
-            return FishUtils.get(base64);
+            return FishUtils.getSkullFromBase64(base64);
         }
 
         return null;

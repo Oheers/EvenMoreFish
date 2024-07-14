@@ -266,7 +266,7 @@ public class FishUtils {
     }
 
     //gets the item with a custom texture
-    public static ItemStack get(String base64EncodedString) {
+    public static ItemStack getSkullFromBase64(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         UUID headUuid = UUID.randomUUID();
         // 1.20.5+ handling
