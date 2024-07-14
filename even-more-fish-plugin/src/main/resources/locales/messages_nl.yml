@@ -252,3 +252,7 @@ admin:
   update-available: "&rEr is een update beschikbaar: https://www.spigotmc.org/resources/even-more-fish.10485/"
 
   reload: "&rEvenMoreFish is succesvol herladen."
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1
