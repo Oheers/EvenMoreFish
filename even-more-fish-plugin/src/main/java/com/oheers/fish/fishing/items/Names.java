@@ -8,6 +8,7 @@ import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.*;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.antlr.v4.runtime.misc.Array2DHashSet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,8 +31,12 @@ public class Names {
         fishList = new HashSet<>();
 
         // gets all the rarities - just their names, nothing else
-        rarities = fishConfiguration.getSection("fish").getRoutesAsStrings(false);
-        rarities.add("Christmas 2022");
+        Section section = fishConfiguration.getSection("fish");
+        if (section == null) {
+            rarities = new HashSet<>();
+        } else {
+            rarities = section.getRoutesAsStrings(false);
+        }
 
         for (String rarity : rarities) {
 
@@ -39,7 +44,12 @@ public class Names {
             this.rarityConfiguration = rarityConfiguration;
 
             // gets all the fish in said rarity, again - just their names
-            fishSet = this.fishConfiguration.getSection("fish." + rarity).getRoutesAsStrings(false);
+            Section raritySection = this.fishConfiguration.getSection("fish." + rarity);
+            if (raritySection == null) {
+                fishSet = new HashSet<>();
+            } else {
+                fishSet = this.fishConfiguration.getSection("fish." + rarity).getRoutesAsStrings(false);
+            }
             fishList.addAll(fishSet);
 
             // creates a rarity object and a fish queue
