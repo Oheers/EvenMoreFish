@@ -260,36 +260,32 @@ public class FishingProcessor implements Listener {
         List<Rarity> allowedRarities = new ArrayList<>();
 
         int idx = 0;
-
-        /* If allowed rarities has objects, it means we've run through and removed the Christmas rarity. Don't run
-           through again */
-        if (allowedRarities.isEmpty()) {
-            if (fisher != null) {
-                rarityLoop:
-                for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
-                    if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
-                        continue;
-                    }
-
-                    if (!(rarity.getPermission() == null || fisher.hasPermission(rarity.getPermission()))) {
-                        continue;
-                    }
-
-                    List<Requirement> requirements;
-                    if ((requirements = rarity.getRequirements()) != null) {
-                        RequirementContext context = new RequirementContext();
-                        context.setLocation(fisher.getLocation());
-                        context.setPlayer(fisher);
-                        for (Requirement requirement : requirements) {
-                            if (!requirement.requirementMet(context)) continue rarityLoop;
-                        }
-                    }
-
-                    allowedRarities.add(rarity);
+        
+        if (fisher != null) {
+            rarityLoop:
+            for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+                if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
+                    continue;
                 }
-            } else {
-                allowedRarities.addAll(totalRarities);
+
+                if (!(rarity.getPermission() == null || fisher.hasPermission(rarity.getPermission()))) {
+                    continue;
+                }
+
+                List<Requirement> requirements;
+                if ((requirements = rarity.getRequirements()) != null) {
+                    RequirementContext context = new RequirementContext();
+                    context.setLocation(fisher.getLocation());
+                    context.setPlayer(fisher);
+                    for (Requirement requirement : requirements) {
+                        if (!requirement.requirementMet(context)) continue rarityLoop;
+                    }
+                }
+
+                allowedRarities.add(rarity);
             }
+        } else {
+            allowedRarities.addAll(totalRarities);
         }
 
         double totalWeight = 0;
