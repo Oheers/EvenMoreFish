@@ -1,6 +1,6 @@
 jdk:
   - openjdk17
 
-install:
+before-install:
+  - chmod +x gradlew
   - ./gradlew clean --stacktrace --debug
-  - ./gradlew build --stacktrace --debug
