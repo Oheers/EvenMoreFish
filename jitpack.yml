@@ -3,4 +3,4 @@ jdk:
 
 before_install:
   - chmod +x gradlew
-  - ./gradlew clean --stacktrace --debug
+  - ./gradlew clean --stacktrace 
