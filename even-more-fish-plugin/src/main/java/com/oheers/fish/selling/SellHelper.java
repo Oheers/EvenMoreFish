@@ -23,9 +23,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class SellHelper {
@@ -173,7 +175,8 @@ public class SellHelper {
                     return (int) totalWorth + " Player Points";
                 }
             case VAULT:
-                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false));
+                DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
+                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false), symbols);
                 return format.format(totalWorth);
             // Includes NONE type
             default:
