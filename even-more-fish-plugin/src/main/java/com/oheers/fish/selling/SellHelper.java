@@ -18,15 +18,14 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class SellHelper {
 
@@ -59,7 +58,7 @@ public class SellHelper {
         double sellPrice = Math.floor(totalWorth * 10) / 10;
 
         // Remove sold items
-        for (ItemStack item : inventory.getContents()) {
+        for (ItemStack item : getPossibleSales()) {
             if (WorthNBT.getValue(item) != -1.0) {
                 Fish fish = FishUtils.getFish(item);
                 if (fish != null) {
@@ -94,7 +93,7 @@ public class SellHelper {
 
         List<SoldFish> soldFish = new ArrayList<>();
 
-        for (ItemStack item : this.inventory.getContents()) {
+        for (ItemStack item : getPossibleSales()) {
             // -1.0 is given when there's no worth NBT value
             SoldFish fish = getSoldFish(item);
             if (fish != null) {
@@ -102,6 +101,18 @@ public class SellHelper {
             }
         }
         return soldFish;
+    }
+
+    public List<ItemStack> getPossibleSales() {
+        // Remove sold items
+        List<ItemStack> items = Arrays.asList(inventory.getStorageContents());
+
+        // Remove armor from possible item list, prevents infinite money bug
+        if (inventory instanceof PlayerInventory playerInventory) {
+            Arrays.stream(playerInventory.getArmorContents()).filter(Objects::nonNull).forEach(items::remove);
+        }
+
+        return items;
     }
 
     private @Nullable SoldFish getSoldFish(final ItemStack item) {
