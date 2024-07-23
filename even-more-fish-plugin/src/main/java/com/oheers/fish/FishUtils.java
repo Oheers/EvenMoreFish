@@ -114,7 +114,21 @@ public class FishUtils {
         final Float lengthFloat = NBT.getPersistentData(skull, nbt -> nbt.getFloat(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_LENGTH).toString()));
         final Integer randomIndex = NBT.getPersistentData(skull, nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RANDOM_INDEX).toString()));
 
-        Fish fish = getFish(nameString, rarityString);
+        if (nameString == null || rarityString == null) {
+            throw new InvalidFishException("NBT Error");
+        }
+
+        // Generating an empty rarity
+        Rarity rarity = null;
+        // Hunting through the fish collection and creating a rarity that matches the fish's nbt
+        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+            if (r.getValue().equals(rarityString)) {
+                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
+            }
+        }
+
+        // setting the correct length and randomIndex, so it's an exact replica.
+        Fish fish = new Fish(rarity, nameString);
         fish.setLength(lengthFloat);
         if (randomIndex != null) {
             fish.getFactory().setType(randomIndex);
@@ -133,25 +147,6 @@ public class FishUtils {
             fish.setFisherman(null);
         }
 
-        return fish;
-    }
-
-    private static @NotNull Fish getFish(String nameString, String rarityString) throws InvalidFishException {
-        if (nameString == null || rarityString == null) {
-            throw new InvalidFishException("NBT Error");
-        }
-
-        // Generating an empty rarity
-        Rarity rarity = null;
-        // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
-            if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
-            }
-        }
-
-        // setting the correct length and randomIndex, so it's an exact replica.
-        Fish fish = new Fish(rarity, nameString);
         return fish;
     }
 
