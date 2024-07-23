@@ -22,7 +22,7 @@ public class Economy {
         enabled = false;
         EvenMoreFish emf = EvenMoreFish.getInstance();
         switch (type) {
-            case VAULT:
+            case VAULT -> {
                 emf.getLogger().log(Level.INFO, "Attempting to hook into Vault for Economy Handling.");
                 if (EvenMoreFish.getInstance().isUsingVault()) {
                     RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = emf.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
@@ -34,8 +34,8 @@ public class Economy {
                     enabled = true;
                     emf.getLogger().log(Level.INFO, "Hooked into Vault for Economy Handling.");
                 }
-                return;
-            case PLAYER_POINTS:
+            }
+            case PLAYER_POINTS -> {
                 emf.getLogger().log(Level.INFO, "Attempting to hook into PlayerPoints for Economy Handling.");
                 if (EvenMoreFish.getInstance().isUsingPlayerPoints()) {
                     this.playerPointsEconomy = PlayerPoints.getInstance().getAPI();
@@ -43,8 +43,8 @@ public class Economy {
                     enabled = true;
                     emf.getLogger().log(Level.INFO, "Hooked into PlayerPoints for Economy Handling.");
                 }
-                return;
-            case GRIEF_PREVENTION:
+            }
+            case GRIEF_PREVENTION -> {
                 emf.getLogger().log(Level.INFO, "Attempting to hook into GriefPrevention for Economy Handling.");
                 if (EvenMoreFish.getInstance().isUsingGriefPrevention()) {
                     this.griefPreventionEconomy = GriefPrevention.instance;
@@ -52,6 +52,7 @@ public class Economy {
                     enabled = true;
                     emf.getLogger().info("Hooked into GriefPrevention for Economy Handling.");
                 }
+            }
         }
     }
 
@@ -61,38 +62,33 @@ public class Economy {
 
     public void deposit(@NotNull OfflinePlayer player, double amount) {
         switch (economyType) {
-            case VAULT:
-                vaultEconomy.depositPlayer(player, amount);
-                return;
-            case PLAYER_POINTS:
-                // PlayerPoints doesn't support doubles, so we need to cast to int
-                playerPointsEconomy.give(player.getUniqueId(), (int) amount);
-                return;
-            case GRIEF_PREVENTION:
+            case VAULT -> vaultEconomy.depositPlayer(player, amount);
+            // PlayerPoints doesn't support doubles, so we need to cast to int
+            case PLAYER_POINTS -> playerPointsEconomy.give(player.getUniqueId(), (int) amount);
+            case GRIEF_PREVENTION -> {
                 PlayerData data = griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId());
                 data.setBonusClaimBlocks(data.getBonusClaimBlocks() + (int) amount);
+            }
         }
     }
 
     public boolean withdraw(@NotNull OfflinePlayer player, double amount) {
-        switch (economyType) {
-            case VAULT:
-                return vaultEconomy.withdrawPlayer(player, amount).transactionSuccess();
-            case PLAYER_POINTS:
-                // PlayerPoints doesn't support doubles, so we need to cast to int
-                return playerPointsEconomy.take(player.getUniqueId(), (int) amount);
-            case GRIEF_PREVENTION:
+        return switch (economyType) {
+            case VAULT -> vaultEconomy.withdrawPlayer(player, amount).transactionSuccess();
+            // PlayerPoints doesn't support doubles, so we need to cast to int
+            case PLAYER_POINTS -> playerPointsEconomy.take(player.getUniqueId(), (int) amount);
+            case GRIEF_PREVENTION -> {
                 PlayerData data = griefPreventionEconomy.dataStore.getPlayerData(player.getUniqueId());
                 int total = data.getBonusClaimBlocks();
                 int finalTotal = total - (int) amount;
                 if (finalTotal < 0) {
-                    return false;
+                    yield false;
                 }
                 data.setBonusClaimBlocks(finalTotal);
-                return true;
-            default:
-                return true;
-        }
+                yield true;
+            }
+            default -> true;
+        };
     }
 
     public boolean has(@NotNull OfflinePlayer player, double amount) {

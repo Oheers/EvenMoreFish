@@ -434,15 +434,9 @@ public class Competition {
                     Random r = EvenMoreFish.getInstance().getRandom();
                     int s = r.nextInt(3);
                     switch (s) {
-                        case 0:
-                            message.setPositionColour("&c» &r");
-                            break;
-                        case 1:
-                            message.setPositionColour("&c_ &r");
-                            break;
-                        case 2:
-                            message.setPositionColour("&c&ko &r");
-                            break;
+                        case 0 -> message.setPositionColour("&c» &r");
+                        case 1 -> message.setPositionColour("&c_ &r");
+                        case 2 -> message.setPositionColour("&c&ko &r");
                     }
 
                 } else {
@@ -560,17 +554,9 @@ public class Competition {
                 Random r = EvenMoreFish.getInstance().getRandom();
                 int s = r.nextInt(3);
                 switch (s) {
-                    case 0:
-                        message.setPositionColour("&c» &r");
-                        break;
-                    case 1:
-                        message.setPositionColour("&c_ &r");
-                        break;
-                    case 2:
-                        message.setPositionColour("&c&ko &r");
-                        break;
-                    default:
-                        break;
+                    case 0 -> message.setPositionColour("&c» &r");
+                    case 1 -> message.setPositionColour("&c_ &r");
+                    case 2 -> message.setPositionColour("&c&ko &r");
                 }
 
             } else {

@@ -192,34 +192,18 @@ public class Names {
             else configLocator = "rarities." + rarity;
             for (String s : requirementSection.getRoutesAsStrings(false)) {
                 switch (s.toLowerCase()) {
-                    case "biome":
-                        currentRequirements.add(new Biome(configLocator + ".requirements.biome", config));
-                        break;
-                    case "irl-time":
-                        currentRequirements.add(new IRLTime(configLocator + ".requirements.irl-time", config));
-                        break;
-                    case "ingame-time":
-                        currentRequirements.add(new InGameTime(configLocator + ".requirements.ingame-time", config));
-                        break;
-                    case "moon-phase":
-                        currentRequirements.add(new MoonPhase(configLocator + ".requirements.moon-phase", config));
-                        break;
-                    case "permission":
-                        currentRequirements.add(new Permission(configLocator + ".requirements.permission", config));
-                        break;
-                    case "region":
+                    case "biome" -> currentRequirements.add(new Biome(configLocator + ".requirements.biome", config));
+                    case "irl-time" -> currentRequirements.add(new IRLTime(configLocator + ".requirements.irl-time", config));
+                    case "ingame-time" -> currentRequirements.add(new InGameTime(configLocator + ".requirements.ingame-time", config));
+                    case "moon-phase" -> currentRequirements.add(new MoonPhase(configLocator + ".requirements.moon-phase", config));
+                    case "permission" -> currentRequirements.add(new Permission(configLocator + ".requirements.permission", config));
+                    case "region" -> {
                         currentRequirements.add(new Region(configLocator + ".requirements.region", config));
                         regionCheck = true;
-                        break;
-                    case "weather":
-                        currentRequirements.add(new Weather(configLocator + ".requirements.weather", config));
-                        break;
-                    case "world":
-                        currentRequirements.add(new World(configLocator + ".requirements.world", config));
-                        break;
-                    case "nearby-players":
-                        currentRequirements.add(new NearbyPlayers(configLocator + ".requirements.nearby-players", config));
-                        break;
+                    }
+                    case "weather" -> currentRequirements.add(new Weather(configLocator + ".requirements.weather", config));
+                    case "world" -> currentRequirements.add(new World(configLocator + ".requirements.world", config));
+                    case "nearby-players" -> currentRequirements.add(new NearbyPlayers(configLocator + ".requirements.nearby-players", config));
                 }
             }
         }

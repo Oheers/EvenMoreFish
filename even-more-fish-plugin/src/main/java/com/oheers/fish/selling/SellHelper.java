@@ -170,26 +170,28 @@ public class SellHelper {
     }
 
     public String formatWorth(double totalWorth) {
-        switch (EvenMoreFish.getInstance().getEconomy().getEconomyType()) {
-            case GRIEF_PREVENTION:
+        return switch (EvenMoreFish.getInstance().getEconomy().getEconomyType()) {
+            case GRIEF_PREVENTION -> {
                 if ((int) totalWorth == 1) {
-                    return (int) totalWorth + " Claim Block";
+                    yield (int) totalWorth + " Claim Block";
                 } else {
-                    return (int) totalWorth + " Claim Blocks";
+                    yield (int) totalWorth + " Claim Blocks";
                 }
-            case PLAYER_POINTS:
+            }
+            case PLAYER_POINTS -> {
                 if ((int) totalWorth == 1) {
-                    return (int) totalWorth + " Player Point";
+                    yield (int) totalWorth + " Player Point";
                 } else {
-                    return (int) totalWorth + " Player Points";
+                    yield (int) totalWorth + " Player Points";
                 }
-            case VAULT:
+            }
+            case VAULT -> {
                 DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false));
-                return format.format(totalWorth);
+                yield format.format(totalWorth);
+            }
             // Includes NONE type
-            default:
-                return String.valueOf(totalWorth);
-        }
+            default -> String.valueOf(totalWorth);
+        };
     }
 
 }
