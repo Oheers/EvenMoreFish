@@ -8,7 +8,6 @@ import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.*;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
-import org.antlr.v4.runtime.misc.Array2DHashSet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
