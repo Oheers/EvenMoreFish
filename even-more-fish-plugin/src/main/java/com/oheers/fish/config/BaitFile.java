@@ -9,7 +9,7 @@ public class BaitFile extends ConfigBase {
     private static BaitFile instance = null;
 
     public BaitFile() {
-        super("baits.yml", EvenMoreFish.getInstance());
+        super("baits.yml", "baits.yml", EvenMoreFish.getInstance(), false);
         instance = this;
     }
     

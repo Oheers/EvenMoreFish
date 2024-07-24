@@ -75,6 +75,13 @@ public enum ConfigMessage {
             "&fMeasures {length}cm"
     ), PrefixType.NONE, false, false, "length-lore"),
     FISH_SALE("&rYou've sold &a{amount} &ffish for &a{sell-price}&f.", PrefixType.DEFAULT, true, true, "fish-sale"),
+    HELP_FORMAT(
+            "[noPrefix]&b{command} &e- {description}",
+            PrefixType.DEFAULT,
+            false,
+            true,
+            "help-format"
+    ),
     HELP_GENERAL_TITLE(
             "[noPrefix]&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f",
             PrefixType.DEFAULT,
@@ -86,6 +93,7 @@ public enum ConfigMessage {
     HELP_GENERAL_HELP("[noPrefix]Shows you this page.", PrefixType.DEFAULT, false, true, "help-general.help"),
     HELP_GENERAL_SHOP("[noPrefix]Opens a shop to sell your fish.", PrefixType.DEFAULT, false, true, "help-general.shop"),
     HELP_GENERAL_TOGGLE("[noPrefix]Toggles whether or not you receive custom fish.", PrefixType.DEFAULT, false, true, "help-general.toggle"),
+    HELP_GENERAL_GUI("[noPrefix]Opens the Main Menu GUI.", PrefixType.DEFAULT, false, true, "help-general.gui"),
     HELP_GENERAL_ADMIN("[noPrefix]Admin command help page.", PrefixType.DEFAULT, false, true, "help-general.admin"),
     HELP_GENERAL_NEXT("[noPrefix]Show how much time is until the next competition.", PrefixType.DEFAULT, false, true, "help-general.next"),
     HELP_GENERAL_SELLALL("[noPrefix]Sell all the fish in your inventory.", PrefixType.DEFAULT, false, true, "help-general.sellall"),

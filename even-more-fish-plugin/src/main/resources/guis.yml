@@ -1,97 +1,187 @@
 # This file is for the 1.7 release of EvenMoreFish, if you are using this before your plugin is using version 1.7.2 there
 # will likely be a few issues or changes to the file won't take effect on the plugin.
 
+# These elements are available in every gui.
+# They will only show up when pages are needed.
+general:
+  # Character: f
+  first-page:
+    item:
+      material: arrow
+    displayname: "&bFirst Page"
+    lore:
+      - "&eGo to the first page"
+  # Character: p
+  previous-page:
+    item:
+      material: paper
+    displayname: "&bPrevious Page"
+    lore:
+      - "&eGo to the previous page"
+  # Character: n
+  next-page:
+    item:
+      material: paper
+    displayname: "&bNext Page"
+    lore:
+      - "&eGo to the next page"
+  # Character: l
+  last-page:
+    item:
+      material: arrow
+    displayname: "&bLast Page"
+    lore:
+      - "&eGo to the last page"
+
 main-menu:
   title: "&1EvenMoreFish"
+  layout:
+    - "126515621"
+    - "23     32"
+    - "4 t s h 4"
+    - "4 c j b 4"
+    - "23     32"
+    - "1265x5621"
+  # This should be the most used filler item.
+  filler: black_stained_glass_pane
 
-  # Which layout should the filler background for the GUI show? View this link to see examples of the available layouts: https://www.bbc.co.uk/
-  filler-layout: "default"
-
-  info-icon:
-    item: PUFFERFISH
-    name: "&#55aaff»      &#55aaffEvenMoreFish"
+  fish-toggle:
+    item:
+      material: tropical_fish
+      displayname: "&6»     Toggle Custom Fish"
     lore:
       - "&f&m                                 "
-      - "&7View information about"
-      - "&7recently caught fish,"
-      - "&7available baits and past"
-      - "&7competitions."
+      - "&7Click this button to"
+      - "&7toggle custom fish."
       - "&f&m                                 "
-    glowing: true
+    character: "t"
+    click-action: "fish-toggle"
+
+  open-shop:
+    item:
+      material: gold_ingot
+      displayname: "&6»     Open Fish Shop"
+    lore:
+      - "&f&m                                 "
+      - "&7Sell the fish you catch to"
+      - "&7earn a bit of extra money."
+      - "&f&m                                 "
+    character: "s"
+    click-action: "open-shop"
 
   help-button:
-    item: COMPASS
-    name: "&6»           Help"
+    item:
+      material: COMPASS
+      displayname: "&6»           Command Help"
     lore:
       - "&f&m                                 "
       - "&7Shows a list of commands"
       - "&7that can be used to use"
       - "&7this plugin."
       - "&f&m                                 "
-    slot: 10
-    button: "command:emf help"
-#   custom-model-data: 1234567
+    character: "h"
+    click-action: "show-command-help"
 
-  fish-journal-button:
-    item: WRITABLE_BOOK
-    name: "&6»      Fish Journal"
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
     lore:
-      - "&f&m                                 "
-      - "&7View a list of the fish"
-      - "&7you've caught, to view"
-      - "&7stats and records."
-      - "&f&m                                 "
-    slot: 13
-    button: "gui:fish-journal"
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "full-exit"
 
-  baits-button:
-    item: NAUTILUS_SHELL
-    name: "&6»           Baits"
+sell-menu-normal:
+  title: "&1&lSell Fish"
+  layout:
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "   s a   "
+  filler: gray_stained_glass_pane
+  # The character to use for the slots where players can place fish.
+  deposit-character: "i"
+
+  sell-item:
+    item:
+      material: GOLD_INGOT
+      displayname: "&6&lSELL"
     lore:
-      - "&f&m                                 "
-      - "&7Purchase baits to boost"
-      - "&7chances of catching"
-      - "&&7certain fish or rarities."
-      - "&f&m                                 "
-    slot: 16
-    button: "gui:baits"
+      - "&8Fish Shop"
+      - ""
+      - "&7Total Value » &e{sell-price}"
+      - ""
+      - "&7Sell your fish here to make"
+      - "&7some extra money."
+      - ""
+      - "&e» (Left-click) sell the fish."
+      - "&7» (Right-click) cancel."
+    character: "s"
+    click-action: "sell-shop"
 
-  shop-button:
-    item: GOLD_INGOT
-    name: "&6»           Shop"
+  sell-all-item:
+    item:
+      material: COD_BUCKET
+      displayname: "&6&lSELL ALL"
     lore:
-      - "&f&m                                 "
-      - "&7Sell the fish you catch to"
-      - "&7earn a bit of extra money."
-      - "&f&m                                 "
-    slot: 28
-    button: "gui:shop"
+      - "&8Inventory"
+      - ""
+      - "&7Total Value » &e{sell-all-price}"
+      - ""
+      - "&7Click this button to sell"
+      - "&7the fish in your inventory to"
+      - "&7make some extra money."
+      - ""
+      - "&e» (Left-click) sell the fish."
+    character: "a"
+    click-action: "sell-inventory"
 
-  competitions-button:
-    item: CLOCK
-    name: "&6»       Competitions"
+sell-menu-confirm:
+  title: "&a&lConfirm"
+  layout:
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "iiiiiiiii"
+    - "   s a   "
+  filler: lime_stained_glass_pane
+  # The character to use for the slots where players can place fish.
+  deposit-character: "i"
+
+  sell-item:
+    item:
+      material: GOLD_INGOT
+      displayname: "&6&lCONFIRM SELL"
     lore:
-      - "&f&m                                 "
-      - "&7View a list of recent and"
-      - "&7upcoming competitions."
-      - "&f&m                                 "
-    slot: 31
-    button: "gui:competitions"
+      - "&8Fish Shop"
+      - ""
+      - "&7Total Value » &e{sell-price}"
+      - ""
+      - "&7Sell your fish here to make"
+      - "&7some extra money."
+      - ""
+      - "&e» (Left-click) sell the fish."
+      - "&7» (Right-click) cancel."
+    character: "s"
+    click-action: "sell-shop-confirm"
 
-  fish-toggle-button:
-    item: "{toggle_icon}"
-    name: "&6»     Custom Fish: {toggle_msg}"
+  sell-all-item:
+    item:
+      material: COD_BUCKET
+      displayname: "&6&lCONFIRM SELL ALL"
     lore:
-      - "&f&m                                 "
-      - "&7Click this button to"
-      - "&7toggle whether you catch"
-      - "&7custom competition fish."
-      - "&f&m                                 "
-    slot: 34
-    button: "command:emf toggle"
+      - "&8Inventory"
+      - ""
+      - "&7Total Value » &e{sell-all-price}"
+      - ""
+      - "&7Click this button to sell"
+      - "&7the fish in your inventory to"
+      - "&7make some extra money."
+      - ""
+      - "&e» (Left-click) sell the fish."
+    character: "a"
+    click-action: "sell-inventory-confirm"
 
-enabled-msg: "&a&l✔"
-disabled-msg: "&c&l✘"
-
-enabled-icon: TROPICAL_FISH_BUCKET
-disabled-icon: WATER_BUCKET
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

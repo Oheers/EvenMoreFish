@@ -3,7 +3,6 @@ package com.oheers.evenmorefish.addons;
 import com.oheers.fish.api.addons.ItemAddon;
 import com.willfp.ecoitems.items.EcoItem;
 import com.willfp.ecoitems.items.EcoItems;
-import org.apache.commons.lang3.JavaVersion;
 import org.bukkit.inventory.ItemStack;
 
 public class EcoItemsItemAddon extends ItemAddon {
@@ -34,8 +33,4 @@ public class EcoItemsItemAddon extends ItemAddon {
         return item.getItemStack();
     }
 
-    @Override
-    public JavaVersion getRequiredJavaVersion() {
-        return JavaVersion.JAVA_17;
-    }
 }

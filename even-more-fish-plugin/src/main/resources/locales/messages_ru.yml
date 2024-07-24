@@ -195,3 +195,7 @@ bait-use: "You have used one of your rod's {bait_theme}&l{bait} &rbait."
 # Отображается при включении переключателя /emf toggle для выключения и включения соответственно.
 toggle-off: "Вы больше не будете ловить кастомную рыбу."
 toggle-on: "Теперь вы будете ловить кастомную рыбу."
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

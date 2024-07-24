@@ -1,12 +1,19 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
+
 plugins {
     `java-library`
-    id("maven-publish")
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    `maven-publish`
+    alias(libs.plugins.bukkit.yml)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.grgit)
 }
 
 group = "com.oheers.evenmorefish"
-version = "1.7.2"
+version = "1.7.3"
 
 description = "A fishing extension bringing an exciting new experience to fishing."
 
@@ -42,7 +49,9 @@ dependencies {
     compileOnly(libs.worldguard.core) {
         exclude("com.sk89q.worldedit", "worldedit-core")
     }
-    compileOnly(libs.worldguard.bukkit)
+    compileOnly(libs.worldguard.bukkit) {
+        exclude("org.spigotmc", "spigot-api")
+    }
     compileOnly(libs.worldedit.core)
     compileOnly(libs.worldedit.bukkit)
 
@@ -69,13 +78,16 @@ dependencies {
     compileOnly(libs.headdatabase.api)
     compileOnly(libs.playerpoints)
     compileOnly(libs.cmi.api)
-    compileOnly(libs.essx.api)
+    compileOnly(libs.essx.api) {
+        exclude("org.spigotmc", "spigot-api")
+    }
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
     implementation(libs.universalscheduler)
     implementation(libs.acf)
     implementation(libs.inventorygui)
+    implementation(libs.bundles.adventure)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -84,6 +96,7 @@ dependencies {
     library(libs.caffeine)
     library(libs.commons.lang3)
     library(libs.commons.codec)
+    library(libs.boostedyaml)
 
     library(libs.json.simple)
 }
@@ -153,7 +166,9 @@ bukkit {
                 "emf.top",
                 "emf.shop",
                 "emf.use_rod",
-                "emf.sellall"
+                "emf.sellall",
+                "emf.help",
+                "emf.next"
             )
         }
 
@@ -175,6 +190,16 @@ bukkit {
         register("emf.use_rod") {
             description = "Allows users to use emf rods."
         }
+
+        register("emf.next") {
+            description = "Allows users to see when the next competition will be."
+        }
+
+        register("emf.help") {
+            description = "Allows users to see the help messages."
+            default = BukkitPluginDescription.Permission.Default.TRUE
+        }
+
     }
 }
 
@@ -198,6 +223,15 @@ tasks {
     }
 
     shadowJar {
+        manifest {
+            val buildNumber: String? by project
+
+            attributes["Specification-Title"] = "EvenMoreFish"
+            attributes["Specification-Version"] = project.version
+            attributes["Implementation-Title"] = grgit.branch.current().name
+            attributes["Implementation-Version"] = getBuildNumberOrDate()
+        }
+
         minimize()
 
         exclude("META-INF/**")
@@ -211,18 +245,37 @@ tasks {
         relocate("co.aikar.commands", "com.oheers.fish.libs.acf")
         relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
+        relocate("net.kyori.adventure", "com.oheers.fish.libs.adventure")
+
     }
 
     compileJava {
         options.compilerArgs.add("-parameters")
         options.isFork = true
+        options.encoding = "UTF-8"
     }
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(17))
         vendor.set(JvmVendorSpec.ADOPTIUM)
     }
+}
+
+fun getBuildNumberOrDate(): String? {
+    if (grgit.branch.current().name.equals("master", ignoreCase = true)) {
+        val buildNumber: String? by project
+        if (buildNumber == null)
+            return "RELEASE"
+
+        return buildNumber
+    }
+
+    val time = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm", Locale.ENGLISH)
+        .withZone(ZoneId.systemDefault())
+        .format(Instant.now())
+
+    return time
 }
 

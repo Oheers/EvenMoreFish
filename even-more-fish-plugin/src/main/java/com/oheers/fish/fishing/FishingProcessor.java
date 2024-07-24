@@ -4,8 +4,6 @@ import com.gmail.nossr50.config.experience.ExperienceConfig;
 import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.utils.nbt.NbtKeys;
-import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
@@ -22,6 +20,8 @@ import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.requirements.Requirement;
 import com.oheers.fish.requirements.RequirementContext;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -88,32 +88,7 @@ public class FishingProcessor implements Listener {
                     }
                 }
             }
-        } /*else if (event.getState() == PlayerFishEvent.State.FISHING) {
-            if (!EvenMoreFish.decidedRarities.containsKey(event.getPlayer().getUniqueId())) {
-                EvenMoreFish.decidedRarities.put(event.getPlayer().getUniqueId(), randomWeightedRarity(event.getPlayer(), 1, null));
-            }
-
-
-            if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isXmas2021()) {
-
-                if (!Objects.equals(EvenMoreFish.xmas2021Config.getParticleMessage(), "none")) {
-                    event.getPlayer().sendMessage(FishUtils.translateHexColorCodes(EvenMoreFish.xmas2021Config.getParticleMessage()));
-                }
-
-                if (EvenMoreFish.xmas2021Config.doXmas2021Particles()) {
-                    ParticleEngine.renderParticles(event.getHook());
-                }
-            }
-            - if the rarity is exposed by having particles showing
-             */
-
-        // } else if (event.getState() == PlayerFishEvent.State.REEL_IN) {
-            /* For a failed attempt the player needs to have triggered a FISHING which generates a pre-decided rarity.
-            if (EvenMoreFish.decidedRarities.get(event.getPlayer().getUniqueId()).isXmas2021()) {
-                EvenMoreFish.decidedRarities.remove(event.getPlayer().getUniqueId());
-            }
-
-        } */
+        }
     }
 
     private static boolean isSpaceForNewFish(Inventory inventory) {
@@ -228,8 +203,8 @@ public class FishingProcessor implements Listener {
 
             String length = Float.toString(fish.getLength());
             // Translating the colours because some servers store colour in their fish name
-            String name = FishUtils.translateHexColorCodes(fish.getName());
-            String rarity = FishUtils.translateHexColorCodes(fish.getRarity().getValue());
+            String name = FishUtils.translateColorCodes(fish.getName());
+            String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
 
             Message message = new Message(ConfigMessage.FISH_CAUGHT);
             message.setPlayer(player.getName());
@@ -303,35 +278,31 @@ public class FishingProcessor implements Listener {
 
         int idx = 0;
 
-        /* If allowed rarities has objects, it means we've run through and removed the Christmas rarity. Don't run
-           through again */
-        if (allowedRarities.isEmpty()) {
-            if (fisher != null) {
-                rarityLoop:
-                for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
-                    if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
-                        continue;
-                    }
-
-                    if (!(rarity.getPermission() == null || fisher.hasPermission(rarity.getPermission()))) {
-                        continue;
-                    }
-
-                    List<Requirement> requirements;
-                    if ((requirements = rarity.getRequirements()) != null) {
-                        RequirementContext context = new RequirementContext();
-                        context.setLocation(fisher.getLocation());
-                        context.setPlayer(fisher);
-                        for (Requirement requirement : requirements) {
-                            if (!requirement.requirementMet(context)) continue rarityLoop;
-                        }
-                    }
-
-                    allowedRarities.add(rarity);
+        if (fisher != null) {
+            rarityLoop:
+            for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+                if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
+                    continue;
                 }
-            } else {
-                allowedRarities.addAll(totalRarities);
+
+                if (!(rarity.getPermission() == null || fisher.hasPermission(rarity.getPermission()))) {
+                    continue;
+                }
+
+                List<Requirement> requirements;
+                if ((requirements = rarity.getRequirements()) != null) {
+                    RequirementContext context = new RequirementContext();
+                    context.setLocation(fisher.getLocation());
+                    context.setPlayer(fisher);
+                    for (Requirement requirement : requirements) {
+                        if (!requirement.requirementMet(context)) continue rarityLoop;
+                    }
+                }
+
+                allowedRarities.add(rarity);
             }
+        } else {
+            allowedRarities.addAll(totalRarities);
         }
 
         double totalWeight = 0;
@@ -368,21 +339,7 @@ public class FishingProcessor implements Listener {
     }
 
     private static Fish randomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
-        double totalWeight = 0;
-
-        for (Fish fish : fishList) {
-            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
-            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
-            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
-
-                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
-                else
-                    totalWeight += fish.getWeight() * boostRate;
-            } else {
-                if (fish.getWeight() == 0.0d) totalWeight += 1;
-                else totalWeight += fish.getWeight();
-            }
-        }
+        final double totalWeight = getTotalWeight(fishList, boostRate, boostedFish);
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < fishList.size() - 1; ++idx) {
@@ -405,6 +362,25 @@ public class FishingProcessor implements Listener {
         }
 
         return fishList.get(idx);
+    }
+
+    private static double getTotalWeight(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
+        double totalWeight = 0;
+
+        for (Fish fish : fishList) {
+            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
+            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
+            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
+
+                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
+                else
+                    totalWeight += fish.getWeight() * boostRate;
+            } else {
+                if (fish.getWeight() == 0.0d) totalWeight += 1;
+                else totalWeight += fish.getWeight();
+            }
+        }
+        return totalWeight;
     }
 
     public static Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish, boolean doRequirementChecks) {

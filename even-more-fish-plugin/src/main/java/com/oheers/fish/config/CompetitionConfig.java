@@ -2,8 +2,8 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.CompetitionType;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ public class CompetitionConfig extends ConfigBase {
     private static CompetitionConfig instance;
 
     public CompetitionConfig() {
-        super("competitions.yml", EvenMoreFish.getInstance());
+        super("competitions.yml", "competitions.yml", EvenMoreFish.getInstance(), true);
         instance = this;
     }
 
@@ -30,7 +30,7 @@ public class CompetitionConfig extends ConfigBase {
 
     public Set<String> getCompetitions() {
         try {
-            return getConfig().getConfigurationSection("competitions").getKeys(false);
+            return getConfig().getSection("competitions").getRoutesAsStrings(false);
         } catch (NullPointerException exception) {
             return null;
         }
@@ -42,7 +42,7 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public Set<String> activeDays(String competitionName) {
-        return Objects.requireNonNull(getConfig().getConfigurationSection("competitions." + competitionName + ".days")).getKeys(false);
+        return Objects.requireNonNull(getConfig().getSection("competitions." + competitionName + ".days")).getRoutesAsStrings(false);
     }
 
     public List<String> getDayTimes(String competitionName, String day) {
@@ -129,18 +129,18 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public Set<String> getRewardPositions(String competitionName) {
-        ConfigurationSection returning = getConfig().getConfigurationSection("competitions." + competitionName + ".rewards");
+        Section returning = getConfig().getSection("competitions." + competitionName + ".rewards");
         if (returning != null) {
-            return returning.getKeys(false);
+            return returning.getRoutesAsStrings(false);
         }
 
         return new HashSet<>();
     }
 
     public Set<String> getRewardPositions() {
-        ConfigurationSection returning = getConfig().getConfigurationSection("rewards");
+        Section returning = getConfig().getSection("rewards");
         if (returning != null) {
-            return returning.getKeys(false);
+            return returning.getRoutesAsStrings(false);
         }
 
         return new HashSet<>();

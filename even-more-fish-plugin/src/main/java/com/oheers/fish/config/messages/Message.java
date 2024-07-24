@@ -5,19 +5,15 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Message {
 
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '\u00A7';
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     public String message;
     private boolean canSilent, canHidePrefix;
@@ -101,17 +97,7 @@ public class Message {
      * have been formatted.
      */
     private void colourFormat() {
-        Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
-        while (matcher.find()) {
-            String group = matcher.group(1);
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
-                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
-                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5)
-            );
-        }
-        this.message = ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+        this.message = FishUtils.translateColorCodes(this.message);
     }
 
     /**
@@ -293,6 +279,13 @@ public class Message {
      */
     public void setVariable(@NotNull final String code, @NotNull final String value) {
         liveVariables.put(code, value);
+    }
+
+    public void setVariables(@Nullable Map<String, String> variableMap) {
+        if (variableMap == null) {
+            return;
+        }
+        this.liveVariables.putAll(variableMap);
     }
 
     /**
@@ -521,19 +514,11 @@ public class Message {
      */
     public void setCompetitionType(@NotNull final CompetitionType type) {
         switch (type) {
-            case MOST_FISH:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage(false));
-                break;
-            case SPECIFIC_FISH:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false));
-                break;
-            case SPECIFIC_RARITY:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false));
-                break;
-            case LARGEST_TOTAL:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage(false));
-                break;
-            default: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false));
+            case MOST_FISH -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage(false));
+            case SPECIFIC_FISH -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false));
+            case SPECIFIC_RARITY -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false));
+            case LARGEST_TOTAL -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage(false));
+            default -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false));
         }
     }
 
@@ -570,9 +555,9 @@ public class Message {
             // does colour coding, hence why .addAll() isn't used
             for (String line : lore) {
                 if (line.equals(lore.get(lore.size() - 1))) {
-                    customLore.append(FishUtils.translateHexColorCodes(line));
+                    customLore.append(FishUtils.translateColorCodes(line));
                 }
-                else customLore.append(FishUtils.translateHexColorCodes(line)).append("\n");
+                else customLore.append(FishUtils.translateColorCodes(line)).append("\n");
             }
             // Replaces the fish lore with the value
             setVariable(variable, customLore.toString());

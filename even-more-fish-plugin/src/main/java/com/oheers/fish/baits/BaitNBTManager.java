@@ -2,12 +2,12 @@ package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.utils.nbt.NbtKeys;
-import com.oheers.fish.utils.nbt.NbtUtils;
 import com.oheers.fish.config.BaitFile;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import org.bukkit.Material;
@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -172,13 +171,13 @@ public class BaitNBTManager {
                     cursorModifier.set(-quantity);
                 }
             } else {
-                if (combined.length() > 0) {
+                if (!combined.isEmpty()) {
                     combined.deleteCharAt(combined.length() - 1);
                 }
             }
             NBT.modify(item, nbt -> {
                 ReadWriteNBT emfCompound = nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
-                if (combined.length() > 0) {
+                if (!combined.isEmpty()) {
                     emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
                 } else {
                     emfCompound.removeKey(NbtKeys.EMF_APPLIED_BAIT);
@@ -200,7 +199,7 @@ public class BaitNBTManager {
             });
         }
 
-        if (doingLoreStuff && combined.length() >= 1) {
+        if (doingLoreStuff && !combined.isEmpty()) {
             ItemMeta meta = item.getItemMeta();
             meta.setLore(newApplyLore(item));
             item.setItemMeta(meta);
@@ -365,7 +364,7 @@ public class BaitNBTManager {
 
                 if (BaitFile.getInstance().showUnusedBaitSlots()) {
                     for (int i = baitCount; i < BaitFile.getInstance().getMaxBaits(); i++) {
-                        lore.add(FishUtils.translateHexColorCodes(BaitFile.getInstance().unusedBaitSlotFormat()));
+                        lore.add(FishUtils.translateColorCodes(BaitFile.getInstance().unusedBaitSlotFormat()));
                     }
                 }
             } else {
@@ -402,9 +401,6 @@ public class BaitNBTManager {
             int maxBaits = BaitFile.getInstance().getMaxBaits() + BaitFile.getInstance().getRodLoreFormat().size();
             //todo, to help this be compliant with java:S5413, we should iterate in reverse order, this should be done in another pr, left here for reference
             //compliant version
-            //            for (int i = lore.size() - 1; i >= maxBaits; i--) {
-            //                lore.remove(i);
-            //            }
             for (int i = 1; i < maxBaits; i++) {
                 lore.remove(lore.size() - 1);
             }
@@ -412,9 +408,6 @@ public class BaitNBTManager {
             // starting at 1, because at least one bait replacing {baits} is repeated.
             int numBaitsApplied = getNumBaitsApplied(itemStack) + BaitFile.getInstance().getRodLoreFormat().size();
             //compliant version
-            //            for (int i = lore.size() - 1; i >= numBaitsApplied; i--) {
-            //                lore.remove(i);
-            //            }
             for (int i = 1; i < numBaitsApplied; i++) {
                 lore.remove(lore.size() - 1);
             }
@@ -447,6 +440,6 @@ public class BaitNBTManager {
      */
     private static String getBaitFormatted(String baitID) {
         Bait bait = EvenMoreFish.getInstance().getBaits().get(baitID);
-        return FishUtils.translateHexColorCodes(bait.getDisplayName());
+        return FishUtils.translateColorCodes(bait.getDisplayName());
     }
 }

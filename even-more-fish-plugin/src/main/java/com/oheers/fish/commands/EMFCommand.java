@@ -10,9 +10,11 @@ import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
+import com.oheers.fish.gui.MainMenuGUI;
+import com.oheers.fish.gui.SellGUI;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
-import com.oheers.fish.selling.SellGUI;
+import com.oheers.fish.selling.SellHelper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -23,6 +25,7 @@ public class EMFCommand extends BaseCommand {
 
     @Subcommand("next")
     @Description("%desc_general_next")
+    @CommandPermission(UserPerms.NEXT)
     public void onNext(final CommandSender sender) {
         Message message = Competition.getNextCompetitionMessage();
         message.usePrefix(PrefixType.DEFAULT);
@@ -43,13 +46,25 @@ public class EMFCommand extends BaseCommand {
         new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, false);
     }
 
-
+    @Subcommand("gui")
+    @Description("%desc_general_gui")
+    @CommandPermission(UserPerms.GUI)
+    public void onGui(final Player player) {
+        new MainMenuGUI(player).open();
+    }
 
     @Default
     @HelpCommand
+    @CommandPermission(UserPerms.HELP)
+    @Description("%desc_general_help")
     public void onHelp(final CommandHelp help, final CommandSender sender) {
         new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender, false);
-        help.showHelp();
+        help.getHelpEntries().forEach(helpEntry -> {
+            Message helpMessage = new Message(ConfigMessage.HELP_FORMAT);
+            helpMessage.setVariable("{command}", "/" + helpEntry.getCommand());
+            helpMessage.setVariable("{description}", helpEntry.getDescription());
+            helpMessage.broadcast(sender, true);
+        });
     }
 
     @Subcommand("top")
@@ -61,13 +76,13 @@ public class EMFCommand extends BaseCommand {
             return;
         }
 
-        if (sender instanceof Player) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard((Player) sender);
+        if (sender instanceof Player player) {
+            EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard(player);
             return;
         }
 
-        if (sender instanceof ConsoleCommandSender) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendConsoleLeaderboard((ConsoleCommandSender) sender);
+        if (sender instanceof ConsoleCommandSender consoleCommandSender) {
+            EvenMoreFish.getInstance().getActiveCompetition().sendConsoleLeaderboard(consoleCommandSender);
         }
     }
 
@@ -81,16 +96,16 @@ public class EMFCommand extends BaseCommand {
         }
 
         if (onlinePlayer == null) {
-            if (!(sender instanceof Player)) {
+            if (!(sender instanceof Player player)) {
                 new Message("&cYou must specify a player when running from console.").broadcast(sender, false);
                 return;
             }
-            new SellGUI((Player) sender).open();
+            new SellGUI(player, SellGUI.SellState.NORMAL, null).open();
             return;
         }
 
         if (sender.hasPermission(AdminPerms.ADMIN)) {
-            new SellGUI(onlinePlayer.player).open();
+            new SellGUI(onlinePlayer.player, SellGUI.SellState.NORMAL, null).open();
             Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
             message.setPlayer(onlinePlayer.player.getName());
             message.broadcast(sender, true);
@@ -106,9 +121,7 @@ public class EMFCommand extends BaseCommand {
             return;
         }
 
-
-        SellGUI gui = new SellGUI(sender);
-        gui.sell(true);
+        new SellHelper(sender.getInventory(), sender).sellFish();
     }
 
 

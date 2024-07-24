@@ -26,19 +26,22 @@ import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
-import com.oheers.fish.database.*;
+import com.oheers.fish.database.DataManager;
+import com.oheers.fish.database.DatabaseV3;
+import com.oheers.fish.database.FishReport;
+import com.oheers.fish.database.UserReport;
 import com.oheers.fish.events.*;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.FillerStyle;
-import com.oheers.fish.selling.SellGUI;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.milkbowl.vault.permission.Permission;
@@ -46,6 +49,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
@@ -54,6 +58,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -70,8 +75,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private Map<Integer, Set<String>> fish = new HashMap<>();
     private final Map<String, Bait> baits = new HashMap<>();
     private Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
-    private Rarity xmasRarity;
-    private final Map<Integer, Fish> xmasFish = new HashMap<>();
     private final List<UUID> disabledPlayers = new ArrayList<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
@@ -82,7 +85,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private CompetitionQueue competitionQueue;
     private Logger logger;
     private PluginManager pluginManager;
-    private List<SellGUI> guis;
     private int metric_fishCaught = 0;
     private int metric_baitsUsed = 0;
     private int metric_baitsApplied = 0;
@@ -127,7 +129,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         this.api = new EMFAPI();
 
 
-        guis = new ArrayList<>();
         decidedRarities = new HashMap<>();
 
         logger = getLogger();
@@ -151,11 +152,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new RaritiesFile();
         new BaitFile();
         new CompetitionConfig();
-        new Xmas2022Config();
 
-        if (MainConfig.getInstance().debugSession()) {
-            new GUIConfig();
-        }
+        new GUIConfig();
+        new GUIFillerConfig();
 
         checkPapi();
 
@@ -192,8 +191,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         // async check for updates on the spigot page
         getScheduler().runTaskAsynchronously(() -> isUpdateAvailable = checkUpdate());
-
-        checkConfigVers();
 
         listeners();
         loadCommandManager();
@@ -235,7 +232,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     @Override
     public void onDisable() {
-        terminateSellGUIS();
+        terminateGUIS();
         // Don't use the scheduler here because it will throw errors on disable
         saveUserData(false);
 
@@ -259,7 +256,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         for (final String fileName : Arrays.stream(DefaultAddons.values())
                 .map(DefaultAddons::getFullFileName)
-                .collect(Collectors.toList())) {
+                .toList()) {
             final File addonFile = new File(getDataFolder(), "addons/" + fileName);
             final File jarFile = new File(getDataFolder(), "addons/" + fileName.replace(".addon", ".jar"));
             if (!jarFile.exists()) {
@@ -385,12 +382,13 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                 "desc_list_rarities", new Message(ConfigMessage.HELP_LIST_RARITIES).getRawMessage(true),
 
                 "desc_competition_start", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true),
-                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true),
+                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_END).getRawMessage(true),
 
                 "desc_general_top", new Message(ConfigMessage.HELP_GENERAL_TOP).getRawMessage(true),
                 "desc_general_help", new Message(ConfigMessage.HELP_GENERAL_HELP).getRawMessage(true),
                 "desc_general_shop", new Message(ConfigMessage.HELP_GENERAL_SHOP).getRawMessage(true),
                 "desc_general_toggle", new Message(ConfigMessage.HELP_GENERAL_TOGGLE).getRawMessage(true),
+                "desc_general_gui", new Message(ConfigMessage.HELP_GENERAL_GUI).getRawMessage(true),
                 "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(true),
                 "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(true),
                 "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(true)
@@ -414,7 +412,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream()
                     .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId))
                     .findFirst();
-            if (!potentialRarity.isPresent()) {
+            if (potentialRarity.isEmpty()) {
                 throw new InvalidCommandArgument("No such rarity: " + rarityId);
             }
 
@@ -427,7 +425,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                     .filter(f -> f.getName().equalsIgnoreCase(fishId.replace("_", " ")) || f.getName().equalsIgnoreCase(fishId))
                     .findFirst();
 
-            if (!potentialFish.isPresent()) {
+            if (potentialFish.isEmpty()) {
                 throw new InvalidCommandArgument("No such fish: " + fishId);
             }
 
@@ -463,11 +461,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
     }
 
-    // gets called on server shutdown to simulate all player's closing their /emf shop GUIs
-    private void terminateSellGUIS() {
+    // gets called on server shutdown to simulate all players closing their GUIs
+    private void terminateGUIS() {
         getServer().getOnlinePlayers().forEach(player -> {
-            if (player.getOpenInventory().getTopInventory().getHolder() instanceof SellGUI) {
-                player.closeInventory();
+            InventoryGui inventoryGui = InventoryGui.getOpen(player);
+            if (inventoryGui != null) {
+                inventoryGui.close();
             }
         });
     }
@@ -512,7 +511,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     public ItemStack createCustomNBTRod() {
-        ItemFactory itemFactory = new ItemFactory("nbt-rod-item", false);
+        ItemFactory itemFactory = new ItemFactory("nbt-rod-item");
         itemFactory.enableDefaultChecks();
         itemFactory.setItemDisplayNameCheck(true);
         itemFactory.setItemLoreCheck(true);
@@ -524,17 +523,26 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return customRod;
     }
 
-    public void reload() {
+    public void reload(@Nullable CommandSender sender) {
 
-        terminateSellGUIS();
+        terminateGUIS();
 
-        setupEconomy();
-
-        fish = new HashMap<>();
-        fishCollection = new HashMap<>();
+        fish.clear();
+        fishCollection.clear();
 
         reloadConfig();
         saveDefaultConfig();
+
+        MainConfig.getInstance().reload();
+        Messages.getInstance().reload();
+        CompetitionConfig.getInstance().reload();
+        GUIConfig.getInstance().reload();
+        GUIFillerConfig.getInstance().reload();
+        FishFile.getInstance().reload();
+        RaritiesFile.getInstance().reload();
+        BaitFile.getInstance().reload();
+
+        setupEconomy();
 
         Names names = new Names();
         names.loadRarities(FishFile.getInstance().getConfig(), RaritiesFile.getInstance().getConfig());
@@ -545,24 +553,20 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         HandlerList.unregisterAll(McMMOTreasureEvent.getInstance());
         optionalListeners();
 
-        MainConfig.getInstance().reload();
-        Messages.getInstance().reload();
-        CompetitionConfig.getInstance().reload();
-        Xmas2022Config.getInstance().reload();
-        if (MainConfig.getInstance().debugSession()) {
-            GUIConfig.getInstance().reload();
-        }
-
         if (MainConfig.getInstance().requireNBTRod()) {
             customNBTRod = createCustomNBTRod();
         }
 
         competitionQueue.load();
+
+        if (sender != null) {
+            new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
+        }
+
     }
 
     // Checks for updates, surprisingly
     private boolean checkUpdate() {
-
 
         String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
         String[] serverVersion = getDescription().getVersion().split("\\.");
@@ -577,28 +581,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             }
         }
         return false;
-    }
-
-    private void checkConfigVers() {
-
-        // ConfigBase#updateConfig() will make sure these configs have the newest options
-        MainConfig.getInstance().updateConfig();
-        Messages.getInstance().updateConfig();
-
-        int COMP_CONFIG_VERSION = 1;
-        if (CompetitionConfig.getInstance().configVersion() < COMP_CONFIG_VERSION) {
-            getLogger().log(Level.WARNING, "Your competitions.yml config is not up to date. Certain new configurable features may have been added, and without" +
-                    " an updated config, you won't be able to modify them. To update, either delete your competitions.yml file and restart the server to create a new" +
-                    " fresh one, or go through the recent updates, adding in missing values. https://www.spigotmc.org/resources/evenmorefish.91310/updates/");
-            CompetitionConfig.getInstance().reload();
-        }
-
-        // Clean up the temp directory
-        File tempDir = new File(getDataFolder(), "temp");
-        if (tempDir.exists()) {
-            tempDir.delete();
-        }
-
     }
 
     /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
@@ -644,18 +626,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public Map<Rarity, List<Fish>> getFishCollection() {
         return fishCollection;
-    }
-
-    public Rarity getXmasRarity() {
-        return xmasRarity;
-    }
-
-    public void setXmasRarity(Rarity rarity) {
-        this.xmasRarity = rarity;
-    }
-
-    public Map<Integer, Fish> getXmasFish() {
-        return xmasFish;
     }
 
     public List<UUID> getDisabledPlayers() {
@@ -704,10 +674,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public PluginManager getPluginManager() {
         return pluginManager;
-    }
-
-    public List<SellGUI> getGuis() {
-        return guis;
     }
 
     public int getMetricFishCaught() {
@@ -845,8 +811,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // Check Essentials
         if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("Essentials");
-            if (plugin instanceof Essentials) {
-                Essentials essentials = (Essentials) plugin;
+            if (plugin instanceof Essentials essentials) {
                 players = players.stream().filter(player -> !essentials.getUser(player).isVanished()).collect(Collectors.toList());
             }
         }

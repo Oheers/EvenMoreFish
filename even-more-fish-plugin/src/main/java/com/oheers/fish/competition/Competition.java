@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class Competition {
 
@@ -101,7 +100,7 @@ public class Competition {
             this.timeLeft = this.maxDuration;
 
             leaderboard = new Leaderboard(competitionType);
-            statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
+            statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
             statusBar.show();
             initTimer();
             announceBegin();
@@ -408,162 +407,90 @@ public class Competition {
 
     public void sendPlayerLeaderboard(Player player) {
         boolean reachingCount = true;
-        if (active) {
-            if (leaderboard.getSize() != 0) {
 
-                List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
-                StringBuilder builder = new StringBuilder();
-                int pos = 0;
-
-                for (CompetitionEntry entry : leaderboard.getEntries()) {
-                    pos++;
-                    if (reachingCount) {
-                        leaderboardMembers.add(entry.getPlayer());
-                        Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                        message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
-                        message.setPosition(Integer.toString(pos));
-                        if (pos > competitionColours.size()) {
-                            Random r = EvenMoreFish.getInstance().getRandom();
-                            int s = r.nextInt(3);
-                            switch (s) {
-                                case 0:
-                                    message.setPositionColour("&c\u00bb &r");
-                                    break;
-                                case 1:
-                                    message.setPositionColour("&c_ &r");
-                                    break;
-                                case 2:
-                                    message.setPositionColour("&c&ko &r");
-                                    break;
-                            }
-
-                        } else {
-                            message.setPositionColour(competitionColours.get(pos - 1));
-                        }
-
-                        if (competitionType == CompetitionType.LARGEST_FISH) {
-                            Fish fish = entry.getFish();
-                            message.setRarityColour(fish.getRarity().getColour());
-                            message.setLength(Float.toString(entry.getValue()));
-
-                            if (fish.getRarity().getDisplayName() != null) {
-                                message.setRarity(fish.getRarity().getDisplayName());
-                            } else {
-                                message.setRarity(fish.getRarity().getValue());
-                            }
-
-                            if (fish.getDisplayName() != null) {
-                                message.setFishCaught(fish.getDisplayName());
-                            } else {
-                                message.setFishCaught(fish.getName());
-                            }
-                        } else {
-                            if (competitionType == CompetitionType.LARGEST_TOTAL) {
-                                message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-                                // Clearing floating point .00000003 error not-cool stuff.
-                                message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
-                            } else {
-                                message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
-                                message.setAmount(Integer.toString((int) entry.getValue()));
-                            }
-
-                        }
-                        builder.append(message.getRawMessage(true));
-
-                        if (pos == Messages.getInstance().getConfig().getInt("leaderboard-count")) {
-                            if (Messages.getInstance().getConfig().getBoolean("always-show-pos")) {
-                                if (leaderboardMembers.contains(player.getUniqueId())) {
-                                    break;
-                                } else {
-                                    reachingCount = false;
-                                }
-                            } else {
-                                break;
-                            }
-                        } else {
-                            builder.append("\n");
-                        }
-                    } else {
-                        if (entry.getPlayer() == player.getUniqueId()) {
-                            Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                            message.setPosition(Integer.toString(pos));
-                            message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
-                            message.setPositionColour("&f");
-
-                            if (competitionType == CompetitionType.LARGEST_FISH) {
-                                Fish fish = entry.getFish();
-                                message.setRarityColour(fish.getRarity().getColour());
-                                message.setLength(Float.toString(entry.getValue()));
-
-                                if (fish.getRarity().getDisplayName() != null) {
-                                    message.setRarity(fish.getRarity().getDisplayName());
-                                } else {
-                                    message.setRarity(fish.getRarity().getValue());
-                                }
-
-                                if (fish.getDisplayName() != null) {
-                                    message.setFishCaught(fish.getDisplayName());
-                                } else {
-                                    message.setFishCaught(fish.getName());
-                                }
-                            } else {
-                                message.setAmount(Integer.toString((int) entry.getValue()));
-                                if (competitionType == CompetitionType.LARGEST_TOTAL) {
-                                    message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-                                } else {
-                                    message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
-                                }
-                            }
-
-                            builder.append("\n").append(message.getRawMessage(true));
-                        }
-                    }
-                }
-                player.sendMessage(builder.toString());
-                Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
-                message.setAmount(Integer.toString(leaderboard.getSize()));
-                message.broadcast(player, true);
-            } else {
-                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(player, false);
-            }
-        } else {
+        if (!active) {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player, true);
+            return;
         }
-    }
 
-    public void sendConsoleLeaderboard(ConsoleCommandSender console) {
-        boolean reachingCount = true;
-        if (active) {
-            if (leaderboard.getSize() != 0) {
+        if (leaderboard.getSize() == 0) {
+            new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(player, false);
+            return;
+        }
 
-                List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
-                StringBuilder builder = new StringBuilder();
-                int pos = 0;
 
-                for (CompetitionEntry entry : leaderboard.getEntries()) {
-                    pos++;
-                    leaderboardMembers.add(entry.getPlayer());
-                    Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                    message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
-                    message.setPosition(Integer.toString(pos));
-                    if (pos > competitionColours.size()) {
-                        Random r = new Random();
-                        int s = r.nextInt(3);
-                        switch (s) {
-                            case 0:
-                                message.setPositionColour("&c\u00bb &r");
-                                break;
-                            case 1:
-                                message.setPositionColour("&c_ &r");
-                                break;
-                            case 2:
-                                message.setPositionColour("&c&ko &r");
-                                break;
-                        }
+        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
+        StringBuilder builder = new StringBuilder();
+        int pos = 0;
 
-                    } else {
-                        message.setPositionColour(competitionColours.get(pos - 1));
+        for (CompetitionEntry entry : leaderboard.getEntries()) {
+            pos++;
+            if (reachingCount) {
+                leaderboardMembers.add(entry.getPlayer());
+                Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
+                message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+                message.setPosition(Integer.toString(pos));
+                if (pos > competitionColours.size()) {
+                    Random r = EvenMoreFish.getInstance().getRandom();
+                    int s = r.nextInt(3);
+                    switch (s) {
+                        case 0 -> message.setPositionColour("&c» &r");
+                        case 1 -> message.setPositionColour("&c_ &r");
+                        case 2 -> message.setPositionColour("&c&ko &r");
                     }
+
+                } else {
+                    message.setPositionColour(competitionColours.get(pos - 1));
+                }
+
+                if (competitionType == CompetitionType.LARGEST_FISH) {
+                    Fish fish = entry.getFish();
+                    message.setRarityColour(fish.getRarity().getColour());
+                    message.setLength(Float.toString(entry.getValue()));
+
+                    if (fish.getRarity().getDisplayName() != null) {
+                        message.setRarity(fish.getRarity().getDisplayName());
+                    } else {
+                        message.setRarity(fish.getRarity().getValue());
+                    }
+
+                    if (fish.getDisplayName() != null) {
+                        message.setFishCaught(fish.getDisplayName());
+                    } else {
+                        message.setFishCaught(fish.getName());
+                    }
+                } else {
+                    if (competitionType == CompetitionType.LARGEST_TOTAL) {
+                        message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                        // Clearing floating point .00000003 error not-cool stuff.
+                        message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+                    } else {
+                        message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                        message.setAmount(Integer.toString((int) entry.getValue()));
+                    }
+
+                }
+                builder.append(message.getRawMessage(true));
+
+                if (pos == Messages.getInstance().getConfig().getInt("leaderboard-count")) {
+                    if (Messages.getInstance().getConfig().getBoolean("always-show-pos")) {
+                        if (leaderboardMembers.contains(player.getUniqueId())) {
+                            break;
+                        } else {
+                            reachingCount = false;
+                        }
+                    } else {
+                        break;
+                    }
+                } else {
+                    builder.append("\n");
+                }
+            } else {
+                if (entry.getPlayer() == player.getUniqueId()) {
+                    Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
+                    message.setPosition(Integer.toString(pos));
+                    message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+                    message.setPositionColour("&f");
 
                     if (competitionType == CompetitionType.LARGEST_FISH) {
                         Fish fish = entry.getFish();
@@ -582,29 +509,96 @@ public class Competition {
                             message.setFishCaught(fish.getName());
                         }
                     } else {
+                        message.setAmount(Integer.toString((int) entry.getValue()));
                         if (competitionType == CompetitionType.LARGEST_TOTAL) {
                             message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-                            // Clearing floating point .00000003 error not-cool stuff.
-                            message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
                         } else {
                             message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
-                            message.setAmount(Integer.toString((int) entry.getValue()));
                         }
-
                     }
-                    builder.append(message.getRawMessage(true));
 
+                    builder.append("\n").append(message.getRawMessage(true));
                 }
-                console.sendMessage(builder.toString());
-                Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
-                message.setAmount(Integer.toString(leaderboard.getSize()));
-                message.broadcast(console, true);
-            } else {
-                new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console, false);
             }
-        } else {
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console, true);
         }
+        player.sendMessage(builder.toString());
+        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+        message.setAmount(Integer.toString(leaderboard.getSize()));
+        message.broadcast(player, true);
+
+
+    }
+
+    public void sendConsoleLeaderboard(ConsoleCommandSender console) {
+        if (!active) {
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console, true);
+            return;
+        }
+        if (leaderboard.getSize() == 0) {
+            new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console, false);
+            return;
+        }
+
+
+        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
+        StringBuilder builder = new StringBuilder();
+        int pos = 0;
+
+        for (CompetitionEntry entry : leaderboard.getEntries()) {
+            pos++;
+            leaderboardMembers.add(entry.getPlayer());
+            Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
+            message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+            message.setPosition(Integer.toString(pos));
+            if (pos > competitionColours.size()) {
+                Random r = EvenMoreFish.getInstance().getRandom();
+                int s = r.nextInt(3);
+                switch (s) {
+                    case 0 -> message.setPositionColour("&c» &r");
+                    case 1 -> message.setPositionColour("&c_ &r");
+                    case 2 -> message.setPositionColour("&c&ko &r");
+                }
+
+            } else {
+                message.setPositionColour(competitionColours.get(pos - 1));
+            }
+
+            if (competitionType == CompetitionType.LARGEST_FISH) {
+                Fish fish = entry.getFish();
+                message.setRarityColour(fish.getRarity().getColour());
+                message.setLength(Float.toString(entry.getValue()));
+
+                if (fish.getRarity().getDisplayName() != null) {
+                    message.setRarity(fish.getRarity().getDisplayName());
+                } else {
+                    message.setRarity(fish.getRarity().getValue());
+                }
+
+                if (fish.getDisplayName() != null) {
+                    message.setFishCaught(fish.getDisplayName());
+                } else {
+                    message.setFishCaught(fish.getName());
+                }
+            } else {
+                if (competitionType == CompetitionType.LARGEST_TOTAL) {
+                    message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+                    // Clearing floating point .00000003 error not-cool stuff.
+                    message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+                } else {
+                    message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+                    message.setAmount(Integer.toString((int) entry.getValue()));
+                }
+
+            }
+            builder.append(message.getRawMessage(true));
+
+        }
+        console.sendMessage(builder.toString());
+        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+        message.setAmount(Integer.toString(leaderboard.getSize()));
+        message.broadcast(console, true);
+
+
     }
 
     public boolean chooseFish(String competitionName, boolean adminStart) {
@@ -630,7 +624,7 @@ public class Competition {
         if (allowedRarities.isEmpty()) {
             EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competitionName + " competition config contains no loaded rarities!");
             EvenMoreFish.getInstance().getLogger().severe("Configured Rarities: " + configRarities);
-            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
+            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).toList());
             return false;
         }
 
@@ -654,7 +648,7 @@ public class Competition {
             }
             this.selectedFish = selectedFish;
             return true;
-        } catch (IllegalArgumentException|IndexOutOfBoundsException exception) {
+        } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
                     .severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
@@ -752,48 +746,49 @@ public class Competition {
     }
 
     private void handleRewards() {
-        boolean databaseEnabled = MainConfig.getInstance().databaseEnabled();
-        if (leaderboard.getSize() != 0) {
-            int rewardPlace = 1;
-            CompetitionEntry topEntry = leaderboard.getTopEntry();
-            if (topEntry != null && databaseEnabled) {
-                UserReport topReport = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
-                if (topReport == null) {
-                    EvenMoreFish.getInstance().getLogger().severe("Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
-                } else {
-                    topReport.incrementCompetitionsWon(1);
-                }
-            }
-
-            boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
-            Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
-
-            while (competitionEntryIterator.hasNext()) {
-                CompetitionEntry entry = competitionEntryIterator.next();
-                if (rewardPlace <= rewards.size()) {
-                    Player player = Bukkit.getPlayer(entry.getPlayer());
-                    if (player != null) {
-                        rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
-                    }
-                    rewardPlace++;
-                } else {
-                    if (participationRewardsExist) {
-                        Player participationPlayer = Bukkit.getPlayer(entry.getPlayer());
-                        if (participationPlayer != null) {
-                            participationRewards.forEach(reward -> reward.rewardPlayer(participationPlayer, null));
-                        }
-                    }
-                }
-                if (databaseEnabled) {
-                    incrementCompetitionsJoined(entry);
-                }
-            }
-
-        } else {
+        if (leaderboard.getSize() == 0) {
             if (!((competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY) && numberNeeded == 1)) {
                 new Message(ConfigMessage.NO_WINNERS).broadcast(false);
             }
+            return;
         }
+
+        boolean databaseEnabled = MainConfig.getInstance().databaseEnabled();
+        int rewardPlace = 1;
+        CompetitionEntry topEntry = leaderboard.getTopEntry();
+        if (topEntry != null && databaseEnabled) {
+            UserReport topReport = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
+            if (topReport == null) {
+                EvenMoreFish.getInstance().getLogger().severe("Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
+            } else {
+                topReport.incrementCompetitionsWon(1);
+            }
+        }
+
+        boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
+        Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
+
+        while (competitionEntryIterator.hasNext()) {
+            CompetitionEntry entry = competitionEntryIterator.next();
+            if (rewardPlace <= rewards.size()) {
+                Player player = Bukkit.getPlayer(entry.getPlayer());
+                if (player != null) {
+                    rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
+                }
+                rewardPlace++;
+            } else {
+                if (participationRewardsExist) {
+                    Player participationPlayer = Bukkit.getPlayer(entry.getPlayer());
+                    if (participationPlayer != null) {
+                        participationRewards.forEach(reward -> reward.rewardPlayer(participationPlayer, null));
+                    }
+                }
+            }
+            if (databaseEnabled) {
+                incrementCompetitionsJoined(entry);
+            }
+        }
+
     }
 
     public void singleReward(Player player) {
@@ -819,7 +814,7 @@ public class Competition {
             EvenMoreFish.getInstance().getLogger().severe(CompetitionConfig.getInstance().getBarColour(competitionName) + " is not a valid bossbar colour, check ");
         }
 
-        this.statusBar.setPrefix(FishUtils.translateHexColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)));
+        this.statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)));
     }
 
     public void initGetNumbersNeeded(String competitionName) {
@@ -837,7 +832,7 @@ public class Competition {
 
     private CompetitionType getRandomType() {
         // -1 from the length so that the RANDOM isn't chosen as the random value.
-        int type = new Random().nextInt(CompetitionType.values().length - 1);
+        int type = EvenMoreFish.getInstance().getRandom().nextInt(CompetitionType.values().length - 1);
         return CompetitionType.values()[type];
     }
 

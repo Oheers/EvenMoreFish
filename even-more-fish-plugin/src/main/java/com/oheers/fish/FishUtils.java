@@ -18,19 +18,20 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.profile.PlayerProfile;
-import org.bukkit.profile.PlayerTextures;
+import org.jetbrains.annotations.NotNull;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -39,7 +40,7 @@ import java.util.regex.Pattern;
 public class FishUtils {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '\u00A7';
+    private static final char COLOR_CHAR = '§';
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
@@ -66,12 +67,6 @@ public class FishUtils {
         String rarityString = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
         Float lengthFloat = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
         Integer randomIndex = NbtUtils.getInteger(item, NbtKeys.EMF_FISH_RANDOM_INDEX);
-        Integer xmasINT = NbtUtils.getInteger(item, NbtKeys.EMF_XMAS_FISH);
-        boolean isXmasFish = false;
-
-        if (xmasINT != null) {
-            isXmasFish = xmasINT == 1;
-        }
 
         if (nameString == null || rarityString == null) {
             return null; //throw new InvalidFishException("NBT Error");
@@ -89,13 +84,17 @@ public class FishUtils {
 
         // setting the correct length so it's an exact replica.
         try {
-            Fish fish = new Fish(rarity, nameString, isXmasFish);
+            Fish fish = new Fish(rarity, nameString);
             if (randomIndex != null) {
                 fish.getFactory().setType(randomIndex);
             }
             fish.setLength(lengthFloat);
-            if (playerString != null) {
-                fish.setFisherman(UUID.fromString(playerString));
+            try {
+                if (playerString != null) {
+                    fish.setFisherman(UUID.fromString(playerString));
+                }
+            } catch (Exception ex) {
+                fish.setFisherman(null);
             }
 
             return fish;
@@ -114,13 +113,6 @@ public class FishUtils {
         final String rarityString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RARITY).toString()));
         final Float lengthFloat = NBT.getPersistentData(skull, nbt -> nbt.getFloat(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_LENGTH).toString()));
         final Integer randomIndex = NBT.getPersistentData(skull, nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_RANDOM_INDEX).toString()));
-        final Integer xmasInteger = NBT.getPersistentData(skull, nbt -> nbt.getInteger(NbtUtils.getNamespacedKey(NbtKeys.EMF_XMAS_FISH).toString()));
-
-        boolean isXmasFish = false;
-
-        if (xmasInteger != null) {
-            isXmasFish = xmasInteger == 1;
-        }
 
         if (nameString == null || rarityString == null) {
             throw new InvalidFishException("NBT Error");
@@ -136,19 +128,23 @@ public class FishUtils {
         }
 
         // setting the correct length and randomIndex, so it's an exact replica.
-        Fish fish = new Fish(rarity, nameString, isXmasFish);
+        Fish fish = new Fish(rarity, nameString);
         fish.setLength(lengthFloat);
         if (randomIndex != null) {
             fish.getFactory().setType(randomIndex);
         }
-        if (playerString != null) {
-            try {
-                fish.setFisherman(UUID.fromString(playerString));
-            } catch (IllegalArgumentException ex) {
+        try {
+            if (playerString != null) {
+                try {
+                    fish.setFisherman(UUID.fromString(playerString));
+                } catch (IllegalArgumentException ex) {
+                    fish.setFisherman(fisher.getUniqueId());
+                }
+            } else {
                 fish.setFisherman(fisher.getUniqueId());
             }
-        } else {
-            fish.setFisherman(fisher.getUniqueId());
+        } catch (IllegalArgumentException exception) {
+            fish.setFisherman(null);
         }
 
         return fish;
@@ -239,9 +235,25 @@ public class FishUtils {
     }
 
     // credit to https://www.spigotmc.org/members/elementeral.717560/
-    public static String translateHexColorCodes(String message) {
+    public static String translateColorCodes(String message) {
+        // Replace all Section symbols with Ampersands so MiniMessage doesn't explode.
+        message = message.replace(ChatColor.COLOR_CHAR, '&');
+
+        try {
+            // Parse MiniMessage
+            LegacyComponentSerializer legacyAmpersandSerializer = LegacyComponentSerializer.builder()
+                    .hexColors()
+                    .useUnusualXRepeatedCharacterHexFormat()
+                    .build();
+            Component component = MiniMessage.builder().strict(true).build().deserialize(message);
+            // Get legacy color codes from MiniMessage
+            message = legacyAmpersandSerializer.serialize(component);
+        } catch (ParsingException exception) {
+            // Ignore. If MiniMessage throws an exception, we'll only use legacy colors.
+        }
+
         Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+        StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
         while (matcher.find()) {
             String group = matcher.group(1);
             matcher.appendReplacement(buffer, COLOR_CHAR + "x"
@@ -254,22 +266,48 @@ public class FishUtils {
     }
 
     //gets the item with a custom texture
-    public static ItemStack get(String base64EncodedString) {
+    public static ItemStack getSkullFromBase64(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        if (meta != null) {
-            try {
-                String decodedBase64 = new String(Base64.getDecoder().decode(base64EncodedString));
-                URL url = new URL(decodedBase64.substring("{\"textures\":{\"SKIN\":{\"url\":\"".length(), decodedBase64.length() - "\"}}}".length()));
-                PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID(), "EMFFish");
-                PlayerTextures textures = profile.getTextures();
-                textures.setSkin(url);
-                profile.setTextures(textures);
-                meta.setOwnerProfile(profile);
-            } catch (MalformedURLException ignored) {
-                // If it's malformed, just don't set it.
-            }
-            skull.setItemMeta(meta);
+        UUID headUuid = UUID.randomUUID();
+        // 1.20.5+ handling
+        if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
+            NBT.modifyComponents(skull, nbt -> {
+                ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
+                profileNbt.setUUID("id", headUuid);
+                ReadWriteNBT propertiesNbt = profileNbt.getCompoundList("properties").addCompound();
+                // This key is required, so we set it to an empty string.
+                propertiesNbt.setString("name", "textures");
+                propertiesNbt.setString("value", base64EncodedString);
+            });
+        // 1.20.4 and below handling
+        } else {
+            NBT.modify(skull, nbt -> {
+                ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
+                skullOwnerCompound.setUUID("Id", headUuid);
+                skullOwnerCompound.getOrCreateCompound("Properties")
+                        .getCompoundList("textures")
+                        .addCompound()
+                        .setString("Value", base64EncodedString);
+            });
+        }
+        return skull;
+    }
+
+    //gets the item with a custom uuid
+    public static ItemStack getSkullFromUUID(UUID uuid) {
+        final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        // 1.20.5+ handling
+        if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
+            NBT.modifyComponents(skull, nbt -> {
+                ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
+                profileNbt.setUUID("id", uuid);
+            });
+            // 1.20.4 and below handling
+        } else {
+            NBT.modify(skull, nbt -> {
+                ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
+                skullOwnerCompound.setUUID("Id", uuid);
+            });
         }
         return skull;
     }
@@ -381,5 +419,19 @@ public class FishUtils {
         }
 
         return false;
+    }
+
+    /**
+     * Gets the first Character from a given String
+     * @param string The String to use.
+     * @param defaultChar The default character to use if an exception is thrown.
+     * @return The first Character from the String
+     */
+    public static char getCharFromString(@NotNull String string, char defaultChar) {
+        try {
+            return string.toCharArray()[0];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return defaultChar;
+        }
     }
 }

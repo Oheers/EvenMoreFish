@@ -2,14 +2,14 @@ package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class NearbyPlayers implements Requirement {
 
     public final String configLocation;
-    public final FileConfiguration fileConfig;
+    public final YamlDocument fileConfig;
     public int nearbyRequirement = 0;
 
     /**
@@ -21,7 +21,7 @@ public class NearbyPlayers implements Requirement {
      * @param fileConfig The file configuration to fetch file data from, this is either the rarities or fish.yml file,
      *                   but it would be possible to use any file, as long as the configLocation is correct.
      */
-    public NearbyPlayers(@NotNull final String configLocation, @NotNull final FileConfiguration fileConfig) {
+    public NearbyPlayers(@NotNull final String configLocation, @NotNull final YamlDocument fileConfig) {
         this.configLocation = configLocation;
         this.fileConfig = fileConfig;
         fetchData();

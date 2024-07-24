@@ -4,11 +4,10 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
-import com.oheers.fish.config.Xmas2022Config;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.requirements.*;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,45 +19,40 @@ public class Names {
     public boolean regionCheck;
     // Gets all the fish names.
     Set<String> rarities, fishSet, fishList;
-    FileConfiguration fishConfiguration, rarityConfiguration;
+    YamlDocument fishConfiguration, rarityConfiguration;
 
     /*
      *  Goes through the fish branch of fish.yml, then for each rarity it realises on its journey,
      *  it goes down that branch looking for fish and their names. It then plops all this stuff into the
      *  main fish map. Badabing badaboom we've now populated our fish map.
      */
-    public void loadRarities(FileConfiguration fishConfiguration, FileConfiguration rarityConfiguration) {
+    public void loadRarities(YamlDocument fishConfiguration, YamlDocument rarityConfiguration) {
         fishList = new HashSet<>();
 
         // gets all the rarities - just their names, nothing else
-        rarities = fishConfiguration.getConfigurationSection("fish").getKeys(false);
-        rarities.add("Christmas 2022");
+        Section section = fishConfiguration.getSection("fish");
+        if (section == null) {
+            rarities = new HashSet<>();
+        } else {
+            rarities = section.getRoutesAsStrings(false);
+        }
 
         for (String rarity : rarities) {
 
-            boolean xmasRarity = rarity.equals("Christmas 2022");
-
-            if (xmasRarity) {
-                if (Xmas2022Config.getInstance().isAvailable()) {
-                    this.rarityConfiguration = Xmas2022Config.getInstance().getConfig();
-                    this.fishConfiguration = Xmas2022Config.getInstance().getConfig();
-                } else {
-                    continue;
-                }
-            } else {
-                this.fishConfiguration = fishConfiguration;
-                this.rarityConfiguration = rarityConfiguration;
-            }
+            this.fishConfiguration = fishConfiguration;
+            this.rarityConfiguration = rarityConfiguration;
 
             // gets all the fish in said rarity, again - just their names
-            fishSet = this.fishConfiguration.getConfigurationSection("fish." + rarity).getKeys(false);
+            Section raritySection = this.fishConfiguration.getSection("fish." + rarity);
+            if (raritySection == null) {
+                fishSet = new HashSet<>();
+            } else {
+                fishSet = this.fishConfiguration.getSection("fish." + rarity).getRoutesAsStrings(false);
+            }
             fishList.addAll(fishSet);
 
             // creates a rarity object and a fish queue
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityUseConfigCasing(rarity), rarityOverridenLore(rarity));
-            if (xmasRarity) {
-                EvenMoreFish.getInstance().setXmasRarity(r);
-            }
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
             r.setRequirements(getRequirements(null, rarity, RaritiesFile.getInstance().getConfig()));
@@ -70,7 +64,7 @@ public class Names {
 
                 // for each fish name, a fish object is made that contains the information gathered from that name
                 try {
-                    canvas = new Fish(r, fish, xmasRarity);
+                    canvas = new Fish(r, fish);
                 } catch (InvalidFishException ignored) {
                     // We're looping through the config, this isn't be an issue.
                 }
@@ -79,11 +73,6 @@ public class Names {
                 canvas.setRequirements(getRequirements(fish, rarity, FishFile.getInstance().getConfig()));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
-
-                if (xmasRarity) {
-                    canvas.setDay(getDay(fish));
-                    EvenMoreFish.getInstance().getXmasFish().put(canvas.getDay(), canvas);
-                }
 
                 if (compCheckExempt(fish, rarity)) {
                     r.setHasCompExemptFish(true);
@@ -101,11 +90,11 @@ public class Names {
         }
     }
 
-    public void loadBaits(FileConfiguration baitConfiguration) {
-        ConfigurationSection section = baitConfiguration.getConfigurationSection("baits.");
+    public void loadBaits(YamlDocument baitConfiguration) {
+        Section section = baitConfiguration.getSection("baits");
         if (section == null) return;
 
-        for (String s : section.getKeys(false)) {
+        for (String s : section.getRoutesAsStrings(false)) {
             Bait bait = new Bait(s);
 
             List<String> rarityList;
@@ -125,8 +114,8 @@ public class Names {
                 }
             }
 
-            if (baitConfiguration.getConfigurationSection("baits." + s + ".fish") != null) {
-                for (String rarityString : baitConfiguration.getConfigurationSection("baits." + s + ".fish").getKeys(false)) {
+            if (baitConfiguration.getSection("baits." + s + ".fish") != null) {
+                for (String rarityString : baitConfiguration.getSection("baits." + s + ".fish").getRoutesAsStrings(false)) {
                     Rarity rarity = null;
                     for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                         if (r.getValue().equalsIgnoreCase(rarityString)) {
@@ -188,51 +177,32 @@ public class Names {
         return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
     }
 
-    private List<Requirement> getRequirements(String name, String rarity, FileConfiguration config) {
-        ConfigurationSection requirementSection;
+    private List<Requirement> getRequirements(String name, String rarity, YamlDocument config) {
+        Section requirementSection;
         if (name != null) {
-            requirementSection = this.fishConfiguration.getConfigurationSection("fish." + rarity + "." + name + ".requirements");
+            requirementSection = this.fishConfiguration.getSection("fish." + rarity + "." + name + ".requirements");
         } else {
-            requirementSection = this.rarityConfiguration.getConfigurationSection("rarities." + rarity + ".requirements");
+            requirementSection = this.rarityConfiguration.getSection("rarities." + rarity + ".requirements");
         }
         List<Requirement> currentRequirements = new ArrayList<>();
-        boolean xmas2022 = false;
-        if (requirementSection == null) {
-            if (rarity.equals("Christmas 2022")) xmas2022 = true;
-        } else {
+        if (requirementSection != null) {
             String configLocator;
             if (name != null) configLocator = "fish." + rarity + "." + name;
             else configLocator = "rarities." + rarity;
-            for (String s : requirementSection.getKeys(false)) {
+            for (String s : requirementSection.getRoutesAsStrings(false)) {
                 switch (s.toLowerCase()) {
-                    case "biome":
-                        currentRequirements.add(new Biome(configLocator + ".requirements.biome", config));
-                        break;
-                    case "irl-time":
-                        currentRequirements.add(new IRLTime(configLocator + ".requirements.irl-time", config));
-                        break;
-                    case "ingame-time":
-                        currentRequirements.add(new InGameTime(configLocator + ".requirements.ingame-time", config));
-                        break;
-                    case "moon-phase":
-                        currentRequirements.add(new MoonPhase(configLocator + ".requirements.moon-phase", config));
-                        break;
-                    case "permission":
-                        currentRequirements.add(new Permission(configLocator + ".requirements.permission", config));
-                        break;
-                    case "region":
+                    case "biome" -> currentRequirements.add(new Biome(configLocator + ".requirements.biome", config));
+                    case "irl-time" -> currentRequirements.add(new IRLTime(configLocator + ".requirements.irl-time", config));
+                    case "ingame-time" -> currentRequirements.add(new InGameTime(configLocator + ".requirements.ingame-time", config));
+                    case "moon-phase" -> currentRequirements.add(new MoonPhase(configLocator + ".requirements.moon-phase", config));
+                    case "permission" -> currentRequirements.add(new Permission(configLocator + ".requirements.permission", config));
+                    case "region" -> {
                         currentRequirements.add(new Region(configLocator + ".requirements.region", config));
                         regionCheck = true;
-                        break;
-                    case "weather":
-                        currentRequirements.add(new Weather(configLocator + ".requirements.weather", config));
-                        break;
-                    case "world":
-                        currentRequirements.add(new World(configLocator + ".requirements.world", config));
-                        break;
-                    case "nearby-players":
-                        currentRequirements.add(new NearbyPlayers(configLocator + ".requirements.nearby-players", config));
-                        break;
+                    }
+                    case "weather" -> currentRequirements.add(new Weather(configLocator + ".requirements.weather", config));
+                    case "world" -> currentRequirements.add(new World(configLocator + ".requirements.world", config));
+                    case "nearby-players" -> currentRequirements.add(new NearbyPlayers(configLocator + ".requirements.nearby-players", config));
                 }
             }
         }
@@ -242,8 +212,6 @@ public class Names {
         } else if (this.rarityConfiguration.getBoolean("rarities." + rarity + ".disabled", false)) {
             currentRequirements.add(new Disabled("rarities." + rarity + ".disabled", config));
         }
-
-        if (xmas2022) currentRequirements.add(new Day("fish." + rarity + "." + name + ".day", Xmas2022Config.getInstance().getConfig()));
 
         return currentRequirements;
     }

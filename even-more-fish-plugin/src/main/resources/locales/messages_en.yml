@@ -1,5 +1,9 @@
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
+# These messages support the MiniMessage format. You are able to mix this with the existing legacy codes, however you MUST close the tags.
+# Here is the MiniMessage Pull Request for more info: https://github.com/Oheers/EvenMoreFish/pull/387
+# Here are the MiniMessage Docs: https://docs.advntr.dev/minimessage/format.html
+
 # Sent to players when they fish an EvenMoreFish fish
 fish-caught: "&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!"
 # By setting a fish's minimum-length to less than 0, you can create a lengthless fish. This is used when a player fishes a lengthless fish.
@@ -70,9 +74,6 @@ fisherman-lore:
   - "&fCaught by {player}"
 length-lore:
   - "&fMeasures {length}cm."
-
-# The format of commands in /emf help (this message doesn't support papi placeholders)
-help: "/{command} - {description}"
 
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
 leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
@@ -169,12 +170,15 @@ fish-sale: "&rYou've sold &a{amount} &ffish for &a{sell-price}&f."
 
 # Help messages
 # General help (/emf help) - permission node dependant commands will only show if they are formatted with the forward-slash.
+help-format: "[noPrefix]&b{command} &e- {description}"
+
 help-general:
   title: "[noPrefix]&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f"
   top: "[noPrefix]Shows an ongoing competition's leaderboard."
   help: "[noPrefix]Shows you this page."
   shop: "[noPrefix]Opens a shop to sell your fish."
   toggle: "[noPrefix]Toggles whether or not you receive custom fish."
+  gui: "[noPrefix]Opens the Main Menu GUI."
   admin: "[noPrefix]Admin command help page."
   sellall: "[noPrefix]Sell all the fish in your inventory."
   next: "[noPrefix]Show how much time is until the next competition."
@@ -291,3 +295,7 @@ admin:
   reload: "&rSuccessfully reloaded the plugin."
   # When checking the list of RewardTypes. The actual list is added to the end of this message.
   list-reward-types: "&rRegistered Reward Types: "
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

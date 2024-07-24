@@ -1,117 +1,90 @@
 package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.oheers.fish.api.FileUtil;
+import dev.dejvokep.boostedyaml.YamlDocument;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.settings.Settings;
+import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
+import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
+import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 public class ConfigBase {
 
     private final String fileName;
-    private final JavaPlugin plugin;
+    private final String resourceName;
+    private final Plugin plugin;
+    private final boolean configUpdater;
 
-    private FileConfiguration config = null;
+    private YamlDocument config = null;
     private File file = null;
 
-    public ConfigBase(String fileName, JavaPlugin plugin) {
+    public ConfigBase(@NotNull String fileName, @NotNull String resourceName, @NotNull Plugin plugin, boolean configUpdater) {
         this.fileName = fileName;
+        this.resourceName = resourceName;
         this.plugin = plugin;
+        this.configUpdater = configUpdater;
         reload();
     }
 
     public void reload() {
-        File configFile = loadFile(this.plugin.getDataFolder());
+        File configFile = FileUtil.loadFileOrResource(getPlugin().getDataFolder(), getFileName(), getResourceName(), getPlugin());
         if (configFile == null) {
             return;
         }
 
-        FileConfiguration config = new YamlConfiguration();
+        List<Settings> settingsList = new ArrayList<>(Arrays.asList(
+                GeneralSettings.DEFAULT,
+                DumperSettings.DEFAULT
+        ));
+
+        if (configUpdater) {
+            settingsList.add(LoaderSettings.builder().setAutoUpdate(true).build());
+            settingsList.add(UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+        }
+
+        final Settings[] settings = settingsList.toArray(new Settings[0]);
 
         try {
-            config.load(configFile);
-            this.config = config;
+            InputStream resource = EvenMoreFish.getInstance().getResource(getResourceName());
+            if (resource == null) {
+                this.config = YamlDocument.create(configFile, settings);
+            } else {
+                this.config = YamlDocument.create(configFile, resource, settings);
+            }
             this.file = configFile;
-        } catch (IOException | InvalidConfigurationException ex) {
+            if (configUpdater) {
+                this.config.update();
+            }
+        } catch (IOException ex) {
             plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
-    public File loadFile(File directory) {
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        File configFile = new File(directory, fileName);
-        if (!configFile.exists()) {
-            try {
-                configFile.createNewFile();
-            } catch (IOException ex) {
-                plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-            }
-
-            InputStream stream = plugin.getResource(fileName);
-            if (stream == null) {
-                plugin.getLogger().log(Level.SEVERE, "Could not retrieve " + fileName);
-                return null;
-            }
-            try {
-                Files.copy(stream, configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException ex) {
-                plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }
-        return configFile;
-    }
-
-    public FileConfiguration getConfig() {
+    public YamlDocument getConfig() {
         if (this.config == null) {
-            EvenMoreFish.getInstance().getLogger().warning(getFileName() + " has not loaded properly. Please check for earlier errors.");
-            return new YamlConfiguration();
+            throw new RuntimeException(getFileName() + " has not loaded properly. Please check for startup errors.");
         }
         return this.config;
     }
 
-    public File getFile() { return file; }
+    public File getFile() { return this.file; }
 
-    public JavaPlugin getPlugin() { return this.plugin; }
+    public Plugin getPlugin() { return this.plugin; }
 
     public String getFileName() { return this.fileName; }
 
-    public void updateConfig() {
-        File tempDirectory = new File(this.plugin.getDataFolder(), "temp");
-        File tempConfigFile = loadFile(tempDirectory);
-        if (tempConfigFile == null) {
-            return;
-        }
-
-        FileConfiguration tempConfig = new YamlConfiguration();
-
-        try {
-            tempConfig.load(tempConfigFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            return;
-        }
-
-        config.getKeys(true).forEach(key -> {
-            if (!config.isConfigurationSection(key)) {
-                tempConfig.set(key, config.get(key));
-            }
-            tempConfig.setComments(key, config.getComments(key));
-        });
-        try {
-            tempConfig.save(file);
-            tempConfigFile.delete();
-        } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        reload();
-    }
+    public String getResourceName() { return this.resourceName; }
 
 }

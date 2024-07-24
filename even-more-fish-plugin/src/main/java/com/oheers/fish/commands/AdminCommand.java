@@ -12,10 +12,7 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
-import com.oheers.fish.config.BaitFile;
-import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
@@ -30,10 +27,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 @CommandAlias("%main")
 @Subcommand("admin")
@@ -57,6 +58,8 @@ public class AdminCommand extends BaseCommand {
         if (fish.hasFishRewards()) {
             fish.getFishRewards().forEach(fishReward -> fishReward.rewardPlayer(target, target.getLocation()));
         }
+
+        fish.setFisherman(target.getUniqueId());
 
         final ItemStack fishItem = fish.give(-1);
         fishItem.setAmount(quantity);
@@ -89,9 +92,9 @@ public class AdminCommand extends BaseCommand {
         @CommandCompletion("@rarities")
         @Description("%desc_list_fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
-            BaseComponent baseComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
+            BaseComponent baseComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
             for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
-                BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour()+ "] "));
+                BaseComponent textComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour()+ "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to receive fish")));
                 textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName().replace(" ","_")));
                 baseComponent.addExtra(textComponent);
@@ -105,7 +108,7 @@ public class AdminCommand extends BaseCommand {
         public void onRarity(final CommandSender sender) {
             BaseComponent baseComponent = new TextComponent("");
             for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
-                BaseComponent textComponent = new TextComponent(FishUtils.translateHexColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
+                BaseComponent textComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
                 textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish.")));
                 textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
                 baseComponent.addExtra(textComponent);
@@ -267,13 +270,7 @@ public class AdminCommand extends BaseCommand {
     @Subcommand("reload")
     @Description("%desc_admin_reload")
     public void onReload(final CommandSender sender) {
-        FishFile.getInstance().reload();
-        RaritiesFile.getInstance().reload();
-        BaitFile.getInstance().reload();
-
-        EvenMoreFish.getInstance().reload();
-
-        new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
+        EvenMoreFish.getInstance().reload(sender);
     }
 
 
@@ -298,8 +295,10 @@ public class AdminCommand extends BaseCommand {
         for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
             fishCount += EvenMoreFish.getInstance().getFishCollection().get(r).size();
         }
-
+        
         String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +
+                Messages.getInstance().getSTDPrefix() + "Feature Branch: " + getFeatureBranchName() + "\n" +
+                Messages.getInstance().getSTDPrefix() + "Feature Build/Date: " + getFeatureBranchBuildOrDate() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
@@ -311,6 +310,40 @@ public class AdminCommand extends BaseCommand {
 
         Message msg = new Message(msgString);
         msg.broadcast(sender, false);
+    }
+
+    private String getFeatureBranchName() {
+        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
+
+            if (inputStream != null) {
+                Manifest manifest = new Manifest(inputStream);
+
+                // Access attributes from the manifest file
+                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_TITLE);
+            } else {
+                return "main";
+            }
+
+        } catch (IOException e) {
+            return "main";
+        }
+    }
+
+    private String getFeatureBranchBuildOrDate() {
+        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
+
+            if (inputStream != null) {
+                Manifest manifest = new Manifest(inputStream);
+
+                // Access attributes from the manifest file
+                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+            } else {
+                return "";
+            }
+
+        } catch (IOException e) {
+            return "";
+        }
     }
 
     private String getDatabaseVersion() {

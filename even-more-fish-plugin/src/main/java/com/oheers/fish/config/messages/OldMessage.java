@@ -117,7 +117,7 @@ public class OldMessage {
             msg = msg.replace(replacement.getKey(), replacement.getValue());
         }
 
-        return FishUtils.translateHexColorCodes(msg);
+        return FishUtils.translateColorCodes(msg);
 
     }
 }

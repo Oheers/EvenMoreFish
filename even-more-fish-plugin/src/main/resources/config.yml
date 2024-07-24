@@ -80,34 +80,8 @@ requires-fishing-permission: false
 # the starfish into a beacon.
 block-crafting: true
 
-# For customizing the /emf shop GUI
-gui:
-  # Allows full control over the layout of the shop GUI.
-  # i = item (fish)
-  # f = filler
-  # s = sell item
-  # a = sell all item
-  layout:
-    - "iiiiiiiii"
-    - "iiiiiiiii"
-    - "iiiiiiiii"
-    - "fffsfafff"
-  # Fills the empty slots of a normal /emf shop
-  filler: GRAY_STAINED_GLASS_PANE
-  # Fills the empty slots of /emf shop when there's an error (i.e. the player trying to sell nothing)
-  filler-error: RED_STAINED_GLASS_PANE
-  # The item for the player to click to sell their fish
-  sell-item: GOLD_INGOT
-  # The item for the player to click to automatically sell all their fish
-  sell-all-item: COD_BUCKET
-  # The item for the player to click to confirm selling their fish
-  sell-item-confirm: GOLD_BLOCK
-  # The item for the player to click to confirm selling all of their fish
-  sell-all-item-confirm: TROPICAL_FISH_BUCKET
-  # The item shown to the player when an error occurs (trying to sell nothing of value from the gui)
-  sell-item-error: REDSTONE_BLOCK
-  # The item shown to the player when an error occurs (trying to sell nothing of value from their inventory)
-  sell-all-item-error: SALMON_BUCKET
+# /emf shop configuration. If you wish to change the layout, please look at the guis.yml file.
+sell-gui:
   # Should the items be dropped(false) or sold(true) when a player exits an inventory?
   sell-over-drop: false
 
@@ -154,3 +128,6 @@ command:
   aliases:
     - "evenmorefish"
 
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+config-version: 1

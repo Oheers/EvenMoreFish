@@ -19,16 +19,20 @@
  */
 
 
-package com.oheers.fish.api.addons;
+package com.oheers.fish.api;
 
 
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +40,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FileUtil {
@@ -114,5 +119,30 @@ public class FileUtil {
         return null;
     }
 
+    public static File loadFileOrResource(@NotNull File directory, @NotNull String fileName, @NotNull String resourceName, @NotNull Plugin plugin) {
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        File configFile = new File(directory, fileName);
+        if (!configFile.exists()) {
+            try {
+                configFile.createNewFile();
+            } catch (IOException ex) {
+                plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            }
+
+            InputStream stream = plugin.getResource(resourceName);
+            if (stream == null) {
+                plugin.getLogger().severe("Could not retrieve " + resourceName);
+                return null;
+            }
+            try {
+                Files.copy(stream, configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ex) {
+                plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            }
+        }
+        return configFile;
+    }
 
 }
