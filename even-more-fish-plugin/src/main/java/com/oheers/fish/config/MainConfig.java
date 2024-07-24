@@ -282,4 +282,8 @@ public class MainConfig extends ConfigBase {
         return layout.toArray(new String[0]);
     }
 
+    public boolean giveStraightToInventory() {
+        return getConfig().getBoolean("give-straight-to-inventory");
+    }
+
 }

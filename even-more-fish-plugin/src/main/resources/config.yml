@@ -143,6 +143,9 @@ requirements:
     # How far should the plugin check in blocks? Large values may cause lag.
     range: 20
 
+# When the player catches a fish, should the fish be put straight into the inventory instead of the vanilla catching animation.
+give-straight-to-inventory: false
+
 # Customize the plugin's command. Requires a server restart to take effect.
 command:
   # The plugin's main command
