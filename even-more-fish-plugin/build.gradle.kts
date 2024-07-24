@@ -72,7 +72,7 @@ dependencies {
     compileOnly(libs.aurelium.skills) {
         exclude(libs.acf.get().group, libs.acf.get().name)
     }
-   
+
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
@@ -215,9 +215,14 @@ tasks {
 
     clean {
         doFirst {
+            val jitpack: Boolean = System.getenv("JITPACK").toBoolean()
+            if (jitpack)
+                return@doFirst
+
             for (file in File(project.projectDir, "src/main/resources/addons").listFiles()!!) {
                 file.delete()
             }
+
         }
 
     }
