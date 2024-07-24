@@ -514,19 +514,11 @@ public class Message {
      */
     public void setCompetitionType(@NotNull final CompetitionType type) {
         switch (type) {
-            case MOST_FISH:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage(false));
-                break;
-            case SPECIFIC_FISH:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false));
-                break;
-            case SPECIFIC_RARITY:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false));
-                break;
-            case LARGEST_TOTAL:
-                setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage(false));
-                break;
-            default: setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false));
+            case MOST_FISH -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage(false));
+            case SPECIFIC_FISH -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false));
+            case SPECIFIC_RARITY -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false));
+            case LARGEST_TOTAL -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage(false));
+            default -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false));
         }
     }
 
