@@ -2,8 +2,13 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
+import dev.dejvokep.boostedyaml.dvs.versioning.AutomaticVersioning;
+import dev.dejvokep.boostedyaml.route.Route;
+import org.apache.commons.lang3.LocaleUtils;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class MainConfig extends ConfigBase {
 
@@ -181,6 +186,11 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("addons.additional-addons", true);
     }
 
+    public Locale getDecimalLocale() {
+        final String locale = getConfig().getString(Route.fromString("decimal-locale"), "en-US");
+        return LocaleUtils.toLocale(locale);
+    }
+
 
     public int getNearbyPlayersRequirementRange() { return getConfig().getInt("requirements.nearby-players.range", 0); }
 
@@ -191,5 +201,4 @@ public class MainConfig extends ConfigBase {
     public List<String> getMainCommandAliases() {
         return getConfig().getStringList("command.aliases");
     }
-
 }

@@ -24,7 +24,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.*;
 
 public class SellHelper {
@@ -186,7 +191,8 @@ public class SellHelper {
                 }
             }
             case VAULT -> {
-                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false));
+                DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
+                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false), symbols);
                 yield format.format(totalWorth);
             }
             // Includes NONE type

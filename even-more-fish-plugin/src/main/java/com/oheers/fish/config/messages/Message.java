@@ -3,6 +3,7 @@ package com.oheers.fish.config.messages;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.config.MainConfig;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
