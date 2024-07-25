@@ -2,6 +2,7 @@ plugins {
     id("com.oheers.evenmorefish.java-conventions")
 }
 
+version = 1.7
 
 dependencies {
     compileOnly(libs.spigot.api)

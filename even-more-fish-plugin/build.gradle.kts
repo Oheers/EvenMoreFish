@@ -72,7 +72,7 @@ dependencies {
     compileOnly(libs.aurelium.skills) {
         exclude(libs.acf.get().group, libs.acf.get().name)
     }
-   
+
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
@@ -215,9 +215,14 @@ tasks {
 
     clean {
         doFirst {
+            val jitpack: Boolean = System.getenv("JITPACK").toBoolean()
+            if (jitpack)
+                return@doFirst
+
             for (file in File(project.projectDir, "src/main/resources/addons").listFiles()!!) {
                 file.delete()
             }
+
         }
 
     }
@@ -264,7 +269,8 @@ java {
 }
 
 fun getBuildNumberOrDate(): String? {
-    if (grgit.branch.current().name.equals("master", ignoreCase = true)) {
+    val currentBranch = grgit.branch.current().name
+    if (currentBranch.equals("head", ignoreCase = true) || currentBranch.equals("master", ignoreCase = true)) {
         val buildNumber: String? by project
         if (buildNumber == null)
             return "RELEASE"

@@ -6,6 +6,12 @@ enabled: true
 # Delete messages.yml before changing this
 locale: en
 
+# The decimal format of the plugin
+# Used to change default formatting for numbers, for example: en-US for 1,000.99 or de-DE for 1.000,99
+# Note: all locales supported by the jvm are avaialable.
+# Only relevant if you use vault
+decimal-locale: en-US
+
 # Should EMF fish only be given during a competition?
 fish-only-in-competition: false
 
@@ -130,4 +136,4 @@ command:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2
