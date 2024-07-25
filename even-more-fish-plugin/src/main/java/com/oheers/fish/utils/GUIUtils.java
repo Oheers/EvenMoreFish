@@ -269,6 +269,9 @@ public class GUIUtils {
                 return true;
             }
             new SellHelper(click.getWhoClicked().getInventory(), player).sellFish();
+            if (gui instanceof SellGUI sellGUI) {
+                sellGUI.doRescue();
+            }
             click.getGui().close();
             return true;
         });

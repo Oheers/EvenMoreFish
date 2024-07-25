@@ -76,13 +76,13 @@ public class EMFCommand extends BaseCommand {
             return;
         }
 
-        if (sender instanceof Player) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard((Player) sender);
+        if (sender instanceof Player player) {
+            EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard(player);
             return;
         }
 
-        if (sender instanceof ConsoleCommandSender) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendConsoleLeaderboard((ConsoleCommandSender) sender);
+        if (sender instanceof ConsoleCommandSender consoleCommandSender) {
+            EvenMoreFish.getInstance().getActiveCompetition().sendConsoleLeaderboard(consoleCommandSender);
         }
     }
 
@@ -96,11 +96,11 @@ public class EMFCommand extends BaseCommand {
         }
 
         if (onlinePlayer == null) {
-            if (!(sender instanceof Player)) {
+            if (!(sender instanceof Player player)) {
                 new Message("&cYou must specify a player when running from console.").broadcast(sender, false);
                 return;
             }
-            new SellGUI((Player) sender, SellGUI.SellState.NORMAL, null).open();
+            new SellGUI(player, SellGUI.SellState.NORMAL, null).open();
             return;
         }
 
