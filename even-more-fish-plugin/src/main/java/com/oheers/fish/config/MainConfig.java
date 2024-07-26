@@ -201,4 +201,25 @@ public class MainConfig extends ConfigBase {
     public List<String> getMainCommandAliases() {
         return getConfig().getStringList("command.aliases");
     }
+  
+    public String[] getSellGUILayout() {
+        List<String> layout = getConfig().getStringList("gui.layout");
+
+        // Return default layout if the config is empty
+        if (layout.isEmpty()) {
+            return new String[]{
+                    "iiiiiiiii",
+                    "iiiiiiiii",
+                    "iiiiiiiii",
+                    "fffsfafff"
+            };
+        }
+
+        // Convert the List<String> to a String[] and return
+        return layout.toArray(new String[0]);
+    }
+
+    public boolean giveStraightToInventory() {
+        return getConfig().getBoolean("give-straight-to-inventory");
+    }
 }

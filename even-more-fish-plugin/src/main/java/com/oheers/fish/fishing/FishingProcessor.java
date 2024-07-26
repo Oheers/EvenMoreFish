@@ -31,6 +31,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -73,16 +74,32 @@ public class FishingProcessor implements Listener {
                 return;
             }
 
-            // replaces the fishing item with a custom evenmorefish fish.
             Item nonCustom = (Item) event.getCaught();
-            if (nonCustom != null) {
-                if (fish.getType().isAir()) {
-                    nonCustom.remove();
-                } else {
-                    nonCustom.setItemStack(fish);
+            if (MainConfig.getInstance().giveStraightToInventory() && isSpaceForNewFish(event.getPlayer().getInventory())) {
+                FishUtils.giveItem(fish, event.getPlayer());
+                nonCustom.remove();
+            } else {
+                // replaces the fishing item with a custom evenmorefish fish.
+                if (nonCustom != null) {
+                    if (fish.getType().isAir()) {
+                        nonCustom.remove();
+                    } else {
+                        nonCustom.setItemStack(fish);
+                    }
                 }
             }
         }
+    }
+
+    private static boolean isSpaceForNewFish(Inventory inventory) {
+        boolean space = false;
+        for(ItemStack item : inventory.getContents()) {
+            if(item == null) {
+                space = true;
+                break;
+            }
+        }
+        return space;
     }
 
     public static boolean isCustomFishAllowed(UUID player) {
