@@ -2,13 +2,16 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.dvs.versioning.AutomaticVersioning;
 import dev.dejvokep.boostedyaml.route.Route;
 import org.apache.commons.lang3.LocaleUtils;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainConfig extends ConfigBase {
 
@@ -222,4 +225,15 @@ public class MainConfig extends ConfigBase {
     public boolean giveStraightToInventory() {
         return getConfig().getBoolean("give-straight-to-inventory");
     }
+
+    public Map<String, List<String>> getBiomeSets() {
+        Map<String, List<String>> biomeSetMap = new HashMap<>();
+        Section section = getConfig().getSection("biome-sets");
+        if (section == null) {
+            return Map.of();
+        }
+        section.getRoutesAsStrings(false).forEach(key -> biomeSetMap.put(key, section.getStringList(key)));
+        return biomeSetMap;
+    }
+
 }

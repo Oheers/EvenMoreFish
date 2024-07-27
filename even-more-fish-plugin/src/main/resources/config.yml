@@ -134,6 +134,18 @@ command:
   aliases:
     - "evenmorefish"
 
+# Customizable sets of biomes for fish.yml configuration
+biome-sets:
+  # oceans biome set. you can add more sets as you please.
+  oceans:
+    - COLD_OCEAN
+    - DEEP_COLD_OCEAN
+    - DEEP_LUKEWARM_OCEAN
+    - DEEP_OCEAN
+    - LUKEWARM_OCEAN
+    - OCEAN
+    - WARM_OCEAN
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 3
+config-version: 4
