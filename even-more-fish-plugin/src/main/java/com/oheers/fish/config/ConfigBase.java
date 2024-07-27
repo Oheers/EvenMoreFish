@@ -45,7 +45,7 @@ public class ConfigBase {
         }
 
         List<Settings> settingsList = new ArrayList<>(Arrays.asList(
-                GeneralSettings.DEFAULT,
+                GeneralSettings.builder().setUseDefaults(false).build(),
                 DumperSettings.DEFAULT
         ));
 
