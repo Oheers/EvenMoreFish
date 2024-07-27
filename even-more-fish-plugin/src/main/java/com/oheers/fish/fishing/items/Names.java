@@ -192,6 +192,7 @@ public class Names {
             for (String s : requirementSection.getRoutesAsStrings(false)) {
                 switch (s.toLowerCase()) {
                     case "biome" -> currentRequirements.add(new Biome(configLocator + ".requirements.biome", config));
+                    case "biome-set" -> currentRequirements.add(new BiomeSet(configLocator + ".requirements.biome-set", config));
                     case "irl-time" -> currentRequirements.add(new IRLTime(configLocator + ".requirements.irl-time", config));
                     case "ingame-time" -> currentRequirements.add(new InGameTime(configLocator + ".requirements.ingame-time", config));
                     case "moon-phase" -> currentRequirements.add(new MoonPhase(configLocator + ".requirements.moon-phase", config));

@@ -2,13 +2,14 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.dvs.versioning.AutomaticVersioning;
 import dev.dejvokep.boostedyaml.route.Route;
 import org.apache.commons.lang3.LocaleUtils;
+import org.bukkit.block.Biome;
 
 import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class MainConfig extends ConfigBase {
 
@@ -222,4 +223,25 @@ public class MainConfig extends ConfigBase {
     public boolean giveStraightToInventory() {
         return getConfig().getBoolean("give-straight-to-inventory");
     }
+
+    public Map<String, List<Biome>> getBiomeSets() {
+        Map<String, List<Biome>> biomeSetMap = new HashMap<>();
+        Section section = getConfig().getSection("biome-sets");
+        if (section == null) {
+            return Map.of();
+        }
+        section.getRoutesAsStrings(false).forEach(key -> {
+            List<Biome> biomes = new ArrayList<>();
+            section.getStringList(key).forEach(biomeString -> {
+                try {
+                    biomes.add(Biome.valueOf(biomeString));
+                } catch (IllegalArgumentException exception) {
+                    EvenMoreFish.getInstance().getLogger().severe(biomeString + " is not a valid biome, found when loading in biome set " + key + ".");
+                }
+            });
+            biomeSetMap.put(key, biomes);
+        });
+        return biomeSetMap;
+    }
+
 }
