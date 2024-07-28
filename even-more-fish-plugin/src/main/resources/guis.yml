@@ -82,6 +82,17 @@ main-menu:
     character: "h"
     click-action: "show-command-help"
 
+  open-baits:
+    item:
+      material: nautilus_shell
+      displayname: "&6»           View Baits"
+    lore:
+      - "&f&m                                 "
+      - "&7Shows all loaded baits"
+      - "&f&m                                 "
+    character: "b"
+    click-action: "open-baits-menu"
+
   exit:
     item:
       material: pufferfish
@@ -182,6 +193,46 @@ sell-menu-confirm:
     character: "a"
     click-action: "sell-inventory-confirm"
 
+baits-menu:
+  title: "&1View Loaded Baits"
+  layout:
+    - "  23232  "
+    - "23 4 4 32"
+    - "4 bbbbb 4"
+    - "23 4 4 32"
+    - "p 23x32 n"
+  filler: black_stained_glass_pane
+  # The character to use for the bait items.
+  bait-character: "b"
+
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
+    lore:
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "open-main-menu"
+
+  next-page:
+    item:
+      material: paper
+      displayname: "&eNext Page"
+    lore:
+      - "&eNavigate to the next page"
+    character: "n"
+    click-action: "next-page"
+
+  previous-page:
+    item:
+      material: paper
+      displayname: "&ePrevious Page"
+    lore:
+      - "&eNavigate to the previous page"
+    character: "p"
+    click-action: "previous-page"
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2
