@@ -5,6 +5,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.gui.BaitsGUI;
 import com.oheers.fish.gui.EMFGUI;
 import com.oheers.fish.gui.MainMenuGUI;
 import com.oheers.fish.gui.SellGUI;
@@ -137,46 +138,65 @@ public class GUIUtils {
         return stack;
     }
 
-    public static GuiElement getDynamicElement(@NotNull String configLocation, @NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static GuiElement getElement(@NotNull String configLocation, @NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
-        // Create Element
-        return new DynamicGuiElement(character, (viewer) -> {
-            ItemFactory factory = new ItemFactory(configLocation, section);
-            factory.enableAllChecks();
-            // Get ItemStack
-            ItemStack item;
-            if (replacementSupplier == null) {
-                item = factory.createItem(null, -1, null);
-            } else {
-                item = factory.createItem(null, -1, replacementSupplier.get());
-            }
-            // Get Click Action
-            GuiElement.Action action = getActionMap(gui).get(section.getString("click-action", "none"));
-            return new StaticGuiElement(character, item, action);
-        });
+        String clickAction = section.getString("click-action", "none");
+
+        ItemFactory factory = new ItemFactory(configLocation, section);
+        factory.enableAllChecks();
+        // Get ItemStack
+        ItemStack item;
+        if (replacementSupplier == null) {
+            item = factory.createItem(null, -1, null);
+        } else {
+            item = factory.createItem(null, -1, replacementSupplier.get());
+        }
+
+        // Create the element
+        return switch (clickAction) {
+            case "next-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.NEXT);
+            case "first-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.FIRST);
+            case "previous-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.PREVIOUS);
+            case "last-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.LAST);
+            default -> new DynamicGuiElement(character, (viewer) -> {
+                // Get Click Action
+                GuiElement.Action action = getActionMap(gui).get(clickAction);
+                return new StaticGuiElement(character, item, action);
+            });
+        };
     }
 
-    public static DynamicGuiElement getDynamicElement(@NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
+    public static GuiElement getElement(@NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
-        // Create Element
-        return new DynamicGuiElement(character, (viewer) -> {
-            ItemFactory factory = new ItemFactory(null, section);
-            factory.enableAllChecks();
-            // Get ItemStack
-            ItemStack item;
-            if (replacementSupplier == null) {
-                item = factory.createItem(null, -1, null);
-            } else {
-                item = factory.createItem(null, -1, replacementSupplier.get());
-            }
-            // Get Click Action
-            GuiElement.Action action = getActionMap(gui).get(section.getString("click-action", "none"));
-            return new StaticGuiElement(character, item, action);
-        });
+        String clickAction = section.getString("click-action", "none");
+
+        ItemFactory factory = new ItemFactory(null, section);
+        factory.enableAllChecks();
+        // Get ItemStack
+        ItemStack item;
+        if (replacementSupplier == null) {
+            item = factory.createItem(null, -1, null);
+        } else {
+            item = factory.createItem(null, -1, replacementSupplier.get());
+        }
+
+        // Create the element
+        return switch (clickAction) {
+            case "next-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.NEXT);
+            case "first-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.FIRST);
+            case "previous-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.PREVIOUS);
+            case "last-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.LAST);
+            default -> new DynamicGuiElement(character, (viewer) -> {
+                // Get Click Action
+                GuiElement.Action action = getActionMap(gui).get(clickAction);
+                return new StaticGuiElement(character, item, action);
+            });
+        };
     }
 
     public static List<GuiElement> getElements(@NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
@@ -186,7 +206,7 @@ public class GUIUtils {
                 .filter(Objects::nonNull)
                 // Exclude non-item config sections, if there are any
                 .filter(loopSection -> loopSection.getRoutesAsStrings(false).contains("item"))
-                .map(loopSection -> GUIUtils.getDynamicElement(loopSection, gui, replacementSupplier))
+                .map(loopSection -> GUIUtils.getElement(loopSection, gui, replacementSupplier))
                 .collect(Collectors.toList());
     }
 
@@ -280,6 +300,15 @@ public class GUIUtils {
             click.getGui().close();
             return true;
         });
+        newActionMap.put("open-baits-menu", click -> {
+            new BaitsGUI(click.getWhoClicked()).open();
+            return true;
+        });
+        // Add page actions so third party plugins cannot register their own.
+        newActionMap.put("first-page", click -> true);
+        newActionMap.put("previous-page", click -> true);
+        newActionMap.put("next-page", click -> true);
+        newActionMap.put("last-page", click -> true);
         if (externalActionMap != null) {
             newActionMap.putAll(externalActionMap);
         }
