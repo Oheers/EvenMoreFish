@@ -664,7 +664,9 @@ public class DatabaseV3 {
                 prep.setString(1, fish.getRarity().getValue());
                 prep.setString(2, fish.getName());
                 try (ResultSet resultSet = prep.executeQuery()) {
-                    return resultSet.getFloat("largest_fish");
+                    if (resultSet.next()) {
+                        return resultSet.getFloat("largest_fish");
+                    }
                 }
             } catch (SQLException exception) {
                 EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not check for " + fish.getName() + "'s largest fish size.", exception);
