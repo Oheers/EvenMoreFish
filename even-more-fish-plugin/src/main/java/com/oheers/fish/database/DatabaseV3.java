@@ -470,7 +470,7 @@ public class DatabaseV3 {
 
                 statement.executeUpdate();
             } catch (SQLException e) {
-                EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "There was a problems setting user's " + userID + "fish.", e);
+                EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "There was a problems setting user's %d fish.".formatted(userID), e);
             }
         });
     }
