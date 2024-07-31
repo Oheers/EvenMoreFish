@@ -223,7 +223,7 @@ public class DatabaseV3 {
      */
     public int getUserID(@NotNull final UUID uuid) {
         Integer userId = getStatement(f -> {
-            try (PreparedStatement statement = f.prepareStatement("SELECT id FROM ${table.prefix}users WHERE uuid = ?;")) {
+            try (PreparedStatement statement = f.prepareStatement(DatabaseUtil.parseSqlString("SELECT id FROM ${table.prefix}users WHERE uuid = ?;", f))) {
                 statement.setString(1, uuid.toString());
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
@@ -232,6 +232,7 @@ public class DatabaseV3 {
                     return null;
                 }
             } catch (SQLException e) {
+                EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
                 return null;
             }
         });
@@ -428,8 +429,10 @@ public class DatabaseV3 {
      */
     public void addUserFish(@NotNull final FishReport report, final int userID) {
         executeStatement(c -> {
-            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString("INSERT INTO ${table.prefix}fish_log (id, rarity, fish, quantity, " +
-                    "first_catch_time, largest_length) VALUES (?,?,?,?,?,?);", c))) {
+            try (PreparedStatement statement = c.prepareStatement(
+                    DatabaseUtil.parseSqlString(
+                    "INSERT INTO ${table.prefix}fish_log " +
+                    "(id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (?,?,?,?,?,?);", c))) {
                 statement.setInt(1, userID);
                 statement.setString(2, report.getRarity());
                 statement.setString(3, report.getName());
