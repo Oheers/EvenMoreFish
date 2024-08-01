@@ -35,7 +35,6 @@ import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
-import com.oheers.fish.gui.FillerStyle;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
@@ -49,15 +48,19 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -75,7 +78,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private Map<Integer, Set<String>> fish = new HashMap<>();
     private final Map<String, Bait> baits = new HashMap<>();
     private Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
-    private final List<UUID> disabledPlayers = new ArrayList<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
     private boolean checkingIntEvent;
@@ -107,7 +109,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private static EvenMoreFish instance;
     private static TaskScheduler scheduler;
-    private FillerStyle guiFillerStyle;
     private EMFAPI api;
 
     private AddonManager addonManager;
@@ -628,10 +629,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return fishCollection;
     }
 
-    public List<UUID> getDisabledPlayers() {
-        return disabledPlayers;
-    }
-
     public ItemStack getCustomNBTRod() {
         return customNBTRod;
     }
@@ -748,10 +745,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         this.HDBapi = api;
     }
 
-    public FillerStyle getGuiFillerStyle() {
-        return guiFillerStyle;
-    }
-
     public EMFAPI getApi() {
         return api;
     }
@@ -833,6 +826,30 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }).collect(Collectors.toList());
 
         return players;
+    }
+
+    public void performFishToggle(@NotNull Player player) {
+        NamespacedKey key = new NamespacedKey(this, "fish-toggle");
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        // 0 means it is disabled, 1 means it is enabled. Spigot 1.16.5 does not have PersistentDataType.BOOLEAN.
+        int toggleValue = pdc.getOrDefault(key, PersistentDataType.INTEGER, 1);
+
+        // If it is disabled, enable it
+        if (toggleValue == 0) {
+            pdc.set(key, PersistentDataType.INTEGER, 1);
+            new Message(ConfigMessage.TOGGLE_ON).broadcast(player, false);
+        // If it is enabled, disable it
+        } else {
+            pdc.set(key, PersistentDataType.INTEGER, 0);
+            new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, false);
+        }
+    }
+
+    public boolean isCustomFishing(@NotNull Player player) {
+        NamespacedKey key = new NamespacedKey(this, "fish-toggle");
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        // 0 means it is disabled, 1 means it is enabled. Spigot 1.16.5 does not have PersistentDataType.BOOLEAN.
+        return pdc.getOrDefault(key, PersistentDataType.INTEGER, 0) == 1;
     }
 
 }

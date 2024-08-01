@@ -36,14 +36,7 @@ public class EMFCommand extends BaseCommand {
     @Description("%desc_general_toggle")
     @CommandPermission(UserPerms.TOGGLE)
     public void onToggle(final Player player) {
-        if (EvenMoreFish.getInstance().getDisabledPlayers().contains(player.getUniqueId())) {
-            EvenMoreFish.getInstance().getDisabledPlayers().remove(player.getUniqueId());
-            new Message(ConfigMessage.TOGGLE_ON).broadcast(player, false);
-            return;
-        }
-
-        EvenMoreFish.getInstance().getDisabledPlayers().add(player.getUniqueId());
-        new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, false);
+        EvenMoreFish.getInstance().performFishToggle(player);
     }
 
     @Subcommand("gui")

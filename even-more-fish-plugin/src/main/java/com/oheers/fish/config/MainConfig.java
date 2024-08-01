@@ -3,12 +3,10 @@ package com.oheers.fish.config;
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
-import dev.dejvokep.boostedyaml.dvs.versioning.AutomaticVersioning;
 import dev.dejvokep.boostedyaml.route.Route;
 import org.apache.commons.lang3.LocaleUtils;
 import org.bukkit.block.Biome;
 
-import java.text.NumberFormat;
 import java.util.*;
 
 public class MainConfig extends ConfigBase {
