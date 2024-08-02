@@ -4,6 +4,9 @@
 
 # All files support hex codes, this is used in the format &#66aabb. A gradient maker can be found here: https://minecraft.menu/minecraft-rgb-generator - use the provided format ("Nickname (&rrggbb)") for compatibility with EvenMoreFish.
 
+# When creating custom fish for a different language, the config key should be in english characters and the name in your language should be the fish's display name.
+# If this is not followed, you cannot get fish via the admin command due to limitations of the command system.
+
 fish:
   # ▼ All rarity names should start on the same column as this down arrow.
   #   ▼ All fish names should start on the same column as this down arrow.
