@@ -60,7 +60,7 @@ dependencyResolutionManagement {
             library("json-simple", "com.googlecode.json-simple:json-simple:1.1.1")
 
             library("universalscheduler", "com.github.Anon8281:UniversalScheduler:0.1.6")
-            library("playerpoints", "org.black_ixx:playerpoints:3.2.6")
+            library("playerpoints", "org.black_ixx:playerpoints:3.2.7")
             library("cmi-api", "CMI-API:CMI-API:9.7.0.1")
             library("essx-api", "net.essentialsx:EssentialsX:2.20.1")
 
