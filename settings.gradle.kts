@@ -68,7 +68,7 @@ dependencyResolutionManagement {
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("inventorygui", "de.themoep:inventorygui:1.6.2-SNAPSHOT")
 
-            plugin("shadow", "io.github.goooler.shadow").version("8.1.7")
+            plugin("shadow", "com.gradleup.shadow").version("8.3.0")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
 
             version("adventure", "4.17.0")
