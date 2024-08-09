@@ -42,7 +42,7 @@ public class FishingProcessor implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public static void process(PlayerFishEvent event) {
-        if (!isCustomFishAllowed(event.getPlayer().getUniqueId())) {
+        if (!isCustomFishAllowed(event.getPlayer())) {
             return;
         }
 
@@ -102,8 +102,8 @@ public class FishingProcessor implements Listener {
         return space;
     }
 
-    public static boolean isCustomFishAllowed(UUID player) {
-        return MainConfig.getInstance().getEnabled() && (competitionOnlyCheck() || EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) && !EvenMoreFish.getInstance().getDisabledPlayers().contains(player);
+    public static boolean isCustomFishAllowed(Player player) {
+        return MainConfig.getInstance().getEnabled() && (competitionOnlyCheck() || EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) && EvenMoreFish.getInstance().isCustomFishing(player);
     }
 
     /**

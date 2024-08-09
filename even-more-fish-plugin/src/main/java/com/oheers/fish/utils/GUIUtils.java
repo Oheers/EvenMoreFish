@@ -3,7 +3,6 @@ package com.oheers.fish.utils;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
-import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.gui.BaitsGUI;
 import com.oheers.fish.gui.EMFGUI;
@@ -235,13 +234,8 @@ public class GUIUtils {
         });
         // Toggling custom fish should redraw the GUI and leave it at that
         newActionMap.put("fish-toggle", click -> {
-            HumanEntity humanEntity = click.getWhoClicked();
-            if (EvenMoreFish.getInstance().getDisabledPlayers().contains(humanEntity.getUniqueId())) {
-                EvenMoreFish.getInstance().getDisabledPlayers().remove(humanEntity.getUniqueId());
-                new Message(ConfigMessage.TOGGLE_ON).broadcast(humanEntity, false);
-            } else {
-                EvenMoreFish.getInstance().getDisabledPlayers().add(humanEntity.getUniqueId());
-                new Message(ConfigMessage.TOGGLE_OFF).broadcast(humanEntity, false);
+            if (click.getWhoClicked() instanceof Player player) {
+                EvenMoreFish.getInstance().performFishToggle(player);
             }
             click.getGui().draw();
             return true;
