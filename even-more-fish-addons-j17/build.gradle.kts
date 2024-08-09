@@ -6,6 +6,7 @@ plugins {
 repositories {
     maven("https://repo.auxilor.io/repository/maven-public/")
     maven("https://maven.citizensnpcs.co/repo")
+    maven("https://repo.oraxen.com/releases")
 }
 
 dependencies {
