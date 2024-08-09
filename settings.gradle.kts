@@ -48,7 +48,7 @@ dependencyResolutionManagement {
             library("commons-lang3", "org.apache.commons:commons-lang3:3.14.0")
             library("commons-codec", "commons-codec:commons-codec:1.17.0")
             library("caffeine", "com.github.ben-manes.caffeine:caffeine:3.1.8")
-            library("annotations", "org.jetbrains:annotations:24.0.1")
+            library("annotations", "org.jetbrains:annotations:24.1.0")
 
             version("flyway", "10.15.0")
             library("flyway-core", "org.flywaydb","flyway-core").versionRef("flyway")
