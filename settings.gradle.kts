@@ -65,7 +65,7 @@ dependencyResolutionManagement {
             library("essx-api", "net.essentialsx:EssentialsX:2.20.1")
 
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
-            library("inventorygui", "de.themoep:inventorygui:1.6.2-SNAPSHOT")
+            library("inventorygui", "de.themoep:inventorygui:1.6.3-SNAPSHOT")
 
             plugin("shadow", "com.gradleup.shadow").version("8.3.0")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
