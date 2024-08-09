@@ -11,7 +11,6 @@ dependencyResolutionManagement {
             library("spigot-api", "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("placeholder-api", "me.clip:placeholderapi:2.11.6")
-            library("authlib", "com.mojang:authlib:1.5.21")
             library("bstats", "org.bstats:bstats-bukkit:3.0.2")
 
             version("worldguard", "7.0.5")//We must use 7.0.5 until we upgrade to java 17

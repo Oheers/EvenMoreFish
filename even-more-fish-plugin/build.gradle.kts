@@ -44,7 +44,6 @@ dependencies {
     compileOnly(libs.spigot.api)
     compileOnly(libs.vault.api)
     compileOnly(libs.placeholder.api)
-    compileOnly(libs.authlib)
 
     compileOnly(libs.worldguard.core) {
         exclude("com.sk89q.worldedit", "worldedit-core")
