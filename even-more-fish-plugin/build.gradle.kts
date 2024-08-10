@@ -32,10 +32,10 @@ repositories {
     maven("https://repo.essentialsx.net/releases/")
     maven("https://repo.auxilor.io/repository/maven-public/")
     maven("https://repo.rosewooddev.io/repository/public/")
+    maven("https://repo.minebench.de/")
     maven("https://repo.firedev.uk/repository/maven-public/")
     maven("https://repo.essentialsx.net/releases/")
     maven("https://repo.aikar.co/content/groups/aikar/")
-    maven("https://repo.minebench.de/")
 }
 
 dependencies {
@@ -44,7 +44,6 @@ dependencies {
     compileOnly(libs.spigot.api)
     compileOnly(libs.vault.api)
     compileOnly(libs.placeholder.api)
-    compileOnly(libs.authlib)
 
     compileOnly(libs.worldguard.core) {
         exclude("com.sk89q.worldedit", "worldedit-core")

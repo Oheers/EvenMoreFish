@@ -11,7 +11,6 @@ dependencyResolutionManagement {
             library("spigot-api", "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("placeholder-api", "me.clip:placeholderapi:2.11.6")
-            library("authlib", "com.mojang:authlib:1.5.21")
             library("bstats", "org.bstats:bstats-bukkit:3.0.2")
 
             version("worldguard", "7.0.5")//We must use 7.0.5 until we upgrade to java 17
@@ -38,8 +37,8 @@ dependencyResolutionManagement {
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.13.1")
-            library("denizen-api", "com.denizenscript:denizen:1.3.0-SNAPSHOT")
-            library("oraxen", "com.github.oraxen:oraxen:1.171.0")
+            library("denizen-api", "com.denizenscript:denizen:1.3.1-SNAPSHOT")
+            library("oraxen", "io.th0rgal:oraxen:1.173.0") // We must use 1.173.0 as later versions require Java 21
 
             library("ecoitems-api", "com.willfp:EcoItems:5.6.1")
             library("ecoitems-libreforge", "com.willfp:libreforge:4.21.1")
@@ -49,9 +48,9 @@ dependencyResolutionManagement {
             library("commons-lang3", "org.apache.commons:commons-lang3:3.14.0")
             library("commons-codec", "commons-codec:commons-codec:1.17.0")
             library("caffeine", "com.github.ben-manes.caffeine:caffeine:3.1.8")
-            library("annotations", "org.jetbrains:annotations:24.0.1")
+            library("annotations", "org.jetbrains:annotations:24.1.0")
 
-            version("flyway", "10.15.0")
+            version("flyway", "10.17.0")
             library("flyway-core", "org.flywaydb","flyway-core").versionRef("flyway")
             library("flyway-mysql", "org.flywaydb","flyway-mysql").versionRef("flyway")
             bundle("flyway", listOf("flyway-core", "flyway-mysql"))
@@ -61,14 +60,14 @@ dependencyResolutionManagement {
             library("json-simple", "com.googlecode.json-simple:json-simple:1.1.1")
 
             library("universalscheduler", "com.github.Anon8281:UniversalScheduler:0.1.6")
-            library("playerpoints", "org.black_ixx:playerpoints:3.2.6")
+            library("playerpoints", "org.black_ixx:playerpoints:3.2.7")
             library("cmi-api", "CMI-API:CMI-API:9.7.0.1")
             library("essx-api", "net.essentialsx:EssentialsX:2.20.1")
 
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
-            library("inventorygui", "de.themoep:inventorygui:1.6.2-SNAPSHOT")
+            library("inventorygui", "de.themoep:inventorygui:1.6.3-SNAPSHOT")
 
-            plugin("shadow", "io.github.goooler.shadow").version("8.1.7")
+            plugin("shadow", "com.gradleup.shadow").version("8.3.0")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
 
             version("adventure", "4.17.0")
@@ -77,7 +76,7 @@ dependencyResolutionManagement {
             library("adventure-legacy", "net.kyori","adventure-text-serializer-legacy").versionRef("adventure")
             bundle("adventure", listOf("adventure-api", "adventure-minimessage", "adventure-legacy"))
 
-            library("boostedyaml", "dev.dejvokep:boosted-yaml:1.3.6")
+            library("boostedyaml", "dev.dejvokep:boosted-yaml:1.3.7")
 
             plugin("grgit", "org.ajoberstar.grgit").version("5.2.2")
 
