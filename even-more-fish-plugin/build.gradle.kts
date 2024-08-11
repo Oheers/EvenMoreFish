@@ -228,20 +228,21 @@ tasks {
     }
 
     shadowJar {
+        val buildNumberOrDate = getBuildNumberOrDate()
         manifest {
             val buildNumber: String? by project
 
             attributes["Specification-Title"] = "EvenMoreFish"
             attributes["Specification-Version"] = project.version
             attributes["Implementation-Title"] = grgit.branch.current().name
-            attributes["Implementation-Version"] = getBuildNumberOrDate()
+            attributes["Implementation-Version"] = buildNumberOrDate
         }
 
         minimize()
 
         exclude("META-INF/**")
 
-        archiveFileName.set("even-more-fish-${project.version}.jar")
+        archiveFileName.set("even-more-fish-${project.version}-${buildNumberOrDate}.jar")
         archiveClassifier.set("shadow")
 
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbtapi")
