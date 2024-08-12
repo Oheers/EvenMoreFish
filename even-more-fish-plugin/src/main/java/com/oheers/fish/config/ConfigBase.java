@@ -39,19 +39,17 @@ public class ConfigBase {
     }
 
     public void reload() {
-        File configFile = FileUtil.loadFileOrResource(getPlugin().getDataFolder(), getFileName(), getResourceName(), getPlugin());
-        if (configFile == null) {
-            return;
-        }
+        // BoostedYAML handles the file creation for us
+        File configFile = new File(getPlugin().getDataFolder(), getFileName());
 
         List<Settings> settingsList = new ArrayList<>(Arrays.asList(
-                GeneralSettings.builder().setUseDefaults(false).build(),
-                DumperSettings.DEFAULT
+                getGeneralSettings(),
+                getDumperSettings()
         ));
 
         if (configUpdater) {
-            settingsList.add(LoaderSettings.builder().setAutoUpdate(true).build());
-            settingsList.add(UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+            settingsList.add(getLoaderSettings());
+            settingsList.add(getUpdaterSettings());
         }
 
         final Settings[] settings = settingsList.toArray(new Settings[0]);
@@ -72,19 +70,35 @@ public class ConfigBase {
         }
     }
 
-    public YamlDocument getConfig() {
+    public final YamlDocument getConfig() {
         if (this.config == null) {
             throw new RuntimeException(getFileName() + " has not loaded properly. Please check for startup errors.");
         }
         return this.config;
     }
 
-    public File getFile() { return this.file; }
+    public final File getFile() { return this.file; }
 
-    public Plugin getPlugin() { return this.plugin; }
+    public final Plugin getPlugin() { return this.plugin; }
 
-    public String getFileName() { return this.fileName; }
+    public final String getFileName() { return this.fileName; }
 
-    public String getResourceName() { return this.resourceName; }
+    public final String getResourceName() { return this.resourceName; }
+
+    public GeneralSettings getGeneralSettings() {
+        return GeneralSettings.builder().setUseDefaults(false).build();
+    }
+
+    public DumperSettings getDumperSettings() {
+        return DumperSettings.DEFAULT;
+    }
+
+    public LoaderSettings getLoaderSettings() {
+        return LoaderSettings.builder().setAutoUpdate(true).build();
+    }
+
+    public UpdaterSettings getUpdaterSettings() {
+        return UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build();
+    }
 
 }

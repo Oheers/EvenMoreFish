@@ -828,28 +828,29 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return players;
     }
 
-    public void performFishToggle(@NotNull Player player) {
-        NamespacedKey key = new NamespacedKey(this, "fish-toggle");
-        PersistentDataContainer pdc = player.getPersistentDataContainer();
-        // 0 means it is disabled, 1 means it is enabled. Spigot 1.16.5 does not have PersistentDataType.BOOLEAN.
-        int toggleValue = pdc.getOrDefault(key, PersistentDataType.INTEGER, 1);
 
-        // If it is disabled, enable it
-        if (toggleValue == 0) {
-            pdc.set(key, PersistentDataType.INTEGER, 1);
-            new Message(ConfigMessage.TOGGLE_ON).broadcast(player, false);
+    // FISH TOGGLE METHODS
+    // We use Strings here because Spigot 1.16.5 does not have PersistentDataType.BOOLEAN.
+
+    public void performFishToggle(@NotNull Player player) {
+        NamespacedKey key = new NamespacedKey(this, "fish-enabled");
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
         // If it is enabled, disable it
-        } else {
-            pdc.set(key, PersistentDataType.INTEGER, 0);
+        if (isCustomFishing(player)) {
+            pdc.set(key, PersistentDataType.STRING, "false");
             new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, false);
+        // If it is disabled, enable it
+        } else {
+            pdc.set(key, PersistentDataType.STRING, "true");
+            new Message(ConfigMessage.TOGGLE_ON).broadcast(player, false);
         }
     }
 
     public boolean isCustomFishing(@NotNull Player player) {
-        NamespacedKey key = new NamespacedKey(this, "fish-toggle");
         PersistentDataContainer pdc = player.getPersistentDataContainer();
-        // 0 means it is disabled, 1 means it is enabled. Spigot 1.16.5 does not have PersistentDataType.BOOLEAN.
-        return pdc.getOrDefault(key, PersistentDataType.INTEGER, 0) == 1;
+        NamespacedKey key = new NamespacedKey(this, "fish-enabled");
+        String toggleValue = pdc.getOrDefault(key, PersistentDataType.STRING, "true");
+        return toggleValue.equals("true");
     }
 
 }
