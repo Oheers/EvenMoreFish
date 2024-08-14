@@ -42,8 +42,9 @@ public class BaitListener implements Listener {
             return;
         }
 
+        GameMode gameMode = event.getWhoClicked().getGameMode();
 
-        if (!event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL)) {
+        if (!gameMode.equals(GameMode.SURVIVAL) && !gameMode.equals(GameMode.ADVENTURE)) {
             new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), false);
             return;
         }
