@@ -37,6 +37,7 @@ public enum ConfigMessage {
     BAR_SECOND("&r{second}s", PrefixType.NONE, true, false, "bossbar.second"),
     BAR_MINUTE("&r{minute}m", PrefixType.NONE, true, false, "bossbar.minute"),
     BAR_HOUR("&r{hour}h", PrefixType.NONE, true, false, "bossbar.hour"),
+    BAR_REMAINING("left", PrefixType.NONE, true, false, "bossbar.remaining"),
 
     COMPETITION_ALREADY_RUNNING("&rThere's already a competition running.", PrefixType.ADMIN, false, true, "admin.competition-already-running"),
 
