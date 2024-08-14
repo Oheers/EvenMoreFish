@@ -90,62 +90,6 @@ not-enough-players: "&rEs sind nicht genug Spieler online, um den Angelwettbewer
 # {time_raw} is what you input in competitions.yml
 time-alert: "&rEs sind noch {time_formatted} verbleibend vom Angelwettbewerb für {type}."
 
-# The GUI title for /emf shop
-worth-gui-name: "&1&lFisch verkaufen"
-# The name found on the selling item in /emf shop
-sell-gui-name: "&6&lVERKAUFEN"
-# The name found on the item to sell all fish in inventory in /emf shop
-sell-all-name: "&6&lALLE VERKAUFEN"
-# The name found on the confirming item in /emf shop
-confirm-gui-name: "&6&lBESTÄTIGEN"
-# The name found on the confirming sell all item in /emf shop
-confirm-sell-all-gui-name: "&6&lBESTÄTIGEN"
-# The name found on the error item in /emf shop when the gui contains no items of value.
-error-gui-name: "&c&lVerkaufen nicht möglich"
-# The name found on the error item in /emf shop when the player's inventory contains no items of value.
-error-sell-all-gui-name: "&c&lVerkaufen nicht möglich"
-# The lore found on the selling/confirmation item in /emf shop
-sell-gui-lore:
-  - "&8Fisch Shop"
-  - ""
-  - "&7Wert » &e{sell-price}"
-  - ""
-  - "&7Klicke auf diese Schaltfläche,"
-  - "&7um die Fische aus dem Menü zu verkaufen."
-  - ""
-  - "&e» (Linksklick) Fisch verkaufen."
-  - "&7» (Rechtsklick) Abbrechen."
-
-sell-all-lore:
-  - "&8Inventar"
-  - ""
-  - "&7Wert » &e{sell-price}"
-  - ""
-  - "&7Klicke auf diese Schaltfläche,"
-  - "&7um den Fisch aus deinem Inventar zu verkaufen."
-  - ""
-  - "&e» (Linksklick) Fisch verkaufen."
-# The lore below the error item in /emf shop when the gui contains no items of value.
-error-gui-lore:
-  - "&8Fisch Shop"
-  - ""
-  - "&7Wert » &c$0"
-  - ""
-  - "&7Klicke auf diese Schaltfläche,"
-  - "&7um die Fische aus dem Menü zu verkaufen."
-  - ""
-  - "&c» (Linksklick) Fisch verkaufen."
-  - "&7» (Rechtsklick) Abbrechen."
-
-error-sell-all-gui-lore:
-  - "&8Inventar"
-  - ""
-  - "&7Wert » &c$0"
-  - ""
-  - "&7Klicke auf diese Schaltfläche,"
-  - "&7um den Fisch aus deinem Inventar zu verkaufen."
-  - ""
-  - "&c» (Linksklick) Fisch verkaufen."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&rDu hast &a{amount} &fFische für &a{sell-price} &fverkauft."
 

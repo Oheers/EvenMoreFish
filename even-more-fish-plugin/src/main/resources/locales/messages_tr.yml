@@ -82,66 +82,6 @@ not-enough-players: "&rEtkinliğin başlaması için yeterli sayıda oyuncu bulu
 # {time_raw} is what you input in competitions.yml
 time-alert: "&rEtkinliğin bitmesine {time_formatted} kaldı!"
 
-# The GUI title for /emf shop
-worth-gui-name: "&9&lBalık Satma"
-# The name found on the selling item in /emf shop
-sell-gui-name: "&6&lSAT"
-# The name found on the item to sell all fish in inventory in /emf shop
-sell-all-name: "&6&lHEPSINI SAT"
-# The name found on the confirming item in /emf shop
-confirm-gui-name: "&6&lONAYLA"
-# The name found on the confirming sell all item in /emf shop
-confirm-sell-all-gui-name: "&6&lCONAYLA"
-# The name found on the error item in /emf shop when the gui contains no items of value.
-error-gui-name: "&c&lSatılamaz"
-# The name found on the error item in /emf shop when the player's inventory contains no items of value.
-error-sell-all-gui-name: "&c&lSatılamaz"
-# The lore found on the selling/confirmation item in /emf shop
-sell-gui-lore:
-  - "&8Fish Shop"
-  - ""
-  - "&7Toplam değer » &a{sell-price}"
-  - ""
-  - "&7Daha fazla para kazanmak için"
-  - "&7tuttuğun balıkları buraya koy"
-  - "&7ve sat."
-  - ""
-  - "&e» Balık satmak için SOL TIKLA"
-  - "&e» Iptal etmek için SAG TIKLA"
-
-sell-all-lore:
-  - "&8Inventory"
-  - ""
-  - "&7Toplam değer » &a{sell-price}"
-  - ""
-  - "&7Envanterinde bulunan, tuttuğun"
-  - "&7tüm balıkları satmak için bunu"
-  - "&7kullan."
-  - ""
-  - "&e» Balık satmak için SOL TIKLA"
-# The lore below the error item in /emf shop when the gui contains no items of value.
-error-gui-lore:
-  - "&8Menüye Koyulanlar"
-  - ""
-  - "&7Toplam değer » &a0$"
-  - ""
-  - "&7Daha fazla para kazanmak için"
-  - "&7tuttuğun balıkları buraya koy"
-  - "&7ve sat."
-  - ""
-  - "&c» Balık satmak için SOL TIKLA."
-  - "&c» Iptal etmek için SAG TIKLA."
-
-error-sell-all-gui-lore:
-  - "&8Envanterindekiler"
-  - ""
-  - "&7Toplam değer » &a0$"
-  - ""
-  - "&7Envanterinde bulunan, tuttuğun"
-  - "&7tüm balıkları satmak için bunu"
-  - "&7kullan."
-  - ""
-  - "&c» Balık satmak için SOL TIKLA."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&a{amount} &fadet balığı &a{sell-price}&f fiyatına sattın."
 

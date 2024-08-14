@@ -97,64 +97,6 @@ not-enough-players: "&r必要なプレイヤー数が不足しているため、
 # {time_raw} is what you input in competitions.yml
 time-alert: "&r釣り大会（{type}）終了まで残りあと {time_formatted}"
 
-# The GUI title for /emf shop
-worth-gui-name: "&1&l魚を売る"
-# The name found on the selling item in /emf shop
-sell-gui-name: "&6&l売る"
-# The name found on the item to sell all fish in inventory in /emf shop
-sell-all-name: "&6&lすべて売る"
-# The name found on the confirming item in /emf shop
-confirm-gui-name: "&6&l確認"
-# The name found on the confirming sell all item in /emf shop
-confirm-sell-all-gui-name: "&6&l確認"
-# The name found on the error item in /emf shop when the gui contains no items of value.
-error-gui-name: "&c&l売ることができません"
-# The name found on the error item in /emf shop when the player's inventory contains no items of value.
-error-sell-all-gui-name: "&c&l売ることができません"
-# The lore found on the selling/confirmation item in /emf shop
-sell-gui-lore:
-  - "&8魚ショップ"
-  - ""
-  - "&7合計金額 » &e{sell-price}"
-  - ""
-  - "&7魚を売って"
-  - "&7お金を手に入れよう。"
-  - ""
-  - "&e» 左クリック で 魚を売る"
-  - "&7» 右クリック で キャンセル"
-
-sell-all-lore:
-  - "&8イベントリ"
-  - ""
-  - "&7合計金額 » &e{sell-price}"
-  - ""
-  - "&7ボタンをクリックして"
-  - "&7イベントリの魚を売って"
-  - "&7お金を手に入れよう。"
-  - ""
-  - "&e» 左クリック で 魚を売る"
-# The lore below the error item in /emf shop when the gui contains no items of value.
-error-gui-lore:
-  - "&8魚ショップ"
-  - ""
-  - "&7合計金額 » &c$0"
-  - ""
-  - "&7魚を売って"
-  - "&7お金を手に入れよう。"
-  - ""
-  - "&c» 左クリック で 魚を売る"
-  - "&7» 右クリック で キャンセル"
-
-error-sell-all-gui-lore:
-  - "&8イベントリ"
-  - ""
-  - "&7合計金額 » &c$0"
-  - ""
-  - "&7ボタンをクリックして"
-  - "&7イベントリの魚を売って"
-  - "&7お金を手に入れよう。"
-  - ""
-  - "&c» 左クリック で 魚を売る"
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&a{sell-price} &rで &a{amount} &r匹の魚を売りました。"
 

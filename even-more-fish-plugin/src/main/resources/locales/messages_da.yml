@@ -96,64 +96,6 @@ not-enough-players: "&rDer er ikke nok aktive spillere, til at starte den ellers
 # {time_raw} is what you input in competitions.yml
 time-alert: "&rDer er {time_formatted} tilbage af konkurrencen om {type}"
 
-# The GUI title for /emf shop
-worth-gui-name: "&1&lSælg Fisk"
-# The name found on the selling item in /emf shop
-sell-gui-name: "&6&lSÆLG"
-# The name found on the item to sell all fish in inventory in /emf shop
-sell-all-name: "&6&lSÆLG ALLE"
-# The name found on the confirming item in /emf shop
-confirm-gui-name: "&6&lGODKEND"
-# The name found on the confirming sell all item in /emf shop
-confirm-sell-all-gui-name: "&6&lGODKEND"
-# The name found on the error item in /emf shop when the gui contains no items of value.
-error-gui-name: "&c&lKan ikke sælge"
-# The name found on the error item in /emf shop when the player's inventory contains no items of value.
-error-sell-all-gui-name: "&c&lKan ikke sælge"
-# The lore found on the selling/confirmation item in /emf shop
-sell-gui-lore:
-  - "&8Fiske Butik"
-  - ""
-  - "&7Total Værdi » &e{sell-price}"
-  - ""
-  - "&7Sælg dine fiske her for at tjene"
-  - "&7 nogle ekstra penge."
-  - ""
-  - "&e» (Venstre-klik) sælg fisken."
-  - "&7» (Højre-klik) annuller."
-
-sell-all-lore:
-  - "&8Inventar"
-  - ""
-  - "&7Total Værdi » &e{sell-price}"
-  - ""
-  - "&7Klik på denne knap for at sælge"
-  - "&7fiskene i dit inventar for at"
-  - "&7tjene nogle ekstra penge."
-  - ""
-  - "&e» (Venstre-klik) sælg fisken."
-# The lore below the error item in /emf shop when the gui contains no items of value.
-error-gui-lore:
-  - "&8Fiske Butik"
-  - ""
-  - "&7Total Værdi » &c$0"
-  - ""
-  - "&7Sælg dine fisk her for at tjene"
-  - "&7nogle ekstra penge."
-  - ""
-  - "&e» (Venstre-klik) sælg fisken."
-  - "&7» (Højre-klik) annuller."
-
-error-sell-all-gui-lore:
-  - "&8Inventar"
-  - ""
-  - "&7Total Værdi » &c$0"
-  - ""
-  - "&7Klik på denne knap for at sælge"
-  - "&7fiskene i dit inventar for at"
-  - "&7tjene nogle ekstra penge."
-  - ""
-  - "&e» (Venstre-klik) sælg fisken."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&rDu har solgt &a{amount} &ffisk for &a{sell-price}&f."
 
