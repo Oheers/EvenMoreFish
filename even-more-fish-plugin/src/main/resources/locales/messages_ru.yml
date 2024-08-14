@@ -33,9 +33,9 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
-  hour: "ч"
-  minute: "м"
-  second: "с"
+  hour: "&r{hour}ч"
+  minute: "&r{minute}м"
+  second: "&r{second}с"
   # Для перевода "left" в конце, например, "5с осталось" -> "5с до конца"
   remaining: "осталось"
 
@@ -198,4 +198,4 @@ toggle-on: "Теперь вы будете ловить кастомную ры�
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

@@ -36,9 +36,9 @@ competition-types:
 # Segments affiché sur la bossbar quand des compétitions commencent
 bossbar:
   # Les abréviations utilisés pour les différentes unités de temps
-  hour: "h"
-  minute: "m"
-  second: "s"
+  hour: "&r{hour}h"
+  minute: "&r{minute}m"
+  second: "&r{second}s"
   # Pour traduire le "left" à la fin p.ex. "5s left" -> "5s restantes"
   remaining: "restantes"
 
@@ -251,4 +251,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

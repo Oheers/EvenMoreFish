@@ -37,9 +37,9 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
-  hour: "時間"
-  minute: "分"
-  second: "秒"
+  hour: "&r{hour}時間"
+  minute: "&r{minute}分"
+  second: "&r{second}秒"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "で終了"
 
@@ -258,4 +258,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

@@ -36,9 +36,9 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
-  hour: "h"
-  minute: "m"
-  second: "s"
+  hour: "&r{hour}h"
+  minute: "&r{minute}m"
+  second: "&r{second}s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "zbývá"
 
@@ -249,4 +249,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

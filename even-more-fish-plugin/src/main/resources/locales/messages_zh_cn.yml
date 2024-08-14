@@ -36,9 +36,9 @@ competition-types:
 # bossbar上面显示的文字
 bossbar:
   # 用于不同时间单位的缩写
-  hour: "时"
-  minute: "分"
-  second: "秒"
+  hour: "&r{hour}时"
+  minute: "&r{minute}分"
+  second: "&r{second}秒"
   # 用于翻译结尾的 "剩余"，例如 "5s 剩余“
   remaining: "剩余"
 
@@ -270,4 +270,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

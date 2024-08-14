@@ -34,9 +34,9 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
-  hour: "시간"
-  minute: "분"
-  second: "초"
+  hour: "&r{hour}시간"
+  minute: "&r{minute}분"
+  second: "&r{second}분"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "남음"
 
@@ -188,4 +188,4 @@ bait-use: "{bait_theme}&l{bait} &r미끼 중 하나를 사용했습니다."
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

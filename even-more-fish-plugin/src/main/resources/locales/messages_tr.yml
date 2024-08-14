@@ -35,9 +35,9 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
-  hour: "st"
-  minute: "dk"
-  second: "sn"
+  hour: "&r{hour}st"
+  minute: "&r{minute}dk"
+  second: "&r{second}sn"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "kaldı"
 
@@ -182,4 +182,4 @@ emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2
