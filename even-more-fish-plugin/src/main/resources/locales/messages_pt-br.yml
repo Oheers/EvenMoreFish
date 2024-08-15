@@ -15,9 +15,9 @@ bossbar:
   # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
   prefix: "&a&lCompetição de pesca: "
   # The abbreviations used for different units of time
-  hour: "h"
-  minute: "m"
-  second: "s"
+  hour: "&r{hour}h"
+  minute: "&r{minute}m"
+  second: "&r{second}s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "restantes"
 
@@ -51,24 +51,6 @@ no-record: "&rVocê não pescou nada."
 # Sent to all online players when not enough players are on to start a competition
 not-enough-players: "&rNão há jogadores o suficiente conectados para começar a competição."
 
-# The GUI title for /emf shop
-worth-gui-name: "&1&lPeixaria"
-# The name found on the selling item in /emf shop
-sell-gui-name: "&6&lVENDER"
-# The name found on the confirming item in /emf shop
-confirm-gui-name: "&6&lCONFIRMAR"
-# The name found on the error item in /emf shop when the gui contains no items of value.
-error-gui-name: "&c&lNão é possível vender"
-# The lore found on the selling/confirmation item in /emf shop
-sell-gui-lore:
-  - "&e&lValor: &e{sell-price}"
-  - "&7Clique esquerdo para vender."
-  - "&7Clique direito para cancelar."
-# The lore below the error item in /emf shop when the gui contains no items of value.
-error-gui-lore:
-  - "&c&lValor: &c$0"
-  - "&cAdicione peixes pescados por"
-  - "&cvocê para conseguir vender."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&fFoi vendido &a{amount} &fpeixes por &a{sell-price}&f."
 
@@ -87,4 +69,4 @@ emf-competition-fish-format: "&l{fish} {rarity} de {length}cm"
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

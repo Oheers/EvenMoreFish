@@ -3,6 +3,8 @@ package com.oheers.fish.config.messages;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 
 public class Messages extends ConfigBase {
 
@@ -20,4 +22,29 @@ public class Messages extends ConfigBase {
     public String getSTDPrefix() {
         return getConfig().getString("prefix-regular") + getConfig().getString("prefix") + "&r";
     }
+
+    @Override
+    public UpdaterSettings getUpdaterSettings() {
+        return UpdaterSettings.builder()
+                .setVersioning(new BasicVersioning("config-version"))
+                // Bossbar config relocations - config version 2
+                .addCustomLogic("2", yamlDocument -> {
+                    String hourColor = yamlDocument.getString("bossbar.hour-color");
+                    String hour = yamlDocument.getString("bossbar.hour");
+                    yamlDocument.set("bossbar.hour", hourColor + "{hour}" + hour);
+                    yamlDocument.remove("bossbar.hour-color");
+
+                    String minuteColor = yamlDocument.getString("bossbar.minute-color");
+                    String minute = yamlDocument.getString("bossbar.minute");
+                    yamlDocument.set("bossbar.minute", minuteColor + "{minute}" + minute);
+                    yamlDocument.remove("bossbar.minute-color");
+
+                    String secondColor = yamlDocument.getString("bossbar.second-color");
+                    String second = yamlDocument.getString("bossbar.second");
+                    yamlDocument.set("bossbar.second", secondColor + "{second}" + second);
+                    yamlDocument.remove("bossbar.second-color");
+                })
+                .build();
+    }
+
 }

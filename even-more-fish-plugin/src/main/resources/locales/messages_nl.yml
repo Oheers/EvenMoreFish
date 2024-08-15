@@ -34,9 +34,9 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
-  hour: "u"
-  minute: "m"
-  second: "s"
+  hour: "&r{hour}u"
+  minute: "&r{minute}m"
+  second: "&r{second}s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "over"
 
@@ -94,59 +94,7 @@ not-enough-players: "&rEr zijn niet genoeg spelers online om de geplande visweds
 # {time_raw} is wat je invoert in competitions.yml
 time-alert: "&rEr is nog {time_formatted} over voor de wedstrijd {type}"
 
-
-worth-gui-name: "&1&lVis Verkopen"
-sell-gui-name: "&6&lVERKOPEN"
-sell-all-name: "&6&lALLES VERKOPEN"
-confirm-gui-name: "&6&lBEVESTIGEN"
-confirm-sell-all-gui-name: "&6&lBEVESTIGEN"
-error-gui-name: "&c&lKan niet verkopen"
-error-sell-all-gui-name: "&c&lKan niet verkopen"
 sell-price-format: "#,##0.0"
-
-sell-gui-lore:
-  - "&8Viswinkel"
-  - ""
-  - "&7Totale Waarde » &e{sell-price}"
-  - ""
-  - "&7Verkoop hier je vis om"
-  - "&7wat extra geld te verdienen."
-  - ""
-  - "&e» (Linker klik) verkoop de vis."
-  - "&7» (Rechter klik) annuleren."
-
-sell-all-lore:
-  - "&8Inventaris"
-  - ""
-  - "&7Totale Waarde » &e{sell-price}"
-  - ""
-  - "&7Klik op deze knop om"
-  - "&7de vis in je inventaris te verkopen"
-  - "&7om wat extra geld te verdienen."
-  - ""
-  - "&e» (Linker klik) verkoop de vis."
-
-error-gui-lore:
-  - "&8Viswinkel"
-  - ""
-  - "&7Totale Waarde » &c{sell-price}"
-  - ""
-  - "&7Verkoop hier je vis om"
-  - "&7wat extra geld te verdienen."
-  - ""
-  - "&c» (Linker klik) verkoop de vis."
-  - "&7» (Rechter klik) annuleren."
-
-error-sell-all-gui-lore:
-  - "&8Inventaris"
-  - ""
-  - "&7Totale Waarde » &c{sell-price}"
-  - ""
-  - "&7Klik op deze knop om"
-  - "&7de vis in je inventaris te verkopen"
-  - "&7om wat extra geld te verdienen."
-  - ""
-  - "&c» (Linker klik) verkoop de vis."
 
 fish-sale: "&rJe hebt &a{amount} &fvis verkocht voor &a{sell-price}&f."
 
@@ -255,4 +203,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

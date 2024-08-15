@@ -36,9 +36,9 @@ competition-types:
 # bossbar上面显示的文字
 bossbar:
   # 用于不同时间单位的缩写
-  hour: "时"
-  minute: "分"
-  second: "秒"
+  hour: "&r{hour}时"
+  minute: "&r{minute}分"
+  second: "&r{second}秒"
   # 用于翻译结尾的 "剩余"，例如 "5s 剩余“
   remaining: "剩余"
 
@@ -93,68 +93,6 @@ not-enough-players: "&r在线玩家人数不足，无法开始预定的钓鱼比
 # {time_raw} 是你在 competitions.yml 中的内容
 time-alert: "&r这场比赛还有 {time_formatted} 结束"
 
-# /emf 商店的图形用户界面标题
-worth-gui-name: "&1&l钓鱼商店"
-# 在 /emf 商店中找到的销售物品名称
-sell-gui-name: "&6&l出售"
-# 在 /emf 商店中出售库存中所有鱼类的物品名称
-sell-all-name: "&6&l出售全部"
-# 在 /emf 商店的确认项目上找到的名称
-confirm-gui-name: "&6&l确认"
-# 当用户界面不包含任何有价值的项目时，在 /emf 商店中找到的错误项目名称。
-confirm-sell-all-gui-name: "&6&l确认"
-# 当用户界面不包含任何有价值的项目时，在 /emf 商店中找到的错误项目名称。
-error-gui-name: "&c&l无法出售"
-# 当玩家的库存中没有任何有价值的物品时，在 /emf 商店中发现的错误物品名称。
-error-sell-all-gui-name: "&c&l无法出售"
-# 售价：
-# 0 - 如果提供，则打印一位数字，否则为 0
-# # - 如果提供了数字，则打印一个数字，否则不打印任何数字
-# . - 指示小数分隔符的位置
-# , - 指示分组分隔符的位置
-sell-price-format: "#,##0.0"
-
-# 在 /emf 商店的销售/确认物品上找到的格式
-sell-gui-lore:
-  - "&8钓鱼商店"
-  - ""
-  - "&7总计价格» &e{sell-price}"
-  - ""
-  - "&7在这里出售你的鱼"
-  - ""
-  - "&e» (左键) 出售鱼."
-  - "&7» (右键) 取消出售."
-
-sell-all-lore:
-  - "&8库存"
-  - ""
-  - "&7总价值 &e{sell-price}"
-  - ""
-  - "&7点击此按钮出售"
-  - "&7您库存中的鱼"
-  - "&7来赚些外快罢。"
-  - ""
-  - "（左键单击）卖掉鱼。"
-# 在 /emf 商店中，当用户界面不包含任何有价值的项目时，错误项目将用下面的格式。
-error-gui-lore:
-  - "&8钓鱼商店"
-  - ""
-  - "&7总计价格» &e{sell-price}"
-  - ""
-  - "&7在这里出售你的鱼"
-  - ""
-  - "&e» (左键) 出售鱼."
-  - "&7» (右键) 取消出售."
-
-error-sell-all-gui-lore:
-  - "&8物品栏"
-  - ""
-  - "&7总计价格» &e{sell-price}"
-  - ""
-  - "&7点击这个按钮来出售"
-  - "&7物品栏中所有的鱼"
-  - ""
-  - "&e» (左键) 出售鱼."
 # 当玩家在/emf shop中卖掉他们的鱼时，向他们发送的信息。
 fish-sale: "&f你出售了 &a{amount} &f条鱼，赚取了 &e{sell-price} &f块钱！"
 
@@ -270,4 +208,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

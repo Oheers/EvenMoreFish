@@ -36,12 +36,9 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
-  hour-color: "&r"
-  hour: h
-  minute-color: "&r"
-  minute: m
-  second-color: "&r"
-  second: s
+  hour: "&r{hour}h"
+  minute: "&r{minute}m"
+  second: "&r{second}s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: restantes
 
@@ -102,20 +99,6 @@ not-enough-players: "&rNo hay suficientes jugadores conectados para comenzar la 
 # {time_raw} is what you input in competitions.yml
 time-alert: "&rSolo quedan {time_formatted} para que termine la competición de {type}"
 
-# The GUI title for /emf shop
-worth-gui-name: "&1&lPescadería"
-# The name found on the selling item in /emf shop
-sell-gui-name: "&6&lVENDER"
-# The name found on the item to sell all fish in inventory in /emf shop
-sell-all-name: "&6&lVENDER TODO"
-# The name found on the confirming item in /emf shop
-confirm-gui-name: "&6&lCONFIRMAR"
-# The name found on the confirming sell all item in /emf shop
-confirm-sell-all-gui-name: "&6&lCONFIRMAR"
-# The name found on the error item in /emf shop when the gui contains no items of value.
-error-gui-name: "&c&lNo se puede vender"
-# The name found on the error item in /emf shop when the player's inventory contains no items of value.
-error-sell-all-gui-name: "&c&lNo se puede vender"
 # The sell price:
 # 0 – prints a digit if provided, 0 otherwise
 # # – prints a digit if provided, nothing otherwise
@@ -123,50 +106,6 @@ error-sell-all-gui-name: "&c&lNo se puede vender"
 # , – indicate where to put the grouping separator
 sell-price-format: $#,##0.0
 
-# The lore found on the selling/confirmation item in /emf shop
-sell-gui-lore:
-  - "&8Pescadería"
-  - ""
-  - "&7Valor total » &e{sell-price}"
-  - ""
-  - "&7Vende tu pescado aquí para"
-  - "&7ganar dinero extra."
-  - ""
-  - "&e» (Click izquierdo) vender el pescado."
-  - "&7» (Click derecho) cancelar."
-
-sell-all-lore:
-  - "&8Inventario"
-  - ""
-  - "&7Valor total » &e{sell-price}"
-  - ""
-  - "&7Presiona este boton para vender"
-  - "&7el pescado de tu inventario para"
-  - "&7ganar dinero extra."
-  - ""
-  - "&e» (Click izquierdo) vender el pescado."
-# The lore below the error item in /emf shop when the gui contains no items of value.
-error-gui-lore:
-  - "&8Pescadería"
-  - ""
-  - "&7Valor total » &c$0"
-  - ""
-  - "&7Vende tu pescado aquí para"
-  - "&7ganar dinero extra."
-  - ""
-  - "&c» (Click izquierdo) vender el pescado."
-  - "&7» (Click derecho) cancelar."
-
-error-sell-all-gui-lore:
-  - "&8Inventario"
-  - ""
-  - "&7Valor total » &c$0"
-  - ""
-  - "&7Presiona este boton para vender"
-  - "&7el pescado de tu inventario para"
-  - "&7ganar dinero extra."
-  - ""
-  - "&c» (Click izquierdo) vender el pescado."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&fHas vendido &a{amount} &fpescados por &a{sell-price}&f."
 
@@ -306,4 +245,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

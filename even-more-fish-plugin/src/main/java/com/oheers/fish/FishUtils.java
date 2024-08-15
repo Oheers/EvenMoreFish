@@ -319,16 +319,22 @@ public class FishUtils {
         long seconds = timeLeft % 60;
 
         if (hours > 0) {
-            returning += new Message(ConfigMessage.BAR_HOUR_COLOR).getRawMessage(false) + hours + new Message(ConfigMessage.BAR_HOUR).getRawMessage(false) + " ";
+            Message message = new Message(ConfigMessage.BAR_HOUR);
+            message.setVariable("{hour}", String.valueOf(hours));
+            returning += message.getRawMessage(true) + " ";
         }
 
         if (minutes > 0) {
-            returning += new Message(ConfigMessage.BAR_MINUTE_COLOR).getRawMessage(false) + minutes + new Message(ConfigMessage.BAR_MINUTE).getRawMessage(false) + " ";
+            Message message = new Message(ConfigMessage.BAR_MINUTE);
+            message.setVariable("{minute}", String.valueOf(minutes));
+            returning += message.getRawMessage(true) + " ";
         }
 
         // Shows remaining seconds if seconds > 0 or hours and minutes are 0, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
         if (seconds > 0 | (minutes == 0 & hours == 0)) {
-            returning += new Message(ConfigMessage.BAR_SECOND_COLOR).getRawMessage(false) + seconds + new Message(ConfigMessage.BAR_SECOND).getRawMessage(false) + " ";
+            Message message = new Message(ConfigMessage.BAR_SECOND);
+            message.setVariable("{second}", String.valueOf(seconds));
+            returning += message.getRawMessage(true) + " ";
         }
 
         return returning;

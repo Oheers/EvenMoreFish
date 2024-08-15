@@ -1,6 +1,6 @@
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
-# These messages support the MiniMessage format. You are able to mix this with the existing legacy codes, however you MUST close the tags.
+# These messages partially support the MiniMessage format (Things like hoverable text will not work). You are able to mix this with the existing legacy codes, however you MUST close the tags.
 # Here is the MiniMessage Pull Request for more info: https://github.com/Oheers/EvenMoreFish/pull/387
 # Here are the MiniMessage Docs: https://docs.advntr.dev/minimessage/format.html
 
@@ -40,12 +40,9 @@ competition-types:
 # Segments shown in the bossbar when competitions run
 bossbar:
   # The abbreviations used for different units of time
-  hour-color: "&r"
-  hour: "h"
-  minute-color: "&r"
-  minute: "m"
-  second-color: "&r"
-  second: "s"
+  hour: "&r{hour}h"
+  minute: "&r{minute}m"
+  second: "&r{second}s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "left"
 
@@ -100,20 +97,6 @@ not-enough-players: "&rThere's not enough players online to start the scheduled 
 # {time_raw} is what you input in competitions.yml
 time-alert: "&rThere is {time_formatted} left on the competition for {type}"
 
-# The GUI title for /emf shop
-worth-gui-name: "&1&lSell Fish"
-# The name found on the selling item in /emf shop
-sell-gui-name: "&6&lSELL"
-# The name found on the item to sell all fish in inventory in /emf shop
-sell-all-name: "&6&lSELL ALL"
-# The name found on the confirming item in /emf shop
-confirm-gui-name: "&6&lCONFIRM"
-# The name found on the confirming sell all item in /emf shop
-confirm-sell-all-gui-name: "&6&lCONFIRM"
-# The name found on the error item in /emf shop when the gui contains no items of value.
-error-gui-name: "&c&lCan't Sell"
-# The name found on the error item in /emf shop when the player's inventory contains no items of value.
-error-sell-all-gui-name: "&c&lCan't Sell"
 # The sell price:
 # 0 – prints a digit if provided, 0 otherwise
 # # – prints a digit if provided, nothing otherwise
@@ -121,50 +104,6 @@ error-sell-all-gui-name: "&c&lCan't Sell"
 # , – indicate where to put the grouping separator
 sell-price-format: "$#,##0.0"
 
-# The lore found on the selling/confirmation item in /emf shop
-sell-gui-lore:
-  - "&8Fish Shop"
-  - ""
-  - "&7Total Value » &e{sell-price}"
-  - ""
-  - "&7Sell your fish here to make"
-  - "&7some extra money."
-  - ""
-  - "&e» (Left-click) sell the fish."
-  - "&7» (Right-click) cancel."
-
-sell-all-lore:
-  - "&8Inventory"
-  - ""
-  - "&7Total Value » &e{sell-price}"
-  - ""
-  - "&7Click this button to sell"
-  - "&7the fish in your inventory to"
-  - "&7make some extra money."
-  - ""
-  - "&e» (Left-click) sell the fish."
-# The lore below the error item in /emf shop when the gui contains no items of value.
-error-gui-lore:
-  - "&8Fish Shop"
-  - ""
-  - "&7Total Value » &c{sell-price}"
-  - ""
-  - "&7Sell your fish here to make"
-  - "&7some extra money."
-  - ""
-  - "&c» (Left-click) sell the fish."
-  - "&7» (Right-click) cancel."
-
-error-sell-all-gui-lore:
-  - "&8Inventory"
-  - ""
-  - "&7Total Value » &c{sell-price}"
-  - ""
-  - "&7Click this button to sell"
-  - "&7the fish in your inventory to"
-  - "&7make some extra money."
-  - ""
-  - "&c» (Left-click) sell the fish."
 # The message sent to players when they've sold their fish in the /emf shop
 fish-sale: "&rYou've sold &a{amount} &ffish for &a{sell-price}&f."
 
@@ -240,7 +179,7 @@ bait-catch: "&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!"
 # Sent when a bait is applied and a fish is caught.
 bait-use: "&rYou have used one of your rod's {bait_theme}&l{bait} &rbait."
 # Sent when someone tries to use a bait in creative
-bait-survival-limited: "&rYou must be in &nsurvival&r to apply baits to fishing rods."
+bait-survival-limited: "&rYou must be in &nsurvival or adventure mode&r to apply baits to fishing rods."
 # Sent when someone tries to merge a baited rod into an unbaited rod
 bait-rod-protection: "&rProtected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead."
 
@@ -298,4 +237,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

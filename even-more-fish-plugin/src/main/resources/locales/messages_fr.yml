@@ -36,9 +36,9 @@ competition-types:
 # Segments affiché sur la bossbar quand des compétitions commencent
 bossbar:
   # Les abréviations utilisés pour les différentes unités de temps
-  hour: "h"
-  minute: "m"
-  second: "s"
+  hour: "&r{hour}h"
+  minute: "&r{minute}m"
+  second: "&r{second}s"
   # Pour traduire le "left" à la fin p.ex. "5s left" -> "5s restantes"
   remaining: "restantes"
 
@@ -90,64 +90,6 @@ not-enough-players: "&rIl n'y a pas assez de joueurs en ligne pour commencer la 
 # {time_raw} est ce que vous entrez dans competitions.yml
 time-alert: "&rIl reste {time_formatted} à la compétition {type}"
 
-# Le titre du GUI pour /emf shop
-worth-gui-name: "&1&lPoissonnerie"
-# Le nom de l'objet pour vendre pour /emf shop
-sell-gui-name: "&6&lVENDRE"
-# Le nom de l'objet pour vendre tous les poissons de l'inventaire pour /emf shop
-sell-all-name: "&6&lVENDRE TOUT"
-# Le nom de l'objet pour confirmer pour /emf shop
-confirm-gui-name: "&6&lCONFIRMER"
-# Le nom de l'objet pour confirmer la vente de tous les objets pour /emf shop
-confirm-sell-all-gui-name: "&6&lCONFIRMER"
-# Le nom de l'objet d'erreur pour /emf shop lorsque le GUI ne contient aucun élément de valeur.
-error-gui-name: "&c&lNe peut pas être vendu"
-# Le nom de l'objet d'erreur pour /emf shop lorsque l'inventaire du joueur ne contient aucun objet de valeur.
-error-sell-all-gui-name: "&c&lNe peut pas être vendus"
-# La descritpion de l'objet de vente/confirmation pour /emf shop
-sell-gui-lore:
-  - "&8Poissonnerie"
-  - ""
-  - "&7Valeur totale » &e{sell-price}"
-  - ""
-  - "&7Vendez votre poisson ici pour faire"
-  - "&7un peu d'argent supplémentaire."
-  - ""
-  - "&e» (Clic gauche) vendre le poisson."
-  - "&7» (Clic droit) annuler."
-
-sell-all-lore:
-  - "&8Inventaire"
-  - ""
-  - "&7Valeur totale » &e{sell-price}"
-  - ""
-  - "&7Cliquez sur ce bouton pour vendre"
-  - "&7les poissons de votre inventaire pour"
-  - "&7gagner de l'argent supplémentaire."
-  - ""
-  - "&e» (Clic gauche) vendre le poisson."
-# La description sous l'élément d'erreur dans /emf shop lorsque le GUI ne contient aucun élément de valeur.
-error-gui-lore:
-  - "&8Poissonnerie"
-  - ""
-  - "&7Valeur totale » &c$0"
-  - ""
-  - "&7Vendez votre poisson ici pour faire"
-  - "&7un peu d'argent supplémentaire."
-  - ""
-  - "&c» (Clic gauche) vendre le poisson."
-  - "&7» (Clic droit) annuler."
-
-error-sell-all-gui-lore:
-  - "&8Inventaire"
-  - ""
-  - "&7Valeur totale » &c$0"
-  - ""
-  - "&7Cliquez sur ce bouton pour vendre"
-  - "&7les poissons de votre inventaire pour"
-  - "&7gagner de l'argent supplémentaire."
-  - ""
-  - "&c» (Clic gauche) vendre le poisson."
 # Le message envoyé aux joueurs lorsqu'ils ont vendu leur poisson dans la boutique /emf
 fish-sale: "&fVous avez vendu &a{amount} &fpoisson(s) pour &a{sell-price}&f."
 
@@ -251,4 +193,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2
