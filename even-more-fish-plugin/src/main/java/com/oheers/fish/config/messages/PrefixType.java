@@ -3,9 +3,9 @@ package com.oheers.fish.config.messages;
 public enum PrefixType {
 
     NONE(null, null),
-    ADMIN("prefix-admin", "&c"),
-    DEFAULT("prefix-regular", "&a"),
-    ERROR("prefix-error", "&c");
+    ADMIN("prefix-admin", "&c[EvenMoreFish] "),
+    DEFAULT("prefix-regular", "&a[EvenMoreFish] "),
+    ERROR("prefix-error", "&c[EvenMoreFish] ");
 
     private final String id, normal;
 
@@ -29,8 +29,7 @@ public enum PrefixType {
     public String getPrefix() {
         if (id == null) return "";
         else {
-            return new Message(Messages.getInstance().getConfig().getString(id, normal)).getRawMessage(false)
-                    + new Message(Messages.getInstance().getConfig().getString("prefix", "[EvenMoreFish]") + "&r").getRawMessage(false);
+            return new Message(Messages.getInstance().getConfig().getString(id, normal)).getRawMessage(false);
         }
     }
 }

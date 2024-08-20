@@ -41,14 +41,12 @@ bossbar:
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
   remaining: "kaldı"
 
-# The prefix shown before pretty much all commands to do with the plugin. Keeping the space in is recommended.
-prefix: "&7[&9&lBalıkçılık&7] "
 # The colour of the [EvenMoreFish] prefix in commands (for when your prefix doesn't have colours)
-prefix-regular: "&a"
+prefix-regular: "&a&7[&9&lBalıkçılık&7] "
 # The colour of the [EvenMoreFish] prefix in admin commands (for when your prefix doesn't have colours)
-prefix-admin: "&c"
+prefix-admin: "&c&7[&9&lBalıkçılık&7] "
 # The colour of the [EvenMoreFish] prefix when errors occur e.g. no permission to run a command (for when your prefix doesn't have colours)
-prefix-error: "&c"
+prefix-error: "&c&7[&9&lBalıkçılık&7] "
 
 # The text shown in a fish's lore before who caught the fish
 fish-caught-by: "&fTutan: {player}"
@@ -122,4 +120,4 @@ emf-competition-fish-format: "{length}cm &l{rarity} {fish}"
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 2
+config-version: 3

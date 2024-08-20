@@ -42,14 +42,12 @@ bossbar:
   # Pour traduire le "left" à la fin p.ex. "5s left" -> "5s restantes"
   remaining: "restantes"
 
-# Le préfixe affiché avant à peu près toutes les commandes à faire avec le plugin. Il est recommandé de garder l'espace à l'intérieur.
-prefix: "[EvenMoreFish] "
 # La couleur du préfixe [EvenMoreFish] dans les commandes (lorsque votre préfixe n'a pas de couleurs)
-prefix-regular: "&a"
+prefix-regular: "&a[EvenMoreFish] "
 # La couleur du préfixe [EvenMoreFish] dans les commandes d'administration (lorsque votre préfixe n'a pas de couleurs)
-prefix-admin: "&c"
+prefix-admin: "&c[EvenMoreFish] "
 # La couleur du préfixe [EvenMoreFish] lorsque des erreurs se produisent, par ex. aucune autorisation d'exécuter une commande (lorsque votre préfixe n'a pas de couleurs)
-prefix-error: "&c"
+prefix-error: "&c[EvenMoreFish] "
 
 # C'est le format de la description donnée aux poissons lorsqu'ils sont pêchés.
 # {custom-lore} est spécifié dans fish.yml sous la section lore:, si le poisson a une description, les lignes de la description vont
@@ -193,4 +191,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 2
+config-version: 3

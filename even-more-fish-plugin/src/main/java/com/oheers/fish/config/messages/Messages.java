@@ -44,6 +44,21 @@ public class Messages extends ConfigBase {
                     yamlDocument.set("bossbar.second", secondColor + "{second}" + second);
                     yamlDocument.remove("bossbar.second-color");
                 })
+                // Prefix config relocations - config version 3
+                .addCustomLogic("3", yamlDocument -> {
+                    String prefix = yamlDocument.getString("prefix");
+
+                    String oldRegular = yamlDocument.getString("prefix-regular");
+                    yamlDocument.set("prefix-regular", oldRegular + prefix);
+
+                    String oldAdmin = yamlDocument.getString("prefix-admin");
+                    yamlDocument.set("prefix-admin", oldAdmin + prefix);
+
+                    String oldError = yamlDocument.getString("prefix-error");
+                    yamlDocument.set("prefix-error", oldError + prefix);
+
+                    yamlDocument.remove("prefix");
+                })
                 .build();
     }
 
