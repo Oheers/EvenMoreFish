@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.acf)
     implementation(libs.inventorygui)
     implementation(libs.bundles.adventure)
+    implementation(libs.boostedyaml)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -95,7 +96,6 @@ dependencies {
     library(libs.caffeine)
     library(libs.commons.lang3)
     library(libs.commons.codec)
-    library(libs.boostedyaml)
 
     library(libs.json.simple)
 }
@@ -251,6 +251,7 @@ tasks {
         relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
         relocate("net.kyori.adventure", "com.oheers.fish.libs.adventure")
+        relocate("dev.dejvokep.boostedyaml", "com.oheers.fish.libs.boostedyaml")
 
     }
 
