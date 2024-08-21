@@ -715,34 +715,29 @@ public class Competition {
         String path;
 
         // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the compeitions
-        if (adminStart) {
+        if (adminStart || CompetitionConfig.getInstance().getRewardPositions(competitionName).isEmpty()) {
             chosen = CompetitionConfig.getInstance().getRewardPositions();
             path = "rewards.";
         } else {
-            if (CompetitionConfig.getInstance().getRewardPositions(competitionName).isEmpty()) {
-                chosen = CompetitionConfig.getInstance().getRewardPositions();
-                path = "rewards.";
+            chosen = CompetitionConfig.getInstance().getRewardPositions(competitionName);
+            path = "competitions." + competitionName + ".rewards.";
+        }
+
+        chosen.forEach(key -> {
+            List<Reward> addingRewards = CompetitionConfig.getInstance().getStringList(path + key).stream()
+                    .map(Reward::new)
+                    .toList();
+
+            if (key.equals("participation")) {
+                this.participationRewards = addingRewards;
             } else {
-                chosen = CompetitionConfig.getInstance().getRewardPositions(competitionName);
-                path = "competitions." + competitionName + ".rewards.";
-            }
-        }
-
-        if (chosen != null) {
-            for (String i : chosen) {
-                List<Reward> addingRewards = new ArrayList<>();
-                for (String j : CompetitionConfig.getInstance().getStringList(path + i)) {
-                    Reward reward = new Reward(j);
-                    addingRewards.add(reward);
-                }
-
-                if (Objects.equals(i, "participation")) {
-                    this.participationRewards = addingRewards;
-                } else {
-                    this.rewards.put(Integer.parseInt(i), addingRewards);
+                try {
+                    this.rewards.put(Integer.parseInt(key), addingRewards);
+                } catch (NumberFormatException exception) {
+                    EvenMoreFish.getInstance().getLogger().log(Level.WARNING, key + " is not a valid number!", exception);
                 }
             }
-        }
+        });
     }
 
     private void handleRewards() {
