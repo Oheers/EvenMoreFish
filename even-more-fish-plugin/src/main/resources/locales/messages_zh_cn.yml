@@ -42,14 +42,12 @@ bossbar:
   # 用于翻译结尾的 "剩余"，例如 "5s 剩余“
   remaining: "剩余"
 
-# 几乎所有与该插件有关的命令前都有前缀。建议保留空格。
-prefix: "&b&l更多的鱼 &r&l&7>> "
 # 命令中[EvenMoreFish]前缀的颜色（当你的前缀没有颜色时）。
-prefix-regular: "&a"
+prefix-regular: "&a&b&l更多的鱼 &r&l&7>> "
 # 管理命令中[EvenMoreFish]前缀的颜色（当你的前缀没有颜色时）。
-prefix-admin: "&c"
+prefix-admin: "&c&b&l更多的鱼 &r&l&7>> "
 # 当发生错误时，[EvenMoreFish]前缀的颜色，例如，没有运行命令的权限（当你的前缀没有颜色时）。
-prefix-error: "&c"
+prefix-error: "&c&b&l更多的鱼 &r&l&7>> "
 
 # 这是鱼类被捕获时的格式。
 # {custom-lore} 是在 fish.yml 中的 lore: 部分指定的，如果鱼有格式，格式的行将替换{fish_lore}，但如果它是空的，该行将被移除。除此变量外，请勿添加任何其他内容之外的任何内容。
@@ -208,4 +206,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 2
+config-version: 3

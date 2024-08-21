@@ -44,14 +44,12 @@ bossbar:
   # 用於翻譯結尾的 "剩餘"，例如 "5s 剩餘“
   remaining: "剩餘"
 
-# 幾乎所有與該插件有關的命令前都有前綴。建議保留空格。
-prefix: "&b[釣魚大賽] "
 # 命令中[EvenMoreFish]前綴的顏色（當你的前綴沒有顏色時）。
-prefix-regular: "&b"
+prefix-regular: "&b[釣魚大賽] "
 # 管理命令中[EvenMoreFish]前綴的顏色（當你的前綴沒有顏色時）。
-prefix-admin: "&b"
+prefix-admin: "&b[釣魚大賽] "
 # 當發生錯誤時，[EvenMoreFish]前綴的顏色，例如，沒有運行命令的權限（當你的前綴沒有顏色時）。
-prefix-error: "&c"
+prefix-error: "&c[釣魚大賽] "
 
 # 這是魚被捕獲時給予的lore的格式。
 # {custom-lore}是在fish.yml的lore:部分下指定的，如果魚有一個lore。
@@ -190,4 +188,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 2
+config-version: 3
