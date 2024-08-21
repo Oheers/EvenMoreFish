@@ -714,7 +714,7 @@ public class Competition {
         Set<String> chosen;
         String path;
 
-        // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the compeitions
+        // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the competition's reward config
         if (adminStart || CompetitionConfig.getInstance().getRewardPositions(competitionName).isEmpty()) {
             chosen = CompetitionConfig.getInstance().getRewardPositions();
             path = "rewards.";
