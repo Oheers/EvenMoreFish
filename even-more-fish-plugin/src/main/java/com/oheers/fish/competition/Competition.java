@@ -761,27 +761,32 @@ public class Competition {
         }
 
         boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
-        Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
 
-        while (competitionEntryIterator.hasNext()) {
-            CompetitionEntry entry = competitionEntryIterator.next();
-            if (rewardPlace <= rewards.size()) {
-                Player player = Bukkit.getPlayer(entry.getPlayer());
-                if (player != null) {
-                    rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
-                }
+        for (CompetitionEntry entry : leaderboard.getEntries()) {
+
+            Player player = Bukkit.getPlayer(entry.getPlayer());
+
+            // If the player is null, increment the place and continue
+            if (player == null) {
                 rewardPlace++;
+                continue;
+            }
+
+            // Does the player's place have rewards?
+            if (rewards.containsKey(rewardPlace)) {
+                rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
+            // Default to participation rewards if not.
             } else {
                 if (participationRewardsExist) {
-                    Player participationPlayer = Bukkit.getPlayer(entry.getPlayer());
-                    if (participationPlayer != null) {
-                        participationRewards.forEach(reward -> reward.rewardPlayer(participationPlayer, null));
-                    }
+                    participationRewards.forEach(reward -> reward.rewardPlayer(player, null));
                 }
             }
+            // Save to database if enabled
             if (databaseEnabled) {
                 incrementCompetitionsJoined(entry);
             }
+            // Increment the place
+            rewardPlace++;
         }
 
     }

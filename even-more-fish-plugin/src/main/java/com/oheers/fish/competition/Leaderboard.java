@@ -21,8 +21,6 @@ interface LeaderboardHandler {
 
     CompetitionEntry getEntry(UUID player);
 
-    Iterator<CompetitionEntry> getIterator();
-
     int getSize();
 
     boolean hasEntry(UUID player);
@@ -84,11 +82,6 @@ public class Leaderboard implements LeaderboardHandler {
             }
         }
         return null;
-    }
-
-    @Override
-    public Iterator<CompetitionEntry> getIterator() {
-        return entries.iterator();
     }
 
     @Override
