@@ -237,7 +237,9 @@ tasks {
             attributes["Implementation-Version"] = buildNumberOrDate
         }
 
-        minimize()
+        minimize {
+            exclude(dependency("net.kyori:.*"))
+        }
 
         exclude("META-INF/**")
 
