@@ -714,35 +714,30 @@ public class Competition {
         Set<String> chosen;
         String path;
 
-        // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the compeitions
-        if (adminStart) {
+        // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the competition's reward config
+        if (adminStart || CompetitionConfig.getInstance().getRewardPositions(competitionName).isEmpty()) {
             chosen = CompetitionConfig.getInstance().getRewardPositions();
             path = "rewards.";
         } else {
-            if (CompetitionConfig.getInstance().getRewardPositions(competitionName).isEmpty()) {
-                chosen = CompetitionConfig.getInstance().getRewardPositions();
-                path = "rewards.";
+            chosen = CompetitionConfig.getInstance().getRewardPositions(competitionName);
+            path = "competitions." + competitionName + ".rewards.";
+        }
+
+        chosen.forEach(key -> {
+            List<Reward> addingRewards = CompetitionConfig.getInstance().getStringList(path + key).stream()
+                    .map(Reward::new)
+                    .toList();
+
+            if (key.equals("participation")) {
+                this.participationRewards = addingRewards;
             } else {
-                chosen = CompetitionConfig.getInstance().getRewardPositions(competitionName);
-                path = "competitions." + competitionName + ".rewards.";
-            }
-        }
-
-        if (chosen != null) {
-            for (String i : chosen) {
-                List<Reward> addingRewards = new ArrayList<>();
-                for (String j : CompetitionConfig.getInstance().getStringList(path + i)) {
-                    Reward reward = new Reward(j);
-                    addingRewards.add(reward);
-                }
-
-                if (Objects.equals(i, "participation")) {
-                    this.participationRewards = addingRewards;
-                } else {
-                    this.rewards.put(Integer.parseInt(i), addingRewards);
+                try {
+                    this.rewards.put(Integer.parseInt(key), addingRewards);
+                } catch (NumberFormatException exception) {
+                    EvenMoreFish.getInstance().getLogger().log(Level.WARNING, key + " is not a valid number!", exception);
                 }
             }
-        }
+        });
     }
 
     private void handleRewards() {
@@ -766,27 +761,32 @@ public class Competition {
         }
 
         boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
-        Iterator<CompetitionEntry> competitionEntryIterator = leaderboard.getIterator();
 
-        while (competitionEntryIterator.hasNext()) {
-            CompetitionEntry entry = competitionEntryIterator.next();
-            if (rewardPlace <= rewards.size()) {
-                Player player = Bukkit.getPlayer(entry.getPlayer());
-                if (player != null) {
-                    rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
-                }
+        for (CompetitionEntry entry : leaderboard.getEntries()) {
+
+            Player player = Bukkit.getPlayer(entry.getPlayer());
+
+            // If the player is null, increment the place and continue
+            if (player == null) {
                 rewardPlace++;
+                continue;
+            }
+
+            // Does the player's place have rewards?
+            if (rewards.containsKey(rewardPlace)) {
+                rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
+            // Default to participation rewards if not.
             } else {
                 if (participationRewardsExist) {
-                    Player participationPlayer = Bukkit.getPlayer(entry.getPlayer());
-                    if (participationPlayer != null) {
-                        participationRewards.forEach(reward -> reward.rewardPlayer(participationPlayer, null));
-                    }
+                    participationRewards.forEach(reward -> reward.rewardPlayer(player, null));
                 }
             }
+            // Save to database if enabled
             if (databaseEnabled) {
                 incrementCompetitionsJoined(entry);
             }
+            // Increment the place
+            rewardPlace++;
         }
 
     }

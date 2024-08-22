@@ -23,8 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.logging.Level;
 
-// TODO fix confirmation and re-add sell states
-
 public class SellGUI implements EMFGUI {
 
     private final InventoryGui gui;

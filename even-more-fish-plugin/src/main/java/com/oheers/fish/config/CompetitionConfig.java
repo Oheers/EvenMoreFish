@@ -20,10 +20,6 @@ public class CompetitionConfig extends ConfigBase {
         return instance;
     }
 
-    public int configVersion() {
-        return getConfig().getInt("config-version");
-    }
-
     public List<String> getStringList(String path) {
         return getConfig().getStringList(path);
     }
