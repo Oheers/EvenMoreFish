@@ -74,7 +74,8 @@ fish:
       item:
         material: FISHING_ROD
     # Don't worry that it isn't coloured nicely like the rest of the fish names, or that your YAML editor may be throwing errors at you, the plugin will accept this. Or at least it did the last time I tested this config file.
-    Explorer's Boat:
+    Explorers Boat:
+      displayname: "Explorer's Boat"
       item:
         # The plugin will pick a random one of these items to choose from and give them to the player.
         materials:
@@ -85,11 +86,12 @@ fish:
           - JUNGLE_BOAT
           - DARK_OAK_BOAT
           - MANGROVE_BOAT
-    Old Fisher's Hat:
+    Old Fishers Hat:
       item:
         material: LEATHER_HELMET
       # Sets the dye colour for the leather item, make sure this uses the British "ou" spelling if repeating this elsewhere without copy/paste.
       dye-colour: "#888877"
+      displayname: "Old Fisher's Hat"
 
   Rare:
     Penguin Feather:
@@ -311,7 +313,8 @@ fish:
     Golden Skull:
       item:
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWI1MjIxYjI3NjRjZWY2Nzg2YWMxNWVhMDc1NzY4N2UyM2I5NTM2ODY0NTIwMzI0ZGQ0MzkzYjdhYmVhZDFkMSJ9fX0="
-    BLÅHAJ:
+    BLAHAJ:
+      displayname: BLÅHAJ
       item:
         head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTIxODhiYzk1YjhhM2M3MWZmYzQwNjZmYTNkZGYyMDRlMDYxYTNiM2NlNGUxODY3YzA0YjI1ZmRmNjhhMjA3MCJ9fX0="
       lore:
