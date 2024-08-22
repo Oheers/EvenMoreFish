@@ -55,7 +55,7 @@ public class ConfigBase {
         final Settings[] settings = settingsList.toArray(new Settings[0]);
 
         try {
-            InputStream resource = EvenMoreFish.getInstance().getResource(getResourceName());
+            InputStream resource = getPlugin().getResource(getResourceName());
             if (resource == null) {
                 this.config = YamlDocument.create(configFile, settings);
             } else {
