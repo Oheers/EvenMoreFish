@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class JoinChecker implements Listener {
      * @param userUUID The user UUID having their data read.
      * @param userName the in-game username of the user having their data read.
      */
-    public void databaseRegistration(UUID userUUID, String userName) {
+    public void databaseRegistration(@NotNull UUID userUUID, @NotNull String userName) {
         if (MainConfig.getInstance().isDatabaseOnline()) {
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
                 List<FishReport> fishReports;
@@ -90,19 +91,14 @@ public class JoinChecker implements Listener {
                     EvenMoreFish.getInstance().getDatabaseV3().createUser(userUUID);
                 }
 
-
                 List<FishReport> fishReports = DataManager.getInstance().getFishReportsIfExists(userUUID);
                 if (fishReports != null) {
-
                     EvenMoreFish.getInstance().getDatabaseV3().writeFishReports(userUUID, fishReports);
-
                 }
 
                 UserReport userReport = DataManager.getInstance().getUserReportIfExists(userUUID);
                 if (userReport != null) {
-
                     EvenMoreFish.getInstance().getDatabaseV3().writeUserReport(userUUID, userReport);
-
                 }
 
                 DataManager.getInstance().uncacheUser(userUUID);
