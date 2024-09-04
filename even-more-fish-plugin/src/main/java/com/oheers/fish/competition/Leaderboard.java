@@ -52,7 +52,6 @@ public class Leaderboard implements LeaderboardHandler {
         return entries;
     }
 
-
     @Override
     public void addEntry(UUID player, Fish fish) {
         CompetitionEntry entry = new CompetitionEntry(player, fish, type);

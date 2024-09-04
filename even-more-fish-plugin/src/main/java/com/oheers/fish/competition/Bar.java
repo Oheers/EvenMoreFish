@@ -31,12 +31,11 @@ public class Bar {
         double progress = (double) (timeLeft) / (double) (totalTime);
 
         if (progress < 0) {
-            bar.setProgress(0.0D);
+            progress = 0.0D;
         } else if (progress > 1) {
-            bar.setProgress(1.0D);
-        } else {
-            bar.setProgress(progress);
+            progress = 1.0D;
         }
+        bar.setProgress(progress);
 
     }
 
@@ -65,26 +64,24 @@ public class Bar {
     }
 
     public void show() {
-        for (Player p : Bukkit.getOnlinePlayers()) addPlayer(p);
+        Bukkit.getOnlinePlayers().forEach(this::addPlayer);
         bar.setVisible(true);
     }
 
     public void hide() {
-        for (Player p : Bukkit.getOnlinePlayers()) removePlayer(p);
+        Bukkit.getOnlinePlayers().forEach(this::removePlayer);
         bar.setVisible(false);
     }
 
     public void createBar() {
-        BarStyle barStyle = BarStyle.valueOf(MainConfig.getInstance().getBarStyle());
+        BarStyle barStyle = MainConfig.getInstance().getBarStyle();
         bar = Bukkit.getServer().createBossBar(title, BarColor.WHITE, barStyle);
     }
 
     // Shows the bar to all players online
     public void renderBars() {
         bar.setVisible(true);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            bar.addPlayer(player);
-        }
+        Bukkit.getOnlinePlayers().forEach(bar::addPlayer);
     }
 
     public void addPlayer(Player player) {

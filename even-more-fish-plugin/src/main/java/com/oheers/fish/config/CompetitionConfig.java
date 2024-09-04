@@ -25,12 +25,8 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public Set<String> getCompetitions() {
-        try {
-            return getConfig().getSection("competitions").getRoutesAsStrings(false);
-        } catch (NullPointerException exception) {
-            return null;
-        }
-
+        Section section = getConfig().getSection("competitions");
+        return section == null ? Set.of() : section.getRoutesAsStrings(false);
     }
 
     public boolean specificDayTimes(String competitionName) {
@@ -38,7 +34,11 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public Set<String> activeDays(String competitionName) {
-        return Objects.requireNonNull(getConfig().getSection("competitions." + competitionName + ".days")).getRoutesAsStrings(false);
+        Section section = getConfig().getSection("competitions." + competitionName + ".days");
+        if (section == null) {
+            return Set.of();
+        }
+        return section.getRoutesAsStrings(false);
     }
 
     public List<String> getDayTimes(String competitionName, String day) {
@@ -82,7 +82,6 @@ public class CompetitionConfig extends ConfigBase {
         if (adminStart) {
             return getConfig().getStringList("general.allowed-rarities");
         }
-
         return getConfig().getStringList("competitions." + competitionName + ".allowed-rarities");
     }
 
@@ -95,7 +94,7 @@ public class CompetitionConfig extends ConfigBase {
             returning = getConfig().getInt("competitions." + competitionName + ".number-needed", getConfig().getInt("general.number-needed"));
         }
 
-        if (returning != 0) {
+        if (returning > 0) {
             return returning;
         } else {
             return 1;
@@ -111,13 +110,20 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public List<String> getPositionColours() {
-        List<String> returning = getConfig().getStringList("leaderboard.position-colours");
+        return getConfig().getStringList("leaderboard.position-colours", getDefaultPositionColours());
+    }
 
-        if (returning.isEmpty()) {
-            return Arrays.asList("&6", "&e", "&7", "&7", "&8");
+    public List<String> getDefaultPositionColours() {
+        // Exists for eventual MiniMessage support
+        if (true) {
+            return new ArrayList<>(
+                    List.of("&6", "&e", "&7", "&7", "&8"
+            ));
+        } else {
+            return new ArrayList<>(List.of(
+                    "<gold>", "<yellow>", "<gray>", "<gray>", "<dark_gray>"
+            ));
         }
-
-        return returning;
     }
 
     public List<String> getAlertTimes(String competitionName) {
@@ -143,64 +149,41 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public String getBarColour(String competitionName) {
-        if (competitionName == null) {
-            if (getConfig().getString("general.bossbar-colour") != null) {
-                return Objects.requireNonNull(getConfig().getString("general.bossbar-colour")).toUpperCase();
-            }
-
-            return "GREEN";
+        String barColor;
+        if (competitionName != null) {
+            barColor = getConfig().getString("competitions." + competitionName + ".bossbar-colour");
+        } else {
+            barColor = getConfig().getString("general.bossbar-colour");
         }
-
-        if (getConfig().getString("competitions." + competitionName + ".bossbar-colour") != null) {
-            return Objects.requireNonNull(getConfig().getString("competitions." + competitionName + ".bossbar-colour")).toUpperCase();
+        if (barColor != null) {
+            return barColor.toUpperCase();
         }
-        if (getConfig().getString("general.bossbar-colour") != null) {
-            return Objects.requireNonNull(getConfig().getString("general.bossbar-colour")).toUpperCase();
-        }
-
         return "GREEN";
-
-
     }
 
     public String getBarPrefix(String competitionName) {
-        if (competitionName == null) {
-            if (getConfig().getString("general.bossbar-prefix") != null) {
-                return getConfig().getString("general.bossbar-prefix");
-            }
-
-            return "&a&lFishing Contest: ";
+        String barPrefix;
+        if (competitionName != null) {
+            barPrefix = getConfig().getString("competitions." + competitionName + ".bossbar-prefix");
+        } else {
+            barPrefix = getConfig().getString("general.bossbar-prefix");
         }
-
-        if (getConfig().getString("competitions." + competitionName + ".bossbar-prefix") != null) {
-            return getConfig().getString("competitions." + competitionName + ".bossbar-prefix");
+        if (barPrefix != null) {
+            return barPrefix;
         }
-
-        if (getConfig().getString("general.bossbar-prefix") != null) {
-            return getConfig().getString("general.bossbar-prefix");
-        }
-
         return "&a&lFishing Contest: ";
     }
 
     public int getPlayersNeeded(String competitionName) {
+        int playersNeeded;
         if (competitionName == null) {
-            if (getConfig().getInt("general.minimum-players") != 0) {
-                return getConfig().getInt("general.minimum-players");
-            }
-
-            return 1;
+            playersNeeded = getConfig().getInt("competitions." + competitionName + ".minimum-players");
+        } else {
+            playersNeeded = getConfig().getInt("general.minimum-players");
         }
-
-
-        if (getConfig().getInt("competitions." + competitionName + ".minimum-players") != 0) {
-            return getConfig().getInt("competitions." + competitionName + ".minimum-players");
+        if (playersNeeded > 0) {
+            return playersNeeded;
         }
-
-        if (getConfig().getInt("general.minimum-players") != 0) {
-            return getConfig().getInt("general.minimum-players");
-        }
-
         return 1;
     }
 
@@ -214,9 +197,8 @@ public class CompetitionConfig extends ConfigBase {
 
         if (!stringSound.equalsIgnoreCase("NONE")) {
             return Sound.valueOf(stringSound);
-        } else {
-            return null;
         }
+        return null;
     }
 
     public List<String> getRequiredWorlds() {

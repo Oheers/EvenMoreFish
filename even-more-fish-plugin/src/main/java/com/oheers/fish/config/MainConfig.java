@@ -6,6 +6,7 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.route.Route;
 import org.apache.commons.lang3.LocaleUtils;
 import org.bukkit.block.Biome;
+import org.bukkit.boss.BarStyle;
 
 import java.util.*;
 
@@ -86,8 +87,14 @@ public class MainConfig extends ConfigBase {
         return getConfig().getBoolean("vanilla-fishing", true);
     }
 
-    public String getBarStyle() {
-        return getConfig().getString("barstyle", "SEGMENTED_10");
+    public BarStyle getBarStyle() {
+        BarStyle barStyle;
+        try {
+            barStyle = BarStyle.valueOf(getConfig().getString("barstyle", "SEGMENTED_10"));
+        } catch (IllegalArgumentException exception) {
+            barStyle = BarStyle.SEGMENTED_10;
+        }
+        return barStyle;
     }
 
     public boolean sellOverDrop() {
