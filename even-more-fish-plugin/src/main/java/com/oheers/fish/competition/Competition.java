@@ -162,7 +162,6 @@ public class Competition {
                 if (decreaseTime()) {
                     cancel();
                 }
-                //timeLeft--;
             }
         }.runTaskTimer(EvenMoreFish.getInstance(), 0, 20);
     }
@@ -178,12 +177,10 @@ public class Competition {
         if (alertTimes.contains(timeLeft)) {
             Message message = getTypeFormat(ConfigMessage.TIME_ALERT);
             message.broadcast(true);
-
         } else if (timeLeft <= 0) {
             end(false);
             return true;
         }
-
         return false;
     }
 
@@ -200,33 +197,36 @@ public class Competition {
         message.setTimeRaw(FishUtils.timeRaw(timeLeft));
         message.setCompetitionType(competitionType);
 
-        if (competitionType == CompetitionType.SPECIFIC_FISH) {
-            message.setAmount(Integer.toString(numberNeeded));
-            message.setRarityColour(selectedFish.getRarity().getColour());
+        switch (competitionType) {
+            case SPECIFIC_FISH -> {
+                message.setAmount(Integer.toString(numberNeeded));
+                message.setRarityColour(selectedFish.getRarity().getColour());
 
-            if (selectedFish.getRarity().getDisplayName() != null) {
-                message.setRarity(selectedFish.getRarity().getDisplayName());
-            } else {
-                message.setRarity(selectedFish.getRarity().getValue());
-            }
+                if (selectedFish.getRarity().getDisplayName() != null) {
+                    message.setRarity(selectedFish.getRarity().getDisplayName());
+                } else {
+                    message.setRarity(selectedFish.getRarity().getValue());
+                }
 
-            if (selectedFish.getDisplayName() != null) {
-                message.setFishCaught(selectedFish.getDisplayName());
-            } else {
-                message.setFishCaught(selectedFish.getName());
+                if (selectedFish.getDisplayName() != null) {
+                    message.setFishCaught(selectedFish.getDisplayName());
+                } else {
+                    message.setFishCaught(selectedFish.getName());
+                }
             }
-        } else if (competitionType == CompetitionType.SPECIFIC_RARITY) {
-            message.setAmount(Integer.toString(numberNeeded));
-            if (selectedRarity == null) {
-                EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");
-                return message;
-            }
-            message.setRarityColour(selectedRarity.getColour());
+            case SPECIFIC_RARITY -> {
+                message.setAmount(Integer.toString(numberNeeded));
+                if (selectedRarity == null) {
+                    EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");
+                    return message;
+                }
+                message.setRarityColour(selectedRarity.getColour());
 
-            if (selectedRarity.getDisplayName() != null) {
-                message.setRarity(selectedRarity.getDisplayName());
-            } else {
-                message.setRarity(selectedRarity.getValue());
+                if (selectedRarity.getDisplayName() != null) {
+                    message.setRarity(selectedRarity.getDisplayName());
+                } else {
+                    message.setRarity(selectedRarity.getValue());
+                }
             }
         }
 
@@ -261,12 +261,12 @@ public class Competition {
      * @return A boolean, true = do it in actionbar.
      */
     public boolean isDoingFirstPlaceActionBar() {
-        boolean a = Messages.getInstance().getConfig().getBoolean("action-bar-message");
-        boolean b = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance()
+        boolean doActionBarMessage = Messages.getInstance().getConfig().getBoolean("action-bar-message");
+        boolean isSupportedActionBarType = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance()
                 .getConfig()
                 .getStringList("action-bar-types")
                 .contains(EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().toString());
-        return a && b;
+        return doActionBarMessage && isSupportedActionBarType;
     }
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
@@ -395,13 +395,10 @@ public class Competition {
 
         startMessage = message;
 
-        boolean doingNoise = startSound != null;
-
         message.broadcast(true);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (doingNoise) {
-                player.playSound(player.getLocation(), startSound, 10f, 1f);
-            }
+
+        if (startSound != null) {
+            Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), startSound, 10f, 1f));
         }
     }
 
@@ -433,12 +430,7 @@ public class Competition {
                 if (pos > competitionColours.size()) {
                     Random r = EvenMoreFish.getInstance().getRandom();
                     int s = r.nextInt(3);
-                    switch (s) {
-                        case 0 -> message.setPositionColour("&c» &r");
-                        case 1 -> message.setPositionColour("&c_ &r");
-                        case 2 -> message.setPositionColour("&c&ko &r");
-                    }
-
+                    setPositionColour(s, message);
                 } else {
                     message.setPositionColour(competitionColours.get(pos - 1));
                 }
@@ -529,6 +521,23 @@ public class Competition {
 
     }
 
+    private void setPositionColour(int place, Message message) {
+        // Exists for eventual MiniMessage support
+        if (true) {
+            switch (place) {
+                case 0 -> message.setPositionColour("&c» &r");
+                case 1 -> message.setPositionColour("&c_ &r");
+                case 2 -> message.setPositionColour("&c&ko &r");
+            }
+        } else {
+            switch (place) {
+                case 0 -> message.setPositionColour("<red>» <reset>");
+                case 1 -> message.setPositionColour("<red>_ <reset>");
+                case 2 -> message.setPositionColour("<red><obf>o <reset>");
+            }
+        }
+    }
+
     public void sendConsoleLeaderboard(ConsoleCommandSender console) {
         if (!active) {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console, true);
@@ -553,12 +562,7 @@ public class Competition {
             if (pos > competitionColours.size()) {
                 Random r = EvenMoreFish.getInstance().getRandom();
                 int s = r.nextInt(3);
-                switch (s) {
-                    case 0 -> message.setPositionColour("&c» &r");
-                    case 1 -> message.setPositionColour("&c_ &r");
-                    case 2 -> message.setPositionColour("&c&ko &r");
-                }
-
+                setPositionColour(s, message);
             } else {
                 message.setPositionColour(competitionColours.get(pos - 1));
             }
