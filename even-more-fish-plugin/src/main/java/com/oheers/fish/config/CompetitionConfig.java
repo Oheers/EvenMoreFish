@@ -25,12 +25,8 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public Set<String> getCompetitions() {
-        try {
-            return getConfig().getSection("competitions").getRoutesAsStrings(false);
-        } catch (NullPointerException exception) {
-            return null;
-        }
-
+        Section section = getConfig().getSection("competitions");
+        return section == null ? Set.of() : section.getRoutesAsStrings(false);
     }
 
     public boolean specificDayTimes(String competitionName) {
@@ -38,7 +34,11 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public Set<String> activeDays(String competitionName) {
-        return Objects.requireNonNull(getConfig().getSection("competitions." + competitionName + ".days")).getRoutesAsStrings(false);
+        Section section = getConfig().getSection("competitions." + competitionName + ".days");
+        if (section == null) {
+            return Set.of();
+        }
+        return section.getRoutesAsStrings(false);
     }
 
     public List<String> getDayTimes(String competitionName, String day) {
@@ -95,7 +95,7 @@ public class CompetitionConfig extends ConfigBase {
             returning = getConfig().getInt("competitions." + competitionName + ".number-needed", getConfig().getInt("general.number-needed"));
         }
 
-        if (returning != 0) {
+        if (returning > 0) {
             return returning;
         } else {
             return 1;
