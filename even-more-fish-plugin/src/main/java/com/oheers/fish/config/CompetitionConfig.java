@@ -153,7 +153,7 @@ public class CompetitionConfig extends ConfigBase {
         if (competitionName != null) {
             barColor = getConfig().getString("competitions." + competitionName + ".bossbar-colour");
         } else {
-            barColor = getConfig().getString("general.bossbar-colour")
+            barColor = getConfig().getString("general.bossbar-colour");
         }
         if (barColor != null) {
             return barColor.toUpperCase();
