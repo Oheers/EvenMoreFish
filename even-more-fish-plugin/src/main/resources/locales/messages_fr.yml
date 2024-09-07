@@ -1,9 +1,9 @@
 # Si un message contient un placeholder EvenMoreFish, p.ex {player} ou {rarity} il supporte aussi les placeholders placeholderapi (PAPI)
 
 # Envoyé aux joueurs quand ils pêchent un poisson EvenMoreFish
-fish-caught: "&l{player} &ra pêché un {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!"
-# En fixant la longueur minimale d'un poisson à moins de 0, vous pouvez créer un poisson sans longueur. Ceci est utilisé lorsqu'un joueur pêche un poisson sans longueur.
-lengthless-fish-caught: "&l{player} &ra pêché un {rarity_colour}&l{rarity} {rarity_colour}{fish}!"
+fish-caught: '&l{player} &ra pêché un(e) {rarity_colour}&l{rarity} {rarity_colour}{fish} de {length}cm !'
+# En définissant la longueur minimale d'un poisson à moins de 0, vous pouvez créer un poisson sans longueur.
+lengthless-fish-caught: '&l{player} &ra pêché un(e) {rarity_colour}&l{rarity} {rarity_colour}{fish}!'
 # Envoyé à un joueur quand il n'a pas la permission d'éxécuter une commande.
 no-permission: "&cVous n'êtes pas autorisé à exécuter cette commande."
 
