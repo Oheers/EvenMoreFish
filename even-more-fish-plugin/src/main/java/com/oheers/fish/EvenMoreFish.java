@@ -125,6 +125,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     @Override
     public void onEnable() {
+
+        if (!NBT.preloadApi()) {
+            throw new RuntimeException("NBT-API wasn't initialized properly, disabling the plugin");
+        }
+
         instance = this;
         scheduler = UniversalScheduler.getScheduler(this);
         this.api = new EMFAPI();
