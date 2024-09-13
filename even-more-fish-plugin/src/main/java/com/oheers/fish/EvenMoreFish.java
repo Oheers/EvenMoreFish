@@ -192,6 +192,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             guardPL = null;
         }
 
+        // Do this before anything competition related.
+        loadRewardManager();
+        RewardManager.getInstance().load();
+        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
+
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
 
@@ -227,11 +232,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             });
 
         }
-
-        loadRewardManager();
-
-        RewardManager.getInstance().load();
-        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
     }
