@@ -7,6 +7,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * @deprecated Use a custom {@link RewardType} instead.
+ */
+@Deprecated
 public class EMFRewardEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
