@@ -19,7 +19,7 @@ public class Reward {
     public Reward(@NotNull String identifier) {
         String[] split = identifier.split(":");
         if (split.length < 2) {
-            EMFPlugin.getLogger().warning(value + " is not formatted correctly. It won't be given as a reward");
+            EMFPlugin.getLogger().warning(identifier + " is not formatted correctly. It won't be given as a reward");
             this.key = "";
             this.value = "";
         } else {
@@ -44,6 +44,8 @@ public class Reward {
 
     public void rewardPlayer(@NotNull Player player, Location hookLocation) {
         if (getRewardType() == null) {
+            EMFPlugin.getLogger().warning("No reward type found for key: " + getKey() + ". Falling back to the deprecated event-based rewards.");
+            // Ignore deprecation warnings, we need to keep this here for any outdated addons.
             EMFRewardEvent event = new EMFRewardEvent(this, player, fishVelocity, hookLocation);
             Bukkit.getPluginManager().callEvent(event);
             return;

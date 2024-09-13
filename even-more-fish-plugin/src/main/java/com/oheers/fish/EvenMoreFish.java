@@ -192,6 +192,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             guardPL = null;
         }
 
+        // Do this before anything competition related.
+        loadRewardManager();
+        RewardManager.getInstance().load();
+        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
+
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
 
@@ -227,11 +232,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             });
 
         }
-
-        loadRewardManager();
-
-        RewardManager.getInstance().load();
-        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
     }
@@ -446,6 +446,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
+
+        // Make server admins aware the deprecation warning is nothing to worry about
+        getLogger().warning("The above warning, if you are on Paper, can safely be ignored for now, we are waiting for a fix from the developers of our command library.");
     }
 
 
