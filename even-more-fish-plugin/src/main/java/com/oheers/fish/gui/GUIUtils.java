@@ -176,6 +176,7 @@ public class GUIUtils {
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
         String clickAction = section.getString("click-action", "none");
+        List<String> commands = section.getStringList("click-commands");
 
         ItemFactory factory = new ItemFactory(null, section);
         factory.enableAllChecks();
@@ -196,7 +197,11 @@ public class GUIUtils {
             default -> new DynamicGuiElement(character, (viewer) -> {
                 // Get Click Action
                 GuiElement.Action action = getActionMap(gui).get(clickAction);
-                return new StaticGuiElement(character, item, action);
+                return new StaticGuiElement(character, item, click -> {
+                    HumanEntity sender = click.getWhoClicked();
+                    commands.forEach(command -> Bukkit.dispatchCommand(sender, command));
+                    return action.onClick(click);
+                });
             });
         };
     }
