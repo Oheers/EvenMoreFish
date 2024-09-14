@@ -1,4 +1,4 @@
-package com.oheers.fish.gui;
+package com.oheers.fish.gui.guis;
 
 import de.themoep.inventorygui.InventoryGui;
 
