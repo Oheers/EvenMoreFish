@@ -107,6 +107,22 @@ main-menu:
     character: "b"
     click-action: "open-baits-menu"
 
+  coming-soon-competitions:
+    item:
+      material: barrier
+      displayname: "&cComing Soon!"
+    lore:
+      - "&7This menu is still being worked on!"
+    character: "c"
+
+  coming-soon-journal:
+    item:
+      material: barrier
+      displayname: "&cComing Soon!"
+    lore:
+      - "&7This menu is still being worked on!"
+    character: "j"
+
   exit:
     item:
       material: pufferfish
