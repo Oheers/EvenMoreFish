@@ -1,10 +1,10 @@
-package com.oheers.fish.gui;
+package com.oheers.fish.gui.guis;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.GUIFillerConfig;
-import com.oheers.fish.utils.GUIUtils;
+import com.oheers.fish.gui.GUIUtils;
 import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;

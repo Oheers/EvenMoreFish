@@ -1,14 +1,17 @@
-package com.oheers.fish.utils;
+package com.oheers.fish.gui;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.gui.BaitsGUI;
-import com.oheers.fish.gui.EMFGUI;
-import com.oheers.fish.gui.MainMenuGUI;
-import com.oheers.fish.gui.SellGUI;
+import com.oheers.fish.gui.guis.BaitsGUI;
+import com.oheers.fish.gui.guis.EMFGUI;
+import com.oheers.fish.gui.guis.MainMenuGUI;
+import com.oheers.fish.gui.guis.SellGUI;
 import com.oheers.fish.selling.SellHelper;
+import com.oheers.fish.utils.ItemBuilder;
+import com.oheers.fish.utils.ItemFactory;
+import com.oheers.fish.utils.ItemUtils;
 import de.themoep.inventorygui.*;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
@@ -173,6 +176,7 @@ public class GUIUtils {
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
         String clickAction = section.getString("click-action", "none");
+        List<String> commands = section.getStringList("click-commands");
 
         ItemFactory factory = new ItemFactory(null, section);
         factory.enableAllChecks();
@@ -193,7 +197,11 @@ public class GUIUtils {
             default -> new DynamicGuiElement(character, (viewer) -> {
                 // Get Click Action
                 GuiElement.Action action = getActionMap(gui).get(clickAction);
-                return new StaticGuiElement(character, item, action);
+                return new StaticGuiElement(character, item, click -> {
+                    HumanEntity sender = click.getWhoClicked();
+                    commands.forEach(command -> Bukkit.dispatchCommand(sender, command));
+                    return action.onClick(click);
+                });
             });
         };
     }

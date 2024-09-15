@@ -1,7 +1,7 @@
 package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.utils.GUIUtils;
+import com.oheers.fish.gui.GUIUtils;
 import de.themoep.inventorygui.GuiElement;
 
 import java.util.List;

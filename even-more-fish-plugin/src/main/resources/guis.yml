@@ -1,6 +1,20 @@
 # This file is for the 1.7 release of EvenMoreFish, if you are using this before your plugin is using version 1.7.2 there
 # will likely be a few issues or changes to the file won't take effect on the plugin.
 
+# An example button, to hopefully help with understanding what they can do.
+# The items can be configured just like fish can.
+button-example:
+  item:
+    material: diamond
+    displayname: "&6Example Button"
+  lore:
+    - "This is customizable lore."
+    - "Add whatever you want in here."
+  character: "c" # The character to use inside the GUI layout configs.
+  click-action: "fish-toggle" # The click action to execute.
+  click-commands: # Optional commands for the player to execute on click.
+    - "emf help"
+
 # These elements are available in every gui.
 # They will only show up when pages are needed.
 general:
@@ -92,6 +106,22 @@ main-menu:
       - "&f&m                                 "
     character: "b"
     click-action: "open-baits-menu"
+
+  coming-soon-competitions:
+    item:
+      material: barrier
+      displayname: "&cComing Soon!"
+    lore:
+      - "&7This menu is still being worked on!"
+    character: "c"
+
+  coming-soon-journal:
+    item:
+      material: barrier
+      displayname: "&cComing Soon!"
+    lore:
+      - "&7This menu is still being worked on!"
+    character: "j"
 
   exit:
     item:
@@ -235,4 +265,4 @@ baits-menu:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 2
+config-version: 3
