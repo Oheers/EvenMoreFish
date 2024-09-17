@@ -13,7 +13,7 @@ dependencyResolutionManagement {
             library("placeholder-api", "me.clip:placeholderapi:2.11.6")
             library("bstats", "org.bstats:bstats-bukkit:3.0.2")
 
-            version("worldguard", "7.0.5")//We must use 7.0.5 until we upgrade to java 17
+            version("worldguard", "7.0.5") //We must use 7.0.5 until we compile against a newer Minecraft version
             library("worldguard-core", "com.sk89q.worldguard","worldguard-core").versionRef("worldguard")
             library("worldguard-bukkit", "com.sk89q.worldguard","worldguard-bukkit").versionRef("worldguard")
             bundle("worldguard", listOf("worldguard-core", "worldguard-bukkit"))
