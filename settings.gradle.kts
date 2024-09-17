@@ -70,12 +70,11 @@ dependencyResolutionManagement {
             plugin("shadow", "com.gradleup.shadow").version("8.3.0")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
 
-            library("adventure-bungee", "net.kyori:adventure-text-serializer-bungeecord:4.3.4")
             version("adventure", "4.17.0")
             library("adventure-api", "net.kyori","adventure-api").versionRef("adventure")
             library("adventure-minimessage", "net.kyori","adventure-text-minimessage").versionRef("adventure")
             library("adventure-legacy", "net.kyori","adventure-text-serializer-legacy").versionRef("adventure")
-            bundle("adventure", listOf("adventure-api", "adventure-minimessage", "adventure-legacy", "adventure-bungee"))
+            bundle("adventure", listOf("adventure-api", "adventure-minimessage", "adventure-legacy"))
 
             library("boostedyaml", "dev.dejvokep:boosted-yaml:1.3.7")
 
