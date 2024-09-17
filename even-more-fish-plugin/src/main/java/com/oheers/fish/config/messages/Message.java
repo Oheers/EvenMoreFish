@@ -15,7 +15,7 @@ import java.util.*;
 public class Message {
 
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
-    public String message;
+    private String message;
     private boolean canSilent, canHidePrefix;
     private Player relevantPlayer;
 
