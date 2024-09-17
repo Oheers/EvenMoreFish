@@ -272,11 +272,8 @@ public class Message {
 
     private void formatPlaceholderAPI() {
         if (EvenMoreFish.getInstance().isUsingPAPI()) {
-            if (relevantPlayer == null) {
-                this.message = PlaceholderAPI.setPlaceholders(null, this.message);
-            } else {
-                this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
-            }
+            // relevantPlayer being null means player placeholders will not be formatted. Server placeholders will.
+            this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
         }
     }
 
