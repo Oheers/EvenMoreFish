@@ -34,7 +34,6 @@ dependencyResolutionManagement {
             library("headdatabase-api", "com.arcaniax:HeadDatabase-API:1.3.1")
             library("griefprevention", "com.github.TechFortress:GriefPrevention:16.17.1")
 
-
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.13.2")
             library("denizen-api", "com.denizenscript:denizen:1.3.1-SNAPSHOT")
@@ -67,7 +66,7 @@ dependencyResolutionManagement {
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("inventorygui", "de.themoep:inventorygui:1.6.3-SNAPSHOT")
 
-            plugin("shadow", "com.gradleup.shadow").version("8.3.0")
+            plugin("shadow", "com.gradleup.shadow").version("8.3.1")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
 
             version("adventure", "4.17.0")
