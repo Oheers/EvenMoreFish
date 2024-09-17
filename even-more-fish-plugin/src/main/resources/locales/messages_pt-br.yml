@@ -12,8 +12,7 @@ contest-start: "&rA competição começou."
 contest-end: "&rA competição acabou."
 # Segments shown in the bossbar when competitions run
 bossbar:
-  # Probably the only bit you'll want to change, make sure to leave a space after the prefix.
-  prefix: "&a&lCompetição de pesca: "
+  layout: "{prefix}&r{time-formatted}&r{remaining}"
   # The abbreviations used for different units of time
   hour: "&r{hour}h"
   minute: "&r{minute}m"
@@ -67,4 +66,4 @@ emf-competition-fish-format: "&l{fish} {rarity} de {length}cm"
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 3
+config-version: 4

@@ -35,6 +35,7 @@ competition-types:
   specific-rarity: "{amount} {rarity_colour}&l{rarity}&r poisson(s)"
 # Segments affiché sur la bossbar quand des compétitions commencent
 bossbar:
+  layout: "{prefix}&r{time-formatted}&r{remaining}"
   # Les abréviations utilisés pour les différentes unités de temps
   hour: "&r{hour}h"
   minute: "&r{minute}m"
@@ -191,4 +192,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 3
+config-version: 4
