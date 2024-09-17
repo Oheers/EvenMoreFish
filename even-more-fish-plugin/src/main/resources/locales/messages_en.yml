@@ -1,6 +1,8 @@
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
-# These messages partially support the MiniMessage format (Things like hoverable text will not work). You are able to mix this with the existing legacy codes, however you MUST close the tags.
+# These messages partially support the MiniMessage format (Things like hoverable and clickable text will not work).
+# MiniMessage is in strict mode, meaning all tags need to be closed in order to work.
+# You are able to mix MiniMessage with the existing legacy codes, however this is not recommended.
 # Here is the MiniMessage Pull Request for more info: https://github.com/Oheers/EvenMoreFish/pull/387
 # Here are the MiniMessage Docs: https://docs.advntr.dev/minimessage/format.html
 
@@ -39,11 +41,13 @@ competition-types:
   specific-rarity: "{amount} {rarity_colour}&l{rarity}&r fish"
 # Segments shown in the bossbar when competitions run
 bossbar:
-  # The abbreviations used for different units of time
+  layout: "{prefix}&r{time-formatted}&r{remaining}"
+  # The abbreviations used for different units of time in the {time-formatted} variable.
   hour: "&r{hour}h"
   minute: "&r{minute}m"
   second: "&r{second}s"
   # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
+  # This is the {remaining} variable.
   remaining: "left"
 
 # The prefix shown in commands. Keeping the space in is recommended.
@@ -235,4 +239,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 3
+config-version: 4
