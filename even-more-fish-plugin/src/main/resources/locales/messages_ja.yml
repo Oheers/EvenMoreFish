@@ -36,6 +36,7 @@ competition-types:
   specific-rarity: "{amount} {rarity_colour}&l{rarity}&r の魚"
 # Segments shown in the bossbar when competitions run
 bossbar:
+  layout: "{prefix}&r{time-formatted}&r{remaining}"
   # The abbreviations used for different units of time
   hour: "&r{hour}時間"
   minute: "&r{minute}分"
@@ -198,4 +199,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 3
+config-version: 4

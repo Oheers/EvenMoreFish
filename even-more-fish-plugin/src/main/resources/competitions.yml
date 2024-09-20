@@ -106,6 +106,9 @@ general:
     - "Epic"
     - "Legendary"
 
+  # Should the bossbar be shown?
+  show-bossbar: true
+
   # The colour of the bossbar shown at the top of the screen, (defaults to GREEN)
   bossbar-colour: GREEN
   # The title of the bossbar (defaults to the one set in messages.yml) - like messages.yml, this won't include the "_s left"

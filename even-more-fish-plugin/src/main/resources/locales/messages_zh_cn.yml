@@ -35,6 +35,7 @@ competition-types:
   specific-rarity: "{amount} {rarity_colour}&l{rarity}&r 鱼"
 # bossbar上面显示的文字
 bossbar:
+  layout: "{prefix}&r{time-formatted}&r{remaining}"
   # 用于不同时间单位的缩写
   hour: "&r{hour}时"
   minute: "&r{minute}分"
@@ -206,4 +207,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 3
+config-version: 4

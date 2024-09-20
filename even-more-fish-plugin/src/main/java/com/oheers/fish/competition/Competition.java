@@ -42,6 +42,7 @@ public class Competition {
     public Message startMessage;
     long maxDuration, timeLeft;
     Bar statusBar;
+    boolean showBar;
     long epochStartTime;
     List<Long> alertTimes;
     Map<Integer, List<Reward>> rewards;
@@ -100,8 +101,11 @@ public class Competition {
             this.timeLeft = this.maxDuration;
 
             leaderboard = new Leaderboard(competitionType);
-            statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
-            statusBar.show();
+
+            if (showBar) {
+                statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
+                statusBar.show();
+            }
             initTimer();
             announceBegin();
             EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(this);
@@ -158,7 +162,9 @@ public class Competition {
         this.timingSystem = new UniversalRunnable() {
             @Override
             public void run() {
-                statusBar.timerUpdate(timeLeft, maxDuration);
+                if (showBar) {
+                    statusBar.timerUpdate(timeLeft, maxDuration);
+                }
                 if (decreaseTime()) {
                     cancel();
                 }
@@ -811,6 +817,9 @@ public class Competition {
     }
 
     public void initBar(String competitionName) {
+
+        showBar = CompetitionConfig.getInstance().getShowBar(competitionName);
+
         this.statusBar = new Bar();
 
         try {

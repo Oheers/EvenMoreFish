@@ -260,7 +260,7 @@ public class Fish implements Cloneable {
 
         newLoreLine.setVariable("{fisherman_lore}",
             !disableFisherman && getFishermanPlayer() != null ?
-                (new Message(ConfigMessage.FISHERMAN_LORE)).message
+                (new Message(ConfigMessage.FISHERMAN_LORE)).getRawMessage(false)
                 : ""
         );
 
@@ -268,7 +268,7 @@ public class Fish implements Cloneable {
 
         newLoreLine.setVariable("{length_lore}",
             length > 0 ?
-                (new Message(ConfigMessage.LENGTH_LORE)).message
+                (new Message(ConfigMessage.LENGTH_LORE)).getRawMessage(false)
                 : ""
         );
 

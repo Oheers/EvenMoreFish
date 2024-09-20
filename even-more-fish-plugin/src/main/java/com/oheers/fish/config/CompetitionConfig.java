@@ -161,6 +161,14 @@ public class CompetitionConfig extends ConfigBase {
         return "GREEN";
     }
 
+    public boolean getShowBar(String competitionName) {
+        if (competitionName != null) {
+            return getConfig().getBoolean("competitions." + competitionName + ".show-bossbar", true);
+        } else {
+            return getConfig().getBoolean("general.show-bossbar", true);
+        }
+    }
+
     public String getBarPrefix(String competitionName) {
         String barPrefix;
         if (competitionName != null) {

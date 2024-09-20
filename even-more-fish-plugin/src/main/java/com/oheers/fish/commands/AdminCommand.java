@@ -20,6 +20,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.permissions.AdminPerms;
 import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -95,7 +96,7 @@ public class AdminCommand extends BaseCommand {
             BaseComponent baseComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
             for (Fish fish : EvenMoreFish.getInstance().getFishCollection().get(rarity)) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour()+ "] "));
-                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to receive fish")));
+                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to receive fish"))));
                 textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName().replace(" ","_")));
                 baseComponent.addExtra(textComponent);
             }
@@ -109,7 +110,7 @@ public class AdminCommand extends BaseCommand {
             BaseComponent baseComponent = new TextComponent("");
             for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                 BaseComponent textComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
-                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish.")));
+                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish."))));
                 textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
                 baseComponent.addExtra(textComponent);
             }
@@ -368,10 +369,10 @@ public class AdminCommand extends BaseCommand {
             TextComponent component = new TextComponent(rewardType.getIdentifier());
             component.setHoverEvent(new HoverEvent(
                     HoverEvent.Action.SHOW_TEXT,
-                    TextComponent.fromLegacyText(
+                    new Text(TextComponent.fromLegacyText(
                             "Author: " + rewardType.getAuthor() + "\n" +
                                     "Registered Plugin: " + rewardType.getPlugin().getName()
-                    )
+                    ))
             ));
             builder.append(component).append(", ");
         });

@@ -15,7 +15,7 @@ import java.util.*;
 public class Message {
 
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
-    public String message;
+    private String message;
     private boolean canSilent, canHidePrefix;
     private Player relevantPlayer;
 
@@ -124,7 +124,7 @@ public class Message {
         if (doVariables) variableFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        formatPlaceholderAPI();
 
         colourFormat();
 
@@ -145,7 +145,7 @@ public class Message {
         if (doVariables) variableFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        formatPlaceholderAPI();
 
         colourFormat();
 
@@ -166,7 +166,7 @@ public class Message {
         if (doVariables) variableFormat();
         if (this.message.endsWith(" -s") && this.canSilent) return;
 
-        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        formatPlaceholderAPI();
 
         colourFormat();
 
@@ -214,7 +214,7 @@ public class Message {
     public String getRawMessage(final boolean doVariables) {
         if (doVariables) variableFormat();
 
-        if (relevantPlayer != null && EvenMoreFish.getInstance().isUsingPAPI()) this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        formatPlaceholderAPI();
 
         colourFormat();
 
@@ -268,6 +268,13 @@ public class Message {
      */
     public void usePrefix(PrefixType type) {
         this.message = type.getPrefix() + this.message;
+    }
+
+    private void formatPlaceholderAPI() {
+        if (EvenMoreFish.getInstance().isUsingPAPI()) {
+            // relevantPlayer being null means player placeholders will not be formatted. Server placeholders will.
+            this.message = PlaceholderAPI.setPlaceholders(relevantPlayer, this.message);
+        }
     }
 
     /**

@@ -60,7 +60,11 @@ public class Bar {
     }
 
     public void setTitle(long timeLeft) {
-        bar.setTitle(prefix + ChatColor.RESET + FishUtils.translateColorCodes(FishUtils.timeFormat(timeLeft) + ChatColor.RESET + new Message(ConfigMessage.BAR_REMAINING).getRawMessage(false)));
+        Message layoutMessage = new Message(ConfigMessage.BAR_LAYOUT);
+        layoutMessage.setVariable("{prefix}", prefix);
+        layoutMessage.setVariable("{time-formatted}", FishUtils.translateColorCodes(FishUtils.timeFormat(timeLeft)));
+        layoutMessage.setVariable("{remaining}", new Message(ConfigMessage.BAR_REMAINING).getRawMessage(false));
+        bar.setTitle(layoutMessage.getRawMessage(true));
     }
 
     public void show() {

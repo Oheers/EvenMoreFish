@@ -33,6 +33,7 @@ competition-types:
   specific-rarity: "{amount} {rarity_colour}&l{rarity}&r vissen"
 # Segments shown in the bossbar when competitions run
 bossbar:
+  layout: "{prefix}&r{time-formatted}&r{remaining}"
   # The abbreviations used for different units of time
   hour: "&r{hour}u"
   minute: "&r{minute}m"
@@ -201,4 +202,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 3
+config-version: 4
