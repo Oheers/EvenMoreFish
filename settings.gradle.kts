@@ -13,12 +13,12 @@ dependencyResolutionManagement {
             library("placeholder-api", "me.clip:placeholderapi:2.11.6")
             library("bstats", "org.bstats:bstats-bukkit:3.0.2")
 
-            version("worldguard", "7.0.5")//We must use 7.0.5 until we upgrade to java 17
+            version("worldguard", "7.0.5") //We must use 7.0.5 until we compile against a newer Minecraft version
             library("worldguard-core", "com.sk89q.worldguard","worldguard-core").versionRef("worldguard")
             library("worldguard-bukkit", "com.sk89q.worldguard","worldguard-bukkit").versionRef("worldguard")
             bundle("worldguard", listOf("worldguard-core", "worldguard-bukkit"))
 
-            version("worldedit", "7.2.15")
+            version("worldedit", "7.2.17") //We must use 7.2.17 until we compile against a newer Minecraft version
             library("worldedit-core", "com.sk89q.worldedit","worldedit-core").versionRef("worldedit")
             library("worldedit-bukkit", "com.sk89q.worldedit","worldedit-bukkit").versionRef("worldedit")
             bundle("worldedit", listOf("worldedit-core", "worldedit-bukkit"))
@@ -33,7 +33,6 @@ dependencyResolutionManagement {
             library("aura-skills", "dev.aurelium:auraskills-api-bukkit:2.0.7")
             library("headdatabase-api", "com.arcaniax:HeadDatabase-API:1.3.1")
             library("griefprevention", "com.github.TechFortress:GriefPrevention:16.17.1")
-
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.13.2")
@@ -67,15 +66,14 @@ dependencyResolutionManagement {
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("inventorygui", "de.themoep:inventorygui:1.6.3-SNAPSHOT")
 
-            plugin("shadow", "com.gradleup.shadow").version("8.3.0")
+            plugin("shadow", "com.gradleup.shadow").version("8.3.1")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
 
-            library("adventure-bungee", "net.kyori:adventure-text-serializer-bungeecord:4.3.4")
             version("adventure", "4.17.0")
             library("adventure-api", "net.kyori","adventure-api").versionRef("adventure")
             library("adventure-minimessage", "net.kyori","adventure-text-minimessage").versionRef("adventure")
             library("adventure-legacy", "net.kyori","adventure-text-serializer-legacy").versionRef("adventure")
-            bundle("adventure", listOf("adventure-api", "adventure-minimessage", "adventure-legacy", "adventure-bungee"))
+            bundle("adventure", listOf("adventure-api", "adventure-minimessage", "adventure-legacy"))
 
             library("boostedyaml", "dev.dejvokep:boosted-yaml:1.3.7")
 
