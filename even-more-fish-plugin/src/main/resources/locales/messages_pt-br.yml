@@ -1,69 +1,240 @@
-# Translated by: DuzzyDev from Cataclysm Network
+# Se uma mensagem contém placeholders do EvenMoreFish, como {player} ou {rarity}, ela também suporta placeholders do PlaceholderAPI.
 
-# If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
+# Essas mensagens suportam parcialmente o formato MiniMessage (Coisas como texto hoverable e clicável não funcionarão).
+# MiniMessage está em modo estrito, o que significa que todas as tags precisam ser fechadas para funcionar.
+# Você pode misturar MiniMessage com os códigos legados existentes, no entanto, isso não é recomendado.
+# Aqui está o Pull Request do MiniMessage para mais informações: https://github.com/Oheers/EvenMoreFish/pull/387
+# Aqui estão os documentos do MiniMessage: https://docs.advntr.dev/minimessage/format.html
 
-# Sent to players when they fish an EvenMoreFish fish
-fish-caught: "&l¡{player} &rpescou um {fish} {rarity} de {length}cm!"
-# Sent to a player when they don't have permission to execute a command.
-no-permission: "&cVocê não possui permissão para executar o comando."
+# Enviado aos jogadores quando eles pescam um peixe do EvenMoreFish
+fish-caught: "&l{player} &rpescou um {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!"
+# Definindo o comprimento-mínimo de um peixe para menos de 0, você pode criar um peixe sem comprimento. Isso é usado quando um jogador pesca um peixe sem comprimento.
+lengthless-fish-caught: "&l{player} &rpescou um {rarity_colour}&l{rarity} {rarity_colour}{fish}!"
+# Enviado a um jogador quando ele não tem permissão para executar um comando.
+no-permission: "&cVocê não tem permissão para executar esse comando."
 
-# The message to be sent when a competition starts and ends
-contest-start: "&rA competição começou."
-contest-end: "&rA competição acabou."
-# Segments shown in the bossbar when competitions run
+# A mensagem a ser enviada quando uma competição começa e termina
+contest-start: "&rUma competição de pesca para {type} começou."
+contest-end: "&rA competição de pesca terminou."
+# A mensagem a ser enviada quando um jogador entra enquanto uma competição está ocorrendo
+contest-join: "&rUma competição de pesca para {type} está ocorrendo."
+
+# Mostrada aos jogadores quando um novo jogador assume o 1º lugar, remova este valor ou defina como "" para desativar esta mensagem
+new-first: "&r{player} agora é o #1"
+# Essa mensagem deve aparecer no chat (false) ou acima da barra de experiência (true)
+action-bar-message: true
+# Para quais tipos de competição a barra de ação deve ser usada? (recomendado: MOST_FISH)
+action-bar-types:
+  - MOST_FISH
+
+# O que deve substituir a variável {type} para cada tipo de competição?
+competition-types:
+  # MOST_FISH
+  most: "o maior número de peixes"
+  # LARGEST_FISH
+  largest: "o maior peixe"
+  # LARGEST_TOTAL_FISH
+  largest-total: "o maior comprimento total de peixe"
+  # SPECIFIC_FISH
+  specific: "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r"
+  # SPECIFIC_RARITY
+  specific-rarity: "{amount} peixes {rarity_colour}&l{rarity}&r"
+# Segmentos mostrados na barra de chefe quando as competições estão em andamento
 bossbar:
   layout: "{prefix}&r{time-formatted}&r{remaining}"
-  # The abbreviations used for different units of time
+  # As abreviações usadas para diferentes unidades de tempo na variável {time-formatted}.
   hour: "&r{hour}h"
   minute: "&r{minute}m"
   second: "&r{second}s"
-  # For translating the "left" at the end e.g. "5s left" -> "5s kvar"
+  # Para traduzir o "restante" no final, por exemplo, "5s restante" -> "5s restantes"
+  # Esta é a variável {remaining}.
   remaining: "restantes"
 
-# The prefix shown in commands. Keeping the space in is recommended.
+# O prefixo mostrado nos comandos. Manter o espaço é recomendado.
 prefix-regular: "&a[EvenMoreFish] "
-# The prefix shown in admin commands.
+# O prefixo mostrado nos comandos de administrador.
 prefix-admin: "&c[EvenMoreFish] "
-# The prefix shown when errors occur e.g. no permission to run a command.
+# O prefixo mostrado quando ocorrem erros, por exemplo, sem permissão para executar um comando.
 prefix-error: "&c[EvenMoreFish] "
 
-# The text shown in a fish's lore before who caught the fish
-fish-caught-by: "&fPescado por {player}"
-# The text shown in a fish's lore before the length of the fish
-fish-length: "&fMede {length}cm"
-# The text to come before the rarity of the fish i.e. "Rarity: UNCOMMON"
-#fish-rarity-prefix: "&fRarity: "
+# Este é o formato do lore dado aos peixes quando são pescados.
+# {custom-lore} é especificado no fish.yml na seção lore:, se o peixe tiver um lore, as linhas do lore substituirão o {fish_lore}, no entanto, se estiver vazio, a linha será removida. NÃO ADICIONE NADA ALÉM DESSA VARIÁVEL
+# A ESSA LINHA.
+fish-lore:
+  - "{fisherman_lore}"
+  - "{length_lore}"
+  - ""
+  - "{fish_lore}"
+  - "{rarity_colour}&l{rarity}"
 
-# The format of commands in /emf help (this message doesn't support papi placeholders)
-help: "/{command} - {description}"
+# Define o que substituir com {fisherman_lore} ou {length_lore} acima ^
+fisherman-lore:
+  - "&fPescado por {player}"
+length-lore:
+  - "&fMede {length}cm."
 
-# The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
-leaderboard: "&r&l{position} &r| {player} - {fish} {rarity} de {length}cm"
-# The number of positions shown in the leaderboard - can't be less than 1.
+# O formato do placar após uma competição terminar (essa mensagem não suporta placeholders do papi)
+leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
+leaderboard-largest-total: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)"
+leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rpeixes)"
+# Se você estiver executando uma competição em que não há placar, essa mensagem é enviada quando há um vencedor
+single-winner: "&r{player} venceu a competição de {type}. Parabéns!"
+# Mostra o número de jogadores atualmente na competição, defina como "" para desativar.
+total-players: "&rHá um total de {amount} jogador(es) no placar."
+# O número de posições mostradas no placar - não pode ser menos de 1.
 leaderboard-count: 5
-# Sent to players when nobody got a record during a competition
-no-winners: "&rNinguém conseguiu pescar nada."
-# When an individual player didn't get a record
-no-record: "&rVocê não pescou nada."
-# Sent to all online players when not enough players are on to start a competition
-not-enough-players: "&rNão há jogadores o suficiente conectados para começar a competição."
+# Se o jogador não aparecer no /emf top, sua posição deve ser exibida no final?
+always-show-pos: true
+# Enviado aos jogadores quando ninguém obteve um recorde durante uma competição
+no-winners: "&rNão houve recordes de pesca."
+# Quando um jogador individual não obteve um recorde
+no-record: "&rVocê não pescou nenhum peixe."
+# Enviado quando um administrador tenta iniciar uma competição em que o tipo não existe, por exemplo, /emf admin competition start 600 ABCDEFGH
+invalid-type: "&rEsse não é um tipo de competição válido, tipos disponíveis: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+# Enviado a todos os jogadores online quando não há jogadores suficientes para iniciar uma competição
+not-enough-players: "&rNão há jogadores suficientes online para iniciar a competição de pesca agendada."
+# Enviado a todos os jogadores em momentos específicos para mostrar o tempo restante
+# {time_formatted} mostra o tempo (por exemplo, 5m restantes, 10m 30s restantes)
+# {time_raw} é o que você define em competitions.yml
+time-alert: "&rFaltam {time_formatted} na competição de {type}"
 
-# The message sent to players when they've sold their fish in the /emf shop
-fish-sale: "&fFoi vendido &a{amount} &fpeixes por &a{sell-price}&f."
+# O preço de venda:
+# 0 – imprime um dígito se fornecido, 0 caso contrário
+# # – imprime um dígito se fornecido, nada caso contrário
+# . – indica onde colocar o separador decimal
+# , – indica onde colocar o separador de agrupamento
+sell-price-format: "R$#,##0.0"
 
-# Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
-no-player-in-place: "Comece a pescar para preencher esta posição."
-# Shown when the emf competition placeholders are used when there's no competition running
-no-competition-running: "Não há competições em andamento."
-# Should %emf_competition_place_player_*% contain the above (false) or return null (true).
-emf-competition-player-null: false
-# Should %emf_competition_place_size_*% contain the above (false) or return null (true).
-emf-competition-size-null: true
-# Should %emf_competition_place_fish_*% contain the above (false) or return null (true).
-emf-competition-fish-null: true
-# How should the %emf_competition_place_fish_*% be formatted?
-emf-competition-fish-format: "&l{fish} {rarity} de {length}cm"
+# A mensagem enviada aos jogadores quando eles vendem seus peixes no /emf shop
+fish-sale: "&rVocê vendeu &a{amount} &fpeixes por &a{sell-price}&f."
 
-# ATTENTION ATTENTION ATTENTION
-# DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
+# Mensagens de ajuda
+# Ajuda geral (/emf help) - comandos dependentes de permissão só serão mostrados se estiverem formatados com a barra.
+help-format: "[noPrefix]&b{command} &e- {description}"
+
+help-general:
+  title: "[noPrefix]&f&m &#f1ffed&m &#e2ffdb&m &#d3ffc9&m &#c3ffb7&m &#b2ffa5&m &#9fff92&m &#8bff7f&m &#73ff6b&m &a&m &f &a&lEvenMoreFish &a&m &#73ff6b&m&m &#8bff7f&m &#9fff92&m &#b2ffa5&m &#c3ffb7&m &#d3ffc9&m &#e2ffdb&m &#f1ffed&m &f&m &f"
+  top: "[noPrefix]Mostra o placar da competição em andamento."
+  help: "[noPrefix]Mostra esta página."
+  shop: "[noPrefix]Abre uma loja para vender seus peixes."
+  toggle: "[noPrefix]Ativa ou desativa se você deseja receber peixes personalizados."
+  gui: "[noPrefix]Abre o menu principal GUI."
+  admin: "[noPrefix]Página de ajuda de comandos de administrador."
+  sellall: "[noPrefix]Vende todos os peixes em seu inventário."
+  next: "[noPrefix]Mostra quanto tempo falta para a próxima competição."
+
+help-list:
+  fish: "[noPrefix]Exibe todos os peixes de uma raridade específica."
+  rarities: "[noPrefix]Exibe todas as raridades."
+
+# Ajuda de competição (/emf admin competition help)
+help-competition:
+  start: "[noPrefix]Inicia uma competição com duração especificada"
+  end: "[noPrefix]Termina a competição atual (se houver alguma)"
+# Admin help (/emf admin help)
+help-admin:
+  bait: "[noPrefix]Fornece iscas para um jogador."
+  competition: "[noPrefix]Inicia ou encerra uma competição."
+  clearbaits: "[noPrefix]Remove todas as iscas aplicadas de uma vara de pescar."
+  fish: "[noPrefix]Fornece um peixe para um jogador."
+  nbt-rod: "[noPrefix]Fornece uma vara de pescar personalizada com NBT para um jogador, necessária para pescar peixes EMF."
+  reload: "[noPrefix]Recarrega os arquivos de configuração do plugin."
+  migrate: "[noPrefix]Migra o banco de dados do Legacy (V2) para o V3."
+  addons: "[noPrefix]Exibe todos os addons."
+  rewardtypes: "[noPrefix]Exibe todos os tipos de recompensas."
+  version: "[noPrefix]Exibe informações do plugin."
+
+# Exibido quando o placeholder emf %emf_competition_place_player_*% solicita uma posição no ranking que não existe
+no-player-in-place: "Comece a pescar para ocupar este lugar."
+# Exibido quando o placeholder emf %emf_competition_place_fish_*% solicita uma posição no ranking que não existe
+no-fish-in-place: "Comece a pescar para ocupar este lugar."
+# Exibido quando o placeholder emf %emf_competition_place_size_*% solicita uma posição no ranking que não existe
+no-size-in-place: "Comece a pescar para ocupar este lugar."
+# Exibido quando o placeholder emf %emf_competition_place_player_*% é usado enquanto não há uma competição em andamento
+no-competition-running: "Nenhuma competição em andamento no momento."
+# Exibido quando o placeholder emf %emf_competition_place_fish_*% é usado enquanto não há uma competição em andamento
+no-competition-running-fish: "Nenhuma competição em andamento no momento."
+# Exibido quando o placeholder emf %emf_competition_place_size_*% é usado enquanto não há uma competição em andamento
+no-competition-running-size: "Nenhuma competição em andamento no momento."
+
+# Como o %emf_competition_place_fish_*% deve ser formatado?
+emf-competition-fish-format: "{rarity_colour}{length}cm &l{rarity} {fish}"
+# Como o %emf_competition_place_fish_*% deve ser formatado quando o peixe não tem comprimento?
+emf-lengthless-fish-format: "{rarity_colour}&l{rarity} {fish}"
+# Como %emf_competition_place_fish_*% deve ser formatado durante competições de MAIOR_QUANTIDADE/PEIXE_ESPECÍFICO?
+emf-most-fish-format: "{amount} peixes"
+# O que deve ser exibido para %emf_competition_place_size_*% durante a competição de MAIOR_QUANTIDADE?
+emf-size-during-most-fish: "N/A"
+# Como a variável %emf_competition_time_left% deve ser formatada.
+emf-time-remaining: "Tempo restante até a próxima competição: {days}d, {hours}h, {minutes}m."
+# Substitui a variável %emf_competition_time_left% quando já há uma competição em andamento.
+emf-time-remaining-during-comp: "Há uma competição em andamento no momento."
+
+# Enviado quando um jogador tenta aplicar muitos tipos de isca em uma vara de pescar, definido na seção geral de baits.yml
+max-baits-reached: "&rVocê atingiu o número máximo de tipos de iscas para esta vara de pescar."
+# Não confunda com o acima, isso é enviado quando o máximo de uma isca específica é atingido. Defina isso em baits.yml usando "max-baits".
+max-bait-reached: "&rVocê atingiu o número máximo de {bait_theme}{bait} &risca que pode ser aplicada a uma vara."
+# Enviado quando um jogador pesca uma isca (isso pode ser desativado definindo a porcentagem de captura para 0 em baits.yml)
+bait-catch: "&r&l{player} &rpescou uma {bait_theme}&l{bait} &risca!"
+# Enviado quando uma isca é aplicada e um peixe é capturado.
+bait-use: "&rVocê usou uma das iscas {bait_theme}&l{bait} &rda sua vara."
+# Enviado quando alguém tenta usar uma isca no modo criativo
+bait-survival-limited: "&rVocê deve estar no &nmodo sobrevivência ou aventura&r para aplicar iscas às varas de pescar."
+# Enviado quando alguém tenta combinar uma vara com isca em outra sem isca
+bait-rod-protection: "&rSua vara de pescar com isca foi protegida. Se você está tentando repará-la, coloque-a no primeiro slot."
+
+# Exibido quando o comando /emf toggle é executado, para desligar e ligar respectivamente.
+toggle-off: "&rVocê não pegará mais peixes personalizados."
+toggle-on: "&rAgora você pegará peixes personalizados."
+
+# Quando tenta colocar um peixe-caveira enquanto isso está bloqueado no config.yml
+place-fish-blocked: "&rVocê não pode colocar este peixe."
+
+admin:
+  # Abre uma loja /emf para outro jogador
+  open-fish-shop: "&rLoja aberta para {player}."
+  # Quando um peixe é dado a um jogador
+  given-player-fish: "&rVocê deu {fish} para {player}."
+  # Quando uma isca é dada a um jogador
+  given-player-bait: "&rVocê deu {bait} para {player}."
+  # Quando um admin executa /emf admin bait sem especificar uma isca.
+  no-bait-specified: "&rVocê deve especificar um nome de isca."
+  # Quando o admin tenta executar /emf admin clearbaits sem segurar uma vara de pescar.
+  must-be-holding-rod: "&rVocê precisa estar segurando uma vara de pescar para executar esse comando."
+  # Quando o comando /emf admin clearbaits é executado.
+  all-baits-cleared: "&rVocê removeu todas as {amount} iscas da sua vara de pescar."
+  # /emf admin clearbaits é executado, mas não há iscas na vara.
+  no-baits-on-rod: "&rA vara de pescar não tem nenhuma isca aplicada."
+
+  # Quando a economia está desativada para o plugin
+  economy-disabled: "&rAs funcionalidades de economia do EvenMoreFish estão desativadas."
+
+  # Quando o jogador especificado não pode ser encontrado ao usar o parâmetro -p:.
+  player-not-found: "&r{player} não foi encontrado."
+  # Quando o número especificado em -q: não é um número.
+  number-format-error: "&r{amount} não é um número válido."
+  # Quando o número especificado em -q: não está dentro do intervalo permitido pelo Minecraft (1-64).
+  number-range-error: "&r{amount} não é um número entre 1-64."
+  # Quando um comando não pode ser executado pelo console.
+  cannot-run-on-console: "&rO comando não pode ser executado pelo console."
+
+  # Enviado quando uma competição já está em andamento ao usar /emf admin competition start
+  competition-already-running: "&rJá há uma competição em andamento."
+  # Quando um tipo de competição inválido é tentado iniciar
+  competition-type-invalid: "&rEsse não é um tipo de competição válido. Tipos disponíveis: MAIOR_QUANTIDADE, MAIOR_PEIXE, PEIXE_ESPECÍFICO."
+
+  # Quando o comando /emf admin nbt-rod é executado.
+  nbt-rod-given: "&rVocê deu uma vara NBT para {player}, certifique-se de que \"require-nbt-rod\" esteja configurado como &atrue &rpara que seja diferente de qualquer outra vara de pescar."
+  # Quando o comando /emf admin nbt-rod é executado, mas require-rod-nbt está como false no config.yml.
+  nbt-not-required: "&rAltere \"require-nbt-rod\" para true para usar esse recurso."
+
+  # Quando há uma atualização do Spigot disponível, não traduza a URL, caso contrário, ela não direcionará para a página correta.
+  update-available: "&rHá uma atualização disponível: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
+  # Quando o plugin é recarregado
+  reload: "&rPlugin recarregado com sucesso."
+  # Ao verificar a lista de RewardTypes. A lista real é adicionada ao final desta mensagem.
+  list-reward-types: "&rTipos de Recompensa Registrados: "
+
+# ATENÇÃO ATENÇÃO ATENÇÃO
+# NÃO EDITE ESTE VALOR OU AS COISAS QUEBRARÃO!!!
 config-version: 4
