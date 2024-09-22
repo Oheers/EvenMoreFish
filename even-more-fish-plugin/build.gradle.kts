@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "com.oheers.evenmorefish"
-version = "1.7.3"
+version = "1.7.4"
 
 description = "A fishing extension bringing an exciting new experience to fishing."
 
