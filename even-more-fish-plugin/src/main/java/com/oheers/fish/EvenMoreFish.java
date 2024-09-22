@@ -11,6 +11,7 @@ import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
+import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitListener;
@@ -771,6 +772,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new MessageRewardType().register();
         new EXPRewardType().register();
         loadExternalRewardTypes();
+    }
+
+    private void loadRequirementManager() {
+        // Load RequirementManager
+        RequirementManager.getInstance().load();
     }
 
     private void loadExternalRewardTypes() {
