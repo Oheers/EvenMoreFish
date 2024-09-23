@@ -15,7 +15,7 @@ import java.util.List;
 public class BiomeSetRequirementType implements RequirementType {
 
     @Override
-    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value) {
+    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values) {
         World world = context.getWorld();
         Location location = context.getLocation();
         String configLocation = context.getConfigPath();
@@ -32,13 +32,18 @@ public class BiomeSetRequirementType implements RequirementType {
                     "default. The player may not have been given a fish if you see this message multiple times.");
             return false;
         }
-        @NotNull List<Biome> checkBiomes = MainConfig.getInstance().getBiomeSets().get(value);
-        if (checkBiomes == null) {
-            EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome set.");
-            return false;
-        }
         Biome hookBiome = location.getBlock().getBiome();
-        return checkBiomes.contains(hookBiome);
+        for (String value : values) {
+            @NotNull List<Biome> checkBiomes = MainConfig.getInstance().getBiomeSets().get(value);
+            if (checkBiomes == null) {
+                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome set.");
+                continue;
+            }
+            if (checkBiomes.contains(hookBiome)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

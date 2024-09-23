@@ -7,12 +7,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class PermissionRequirementType implements RequirementType {
 
     @Override
-    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value) {
+    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values) {
         Player player = context.getPlayer();
-        return player != null && player.hasPermission(value);
+        if (player == null) {
+            return false;
+        }
+        for (String value : values) {
+            if (player.hasPermission(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

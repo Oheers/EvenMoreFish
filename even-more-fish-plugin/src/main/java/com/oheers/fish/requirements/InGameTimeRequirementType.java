@@ -7,11 +7,13 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 // TODO auto-update configs to reflect the new format required for this
 public class InGameTimeRequirementType implements RequirementType {
 
     @Override
-    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value) {
+    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values) {
         World world = context.getWorld();
         if (world == null) {
             String configLocation = context.getConfigPath();
@@ -22,18 +24,23 @@ public class InGameTimeRequirementType implements RequirementType {
                     "default. The player may not have been given a fish if you see this message multiple times.");
             return false;
         }
-        String[] split = value.split("-");
-        int minTime;
-        int maxTime;
-        try {
-            minTime = Integer.parseInt(split[0]);
-            maxTime = Integer.parseInt(split[1]);
-        } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid ingame time format. Using the defaults.");
-            minTime = 0;
-            maxTime = 24000;
+        for (String value : values) {
+            String[] split = value.split("-");
+            int minTime;
+            int maxTime;
+            try {
+                minTime = Integer.parseInt(split[0]);
+                maxTime = Integer.parseInt(split[1]);
+            } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
+                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid ingame time format. Using the defaults.");
+                minTime = 0;
+                maxTime = 24000;
+            }
+            if (world.getTime() <= maxTime && world.getTime() >= minTime) {
+                return true;
+            }
         }
-        return world.getTime() <= maxTime && world.getTime() >= minTime;
+        return false;
     }
 
     @Override

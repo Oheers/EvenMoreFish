@@ -7,25 +7,31 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.List;
 
 // TODO same as InGameTimeRequirementType
 public class IRLTimeRequirementType implements RequirementType {
 
     @Override
-    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value) {
-        String[] split = value.split("-");
-        int minTime;
-        int maxTime;
-        try {
-            minTime = getDayMinute(split[0], 0);
-            maxTime = getDayMinute(split[1], 1440);
-        } catch (ArrayIndexOutOfBoundsException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid real time format. Using the defaults.");
-            minTime = 0;
-            maxTime = 1440;
-        }
+    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values) {
         long currentTime = (Instant.now().getEpochSecond() / 60) % 1440 + 60;
-        return currentTime >= minTime && currentTime < maxTime;
+        for (String value : values) {
+            String[] split = value.split("-");
+            int minTime;
+            int maxTime;
+            try {
+                minTime = getDayMinute(split[0], 0);
+                maxTime = getDayMinute(split[1], 1440);
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid real time format. Using the defaults.");
+                minTime = 0;
+                maxTime = 1440;
+            }
+            if (currentTime >= minTime && currentTime < maxTime) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

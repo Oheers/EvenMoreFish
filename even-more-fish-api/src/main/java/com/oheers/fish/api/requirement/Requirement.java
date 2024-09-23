@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Requirement {
 
-    private final Map<String, String> checkMap;
+    private final Map<String, List<String>> checkMap;
 
     public Requirement() {
         checkMap = new HashMap<>();
@@ -36,20 +36,20 @@ public class Requirement {
     }
 
     private void processRequirement(@NotNull String identifier, @NotNull List<String> values) {
-        values.forEach(value -> this.checkMap.put(identifier, value));
+        this.checkMap.put(identifier, values);
     }
 
     public boolean meetsRequirements(@NotNull RequirementContext context) {
-        for (Map.Entry<String, String> entry : checkMap.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : checkMap.entrySet()) {
             String key = entry.getKey().toUpperCase();
-            String value = entry.getValue();
+            List<String> value = entry.getValue();
             if (key.isEmpty() || value.isEmpty()) {
                 EMFPlugin.getLogger().warning("Attempted to process an invalid Requirement. Please check for earlier warnings.");
                 continue;
             }
             RequirementType requirementType = RequirementManager.getInstance().getRegisteredRequirements().get(key);
             if (requirementType == null) {
-                EMFPlugin.getLogger().warning("Invalid requirement. Possible typo?: " + key + ":" + value);
+                EMFPlugin.getLogger().warning("Invalid requirement. Possible typo?: " + key);
                 continue;
             }
             if (!requirementType.checkRequirement(context, value)) {

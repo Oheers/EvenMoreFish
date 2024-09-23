@@ -7,10 +7,12 @@ import org.bukkit.WeatherType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class WeatherRequirementType implements RequirementType {
 
     @Override
-    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value) {
+    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values) {
         if (context.getWorld() == null) {
             String configLocation = context.getConfigPath();
             if (configLocation == null) {
@@ -20,18 +22,20 @@ public class WeatherRequirementType implements RequirementType {
                     "default. The player may not have been given a fish if you see this message multiple times.");
             return false;
         }
-        @NotNull WeatherType weatherType;
-        try {
-            weatherType = WeatherType.valueOf(value);
-        } catch (IllegalArgumentException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid weather type.");
-            return false;
+        boolean isClear = context.getWorld().isClearWeather();
+        for (String value : values) {
+            @NotNull WeatherType weatherType;
+            try {
+                weatherType = WeatherType.valueOf(value);
+            } catch (IllegalArgumentException exception) {
+                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid weather type.");
+                return false;
+            }
+            if (isClear ? weatherType.equals(WeatherType.CLEAR) : weatherType.equals(WeatherType.DOWNFALL)) {
+                return true;
+            }
         }
-        if (context.getWorld().isClearWeather()) {
-            return weatherType.equals(WeatherType.CLEAR);
-        } else {
-            return weatherType.equals(WeatherType.DOWNFALL);
-        }
+        return false;
     }
 
     @Override

@@ -8,10 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class NearbyPlayersRequirementType implements RequirementType {
 
     @Override
-    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value) {
+    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values) {
         Player player = context.getPlayer();
         if (player == null) {
             String configLocation = context.getConfigPath();
@@ -22,16 +24,21 @@ public class NearbyPlayersRequirementType implements RequirementType {
                     "default. The player may not have been given a fish if you see this message multiple times.");
             return false;
         }
-        int nearbyRequirement;
-        try {
-            nearbyRequirement = Integer.parseInt(value);
-        } catch (NumberFormatException exception) {
-            EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid integer");
-            return false;
-        }
         int range = MainConfig.getInstance().getNearbyPlayersRequirementRange();
         long nearbyPlayers = context.getPlayer().getNearbyEntities(range, range, range).stream().filter(entity -> entity instanceof Player).count();
-        return nearbyPlayers >= nearbyRequirement;
+        for (String value : values) {
+            int nearbyRequirement;
+            try {
+                nearbyRequirement = Integer.parseInt(value);
+            } catch (NumberFormatException exception) {
+                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid integer");
+                return false;
+            }
+            if (nearbyPlayers >= nearbyRequirement) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

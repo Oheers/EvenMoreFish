@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * A way to check if a player meets a certain requirement.
  * This interface can be implemented by third party plugins to register their own Requirement.
@@ -15,7 +17,7 @@ public interface RequirementType {
      * @param player The player to check
      * @param value The value to check
      */
-    boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value);
+    boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values);
 
     /**
      * The identifier for this Requirement

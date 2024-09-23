@@ -12,8 +12,8 @@ import java.util.List;
 public class RegionRequirementType implements RequirementType {
 
     @Override
-    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value) {
-        return FishUtils.checkRegion(context.getLocation(), List.of(value));
+    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values) {
+        return FishUtils.checkRegion(context.getLocation(), values);
     }
 
     @Override

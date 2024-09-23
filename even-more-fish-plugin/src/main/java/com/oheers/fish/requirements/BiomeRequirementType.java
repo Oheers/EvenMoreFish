@@ -9,10 +9,13 @@ import org.bukkit.block.Biome;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BiomeRequirementType implements RequirementType {
 
     @Override
-    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value) {
+    public boolean checkRequirement(@NotNull RequirementContext context, @NotNull List<String> values) {
         World world = context.getWorld();
         Location location = context.getLocation();
         String configLocation = context.getConfigPath();
@@ -29,14 +32,16 @@ public class BiomeRequirementType implements RequirementType {
                     "default. The player may not have been given a fish if you see this message multiple times.");
             return false;
         }
-        @NotNull org.bukkit.block.Biome checkBiome;
-        try {
-            checkBiome = org.bukkit.block.Biome.valueOf(value);
-        } catch (IllegalArgumentException exception) {
-            return false;
-        }
+        List<Biome> biomes = new ArrayList<>();
+        values.forEach(value -> {
+            try {
+                biomes.add(Biome.valueOf(value));
+            } catch (IllegalArgumentException exception) {
+                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome.");
+            }
+        });
         Biome hookBiome = location.getBlock().getBiome();
-        return checkBiome.equals(hookBiome);
+        return biomes.contains(hookBiome);
     }
 
     @Override
