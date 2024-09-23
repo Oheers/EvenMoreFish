@@ -184,8 +184,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         // Do this before anything competition related.
         loadRewardManager();
-        RewardManager.getInstance().load();
-        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
@@ -727,6 +725,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private void loadRewardManager() {
         // Load RewardManager
         RewardManager.getInstance().load();
+        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         // Load RewardTypes
         new CommandRewardType().register();
@@ -742,6 +741,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private void loadRequirementManager() {
         // Load RequirementManager
         RequirementManager.getInstance().load();
+        getServer().getPluginManager().registerEvents(RequirementManager.getInstance(), this);
 
         // Load RequirementTypes
         new BiomeRequirementType().register();
