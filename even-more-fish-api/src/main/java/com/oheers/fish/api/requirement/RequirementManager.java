@@ -1,15 +1,10 @@
 package com.oheers.fish.api.requirement;
 
 import com.oheers.fish.api.plugin.EMFPlugin;
-import com.oheers.fish.api.reward.EMFRewardsLoadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
-import org.jetbrains.annotations.NotNull;
-import uk.firedev.daisylib.Loggers;
-import uk.firedev.daisylib.local.DaisyLib;
-import uk.firedev.daisylib.requirement.requirements.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

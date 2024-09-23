@@ -1,10 +1,8 @@
 package com.oheers.fish.api.requirement;
 
 import com.oheers.fish.api.plugin.EMFPlugin;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,26 +11,35 @@ public class Requirement {
 
     private final Map<String, String> checkMap;
 
-    public Requirement(@NotNull String identifier) {
+    public Requirement() {
         checkMap = new HashMap<>();
-        processIdentifier(identifier);
     }
 
-    public Requirement(@NotNull List<String> identifiers) {
+    public Requirement(@NotNull String identifier, @NotNull List<String> values) {
         checkMap = new HashMap<>();
-        identifiers.forEach(this::processIdentifier);
+        processRequirement(identifier, values);
     }
 
-    private void processIdentifier(@NotNull String identifier) {
-        String[] split = identifier.split(":");
-        try {
-            this.checkMap.putIfAbsent(split[0], String.join(":", Arrays.copyOfRange(split, 1, split.length)));
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            EMFPlugin.getLogger().warning("Broken requirement " + identifier);
-        }
+    public Requirement(@NotNull Map<String, List<String>> requirements) {
+        checkMap = new HashMap<>();
+        requirements.forEach(this::processRequirement);
     }
 
-    public boolean meetsRequirements(@NotNull Player player) {
+    public Requirement add(@NotNull String identifier, @NotNull List<String> values) {
+        processRequirement(identifier, values);
+        return this;
+    }
+
+    public Requirement add(@NotNull Map<String, List<String>> requirements) {
+        requirements.forEach(this::processRequirement);
+        return this;
+    }
+
+    private void processRequirement(@NotNull String identifier, @NotNull List<String> values) {
+        values.forEach(value -> this.checkMap.put(identifier, value));
+    }
+
+    public boolean meetsRequirements(@NotNull RequirementContext context) {
         for (Map.Entry<String, String> entry : checkMap.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -45,7 +52,7 @@ public class Requirement {
                 EMFPlugin.getLogger().warning("Invalid requirement. Possible typo?: " + key + ":" + value);
                 continue;
             }
-            if (!requirementType.checkRequirement(player, value)) {
+            if (!requirementType.checkRequirement(context, value)) {
                 return false;
             }
         }

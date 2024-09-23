@@ -5,7 +5,7 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.exceptions.InvalidFishException;
-import com.oheers.fish.requirements.*;
+import com.oheers.fish.api.requirement.Requirement;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 
@@ -55,7 +55,7 @@ public class Names {
             Rarity r = new Rarity(rarity, rarityColour(rarity), rarityWeight(rarity), rarityAnnounce(rarity), rarityUseConfigCasing(rarity), rarityOverridenLore(rarity));
             r.setPermission(rarityPermission(rarity));
             r.setDisplayName(rarityDisplayName(rarity));
-            r.setRequirements(getRequirements(null, rarity, RaritiesFile.getInstance().getConfig()));
+            r.setRequirement(getRequirement(null, rarity, RaritiesFile.getInstance().getConfig()));
 
             List<Fish> fishQueue = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class Names {
                 }
 
                 assert canvas != null;
-                canvas.setRequirements(getRequirements(fish, rarity, FishFile.getInstance().getConfig()));
+                canvas.setRequirement(getRequirement(fish, rarity, FishFile.getInstance().getConfig()));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
 
@@ -177,44 +177,29 @@ public class Names {
         return this.rarityConfiguration.getString("rarities." + rarity + ".permission");
     }
 
-    private List<Requirement> getRequirements(String name, String rarity, YamlDocument config) {
+    private Requirement getRequirement(String name, String rarity, YamlDocument config) {
         Section requirementSection;
         if (name != null) {
             requirementSection = this.fishConfiguration.getSection("fish." + rarity + "." + name + ".requirements");
         } else {
             requirementSection = this.rarityConfiguration.getSection("rarities." + rarity + ".requirements");
         }
-        List<Requirement> currentRequirements = new ArrayList<>();
+
+        Requirement requirement = new Requirement();
         if (requirementSection != null) {
-            String configLocator;
-            if (name != null) configLocator = "fish." + rarity + "." + name;
-            else configLocator = "rarities." + rarity;
-            for (String s : requirementSection.getRoutesAsStrings(false)) {
-                switch (s.toLowerCase()) {
-                    case "biome" -> currentRequirements.add(new Biome(configLocator + ".requirements.biome", config));
-                    case "biome-set" -> currentRequirements.add(new BiomeSet(configLocator + ".requirements.biome-set", config));
-                    case "irl-time" -> currentRequirements.add(new IRLTime(configLocator + ".requirements.irl-time", config));
-                    case "ingame-time" -> currentRequirements.add(new InGameTime(configLocator + ".requirements.ingame-time", config));
-                    case "moon-phase" -> currentRequirements.add(new MoonPhase(configLocator + ".requirements.moon-phase", config));
-                    case "permission" -> currentRequirements.add(new Permission(configLocator + ".requirements.permission", config));
-                    case "region" -> {
-                        currentRequirements.add(new Region(configLocator + ".requirements.region", config));
-                        regionCheck = true;
-                    }
-                    case "weather" -> currentRequirements.add(new Weather(configLocator + ".requirements.weather", config));
-                    case "world" -> currentRequirements.add(new World(configLocator + ".requirements.world", config));
-                    case "nearby-players" -> currentRequirements.add(new NearbyPlayers(configLocator + ".requirements.nearby-players", config));
+            for (String requirementString : requirementSection.getRoutesAsStrings(false)) {
+                List<String> values = new ArrayList<>();
+                String fullPath = requirementSection.getRouteAsString() + "." + requirementString;
+                if (config.isList(fullPath)) {
+                    values.addAll(config.getStringList(fullPath));
+                } else {
+                    values.add(config.getString(fullPath));
                 }
+                requirement.add(requirementString, values);
             }
         }
 
-        if (name != null && this.fishConfiguration.getBoolean("fish." + rarity + "." + name + ".disabled", false)) {
-            currentRequirements.add(new Disabled("fish." + rarity + "." + name + ".disabled", config));
-        } else if (this.rarityConfiguration.getBoolean("rarities." + rarity + ".disabled", false)) {
-            currentRequirements.add(new Disabled("rarities." + rarity + ".disabled", config));
-        }
-
-        return currentRequirements;
+        return requirement;
     }
 
     private void weightCheck(Fish fishObject, String name, Rarity rarityObject, String rarity) {

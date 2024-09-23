@@ -36,6 +36,7 @@ import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.requirements.*;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
@@ -184,6 +185,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         } else if (checkRP()) {
             guardPL = "redprotect";
         }
+
+        loadRequirementManager();
 
         Names names = new Names();
         names.loadRarities(FishFile.getInstance().getConfig(), RaritiesFile.getInstance().getConfig());
@@ -777,6 +780,19 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private void loadRequirementManager() {
         // Load RequirementManager
         RequirementManager.getInstance().load();
+
+        // Load RequirementTypes
+        new BiomeRequirementType().register();
+        new BiomeSetRequirementType().register();
+        new DisabledRequirementType().register();
+        new InGameTimeRequirementType().register();
+        new IRLTimeRequirementType().register();
+        new MoonPhaseRequirementType().register();
+        new NearbyPlayersRequirementType().register();
+        new PermissionRequirementType().register();
+        new RegionRequirementType().register();
+        new WeatherRequirementType().register();
+        new WorldRequirementType().register();
     }
 
     private void loadExternalRewardTypes() {

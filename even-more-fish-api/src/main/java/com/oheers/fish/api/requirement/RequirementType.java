@@ -15,7 +15,7 @@ public interface RequirementType {
      * @param player The player to check
      * @param value The value to check
      */
-    boolean checkRequirement(@NotNull Player player, @NotNull String value);
+    boolean checkRequirement(@NotNull RequirementContext context, @NotNull String value);
 
     /**
      * The identifier for this Requirement

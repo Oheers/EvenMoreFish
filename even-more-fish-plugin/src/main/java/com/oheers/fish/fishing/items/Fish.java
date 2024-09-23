@@ -8,7 +8,7 @@ import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
-import com.oheers.fish.requirements.Requirement;
+import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -41,7 +41,7 @@ public class Fish implements Cloneable {
     List<Reward> sellRewards;
     String eventType;
 
-    List<Requirement> requirements = new ArrayList<>();
+    Requirement requirement = new Requirement();
 
     boolean wasBaited;
     boolean silent;
@@ -422,16 +422,12 @@ public class Fish implements Cloneable {
         return factory;
     }
 
-    public List<Requirement> getRequirements() {
-        return this.requirements;
+    public Requirement getRequirement() {
+        return this.requirement;
     }
 
-    public void setRequirements(List<Requirement> requirements) {
-        this.requirements = requirements;
-    }
-
-    public void addRequirement(Requirement requirement) {
-        this.requirements.add(requirement);
+    public void setRequirement(Requirement requirement) {
+        this.requirement = requirement;
     }
 
     public boolean isWasBaited() {
