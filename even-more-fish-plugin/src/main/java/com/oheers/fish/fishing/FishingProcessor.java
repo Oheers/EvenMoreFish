@@ -290,7 +290,7 @@ public class FishingProcessor implements Listener {
                 }
 
                 Requirement requirement = rarity.getRequirement();
-                RequirementContext context = new RequirementContext(null, fisher.getLocation(), fisher, null, null);
+                RequirementContext context = new RequirementContext(fisher.getWorld(), fisher.getLocation(), fisher, null, null);
                 if (requirement.meetsRequirements(context)) {
                     allowedRarities.add(rarity);
                 }
@@ -388,7 +388,7 @@ public class FishingProcessor implements Listener {
             r = randomWeightedRarity(p, 1, null, EvenMoreFish.getInstance().getFishCollection().keySet());
 
         if (doRequirementChecks) {
-            RequirementContext context = new RequirementContext(null, l, p, null, null);
+            RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
 
             for (Fish f : EvenMoreFish.getInstance().getFishCollection().get(r)) {
 
