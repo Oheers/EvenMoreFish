@@ -11,6 +11,7 @@ import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
+import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitListener;
@@ -35,11 +36,11 @@ import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Names;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.requirements.*;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
 import com.oheers.fish.utils.nbt.NbtKeys;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -102,8 +103,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private boolean usingPlayerPoints;
     private boolean usingGriefPrevention;
 
-    private WorldGuardPlugin wgPlugin;
-    private String guardPL;
     private DatabaseV3 databaseV3;
     private HeadDatabaseAPI HDBapi;
 
@@ -177,25 +176,14 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         setupPermissions();
 
-        // checks against both support region plugins and sets an active plugin (worldguard is priority)
-        if (checkWG()) {
-            guardPL = "worldguard";
-        } else if (checkRP()) {
-            guardPL = "redprotect";
-        }
+        loadRequirementManager();
 
         Names names = new Names();
         names.loadRarities(FishFile.getInstance().getConfig(), RaritiesFile.getInstance().getConfig());
         names.loadBaits(BaitFile.getInstance().getConfig());
 
-        if (!names.regionCheck && MainConfig.getInstance().getAllowedRegions().isEmpty()) {
-            guardPL = null;
-        }
-
         // Do this before anything competition related.
         loadRewardManager();
-        RewardManager.getInstance().load();
-        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         competitionQueue = new CompetitionQueue();
         competitionQueue.load();
@@ -211,8 +199,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         AutoRunner.init();
-
-        wgPlugin = getWorldGuard();
 
         if (MainConfig.getInstance().databaseEnabled()) {
 
@@ -592,25 +578,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return false;
     }
 
-    /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
-       can't find the plugin. */
-    private WorldGuardPlugin getWorldGuard() {
-        return (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
-    }
-
     private void checkPapi() {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             usingPAPI = true;
             new PlaceholderReceiver(this).register();
         }
-    }
-
-    private boolean checkRP() {
-        return Bukkit.getPluginManager().isPluginEnabled("RedProtect");
-    }
-
-    private boolean checkWG() {
-        return Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
     }
 
     public Random getRandom() {
@@ -733,14 +705,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public boolean isUsingGriefPrevention() {return usingGriefPrevention;}
 
-    public WorldGuardPlugin getWgPlugin() {
-        return wgPlugin;
-    }
-
-    public String getGuardPL() {
-        return guardPL;
-    }
-
     public DatabaseV3 getDatabaseV3() {
         return databaseV3;
     }
@@ -761,6 +725,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private void loadRewardManager() {
         // Load RewardManager
         RewardManager.getInstance().load();
+        getServer().getPluginManager().registerEvents(RewardManager.getInstance(), this);
 
         // Load RewardTypes
         new CommandRewardType().register();
@@ -771,6 +736,25 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new MessageRewardType().register();
         new EXPRewardType().register();
         loadExternalRewardTypes();
+    }
+
+    private void loadRequirementManager() {
+        // Load RequirementManager
+        RequirementManager.getInstance().load();
+        getServer().getPluginManager().registerEvents(RequirementManager.getInstance(), this);
+
+        // Load RequirementTypes
+        new BiomeRequirementType().register();
+        new BiomeSetRequirementType().register();
+        new DisabledRequirementType().register();
+        new InGameTimeRequirementType().register();
+        new IRLTimeRequirementType().register();
+        new MoonPhaseRequirementType().register();
+        new NearbyPlayersRequirementType().register();
+        new PermissionRequirementType().register();
+        new RegionRequirementType().register();
+        new WeatherRequirementType().register();
+        new WorldRequirementType().register();
     }
 
     private void loadExternalRewardTypes() {
@@ -788,7 +772,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             new McMMOXPRewardType().register();
         }
         // Only enable the PERMISSION type if Vault perms is found.
-        if (getPermission() != null) {
+        if (getPermission() != null && getPermission().isEnabled()) {
             new PermissionRewardType().register();
         }
         // Only enable the MONEY type if the economy is loaded.

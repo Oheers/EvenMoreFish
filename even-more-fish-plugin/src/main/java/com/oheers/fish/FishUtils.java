@@ -181,16 +181,12 @@ public class FishUtils {
     }
 
     public static boolean checkRegion(Location l, List<String> whitelistedRegions) {
-        // if there's any region plugin installed
-        if (EvenMoreFish.getInstance().getGuardPL() == null) {
-            return true;
-        }
         // if the user has defined a region whitelist
         if (whitelistedRegions.isEmpty()) {
             return true;
         }
 
-        if (EvenMoreFish.getInstance().getGuardPL().equals("worldguard")) {
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
 
             // Creates a query for whether the player is stood in a protectedregion defined by the user
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -204,7 +200,8 @@ public class FishUtils {
                 }
             }
             return false;
-        } else if (EvenMoreFish.getInstance().getGuardPL().equals("redprotect")) {
+        } else if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) {
+
             Region r = RedProtect.get().getAPI().getRegion(l);
             // if the hook is in any redprotect region
             if (r != null) {

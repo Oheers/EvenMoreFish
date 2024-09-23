@@ -5,6 +5,7 @@ import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
+import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
@@ -18,8 +19,7 @@ import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.permissions.UserPerms;
-import com.oheers.fish.requirements.Requirement;
-import com.oheers.fish.requirements.RequirementContext;
+import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
 import org.bukkit.Bukkit;
@@ -289,17 +289,11 @@ public class FishingProcessor implements Listener {
                     continue;
                 }
 
-                List<Requirement> requirements;
-                if ((requirements = rarity.getRequirements()) != null) {
-                    RequirementContext context = new RequirementContext();
-                    context.setLocation(fisher.getLocation());
-                    context.setPlayer(fisher);
-                    for (Requirement requirement : requirements) {
-                        if (!requirement.requirementMet(context)) continue rarityLoop;
-                    }
+                Requirement requirement = rarity.getRequirement();
+                RequirementContext context = new RequirementContext(fisher.getWorld(), fisher.getLocation(), fisher, null, null);
+                if (requirement.meetsRequirements(context)) {
+                    allowedRarities.add(rarity);
                 }
-
-                allowedRarities.add(rarity);
             }
         } else {
             allowedRarities.addAll(totalRarities);
@@ -394,26 +388,19 @@ public class FishingProcessor implements Listener {
             r = randomWeightedRarity(p, 1, null, EvenMoreFish.getInstance().getFishCollection().keySet());
 
         if (doRequirementChecks) {
-            RequirementContext context = new RequirementContext();
-            context.setLocation(l);
-            context.setPlayer(p);
+            RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
 
-            fishLoop:
             for (Fish f : EvenMoreFish.getInstance().getFishCollection().get(r)) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;
                 }
 
-                List<Requirement> requirements;
-                if ((requirements = f.getRequirements()) == null) {
-                    available.add(f);
-                } else {
-                    for (Requirement requirement : requirements) {
-                        if (!requirement.requirementMet(context)) continue fishLoop;
-                    }
-                    available.add(f);
+                Requirement requirement = f.getRequirement();
+                if (!requirement.meetsRequirements(context)) {
+                    continue;
                 }
+                available.add(f);
             }
         } else {
             for (Fish f : EvenMoreFish.getInstance().getFishCollection().get(r)) {

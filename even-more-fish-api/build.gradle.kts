@@ -9,6 +9,7 @@ dependencies {
     compileOnly(libs.annotations)
     compileOnly(libs.commons.lang3)
     compileOnly(libs.universalscheduler)
+    compileOnly(libs.boostedyaml)
 }
 
 java {
