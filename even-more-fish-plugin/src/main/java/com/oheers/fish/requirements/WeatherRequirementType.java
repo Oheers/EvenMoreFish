@@ -40,7 +40,7 @@ public class WeatherRequirementType implements RequirementType {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "WORLD";
+        return "WEATHER";
     }
 
     @Override
