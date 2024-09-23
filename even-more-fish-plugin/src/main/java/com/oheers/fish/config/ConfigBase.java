@@ -101,4 +101,12 @@ public class ConfigBase {
         return UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build();
     }
 
+    public void save() {
+        try {
+            getConfig().save();
+        } catch (IOException exception) {
+            EvenMoreFish.getInstance().getLogger().warning("Failed to save " + getFileName());
+        }
+    }
+
 }
