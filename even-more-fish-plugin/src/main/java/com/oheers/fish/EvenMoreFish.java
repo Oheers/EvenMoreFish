@@ -794,7 +794,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             new McMMOXPRewardType().register();
         }
         // Only enable the PERMISSION type if Vault perms is found.
-        if (getPermission() != null) {
+        if (getPermission() != null && getPermission().isEnabled()) {
             new PermissionRewardType().register();
         }
         // Only enable the MONEY type if the economy is loaded.
