@@ -41,7 +41,6 @@ import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;
 import com.oheers.fish.utils.ItemFactory;
 import com.oheers.fish.utils.nbt.NbtKeys;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
@@ -104,8 +103,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private boolean usingPlayerPoints;
     private boolean usingGriefPrevention;
 
-    private WorldGuardPlugin wgPlugin;
-    private String guardPL;
     private DatabaseV3 databaseV3;
     private HeadDatabaseAPI HDBapi;
 
@@ -179,22 +176,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         setupPermissions();
 
-        // checks against both support region plugins and sets an active plugin (worldguard is priority)
-        if (checkWG()) {
-            guardPL = "worldguard";
-        } else if (checkRP()) {
-            guardPL = "redprotect";
-        }
-
         loadRequirementManager();
 
         Names names = new Names();
         names.loadRarities(FishFile.getInstance().getConfig(), RaritiesFile.getInstance().getConfig());
         names.loadBaits(BaitFile.getInstance().getConfig());
-
-        if (!names.regionCheck && MainConfig.getInstance().getAllowedRegions().isEmpty()) {
-            guardPL = null;
-        }
 
         // Do this before anything competition related.
         loadRewardManager();
@@ -215,8 +201,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         AutoRunner.init();
-
-        wgPlugin = getWorldGuard();
 
         if (MainConfig.getInstance().databaseEnabled()) {
 
@@ -596,25 +580,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return false;
     }
 
-    /* Gets the worldguard plugin, returns null and assumes the player has this functionality disabled if it
-       can't find the plugin. */
-    private WorldGuardPlugin getWorldGuard() {
-        return (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
-    }
-
     private void checkPapi() {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             usingPAPI = true;
             new PlaceholderReceiver(this).register();
         }
-    }
-
-    private boolean checkRP() {
-        return Bukkit.getPluginManager().isPluginEnabled("RedProtect");
-    }
-
-    private boolean checkWG() {
-        return Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
     }
 
     public Random getRandom() {
@@ -736,14 +706,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     public boolean isUsingGriefPrevention() {return usingGriefPrevention;}
-
-    public WorldGuardPlugin getWgPlugin() {
-        return wgPlugin;
-    }
-
-    public String getGuardPL() {
-        return guardPL;
-    }
 
     public DatabaseV3 getDatabaseV3() {
         return databaseV3;
