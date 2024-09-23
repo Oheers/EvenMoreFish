@@ -41,7 +41,7 @@ public class Requirement {
 
     public boolean meetsRequirements(@NotNull RequirementContext context) {
         for (Map.Entry<String, String> entry : checkMap.entrySet()) {
-            String key = entry.getKey();
+            String key = entry.getKey().toUpperCase();
             String value = entry.getValue();
             if (key.isEmpty() || value.isEmpty()) {
                 EMFPlugin.getLogger().warning("Attempted to process an invalid Requirement. Please check for earlier warnings.");
