@@ -337,7 +337,7 @@ public class Competition {
                     if (this.competitionType == CompetitionType.LARGEST_TOTAL) {
                         newEntry.incrementValue(fish.getLength() - 1);
                     } else if (this.competitionType == CompetitionType.SHORTEST_TOTAL) {
-                        newEntry.incrementValue(-fish.getLength() - 1); // Decrease for shortest total
+                        newEntry.incrementValue(fish.getLength() - 1); // Decrease for shortest total
                     }
                     leaderboard.addEntry(newEntry);
                 }
