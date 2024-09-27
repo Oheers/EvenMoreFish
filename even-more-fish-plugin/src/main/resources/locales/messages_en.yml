@@ -35,10 +35,6 @@ competition-types:
   largest: "the largest fish"
   # LARGEST_TOTAL_FISH
   largest-total: "the largest total fish length"
-  # SHORTEST_FISH
-  shortest: "the shortest fish"
-  # SHORTEST_TOTAL_FISH
-  shortest-total: "the shortest total fish length"
   # SPECIFIC_FISH
   specific: "{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r"
   # SPECIFIC_RARITY
@@ -82,8 +78,6 @@ length-lore:
 leaderboard-largest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
 leaderboard-largest-total: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)"
 leaderboard-most-fish: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)"
-leaderboard-shortest-fish: "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)"
-leaderboard-shortest-total: "&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)"
 # If you're running a competition where there's no leaderboard, this message is sent when there's a winner
 single-winner: "&r{player} has won the competition for {type}. Congratulations!"
 # This shows the number of players currently in the competition, set to "" to disable.

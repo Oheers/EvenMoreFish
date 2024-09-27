@@ -51,8 +51,6 @@ public enum ConfigMessage {
     COMPETITION_TYPE_MOST("the most fish", PrefixType.NONE, true, false, "competition-types.most"),
     COMPETITION_TYPE_SPECIFIC("{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r", PrefixType.NONE, true, false, "competition-types.specific"),
     COMPETITION_TYPE_SPECIFIC_RARITY("{amount} {rarity_colour}&l{rarity}&r fish", PrefixType.NONE, true, false, "competition-types.specific-rarity"),
-    COMPETITION_TYPE_SHORTEST("the shortest fish", PrefixType.NONE, true, false, "competition-types.shortest"),
-    COMPETITION_TYPE_SHORTEST_TOTAL("the shortest total fish length", PrefixType.NONE, true, false, "competition-types.shortest-total"),
 
     COMPETITION_SINGLE_WINNER("&r{player} has won the competition for {type}. Congratulations!", PrefixType.DEFAULT, true, true, "single-winner"),
 
@@ -130,14 +128,6 @@ public enum ConfigMessage {
     LEADERBOARD_LARGEST_TOTAL("&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)", PrefixType.DEFAULT, false, true, "leaderboard-largest-total"),
     LEADERBOARD_MOST_FISH("&r#{position} | {pos_colour}{player} &r({pos_colour}{amount} &rfish)", PrefixType.DEFAULT, false, true, "leaderboard-most-fish"),
     LEADERBOARD_TOTAL_PLAYERS("&rThere are a total of {amount} player(s) in the leaderboard.", PrefixType.DEFAULT, true, true, "total-players"),
-    LEADERBOARD_SHORTEST_FISH(
-            "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)",
-            PrefixType.DEFAULT,
-            false,
-            true,
-            "leaderboard-shortest-fish"
-    ),
-    LEADERBOARD_SHORTEST_TOTAL("&r#{position} | {pos_colour}{player} &r({pos_colour}{amount}cm&r)", PrefixType.DEFAULT, false, true, "leaderboard-shortest-total"),
 
     NEW_FIRST_PLACE_NOTIFICATION("&r{player} is now #1", PrefixType.DEFAULT, true, true, "new-first"),
 
