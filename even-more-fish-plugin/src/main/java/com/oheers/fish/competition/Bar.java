@@ -47,6 +47,8 @@ public class Bar {
             case LARGEST_TOTAL -> "Largest Total";
             case SPECIFIC_FISH -> "Specific Fish";
             case RANDOM -> "Random";
+            case SHORTEST_FISH -> "Shortest Fish";
+            case SHORTEST_TOTAL -> "Shortest Total";
         };
         this.prefix = prefix.replace("{type}", typeString);
     }
