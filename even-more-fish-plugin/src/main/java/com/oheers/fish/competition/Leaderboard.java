@@ -48,7 +48,7 @@ public class Leaderboard implements LeaderboardHandler {
     }
 
     @Override
-    public Set<CompetitionEntry> getEntries() {
+    public TreeSet<CompetitionEntry> getEntries() {
         return entries;
     }
 

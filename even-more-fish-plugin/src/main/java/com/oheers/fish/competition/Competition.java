@@ -301,10 +301,8 @@ public class Competition {
                 CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
 
                 float increaseAmount;
-                if (this.competitionType == CompetitionType.LARGEST_TOTAL) {
+                if (this.competitionType == CompetitionType.LARGEST_TOTAL || this.competitionType == CompetitionType.SHORTEST_TOTAL) {
                     increaseAmount = fish.getLength();
-                } else if (this.competitionType == CompetitionType.SHORTEST_TOTAL) {
-                    increaseAmount = -fish.getLength(); // Decrease for shortest total
                 } else {
                     increaseAmount = 1.0f;
                 }
@@ -432,7 +430,16 @@ public class Competition {
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
-        for (CompetitionEntry entry : leaderboard.getEntries()) {
+        TreeSet<CompetitionEntry> entries = leaderboard.getEntries();
+        Iterator<CompetitionEntry> entryIterator;
+        if (competitionType.equals(CompetitionType.SHORTEST_TOTAL) || competitionType.equals(CompetitionType.SHORTEST_FISH)) {
+            entryIterator = entries.descendingIterator();
+        } else {
+            entryIterator = entries.iterator();
+        }
+
+        while (entryIterator.hasNext()) {
+            CompetitionEntry entry = entryIterator.next();
             pos++;
             if (reachingCount) {
                 leaderboardMembers.add(entry.getPlayer());
