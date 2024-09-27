@@ -6,5 +6,7 @@ public enum CompetitionType {
     MOST_FISH,
     SPECIFIC_RARITY,
     LARGEST_TOTAL,
-    RANDOM
+    RANDOM,
+    SHORTEST_FISH,
+    SHORTEST_TOTAL
 }

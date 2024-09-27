@@ -525,6 +525,8 @@ public class Message {
             case SPECIFIC_FISH -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage(false));
             case SPECIFIC_RARITY -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage(false));
             case LARGEST_TOTAL -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage(false));
+            case SHORTEST_FISH -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SHORTEST).getRawMessage(false));
+            case SHORTEST_TOTAL -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_SHORTEST_TOTAL).getRawMessage(false));
             default -> setVariable("{type}", new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage(false));
         }
     }
