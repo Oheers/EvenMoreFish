@@ -43,6 +43,8 @@ public class Bar {
         String typeString = switch (type) {
             case SPECIFIC_RARITY -> "Specific Rarity";
             case MOST_FISH -> "Most Fish";
+            case SHORTEST_FISH -> "Shortest Fish";
+            case SHORTEST_TOTAL -> "Shortest Total";
             case LARGEST_FISH -> "Largest Fish";
             case LARGEST_TOTAL -> "Largest Total";
             case SPECIFIC_FISH -> "Specific Fish";
