@@ -51,7 +51,6 @@ public enum ConfigMessage {
     COMPETITION_TYPE_MOST("the most fish", PrefixType.NONE, true, false, "competition-types.most"),
     COMPETITION_TYPE_SPECIFIC("{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r", PrefixType.NONE, true, false, "competition-types.specific"),
     COMPETITION_TYPE_SPECIFIC_RARITY("{amount} {rarity_colour}&l{rarity}&r fish", PrefixType.NONE, true, false, "competition-types.specific-rarity"),
-    COMPETITION_TYPE_RANDOM("a random fish", PrefixType.NONE, true, false, "competition-types.random"),
     COMPETITION_TYPE_SHORTEST("the shortest fish", PrefixType.NONE, true, false, "competition-types.shortest"),
     COMPETITION_TYPE_SHORTEST_TOTAL("the shortest total fish length", PrefixType.NONE, true, false, "competition-types.shortest-total"),
 
