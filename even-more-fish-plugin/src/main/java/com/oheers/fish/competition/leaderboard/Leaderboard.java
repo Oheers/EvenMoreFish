@@ -1,42 +1,19 @@
-package com.oheers.fish.competition;
+package com.oheers.fish.competition.leaderboard;
 
+import com.oheers.fish.competition.CompetitionEntry;
+import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.fishing.items.Fish;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-interface LeaderboardHandler {
-
-    List<CompetitionEntry> getEntries();
-
-    void addEntry(UUID player, Fish fish);
-
-    void addEntry(CompetitionEntry entry);
-
-    void clear();
-
-    boolean contains(CompetitionEntry entry);
-
-    CompetitionEntry getEntry(UUID player);
-
-    CompetitionEntry getEntry(int place);
-
-    int getSize();
-
-    boolean hasEntry(UUID player);
-
-    void removeEntry(CompetitionEntry entry) throws Exception;
-
-    CompetitionEntry getTopEntry();
-}
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Leaderboard implements LeaderboardHandler {
 
     CompetitionType type;
     List<CompetitionEntry> entries;
 
-    Leaderboard(CompetitionType type) {
+    public Leaderboard(CompetitionType type) {
         this.type = type;
         entries = new ArrayList<>();
     }
