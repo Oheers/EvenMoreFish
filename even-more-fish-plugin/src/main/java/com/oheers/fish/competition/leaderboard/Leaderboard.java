@@ -94,7 +94,7 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public void removeEntry(CompetitionEntry entry) {
-        entries.removeIf(e -> e == entry);
+        entries.remove(entry);
     }
 
     @Override
