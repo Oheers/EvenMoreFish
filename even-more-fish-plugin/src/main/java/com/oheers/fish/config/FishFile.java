@@ -34,7 +34,6 @@ public class FishFile extends ConfigBase {
                     int max = ingameSection.getInt("maxTime");
                     ingameSection.remove("minTime");
                     ingameSection.remove("maxTime");
-                    System.out.println(ingameSection.getRouteAsString());
                     getConfig().set("fish." + rarity + "." + fish + ".requirements.ingame-time", min + "-" + max);
                 }
                 Section irlSection = fishSection.getSection("requirements.irl-time");
@@ -43,7 +42,6 @@ public class FishFile extends ConfigBase {
                     String max = irlSection.getString("maxTime");
                     irlSection.remove("minTime");
                     irlSection.remove("maxTime");
-                    System.out.println(irlSection.getRouteAsString());
                     getConfig().set("fish." + rarity + "." + fish + ".requirements.irl-time", min + "-" + max);
                 }
             });

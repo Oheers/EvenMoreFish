@@ -19,7 +19,6 @@ public class RaritiesFile extends ConfigBase {
             return;
         }
         mainSection.getRoutesAsStrings(false).forEach(rarity -> {
-            System.out.println(rarity);
             Section raritySection = getConfig().getSection("rarities." + rarity);
             if (raritySection == null) {
                 return;
@@ -30,7 +29,6 @@ public class RaritiesFile extends ConfigBase {
                 int max = ingameSection.getInt("maxTime");
                 ingameSection.remove("minTime");
                 ingameSection.remove("maxTime");
-                System.out.println(ingameSection.getRouteAsString());
                 getConfig().set("rarities." + rarity + ".requirements.ingame-time", min + "-" + max);
             }
             Section irlSection = raritySection.getSection("requirements.irl-time");
@@ -39,7 +37,6 @@ public class RaritiesFile extends ConfigBase {
                 String max = irlSection.getString("maxTime");
                 irlSection.remove("minTime");
                 irlSection.remove("maxTime");
-                System.out.println(irlSection.getRouteAsString());
                 getConfig().set("rarities." + rarity + ".requirements.irl-time", min + "-" + max);
             }
         });
