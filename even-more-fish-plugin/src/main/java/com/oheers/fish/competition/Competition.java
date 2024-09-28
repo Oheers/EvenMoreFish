@@ -582,20 +582,11 @@ public class Competition {
         message.broadcast(player, true);
     }
 
-        private void setPositionColour(int place, Message message) {
-        // Exists for eventual MiniMessage support
-        if (true) {
-            switch (place) {
-                case 0 -> message.setPositionColour("&c» &r");
-                case 1 -> message.setPositionColour("&c_ &r");
-                case 2 -> message.setPositionColour("&c&ko &r");
-            }
-        } else {
-            switch (place) {
-                case 0 -> message.setPositionColour("<red>» <reset>");
-                case 1 -> message.setPositionColour("<red>_ <reset>");
-                case 2 -> message.setPositionColour("<red><obf>o <reset>");
-            }
+    private void setPositionColour(int place, Message message) {
+        switch (place) {
+            case 0 -> message.setPositionColour("&c» &r");
+            case 1 -> message.setPositionColour("&c_ &r");
+            case 2 -> message.setPositionColour("&c&ko &r");
         }
     }
 

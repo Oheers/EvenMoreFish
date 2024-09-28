@@ -43,7 +43,6 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public List<CompetitionEntry> getEntries() {
-        // Sort the list so the highest entry value is first
         switch (type) {
             case SHORTEST_FISH, SHORTEST_TOTAL -> {
                 return entries.stream()

@@ -114,16 +114,9 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public List<String> getDefaultPositionColours() {
-        // Exists for eventual MiniMessage support
-        if (true) {
-            return new ArrayList<>(
-                    List.of("&6", "&e", "&7", "&7", "&8"
-            ));
-        } else {
-            return new ArrayList<>(List.of(
-                    "<gold>", "<yellow>", "<gray>", "<gray>", "<dark_gray>"
-            ));
-        }
+        return new ArrayList<>(
+                List.of("&6", "&e", "&7", "&7", "&8"
+                ));
     }
 
     public List<String> getAlertTimes(String competitionName) {
