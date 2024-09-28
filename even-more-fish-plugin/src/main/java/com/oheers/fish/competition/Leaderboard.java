@@ -9,7 +9,7 @@ import java.util.UUID;
 
 interface LeaderboardHandler {
 
-    TreeSet<CompetitionEntry> getEntries();
+    List<CompetitionEntry> getEntries();
 
     void addEntry(UUID player, Fish fish);
 
@@ -40,16 +40,27 @@ interface LeaderboardHandler {
 public class Leaderboard implements LeaderboardHandler {
 
     CompetitionType type;
-    TreeSet<CompetitionEntry> entries;
+    List<CompetitionEntry> entries;
 
     Leaderboard(CompetitionType type) {
         this.type = type;
-        entries = new TreeSet<>();
+        entries = new ArrayList<>();
     }
 
     @Override
-    public TreeSet<CompetitionEntry> getEntries() {
-        return entries;
+        // Sort the list so the highest entry value is first
+        switch (type) {
+            case SHORTEST_FISH, SHORTEST_TOTAL -> {
+                return entries.stream()
+                        .sorted((e1, e2) -> Float.compare(e1.getValue(), e2.getValue()))
+                        .toList();
+            }
+            default -> {
+                return entries.stream()
+                        .sorted((e1, e2) -> Float.compare(e2.getValue(), e1.getValue()))
+                        .toList();
+            }
+        }
     }
 
     @Override
@@ -75,6 +86,7 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public CompetitionEntry getEntry(UUID player) {
+        // Does not need to use the sorted list
         for (CompetitionEntry entry : entries) {
             if (entry.getPlayer().equals(player)) {
                 return entry;
