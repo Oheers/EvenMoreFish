@@ -127,7 +127,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            UUID uuid = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getPlayer(place);
+            UUID uuid = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getPlayer();
             if (uuid != null) {
                 // To be in the leaderboard the player must have joined
                 return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
@@ -149,7 +149,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            float value = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getPlaceValue(place);
+            float value = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getValue();
             
             if (value != -1.0f) return Float.toString(Math.round(value * 10f) / 10f);
             else return "";
@@ -168,7 +168,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 }
                 
                 // getting "place" place in the competition
-                Fish fish = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getPlaceFish(place);
+                Fish fish = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getFish();
                 if (fish != null) {
                     Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
                     if (fish.getLength() == -1)
@@ -189,7 +189,8 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 
             } else {
                 // checking the leaderboard actually contains the value of place
-                float value = Competition.leaderboard.getPlaceValue(Integer.parseInt(identifier.substring(23)));
+                int place = Integer.parseInt(identifier.substring(23));
+                float value = Competition.leaderboard.getEntry(place).getValue();
                 if (value == -1)
                     return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(false);
                 

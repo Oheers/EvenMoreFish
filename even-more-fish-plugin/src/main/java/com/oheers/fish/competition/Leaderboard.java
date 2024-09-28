@@ -1,11 +1,10 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.fishing.items.Fish;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 interface LeaderboardHandler {
 
@@ -21,6 +20,8 @@ interface LeaderboardHandler {
 
     CompetitionEntry getEntry(UUID player);
 
+    CompetitionEntry getEntry(int place);
+
     int getSize();
 
     boolean hasEntry(UUID player);
@@ -28,13 +29,6 @@ interface LeaderboardHandler {
     void removeEntry(CompetitionEntry entry) throws Exception;
 
     CompetitionEntry getTopEntry();
-
-    UUID getPlayer(int i);
-
-    float getPlaceValue(int i);
-
-    Fish getPlaceFish(int i);
-
 }
 
 public class Leaderboard implements LeaderboardHandler {
@@ -48,6 +42,7 @@ public class Leaderboard implements LeaderboardHandler {
     }
 
     @Override
+    public List<CompetitionEntry> getEntries() {
         // Sort the list so the highest entry value is first
         switch (type) {
             case SHORTEST_FISH, SHORTEST_TOTAL -> {
@@ -96,14 +91,25 @@ public class Leaderboard implements LeaderboardHandler {
     }
 
     @Override
+    public CompetitionEntry getEntry(int place) {
+        try {
+            // Needs to use the sorted list
+            return getEntries().get(place - 1);
+        } catch (IndexOutOfBoundsException exception) {
+            return null;
+        }
+    }
+
+    @Override
     public int getSize() {
         return entries.size();
     }
 
     @Override
     public boolean hasEntry(UUID player) {
+        // Does not need to use the sorted list
         for (CompetitionEntry entry : entries) {
-            if (entry.getPlayer() == player) {
+            if (entry.getPlayer().equals(player)) {
                 return true;
             }
         }
@@ -117,42 +123,8 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public CompetitionEntry getTopEntry() {
-        return entries.first();
+        // Needs to use the sorted list
+        return getEntries().get(0);
     }
 
-    @Override
-    public UUID getPlayer(int i) {
-        int count = 1;
-        for (CompetitionEntry entry : entries) {
-            if (count == i) {
-                return entry.getPlayer();
-            }
-            count++;
-        }
-        return null;
-    }
-
-    @Override
-    public float getPlaceValue(int i) {
-        int count = 1;
-        for (CompetitionEntry entry : entries) {
-            if (count == i) {
-                return entry.getValue();
-            }
-            count++;
-        }
-        return -1.0f;
-    }
-
-    @Override
-    public Fish getPlaceFish(int i) {
-        int count = 1;
-        for (CompetitionEntry entry : entries) {
-            if (count == i) {
-                return entry.getFish();
-            }
-            count++;
-        }
-        return null;
-    }
 }
