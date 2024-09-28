@@ -9,7 +9,7 @@ import java.util.UUID;
 
 interface LeaderboardHandler {
 
-    Set<CompetitionEntry> getEntries();
+    TreeSet<CompetitionEntry> getEntries();
 
     void addEntry(UUID player, Fish fish);
 
