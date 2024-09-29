@@ -7,6 +7,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
 import com.oheers.fish.api.EMFCompetitionStartEvent;
 import com.oheers.fish.api.reward.Reward;
+import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -430,16 +431,7 @@ public class Competition {
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
-        TreeSet<CompetitionEntry> entries = leaderboard.getEntries();
-        Iterator<CompetitionEntry> entryIterator;
-        if (competitionType.equals(CompetitionType.SHORTEST_TOTAL) || competitionType.equals(CompetitionType.SHORTEST_FISH)) {
-            entryIterator = entries.descendingIterator();
-        } else {
-            entryIterator = entries.iterator();
-        }
-
-        while (entryIterator.hasNext()) {
-            CompetitionEntry entry = entryIterator.next();
+        for (CompetitionEntry entry : leaderboard.getEntries()) {
             pos++;
             if (reachingCount) {
                 leaderboardMembers.add(entry.getPlayer());
@@ -591,20 +583,11 @@ public class Competition {
         message.broadcast(player, true);
     }
 
-        private void setPositionColour(int place, Message message) {
-        // Exists for eventual MiniMessage support
-        if (true) {
-            switch (place) {
-                case 0 -> message.setPositionColour("&c» &r");
-                case 1 -> message.setPositionColour("&c_ &r");
-                case 2 -> message.setPositionColour("&c&ko &r");
-            }
-        } else {
-            switch (place) {
-                case 0 -> message.setPositionColour("<red>» <reset>");
-                case 1 -> message.setPositionColour("<red>_ <reset>");
-                case 2 -> message.setPositionColour("<red><obf>o <reset>");
-            }
+    private void setPositionColour(int place, Message message) {
+        switch (place) {
+            case 0 -> message.setPositionColour("&c» &r");
+            case 1 -> message.setPositionColour("&c_ &r");
+            case 2 -> message.setPositionColour("&c&ko &r");
         }
     }
 
@@ -622,16 +605,7 @@ public class Competition {
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
-        TreeSet<CompetitionEntry> entries = leaderboard.getEntries();
-        Iterator<CompetitionEntry> entryIterator;
-        if (competitionType.equals(CompetitionType.SHORTEST_TOTAL) || competitionType.equals(CompetitionType.SHORTEST_FISH)) {
-            entryIterator = entries.descendingIterator();
-        } else {
-            entryIterator = entries.iterator();
-        }
-
-        while (entryIterator.hasNext()) {
-            CompetitionEntry entry = entryIterator.next();
+        for (CompetitionEntry entry : leaderboard.getEntries()) {
             pos++;
             leaderboardMembers.add(entry.getPlayer());
             Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);

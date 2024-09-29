@@ -6,14 +6,14 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 
-public class CompetitionEntry implements Comparable<CompetitionEntry> {
+public class CompetitionEntry {
 
     private final UUID player;
     private final Fish fish;
     private long time;
     private float value;
 
-    CompetitionEntry(UUID player, Fish fish, CompetitionType type) {
+    public CompetitionEntry(UUID player, Fish fish, CompetitionType type) {
         this.player = player;
         this.fish = fish;
         this.time = Instant.now().toEpochMilli();
@@ -55,16 +55,6 @@ public class CompetitionEntry implements Comparable<CompetitionEntry> {
 
     public UUID getPlayer() {
         return player;
-    }
-
-    @Override
-    public int compareTo(@NotNull CompetitionEntry entry) {
-        // if o's value and this's value are equal, use the time caught instead
-        if (entry.getValue() != this.value) {
-            return (entry.getValue() > this.value) ? 1 : -1;
-        } else {
-            return (entry.getTime() > this.time) ? 1 : -1;
-        }
     }
 
 
