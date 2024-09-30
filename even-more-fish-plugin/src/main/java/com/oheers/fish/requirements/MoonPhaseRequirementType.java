@@ -3,7 +3,6 @@ package com.oheers.fish.requirements;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.api.requirement.RequirementType;
-import com.sk89q.worldguard.protection.flags.StringFlag;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;

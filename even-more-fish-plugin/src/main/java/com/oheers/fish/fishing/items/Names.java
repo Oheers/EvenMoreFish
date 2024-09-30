@@ -1,11 +1,11 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.exceptions.InvalidFishException;
-import com.oheers.fish.api.requirement.Requirement;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 

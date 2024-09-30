@@ -1,7 +1,6 @@
 package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.api.FileUtil;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
 import dev.dejvokep.boostedyaml.settings.Settings;
