@@ -3,6 +3,7 @@ package com.oheers.fish.config.messages;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.config.ConfigBase;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -180,10 +181,20 @@ public class Message {
      * @return The string from config that matches the value of id.
      */
     public String getString(String normal, String id) {
-        String string = Messages.getInstance().getConfig().getString(id, null);
+        Messages messageConfig = Messages.getInstance();
+        ConfigBase defaultEnConfig = messageConfig.getDefaultEn();
+        String string = messageConfig.getConfig().getString(id, null);
         if (string == null) {
-            EvenMoreFish.getInstance().getLogger().severe("No valid value in messages.yml for: " + id + " using default value instead.");
-            return normal;
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default en value.");
+            String en = defaultEnConfig.getConfig().getString(id, null);
+            if (en == null) {
+                EvenMoreFish.getInstance().getLogger().warning("Failed to insert the default en value. Please report this!");
+                return normal;
+            }
+            messageConfig.getConfig().set(id, en);
+            messageConfig.save();
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default english value.");
+            return en;
         }
         return string;
     }
@@ -196,10 +207,20 @@ public class Message {
      * @return The string list from config that matches the value of id.
      */
     public List<String> getStringList(List<String> normal, String id) {
-        List<String> list = Messages.getInstance().getConfig().getStringList(id);
+        Messages messageConfig = Messages.getInstance();
+        ConfigBase defaultEnConfig = messageConfig.getDefaultEn();
+        List<String> list = messageConfig.getConfig().getStringList(id);
         if (list.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No valid value in messages.yml for: " + id + " using default value instead.");
-            return normal;
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default en value.");
+            List<String> en = defaultEnConfig.getConfig().getStringList(id, null);
+            if (en.isEmpty()) {
+                EvenMoreFish.getInstance().getLogger().warning("Failed to insert the default en value. Please report this!");
+                return normal;
+            }
+            messageConfig.getConfig().set(id, en);
+            messageConfig.save();
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default english value.");
+            return en;
         }
         return list;
     }
