@@ -315,7 +315,7 @@ public class Competition {
                         message.setRarityColour(fish.getRarity().getColour());
                         message.setFishCaught(fish.getName());
                         message.setRarity(fish.getRarity().getValue());
-                        message.setPlayer(fisher.getName());
+                        message.setPlayer(fisher);
 
                         FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
                     }
@@ -363,7 +363,7 @@ public class Competition {
                         message.setRarityColour(fish.getRarity().getColour());
                         message.setFishCaught(fish.getName());
                         message.setRarity(fish.getRarity().getValue());
-                        message.setPlayer(fisher.getName());
+                        message.setPlayer(fisher);
 
                         FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
                     }
@@ -384,7 +384,7 @@ public class Competition {
                         message.setRarityColour(fish.getRarity().getColour());
                         message.setFishCaught(fish.getName());
                         message.setRarity(fish.getRarity().getValue());
-                        message.setPlayer(fisher.getName());
+                        message.setPlayer(fisher);
 
                         FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
                     }
@@ -436,7 +436,7 @@ public class Competition {
             if (reachingCount) {
                 leaderboardMembers.add(entry.getPlayer());
                 Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+                message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
                 message.setPosition(Integer.toString(pos));
                 if (pos > competitionColours.size()) {
                     Random r = EvenMoreFish.getInstance().getRandom();
@@ -517,7 +517,7 @@ public class Competition {
                 if (entry.getPlayer() == player.getUniqueId()) {
                     Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
                     message.setPosition(Integer.toString(pos));
-                    message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+                    message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
                     message.setPositionColour("&f");
 
                     switch (competitionType) {
@@ -609,7 +609,7 @@ public class Competition {
             pos++;
             leaderboardMembers.add(entry.getPlayer());
             Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-            message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()).getName());
+            message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
             message.setPosition(Integer.toString(pos));
             if (pos > competitionColours.size()) {
                 Random r = EvenMoreFish.getInstance().getRandom();
@@ -871,7 +871,7 @@ public class Competition {
 
     public void singleReward(Player player) {
         Message message = getTypeFormat(ConfigMessage.COMPETITION_SINGLE_WINNER);
-        message.setPlayer(player.getName());
+        message.setPlayer(player);
         message.setCompetitionType(competitionType);
 
         message.broadcast();

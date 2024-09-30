@@ -264,7 +264,7 @@ public class Fish implements Cloneable {
                 : ""
         );
 
-        if (!disableFisherman && getFishermanPlayer() != null) newLoreLine.setPlayer(getFishermanPlayer().getName());
+        if (!disableFisherman && getFishermanPlayer() != null) newLoreLine.setPlayer(getFishermanPlayer());
 
         newLoreLine.setVariable("{length_lore}",
             length > 0 ?

@@ -5,6 +5,7 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +18,7 @@ public class Message {
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     private String message;
     private boolean canSilent, canHidePrefix;
-    private Player relevantPlayer;
+    private OfflinePlayer relevantPlayer;
 
     /**
      * EMF system of sending messages. A raw message with variables is passed through the "message" parameter. Variables
@@ -287,9 +288,9 @@ public class Message {
      *
      * @param playerName The name of the player.
      */
-    public void setPlayer(@NotNull final String playerName) {
-        relevantPlayer = Bukkit.getPlayer(playerName);
-        setVariable("{player}", playerName);
+    public void setPlayer(@NotNull final OfflinePlayer player) {
+        relevantPlayer = player;
+        setVariable("{player}", Objects.requireNonNullElse(player.getName(), "N/A"));
     }
 
     /**

@@ -80,7 +80,7 @@ public class SellHelper {
         Message message = new Message(ConfigMessage.FISH_SALE);
         message.setSellPrice(formatWorth(sellPrice));
         message.setAmount(Integer.toString(fishCount));
-        message.setPlayer(this.player.toString());
+        message.setPlayer(this.player);
         message.broadcast(player);
 
         this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);

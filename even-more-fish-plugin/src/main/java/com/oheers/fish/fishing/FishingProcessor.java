@@ -154,7 +154,7 @@ public class FishingProcessor implements Listener {
                 Message message = new Message(ConfigMessage.BAIT_CAUGHT);
                 message.setBaitTheme(caughtBait.getTheme());
                 message.setBait(caughtBait.getName());
-                message.setPlayer(player.getName());
+                message.setPlayer(player);
                 message.broadcast(player);
 
                 return caughtBait.create(player);
@@ -207,7 +207,7 @@ public class FishingProcessor implements Listener {
             String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
 
             Message message = new Message(ConfigMessage.FISH_CAUGHT);
-            message.setPlayer(player.getName());
+            message.setPlayer(player);
             message.setRarityColour(fish.getRarity().getColour());
             message.setRarity(rarity);
             message.setLength(length);

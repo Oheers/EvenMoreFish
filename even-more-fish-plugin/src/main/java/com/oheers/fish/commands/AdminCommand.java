@@ -68,7 +68,7 @@ public class AdminCommand extends BaseCommand {
         FishUtils.giveItems(Collections.singletonList(fishItem), target);
 
         Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_FISH);
-        message.setPlayer(target.getName());
+        message.setPlayer(target);
         message.setFishCaught(fish.getName());
         message.broadcast(sender);
         //give fish to target
@@ -188,7 +188,7 @@ public class AdminCommand extends BaseCommand {
 
         FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
         giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
-        giveMessage.setPlayer(player.getName());
+        giveMessage.setPlayer(player);
         giveMessage.broadcast(sender);
     }
 
@@ -221,7 +221,7 @@ public class AdminCommand extends BaseCommand {
         baitItem.setAmount(quantity);
         FishUtils.giveItems(Collections.singletonList(baitItem), player.player);
         Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
-        message.setPlayer(player.player.getName());
+        message.setPlayer(player.player);
         message.setBait(baitId);
         message.broadcast(sender);
     }

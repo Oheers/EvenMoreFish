@@ -100,7 +100,7 @@ public class EMFCommand extends BaseCommand {
         if (sender.hasPermission(AdminPerms.ADMIN)) {
             new SellGUI(onlinePlayer.player, SellGUI.SellState.NORMAL, null).open();
             Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
-            message.setPlayer(onlinePlayer.player.getName());
+            message.setPlayer(onlinePlayer.player);
             message.broadcast(sender);
         }
     }
