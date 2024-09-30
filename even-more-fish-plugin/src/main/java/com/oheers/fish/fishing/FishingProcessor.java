@@ -61,7 +61,7 @@ public class FishingProcessor implements Listener {
             //check if player have permssion to fish emf fishes
             if (!event.getPlayer().hasPermission(UserPerms.USE_ROD)) {
                 if (event.getState() == PlayerFishEvent.State.FISHING) {//send msg only when throw the lure
-                    new Message(ConfigMessage.NO_PERMISSION_FISHING).broadcast(event.getPlayer(), false);
+                    new Message(ConfigMessage.NO_PERMISSION_FISHING).broadcast(event.getPlayer());
                 }
                 return;
             }
@@ -155,7 +155,7 @@ public class FishingProcessor implements Listener {
                 message.setBaitTheme(caughtBait.getTheme());
                 message.setBait(caughtBait.getName());
                 message.setPlayer(player.getName());
-                message.broadcast(player, true);
+                message.broadcast(player);
 
                 return caughtBait.create(player);
             }
@@ -230,7 +230,7 @@ public class FishingProcessor implements Listener {
                 FishUtils.broadcastFishMessage(message, player, false);
             } else {
                 // sends it to just the fisher
-                message.broadcast(player, true);
+                message.broadcast(player);
             }
         }
 

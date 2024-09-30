@@ -46,7 +46,7 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_fish")
     public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Optional @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional OnlinePlayer player) {
         if (player == null && !(sender instanceof Player)) {
-            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
             return;
         }
 
@@ -70,7 +70,7 @@ public class AdminCommand extends BaseCommand {
         Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_FISH);
         message.setPlayer(target.getName());
         message.setFishCaught(fish.getName());
-        message.broadcast(sender, true);
+        message.broadcast(sender);
         //give fish to target
     }
 
@@ -135,7 +135,7 @@ public class AdminCommand extends BaseCommand {
                             @Default("1") @Conditions("limits:min=1") @Optional Integer amount
         ) {
             if (Competition.isActive()) {
-                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender, false);
+                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
                 return;
             }
 
@@ -161,7 +161,7 @@ public class AdminCommand extends BaseCommand {
                 return;
             }
 
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender, true);
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender);
         }
 
     }
@@ -170,7 +170,7 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_nbtrod")
     public void onNbtRod(final CommandSender sender, @Optional Player player) {
         if (!MainConfig.getInstance().requireNBTRod()) {
-            new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender, false);
+            new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender);
             return;
         }
 
@@ -179,7 +179,7 @@ public class AdminCommand extends BaseCommand {
         if (player == null) {
             if (!(sender instanceof Player)) {
                 Message errorMessage = new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE);
-                errorMessage.broadcast(sender, false);
+                errorMessage.broadcast(sender);
                 return;
             }
 
@@ -189,7 +189,7 @@ public class AdminCommand extends BaseCommand {
         FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
         giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
         giveMessage.setPlayer(player.getName());
-        giveMessage.broadcast(sender, true);
+        giveMessage.broadcast(sender);
     }
 
 
@@ -207,7 +207,7 @@ public class AdminCommand extends BaseCommand {
 
         if (player == null) {
             if (!(sender instanceof Player)) {
-                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
+                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
                 return;
             }
 
@@ -223,7 +223,7 @@ public class AdminCommand extends BaseCommand {
         Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
         message.setPlayer(player.player.getName());
         message.setBait(baitId);
-        message.broadcast(sender, true);
+        message.broadcast(sender);
     }
 
     private String getBaitIdFromName(final String baitName) {
@@ -240,7 +240,7 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_clearbaits")
     public void onClearBaits(final CommandSender sender, @Optional Player player) {
         if (player == null && !(sender instanceof Player)) {
-            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender, false);
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
             return;
         }
 
@@ -249,13 +249,13 @@ public class AdminCommand extends BaseCommand {
         }
 
         if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
-            new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player, false);
+            new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player);
             return;
         }
 
         ItemStack fishingRod = player.getInventory().getItemInMainHand();
         if (!BaitNBTManager.isBaitedRod(fishingRod)) {
-            new Message(ConfigMessage.NO_BAITS).broadcast(player, false);
+            new Message(ConfigMessage.NO_BAITS).broadcast(player);
             return;
         }
 
@@ -264,7 +264,7 @@ public class AdminCommand extends BaseCommand {
         fishingRod.setItemMeta(meta);
         Message message = new Message(ConfigMessage.BAITS_CLEARED);
         message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
-        message.broadcast(player, true);
+        message.broadcast(player);
     }
 
 
@@ -286,7 +286,7 @@ public class AdminCommand extends BaseCommand {
             messageList.add(String.format(messageFormat, prefix, addonManager.isLoading(prefix)));
         }
 
-        new Message(messageList).broadcast(sender, false);
+        new Message(messageList).broadcast(sender);
     }
 
     @Subcommand("version")
@@ -310,7 +310,7 @@ public class AdminCommand extends BaseCommand {
         msgString += "Database Engine: " + getDatabaseVersion();
 
         Message msg = new Message(msgString);
-        msg.broadcast(sender, false);
+        msg.broadcast(sender);
     }
 
     private String getFeatureBranchName() {
@@ -384,7 +384,7 @@ public class AdminCommand extends BaseCommand {
     @CommandPermission(AdminPerms.MIGRATE)
     public void onMigrate(final CommandSender sender) {
         if (!MainConfig.getInstance().databaseEnabled()) {
-            new Message("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.").broadcast(sender, false);
+            new Message("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.").broadcast(sender);
             return;
         }
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));

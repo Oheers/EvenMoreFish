@@ -12,7 +12,7 @@ public class MessageRewardType implements RewardType {
 
     @Override
     public void doReward(@NotNull Player player, @NotNull String key, @NotNull String value, Location hookLocation) {
-        new Message(value).broadcast(player, true);
+        new Message(value).broadcast(player);
     }
 
     @Override

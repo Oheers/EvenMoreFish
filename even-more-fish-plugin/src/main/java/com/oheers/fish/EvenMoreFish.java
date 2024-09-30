@@ -555,7 +555,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         competitionQueue.load();
 
         if (sender != null) {
-            new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender, false);
+            new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender);
         }
 
     }
@@ -830,11 +830,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // If it is enabled, disable it
         if (isCustomFishing(player)) {
             pdc.set(key, PersistentDataType.STRING, "false");
-            new Message(ConfigMessage.TOGGLE_OFF).broadcast(player, false);
+            new Message(ConfigMessage.TOGGLE_OFF).broadcast(player);
         // If it is disabled, enable it
         } else {
             pdc.set(key, PersistentDataType.STRING, "true");
-            new Message(ConfigMessage.TOGGLE_ON).broadcast(player, false);
+            new Message(ConfigMessage.TOGGLE_ON).broadcast(player);
         }
     }
 

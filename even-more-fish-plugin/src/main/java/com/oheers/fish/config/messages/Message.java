@@ -3,7 +3,6 @@ package com.oheers.fish.config.messages;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
-import com.oheers.fish.config.ConfigBase;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -115,57 +114,27 @@ public class Message {
     /**
      * Sends a global message to all online users, formatting the message for each user and applying placeholders where
      * necessary, where the placeholder acts on the user being sent the message.
-     *
-     * @param doVariables If variables should be formatted or not.
      */
-    public void broadcast(final boolean doVariables) {
-        if (this.message.isEmpty()) {
-            return;
-        }
-        if (doVariables) variableFormat();
-        if (this.message.endsWith(" -s") && this.canSilent) return;
-
-        formatPlaceholderAPI();
-
-        colourFormat();
-
-        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(this.message));
-
-    }
-
-    /**
-     * Sends a message to just one player, the message is formatted and the placeholder is directed to them.
-     *
-     * @param player      The player receiving the message.
-     * @param doVariables If variables should be formatted or not.
-     */
-    public void broadcast(@NotNull final Player player, final boolean doVariables) {
-        if (this.message.isEmpty()) {
-            return;
-        }
-        if (doVariables) variableFormat();
-        if (this.message.endsWith(" -s") && this.canSilent) return;
-
-        formatPlaceholderAPI();
-
-        colourFormat();
-
-        player.sendMessage(this.message);
+    public void broadcast() {
+        // We need to create copies here to keep the original placeholders intact. Placeholders will now be parsed per-player.
+        Bukkit.getOnlinePlayers().forEach(player -> createCopy().broadcast(player));
     }
 
     /**
      * Sends a message to the console, the message is colour-formatted in case the console supports it and the placeholder
      * is directed to them.
-     *
-     * @param sender      The console sender.
-     * @param doVariables If variables should be formatted or not.
+     * @param sender      The command sender.
      */
-    public void broadcast(@NotNull final CommandSender sender, final boolean doVariables) {
-        if (this.message.isEmpty()) {
+    public void broadcast(@NotNull final CommandSender sender) {
+        if (this.message.isEmpty() || (this.message.endsWith(" -s") && this.canSilent)) {
             return;
         }
-        if (doVariables) variableFormat();
-        if (this.message.endsWith(" -s") && this.canSilent) return;
+
+        if (sender instanceof Player player) {
+            this.relevantPlayer = player;
+        }
+
+        variableFormat();
 
         formatPlaceholderAPI();
 
@@ -581,5 +550,14 @@ public class Message {
             setVariable(variable, customLore.toString());
         } else this.message = this.message.replace("\n"+variable, "");
     }
+
+    public Message createCopy() {
+        Message newMessage = new Message(this.message);
+        newMessage.setVariables(this.liveVariables);
+        newMessage.canHidePrefix = canHidePrefix;
+        newMessage.canSilent = canSilent;
+        return newMessage;
+    }
+
 }
 
