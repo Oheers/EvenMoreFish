@@ -9,9 +9,13 @@ import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 public class Messages extends ConfigBase {
 
     private static Messages instance = null;
+    private ConfigBase defaultEn;
 
     public Messages() {
         super("messages.yml", "locales/" + "messages_" + MainConfig.getInstance().getLocale() + ".yml", EvenMoreFish.getInstance(), true);
+        defaultEn = new ConfigBase("default/messages_en.yml", "locales/messages_en.yml", EvenMoreFish.getInstance(), false);
+        defaultEn.getFile().delete();
+        defaultEn.reload();
         instance = this;
     }
 
@@ -21,6 +25,10 @@ public class Messages extends ConfigBase {
 
     public String getSTDPrefix() {
         return getConfig().getString("prefix-regular") + getConfig().getString("prefix") + "&r";
+    }
+
+    public ConfigBase getDefaultEn() {
+        return defaultEn;
     }
 
     @Override
