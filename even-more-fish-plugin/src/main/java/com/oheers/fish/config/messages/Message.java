@@ -182,19 +182,13 @@ public class Message {
      */
     public String getString(String normal, String id) {
         Messages messageConfig = Messages.getInstance();
-        ConfigBase defaultEnConfig = messageConfig.getDefaultEn();
         String string = messageConfig.getConfig().getString(id, null);
         if (string == null) {
-            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default en value.");
-            String en = defaultEnConfig.getConfig().getString(id, null);
-            if (en == null) {
-                EvenMoreFish.getInstance().getLogger().warning("Failed to insert the default en value. Please report this!");
-                return normal;
-            }
-            messageConfig.getConfig().set(id, en);
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
+            messageConfig.getConfig().set(id, normal);
             messageConfig.save();
-            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default english value.");
-            return en;
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default value.");
+            return normal;
         }
         return string;
     }
@@ -208,19 +202,13 @@ public class Message {
      */
     public List<String> getStringList(List<String> normal, String id) {
         Messages messageConfig = Messages.getInstance();
-        ConfigBase defaultEnConfig = messageConfig.getDefaultEn();
         List<String> list = messageConfig.getConfig().getStringList(id);
         if (list.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default en value.");
-            List<String> en = defaultEnConfig.getConfig().getStringList(id, null);
-            if (en.isEmpty()) {
-                EvenMoreFish.getInstance().getLogger().warning("Failed to insert the default en value. Please report this!");
-                return normal;
-            }
-            messageConfig.getConfig().set(id, en);
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
+            messageConfig.getConfig().set(id, null);
             messageConfig.save();
-            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default english value.");
-            return en;
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default value.");
+            return normal;
         }
         return list;
     }
