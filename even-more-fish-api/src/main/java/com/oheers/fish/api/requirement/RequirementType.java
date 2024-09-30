@@ -1,6 +1,5 @@
 package com.oheers.fish.api.requirement;
 
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 

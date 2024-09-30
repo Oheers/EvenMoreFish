@@ -3,6 +3,7 @@ package com.oheers.fish.config.messages;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.config.ConfigBase;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -180,9 +181,13 @@ public class Message {
      * @return The string from config that matches the value of id.
      */
     public String getString(String normal, String id) {
-        String string = Messages.getInstance().getConfig().getString(id, null);
+        Messages messageConfig = Messages.getInstance();
+        String string = messageConfig.getConfig().getString(id, null);
         if (string == null) {
-            EvenMoreFish.getInstance().getLogger().severe("No valid value in messages.yml for: " + id + " using default value instead.");
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
+            messageConfig.getConfig().set(id, normal);
+            messageConfig.save();
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default value.");
             return normal;
         }
         return string;
@@ -196,9 +201,13 @@ public class Message {
      * @return The string list from config that matches the value of id.
      */
     public List<String> getStringList(List<String> normal, String id) {
-        List<String> list = Messages.getInstance().getConfig().getStringList(id);
+        Messages messageConfig = Messages.getInstance();
+        List<String> list = messageConfig.getConfig().getStringList(id);
         if (list.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No valid value in messages.yml for: " + id + " using default value instead.");
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
+            messageConfig.getConfig().set(id, null);
+            messageConfig.save();
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default value.");
             return normal;
         }
         return list;

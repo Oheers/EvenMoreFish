@@ -1,7 +1,6 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.fishing.items.Fish;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;

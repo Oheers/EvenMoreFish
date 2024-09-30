@@ -3,7 +3,8 @@ package com.oheers.fish.competition.leaderboard;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.fishing.items.Fish;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 public interface LeaderboardHandler {
 
