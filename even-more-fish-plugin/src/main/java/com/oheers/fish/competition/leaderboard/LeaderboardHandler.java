@@ -4,6 +4,7 @@ import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -43,6 +44,8 @@ public interface LeaderboardHandler {
         Bukkit.getOnlinePlayers().forEach(this::send);
         sendToConsole();
     }
+
+    void applyFish(@NotNull Fish fish, @NotNull Player player);
 
 }
 

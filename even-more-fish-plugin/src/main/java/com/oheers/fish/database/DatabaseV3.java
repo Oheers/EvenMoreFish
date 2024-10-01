@@ -3,7 +3,7 @@ package com.oheers.fish.database;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
-import com.oheers.fish.competition.leaderboard.Leaderboard;
+import com.oheers.fish.competition.leaderboard.LeaderboardHandler;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.connection.ConnectionFactory;
 import com.oheers.fish.database.connection.MySqlConnectionFactory;
@@ -255,7 +255,7 @@ public class DatabaseV3 {
         // starts a field for the new fish that's been fished for the first time
         executeStatement(c -> {
             try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
-                Leaderboard leaderboard = competition.getLeaderboard();
+                LeaderboardHandler leaderboard = competition.getLeaderboard();
                 prep.setString(1, competition.getCompetitionName());
                 if (leaderboard.getSize() > 0) {
                     prep.setString(2, leaderboard.getTopEntry().getPlayer().toString());

@@ -1,7 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.competition.CompetitionManager;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
@@ -107,16 +107,15 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             return "";
         }
         
-        if(identifier.equalsIgnoreCase("competition_type")) {
-            if (!Competition.isActive()) {
+        if (identifier.equalsIgnoreCase("competition_type")) {
+            if (!CompetitionManager.getInstance().isCompetitionActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(false);
             }
-            
-            return EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().name();
+            return CompetitionManager.getInstance().getActiveCompetition().getCompetitionType().getIdentifier();
         }
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
-            if (!Competition.isActive()) {
+            if (!CompetitionManager.getInstance().isCompetitionActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(false);
             }
             
@@ -127,19 +126,15 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            UUID uuid = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getPlayer();
+            UUID uuid = CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getPlayer();
             if (uuid != null) {
                 // To be in the leaderboard the player must have joined
                 return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
             }
         }
         if (identifier.startsWith("competition_place_size_")) {
-            if (!Competition.isActive()) {
+            if (!CompetitionManager.getInstance().isCompetitionActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE).getRawMessage(false);
-            }
-            if (!(EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_FISH ||
-                EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_TOTAL)) {
-                return new Message(ConfigMessage.PLACEHOLDER_SIZE_DURING_MOST_FISH).getRawMessage(false);
             }
             
             // checking the leaderboard actually contains the value of place
@@ -149,18 +144,18 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            float value = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getValue();
+            float value = CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getValue();
             
             if (value != -1.0f) return Float.toString(Math.round(value * 10f) / 10f);
             else return "";
             
         }
         if (identifier.startsWith("competition_place_fish_")) {
-            if (!Competition.isActive()) {
+            if (!CompetitionManager.getInstance().isCompetitionActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_FISH).getRawMessage(false);
             }
             
-            if (EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_FISH) {
+            if (!CompetitionManager.getInstance().getActiveCompetition().getCompetitionType().shouldUseLength()) {
                 // checking the leaderboard actually contains the value of place
                 int place = Integer.parseInt(identifier.substring(23));
                 if (!leaderboardContainsPlace(place)) {
@@ -168,7 +163,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 }
                 
                 // getting "place" place in the competition
-                Fish fish = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getFish();
+                Fish fish = CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getFish();
                 if (fish != null) {
                     Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
                     if (fish.getLength() == -1)
@@ -190,7 +185,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             } else {
                 // checking the leaderboard actually contains the value of place
                 int place = Integer.parseInt(identifier.substring(23));
-                float value = Competition.leaderboard.getEntry(place).getValue();
+                float value = CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getValue();
                 if (value == -1)
                     return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(false);
                 
@@ -232,7 +227,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
 
         if (identifier.equals("competition_active")) {
-            return Boolean.toString(Competition.isActive());
+            return Boolean.toString(CompetitionManager.getInstance().isCompetitionActive());
         }
         
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
@@ -241,6 +236,6 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
     }
     
     private boolean leaderboardContainsPlace(int place) {
-        return EvenMoreFish.getInstance().getActiveCompetition().getLeaderboardSize() >= place;
+        return CompetitionManager.getInstance().getActiveCompetition().getLeaderboardSize() >= place;
     }
 }

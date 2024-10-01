@@ -18,12 +18,9 @@ public class AutoRunner {
                 int weekMinute = getCurrentTimeCode();
 
                 // Beginning the competition set for schedule
-                CompetitionQueue queue = EvenMoreFish.getInstance().getCompetitionQueue();
+                CompetitionQueue queue = CompetitionManager.getInstance().getCompetitionQueue();
                 if (queue.competitions.containsKey(weekMinute)) {
-                    if (!Competition.isActive()) {
-                        EvenMoreFish.getInstance().setActiveCompetition(queue.competitions.get(weekMinute));
-                        EvenMoreFish.getInstance().getActiveCompetition().begin(false);
-                    }
+                    CompetitionManager.getInstance().startCompetition(queue.competitions.get(weekMinute));
                 }
             }
         }, (60 - LocalTime.now().getSecond()) * 20, 20);
@@ -40,7 +37,7 @@ public class AutoRunner {
 
         // Obtaining how many minutes have passed since midnight last Sunday
         String day = LocalDate.now().getDayOfWeek().toString();
-        return EvenMoreFish.getInstance().getCompetitionQueue().generateTimeCode(day, timeKey);
+        return CompetitionManager.getInstance().getCompetitionQueue().generateTimeCode(day, timeKey);
     }
 
     /**

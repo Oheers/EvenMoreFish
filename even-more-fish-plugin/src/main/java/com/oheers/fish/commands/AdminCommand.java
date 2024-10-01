@@ -11,6 +11,7 @@ import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionManager;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -134,7 +135,7 @@ public class AdminCommand extends BaseCommand {
                             @Default("LARGEST_FISH") @Optional CompetitionType type,
                             @Default("1") @Conditions("limits:min=1") @Optional Integer amount
         ) {
-            if (Competition.isActive()) {
+            if (CompetitionManager.getInstance().isCompetitionActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
                 return;
             }
@@ -149,15 +150,14 @@ public class AdminCommand extends BaseCommand {
             comp.setNumberNeeded(amount);
             comp.initStartSound(null);
 
-            EvenMoreFish.getInstance().setActiveCompetition(comp);
-            comp.begin(true);
+            CompetitionManager.getInstance().startCompetition(comp);
         }
 
         @Subcommand("end")
         @Description("%desc_competition_end")
         public void onEnd(final CommandSender sender) {
-            if (Competition.isActive()) {
-                EvenMoreFish.getInstance().getActiveCompetition().end(false);
+            if (CompetitionManager.getInstance().isCompetitionActive()) {
+                CompetitionManager.getInstance().getActiveCompetition().end(false);
                 return;
             }
 
@@ -304,7 +304,7 @@ public class AdminCommand extends BaseCommand {
                 Messages.getInstance().getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "Loaded: Rarities(" + EvenMoreFish.getInstance().getFishCollection().size() + ") Fish(" +
-                fishCount + ") Baits(" + EvenMoreFish.getInstance().getBaits().size() + ") Competitions(" + EvenMoreFish.getInstance().getCompetitionQueue().getSize() + ")\n" +
+                fishCount + ") Baits(" + EvenMoreFish.getInstance().getBaits().size() + ") Competitions(" + CompetitionManager.getInstance().getCompetitionQueue().getSize() + ")\n" +
                 Messages.getInstance().getSTDPrefix();
 
         msgString += "Database Engine: " + getDatabaseVersion();

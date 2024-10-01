@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionManager;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -64,19 +65,15 @@ public class EMFCommand extends BaseCommand {
     @CommandPermission(UserPerms.TOP)
     @Description("%desc_general_top")
     public void onTop(final CommandSender sender) {
-        if (!Competition.isActive()) {
+
+        Competition activeComp = CompetitionManager.getInstance().getActiveCompetition();
+
+        if (activeComp == null) {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender);
             return;
         }
 
-        if (sender instanceof Player player) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard(player);
-            return;
-        }
-
-        if (sender instanceof ConsoleCommandSender consoleCommandSender) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendConsoleLeaderboard(consoleCommandSender);
-        }
+        activeComp.getLeaderboard().send(sender);
     }
 
     @Subcommand("shop")

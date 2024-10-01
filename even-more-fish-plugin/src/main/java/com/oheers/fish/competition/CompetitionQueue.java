@@ -115,7 +115,7 @@ public class CompetitionQueue {
             return currentTimeCode;
         }
 
-        Competition competition = new Competition(-1, CompetitionType.LARGEST_FISH, new ArrayList<>());
+        Competition competition = new Competition(-1, CompetitionManager.getInstance().getCompetitionType("LARGEST_FISH"), new ArrayList<>());
         competitions.put(currentTimeCode, competition);
 
         int nextTimeCode = findNextCompetitionTimeCode(currentTimeCode);

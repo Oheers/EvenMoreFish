@@ -17,9 +17,7 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitListener;
 import com.oheers.fish.commands.AdminCommand;
 import com.oheers.fish.commands.EMFCommand;
-import com.oheers.fish.competition.AutoRunner;
-import com.oheers.fish.competition.Competition;
-import com.oheers.fish.competition.CompetitionQueue;
+import com.oheers.fish.competition.CompetitionManager;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.competition.rewardtypes.external.*;
@@ -84,8 +82,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private boolean checkingIntEvent;
     // Do some fish in some rarities have the comp-check-exempt: true.
     private boolean raritiesCompCheckExempt = false;
-    private Competition active;
-    private CompetitionQueue competitionQueue;
     private Logger logger;
     private PluginManager pluginManager;
     private int metric_fishCaught = 0;
@@ -185,8 +181,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // Do this before anything competition related.
         loadRewardManager();
 
-        competitionQueue = new CompetitionQueue();
-        competitionQueue.load();
+        CompetitionManager.getInstance().load();
 
         // async check for updates on the spigot page
         getScheduler().runTaskAsynchronously(() -> isUpdateAvailable = checkUpdate());
@@ -197,8 +192,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (!MainConfig.getInstance().debugSession()) {
             metrics();
         }
-
-        AutoRunner.init();
 
         if (MainConfig.getInstance().databaseEnabled()) {
 
@@ -228,10 +221,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         // Don't use the scheduler here because it will throw errors on disable
         saveUserData(false);
 
-        // Ends the current competition in case the plugin is being disabled when the server will continue running
-        if (Competition.isActive()) {
-            active.end(false);
-        }
+        CompetitionManager.getInstance().unload();
 
         RewardManager.getInstance().unload();
 
@@ -552,7 +542,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             customNBTRod = createCustomNBTRod();
         }
 
-        competitionQueue.load();
+        CompetitionManager.getInstance().reload();
 
         if (sender != null) {
             new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender);
@@ -635,18 +625,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public void setRaritiesCompCheckExempt(boolean bool) {
         this.raritiesCompCheckExempt = bool;
-    }
-
-    public Competition getActiveCompetition() {
-        return active;
-    }
-
-    public void setActiveCompetition(Competition competition) {
-        this.active = competition;
-    }
-
-    public CompetitionQueue getCompetitionQueue() {
-        return competitionQueue;
     }
 
     public PluginManager getPluginManager() {

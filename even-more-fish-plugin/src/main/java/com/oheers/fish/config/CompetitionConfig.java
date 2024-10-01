@@ -1,6 +1,7 @@
 package com.oheers.fish.config;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.competition.CompetitionManager;
 import com.oheers.fish.competition.CompetitionType;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Sound;
@@ -59,7 +60,7 @@ public class CompetitionConfig extends ConfigBase {
     }
 
     public CompetitionType getCompetitionType(String competitionName) {
-        return CompetitionType.valueOf(getConfig().getString("competitions." + competitionName + ".type"));
+        return CompetitionManager.getInstance().getCompetitionType(getConfig().getString("competitions." + competitionName + ".type", ""));
     }
 
     public boolean doingRepeatedTiming(String competitionName) {

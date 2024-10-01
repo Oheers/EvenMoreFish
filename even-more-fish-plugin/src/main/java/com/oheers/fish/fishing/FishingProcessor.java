@@ -10,6 +10,7 @@ import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionManager;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
@@ -163,7 +164,7 @@ public class FishingProcessor implements Listener {
 
         Fish fish;
 
-        if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !Competition.isActive())) {
+        if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !CompetitionManager.getInstance().isCompetitionActive())) {
 
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
             fish = applyingBait.chooseFish(player, location);
@@ -323,9 +324,9 @@ public class FishingProcessor implements Listener {
             return null;
         }
 
-        if (!Competition.isActive() && EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) {
+        if (!CompetitionManager.getInstance().isCompetitionActive() && EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) {
             if (allowedRarities.get(idx).hasCompExemptFish()) return allowedRarities.get(idx);
-        } else if (Competition.isActive() || !MainConfig.getInstance().isCompetitionUnique()) {
+        } else if (CompetitionManager.getInstance().isCompetitionActive() || !MainConfig.getInstance().isCompetitionUnique()) {
             return allowedRarities.get(idx);
         }
 
@@ -424,7 +425,7 @@ public class FishingProcessor implements Listener {
         // checks whether weight calculations need doing for fish
         returningFish = randomWeightedFish(available, boostRate, boostedFish);
 
-        if (Competition.isActive() || !MainConfig.getInstance().isCompetitionUnique() || (EvenMoreFish.getInstance().isRaritiesCompCheckExempt() && returningFish.isCompExemptFish())) {
+        if (CompetitionManager.getInstance().isCompetitionActive() || !MainConfig.getInstance().isCompetitionUnique() || (EvenMoreFish.getInstance().isRaritiesCompCheckExempt() && returningFish.isCompExemptFish())) {
             return returningFish;
         } else {
             return null;
@@ -434,14 +435,14 @@ public class FishingProcessor implements Listener {
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
     public static boolean competitionOnlyCheck() {
         if (MainConfig.getInstance().isCompetitionUnique()) {
-            return Competition.isActive();
+            return CompetitionManager.getInstance().isCompetitionActive();
         } else {
             return true;
         }
     }
 
     public static void competitionCheck(Fish fish, Player fisherman, Location location) {
-        if (Competition.isActive()) {
+        if (CompetitionManager.getInstance().isCompetitionActive()) {
             List<String> competitionWorlds = CompetitionConfig.getInstance().getRequiredWorlds();
             if (!competitionWorlds.isEmpty()) {
                 if (location.getWorld() != null) {
@@ -453,7 +454,7 @@ public class FishingProcessor implements Listener {
                 }
             }
 
-            EvenMoreFish.getInstance().getActiveCompetition().applyToLeaderboard(fish, fisherman);
+            CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().applyFish(fish, fisherman);
         }
     }
 }
