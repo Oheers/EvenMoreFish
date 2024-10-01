@@ -132,7 +132,7 @@ public class Message {
         }
 
         if (sender instanceof Player player) {
-            this.relevantPlayer = player;
+            setPlayer(player);
         }
 
         variableFormat();
@@ -552,11 +552,20 @@ public class Message {
         } else this.message = this.message.replace("\n"+variable, "");
     }
 
+    public void setCanHidePrefix(boolean canHidePrefix) {
+        this.canHidePrefix = canHidePrefix;
+    }
+
+    public void setCanSilent(boolean canSilent) {
+        this.canSilent = canSilent;
+    }
+
     public Message createCopy() {
         Message newMessage = new Message(this.message);
+        newMessage.setPlayer(this.relevantPlayer);
         newMessage.setVariables(this.liveVariables);
-        newMessage.canHidePrefix = canHidePrefix;
-        newMessage.canSilent = canSilent;
+        newMessage.setCanHidePrefix(this.canHidePrefix);
+        newMessage.setCanSilent(this.canSilent);
         return newMessage;
     }
 
