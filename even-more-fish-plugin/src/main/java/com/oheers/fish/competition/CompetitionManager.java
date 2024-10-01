@@ -3,6 +3,8 @@ package com.oheers.fish.competition;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.config.CompetitionConfig;
+import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
@@ -213,6 +215,36 @@ public class CompetitionManager {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
             return false;
         }
+    }
+
+    public Message getNextCompetitionMessage() {
+        if (CompetitionManager.getInstance().isCompetitionActive()) {
+            return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP);
+        }
+
+        int remainingTime = getRemainingTime();
+
+        Message message = new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING);
+        message.setDays(Integer.toString(remainingTime / 1440));
+        message.setHours(Integer.toString((remainingTime % 1440) / 60));
+        message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
+
+        return message;
+    }
+
+    private int getRemainingTime() {
+        int competitionStartTime = CompetitionManager.getInstance().getCompetitionQueue().getNextCompetition();
+        int currentTime = AutoRunner.getCurrentTimeCode();
+        if (competitionStartTime > currentTime) {
+            return competitionStartTime - currentTime;
+        }
+
+        return getRemainingTimeOverWeek(competitionStartTime, currentTime);
+    }
+
+    // time left of the current week + the time next week until next competition
+    private int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
+        return (10080 - currentTime) + competitionStartTime;
     }
 
 }

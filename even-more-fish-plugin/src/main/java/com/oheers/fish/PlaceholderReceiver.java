@@ -223,7 +223,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
         
         if (identifier.equals("competition_time_left")) {
-            return Competition.getNextCompetitionMessage().getRawMessage(true);
+            return CompetitionManager.getInstance().getNextCompetitionMessage().getRawMessage(true);
         }
 
         if (identifier.equals("competition_active")) {

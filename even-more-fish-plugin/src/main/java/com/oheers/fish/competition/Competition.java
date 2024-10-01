@@ -28,12 +28,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 
-// TODO de-static this whole thing, move anything that needs to be moved to CompetitionManager
 public class Competition {
 
     private LeaderboardHandler leaderboard;
-    static boolean active;
-    static boolean originallyRandom;
+    boolean active;
     private CompetitionType competitionType;
     private Fish selectedFish;
     private Rarity selectedRarity;
@@ -51,7 +49,6 @@ public class Competition {
     int playersNeeded;
     Sound startSound;
     MyScheduledTask timingSystem;
-    List<UUID> leaderboardMembers = new ArrayList<>();
     private final List<String> beginCommands;
 
     public Competition(final Integer duration, final CompetitionType type, List<String> beginCommands) {
@@ -60,10 +57,6 @@ public class Competition {
         this.rewards = new HashMap<>();
         this.competitionType = type;
         this.beginCommands = beginCommands;
-    }
-
-    public static void setOriginallyRandom(boolean originallyRandom) {
-        Competition.originallyRandom = originallyRandom;
     }
 
     public void begin(boolean adminStart) {
@@ -397,37 +390,6 @@ public class Competition {
 
     public void setCompetitionName(String competitionName) {
         this.competitionName = competitionName;
-    }
-
-    // TODO move somewhere else
-    public static Message getNextCompetitionMessage() {
-        if (CompetitionManager.getInstance().isCompetitionActive()) {
-            return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP);
-        }
-
-        int remainingTime = getRemainingTime();
-
-        Message message = new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING);
-        message.setDays(Integer.toString(remainingTime / 1440));
-        message.setHours(Integer.toString((remainingTime % 1440) / 60));
-        message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
-
-        return message;
-    }
-
-    private static int getRemainingTime() {
-        int competitionStartTime = CompetitionManager.getInstance().getCompetitionQueue().getNextCompetition();
-        int currentTime = AutoRunner.getCurrentTimeCode();
-        if (competitionStartTime > currentTime) {
-            return competitionStartTime - currentTime;
-        }
-
-        return getRemainingTimeOverWeek(competitionStartTime, currentTime);
-    }
-
-    // time left of the current week + the time next week until next competition
-    private static int getRemainingTimeOverWeek(int competitionStartTime, int currentTime) {
-        return (10080 - currentTime) + competitionStartTime;
     }
 
     private void incrementCompetitionsJoined(CompetitionEntry entry) {

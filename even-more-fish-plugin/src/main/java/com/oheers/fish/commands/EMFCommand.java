@@ -28,7 +28,7 @@ public class EMFCommand extends BaseCommand {
     @Description("%desc_general_next")
     @CommandPermission(UserPerms.NEXT)
     public void onNext(final CommandSender sender) {
-        Message message = Competition.getNextCompetitionMessage();
+        Message message = CompetitionManager.getInstance().getNextCompetitionMessage();
         message.usePrefix(PrefixType.DEFAULT);
         message.broadcast(sender);
     }
