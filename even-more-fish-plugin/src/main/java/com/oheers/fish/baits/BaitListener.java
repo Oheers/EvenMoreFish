@@ -45,7 +45,7 @@ public class BaitListener implements Listener {
         GameMode gameMode = event.getWhoClicked().getGameMode();
 
         if (!gameMode.equals(GameMode.SURVIVAL) && !gameMode.equals(GameMode.ADVENTURE)) {
-            new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked(), false);
+            new Message(ConfigMessage.BAIT_WRONG_GAMEMODE).broadcast(event.getWhoClicked());
             return;
         }
 
@@ -67,14 +67,14 @@ public class BaitListener implements Listener {
             }
 
         } catch (MaxBaitsReachedException exception) {
-            new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked(), false);
+            new Message(ConfigMessage.BAITS_MAXED).broadcast(event.getWhoClicked());
             result = exception.getRecoveryResult();
         } catch (MaxBaitReachedException exception) {
             result = exception.getRecoveryResult();
             Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
             message.setBaitTheme(bait.getTheme());
             message.setBait(bait.getName());
-            message.broadcast(event.getWhoClicked(), true);
+            message.broadcast(event.getWhoClicked());
         }
 
         if (result == null || result.getFishingRod() == null)
@@ -132,7 +132,7 @@ public class BaitListener implements Listener {
         if (event.getSlot() == 2 && BaitNBTManager.isBaitedRod(inv.getItem(1))) {
             event.setCancelled(true);
             player.closeInventory();
-            new Message(ConfigMessage.BAIT_ROD_PROTECTION).broadcast(player, false);
+            new Message(ConfigMessage.BAIT_ROD_PROTECTION).broadcast(player);
             return true;
         }
         return false;
