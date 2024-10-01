@@ -16,8 +16,8 @@ public interface CompetitionType {
 
     LeaderboardHandler getNewLeaderboard();
 
-    default void register() {
-        CompetitionManager.getInstance().registerType(this);
+    default boolean register() {
+        return CompetitionManager.getInstance().registerType(this);
     }
 
     @Nullable Consumer<Competition> getTypeBeginLogic();
