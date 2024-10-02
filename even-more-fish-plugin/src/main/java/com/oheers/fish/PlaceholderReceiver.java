@@ -233,6 +233,18 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         if (identifier.equals("competition_active")) {
             return Boolean.toString(Competition.isActive());
         }
+
+        if (identifier.equals("custom_fishing_boolean")) {
+            return Boolean.toString(plugin.isCustomFishing(player));
+        }
+
+        if (identifier.equals("custom_fishing_status")) {
+            if (plugin.isCustomFishing(player)) {
+                return new Message(ConfigMessage.CUSTOM_FISHING_ENABLED).getRawMessage(false);
+            } else {
+                return new Message(ConfigMessage.CUSTOM_FISHING_DISABLED).getRawMessage(false);
+            }
+        }
         
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
         // was provided

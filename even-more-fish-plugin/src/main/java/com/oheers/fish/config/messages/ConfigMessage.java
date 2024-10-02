@@ -148,6 +148,9 @@ public enum ConfigMessage {
     NO_PERMISSION("&cYou don't have permission to run that command.", PrefixType.ERROR, false, true, "no-permission"),
     NO_WINNERS("&rThere were no fishing records.", PrefixType.DEFAULT, true, true, "no-winners"),
     NOT_ENOUGH_PLAYERS("&rThere's not enough players online to start the scheduled fishing competition.", PrefixType.ERROR, true, false, "not-enough-players"),
+   
+    CUSTOM_FISHING_ENABLED("&aEnabled", PrefixType.NONE, false, true, "custom-fishing-enabled"),
+    CUSTOM_FISHING_DISABLED("&cDisabled", PrefixType.NONE, false, true, "custom-fishing-disabled"),
 
     PLACEHOLDER_FISH_FORMAT("{rarity_colour}{length}cm &l{rarity} {fish}", PrefixType.NONE, true, false, "emf-competition-fish-format"),
     PLACEHOLDER_FISH_LENGTHLESS_FORMAT("{rarity_colour}&l{rarity} {fish}", PrefixType.NONE, true, false, "emf-lengthless-fish-format"),
