@@ -554,7 +554,9 @@ public class Message {
 
     public Message createCopy() {
         Message newMessage = new Message(this.message);
-        newMessage.setPlayer(this.relevantPlayer);
+        if (this.relevantPlayer != null) {
+            newMessage.setPlayer(this.relevantPlayer);
+        }
         newMessage.setVariables(this.liveVariables);
         newMessage.setCanHidePrefix(this.canHidePrefix);
         newMessage.setCanSilent(this.canSilent);
