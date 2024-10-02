@@ -65,6 +65,7 @@ public class CompetitionManager {
     }
 
     private void registerInternalTypes() {
+        new RandomCompetitionType().register();
         new LargestFishCompetitionType().register();
     }
 
