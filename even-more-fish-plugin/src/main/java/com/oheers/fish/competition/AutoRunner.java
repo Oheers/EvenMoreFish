@@ -20,7 +20,7 @@ public class AutoRunner {
                 // Beginning the competition set for schedule
                 CompetitionQueue queue = CompetitionManager.getInstance().getCompetitionQueue();
                 if (queue.competitions.containsKey(weekMinute)) {
-                    CompetitionManager.getInstance().startCompetition(queue.competitions.get(weekMinute));
+                    queue.competitions.get(weekMinute).begin(false);
                 }
             }
         }, (60 - LocalTime.now().getSecond()) * 20, 20);

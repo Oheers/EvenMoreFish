@@ -164,7 +164,7 @@ public class FishingProcessor implements Listener {
 
         Fish fish;
 
-        if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !CompetitionManager.getInstance().isCompetitionActive())) {
+        if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !Competition.isCurrentlyActive())) {
 
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
             fish = applyingBait.chooseFish(player, location);
@@ -324,9 +324,9 @@ public class FishingProcessor implements Listener {
             return null;
         }
 
-        if (!CompetitionManager.getInstance().isCompetitionActive() && EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) {
+        if (!Competition.isCurrentlyActive() && EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) {
             if (allowedRarities.get(idx).hasCompExemptFish()) return allowedRarities.get(idx);
-        } else if (CompetitionManager.getInstance().isCompetitionActive() || !MainConfig.getInstance().isCompetitionUnique()) {
+        } else if (Competition.isCurrentlyActive() || !MainConfig.getInstance().isCompetitionUnique()) {
             return allowedRarities.get(idx);
         }
 
@@ -425,7 +425,7 @@ public class FishingProcessor implements Listener {
         // checks whether weight calculations need doing for fish
         returningFish = randomWeightedFish(available, boostRate, boostedFish);
 
-        if (CompetitionManager.getInstance().isCompetitionActive() || !MainConfig.getInstance().isCompetitionUnique() || (EvenMoreFish.getInstance().isRaritiesCompCheckExempt() && returningFish.isCompExemptFish())) {
+        if (Competition.isCurrentlyActive() || !MainConfig.getInstance().isCompetitionUnique() || (EvenMoreFish.getInstance().isRaritiesCompCheckExempt() && returningFish.isCompExemptFish())) {
             return returningFish;
         } else {
             return null;
@@ -435,14 +435,14 @@ public class FishingProcessor implements Listener {
     // Checks if it should be giving the player the fish considering the fish-only-in-competition option in config.yml
     public static boolean competitionOnlyCheck() {
         if (MainConfig.getInstance().isCompetitionUnique()) {
-            return CompetitionManager.getInstance().isCompetitionActive();
+            return Competition.isCurrentlyActive();
         } else {
             return true;
         }
     }
 
     public static void competitionCheck(Fish fish, Player fisherman, Location location) {
-        if (CompetitionManager.getInstance().isCompetitionActive()) {
+        if (Competition.isCurrentlyActive()) {
             List<String> competitionWorlds = CompetitionConfig.getInstance().getRequiredWorlds();
             if (!competitionWorlds.isEmpty()) {
                 if (location.getWorld() != null) {
@@ -454,7 +454,7 @@ public class FishingProcessor implements Listener {
                 }
             }
 
-            CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().applyFish(fish, fisherman);
+            Competition.getActiveCompetition().getLeaderboard().applyFish(fish, fisherman);
         }
     }
 }

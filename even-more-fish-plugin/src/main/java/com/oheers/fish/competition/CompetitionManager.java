@@ -2,6 +2,8 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.plugin.EMFPlugin;
+import com.oheers.fish.competition.types.RandomCompetitionType;
+import com.oheers.fish.competition.types.largest_fish.LargestFishCompetitionType;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -22,7 +24,6 @@ public class CompetitionManager {
     private CompetitionQueue queue;
     private Map<String, CompetitionType> registeredTypes;
     private boolean loaded = false;
-    private Competition activeCompetition;
 
     private CompetitionManager() {
         registeredTypes = new HashMap<>();
@@ -56,11 +57,15 @@ public class CompetitionManager {
         if (!loaded) {
             return;
         }
-        getActiveCompetition().end(false);
+        Competition comp = Competition.getActiveCompetition();
+        if (comp != null) {
+            comp.end(false);
+        }
+        Competition.stopActiveCompetition();
     }
 
     private void registerInternalTypes() {
-
+        new LargestFishCompetitionType().register();
     }
 
     public boolean registerType(@NotNull CompetitionType type) {
@@ -81,38 +86,30 @@ public class CompetitionManager {
         return registeredTypes.get(identifier.toUpperCase());
     }
 
-    public boolean isCompetitionActive() {
-        return activeCompetition != null;
-    }
-
-    public boolean startCompetition(@NotNull Competition competition) {
-        if (isCompetitionActive()) {
-            return false;
+    public @Nullable CompetitionType getRandomCompetitionType() {
+        if (registeredTypes.isEmpty()) {
+            return null;
         }
-        this.activeCompetition = competition;
-        activeCompetition.begin(false);
-        return true;
-    }
-
-    public boolean endCompetition() {
-        if (!isCompetitionActive()) {
-            return false;
+        try {
+            // -1 from the length so that the RANDOM isn't chosen as the random value.
+            int typePlace = EvenMoreFish.getInstance().getRandom().nextInt(registeredTypes.size() - 1);
+            String[] typeNames = registeredTypes.keySet().toArray(String[]::new);
+            return registeredTypes.get(typeNames[typePlace]);
+        } catch (IndexOutOfBoundsException exception) {
+            return null;
         }
-        activeCompetition.end(false);
-        activeCompetition = null;
-        return true;
     }
 
-    public Competition getActiveCompetition() {
-        return activeCompetition;
+    public Map<String, CompetitionType> getRegisteredTypes() {
+        return Map.copyOf(registeredTypes);
     }
 
-    public boolean shouldUseActionBar(@NotNull Competition competition) {
+    public boolean shouldUseActionBar(@NotNull CompetitionType competitionType) {
         boolean doActionBarMessage = Messages.getInstance().getConfig().getBoolean("action-bar-message");
         boolean isSupportedActionBarType = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance()
                 .getConfig()
                 .getStringList("action-bar-types")
-                .contains(competition.getCompetitionType().getIdentifier());
+                .contains(competitionType.getIdentifier());
         return doActionBarMessage && isSupportedActionBarType;
     }
 
@@ -218,7 +215,7 @@ public class CompetitionManager {
     }
 
     public Message getNextCompetitionMessage() {
-        if (CompetitionManager.getInstance().isCompetitionActive()) {
+        if (Competition.isCurrentlyActive()) {
             return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP);
         }
 

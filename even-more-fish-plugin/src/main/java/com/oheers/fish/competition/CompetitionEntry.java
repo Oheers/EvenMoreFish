@@ -1,6 +1,8 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.fishing.items.Fish;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -12,7 +14,7 @@ public class CompetitionEntry {
     private long time;
     private float value;
 
-    public CompetitionEntry(UUID player, Fish fish, CompetitionType type) {
+    public CompetitionEntry(@NotNull UUID player, @NotNull Fish fish, @NotNull CompetitionType type) {
         this.player = player;
         this.fish = fish;
         this.time = Instant.now().toEpochMilli();
@@ -58,7 +60,6 @@ public class CompetitionEntry {
     public UUID getPlayer() {
         return player;
     }
-
 
     @Override
     public String toString() {

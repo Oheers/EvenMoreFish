@@ -25,7 +25,7 @@ public class McMMOTreasureEvent implements Listener {
     public void mcmmoTreasure(McMMOReplaceVanillaTreasureEvent event) {
         if (MainConfig.getInstance().disableMcMMOTreasure()) {
             if (MainConfig.getInstance().isCompetitionUnique()) {
-                if (CompetitionManager.getInstance().getActiveCompetition() != null) {
+                if (Competition.isCurrentlyActive()) {
                     event.setReplacementItemStack(event.getOriginalItem().getItemStack());
                 }
             } else {
@@ -38,7 +38,7 @@ public class McMMOTreasureEvent implements Listener {
     public void mcmmoTreasure(McMMOPlayerFishingTreasureEvent event) {
         if (MainConfig.getInstance().disableMcMMOTreasure()) {
             if (MainConfig.getInstance().isCompetitionUnique()) {
-                if (CompetitionManager.getInstance().isCompetitionActive()) {
+                if (Competition.isCurrentlyActive()) {
                     event.setTreasure(null);
                 }
             } else {

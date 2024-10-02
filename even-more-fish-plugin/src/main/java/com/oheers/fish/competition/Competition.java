@@ -31,7 +31,6 @@ import java.util.logging.Level;
 public class Competition {
 
     private LeaderboardHandler leaderboard;
-    boolean active;
     private CompetitionType competitionType;
     private Fish selectedFish;
     private Rarity selectedRarity;
@@ -51,6 +50,8 @@ public class Competition {
     MyScheduledTask timingSystem;
     private final List<String> beginCommands;
 
+    private static Competition activeCompetition = null;
+
     public Competition(final Integer duration, final CompetitionType type, List<String> beginCommands) {
         this.maxDuration = duration;
         this.alertTimes = new ArrayList<>();
@@ -59,18 +60,38 @@ public class Competition {
         this.beginCommands = beginCommands;
     }
 
+    public static Competition getActiveCompetition() {
+        return activeCompetition;
+    }
+
+    public static void stopActiveCompetition() {
+        if (activeCompetition != null) {
+            activeCompetition.end(false);
+            activeCompetition = null;
+        }
+    }
+
+    public static boolean isCurrentlyActive() {
+        return activeCompetition != null;
+    }
+
     public void begin(boolean adminStart) {
-        if (!adminStart && EvenMoreFish.getInstance().getOnlinePlayersExcludingVanish().size() < playersNeeded) {
-            new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast();
-            active = false;
+        if (isCurrentlyActive()) {
+            EvenMoreFish.getInstance().getLogger().warning("Tried to start a competition while one is already active!");
             return;
         }
 
-        active = true;
+        if (!adminStart && EvenMoreFish.getInstance().getOnlinePlayersExcludingVanish().size() < playersNeeded) {
+            new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast();
+            activeCompetition = null;
+            return;
+        }
+
+        activeCompetition = this;
 
         Function<Competition, Boolean> beginLogic = competitionType.getTypeBeginLogic();
         if (beginLogic != null && !beginLogic.apply(this)) {
-            active = false;
+            activeCompetition = null;
             return;
         }
 
@@ -123,7 +144,7 @@ public class Competition {
         } catch (Exception exception) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "An exception was thrown while the competition was being ended!", exception);
         } finally {
-            active = false;
+            activeCompetition = null;
         }
     }
 
@@ -412,6 +433,10 @@ public class Competition {
 
     public void setSelectedRarity(@NotNull Rarity rarity) {
         this.selectedRarity = rarity;
+    }
+
+    public void setCompetitionType(@NotNull CompetitionType type) {
+        this.competitionType = type;
     }
 
 }

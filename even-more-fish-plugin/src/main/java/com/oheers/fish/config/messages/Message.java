@@ -499,7 +499,7 @@ public class Message {
      * @param type The competition type.
      */
     public void setCompetitionType(@NotNull final CompetitionType type) {
-        setVariable("{type}", type.getMessageTypeVariable());
+        setVariable("{type}", type.getMessageTypeVariable().getRawMessage(false));
     }
 
     /**

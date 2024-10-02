@@ -132,14 +132,20 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_competition_start")
         public void onStart(final CommandSender sender,
                             @Default("%duration") @Conditions("limits:min=1") @Optional Integer duration,
-                            @Default("LARGEST_FISH") @Optional CompetitionType type,
+                            @Default("LARGEST_FISH") @Optional String typeString,
                             @Default("1") @Conditions("limits:min=1") @Optional Integer amount
         ) {
-            if (CompetitionManager.getInstance().isCompetitionActive()) {
+            if (Competition.isCurrentlyActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
                 return;
             }
 
+            CompetitionType type = CompetitionManager.getInstance().getCompetitionType(typeString);
+
+            if (type == null) {
+                sender.sendMessage("NOT VALID");
+                return;
+            }
 
             Competition comp = new Competition(duration, type, new ArrayList<>());
 
@@ -150,14 +156,14 @@ public class AdminCommand extends BaseCommand {
             comp.setNumberNeeded(amount);
             comp.initStartSound(null);
 
-            CompetitionManager.getInstance().startCompetition(comp);
+            comp.begin(true);
         }
 
         @Subcommand("end")
         @Description("%desc_competition_end")
         public void onEnd(final CommandSender sender) {
-            if (CompetitionManager.getInstance().isCompetitionActive()) {
-                CompetitionManager.getInstance().getActiveCompetition().end(false);
+            if (Competition.isCurrentlyActive()) {
+                Competition.getActiveCompetition().end(false);
                 return;
             }
 

@@ -29,9 +29,9 @@ public interface CompetitionType {
     /**
      * @return A new leaderboard instance for use in different competitions.
      */
-    @NotNull LeaderboardHandler createLeaderboard();
+    @Nullable LeaderboardHandler createLeaderboard();
 
-    @NotNull String getMessageTypeVariable();
+    @NotNull Message getMessageTypeVariable();
 
     /**
      * Registers this CompetitionType with the CompetitionManager

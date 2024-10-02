@@ -108,14 +108,14 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
         
         if (identifier.equalsIgnoreCase("competition_type")) {
-            if (!CompetitionManager.getInstance().isCompetitionActive()) {
+            if (!Competition.isCurrentlyActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(false);
             }
-            return CompetitionManager.getInstance().getActiveCompetition().getCompetitionType().getIdentifier();
+            return Competition.getActiveCompetition().getCompetitionType().getIdentifier();
         }
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
-            if (!CompetitionManager.getInstance().isCompetitionActive()) {
+            if (!Competition.isCurrentlyActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(false);
             }
             
@@ -126,14 +126,14 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            UUID uuid = CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getPlayer();
+            UUID uuid = Competition.getActiveCompetition().getLeaderboard().getEntry(place).getPlayer();
             if (uuid != null) {
                 // To be in the leaderboard the player must have joined
                 return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
             }
         }
         if (identifier.startsWith("competition_place_size_")) {
-            if (!CompetitionManager.getInstance().isCompetitionActive()) {
+            if (!Competition.isCurrentlyActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE).getRawMessage(false);
             }
             
@@ -144,18 +144,18 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            float value = CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getValue();
+            float value = Competition.getActiveCompetition().getLeaderboard().getEntry(place).getValue();
             
             if (value != -1.0f) return Float.toString(Math.round(value * 10f) / 10f);
             else return "";
             
         }
         if (identifier.startsWith("competition_place_fish_")) {
-            if (!CompetitionManager.getInstance().isCompetitionActive()) {
+            if (!Competition.isCurrentlyActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_FISH).getRawMessage(false);
             }
             
-            if (!CompetitionManager.getInstance().getActiveCompetition().getCompetitionType().shouldUseLength()) {
+            if (!Competition.getActiveCompetition().getCompetitionType().shouldUseLength()) {
                 // checking the leaderboard actually contains the value of place
                 int place = Integer.parseInt(identifier.substring(23));
                 if (!leaderboardContainsPlace(place)) {
@@ -163,7 +163,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 }
                 
                 // getting "place" place in the competition
-                Fish fish = CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getFish();
+                Fish fish = Competition.getActiveCompetition().getLeaderboard().getEntry(place).getFish();
                 if (fish != null) {
                     Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
                     if (fish.getLength() == -1)
@@ -185,7 +185,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             } else {
                 // checking the leaderboard actually contains the value of place
                 int place = Integer.parseInt(identifier.substring(23));
-                float value = CompetitionManager.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getValue();
+                float value = Competition.getActiveCompetition().getLeaderboard().getEntry(place).getValue();
                 if (value == -1)
                     return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(false);
                 
@@ -227,7 +227,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
 
         if (identifier.equals("competition_active")) {
-            return Boolean.toString(CompetitionManager.getInstance().isCompetitionActive());
+            return Boolean.toString(Competition.isCurrentlyActive());
         }
         
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
@@ -236,6 +236,6 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
     }
     
     private boolean leaderboardContainsPlace(int place) {
-        return CompetitionManager.getInstance().getActiveCompetition().getLeaderboardSize() >= place;
+        return Competition.getActiveCompetition().getLeaderboardSize() >= place;
     }
 }

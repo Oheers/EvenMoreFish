@@ -66,7 +66,7 @@ public class EMFCommand extends BaseCommand {
     @Description("%desc_general_top")
     public void onTop(final CommandSender sender) {
 
-        Competition activeComp = CompetitionManager.getInstance().getActiveCompetition();
+        Competition activeComp = Competition.getActiveCompetition();
 
         if (activeComp == null) {
             new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender);
