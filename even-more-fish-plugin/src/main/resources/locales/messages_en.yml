@@ -164,6 +164,10 @@ no-competition-running-fish: "No competition running right now."
 # Shown when the emf %emf_competition_place_size_*% placeholder is used when there's no competition running
 no-competition-running-size: "No competition running right now."
 
+# HOw should %emf_custom_fishing_status% be formatted?
+custom-fishing-enabled: '&aEnabled'
+custom-fishing-disabled: '&cDisabled'
+
 
 # How should the %emf_competition_place_fish_*% be formatted?
 emf-competition-fish-format: "{rarity_colour}{length}cm &l{rarity} {fish}"
