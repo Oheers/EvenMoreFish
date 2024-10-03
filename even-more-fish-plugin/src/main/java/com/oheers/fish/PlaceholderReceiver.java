@@ -128,7 +128,12 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            UUID uuid = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getPlayer();
+            UUID uuid;
+            try {
+                uuid = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getPlayer();
+            } catch (NullPointerException exception) {
+                uuid = null;
+            }
             if (uuid != null) {
                 // To be in the leaderboard the player must have joined
                 return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
@@ -151,11 +156,18 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
             
             // getting "place" place in the competition
-            float value = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getValue();
+            float value;
+            try {
+                value = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getValue();
+            } catch (NullPointerException exception) {
+                value = -1;
+            }
             
-            if (value != -1.0f) return Float.toString(Math.round(value * 10f) / 10f);
-            else return "";
-            
+            if (value != -1.0f) {
+                return Float.toString(Math.round(value * 10f) / 10f);
+            } else {
+                return "";
+            }
         }
 
         if (identifier.startsWith("competition_place_fish_")) {
@@ -171,7 +183,12 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 }
                 
                 // getting "place" place in the competition
-                Fish fish = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getFish();
+                Fish fish;
+                try {
+                    fish = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getFish();
+                } catch (NullPointerException exception) {
+                    fish = null;
+                }
                 if (fish != null) {
                     Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
                     if (fish.getLength() == -1) {
@@ -199,10 +216,16 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 
             } else {
                 // checking the leaderboard actually contains the value of place
-                int place = Integer.parseInt(identifier.substring(23));
-                float value = Competition.leaderboard.getEntry(place).getValue();
-                if (value == -1)
+                float value;
+                try {
+                    value = Competition.leaderboard.getEntry(place).getValue();
+                } catch (NullPointerException exception) {
+                    value = -1;
+                }
+
+                if (value == -1) {
                     return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(false);
+                }
                 
                 Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_MOST_FORMAT);
                 message.setAmount(Integer.toString((int) value));
