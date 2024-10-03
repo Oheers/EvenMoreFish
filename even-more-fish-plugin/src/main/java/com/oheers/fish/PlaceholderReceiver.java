@@ -1,6 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -106,14 +107,14 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         if (player == null) {
             return "";
         }
-        
-        if(identifier.equalsIgnoreCase("competition_type")) {
+
+        if (identifier.equalsIgnoreCase("competition_type")) {
             if (!Competition.isActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(false);
             }
-            
             return EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().name();
         }
+
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
             if (!Competition.isActive()) {
@@ -133,6 +134,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 return Objects.requireNonNull(Bukkit.getOfflinePlayer(uuid)).getName();
             }
         }
+
         if (identifier.startsWith("competition_place_size_")) {
             if (!Competition.isActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE).getRawMessage(false);
@@ -155,14 +157,15 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             else return "";
             
         }
+
         if (identifier.startsWith("competition_place_fish_")) {
             if (!Competition.isActive()) {
                 return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_FISH).getRawMessage(false);
             }
-            
+
+            int place = Integer.parseInt(identifier.substring(23));
             if (EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_FISH) {
                 // checking the leaderboard actually contains the value of place
-                int place = Integer.parseInt(identifier.substring(23));
                 if (!leaderboardContainsPlace(place)) {
                     return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(false);
                 }
@@ -171,18 +174,25 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 Fish fish = EvenMoreFish.getInstance().getActiveCompetition().getLeaderboard().getEntry(place).getFish();
                 if (fish != null) {
                     Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_FORMAT);
-                    if (fish.getLength() == -1)
+                    if (fish.getLength() == -1) {
                         message.setMessage(ConfigMessage.PLACEHOLDER_FISH_LENGTHLESS_FORMAT);
-                    else message.setLength(Float.toString(fish.getLength()));
+                    } else {
+                        message.setLength(Float.toString(fish.getLength()));
+                    }
                     
                     message.setRarityColour(fish.getRarity().getColour());
                     
-                    if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
-                    else message.setFishCaught(fish.getName());
+                    if (fish.getDisplayName() != null) {
+                        message.setFishCaught(fish.getDisplayName());
+                    } else {
+                        message.setFishCaught(fish.getName());
+                    }
                     
-                    if (fish.getRarity().getDisplayName() != null)
+                    if (fish.getRarity().getDisplayName() != null) {
                         message.setRarity(fish.getRarity().getDisplayName());
-                    else message.setRarity(fish.getRarity().getValue());
+                    } else {
+                        message.setRarity(fish.getRarity().getValue());
+                    }
                     
                     return message.getRawMessage(true);
                 }
@@ -201,26 +211,26 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             
         }
         
-        if(identifier.startsWith("total_money_earned_")) {
+        if (identifier.startsWith("total_money_earned_")) {
             try {
                 final UUID uuid = UUID.fromString(identifier.split("total_money_earned_")[1]);
                 final UserReport userReport = DataManager.getInstance().getUserReportIfExists(uuid);
-                if(userReport == null)
+                if (userReport == null) {
                     return null;
-        
+                }
                 return String.format("%.2f",userReport.getMoneyEarned());
             } catch (IllegalArgumentException e) {
                 return null;
             }
         }
         
-        if(identifier.startsWith("total_fish_sold_")) {
+        if (identifier.startsWith("total_fish_sold_")) {
             try {
                 final UUID uuid = UUID.fromString(identifier.split("total_fish_sold_")[1]);
                 final UserReport userReport = DataManager.getInstance().getUserReportIfExists(uuid);
-                if(userReport == null)
+                if (userReport == null) {
                     return null;
-        
+                }
                 return String.valueOf(userReport.getFishSold());
             } catch (IllegalArgumentException e) {
                 return null;
