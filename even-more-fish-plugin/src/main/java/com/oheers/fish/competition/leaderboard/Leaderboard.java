@@ -20,18 +20,14 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public List<CompetitionEntry> getEntries() {
-        switch (type) {
-            case SHORTEST_FISH, SHORTEST_TOTAL -> {
-                return entries.stream()
-                        .sorted((e1, e2) -> Float.compare(e1.getValue(), e2.getValue()))
-                        .toList();
-            }
-            default -> {
-                return entries.stream()
-                        .sorted((e1, e2) -> Float.compare(e2.getValue(), e1.getValue()))
-                        .toList();
-            }
+        if (type.shouldReverseLeaderboard()) {
+            return entries.stream()
+                    .sorted((e1, e2) -> Float.compare(e1.getValue(), e2.getValue()))
+                    .toList();
         }
+        return entries.stream()
+                .sorted((e1, e2) -> Float.compare(e2.getValue(), e1.getValue()))
+                .toList();
     }
 
     @Override
