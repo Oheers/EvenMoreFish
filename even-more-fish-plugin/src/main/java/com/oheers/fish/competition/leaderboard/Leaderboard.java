@@ -1,10 +1,12 @@
 package com.oheers.fish.competition.leaderboard;
 
+import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.fishing.items.Fish;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,18 +22,12 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public List<CompetitionEntry> getEntries() {
-        switch (type) {
-            case SHORTEST_FISH, SHORTEST_TOTAL -> {
-                return entries.stream()
-                        .sorted((e1, e2) -> Float.compare(e1.getValue(), e2.getValue()))
-                        .toList();
-            }
-            default -> {
-                return entries.stream()
-                        .sorted((e1, e2) -> Float.compare(e2.getValue(), e1.getValue()))
-                        .toList();
-            }
-        }
+        Comparator<CompetitionEntry> entryComparator = type.shouldReverseLeaderboard() ?
+                (e1, e2) -> Float.compare(e1.getValue(), e2.getValue()) :
+                (e1, e2) -> Float.compare(e2.getValue(), e1.getValue());
+        return entries.stream()
+                .sorted(entryComparator)
+                .toList();
     }
 
     @Override

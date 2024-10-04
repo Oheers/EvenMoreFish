@@ -23,6 +23,8 @@ import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import java.util.function.Function;
 
 import java.time.Instant;
 import java.util.*;
@@ -80,23 +82,10 @@ public class Competition {
 
             active = true;
 
-            if (competitionType == CompetitionType.RANDOM) {
-                competitionType = getRandomType();
-                originallyRandom = true;
-            }
-
-            if (competitionType == CompetitionType.SPECIFIC_FISH) {
-                if (!chooseFish(competitionName, adminStart)) {
-                    active = false;
-                    return;
-                }
-            }
-
-            if (competitionType == CompetitionType.SPECIFIC_RARITY) {
-                if (!chooseRarity(competitionName, adminStart)) {
-                    active = false;
-                    return;
-                }
+            Function<Competition, @NotNull Boolean> typeBeginLogic = competitionType.getBeginLogic();
+            if (typeBeginLogic != null && !typeBeginLogic.apply(this)) {
+                active = false;
+                return;
             }
 
             this.timeLeft = this.maxDuration;
@@ -678,7 +667,9 @@ public class Competition {
         message.broadcast(console);
     }
 
-    public boolean chooseFish(String competitionName, boolean adminStart) {
+    public boolean chooseFish() {
+        String competitionName = this.competitionName;
+        boolean adminStart = this.adminStarted;
         List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStart);
 
         if (configRarities.isEmpty()) {
@@ -737,7 +728,9 @@ public class Competition {
         }
     }
 
-    public boolean chooseRarity(String competitionName, boolean adminStart) {
+    public boolean chooseRarity() {
+        String competitionName = this.competitionName;
+        boolean adminStart = this.adminStarted;
         List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStart);
 
         if (configRarities.isEmpty()) {
@@ -909,12 +902,6 @@ public class Competition {
      */
     public void initStartSound(String competitionName) {
         this.startSound = CompetitionConfig.getInstance().getStartNoise(competitionName);
-    }
-
-    private CompetitionType getRandomType() {
-        // -1 from the length so that the RANDOM isn't chosen as the random value.
-        int type = EvenMoreFish.getInstance().getRandom().nextInt(CompetitionType.values().length - 1);
-        return CompetitionType.values()[type];
     }
 
     public Bar getStatusBar() {
