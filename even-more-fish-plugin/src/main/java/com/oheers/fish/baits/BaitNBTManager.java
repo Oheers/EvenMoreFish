@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 public class BaitNBTManager {
     private BaitNBTManager() {
@@ -251,7 +252,12 @@ public class BaitNBTManager {
             }
         }
 
-        return baitList.get(idx);
+        try {
+            return baitList.get(idx);
+        } catch (IndexOutOfBoundsException exception) {
+            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Could not find a valid bait!", exception);
+            return null;
+        }
     }
 
     /**

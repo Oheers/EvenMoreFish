@@ -166,18 +166,22 @@ public class FishingProcessor implements Listener {
         if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !Competition.isActive())) {
 
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
-            fish = applyingBait.chooseFish(player, location);
-            if (fish.isWasBaited()) {
-                fish.setFisherman(player.getUniqueId());
-                try {
-                    ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
-                    fishingRod.setItemMeta(newMeta);
-                    EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
-                } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
-                    EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
-                }
-            } else {
+            if (applyingBait == null) {
                 fish = chooseNonBaitFish(player, location);
+            } else {
+                fish = applyingBait.chooseFish(player, location);
+                if (fish.isWasBaited()) {
+                    fish.setFisherman(player.getUniqueId());
+                    try {
+                        ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
+                        fishingRod.setItemMeta(newMeta);
+                        EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
+                    } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
+                        EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
+                    }
+                } else {
+                    fish = chooseNonBaitFish(player, location);
+                }
             }
         } else {
             fish = chooseNonBaitFish(player, location);
