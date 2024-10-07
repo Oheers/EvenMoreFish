@@ -12,6 +12,7 @@ import com.oheers.fish.selling.SellHelper;
 import com.oheers.fish.utils.ItemBuilder;
 import com.oheers.fish.utils.ItemFactory;
 import com.oheers.fish.utils.ItemUtils;
+import com.sun.jdi.PrimitiveValue;
 import de.themoep.inventorygui.*;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
@@ -19,15 +20,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -140,12 +139,18 @@ public class GUIUtils {
         return stack;
     }
 
-    public static GuiElement getElement(@NotNull String configLocation, @NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
-
+    public static GuiElement getElement(@Nullable String configLocation, @NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
         // Get Character
         char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
 
-        String clickAction = section.getString("click-action", "none");
+        Map<ClickType, String> clickTypeStringMap = new HashMap<>();
+        if (section.isSection("click-action")) {
+            clickTypeStringMap.put(ClickType.LEFT, section.getString("click-action.left", "none"));
+            clickTypeStringMap.put(ClickType.RIGHT, section.getString("click-action.right", "none"));
+        } else {
+            clickTypeStringMap.put(ClickType.LEFT, section.getString("click-action", "none"));
+        }
+        List<String> commands = section.getStringList("click-commands");
 
         ItemFactory factory = new ItemFactory(configLocation, section);
         factory.enableAllChecks();
@@ -158,52 +163,42 @@ public class GUIUtils {
         }
 
         // Create the element
-        return switch (clickAction) {
-            case "next-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.NEXT);
-            case "first-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.FIRST);
-            case "previous-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.PREVIOUS);
-            case "last-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.LAST);
-            default -> new DynamicGuiElement(character, (viewer) -> {
-                // Get Click Action
-                GuiElement.Action action = getActionMap(gui).get(clickAction);
-                return new StaticGuiElement(character, item, action);
-            });
-        };
-    }
-
-    public static GuiElement getElement(@NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
-        // Get Character
-        char character = FishUtils.getCharFromString(section.getString("character", "#"), '#');
-
-        String clickAction = section.getString("click-action", "none");
-        List<String> commands = section.getStringList("click-commands");
-
-        ItemFactory factory = new ItemFactory(null, section);
-        factory.enableAllChecks();
-        // Get ItemStack
-        ItemStack item;
-        if (replacementSupplier == null) {
-            item = factory.createItem(null, -1, null);
+        if (eitherClickTypeMatchesString(clickTypeStringMap, "next-page")) {
+            return new GuiPageElement(character, item, GuiPageElement.PageAction.NEXT);
+        } else if (eitherClickTypeMatchesString(clickTypeStringMap, "first-page")) {
+            return new GuiPageElement(character, item, GuiPageElement.PageAction.FIRST);
+        } else if (eitherClickTypeMatchesString(clickTypeStringMap, "previous-page")) {
+            return new GuiPageElement(character, item, GuiPageElement.PageAction.PREVIOUS);
+        } else if (eitherClickTypeMatchesString(clickTypeStringMap, "last-page")) {
+            return new GuiPageElement(character, item, GuiPageElement.PageAction.LAST);
         } else {
-            item = factory.createItem(null, -1, replacementSupplier.get());
-        }
-
-        // Create the element
-        return switch (clickAction) {
-            case "next-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.NEXT);
-            case "first-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.FIRST);
-            case "previous-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.PREVIOUS);
-            case "last-page" -> new GuiPageElement(character, item, GuiPageElement.PageAction.LAST);
-            default -> new DynamicGuiElement(character, (viewer) -> {
-                // Get Click Action
-                GuiElement.Action action = getActionMap(gui).get(clickAction);
+            return new DynamicGuiElement(character, (viewer) -> {
+                GuiElement.Action left = getActionMap(gui).get(clickTypeStringMap.get(ClickType.LEFT));
+                GuiElement.Action right = getActionMap(gui).get(clickTypeStringMap.get(ClickType.RIGHT));
                 return new StaticGuiElement(character, item, click -> {
                     HumanEntity sender = click.getWhoClicked();
                     commands.forEach(command -> Bukkit.dispatchCommand(sender, command));
-                    return action.onClick(click);
+                    if (click.getType().equals(ClickType.LEFT) && left != null) {
+                        return left.onClick(click);
+                    } else if (click.getType().equals(ClickType.RIGHT) && right != null) {
+                        return right.onClick(click);
+                    }
+                    return true;
                 });
             });
-        };
+        }
+    }
+
+
+    private static boolean eitherClickTypeMatchesString(@NotNull Map<ClickType, String> map, @NotNull String matcher) {
+        boolean matches = true;
+        for (String string : map.values()) {
+            if (!string.equalsIgnoreCase(matcher)) {
+                matches = false;
+                break;
+            }
+        }
+        return matches;
     }
 
     public static List<GuiElement> getElements(@NotNull Section section, @Nullable EMFGUI gui, @Nullable Supplier<Map<String, String>> replacementSupplier) {
@@ -213,7 +208,7 @@ public class GUIUtils {
                 .filter(Objects::nonNull)
                 // Exclude non-item config sections, if there are any
                 .filter(loopSection -> loopSection.getRoutesAsStrings(false).contains("item"))
-                .map(loopSection -> GUIUtils.getElement(loopSection, gui, replacementSupplier))
+                .map(loopSection -> GUIUtils.getElement(null, loopSection, gui, replacementSupplier))
                 .collect(Collectors.toList());
     }
 
