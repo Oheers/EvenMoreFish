@@ -34,16 +34,6 @@ public class GUIUtils {
 
     private static Map<String, GuiElement.Action> externalActionMap;
 
-    public static ItemStack getExitItem() {
-        YamlDocument config = GUIConfig.getInstance().getConfig();
-        return createItemStack(
-                config.getString("gui.global.exit.material", "structure_void"),
-                Material.STRUCTURE_VOID,
-                config.getString("gui.global.exit.name", "&cExit"),
-                config.getStringList("gui.global.exit.lore")
-        );
-    }
-
     public static GuiPageElement getFirstPageButton() {
         YamlDocument config = GUIConfig.getInstance().getConfig();
         return new GuiPageElement('f',
