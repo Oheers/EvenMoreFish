@@ -101,6 +101,7 @@ public class SellGUI implements EMFGUI {
             }
         }
         FishUtils.giveItems(throwing, this.player);
+        this.fishInventory.clear();
     }
 
     @Override
