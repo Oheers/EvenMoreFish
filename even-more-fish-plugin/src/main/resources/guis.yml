@@ -11,8 +11,10 @@ button-example:
     - "This is customizable lore."
     - "Add whatever you want in here."
   character: "c" # The character to use inside the GUI layout configs.
-  click-action: "fish-toggle" # The click action to execute.
-  click-commands: # Optional commands for the player to execute on click.
+  click-action:
+    left: "fish-toggle" # The click action to execute on left click.
+    right: "full-exit" # The click action to execute on right click.
+  click-commands: # Optional commands for the player to execute on either click.
     - "emf help"
 
 # These elements are available in every gui.
