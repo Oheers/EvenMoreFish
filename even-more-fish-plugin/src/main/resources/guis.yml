@@ -161,7 +161,9 @@ sell-menu-normal:
       - "&e» (Left-click) sell the fish."
       - "&7» (Right-click) cancel."
     character: "s"
-    click-action: "sell-shop"
+    click-action:
+      left: "sell-shop"
+      right: "full-exit"
 
   sell-all-item:
     item:
@@ -206,7 +208,9 @@ sell-menu-confirm:
       - "&e» (Left-click) sell the fish."
       - "&7» (Right-click) cancel."
     character: "s"
-    click-action: "sell-shop-confirm"
+    click-action:
+      left: "sell-shop-confirm"
+      right: "full-exit"
 
   sell-all-item:
     item:
