@@ -188,7 +188,7 @@ public class SellHelper {
             }
             case VAULT -> {
                 DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
-                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(false), symbols);
+                DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(), symbols);
                 yield format.format(totalWorth);
             }
             // Includes NONE type

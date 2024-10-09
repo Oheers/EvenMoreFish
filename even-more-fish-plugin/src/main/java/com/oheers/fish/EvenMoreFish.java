@@ -359,31 +359,31 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
         //desc_admin_<command>_<id>
         manager.getCommandReplacements().addReplacements(
-                "desc_admin_bait", new Message(ConfigMessage.HELP_ADMIN_BAIT).getRawMessage(true),
-                "desc_admin_competition", new Message(ConfigMessage.HELP_ADMIN_COMPETITION).getRawMessage(true),
-                "desc_admin_clearbaits", new Message(ConfigMessage.HELP_ADMIN_CLEARBAITS).getRawMessage(true),
-                "desc_admin_fish", new Message(ConfigMessage.HELP_ADMIN_FISH).getRawMessage(true),
-                "desc_admin_nbtrod", new Message(ConfigMessage.HELP_ADMIN_NBTROD).getRawMessage(true),
-                "desc_admin_reload", new Message(ConfigMessage.HELP_ADMIN_RELOAD).getRawMessage(true),
-                "desc_admin_version", new Message(ConfigMessage.HELP_ADMIN_VERSION).getRawMessage(true),
-                "desc_admin_migrate", new Message(ConfigMessage.HELP_ADMIN_MIGRATE).getRawMessage(true),
-                "desc_admin_rewardtypes", new Message(ConfigMessage.HELP_ADMIN_REWARDTYPES).getRawMessage(true),
-                "desc_admin_addons", new Message(ConfigMessage.HELP_ADMIN_ADDONS).getRawMessage(true),
+                "desc_admin_bait", new Message(ConfigMessage.HELP_ADMIN_BAIT).getRawMessage(),
+                "desc_admin_competition", new Message(ConfigMessage.HELP_ADMIN_COMPETITION).getRawMessage(),
+                "desc_admin_clearbaits", new Message(ConfigMessage.HELP_ADMIN_CLEARBAITS).getRawMessage(),
+                "desc_admin_fish", new Message(ConfigMessage.HELP_ADMIN_FISH).getRawMessage(),
+                "desc_admin_nbtrod", new Message(ConfigMessage.HELP_ADMIN_NBTROD).getRawMessage(),
+                "desc_admin_reload", new Message(ConfigMessage.HELP_ADMIN_RELOAD).getRawMessage(),
+                "desc_admin_version", new Message(ConfigMessage.HELP_ADMIN_VERSION).getRawMessage(),
+                "desc_admin_migrate", new Message(ConfigMessage.HELP_ADMIN_MIGRATE).getRawMessage(),
+                "desc_admin_rewardtypes", new Message(ConfigMessage.HELP_ADMIN_REWARDTYPES).getRawMessage(),
+                "desc_admin_addons", new Message(ConfigMessage.HELP_ADMIN_ADDONS).getRawMessage(),
 
-                "desc_list_fish", new Message(ConfigMessage.HELP_LIST_FISH).getRawMessage(true),
-                "desc_list_rarities", new Message(ConfigMessage.HELP_LIST_RARITIES).getRawMessage(true),
+                "desc_list_fish", new Message(ConfigMessage.HELP_LIST_FISH).getRawMessage(),
+                "desc_list_rarities", new Message(ConfigMessage.HELP_LIST_RARITIES).getRawMessage(),
 
-                "desc_competition_start", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(true),
-                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_END).getRawMessage(true),
+                "desc_competition_start", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(),
+                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_END).getRawMessage(),
 
-                "desc_general_top", new Message(ConfigMessage.HELP_GENERAL_TOP).getRawMessage(true),
-                "desc_general_help", new Message(ConfigMessage.HELP_GENERAL_HELP).getRawMessage(true),
-                "desc_general_shop", new Message(ConfigMessage.HELP_GENERAL_SHOP).getRawMessage(true),
-                "desc_general_toggle", new Message(ConfigMessage.HELP_GENERAL_TOGGLE).getRawMessage(true),
-                "desc_general_gui", new Message(ConfigMessage.HELP_GENERAL_GUI).getRawMessage(true),
-                "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(true),
-                "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(true),
-                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(true)
+                "desc_general_top", new Message(ConfigMessage.HELP_GENERAL_TOP).getRawMessage(),
+                "desc_general_help", new Message(ConfigMessage.HELP_GENERAL_HELP).getRawMessage(),
+                "desc_general_shop", new Message(ConfigMessage.HELP_GENERAL_SHOP).getRawMessage(),
+                "desc_general_toggle", new Message(ConfigMessage.HELP_GENERAL_TOGGLE).getRawMessage(),
+                "desc_general_gui", new Message(ConfigMessage.HELP_GENERAL_GUI).getRawMessage(),
+                "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(),
+                "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(),
+                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage()
         );
 
 

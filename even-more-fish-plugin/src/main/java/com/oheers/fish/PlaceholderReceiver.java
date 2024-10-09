@@ -1,7 +1,6 @@
 package com.oheers.fish;
 
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -110,7 +109,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
 
         if (identifier.equalsIgnoreCase("competition_type")) {
             if (!Competition.isActive()) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage();
             }
             return EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().name();
         }
@@ -118,13 +117,13 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
             if (!Competition.isActive()) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage(false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage();
             }
             
             // checking the leaderboard actually contains the value of place
             int place = Integer.parseInt(identifier.substring(25));
             if (!leaderboardContainsPlace(place)) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage(false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_PLAYER_IN_PLACE).getRawMessage();
             }
             
             // getting "place" place in the competition
@@ -142,17 +141,17 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
 
         if (identifier.startsWith("competition_place_size_")) {
             if (!Competition.isActive()) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE).getRawMessage(false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE).getRawMessage();
             }
             if (!(EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_FISH ||
                 EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_TOTAL)) {
-                return new Message(ConfigMessage.PLACEHOLDER_SIZE_DURING_MOST_FISH).getRawMessage(false);
+                return new Message(ConfigMessage.PLACEHOLDER_SIZE_DURING_MOST_FISH).getRawMessage();
             }
             
             // checking the leaderboard actually contains the value of place
             int place = Integer.parseInt(identifier.substring(23));
             if (!leaderboardContainsPlace(place)) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_SIZE_IN_PLACE).getRawMessage(false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_SIZE_IN_PLACE).getRawMessage();
             }
             
             // getting "place" place in the competition
@@ -172,14 +171,14 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
 
         if (identifier.startsWith("competition_place_fish_")) {
             if (!Competition.isActive()) {
-                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_FISH).getRawMessage(false);
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING_FISH).getRawMessage();
             }
 
             int place = Integer.parseInt(identifier.substring(23));
             if (EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType() == CompetitionType.LARGEST_FISH) {
                 // checking the leaderboard actually contains the value of place
                 if (!leaderboardContainsPlace(place)) {
-                    return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(false);
+                    return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage();
                 }
                 
                 // getting "place" place in the competition
@@ -211,7 +210,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                         message.setRarity(fish.getRarity().getValue());
                     }
                     
-                    return message.getRawMessage(true);
+                    return message.getRawMessage();
                 }
                 
             } else {
@@ -224,12 +223,12 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 }
 
                 if (value == -1) {
-                    return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage(false);
+                    return new Message(ConfigMessage.PLACEHOLDER_NO_FISH_IN_PLACE).getRawMessage();
                 }
                 
                 Message message = new Message(ConfigMessage.PLACEHOLDER_FISH_MOST_FORMAT);
                 message.setAmount(Integer.toString((int) value));
-                return message.getRawMessage(true);
+                return message.getRawMessage();
             }
             
         }
@@ -261,7 +260,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         }
         
         if (identifier.equals("competition_time_left")) {
-            return Competition.getNextCompetitionMessage().getRawMessage(true);
+            return Competition.getNextCompetitionMessage().getRawMessage();
         }
 
         if (identifier.equals("competition_active")) {
@@ -274,9 +273,9 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
 
         if (identifier.equals("custom_fishing_status")) {
             if (plugin.isCustomFishing(player)) {
-                return new Message(ConfigMessage.CUSTOM_FISHING_ENABLED).getRawMessage(false);
+                return new Message(ConfigMessage.CUSTOM_FISHING_ENABLED).getRawMessage();
             } else {
-                return new Message(ConfigMessage.CUSTOM_FISHING_DISABLED).getRawMessage(false);
+                return new Message(ConfigMessage.CUSTOM_FISHING_DISABLED).getRawMessage();
             }
         }
         

@@ -54,8 +54,8 @@ public class Bar {
         Message layoutMessage = new Message(ConfigMessage.BAR_LAYOUT);
         layoutMessage.setVariable("{prefix}", prefix);
         layoutMessage.setVariable("{time-formatted}", FishUtils.translateColorCodes(FishUtils.timeFormat(timeLeft)));
-        layoutMessage.setVariable("{remaining}", new Message(ConfigMessage.BAR_REMAINING).getRawMessage(false));
-        bar.setTitle(layoutMessage.getRawMessage(true));
+        layoutMessage.setVariable("{remaining}", new Message(ConfigMessage.BAR_REMAINING).getRawMessage());
+        bar.setTitle(layoutMessage.getRawMessage());
     }
 
     public void show() {

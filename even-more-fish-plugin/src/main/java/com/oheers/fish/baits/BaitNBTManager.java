@@ -365,7 +365,7 @@ public class BaitNBTManager {
                     Message message = new Message(BaitFile.getInstance().getBaitFormat());
                     message.setAmount(bait.split(":")[1]);
                     message.setBait(getBaitFormatted(bait.split(":")[0]));
-                    lore.add(message.getRawMessage(true));
+                    lore.add(message.getRawMessage());
                 }
 
                 if (BaitFile.getInstance().showUnusedBaitSlots()) {
@@ -377,7 +377,7 @@ public class BaitNBTManager {
                 Message message = new Message(lineAddition);
                 message.setCurrentBaits(Integer.toString(getNumBaitsApplied(itemStack)));
                 message.setMaxBaits(Integer.toString(BaitFile.getInstance().getMaxBaits()));
-                lore.add(message.getRawMessage(true));
+                lore.add(message.getRawMessage());
             }
         }
 
