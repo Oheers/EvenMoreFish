@@ -118,7 +118,7 @@ public class Message {
      */
     public void broadcast() {
         // We need to create copies here to keep the original placeholders intact. Placeholders will now be parsed per-player.
-        Bukkit.getOnlinePlayers().forEach(player -> createCopy().broadcast(player));
+        Bukkit.getOnlinePlayers().forEach(this::broadcast);
     }
 
     /**
@@ -131,6 +131,8 @@ public class Message {
             return;
         }
 
+        String originalMessage = this.message;
+
         if (sender instanceof Player player) {
             setPlayer(player);
         }
@@ -142,6 +144,8 @@ public class Message {
         colourFormat();
 
         sender.sendMessage(this.message);
+
+        this.message = originalMessage;
     }
 
     /**
@@ -187,11 +191,10 @@ public class Message {
      * This fetches the message straight from the messages.yml file and sends it back. It won't have been formatted unless
      * specified.
      *
-     * @param doVariables If variables should be formatted or not.
      * @return The raw value from messages.yml or the raw value passed through.
      */
-    public String getRawMessage(final boolean doVariables) {
-        if (doVariables) variableFormat();
+    public String getRawMessage() {
+        variableFormat();
 
         formatPlaceholderAPI();
 
@@ -206,11 +209,10 @@ public class Message {
      * the existing "message" string by \n characters to make a list which is then returned as a colour/variable formatted
      * list of strings (if requested to be formatted).
      *
-     * @param doVariables If variables should be formatted or not.
      * @return A list of formatted strings in the form of an ArrayList.
      */
-    public List<String> getRawListMessage(final boolean doVariables) {
-        if (doVariables) variableFormat();
+    public List<String> getRawListMessage() {
+        variableFormat();
         colourFormat();
 
         String[] list = this.message.split("\n");
@@ -499,7 +501,7 @@ public class Message {
      * @param type The competition type.
      */
     public void setCompetitionType(@NotNull final CompetitionType type) {
-        setVariable("{type}", new Message(type.getTypeVariable()).getRawMessage(false));
+        setVariable("{type}", new Message(type.getTypeVariable()).getRawMessage());
     }
 
     /**

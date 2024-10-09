@@ -29,7 +29,7 @@ public enum PrefixType {
     public String getPrefix() {
         if (id == null) return "";
         else {
-            return new Message(Messages.getInstance().getConfig().getString(id, normal)).getRawMessage(false);
+            return new Message(Messages.getInstance().getConfig().getString(id, normal)).getRawMessage();
         }
     }
 }

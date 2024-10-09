@@ -487,7 +487,7 @@ public class Competition {
                         message.setAmount(Integer.toString((int) entry.getValue()));
                     }
                 }
-                builder.append(message.getRawMessage(true));
+                builder.append(message.getRawMessage());
 
                 if (pos == Messages.getInstance().getConfig().getInt("leaderboard-count")) {
                     if (Messages.getInstance().getConfig().getBoolean("always-show-pos")) {
@@ -562,7 +562,7 @@ public class Competition {
                         }
                     }
 
-                    builder.append("\n").append(message.getRawMessage(true));
+                    builder.append("\n").append(message.getRawMessage());
                 }
             }
         }
