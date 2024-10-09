@@ -118,7 +118,7 @@ public class Message {
      */
     public void broadcast() {
         // We need to create copies here to keep the original placeholders intact. Placeholders will now be parsed per-player.
-        Bukkit.getOnlinePlayers().forEach(player -> createCopy().broadcast(player));
+        Bukkit.getOnlinePlayers().forEach(this::broadcast);
     }
 
     /**
@@ -131,6 +131,8 @@ public class Message {
             return;
         }
 
+        String originalMessage = this.message;
+
         if (sender instanceof Player player) {
             setPlayer(player);
         }
@@ -142,6 +144,8 @@ public class Message {
         colourFormat();
 
         sender.sendMessage(this.message);
+
+        this.message = originalMessage;
     }
 
     /**
