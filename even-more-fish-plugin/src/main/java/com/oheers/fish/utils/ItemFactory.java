@@ -530,7 +530,7 @@ public class ItemFactory {
         Message lore = new Message(loreConfig);
         lore.setVariables(replacements);
 
-        meta.setLore(lore.getRawListMessage(true));
+        meta.setLore(lore.getRawListMessage());
         product.setItemMeta(meta);
     }
 
@@ -552,7 +552,7 @@ public class ItemFactory {
                 } else {
                     Message display = new Message(displayName);
                     display.setVariables(replacements);
-                    meta.setDisplayName(display.getRawMessage(true));
+                    meta.setDisplayName(display.getRawMessage());
                 }
             }
 

@@ -69,10 +69,10 @@ public class ItemBuilder {
             return stack;
         }
         if (this.display != null) {
-            meta.setDisplayName(new Message(this.display).getRawMessage(false));
+            meta.setDisplayName(new Message(this.display).getRawMessage());
         }
         if (!this.lore.isEmpty()) {
-            meta.setLore(new Message(this.lore).getRawListMessage(false));
+            meta.setLore(new Message(this.lore).getRawListMessage());
         }
         stack.setItemMeta(meta);
         if (this.glowing) {
