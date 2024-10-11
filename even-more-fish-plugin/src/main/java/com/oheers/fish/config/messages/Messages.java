@@ -29,18 +29,18 @@ public class Messages extends ConfigBase {
                 .setVersioning(new BasicVersioning("config-version"))
                 // Bossbar config relocations - config version 2
                 .addCustomLogic("2", yamlDocument -> {
-                    String hourColor = yamlDocument.getString("bossbar.hour-color");
-                    String hour = yamlDocument.getString("bossbar.hour");
+                    String hourColor = yamlDocument.getString("bossbar.hour-color", "&f");
+                    String hour = yamlDocument.getString("bossbar.hour", "h");
                     yamlDocument.set("bossbar.hour", hourColor + "{hour}" + hour);
                     yamlDocument.remove("bossbar.hour-color");
 
-                    String minuteColor = yamlDocument.getString("bossbar.minute-color");
-                    String minute = yamlDocument.getString("bossbar.minute");
+                    String minuteColor = yamlDocument.getString("bossbar.minute-color", "&f");
+                    String minute = yamlDocument.getString("bossbar.minute", "m");
                     yamlDocument.set("bossbar.minute", minuteColor + "{minute}" + minute);
                     yamlDocument.remove("bossbar.minute-color");
 
-                    String secondColor = yamlDocument.getString("bossbar.second-color");
-                    String second = yamlDocument.getString("bossbar.second");
+                    String secondColor = yamlDocument.getString("bossbar.second-color", "&f");
+                    String second = yamlDocument.getString("bossbar.second", "s");
                     yamlDocument.set("bossbar.second", secondColor + "{second}" + second);
                     yamlDocument.remove("bossbar.second-color");
                 })
