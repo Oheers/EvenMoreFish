@@ -52,7 +52,7 @@ public enum CompetitionType {
     SHORTEST_FISH(
             ConfigMessage.COMPETITION_TYPE_SHORTEST,
             "Shortest Fish",
-            true,
+            false,
             null
     ),
     SHORTEST_TOTAL(

@@ -420,7 +420,14 @@ public class Competition {
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
-        for (CompetitionEntry entry : leaderboard.getEntries()) {
+        List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
+
+        // Sort entries in ascending order for SHORTEST_FISH
+        if (competitionType == CompetitionType.SHORTEST_FISH) {
+            entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
+        }
+
+        for (CompetitionEntry entry : entries) {
             pos++;
             if (reachingCount) {
                 leaderboardMembers.add(entry.getPlayer());
@@ -436,10 +443,10 @@ public class Competition {
                 }
 
                 switch (competitionType) {
-                    case LARGEST_FISH -> {
+                    case LARGEST_FISH, SHORTEST_FISH -> {
                         Fish fish = entry.getFish();
                         message.setRarityColour(fish.getRarity().getColour());
-                        message.setLength(Float.toString(entry.getValue()));
+                        message.setLength(Float.toString(fish.getLength()));
 
                         if (fish.getRarity().getDisplayName() != null) {
                             message.setRarity(fish.getRarity().getDisplayName());
@@ -453,26 +460,7 @@ public class Competition {
                             message.setFishCaught(fish.getName());
                         }
 
-                        message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                    }
-                    case SHORTEST_FISH -> {
-                        Fish fish = entry.getFish();
-                        message.setRarityColour(fish.getRarity().getColour());
-                        message.setLength(Float.toString(entry.getValue()));
-
-                        if (fish.getRarity().getDisplayName() != null) {
-                            message.setRarity(fish.getRarity().getDisplayName());
-                        } else {
-                            message.setRarity(fish.getRarity().getValue());
-                        }
-
-                        if (fish.getDisplayName() != null) {
-                            message.setFishCaught(fish.getDisplayName());
-                        } else {
-                            message.setFishCaught(fish.getName());
-                        }
-
-                        message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_FISH);
+                        message.setMessage(competitionType == CompetitionType.LARGEST_FISH ? ConfigMessage.LEADERBOARD_LARGEST_FISH : ConfigMessage.LEADERBOARD_SHORTEST_FISH);
                     }
                     case LARGEST_TOTAL -> {
                         message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
@@ -510,7 +498,7 @@ public class Competition {
                     message.setPositionColour("&f");
 
                     switch (competitionType) {
-                        case LARGEST_FISH -> {
+                        case LARGEST_FISH, SHORTEST_FISH -> {
                             Fish fish = entry.getFish();
                             message.setRarityColour(fish.getRarity().getColour());
                             message.setLength(Float.toString(entry.getValue()));
@@ -527,26 +515,7 @@ public class Competition {
                                 message.setFishCaught(fish.getName());
                             }
 
-                            message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                        }
-                        case SHORTEST_FISH -> {
-                            Fish fish = entry.getFish();
-                            message.setRarityColour(fish.getRarity().getColour());
-                            message.setLength(Float.toString(entry.getValue()));
-
-                            if (fish.getRarity().getDisplayName() != null) {
-                                message.setRarity(fish.getRarity().getDisplayName());
-                            } else {
-                                message.setRarity(fish.getRarity().getValue());
-                            }
-
-                            if (fish.getDisplayName() != null) {
-                                message.setFishCaught(fish.getDisplayName());
-                            } else {
-                                message.setFishCaught(fish.getName());
-                            }
-
-                            message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_FISH);
+                            message.setMessage(competitionType == CompetitionType.LARGEST_FISH ? ConfigMessage.LEADERBOARD_LARGEST_FISH : ConfigMessage.LEADERBOARD_SHORTEST_FISH);
                         }
                         case LARGEST_TOTAL -> {
                             message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
@@ -594,7 +563,14 @@ public class Competition {
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
-        for (CompetitionEntry entry : leaderboard.getEntries()) {
+        List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
+
+        // Sort entries in ascending order for SHORTEST_FISH
+        if (competitionType == CompetitionType.SHORTEST_FISH) {
+            entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
+        }
+
+        for (CompetitionEntry entry : entries) {
             pos++;
             leaderboardMembers.add(entry.getPlayer());
             Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
@@ -660,6 +636,7 @@ public class Competition {
                     message.setAmount(Integer.toString((int) entry.getValue()));
                 }
             }
+            builder.append(message.getRawMessage()).append("\n");
         }
         console.sendMessage(builder.toString());
         Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
@@ -821,7 +798,14 @@ public class Competition {
 
         boolean databaseEnabled = MainConfig.getInstance().databaseEnabled();
         int rewardPlace = 1;
-        CompetitionEntry topEntry = leaderboard.getTopEntry();
+
+        // Sort entries in ascending order for SHORTEST_FISH
+        List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
+        if (competitionType == CompetitionType.SHORTEST_FISH) {
+            entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
+        }
+
+        CompetitionEntry topEntry = entries.get(0);
         if (topEntry != null && databaseEnabled) {
             UserReport topReport = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
             if (topReport == null) {
@@ -833,8 +817,7 @@ public class Competition {
 
         boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
 
-        for (CompetitionEntry entry : leaderboard.getEntries()) {
-
+        for (CompetitionEntry entry : entries) {
             Player player = Bukkit.getPlayer(entry.getPlayer());
 
             // If the player is null, increment the place and continue
@@ -846,20 +829,21 @@ public class Competition {
             // Does the player's place have rewards?
             if (rewards.containsKey(rewardPlace)) {
                 rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
-                // Default to participation rewards if not.
             } else {
+                // Default to participation rewards if not.
                 if (participationRewardsExist) {
                     participationRewards.forEach(reward -> reward.rewardPlayer(player, null));
                 }
             }
+
             // Save to database if enabled
             if (databaseEnabled) {
                 incrementCompetitionsJoined(entry);
             }
+
             // Increment the place
             rewardPlace++;
         }
-
     }
 
     public void singleReward(Player player) {

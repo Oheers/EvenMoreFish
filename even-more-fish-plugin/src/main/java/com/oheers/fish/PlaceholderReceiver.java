@@ -114,6 +114,32 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             return EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().name();
         }
 
+        if (identifier.equalsIgnoreCase("competition_type_format")) {
+            if (!Competition.isActive()) {
+                return new Message(ConfigMessage.PLACEHOLDER_NO_COMPETITION_RUNNING).getRawMessage();
+            }
+
+            CompetitionType competitionType = EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType();
+            switch (competitionType) {
+                case LARGEST_FISH:
+                    return new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage();
+                case LARGEST_TOTAL:
+                    return new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage();
+                case MOST_FISH:
+                    return new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage();
+                case SPECIFIC_FISH:
+                    return new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage();
+                case SPECIFIC_RARITY:
+                    return new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage();
+                case SHORTEST_FISH:
+                    return new Message(ConfigMessage.COMPETITION_TYPE_SHORTEST).getRawMessage();
+                case SHORTEST_TOTAL:
+                    return new Message(ConfigMessage.COMPETITION_TYPE_SHORTEST_TOTAL).getRawMessage();
+                default:
+                    return "";
+            }
+        }
+
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
         if (identifier.startsWith("competition_place_player_")) {
             if (!Competition.isActive()) {
