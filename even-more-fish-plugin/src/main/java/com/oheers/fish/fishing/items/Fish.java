@@ -16,6 +16,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -205,20 +206,49 @@ public class Fish implements Cloneable {
         if (effectConfig == null) return;
 
         String[] separated = effectConfig.split(":");
+
+        // Check if fisherman is null
+        if (this.fisherman == null) {
+            return;
+        }
+        // Check if the requested player is null
+        Player player = Bukkit.getPlayer(this.fisherman);
+        if (player == null) {
+            return;
+        }
+
+        Runnable fallback = () -> {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
+            EvenMoreFish.getInstance().getLogger().warning("Invalid potion effect specified. Defaulting to Speed 2 for 5 seconds.");
+        };
+
         // if it's formatted wrong, it'll just give the player this as a stock effect
         if (separated.length < 3) {
-            Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
-            EvenMoreFish.getInstance().getLogger().warning("Invalid potion effect specified. Defaulting to Speed 2 for 5 seconds.");
+            fallback.run();
             return;
         }
 
         PotionEffectType effect = PotionEffectType.getByName(separated[0].toUpperCase());
+        // Handle the effect type being null.
+        if (effect == null) {
+            fallback.run();
+            return;
+        }
         int amplitude = Integer.parseInt(separated[1]);
         // *20 to bring it to seconds rather than ticks
         int time = Integer.parseInt(separated[2]) * 20;
 
         try {
-            Objects.requireNonNull(Bukkit.getPlayer(this.fisherman)).addPotionEffect(new PotionEffect(effect, time, amplitude));
+            // Check if fisherman is null
+            if (this.fisherman == null) {
+                return;
+            }
+            // Check if the requested player is null
+            Player player = Bukkit.getPlayer(this.fisherman);
+            if (player == null) {
+                return;
+            }
+            player.addPotionEffect(new PotionEffect(effect, time, amplitude));
         } catch (IllegalArgumentException e) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "ATTENTION! There was an error adding the effect from the " + this.name + " fish.");
