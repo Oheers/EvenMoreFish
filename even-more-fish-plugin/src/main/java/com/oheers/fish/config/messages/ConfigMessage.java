@@ -56,6 +56,8 @@ public enum ConfigMessage {
 
     COMPETITION_SINGLE_WINNER("&r{player} has won the competition for {type}. Congratulations!", PrefixType.DEFAULT, true, true, "single-winner"),
 
+
+
     ECONOMY_DISABLED("&rEvenMoreFish's economy features are disabled.", PrefixType.ERROR, false, false, "admin.economy-disabled"),
 
     FISH_CANT_BE_PLACED("&rYou cannot place this fish.", PrefixType.ERROR, true, true, "place-fish-blocked"),

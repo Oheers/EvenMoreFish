@@ -6,7 +6,6 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Sound;
 
 import java.util.*;
-
 public class CompetitionConfig extends ConfigBase {
 
     private static CompetitionConfig instance;
@@ -164,14 +163,17 @@ public class CompetitionConfig extends ConfigBase {
 
     public String getBarPrefix(String competitionName) {
         String barPrefix;
-        if (competitionName != null) {
+
+        if (competitionName != null && !competitionName.equals("[admin_started]")) {
             barPrefix = getConfig().getString("competitions." + competitionName + ".bossbar-prefix");
         } else {
             barPrefix = getConfig().getString("general.bossbar-prefix");
         }
+
         if (barPrefix != null) {
             return barPrefix;
         }
+
         return "&a&lFishing Contest: ";
     }
 
