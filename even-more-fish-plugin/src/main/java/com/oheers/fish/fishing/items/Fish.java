@@ -239,15 +239,6 @@ public class Fish implements Cloneable {
         int time = Integer.parseInt(separated[2]) * 20;
 
         try {
-            // Check if fisherman is null
-            if (this.fisherman == null) {
-                return;
-            }
-            // Check if the requested player is null
-            Player player = Bukkit.getPlayer(this.fisherman);
-            if (player == null) {
-                return;
-            }
             player.addPotionEffect(new PotionEffect(effect, time, amplitude));
         } catch (IllegalArgumentException e) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
