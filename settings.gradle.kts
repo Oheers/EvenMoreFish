@@ -61,7 +61,7 @@ dependencyResolutionManagement {
             library("universalscheduler", "com.github.Anon8281:UniversalScheduler:0.1.6")
             library("playerpoints", "org.black_ixx:playerpoints:3.2.7")
 
-            library("vanishchecker", "uk.firedev:VanishChecker:1.0.2")
+            library("vanishchecker", "uk.firedev:VanishChecker:1.0.3")
 
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("inventorygui", "de.themoep:inventorygui:1.6.4-SNAPSHOT")
