@@ -6,7 +6,15 @@ plugin
 With over 60 custom fish in the default configurations, and the ability to add your own, this is the best competition
 plugin for your server.
 
+---
+
 Supported Versions: 1.16.5, 1.17.1, 1.18.2, 1.19.4, 1.20.6, 1.21.1, 1.21.3 (Experimental, Dev Builds)
+
+If you encounter any issues with the plugin, please do the following before reporting the problem:
+- Create a Spigot or Paper test server using one of the supported versions.
+- Add the latest [dev build](https://ci.codemc.io/job/Oheers/job/EvenMoreFish/) to the server.
+- Test your issue.
+- If your issue is still happening, open a GitHub issue or send a message in the Discord server.
 
 ---
 
