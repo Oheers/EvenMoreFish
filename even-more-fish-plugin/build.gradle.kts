@@ -76,10 +76,6 @@ dependencies {
     compileOnly(libs.mcmmo)
     compileOnly(libs.headdatabase.api)
     compileOnly(libs.playerpoints)
-    compileOnly(libs.cmi.api)
-    compileOnly(libs.essx.api) {
-        exclude("org.spigotmc", "spigot-api")
-    }
 
     implementation(libs.nbt.api)
     implementation(libs.bstats)
@@ -88,6 +84,7 @@ dependencies {
     implementation(libs.inventorygui)
     implementation(libs.bundles.adventure)
     implementation(libs.boostedyaml)
+    implementation(libs.vanishchecker)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -254,6 +251,7 @@ tasks {
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
         relocate("net.kyori.adventure", "com.oheers.fish.libs.adventure")
         relocate("dev.dejvokep.boostedyaml", "com.oheers.fish.libs.boostedyaml")
+        relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
 
     }
 

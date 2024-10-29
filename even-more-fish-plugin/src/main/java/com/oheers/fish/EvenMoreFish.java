@@ -3,8 +3,6 @@ package com.oheers.fish;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
-import com.Zrips.CMI.Containers.CMIUser;
-import com.earth2me.essentials.Essentials;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.oheers.fish.addons.AddonManager;
@@ -779,45 +777,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (getEconomy() != null && getEconomy().isEnabled()) {
             new MoneyRewardType().register();
         }
-    }
-
-    /**
-     * Retrieves online players excluding those who are vanished.
-     *
-     * @return A list of online players excluding those who are vanished.
-     */
-    public List<Player> getOnlinePlayersExcludingVanish() {
-        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-
-        if (!MainConfig.getInstance().shouldRespectVanish()) {
-            return players;
-        }
-
-        // Check Essentials
-        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
-            Plugin plugin = Bukkit.getPluginManager().getPlugin("Essentials");
-            if (plugin instanceof Essentials essentials) {
-                players = players.stream().filter(player -> !essentials.getUser(player).isVanished()).collect(Collectors.toList());
-            }
-        }
-
-        // Check CMI
-        if (Bukkit.getPluginManager().isPluginEnabled("CMI")) {
-            players = players.stream().filter(player -> !CMIUser.getUser(player).isVanished()).collect(Collectors.toList());
-        }
-
-        // Metadata check - A more generic way of checking if a player is vanished.
-        // SuperVanish, PremiumVanish, and VanishNoPacket support this according to the SuperVanish Spigot page.
-        players = players.stream().filter(player -> {
-            for (MetadataValue meta : player.getMetadata("vanished")) {
-                if (meta.asBoolean()) {
-                    return false;
-                }
-            }
-            return true;
-        }).collect(Collectors.toList());
-
-        return players;
     }
 
 
