@@ -24,6 +24,8 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import uk.firedev.vanishchecker.VanishChecker;
+
 import java.util.function.Function;
 
 import java.time.Instant;
@@ -74,7 +76,7 @@ public class Competition {
 
     public void begin(boolean adminStart) {
         try {
-            if (!adminStart && EvenMoreFish.getInstance().getOnlinePlayersExcludingVanish().size() < playersNeeded) {
+            if (!adminStart && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
                 new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast();
                 active = false;
                 return;
