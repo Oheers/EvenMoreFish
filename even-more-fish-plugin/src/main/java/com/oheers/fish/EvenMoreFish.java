@@ -61,6 +61,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import uk.firedev.vanishchecker.VanishChecker;
 
 import java.io.File;
 import java.util.*;
@@ -779,6 +780,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
     }
 
+    public List<Player> getVisibleOnlinePlayers() {
+        return MainConfig.getInstance().shouldRespectVanish() ? VanishChecker.getVisibleOnlinePlayers() : new ArrayList<>(Bukkit.getOnlinePlayers());
+    }
 
     // FISH TOGGLE METHODS
     // We use Strings here because Spigot 1.16.5 does not have PersistentDataType.BOOLEAN.
