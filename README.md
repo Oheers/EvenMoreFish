@@ -6,6 +6,8 @@ plugin
 With over 60 custom fish in the default configurations, and the ability to add your own, this is the best competition
 plugin for your server.
 
+Supported Versions: 1.16.5, 1.17.1, 1.18.2, 1.19.4, 1.20.6, 1.21.1, 1.21.3 (Experimental, Dev Builds)
+
 ---
 
 ## ⭐ Features ⭐
