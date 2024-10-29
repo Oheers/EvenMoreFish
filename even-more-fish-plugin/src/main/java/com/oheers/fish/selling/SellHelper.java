@@ -9,6 +9,7 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.utils.ItemUtils;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
 import de.themoep.inventorygui.GuiStorageElement;
@@ -73,6 +74,10 @@ public class SellHelper {
         Economy economy = EvenMoreFish.getInstance().getEconomy();
         if (economy != null && economy.isEnabled()) {
             economy.deposit(this.player, totalWorth);
+        }
+
+        if (!(inventory instanceof PlayerInventory)) {
+            FishUtils.giveItems(Arrays.stream(inventory.getStorageContents()).filter(Objects::nonNull).toArray(ItemStack[]::new), this.player);
         }
 
         // sending the sell message to the player

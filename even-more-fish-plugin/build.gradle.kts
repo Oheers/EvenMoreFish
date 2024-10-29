@@ -19,6 +19,8 @@ description = "A fishing extension bringing an exciting new experience to fishin
 
 repositories {
     mavenCentral()
+    // Adventure Snapshots
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     maven("https://hub.spigotmc.org/nexus/content/groups/public/")
     maven("https://github.com/deanveloper/SkullCreator/raw/mvn-repo/")
     maven("https://jitpack.io")
