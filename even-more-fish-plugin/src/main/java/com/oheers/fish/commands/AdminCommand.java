@@ -168,26 +168,30 @@ public class AdminCommand extends BaseCommand {
 
     @Subcommand("nbt-rod")
     @Description("%desc_admin_nbtrod")
-    public void onNbtRod(final CommandSender sender, @Optional Player player) {
+    public void onNbtRod(final CommandSender sender, @Optional String playerName) {
         if (!MainConfig.getInstance().requireNBTRod()) {
             new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender);
             return;
         }
 
-
-        Message giveMessage;
-        if (player == null) {
-            if (!(sender instanceof Player)) {
-                Message errorMessage = new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE);
-                errorMessage.broadcast(sender);
+        Player player = null;
+        if (playerName != null) {
+            player = Bukkit.getPlayer(playerName);
+            if (player == null) {
+                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
                 return;
             }
-
+        } else if (sender instanceof Player) {
             player = (Player) sender;
         }
 
+        if (player == null) {
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
+            return;
+        }
+
         FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
-        giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
+        Message giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
         giveMessage.setPlayer(player);
         giveMessage.broadcast(sender);
     }
