@@ -19,8 +19,8 @@ competitions:
       - "18:00"
     # Allows you to run commands when the competition starts. Uncomment to use
     #start-commands:
-    #  - "command 1"
-    #  - "command 2"
+    #  - "say The main competition has started!"
+    #  - "give @a diamond 1"
     # Sets days that this competition type won't run on, this is useful if you want one day to be dominated by another competition type
     blacklisted-days:
       - "Sunday"
@@ -121,6 +121,11 @@ general:
   #required-worlds:
   #  - "competition_world"
 
+  # Allows you to run commands when the competition starts. Uncomment to use
+  #  start-commands:
+  #    - "say An admin has started a competition!"
+  #    - "give @a diamond 1"
+
 leaderboard:
 
   # This is the colours used in the variable {pos_colour} for each position, if you aren't using this variable, it isn't needed.
@@ -156,4 +161,4 @@ rewards:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 1
+config-version: 2

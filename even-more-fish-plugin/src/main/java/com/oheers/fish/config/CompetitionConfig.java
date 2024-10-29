@@ -48,8 +48,14 @@ public class CompetitionConfig extends ConfigBase {
         return Math.max(1, getConfig().getInt("competitions." + competitionName + ".duration"));
     }
 
-    public List<String> getCompetitionStartCommands(String competitionName) {
-        String key = "competitions." + competitionName + ".start-commands";
+    public List<String> getCompetitionStartCommands(String competitionName, boolean adminStart) {
+        String key;
+        if (adminStart) {
+            key = "general.start-commands";
+        } else {
+            key = "competitions." + competitionName + ".start-commands";
+        }
+
         if (getConfig().isString(key)) {
             return Collections.singletonList(getConfig().getString(key));
         }
