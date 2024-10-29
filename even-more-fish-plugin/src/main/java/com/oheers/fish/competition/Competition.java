@@ -103,9 +103,11 @@ public class Competition {
             EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(this);
             Bukkit.getServer().getPluginManager().callEvent(startEvent);
             epochStartTime = Instant.now().getEpochSecond();
-            this.beginCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
 
-            // Players can have had their rarities decided to be a null rarity if the competition only check is disabled for some rarities
+            // Execute start commands
+            List<String> startCommands = CompetitionConfig.getInstance().getCompetitionStartCommands(competitionName, adminStart);
+            startCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
+
             EvenMoreFish.getInstance().getDecidedRarities().clear();
         } catch (Exception ex) {
             end(true);

@@ -35,7 +35,7 @@ public class CompetitionQueue {
         Competition competition = new Competition(
                 competitionConfig.getCompetitionDuration(comp) * 60,
                 type,
-                competitionConfig.getCompetitionStartCommands(comp)
+                competitionConfig.getCompetitionStartCommands(comp, false)
         );
 
         competition.setCompetitionName(comp);
