@@ -69,7 +69,7 @@ dependencyResolutionManagement {
             plugin("shadow", "com.gradleup.shadow").version("8.3.3")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
 
-            version("adventure", "4.17.0")
+            version("adventure", "4.18.0-SNAPSHOT")
             library("adventure-api", "net.kyori","adventure-api").versionRef("adventure")
             library("adventure-minimessage", "net.kyori","adventure-text-minimessage").versionRef("adventure")
             library("adventure-legacy", "net.kyori","adventure-text-serializer-legacy").versionRef("adventure")
