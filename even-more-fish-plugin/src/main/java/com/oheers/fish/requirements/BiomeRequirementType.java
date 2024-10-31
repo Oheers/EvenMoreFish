@@ -1,6 +1,7 @@
 package com.oheers.fish.requirements;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.api.requirement.RequirementType;
 import org.bukkit.Location;
@@ -36,22 +37,8 @@ public class BiomeRequirementType implements RequirementType {
         }
         Biome hookBiome = location.getBlock().getBiome();
         for (String value : values) {
-            // Force lowercase
-            value = value.toLowerCase();
-            // If no namespace, assume minecraft
-            if (!value.contains(":")) {
-                value = "minecraft:" + value;
-            }
-            // Get the key and check if null
-            NamespacedKey key = NamespacedKey.fromString(value);
-            if (key == null) {
-                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome.");
-                continue;
-            }
-            // Get the biome and check if null
-            Biome biome = Registry.BIOME.get(key);
+            Biome biome = FishUtils.getBiome(value);
             if (biome == null) {
-                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome.");
                 continue;
             }
             if (hookBiome.equals(biome)) {
