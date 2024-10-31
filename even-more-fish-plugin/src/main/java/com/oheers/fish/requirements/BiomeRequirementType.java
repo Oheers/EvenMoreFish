@@ -4,6 +4,8 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.api.requirement.RequirementType;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.plugin.Plugin;
@@ -34,13 +36,29 @@ public class BiomeRequirementType implements RequirementType {
         }
         List<Biome> biomes = new ArrayList<>();
         values.forEach(value -> {
-            try {
-                biomes.add(Biome.valueOf(value));
-            } catch (IllegalArgumentException exception) {
-                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome.");
+            // Force lowercase
+            value = value.toLowerCase();
+            // If no namespace, assume minecraft
+            if (!value.contains(":")) {
+                value = "minecraft:" + value;
             }
+            // Get the key and check if null
+            NamespacedKey key = NamespacedKey.fromString(value);
+            if (key == null) {
+                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome.");
+                return;
+            }
+            // Get the biome and check if null
+            Biome biome = Registry.BIOME.get(key);
+            if (biome == null) {
+                EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome.");
+                return;
+            }
+            // Add the biome to the check list
+            biomes.add(biome);
         });
         Biome hookBiome = location.getBlock().getBiome();
+        System.out.println(hookBiome.getKey());
         return biomes.contains(hookBiome);
     }
 
