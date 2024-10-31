@@ -34,8 +34,8 @@ public class BiomeRequirementType implements RequirementType {
                     "default. The player may not have been given a fish if you see this message multiple times.");
             return false;
         }
-        List<Biome> biomes = new ArrayList<>();
-        values.forEach(value -> {
+        Biome hookBiome = location.getBlock().getBiome();
+        for (String value : values) {
             // Force lowercase
             value = value.toLowerCase();
             // If no namespace, assume minecraft
@@ -46,20 +46,19 @@ public class BiomeRequirementType implements RequirementType {
             NamespacedKey key = NamespacedKey.fromString(value);
             if (key == null) {
                 EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome.");
-                return;
+                continue;
             }
             // Get the biome and check if null
             Biome biome = Registry.BIOME.get(key);
             if (biome == null) {
                 EvenMoreFish.getInstance().getLogger().severe(value + " is not a valid biome.");
-                return;
+                continue;
             }
-            // Add the biome to the check list
-            biomes.add(biome);
-        });
-        Biome hookBiome = location.getBlock().getBiome();
-        System.out.println(hookBiome.getKey());
-        return biomes.contains(hookBiome);
+            if (hookBiome.equals(biome)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
