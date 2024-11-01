@@ -27,6 +27,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -437,4 +438,27 @@ public class FishUtils {
             return defaultChar;
         }
     }
+
+    public static Biome getBiome(@NotNull String keyString) {
+        // Force lowercase
+        keyString = keyString.toLowerCase();
+        // If no namespace, assume minecraft
+        if (!keyString.contains(":")) {
+            keyString = "minecraft:" + keyString;
+        }
+        // Get the key and check if null
+        NamespacedKey key = NamespacedKey.fromString(keyString);
+        if (key == null) {
+            EvenMoreFish.getInstance().getLogger().severe(keyString + " is not a valid biome.");
+            return null;
+        }
+        // Get the biome and check if null
+        Biome biome = Registry.BIOME.get(key);
+        if (biome == null) {
+            EvenMoreFish.getInstance().getLogger().severe(keyString + " is not a valid biome.");
+            return null;
+        }
+        return biome;
+    }
+
 }

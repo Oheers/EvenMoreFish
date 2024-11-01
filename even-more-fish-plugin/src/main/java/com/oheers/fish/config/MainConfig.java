@@ -2,6 +2,7 @@ package com.oheers.fish.config;
 
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.route.Route;
 import org.apache.commons.lang3.LocaleUtils;
@@ -238,11 +239,11 @@ public class MainConfig extends ConfigBase {
         section.getRoutesAsStrings(false).forEach(key -> {
             List<Biome> biomes = new ArrayList<>();
             section.getStringList(key).forEach(biomeString -> {
-                try {
-                    biomes.add(Biome.valueOf(biomeString));
-                } catch (IllegalArgumentException exception) {
+                Biome biome = FishUtils.getBiome(biomeString);
+                if (biome == null) {
                     EvenMoreFish.getInstance().getLogger().severe(biomeString + " is not a valid biome, found when loading in biome set " + key + ".");
                 }
+                biomes.add(biome);
             });
             biomeSetMap.put(key, biomes);
         });
