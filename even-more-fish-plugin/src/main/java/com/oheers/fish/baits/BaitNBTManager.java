@@ -321,7 +321,7 @@ public class BaitNBTManager {
      * @return The number of baits that were deleted in total.
      */
     public static int deleteAllBaits(ItemStack itemStack) {
-        if (NbtUtils.hasKey(itemStack, NbtKeys.EMF_APPLIED_BAIT)) {
+        if (!NbtUtils.hasKey(itemStack, NbtKeys.EMF_APPLIED_BAIT)) {
             return 0;
         }
 
@@ -334,7 +334,7 @@ public class BaitNBTManager {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).removeKey(NbtKeys.EMF_APPLIED_BAIT);
         });
 
-        itemStack.setItemMeta(itemStack.getItemMeta()); //we can modify meta via nbtapi
+        itemStack.setItemMeta(itemStack.getItemMeta()); // we can modify meta via nbtapi
         return totalDeleted;
     }
 
