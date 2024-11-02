@@ -168,30 +168,30 @@ public class AdminCommand extends BaseCommand {
 
     @Subcommand("nbt-rod")
     @Description("%desc_admin_nbtrod")
-    public void onNbtRod(final CommandSender sender, @Optional Player player) {
+    @CommandCompletion("@players")
+    public void onNbtRod(final CommandSender sender, @Optional OnlinePlayer playerName) {
         if (!MainConfig.getInstance().requireNBTRod()) {
             new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender);
             return;
         }
 
-
-        Message giveMessage;
-        if (player == null) {
-            if (!(sender instanceof Player)) {
-                Message errorMessage = new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE);
-                errorMessage.broadcast(sender);
-                return;
-            }
-
+        Player player = null;
+        if (playerName != null) {
+            player = playerName.getPlayer();
+        } else if (sender instanceof Player) {
             player = (Player) sender;
         }
 
+        if (player == null) {
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
+            return;
+        }
+
         FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
-        giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
+        Message giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
         giveMessage.setPlayer(player);
         giveMessage.broadcast(sender);
     }
-
 
     @Subcommand("bait")
     @CommandCompletion("@baits @range:1-64 @players")
@@ -259,11 +259,16 @@ public class AdminCommand extends BaseCommand {
             return;
         }
 
-        ItemMeta meta = fishingRod.getItemMeta();
-        meta.setLore(BaitNBTManager.deleteOldLore(fishingRod));
-        fishingRod.setItemMeta(meta);
+        int totalDeleted = BaitNBTManager.deleteAllBaits(fishingRod);
+        if (totalDeleted > 0) {
+            ItemMeta meta = fishingRod.getItemMeta();
+            List<String> updatedLore = BaitNBTManager.deleteOldLore(fishingRod);
+            meta.setLore(updatedLore);
+            fishingRod.setItemMeta(meta);
+        }
+
         Message message = new Message(ConfigMessage.BAITS_CLEARED);
-        message.setAmount(Integer.toString(BaitNBTManager.deleteAllBaits(fishingRod)));
+        message.setAmount(Integer.toString(totalDeleted));
         message.broadcast(player);
     }
 
