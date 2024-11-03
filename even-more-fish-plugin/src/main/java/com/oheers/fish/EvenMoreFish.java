@@ -533,6 +533,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         setupEconomy();
 
+        FishManager.getInstance().reload();
+        BaitManager.getInstance().reload();
+
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());
         HandlerList.unregisterAll(McMMOTreasureEvent.getInstance());
