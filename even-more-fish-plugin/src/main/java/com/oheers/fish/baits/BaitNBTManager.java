@@ -445,7 +445,11 @@ public class BaitNBTManager {
      * @return How the bait should look in the lore of the fishing rod, for example.
      */
     private static String getBaitFormatted(String baitID) {
-        Bait bait = BaitManager.getInstance().getBaitMap().get(baitID);
+        Bait bait = BaitManager.getInstance().getBait(baitID);
+        if (bait == null) {
+            EvenMoreFish.getInstance().getLogger().warning("Bait " + baitID + " is not a valid bait!");
+            return "Invalid Bait";
+        }
         return FishUtils.translateColorCodes(bait.getDisplayName());
     }
 }
