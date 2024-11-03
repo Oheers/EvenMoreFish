@@ -17,6 +17,7 @@ import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.UserReport;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -24,7 +25,6 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import uk.firedev.vanishchecker.VanishChecker;
 
 import java.util.function.Function;
 
@@ -662,9 +662,9 @@ public class Competition {
         List<Rarity> allowedRarities = new ArrayList<>();
         double totalWeight = 0;
 
-        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+        for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
             if (configRarities.contains(r.getValue())) {
-                fish.addAll(EvenMoreFish.getInstance().getFishCollection().get(r));
+                fish.addAll(FishManager.getInstance().getRarityMap().get(r));
                 allowedRarities.add(r);
                 totalWeight += (r.getWeight());
             }
@@ -673,7 +673,7 @@ public class Competition {
         if (allowedRarities.isEmpty()) {
             EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competitionName + " competition config contains no loaded rarities!");
             EvenMoreFish.getInstance().getLogger().severe("Configured Rarities: " + configRarities);
-            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).toList());
+            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList());
             return false;
         }
 
@@ -723,19 +723,19 @@ public class Competition {
 
         try {
             String randomRarity = configRarities.get(new Random().nextInt(configRarities.size()));
-            for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+            for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
                 if (r.getValue().equalsIgnoreCase(randomRarity)) {
                     this.selectedRarity = r;
                     return true;
                 }
             }
-            this.selectedRarity = FishingProcessor.randomWeightedRarity(null, 0, null, EvenMoreFish.getInstance().getFishCollection().keySet());
+            this.selectedRarity = FishingProcessor.randomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
                     .severe("Could not load: " + competitionName + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
-            EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + EvenMoreFish.getInstance().getFishCollection().keySet().size());
+            EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + FishManager.getInstance().getRarityMap().keySet().size());
             EvenMoreFish.getInstance().getLogger().severe("configRarities.size(): " + configRarities.size());
             // Also log the exception
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);

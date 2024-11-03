@@ -18,6 +18,7 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.utils.nbt.NbtKeys;
@@ -115,7 +116,7 @@ public class FishingProcessor implements Listener {
      *                 {@code @returns} A random fish without any bait application.
      */
     public static Fish chooseNonBaitFish(Player player, Location location) {
-        Rarity fishRarity = randomWeightedRarity(player, 1, null, EvenMoreFish.getInstance().getFishCollection().keySet());
+        Rarity fishRarity = randomWeightedRarity(player, 1, null, FishManager.getInstance().getRarityMap().keySet());
         if (fishRarity == null) {
             EvenMoreFish.getInstance().getLogger().severe("Could not determine a rarity for fish for " + player.getName());
             return null;
@@ -284,7 +285,7 @@ public class FishingProcessor implements Listener {
 
         if (fisher != null) {
             rarityLoop:
-            for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+            for (Rarity rarity : FishManager.getInstance().getRarityMap().keySet()) {
                 if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
                     continue;
                 }
@@ -388,13 +389,13 @@ public class FishingProcessor implements Listener {
         List<Fish> available = new ArrayList<>();
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (EvenMoreFish.getInstance().getFishCollection().get(r) == null)
-            r = randomWeightedRarity(p, 1, null, EvenMoreFish.getInstance().getFishCollection().keySet());
+        if (FishManager.getInstance().getRarityMap().get(r) == null)
+            r = randomWeightedRarity(p, 1, null, FishManager.getInstance().getRarityMap().keySet());
 
         if (doRequirementChecks) {
             RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
 
-            for (Fish f : EvenMoreFish.getInstance().getFishCollection().get(r)) {
+            for (Fish f : FishManager.getInstance().getRarityMap().get(r)) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;
@@ -407,7 +408,7 @@ public class FishingProcessor implements Listener {
                 available.add(f);
             }
         } else {
-            for (Fish f : EvenMoreFish.getInstance().getFishCollection().get(r)) {
+            for (Fish f : FishManager.getInstance().getRarityMap().get(r)) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;

@@ -1,6 +1,5 @@
 package com.oheers.fish.competition.leaderboard;
 
-import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.fishing.items.Fish;

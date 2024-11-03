@@ -13,6 +13,7 @@ import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitListener;
+import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.commands.AdminCommand;
 import com.oheers.fish.commands.EMFCommand;
 import com.oheers.fish.competition.AutoRunner;
@@ -32,7 +33,7 @@ import com.oheers.fish.database.UserReport;
 import com.oheers.fish.events.*;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
-import com.oheers.fish.fishing.items.Names;
+import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.requirements.*;
 import com.oheers.fish.utils.AntiCraft;
@@ -52,10 +53,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -76,8 +75,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private Permission permission = null;
     private Economy economy;
     private Map<Integer, Set<String>> fish = new HashMap<>();
-    private final Map<String, Bait> baits = new HashMap<>();
-    private Map<Rarity, List<Fish>> fishCollection = new HashMap<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
     private boolean checkingIntEvent;
@@ -177,9 +174,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         loadRequirementManager();
 
-        Names names = new Names();
-        names.loadRarities(FishFile.getInstance().getConfig(), RaritiesFile.getInstance().getConfig());
-        names.loadBaits(BaitFile.getInstance().getConfig());
+        FishManager.getInstance().load();
+        BaitManager.getInstance().load();
 
         // Do this before anything competition related.
         loadRewardManager();
@@ -237,6 +233,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (MainConfig.getInstance().databaseEnabled()) {
             databaseV3.shutdown();
         }
+
+        FishManager.getInstance().unload();
+        BaitManager.getInstance().unload();
+
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Disabled");
     }
 
@@ -400,33 +400,29 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         });
         manager.getCommandContexts().registerContext(Rarity.class, c -> {
             final String rarityId = c.popFirstArg().replace("\"", "");
-            Optional<Rarity> potentialRarity = EvenMoreFish.getInstance().getFishCollection().keySet().stream()
-                    .filter(rarity -> rarity.getValue().equalsIgnoreCase(rarityId))
-                    .findFirst();
-            if (potentialRarity.isEmpty()) {
+            Rarity rarity = FishManager.getInstance().getRarity(rarityId);
+            if (rarity == null) {
                 throw new InvalidCommandArgument("No such rarity: " + rarityId);
             }
-
-            return potentialRarity.get();
+            return rarity;
         });
         manager.getCommandContexts().registerContext(Fish.class, c -> {
             final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
             final String fishId = c.popFirstArg();
-            Optional<Fish> potentialFish = EvenMoreFish.getInstance().getFishCollection().get(rarity).stream()
-                    .filter(f -> f.getName().equalsIgnoreCase(fishId.replace("_", " ")) || f.getName().equalsIgnoreCase(fishId))
-                    .findFirst();
-
-            if (potentialFish.isEmpty()) {
+            Fish fish = FishManager.getInstance().getFish(rarity, fishId);
+            if (fish == null) {
+                fish = FishManager.getInstance().getFish(rarity, fishId.replace("_", " "));
+            }
+            if (fish == null) {
                 throw new InvalidCommandArgument("No such fish: " + fishId);
             }
-
-            return potentialFish.get();
+            return fish;
         });
-        manager.getCommandCompletions().registerCompletion("baits", c -> EvenMoreFish.getInstance().getBaits().keySet().stream().map(s -> s.replace(" ", "_")).collect(Collectors.toList()));
-        manager.getCommandCompletions().registerCompletion("rarities", c -> EvenMoreFish.getInstance().getFishCollection().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
+        manager.getCommandCompletions().registerCompletion("baits", c -> BaitManager.getInstance().getBaitMap().keySet().stream().map(s -> s.replace(" ", "_")).collect(Collectors.toList()));
+        manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
-            return EvenMoreFish.getInstance().getFishCollection().get(rarity).stream().map(f -> f.getName().replace(" ", "_")).collect(Collectors.toList());
+            return FishManager.getInstance().getRarityMap().get(rarity).stream().map(f -> f.getName().replace(" ", "_")).collect(Collectors.toList());
         });
 
         manager.registerCommand(new EMFCommand());
@@ -522,7 +518,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         terminateGUIS();
 
         fish.clear();
-        fishCollection.clear();
 
         reloadConfig();
         saveDefaultConfig();
@@ -537,10 +532,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         BaitFile.getInstance().reload();
 
         setupEconomy();
-
-        Names names = new Names();
-        names.loadRarities(FishFile.getInstance().getConfig(), RaritiesFile.getInstance().getConfig());
-        names.loadBaits(BaitFile.getInstance().getConfig());
 
         HandlerList.unregisterAll(FishEatEvent.getInstance());
         HandlerList.unregisterAll(FishInteractEvent.getInstance());
@@ -598,14 +589,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public Map<Integer, Set<String>> getFish() {
         return fish;
-    }
-
-    public Map<String, Bait> getBaits() {
-        return baits;
-    }
-
-    public Map<Rarity, List<Fish>> getFishCollection() {
-        return fishCollection;
     }
 
     public ItemStack getCustomNBTRod() {
