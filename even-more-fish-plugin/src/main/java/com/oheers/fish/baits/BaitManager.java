@@ -46,6 +46,8 @@ public class BaitManager {
         if (!isLoaded()) {
             return;
         }
+        baitMap.clear();
+        loadBaits();
     }
     
     public void unload() {

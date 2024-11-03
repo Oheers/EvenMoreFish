@@ -53,6 +53,7 @@ public class FishManager {
         if (!isLoaded()) {
             return;
         }
+        rarityMap.clear();
         loaded = false;
     }
 
@@ -115,7 +116,6 @@ public class FishManager {
 
     // Loading things
 
-    // Log all loaded rarities, and the amount of fish they have.
     private void logLoadedItems() {
         int allFish = 0;
         for (List<Fish> fishList : rarityMap.values()) {
