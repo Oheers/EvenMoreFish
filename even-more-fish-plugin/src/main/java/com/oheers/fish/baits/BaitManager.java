@@ -39,6 +39,7 @@ public class BaitManager {
             return;
         }
         loadBaits();
+        logLoadedItems();
         loaded = true;
     }
     
@@ -48,12 +49,14 @@ public class BaitManager {
         }
         baitMap.clear();
         loadBaits();
+        logLoadedItems();
     }
     
     public void unload() {
         if (!isLoaded()) {
             return;
         }
+        baitMap.clear();
         loaded = false;
     }
     
@@ -79,6 +82,10 @@ public class BaitManager {
     }
 
     // Loading things
+
+    private void logLoadedItems() {
+        EvenMoreFish.getInstance().getLogger().info("Loaded BaitManager with " + baitMap.size() + " Baits.");
+    }
 
     private void loadBaits() {
         Section section = getBaitConfiguration().getSection("baits");
