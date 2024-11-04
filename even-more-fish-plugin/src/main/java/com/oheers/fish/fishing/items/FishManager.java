@@ -1,7 +1,6 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -138,7 +137,7 @@ public class FishManager {
         raritiesSection.getRoutesAsStrings(false).forEach(rarityString -> {
             Section raritySection = raritiesSection.getSection(rarityString);
             if (raritySection == null) {
-                return;
+                raritySection = raritiesSection.createSection(rarityString);
             }
             rarityList.add(new Rarity(raritySection));
         });
@@ -155,7 +154,7 @@ public class FishManager {
             raritySection.getRoutesAsStrings(false).forEach(fishStr -> {
                 Section fishSection = raritySection.getSection(fishStr);
                 if (fishSection == null) {
-                    return;
+                    fishSection = raritySection.createSection(fishStr);
                 }
                 try {
                     rarityFish.add(new Fish(rarity, fishSection));
