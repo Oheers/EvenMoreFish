@@ -95,11 +95,20 @@ sell-gui:
 # in a list of set defined regions (this requires the worldguard/redprotect plugin) and/or in a list of set defined
 # worlds. EvenMoreFish automatically detects your protection plugin so it's important you don't run both at once.
 # Note- Changing this value requires a SERVER RESTART NOT A RELOAD.
-#allowed-regions:
-#  - "fishing"
-#
-#allowed-worlds:
-#  - "fishworld"
+allowed-regions:
+  - "fishing"
+
+allowed-worlds:
+  - "world"
+
+# Region boost settings
+region-boosts:
+  fishing:
+    common: 0.5
+    uncommon: 1.0
+    rare: 2.0
+    epic: 3.0
+    legendary: 5.0
 
 # Prevents mcMMO from overriding fishing loot, this means treasure won't appear when fish can.
 disable-mcmmo-loot: true

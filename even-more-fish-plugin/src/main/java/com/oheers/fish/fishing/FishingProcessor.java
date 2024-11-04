@@ -131,7 +131,6 @@ public class FishingProcessor implements Listener {
     }
 
     public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {
-
         if (!FishUtils.checkRegion(location, MainConfig.getInstance().getAllowedRegions())) {
             return null;
         }
@@ -164,7 +163,6 @@ public class FishingProcessor implements Listener {
         Fish fish;
 
         if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !Competition.isActive())) {
-
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
             if (applyingBait == null) {
                 fish = chooseNonBaitFish(player, location);
@@ -203,10 +201,7 @@ public class FishingProcessor implements Listener {
         if (cEvent.isCancelled()) return null;
 
         if (sendMessages && !fish.isSilent()) {
-            // puts all the fish information into a format that Messages.renderMessage() can print out nicely
-
             String length = Float.toString(fish.getLength());
-            // Translating the colours because some servers store colour in their fish name
             String name = FishUtils.translateColorCodes(fish.getName());
             String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
 
@@ -228,12 +223,9 @@ public class FishingProcessor implements Listener {
                 message.setMessage(ConfigMessage.FISH_LENGTHLESS_CAUGHT);
             }
 
-            // Gets whether it's a serverwide announce or not
             if (fish.getRarity().getAnnounce()) {
-                // should we only broadcast this information to rod holders?
                 FishUtils.broadcastFishMessage(message, player, false);
             } else {
-                // sends it to just the fisher
                 message.broadcast(player);
             }
         }
@@ -247,11 +239,9 @@ public class FishingProcessor implements Listener {
         if (MainConfig.getInstance().isDatabaseOnline()) {
             Fish finalFish = fish;
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                // increases the fish fished count if the fish is already in the db
                 if (EvenMoreFish.getInstance().getDatabaseV3().hasFishData(finalFish)) {
                     EvenMoreFish.getInstance().getDatabaseV3().incrementFish(finalFish);
 
-                    // sets the new leader in top fish, if the player has fished a record fish
                     if (EvenMoreFish.getInstance().getDatabaseV3().getLargestFishSize(finalFish) < finalFish.getLength()) {
                         EvenMoreFish.getInstance().getDatabaseV3().updateLargestFish(finalFish, player.getUniqueId());
                     }
@@ -260,10 +250,6 @@ public class FishingProcessor implements Listener {
                 }
 
                 EvenMoreFish.getInstance().getDatabaseV3().handleFishCatch(player.getUniqueId(), finalFish);
-
-//                    catch (SQLException exception) {
-//                        EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed SQL operations whilst writing fish catch data for " + player.getUniqueId() + ". Try restarting or contacting support.", exception);
-//                    }
             });
         }
 
@@ -283,7 +269,7 @@ public class FishingProcessor implements Listener {
         int idx = 0;
 
         if (fisher != null) {
-            rarityLoop:
+            String region = FishUtils.getRegionName(fisher.getLocation());
             for (Rarity rarity : EvenMoreFish.getInstance().getFishCollection().keySet()) {
                 if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
                     continue;
@@ -296,7 +282,10 @@ public class FishingProcessor implements Listener {
                 Requirement requirement = rarity.getRequirement();
                 RequirementContext context = new RequirementContext(fisher.getWorld(), fisher.getLocation(), fisher, null, null);
                 if (requirement.meetsRequirements(context)) {
-                    allowedRarities.add(rarity);
+                    double regionBoost = MainConfig.getInstance().getRegionBoost(region, rarity.getValue());
+                    for (int i = 0; i < regionBoost; i++) {
+                        allowedRarities.add(rarity);
+                    }
                 }
             }
         } else {
