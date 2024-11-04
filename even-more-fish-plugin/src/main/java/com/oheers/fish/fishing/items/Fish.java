@@ -473,7 +473,7 @@ public class Fish implements Cloneable {
         if (displayName == null) {
             return rarity.getColour() + name;
         }
-        return displayName;
+        return rarity.getColour() + displayName;
     }
 
     public ItemFactory getFactory() {
