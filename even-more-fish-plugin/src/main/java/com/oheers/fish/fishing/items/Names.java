@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class Names {
 
@@ -65,11 +66,11 @@ public class Names {
                 // for each fish name, a fish object is made that contains the information gathered from that name
                 try {
                     canvas = new Fish(r, fish);
-                } catch (InvalidFishException ignored) {
-                    // We're looping through the config, this isn't be an issue.
+                } catch (InvalidFishException exception) {
+                    EvenMoreFish.getInstance().getLogger().log(Level.WARNING, exception.getMessage(), exception);
+                    continue;
                 }
 
-                assert canvas != null;
                 canvas.setRequirement(getRequirement(fish, rarity, FishFile.getInstance().getConfig()));
                 weightCheck(canvas, fish, r, rarity);
                 fishQueue.add(canvas);
@@ -79,7 +80,6 @@ public class Names {
                     canvas.setCompExemptFish(true);
                     EvenMoreFish.getInstance().setRaritiesCompCheckExempt(true);
                 }
-
             }
 
             // puts the collection of fish and their rarities into the main class

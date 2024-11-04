@@ -25,10 +25,12 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Fish implements Cloneable {
 
+    private static final Logger LOGGER = EvenMoreFish.getInstance().getLogger();
     String name;
     Rarity rarity;
     ItemFactory factory;
@@ -64,9 +66,14 @@ public class Fish implements Cloneable {
     private int day = -1;
 
     public Fish(Rarity rarity, String name) throws InvalidFishException {
+        if (name.contains(" ") || !name.equals(name.toLowerCase())) {
+            LOGGER.warning(name + " is invalid. Fish names must be lowercase and contain no spaces.");
+        }
+        name = name.toLowerCase().replace(" ", "_");
         if (rarity == null) {
             throw new InvalidFishException(name + " could not be fetched from the config.");
         }
+
         this.rarity = rarity;
         this.name = name;
         this.weight = 0;
@@ -307,6 +314,11 @@ public class Fish implements Cloneable {
 
     public void checkDisplayName() {
         this.displayName = this.fishConfig.getString("fish." + this.rarity.getValue() + "." + this.name + ".displayname");
+        if (this.displayName == null) {
+            this.displayName = this.rarity.getColour() + this.name;
+        } else {
+            this.displayName = this.rarity.getColour() + this.displayName;
+        }
     }
 
     public void checkEatEvent() {
