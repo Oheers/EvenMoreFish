@@ -283,13 +283,22 @@ public class FishingProcessor implements Listener {
                 RequirementContext context = new RequirementContext(fisher.getWorld(), fisher.getLocation(), fisher, null, null);
                 if (requirement.meetsRequirements(context)) {
                     double regionBoost = MainConfig.getInstance().getRegionBoost(region, rarity.getValue());
-                    for (int i = 0; i < regionBoost; i++) {
+                    if (regionBoost > 0) {
+                        for (int i = 0; i < regionBoost; i++) {
+                            allowedRarities.add(rarity);
+                        }
+                    } else {
                         allowedRarities.add(rarity);
                     }
                 }
             }
         } else {
             allowedRarities.addAll(totalRarities);
+        }
+
+        if (allowedRarities.isEmpty()) {
+            EvenMoreFish.getInstance().getLogger().severe("There are no rarities for the user " + fisher.getName() + " to fish. They have received no fish.");
+            return null;
         }
 
         double totalWeight = 0;
@@ -309,11 +318,6 @@ public class FishingProcessor implements Listener {
                 r -= allowedRarities.get(idx).getWeight();
             }
             if (r <= 0.0) break;
-        }
-
-        if (allowedRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("There are no rarities for the user " + fisher.getName() + " to fish. They have received no fish.");
-            return null;
         }
 
         if (!Competition.isActive() && EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) {

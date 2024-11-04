@@ -101,14 +101,31 @@ allowed-regions:
 allowed-worlds:
   - "world"
 
+# This section defines the boost settings for different regions.
+# Each rarity of fish has a boost multiplier that adjusts its weight in the specified region.
+# To disable a boost, comment out the corresponding line.
 # Region boost settings
-region-boosts:
-  fishing:
-    common: 0.5
-    uncommon: 1.0
-    rare: 2.0
-    epic: 3.0
-    legendary: 5.0
+#region-boosts:
+  #fishing:
+    # The boost multiplier for the "Common" rarity in the "fishing" region.
+    # This means the weight of "Common" fish will be multiplied by 0.5.
+    # To disable, comment out the line below.
+    #common: 0.5
+
+    # The boost multiplier for the "Rare" rarity in the "fishing" region.
+    # This means the weight of "Rare" fish will be multiplied by 1.0 (no change).
+    # To disable, comment out the line below.
+    #rare: 1.0
+
+    # The boost multiplier for the "Epic" rarity in the "fishing" region.
+    # This means the weight of "Epic" fish will be multiplied by 3.0.
+    # To disable, comment out the line below.
+    #epic: 3.0
+
+    # The boost multiplier for the "Legendary" rarity in the "fishing" region.
+    # This means the weight of "Legendary" fish will be multiplied by 15.0.
+    # To disable, comment out the line below.
+    #legendary: 15.0
 
 # Prevents mcMMO from overriding fishing loot, this means treasure won't appear when fish can.
 disable-mcmmo-loot: true
