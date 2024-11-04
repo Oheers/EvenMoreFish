@@ -78,6 +78,10 @@ public class FishUtils {
         // Get the rarity
         Rarity rarity = FishManager.getInstance().getRarity(rarityString);
 
+        if (rarity == null) {
+            return null;
+        }
+
         // setting the correct length so it's an exact replica.
         try {
             Fish fish = new Fish(rarity, nameString);
@@ -116,6 +120,10 @@ public class FishUtils {
 
         // Get the rarity
         Rarity rarity = FishManager.getInstance().getRarity(rarityString);
+
+        if (rarity == null) {
+            return null;
+        }
 
         // setting the correct length and randomIndex, so it's an exact replica.
         Fish fish = new Fish(rarity, nameString);
