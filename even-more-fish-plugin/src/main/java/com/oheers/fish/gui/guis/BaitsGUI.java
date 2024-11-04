@@ -2,6 +2,7 @@ package com.oheers.fish.gui.guis;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.GUIFillerConfig;
 import com.oheers.fish.gui.GUIUtils;
@@ -41,7 +42,7 @@ public class BaitsGUI implements EMFGUI {
 
         return new DynamicGuiElement(character, who -> {
             GuiElementGroup group = new GuiElementGroup(character);
-            EvenMoreFish.getInstance().getBaits().values()
+            BaitManager.getInstance().getBaitMap().values()
                     .forEach(bait -> group.addElement(new StaticGuiElement(character, bait.create(Bukkit.getOfflinePlayer(viewer.getUniqueId())))));
             return group;
         });

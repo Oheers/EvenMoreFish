@@ -230,8 +230,8 @@ public class BaitNBTManager {
 
         for (String baitName : baitNameList) {
 
-            Bait bait;
-            if ((bait = EvenMoreFish.getInstance().getBaits().get(baitName.split(":")[0])) != null) {
+            Bait bait = BaitManager.getInstance().getBait(baitName.split(":")[0]);
+            if (bait != null) {
                 baitList.add(bait);
             }
 
@@ -269,7 +269,7 @@ public class BaitNBTManager {
     public static Bait randomBaitCatch() {
         double totalWeight = 0;
 
-        List<Bait> baitList = new ArrayList<>(EvenMoreFish.getInstance().getBaits().values());
+        List<Bait> baitList = new ArrayList<>(BaitManager.getInstance().getBaitMap().values());
 
         // Weighted random logic (nabbed from stackoverflow)
         for (Bait bait : baitList) {
@@ -277,7 +277,7 @@ public class BaitNBTManager {
         }
 
         int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < EvenMoreFish.getInstance().getBaits().size() - 1; ++idx) {
+        for (double r = Math.random() * totalWeight; idx < BaitManager.getInstance().getBaitMap().size() - 1; ++idx) {
             r -= baitList.get(idx).getCatchWeight();
             if (r <= 0.0) {
                 break;
@@ -445,7 +445,11 @@ public class BaitNBTManager {
      * @return How the bait should look in the lore of the fishing rod, for example.
      */
     private static String getBaitFormatted(String baitID) {
-        Bait bait = EvenMoreFish.getInstance().getBaits().get(baitID);
+        Bait bait = BaitManager.getInstance().getBait(baitID);
+        if (bait == null) {
+            EvenMoreFish.getInstance().getLogger().warning("Bait " + baitID + " is not a valid bait!");
+            return "Invalid Bait";
+        }
         return FishUtils.translateColorCodes(bait.getDisplayName());
     }
 }
