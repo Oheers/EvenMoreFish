@@ -2,10 +2,16 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.requirement.Requirement;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Rarity {
 
-    public String overridenLore;
+    public String loreOverride;
     public String permission;
     String value, colour;
     double weight;
@@ -13,16 +19,61 @@ public class Rarity {
     boolean fishWeighted;
     boolean hasCompExemptFish;
     boolean useConfigCasing;
+    boolean shouldDisableFisherman;
     String displayName;
     Requirement requirement = new Requirement();
+    double minSize;
+    double maxSize;
 
-    public Rarity(String value, String colour, double weight, boolean announce, boolean useConfigCasing, String overridenLore) {
+    /**
+     * Constructs a Rarity from its config section.
+     * @param section The section for this rarity.
+     */
+    public Rarity(@NotNull Section section) {
+        // This should never be null, but we have this check just to be safe.
+        this.value = Objects.requireNonNull(section.getNameAsString());
+        this.colour = section.getString("colour", "&f");
+        this.weight = section.getDouble("weight");
+        this.announce = section.getBoolean("broadcast");
+        this.loreOverride = section.getString("override-lore");
+        this.useConfigCasing = section.getBoolean("use-this-casing");
+        this.permission = section.getString("permission");
+        this.displayName = section.getString("displayname");
+        this.shouldDisableFisherman = section.getBoolean("disable-fisherman", false);
+        this.minSize = section.getDouble("size.minSize");
+        this.maxSize = section.getDouble("size.maxSize");
+        handleRequirements(section);
+    }
+
+    /**
+     * Constructs a rarity with the provided values.
+     * @deprecated Use {@link Rarity#Rarity(Section)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public Rarity(String value, String colour, double weight, boolean announce, boolean useConfigCasing, String loreOverride) {
         this.value = value;
         this.colour = colour;
         this.weight = weight;
         this.announce = announce;
-        this.overridenLore = overridenLore;
+        this.loreOverride = loreOverride;
         this.useConfigCasing = useConfigCasing;
+    }
+
+    private void handleRequirements(@NotNull Section raritySection) {
+        Section requirementSection = raritySection.getSection("requirements");
+        requirement = new Requirement();
+        if (requirementSection == null) {
+            return;
+        }
+        requirementSection.getRoutesAsStrings(false).forEach(requirementString -> {
+            List<String> values = new ArrayList<>();
+            if (requirementSection.isList(requirementString)) {
+                values.addAll(requirementSection.getStringList(requirementString));
+            } else {
+                values.add(requirementSection.getString(requirementString));
+            }
+            requirement.add(requirementString, values);
+        });
     }
 
     public String getValue() {
@@ -67,7 +118,7 @@ public class Rarity {
     }
 
     public String getLorePrep() {
-        if (overridenLore != null) return FishUtils.translateColorCodes(overridenLore);
+        if (loreOverride != null) return FishUtils.translateColorCodes(loreOverride);
         else {
             if (this.displayName != null) {
                 return this.displayName;
@@ -78,7 +129,6 @@ public class Rarity {
                 }
                 return this.getColour() + "&l" + finalName;
             }
-
         }
     }
 
@@ -101,4 +151,17 @@ public class Rarity {
     public Requirement getRequirement() {
         return requirement;
     }
+
+    public boolean isShouldDisableFisherman() {
+        return shouldDisableFisherman;
+    }
+
+    public double getMinSize() {
+        return minSize;
+    }
+
+    public double getMaxSize() {
+        return maxSize;
+    }
+
 }
