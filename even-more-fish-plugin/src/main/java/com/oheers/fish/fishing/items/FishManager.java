@@ -1,7 +1,6 @@
 package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.exceptions.InvalidFishException;
@@ -126,134 +125,47 @@ public class FishManager {
 
     private void loadRarities() {
 
-        // gets all the rarities - just their names, nothing else
-        Set<String> rarityNames;
-        Section section = getFishConfiguration().getSection("fish");
-        if (section == null) {
-            rarityNames = new HashSet<>();
-        } else {
-            rarityNames = section.getRoutesAsStrings(false);
+        Section raritiesSection = getRarityConfiguration().getSection("rarities");
+
+        if (raritiesSection == null) {
+            return;
         }
 
-        for (String rarityStr : rarityNames) {
+        List<Rarity> rarityList = new ArrayList<>();
 
-            Set<String> fishNames;
-
-            // gets all the fish in said rarity, again - just their names
-            Section raritySection = getFishConfiguration().getSection("fish." + rarityStr);
+        // Collect the rarities
+        raritiesSection.getRoutesAsStrings(false).forEach(rarityString -> {
+            Section raritySection = raritiesSection.getSection(rarityString);
             if (raritySection == null) {
-                fishNames = new HashSet<>();
-            } else {
-                fishNames = raritySection.getRoutesAsStrings(false);
+                raritySection = raritiesSection.createSection(rarityString);
             }
+            rarityList.add(new Rarity(raritySection));
+        });
 
-            // creates a rarity object and a fish queue
-            Rarity rarity = new Rarity(rarityStr, getRarityColor(rarityStr), getRarityWeight(rarityStr), getRarityAnnounce(rarityStr), getRarityUseConfigCasing(rarityStr), getRarityLoreOverride(rarityStr));
-            rarity.setPermission(getRarityPermission(rarityStr));
-            rarity.setDisplayName(getRarityDisplayName(rarityStr));
-            rarity.setRequirement(getRequirement(null, rarityStr, RaritiesFile.getInstance().getConfig()));
-
-            List<Fish> fishList = new ArrayList<>();
-
-            for (String fishStr : fishNames) {
-
-                Fish fish;
-
-                // for each fish name, a fish object is made that contains the information gathered from that name
+        // Collect the fish in each rarity
+        Section parentFishSection = getFishConfiguration().getSection("fish");
+        rarityList.forEach(rarity -> {
+            String rarityStr = rarity.getValue();
+            Section raritySection = parentFishSection.getSection(rarityStr);
+            if (raritySection == null) {
+                return;
+            }
+            List<Fish> rarityFish = new ArrayList<>();
+            raritySection.getRoutesAsStrings(false).forEach(fishStr -> {
+                Section fishSection = raritySection.getSection(fishStr);
+                if (fishSection == null) {
+                    fishSection = raritySection.createSection(fishStr);
+                }
                 try {
-                    fish = new Fish(rarity, fishStr);
+                    rarityFish.add(new Fish(rarity, fishSection));
                 } catch (InvalidFishException exception) {
                     EvenMoreFish.getInstance().getLogger().log(Level.WARNING, exception.getMessage(), exception);
-                    continue;
                 }
-
-                fish.setRequirement(getRequirement(fishStr, rarityStr, FishFile.getInstance().getConfig()));
-                checkFishWeight(fish, rarity);
-                fishList.add(fish);
-
-                if (getFishCompCheckExempt(fish, rarity)) {
-                    rarity.setHasCompExemptFish(true);
-                    fish.setCompExemptFish(true);
-                    EvenMoreFish.getInstance().setRaritiesCompCheckExempt(true);
-                }
-
-            }
-
-            // puts the collection of fish and their rarities into the main class
-            rarityMap.put(rarity, fishList);
-        }
-    }
-    
-    // Common getters
-
-    private Requirement getRequirement(String fishName, String rarity, YamlDocument config) {
-        Section requirementSection;
-        if (fishName != null) {
-            requirementSection = getFishConfiguration().getSection("fish." + rarity + "." + fishName + ".requirements");
-        } else {
-            requirementSection = getRarityConfiguration().getSection("rarities." + rarity + ".requirements");
-        }
-
-        Requirement requirement = new Requirement();
-        if (requirementSection != null) {
-            requirementSection.getRoutesAsStrings(false).forEach(requirementString -> {
-                List<String> values = new ArrayList<>();
-                String fullPath = requirementSection.getRouteAsString() + "." + requirementString;
-                if (config.isList(fullPath)) {
-                    values.addAll(config.getStringList(fullPath));
-                } else {
-                    values.add(config.getString(fullPath));
-                }
-                requirement.add(requirementString, values);
             });
-        }
+            // Add the rarity and fish list to the map.
+            rarityMap.put(rarity, rarityFish);
+        });
 
-        return requirement;
-    }
-
-    // Rarity getters
-    
-    private String getRarityColor(@NotNull String rarityName) {
-        String color = getRarityConfiguration().getString("rarities." + rarityName + ".colour");
-        return color == null ? "&f" : color;
-    }
-
-    private double getRarityWeight(@NotNull String rarityName) {
-        return getRarityConfiguration().getDouble("rarities." + rarityName + ".weight");
-    }
-
-    private boolean getRarityAnnounce(@NotNull String rarityName) {
-        return getRarityConfiguration().getBoolean("rarities." + rarityName + ".broadcast");
-    }
-
-    private boolean getRarityUseConfigCasing(@NotNull String rarityName) {
-        return getRarityConfiguration().getBoolean("rarities." + rarityName + ".use-this-casing");
-    }
-
-    private String getRarityLoreOverride(@NotNull String rarityName) {
-        return getRarityConfiguration().getString("rarities." + rarityName + ".override-lore");
-    }
-    
-    private String getRarityPermission(@NotNull String rarityName) {
-        return getRarityConfiguration().getString("rarities." + rarityName + ".permission");
-    }
-    
-    private String getRarityDisplayName(@NotNull String rarityName) {
-        return getRarityConfiguration().getString("rarities." + rarityName + ".displayname");
-    }
-    
-    // Fish getters
-    
-    private void checkFishWeight(@NotNull Fish fish, @NotNull Rarity rarity) {
-        double weight = getFishConfiguration().getDouble("fish." + rarity.getValue() + "." + fish.getName() + ".weight");
-        if (weight != 0) {
-            rarity.setFishWeighted(true);
-            fish.setWeight(weight);
-        }
-    }
-
-    private boolean getFishCompCheckExempt(@NotNull Fish fish, @NotNull Rarity rarity) {
-        return getFishConfiguration().getBoolean("fish." + rarity.getValue() + "." + fish.getName() + ".comp-check-exempt");
     }
 
 }
