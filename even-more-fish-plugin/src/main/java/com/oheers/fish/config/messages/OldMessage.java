@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated Use {@link Message} instead. This class will be removed in EMF 1.8
+ */
 @Deprecated
 public class OldMessage {
 

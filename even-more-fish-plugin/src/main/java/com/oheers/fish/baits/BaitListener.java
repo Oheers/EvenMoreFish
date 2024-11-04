@@ -50,7 +50,7 @@ public class BaitListener implements Listener {
         }
 
         ApplicationResult result;
-        Bait bait = EvenMoreFish.getInstance().getBaits().get(BaitNBTManager.getBaitName(event.getCursor()));
+        Bait bait = BaitManager.getInstance().getBait(BaitNBTManager.getBaitName(event.getCursor()));
 
         NbtVersion nbtVersion = NbtVersion.getVersion(potentialFishingRod);
         if (nbtVersion != NbtVersion.COMPAT) {

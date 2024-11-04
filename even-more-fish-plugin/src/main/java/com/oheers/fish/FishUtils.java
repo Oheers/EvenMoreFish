@@ -8,6 +8,7 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
@@ -77,7 +78,7 @@ public class FishUtils {
         // Generating an empty rarity
         Rarity rarity = null;
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+        for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
             if (r.getValue().equals(rarityString)) {
                 rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
             }
@@ -122,7 +123,7 @@ public class FishUtils {
         // Generating an empty rarity
         Rarity rarity = null;
         // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
+        for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
             if (r.getValue().equals(rarityString)) {
                 rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
             }
