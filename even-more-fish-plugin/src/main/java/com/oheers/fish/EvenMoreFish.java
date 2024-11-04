@@ -11,7 +11,6 @@ import com.oheers.fish.api.EMFAPI;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
-import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitListener;
 import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.commands.AdminCommand;
@@ -116,6 +115,14 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public AddonManager getAddonManager() {
         return addonManager;
+    }
+
+    /**
+     * @deprecated Use {@link FishManager#getRarityMap()} instead. This method will be removed in EMF 1.8
+     */
+    @Deprecated(forRemoval = true)
+    public Map<Rarity, List<Fish>> getFishCollection() {
+        return FishManager.getInstance().getRarityMap();
     }
 
     @Override
