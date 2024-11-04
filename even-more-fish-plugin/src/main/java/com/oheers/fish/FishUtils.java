@@ -75,13 +75,11 @@ public class FishUtils {
         }
 
 
-        // Generating an empty rarity
-        Rarity rarity = null;
-        // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
-            if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
-            }
+        // Get the rarity
+        Rarity rarity = FishManager.getInstance().getRarity(rarityString);
+
+        if (rarity == null) {
+            return null;
         }
 
         // setting the correct length so it's an exact replica.
@@ -120,13 +118,11 @@ public class FishUtils {
             throw new InvalidFishException("NBT Error");
         }
 
-        // Generating an empty rarity
-        Rarity rarity = null;
-        // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
-            if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
-            }
+        // Get the rarity
+        Rarity rarity = FishManager.getInstance().getRarity(rarityString);
+
+        if (rarity == null) {
+            return null;
         }
 
         // setting the correct length and randomIndex, so it's an exact replica.
