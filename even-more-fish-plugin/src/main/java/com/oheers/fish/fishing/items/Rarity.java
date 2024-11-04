@@ -47,7 +47,7 @@ public class Rarity {
 
     /**
      * Constructs a rarity with the provided values.
-     * @deprecated Use {@link Rarity#Rarity(Section)} instead.
+     * @deprecated Use {@link Rarity#Rarity(Section)} instead. This constructor will be removed for EMF 1.8.
      */
     @Deprecated(forRemoval = true)
     public Rarity(String value, String colour, double weight, boolean announce, boolean useConfigCasing, String loreOverride) {

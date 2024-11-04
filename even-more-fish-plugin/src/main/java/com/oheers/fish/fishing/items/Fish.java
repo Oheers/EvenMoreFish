@@ -62,6 +62,10 @@ public class Fish implements Cloneable {
 
     private int day = -1;
 
+    /**
+     * Constructs a Fish from its config section.
+     * @param section The section for this fish.
+     */
     public Fish(@NotNull Rarity rarity, @Nullable Section section) throws InvalidFishException {
         if (section == null) {
             throw new InvalidFishException("Fish could not be fetched from the config.");
@@ -99,7 +103,10 @@ public class Fish implements Cloneable {
         handleRequirements();
     }
 
-    @Deprecated
+    /**
+     * Constructs a fish with the provided values.
+     * If possible, prefer {@link Fish#Fish(Rarity, Section)} instead.
+     */
     public Fish(@NotNull Rarity rarity, @NotNull String name) throws InvalidFishException {
         // Manually obtain the section when this deprecated constructor is used.
         this(rarity, FishFile.getInstance().getConfig().getSection("fish." + rarity.getValue() + "." + name));
