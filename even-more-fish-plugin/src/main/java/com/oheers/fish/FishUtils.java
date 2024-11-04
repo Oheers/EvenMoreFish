@@ -217,17 +217,18 @@ public class FishUtils {
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionQuery query = container.createQuery();
             ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(location));
-
             for (ProtectedRegion region : set) {
-                return region.getId(); // Return the first region ID found
+                return region.getId(); // Return the first region found
             }
         } else if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) {
             Region region = RedProtect.get().getAPI().getRegion(location);
             if (region != null) {
-                return region.getName(); // Return the region name
+                return region.getName();
             }
+        } else {
+            EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to enable region-specific fishing.");
         }
-        return "default_region"; // Return a default value if no region is found
+        return null; // Return null if no region is found or no region plugin is enabled
     }
 
     public static boolean checkWorld(Location l) {
