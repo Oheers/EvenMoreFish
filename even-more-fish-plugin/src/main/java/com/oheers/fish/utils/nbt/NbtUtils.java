@@ -58,8 +58,11 @@ public class NbtUtils {
             }
             case COMPAT -> nbt.getCompound(namespacedKey.getNamespace()).getString(namespacedKey.getKey());
             case LEGACY -> {
-                String baitString = nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getString(namespacedKey.toString());
-                yield baitString.isEmpty() ? null : baitString;
+                if (nbt.hasTag(NbtKeys.PUBLIC_BUKKIT_VALUES)) {
+                    String baitString = nbt.getCompound(NbtKeys.PUBLIC_BUKKIT_VALUES).getString(namespacedKey.toString());
+                    yield baitString.isEmpty() ? null : baitString;
+                }
+                yield null;
             }
         };
 
