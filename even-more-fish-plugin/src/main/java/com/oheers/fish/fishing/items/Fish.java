@@ -317,17 +317,17 @@ public class Fish implements Cloneable {
         );
 
         newLoreLine.setVariable("{fisherman_lore}",
-            !disableFisherman && getFishermanPlayer() != null ?
-                (new Message(ConfigMessage.FISHERMAN_LORE)).getRawMessage()
-                : ""
+                !disableFisherman && getFishermanPlayer() != null ?
+                        (new Message(ConfigMessage.FISHERMAN_LORE)).getRawMessage()
+                        : ""
         );
 
         if (!disableFisherman && getFishermanPlayer() != null) newLoreLine.setPlayer(getFishermanPlayer());
 
         newLoreLine.setVariable("{length_lore}",
-            length > 0 ?
-                (new Message(ConfigMessage.LENGTH_LORE)).getRawMessage()
-                : ""
+                length > 0 ?
+                        (new Message(ConfigMessage.LENGTH_LORE)).getRawMessage()
+                        : ""
         );
 
         if (length > 0) newLoreLine.setLength(Float.toString(length));
@@ -473,7 +473,7 @@ public class Fish implements Cloneable {
         if (displayName == null) {
             return rarity.getColour() + name;
         }
-        return displayName;
+        return rarity.getColour() + displayName;
     }
 
     public ItemFactory getFactory() {

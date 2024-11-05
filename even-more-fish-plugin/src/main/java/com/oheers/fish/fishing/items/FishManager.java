@@ -59,13 +59,13 @@ public class FishManager {
     public boolean isLoaded() {
         return loaded;
     }
-    
+
     // Getters for config files
-    
+
     public YamlDocument getFishConfiguration() {
         return FishFile.getInstance().getConfig();
     }
-    
+
     public YamlDocument getRarityConfiguration() {
         return RaritiesFile.getInstance().getConfig();
     }
