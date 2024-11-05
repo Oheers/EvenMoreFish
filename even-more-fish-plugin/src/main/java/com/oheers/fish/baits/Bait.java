@@ -1,12 +1,12 @@
 package com.oheers.fish.baits;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.ItemFactory;
 import org.bukkit.Location;
@@ -165,14 +165,14 @@ public class Bait {
         Set<Rarity> boostedRarities = new HashSet<>(getRarityList());
         boostedRarities.addAll(fishListRarities);
 
-        Rarity fishRarity = FishingProcessor.randomWeightedRarity(player, getBoostRate(), boostedRarities, EvenMoreFish.getInstance().getFishCollection().keySet());
+        Rarity fishRarity = FishingProcessor.randomWeightedRarity(player, getBoostRate(), boostedRarities, FishManager.getInstance().getRarityMap().keySet());
         Fish fish;
 
         if (!getFishList().isEmpty()) {
             // The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
             // the method isn't given an empty list.
             if (!fishListRarities.contains(fishRarity)) {
-                fish = FishingProcessor.getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), EvenMoreFish.getInstance().getFishCollection().get(fishRarity), true);
+                fish = FishingProcessor.getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), FishManager.getInstance().getRarityMap().get(fishRarity), true);
             } else {
                 fish = FishingProcessor.getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFishList(), true);
             }

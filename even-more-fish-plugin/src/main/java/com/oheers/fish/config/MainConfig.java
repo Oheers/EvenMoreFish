@@ -8,6 +8,7 @@ import dev.dejvokep.boostedyaml.route.Route;
 import org.apache.commons.lang3.LocaleUtils;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BarStyle;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 
@@ -248,6 +249,20 @@ public class MainConfig extends ConfigBase {
             biomeSetMap.put(key, biomes);
         });
         return biomeSetMap;
+    }
+
+    public double getRegionBoost(String region, String rarity) {
+        Section regionBoosts = getConfig().getSection("region-boosts");
+        if (regionBoosts == null) {
+            return 1.0; // Default boost rate is 1.0 if not specified
+        }
+
+        Section regionSection = regionBoosts.getSection(region);
+        if (regionSection == null) {
+            return 1.0; // Default boost rate is 1.0 if not specified
+        }
+
+        return regionSection.getDouble(rarity, 1.0); // Default boost rate is 1.0 if not specified
     }
 
 }

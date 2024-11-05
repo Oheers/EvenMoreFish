@@ -8,6 +8,7 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
@@ -74,13 +75,11 @@ public class FishUtils {
         }
 
 
-        // Generating an empty rarity
-        Rarity rarity = null;
-        // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
-            if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
-            }
+        // Get the rarity
+        Rarity rarity = FishManager.getInstance().getRarity(rarityString);
+
+        if (rarity == null) {
+            return null;
         }
 
         // setting the correct length so it's an exact replica.
@@ -119,13 +118,11 @@ public class FishUtils {
             throw new InvalidFishException("NBT Error");
         }
 
-        // Generating an empty rarity
-        Rarity rarity = null;
-        // Hunting through the fish collection and creating a rarity that matches the fish's nbt
-        for (Rarity r : EvenMoreFish.getInstance().getFishCollection().keySet()) {
-            if (r.getValue().equals(rarityString)) {
-                rarity = new Rarity(r.getValue(), r.getColour(), r.getWeight(), r.getAnnounce(), r.getUseConfigCasing(), r.overridenLore);
-            }
+        // Get the rarity
+        Rarity rarity = FishManager.getInstance().getRarity(rarityString);
+
+        if (rarity == null) {
+            return null;
         }
 
         // setting the correct length and randomIndex, so it's an exact replica.
@@ -188,8 +185,7 @@ public class FishUtils {
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
-
-            // Creates a query for whether the player is stood in a protectedregion defined by the user
+            // Creates a query for whether the player is stood in a protected region defined by the user
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionQuery query = container.createQuery();
             ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
@@ -202,9 +198,8 @@ public class FishUtils {
             }
             return false;
         } else if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) {
-
             Region r = RedProtect.get().getAPI().getRegion(l);
-            // if the hook is in any redprotect region
+            // if the hook is in any RedProtect region
             if (r != null) {
                 // if the hook is in a whitelisted region
                 return whitelistedRegions.contains(r.getName());
@@ -215,6 +210,25 @@ public class FishUtils {
             EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to enable region-specific fishing.");
             return true;
         }
+    }
+
+    public static String getRegionName(Location location) {
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
+            ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(location));
+            for (ProtectedRegion region : set) {
+                return region.getId(); // Return the first region found
+            }
+        } else if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) {
+            Region region = RedProtect.get().getAPI().getRegion(location);
+            if (region != null) {
+                return region.getName();
+            }
+        } else {
+            EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to enable region-specific fishing.");
+        }
+        return null; // Return null if no region is found or no region plugin is enabled
     }
 
     public static boolean checkWorld(Location l) {
