@@ -232,7 +232,7 @@ public class ItemFactory {
      */
     private ItemStack checkRaw() {
         // The fish has item.raw selected
-        String rawValue = this.configurationFile.getString(configLocation + "item.raw");
+        String rawValue = this.configurationFile.getString(configLocation + "item.raw-nbt");
         if (rawValue == null) {
             return null;
         }
