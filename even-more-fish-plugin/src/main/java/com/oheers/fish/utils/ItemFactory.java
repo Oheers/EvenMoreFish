@@ -9,6 +9,7 @@ import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.Message;
 import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NbtApiException;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Material;
@@ -235,7 +236,17 @@ public class ItemFactory {
         if (rawValue == null) {
             return null;
         }
-        return NBT.itemStackFromNBT(NBT.parseNBT(rawValue));
+        ItemStack item = null;
+        try {
+            item = NBT.itemStackFromNBT(NBT.parseNBT(rawValue));
+        } catch (NbtApiException exception) {
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + " has invalid raw NBT: " + rawValue);
+        }
+        if (item == null) {
+            return null;
+        }
+        rawMaterial = true;
+        return item;
     }
 
     /**
