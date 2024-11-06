@@ -95,30 +95,32 @@ public class AdminCommand extends BaseCommand {
         @CommandCompletion("@rarities")
         @Description("%desc_list_fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
-            BaseComponent baseComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
+            BaseComponent[] baseComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
             for (Fish fish : FishManager.getInstance().getRarityMap().get(rarity)) {
-                BaseComponent textComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour()+ "] "));
-                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to receive fish"))));
-                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName().replace(" ","_")));
-                baseComponent.addExtra(textComponent);
+                BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour() + "] "));
+                for (BaseComponent component : textComponent) {
+                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to receive fish"))));
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName().replace(" ", "_")));
+                    baseComponent[0].addExtra(component);
+                }
             }
             sender.spigot().sendMessage(baseComponent);
         }
-
 
         @Subcommand("rarities")
         @Description("%desc_list_rarities")
         public void onRarity(final CommandSender sender) {
-            BaseComponent baseComponent = new TextComponent("");
+            BaseComponent[] baseComponent = TextComponent.fromLegacyText("");
             for (Rarity rarity : FishManager.getInstance().getRarityMap().keySet()) {
-                BaseComponent textComponent = new TextComponent(FishUtils.translateColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
-                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish."))));
-                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
-                baseComponent.addExtra(textComponent);
+                BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
+                for (BaseComponent component : textComponent) {
+                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish."))));
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
+                    baseComponent[0].addExtra(component);
+                }
             }
             sender.spigot().sendMessage(baseComponent);
         }
-
     }
 
     /**
