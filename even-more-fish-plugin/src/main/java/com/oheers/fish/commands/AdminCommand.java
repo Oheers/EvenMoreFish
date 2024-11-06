@@ -21,6 +21,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.permissions.AdminPerms;
+import de.tr7zw.changeme.nbtapi.NBT;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
@@ -396,4 +397,22 @@ public class AdminCommand extends BaseCommand {
         }
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
     }
+
+    @Subcommand("rawItem")
+    @Description("Outputs this item's raw NBT form")
+    public void onRawItem(final CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
+            return;
+        }
+        ItemStack handItem = player.getInventory().getItemInMainHand();
+        String handItemNbt = NBT.itemStackToNBT(handItem).toString();
+        TextComponent component = new TextComponent(handItemNbt);
+        component.setHoverEvent(new HoverEvent(
+                HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to copy to clipboard."))
+        ));
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, handItemNbt));
+        player.spigot().sendMessage(component);
+    }
+
 }
