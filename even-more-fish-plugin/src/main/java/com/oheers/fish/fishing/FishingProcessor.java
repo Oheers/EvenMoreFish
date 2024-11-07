@@ -132,10 +132,6 @@ public class FishingProcessor implements Listener {
     }
 
     public static ItemStack getFish(Player player, Location location, ItemStack fishingRod, boolean runRewards, boolean sendMessages) {
-        if (!FishUtils.checkRegion(location, MainConfig.getInstance().getAllowedRegions())) {
-            return null;
-        }
-
         if (!FishUtils.checkWorld(location)) {
             return null;
         }
@@ -267,8 +263,6 @@ public class FishingProcessor implements Listener {
 
         List<Rarity> allowedRarities = new ArrayList<>();
 
-        int idx = 0;
-
         if (fisher != null) {
             String region = FishUtils.getRegionName(fisher.getLocation());
             for (Rarity rarity : FishManager.getInstance().getRarityMap().keySet()) {
@@ -284,11 +278,7 @@ public class FishingProcessor implements Listener {
                 RequirementContext context = new RequirementContext(fisher.getWorld(), fisher.getLocation(), fisher, null, null);
                 if (requirement.meetsRequirements(context)) {
                     double regionBoost = MainConfig.getInstance().getRegionBoost(region, rarity.getValue());
-                    if (regionBoost > 0) {
-                        for (int i = 0; i < regionBoost; i++) {
-                            allowedRarities.add(rarity);
-                        }
-                    } else {
+                    for (int i = 0; i < regionBoost; i++) {
                         allowedRarities.add(rarity);
                     }
                 }
@@ -312,6 +302,7 @@ public class FishingProcessor implements Listener {
             }
         }
 
+        int idx = 0;
         for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
             if (boostRate != -1.0 && boostedRarities != null && boostedRarities.contains(allowedRarities.get(idx))) {
                 r -= allowedRarities.get(idx).getWeight() * boostRate;

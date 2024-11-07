@@ -252,6 +252,10 @@ public class MainConfig extends ConfigBase {
     }
 
     public double getRegionBoost(String region, String rarity) {
+        if (region == null || rarity == null) {
+            return 1.0; // Default boost rate is 1.0 if region or rarity is null
+        }
+
         Section regionBoosts = getConfig().getSection("region-boosts");
         if (regionBoosts == null) {
             return 1.0; // Default boost rate is 1.0 if not specified

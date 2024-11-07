@@ -95,37 +95,38 @@ sell-gui:
 # in a list of set defined regions (this requires the worldguard/redprotect plugin) and/or in a list of set defined
 # worlds. EvenMoreFish automatically detects your protection plugin so it's important you don't run both at once.
 # Note- Changing this value requires a SERVER RESTART NOT A RELOAD.
-allowed-regions:
-  - "fishing"
+# Uncomment the below section to enable these feature.
+#allowed-regions:
+#  - "fishing"
 
-allowed-worlds:
-  - "world"
+#allowed-worlds:
+#  - "world"
 
 # This section defines the boost settings for different regions.
 # Each rarity of fish has a boost multiplier that adjusts its weight in the specified region.
 # To disable a boost, comment out the corresponding line.
-# Region boost settings
+# Region boost settings the rarity is case-sensitive.
 #region-boosts:
   #fishing:
     # The boost multiplier for the "Common" rarity in the "fishing" region.
     # This means the weight of "Common" fish will be multiplied by 0.5.
-    # To disable, comment out the line below.
-    #common: 0.5
+    # To enable, comment out the line below.
+    #Common: 0.5
 
     # The boost multiplier for the "Rare" rarity in the "fishing" region.
     # This means the weight of "Rare" fish will be multiplied by 1.0 (no change).
-    # To disable, comment out the line below.
-    #rare: 1.0
+    # To enable, comment out the line below.
+    #Rare: 1.0
 
     # The boost multiplier for the "Epic" rarity in the "fishing" region.
     # This means the weight of "Epic" fish will be multiplied by 3.0.
-    # To disable, comment out the line below.
-    #epic: 3.0
+    # To enable, comment out the line below.
+    #Epic: 3.0
 
     # The boost multiplier for the "Legendary" rarity in the "fishing" region.
     # This means the weight of "Legendary" fish will be multiplied by 15.0.
-    # To disable, comment out the line below.
-    #legendary: 15.0
+    # To enable, comment out the line below.
+    #Legendary: 15.0
 
 # Prevents mcMMO from overriding fishing loot, this means treasure won't appear when fish can.
 disable-mcmmo-loot: true
