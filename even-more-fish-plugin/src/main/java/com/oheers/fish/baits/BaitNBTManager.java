@@ -178,6 +178,12 @@ public class BaitNBTManager {
             }
             NBT.modify(item, nbt -> {
                 ReadWriteNBT emfCompound = nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND);
+
+                // Fixes malformed nbt data to rods that had enchants, lore, or extra nbt data.
+                // This is only for backwards compatibility to fix bugged rods
+                if (combined.charAt(0) == ',')
+                    combined.deleteCharAt(0);
+
                 if (!combined.isEmpty()) {
                     emfCompound.setString(NbtKeys.EMF_APPLIED_BAIT, combined.toString());
                 } else {
