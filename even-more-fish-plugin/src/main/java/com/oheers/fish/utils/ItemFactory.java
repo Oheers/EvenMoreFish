@@ -8,6 +8,8 @@ import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.Message;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NbtApiException;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Material;
@@ -112,6 +114,9 @@ public class ItemFactory {
      * @return The ItemStack of the item, with only skull metadata set if it's a player head.
      */
     public ItemStack getType(OfflinePlayer player) {
+
+        ItemStack raw = checkRaw();
+        if (raw != null) return raw;
 
         ItemStack material = checkMaterial();
         if (material != null) return material;
@@ -218,6 +223,30 @@ public class ItemFactory {
         }
 
         return null;
+    }
+
+    /**
+     * Checks for a value in the item.raw setting for the item.
+     *
+     * @return Null if the setting doesn't exist or is invalid, the item in ItemStack form if it does.
+     */
+    private ItemStack checkRaw() {
+        // The fish has item.raw selected
+        String rawValue = this.configurationFile.getString(configLocation + "item.raw-nbt");
+        if (rawValue == null) {
+            return null;
+        }
+        ItemStack item = null;
+        try {
+            item = NBT.itemStackFromNBT(NBT.parseNBT(rawValue));
+        } catch (NbtApiException exception) {
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + " has invalid raw NBT: " + rawValue);
+        }
+        if (item == null) {
+            return null;
+        }
+        rawMaterial = true;
+        return item;
     }
 
     /**
