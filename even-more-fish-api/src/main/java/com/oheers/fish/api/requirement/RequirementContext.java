@@ -27,7 +27,7 @@ public class RequirementContext {
         this.configPath = configPath;
     }
 
-    public World getWorld() {
+    public @Nullable World getWorld() {
         return world;
     }
 
@@ -35,7 +35,7 @@ public class RequirementContext {
         this.world = world;
     }
 
-    public Location getLocation() {
+    public @Nullable Location getLocation() {
         return location;
     }
 
@@ -43,7 +43,7 @@ public class RequirementContext {
         this.config = config;
     }
 
-    public YamlDocument getConfig() {
+    public @Nullable YamlDocument getConfig() {
         return this.config;
     }
 
@@ -51,7 +51,7 @@ public class RequirementContext {
         this.configPath = configPath;
     }
 
-    public String getConfigPath() {
+    public @Nullable String getConfigPath() {
         return this.configPath;
     }
 
@@ -66,7 +66,7 @@ public class RequirementContext {
         this.world = location.getWorld();
     }
 
-    public Player getPlayer() {
+    public @Nullable Player getPlayer() {
         return player;
     }
 

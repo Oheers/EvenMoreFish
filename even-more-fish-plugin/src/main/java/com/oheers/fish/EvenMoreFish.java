@@ -747,6 +747,14 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new RegionRequirementType().register();
         new WeatherRequirementType().register();
         new WorldRequirementType().register();
+
+        // Load Group RequirementType
+        if (isUsingVault()) {
+            RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+            if (rsp != null) {
+                new GroupRequirementType(rsp.getProvider()).register();
+            }
+        }
     }
 
     private void loadExternalRewardTypes() {
