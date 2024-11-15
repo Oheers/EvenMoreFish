@@ -23,6 +23,7 @@ baits:
     application-weight: 150
     # How many of this bait can be applied to a rod at once?
     max-baits: 100
+    infinite: false
 
   Fresh Water:
     item:
@@ -38,6 +39,7 @@ baits:
     catch-weight: 2
     application-weight: 5
     max-baits: 64
+    infinite: false
 
   Epic Elixir:
     item:
@@ -47,6 +49,7 @@ baits:
     rarities:
       - "Epic"
     max-baits: 64
+    infinite: false
 
   Stringy Worms:
     item:
@@ -58,6 +61,7 @@ baits:
     catch-weight: 20
     application-weight: 40
     max-baits: 16
+    infinite: false
 
   Legendary Lure:
     item:
@@ -69,6 +73,19 @@ baits:
     catch-weight: 2
     application-weight: 40
     max-baits: 20
+    infinite: false
+
+  Infinite Bait:
+    item:
+      material: ENDER_PEARL
+      displayname: "&dInfinite Bait"
+    glowing: true
+    rarities:
+      - "Legendary"
+    catch-weight: 1
+    application-weight: 1
+    max-baits: 1
+    infinite: true
 
 general:
   # This defines the multiplier for how frequently a rarity/fish appears.
@@ -85,7 +102,7 @@ general:
 
   # As a percentage, how often should baits appear? (The bait will be more likely to be selected if it has a higher catch-weight. It will also
   # replace any fish that might have been caught in its place.)
-  catch-percentage: 2.5
+  catch-percentage: 0
 
   # How many types of bait can be applied to each fishing rod.
   # NOTE: THIS WILL BREAK RODS THAT ALREADY HAVE BAITS APPLIED.
@@ -93,7 +110,7 @@ general:
 
   # Should unused bait slots show a message in their place?
   # NOTE: THIS WILL BREAK RODS THAT ALREADY HAVE BAITS APPLIED.
-  show-unused-slots: true
+  show-unused-slots: false
 
 format:
   # How the lore should look ({baits} takes up multiple lines)
