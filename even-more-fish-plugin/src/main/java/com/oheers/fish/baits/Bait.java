@@ -201,11 +201,16 @@ public class Bait {
      *
      * @param player The player that's used the bait.
      */
+
     private void alertUsage(Player player) {
-        Message message = new Message(ConfigMessage.BAIT_USED);
-        message.setBait(this.name);
-        message.setBaitTheme(this.theme);
-        message.broadcast(player);
+        if (BaitFile.getInstance().alertOnBaitUse(this.name)) {
+            return;
+        } else {
+            Message message = new Message(ConfigMessage.BAIT_USED);
+            message.setBait(this.name);
+            message.setBaitTheme(this.theme);
+            message.broadcast(player);
+        }
     }
 
     /**

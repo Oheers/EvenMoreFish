@@ -100,4 +100,8 @@ public class BaitFile extends ConfigBase {
     public boolean isBaitInfinite(String baitName) {
         return getConfig().getBoolean("baits." + baitName + ".infinite", false);
     }
+
+    public boolean alertOnBaitUse(String baitName) {
+        return getConfig().getBoolean("baits." + baitName + ".use-alert", true);
+    }
 }
