@@ -102,6 +102,6 @@ public class BaitFile extends ConfigBase {
     }
 
     public boolean alertOnBaitUse(String baitName) {
-        return getConfig().getBoolean("baits." + baitName + ".use-alert", true);
+        return getConfig().getBoolean("baits." + baitName + ".disable-use-alert", false);
     }
 }

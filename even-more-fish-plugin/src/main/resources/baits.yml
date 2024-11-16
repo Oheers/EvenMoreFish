@@ -82,7 +82,7 @@ baits:
     max-baits: 1
     infinite: true
     # This will disable the bait-use message to be send to the player, this is useful for baits that are infinite. This can be used for every bait
-    use-alert: false
+    disable-use-alert: true
 
 general:
   # This defines the multiplier for how frequently a rarity/fish appears.

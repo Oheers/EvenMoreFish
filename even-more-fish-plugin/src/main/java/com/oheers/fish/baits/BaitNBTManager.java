@@ -138,7 +138,7 @@ public class BaitNBTManager {
             for (String baitName : baitList) {
                 if (baitName.split(":")[0].equals(bait.getName())) {
                     if (isBaitInfinite(item, bait.getName())) {
-                        combined.append(baitName).append(",");
+                        combined.append(baitName.split(":")[0]).append(":∞,");
                     } else {
                         int newQuantity = Integer.parseInt(baitName.split(":")[1]) + quantity;
 
@@ -335,13 +335,18 @@ public class BaitNBTManager {
         int totalDeleted = 0;
         String[] baitList = NbtUtils.getBaitArray(itemStack);
         for (String appliedBait : baitList) {
-            totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
+            String quantityStr = appliedBait.split(":")[1];
+            if (!quantityStr.equals("∞")) {
+                totalDeleted += Integer.parseInt(quantityStr);
+            } else {
+                totalDeleted += 1; // Count infinite baits as 1
+            }
         }
         NBT.modify(itemStack, nbt -> {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).removeKey(NbtKeys.EMF_APPLIED_BAIT);
         });
 
-        itemStack.setItemMeta(itemStack.getItemMeta()); // we can modify meta via nbtapi
+        itemStack.setItemMeta(itemStack.getItemMeta()); // Update item meta to reflect changes
         return totalDeleted;
     }
 
