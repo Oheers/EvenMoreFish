@@ -96,4 +96,12 @@ public class BaitFile extends ConfigBase {
     public int getDropQuantity(String baitName) {
         return getConfig().getInt("baits." + baitName + ".drop-quantity", 1);
     }
+
+    public boolean isBaitInfinite(String baitName) {
+        return getConfig().getBoolean("baits." + baitName + ".infinite", false);
+    }
+
+    public boolean alertOnBaitUse(String baitName) {
+        return getConfig().getBoolean("baits." + baitName + ".disable-use-alert", false);
+    }
 }

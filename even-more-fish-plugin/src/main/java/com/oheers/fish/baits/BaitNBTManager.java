@@ -28,6 +28,10 @@ public class BaitNBTManager {
         throw new UnsupportedOperationException();
     }
 
+    public static boolean isBaitInfinite(ItemStack fishingRod, String baitName) {
+        return BaitFile.getInstance().isBaitInfinite(baitName);
+    }
+
     /**
      * Checks whether the item has nbt to suggest it is a bait object.
      *
@@ -133,16 +137,19 @@ public class BaitNBTManager {
 
             for (String baitName : baitList) {
                 if (baitName.split(":")[0].equals(bait.getName())) {
-                    int newQuantity = Integer.parseInt(baitName.split(":")[1]) + quantity;
+                    if (isBaitInfinite(item, bait.getName())) {
+                        combined.append(baitName.split(":")[0]).append(":∞,");
+                    } else {
+                        int newQuantity = Integer.parseInt(baitName.split(":")[1]) + quantity;
 
-                    if (newQuantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
-                        combined.append(baitName.split(":")[0]).append(":").append(bait.getMaxApplications()).append(",");
-                        // new cursor amt = -(max app - old app)
-                        cursorModifier.set(-bait.getMaxApplications() + (newQuantity - quantity));
-                        maxBait.set(true);
-                    } else if (newQuantity != 0) {
-                        combined.append(baitName.split(":")[0]).append(":").append(Integer.parseInt(baitName.split(":")[1]) + quantity).append(",");
-                        cursorModifier.set(-quantity);
+                        if (newQuantity > bait.getMaxApplications() && bait.getMaxApplications() != -1) {
+                            combined.append(baitName.split(":")[0]).append(":").append(bait.getMaxApplications()).append(",");
+                            cursorModifier.set(-bait.getMaxApplications() + (newQuantity - quantity));
+                            maxBait.set(true);
+                        } else if (newQuantity != 0) {
+                            combined.append(baitName.split(":")[0]).append(":").append(newQuantity).append(",");
+                            cursorModifier.set(-quantity);
+                        }
                     }
                     foundBait = true;
                 } else {
@@ -328,13 +335,18 @@ public class BaitNBTManager {
         int totalDeleted = 0;
         String[] baitList = NbtUtils.getBaitArray(itemStack);
         for (String appliedBait : baitList) {
-            totalDeleted += Integer.parseInt(appliedBait.split(":")[1]);
+            String quantityStr = appliedBait.split(":")[1];
+            if (!quantityStr.equals("∞")) {
+                totalDeleted += Integer.parseInt(quantityStr);
+            } else {
+                totalDeleted += 1; // Count infinite baits as 1
+            }
         }
         NBT.modify(itemStack, nbt -> {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).removeKey(NbtKeys.EMF_APPLIED_BAIT);
         });
 
-        itemStack.setItemMeta(itemStack.getItemMeta()); // we can modify meta via nbtapi
+        itemStack.setItemMeta(itemStack.getItemMeta()); // Update item meta to reflect changes
         return totalDeleted;
     }
 

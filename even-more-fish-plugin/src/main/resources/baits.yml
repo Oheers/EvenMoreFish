@@ -70,6 +70,20 @@ baits:
     application-weight: 40
     max-baits: 20
 
+  Infinite Bait:
+    item:
+      material: ENDER_PEARL
+      displayname: "&dInfinite Bait"
+    glowing: true
+    rarities:
+      - "Legendary"
+    catch-weight: 1
+    application-weight: 1
+    max-baits: 1
+    infinite: true
+    # This will disable the bait-use message to be send to the player, this is useful for baits that are infinite. This can be used for every bait
+    disable-use-alert: true
+
 general:
   # This defines the multiplier for how frequently a rarity/fish appears.
   # Setting to -1 will mean players are guaranteed to get a fish available from the bait.

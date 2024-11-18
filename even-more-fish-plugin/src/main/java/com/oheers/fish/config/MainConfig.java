@@ -269,4 +269,8 @@ public class MainConfig extends ConfigBase {
         return regionSection.getDouble(rarity, 1.0); // Default boost rate is 1.0 if not specified
     }
 
+    public boolean isRegionBoostsEnabled() {
+        return getConfig().contains("region-boosts") && getConfig().isSection("region-boosts");
+    }
+
 }

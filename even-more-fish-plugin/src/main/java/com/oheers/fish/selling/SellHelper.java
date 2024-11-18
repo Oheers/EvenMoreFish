@@ -109,8 +109,8 @@ public class SellHelper {
     }
 
     public List<ItemStack> getPossibleSales() {
-        // Remove sold items
-        List<ItemStack> items = Arrays.asList(inventory.getStorageContents());
+        // Create a modifiable list from the inventory contents
+        List<ItemStack> items = new ArrayList<>(Arrays.asList(inventory.getStorageContents()));
 
         // Remove armor from possible item list, prevents infinite money bug
         if (inventory instanceof PlayerInventory playerInventory) {

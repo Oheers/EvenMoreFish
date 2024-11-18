@@ -15,6 +15,7 @@ import com.oheers.fish.utils.nbt.NbtUtils;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
@@ -32,6 +33,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -207,26 +209,29 @@ public class FishUtils {
             return false;
         } else {
             // the user has defined a region whitelist but doesn't have a region plugin.
-            EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to enable region-specific fishing.");
+            EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to use allowed-regions.");
             return true;
         }
     }
 
     public static String getRegionName(Location location) {
-        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
-            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-            RegionQuery query = container.createQuery();
-            ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(location));
-            for (ProtectedRegion region : set) {
-                return region.getId(); // Return the first region found
+        if (MainConfig.getInstance().isRegionBoostsEnabled()) {
+            Plugin worldGuard = EvenMoreFish.getInstance().getServer().getPluginManager().getPlugin("WorldGuard");
+            if (worldGuard != null && worldGuard.isEnabled()) {
+                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+                RegionQuery query = container.createQuery();
+                ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(location));
+                for (ProtectedRegion region : set) {
+                    return region.getId(); // Return the first region found
+                }
+            } else if (EvenMoreFish.getInstance().getServer().getPluginManager().isPluginEnabled("RedProtect")) {
+                Region region = RedProtect.get().getAPI().getRegion(location);
+                if (region != null) {
+                    return region.getName();
+                }
+            } else {
+                EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to use region-boosts.");
             }
-        } else if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) {
-            Region region = RedProtect.get().getAPI().getRegion(location);
-            if (region != null) {
-                return region.getName();
-            }
-        } else {
-            EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to enable region-specific fishing.");
         }
         return null; // Return null if no region is found or no region plugin is enabled
     }
