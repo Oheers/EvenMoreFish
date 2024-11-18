@@ -353,7 +353,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private void loadCommandManager() {
         PaperCommandManager manager = new PaperCommandManager(this);
 
-        manager.enableUnstableAPI("brigadier");
+        // Brigadier should stay disabled until ACF updates their implementation.
+        //manager.enableUnstableAPI("brigadier");
         manager.enableUnstableAPI("help");
 
         StringBuilder main = new StringBuilder(MainConfig.getInstance().getMainCommandName());
