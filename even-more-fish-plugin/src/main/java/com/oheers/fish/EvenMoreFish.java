@@ -445,7 +445,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             return false;
         }
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        permission = rsp.getProvider();
+        permission = rsp == null ? null : rsp.getProvider();
         return permission != null;
     }
 
@@ -515,7 +515,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         ItemStack customRod = itemFactory.createItem(null, 0);
         NBT.modify(customRod,nbt -> {
-            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setBoolean(NbtKeys.EMF_ROD_NBT,true);
+            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setBoolean(NbtKeys.EMF_ROD_NBT, true);
         });
         return customRod;
     }
