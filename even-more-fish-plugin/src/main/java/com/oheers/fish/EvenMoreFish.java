@@ -226,6 +226,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     @Override
     public void onDisable() {
+
+        // Prevent issues when NBT preload fails.
+        if (instance == null) {
+            return;
+        }
+
         terminateGUIS();
         // Don't use the scheduler here because it will throw errors on disable
         saveUserData(false);
