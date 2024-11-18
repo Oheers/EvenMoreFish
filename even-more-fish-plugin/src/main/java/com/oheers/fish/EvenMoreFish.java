@@ -353,7 +353,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private void loadCommandManager() {
         PaperCommandManager manager = new PaperCommandManager(this);
 
-        manager.enableUnstableAPI("brigadier");
+        // Brigadier should stay disabled until ACF updates their implementation.
+        //manager.enableUnstableAPI("brigadier");
         manager.enableUnstableAPI("help");
 
         StringBuilder main = new StringBuilder(MainConfig.getInstance().getMainCommandName());
@@ -434,9 +435,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
-
-        // Make server admins aware the deprecation warning is nothing to worry about
-        getLogger().warning("The above warning, if you are on Paper, can safely be ignored for now, we are waiting for a fix from the developers of our command library.");
     }
 
 
@@ -445,7 +443,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             return false;
         }
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        permission = rsp.getProvider();
+        permission = rsp == null ? null : rsp.getProvider();
         return permission != null;
     }
 
@@ -515,7 +513,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         ItemStack customRod = itemFactory.createItem(null, 0);
         NBT.modify(customRod,nbt -> {
-            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setBoolean(NbtKeys.EMF_ROD_NBT,true);
+            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setBoolean(NbtKeys.EMF_ROD_NBT, true);
         });
         return customRod;
     }
