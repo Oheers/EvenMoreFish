@@ -75,18 +75,19 @@ public class FishingProcessor implements Listener {
                 return;
             }
 
-            Item nonCustom = (Item) event.getCaught();
+            if (!(event.getCaught() instanceof Item nonCustom)) {
+                return;
+            }
+
             if (MainConfig.getInstance().giveStraightToInventory() && isSpaceForNewFish(event.getPlayer().getInventory())) {
                 FishUtils.giveItem(fish, event.getPlayer());
                 nonCustom.remove();
             } else {
                 // replaces the fishing item with a custom evenmorefish fish.
-                if (nonCustom != null) {
-                    if (fish.getType().isAir()) {
-                        nonCustom.remove();
-                    } else {
-                        nonCustom.setItemStack(fish);
-                    }
+                if (fish.getType().isAir()) {
+                    nonCustom.remove();
+                } else {
+                    nonCustom.setItemStack(fish);
                 }
             }
         }
