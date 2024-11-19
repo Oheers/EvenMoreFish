@@ -92,18 +92,16 @@ public class FishingProcessor implements Listener {
         }
     }
 
-    private static boolean isSpaceForNewFish(Inventory inventory) {
-        boolean space = false;
-        for(ItemStack item : inventory.getContents()) {
-            if(item == null) {
-                space = true;
-                break;
+    private boolean isSpaceForNewFish(Inventory inventory) {
+        for (ItemStack item : inventory.getContents()) {
+            if (item == null) {
+                return true;
             }
         }
-        return space;
+        return false;
     }
 
-    public static boolean isCustomFishAllowed(Player player) {
+    private boolean isCustomFishAllowed(Player player) {
         return MainConfig.getInstance().getEnabled() && (competitionOnlyCheck() || EvenMoreFish.getInstance().isRaritiesCompCheckExempt()) && EvenMoreFish.getInstance().isCustomFishing(player);
     }
 
