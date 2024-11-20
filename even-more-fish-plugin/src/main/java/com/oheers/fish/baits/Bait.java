@@ -4,7 +4,6 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
-import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -165,7 +164,7 @@ public class Bait {
         Set<Rarity> boostedRarities = new HashSet<>(getRarityList());
         boostedRarities.addAll(fishListRarities);
 
-        Rarity fishRarity = FishManager.getInstance().randomWeightedRarity(player, getBoostRate(), boostedRarities, FishManager.getInstance().getRarityMap().keySet());
+        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, getBoostRate(), boostedRarities, FishManager.getInstance().getRarityMap().keySet());
         Fish fish;
 
         if (!getFishList().isEmpty()) {

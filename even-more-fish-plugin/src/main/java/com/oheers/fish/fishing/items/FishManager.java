@@ -117,7 +117,7 @@ public class FishManager {
     }
 
     // TODO cleanup
-    public Rarity randomWeightedRarity(Player fisher, double boostRate, Set<Rarity> boostedRarities, Set<Rarity> totalRarities) {
+    public Rarity getRandomWeightedRarity(Player fisher, double boostRate, Set<Rarity> boostedRarities, Set<Rarity> totalRarities) {
         Map<UUID, Rarity> decidedRarities = EvenMoreFish.getInstance().getDecidedRarities();
         if (fisher != null && decidedRarities.containsKey(fisher.getUniqueId())) {
             Rarity chosenRarity = decidedRarities.get(fisher.getUniqueId());
@@ -186,7 +186,7 @@ public class FishManager {
     }
 
     // TODO cleanup
-    public Fish randomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
+    public Fish getRandomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
         final double totalWeight = FishUtils.getTotalWeight(fishList, boostRate, boostedFish);
 
         int idx = 0;
@@ -221,7 +221,7 @@ public class FishManager {
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
         if (FishManager.getInstance().getRarityMap().get(r) == null)
-            r = randomWeightedRarity(p, 1, null, FishManager.getInstance().getRarityMap().keySet());
+            r = getRandomWeightedRarity(p, 1, null, FishManager.getInstance().getRarityMap().keySet());
 
         if (doRequirementChecks) {
             RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
@@ -258,7 +258,7 @@ public class FishManager {
         Fish returningFish;
 
         // checks whether weight calculations need doing for fish
-        returningFish = randomWeightedFish(available, boostRate, boostedFish);
+        returningFish = getRandomWeightedFish(available, boostRate, boostedFish);
 
         if (Competition.isActive() || !MainConfig.getInstance().isCompetitionUnique() || (EvenMoreFish.getInstance().isRaritiesCompCheckExempt() && returningFish.isCompExemptFish())) {
             return returningFish;

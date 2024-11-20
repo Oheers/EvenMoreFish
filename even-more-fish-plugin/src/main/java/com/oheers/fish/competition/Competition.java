@@ -15,7 +15,6 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.UserReport;
-import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -728,7 +727,7 @@ public class Competition {
                     return true;
                 }
             }
-            this.selectedRarity = FishManager.getInstance().randomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
+            this.selectedRarity = FishManager.getInstance().getRandomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.getInstance()

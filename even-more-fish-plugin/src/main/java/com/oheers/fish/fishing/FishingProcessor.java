@@ -113,7 +113,7 @@ public class FishingProcessor implements Listener {
      *                 {@code @returns} A random fish without any bait application.
      */
     private Fish chooseNonBaitFish(Player player, Location location) {
-        Rarity fishRarity = FishManager.getInstance().randomWeightedRarity(player, 1, null, FishManager.getInstance().getRarityMap().keySet());
+        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, 1, null, FishManager.getInstance().getRarityMap().keySet());
         if (fishRarity == null) {
             EvenMoreFish.getInstance().getLogger().severe("Could not determine a rarity for fish for " + player.getName());
             return null;
