@@ -689,7 +689,7 @@ public class Competition {
         }
 
         try {
-            Fish selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
+            Fish selectedFish = FishManager.getInstance().getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
             if (selectedFish == null) {
                 // For the catch block to catch.
                 throw new IllegalArgumentException();
@@ -728,7 +728,7 @@ public class Competition {
                     return true;
                 }
             }
-            this.selectedRarity = FishingProcessor.randomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
+            this.selectedRarity = FishManager.getInstance().randomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.getInstance()
