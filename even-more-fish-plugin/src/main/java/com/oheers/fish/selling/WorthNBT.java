@@ -90,10 +90,6 @@ public class WorthNBT {
         return defaultGUIItem;
     }
 
-    public static boolean isDefault(ItemStack is) {
-        return NbtUtils.hasKey(is, NbtKeys.DEFAULT_GUI_ITEM);
-    }
-
     private static double getMultipliedValue(Float length, String rarity, String name) {
         double worthMultiplier = getWorthMultiplier(rarity, name);
         double value = multipleWorthByLength(worthMultiplier, length);

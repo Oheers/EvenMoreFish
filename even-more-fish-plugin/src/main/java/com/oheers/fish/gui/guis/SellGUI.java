@@ -69,7 +69,6 @@ public class SellGUI implements EMFGUI {
             if (MainConfig.getInstance().sellOverDrop()) {
                 SellHelper.sellInventoryGui(close.getGui(), close.getPlayer());
             }
-            doRescue();
             return false;
         });
     }
@@ -90,18 +89,8 @@ public class SellGUI implements EMFGUI {
         gui.close();
     }
 
-    // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
     public void doRescue() {
-        List<ItemStack> throwing = new ArrayList<>();
-        for (ItemStack i : this.fishInventory.getContents()) {
-            if (i != null) {
-                if (!WorthNBT.isDefault(i)) {
-                    throwing.add(i);
-                }
-            }
-        }
-        FishUtils.giveItems(throwing, this.player);
-        this.fishInventory.clear();
+        GUIUtils.doRescue(this.fishInventory, this.player);
     }
 
     @Override

@@ -20,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -318,4 +319,9 @@ public class GUIUtils {
         return newActionMap;
     }
 
+    // Returns all items from the provided inventory to the player.
+    public static void doRescue(@NotNull Inventory inventory, @NotNull Player player) {
+        FishUtils.giveItems(inventory.getContents(), player);
+        inventory.clear();
+    }
 }

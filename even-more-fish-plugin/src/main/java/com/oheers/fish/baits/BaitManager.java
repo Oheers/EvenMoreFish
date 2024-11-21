@@ -5,8 +5,12 @@ import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.utils.nbt.NbtKeys;
+import com.oheers.fish.utils.nbt.NbtUtils;
+import com.sk89q.jnbt.NBTUtils;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -70,6 +74,13 @@ public class BaitManager {
             return null;
         }
         return baitMap.get(baitName.toUpperCase());
+    }
+
+    public @Nullable Bait getBait(@Nullable ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+        return getBait(BaitNBTManager.getBaitName(itemStack));
     }
 
     // Getters for config files
