@@ -24,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -73,9 +75,13 @@ public class ApplyBaitsGUI implements EMFGUI {
             return;
         }
         boolean changedRod = false;
+        List<String> ignoredBaits = new ArrayList<>();
         for (ItemStack item : baitInventory.getContents()) {
             Bait bait = BaitManager.getInstance().getBait(item);
             if (bait == null) {
+                continue;
+            }
+            if (ignoredBaits.contains(bait.getName())) {
                 continue;
             }
             ApplicationResult result;
@@ -84,6 +90,8 @@ public class ApplyBaitsGUI implements EMFGUI {
                 EvenMoreFish.getInstance().incrementMetricBaitsApplied(item.getAmount());
             } catch (MaxBaitReachedException exception) {
                 new Message(ConfigMessage.BAITS_MAXED).broadcast(this.player);
+                // We should now start to ignore this bait.
+                ignoredBaits.add(bait.getName());
                 result = exception.getRecoveryResult();
             } catch (MaxBaitsReachedException exception) {
                 Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
