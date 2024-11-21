@@ -112,12 +112,12 @@ public class ApplyBaitsGUI implements EMFGUI {
 
     @Override
     public InventoryGui getGui() {
-        return null;
+        return this.gui;
     }
 
     @Override
     public void open() {
-
+        gui.show(this.player);
     }
 
 }
