@@ -69,6 +69,7 @@ public class SellGUI implements EMFGUI {
             if (MainConfig.getInstance().sellOverDrop()) {
                 SellHelper.sellInventoryGui(close.getGui(), close.getPlayer());
             }
+            doRescue();
             return false;
         });
     }
