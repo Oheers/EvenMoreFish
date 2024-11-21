@@ -89,6 +89,7 @@ public class SellGUI implements EMFGUI {
         gui.close();
     }
 
+    @Override
     public void doRescue() {
         GUIUtils.doRescue(this.fishInventory, this.player);
     }

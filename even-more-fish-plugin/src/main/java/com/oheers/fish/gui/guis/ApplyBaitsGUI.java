@@ -57,9 +57,14 @@ public class ApplyBaitsGUI implements EMFGUI {
 
         gui.setCloseAction(close -> {
             processBaits();
-            GUIUtils.doRescue(this.baitInventory, this.player);
+            doRescue();
             return false;
         });
+    }
+
+    @Override
+    public void doRescue() {
+        GUIUtils.doRescue(this.baitInventory, this.player);
     }
 
     private void processBaits() {
