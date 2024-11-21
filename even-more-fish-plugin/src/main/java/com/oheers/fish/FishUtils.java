@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -155,14 +156,12 @@ public class FishUtils {
         if (items.isEmpty()) {
             return;
         }
+        // Remove null items
+        items = items.stream().filter(Objects::nonNull).toList();
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
         player.getInventory().addItem(items.toArray(new ItemStack[0]))
                 .values()
-                .forEach(item -> {
-                    if (item != null) {
-                        player.getWorld().dropItem(player.getLocation(), item);
-                    }
-                });
+                .forEach(item -> player.getWorld().dropItem(player.getLocation(), item));
     }
 
     public static void giveItems(ItemStack[] items, Player player) {
