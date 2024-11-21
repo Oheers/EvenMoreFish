@@ -269,6 +269,27 @@ baits-menu:
     character: "p"
     click-action: "previous-page"
 
+apply-baits-menu:
+  title: "&1&lApply Baits"
+  layout:
+    - "bbbbbbbbb"
+    - "bbbbbbbbb"
+    - "bbbbbbbbb"
+    - "    x   "
+  filler: gray_stained_glass_pane
+  # The character to use for the bait slots.
+  bait-character: "b"
+
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
+    lore:
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "full-exit"
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 3
+config-version: 4
