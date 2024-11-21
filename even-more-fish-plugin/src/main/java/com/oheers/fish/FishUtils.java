@@ -36,6 +36,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -157,27 +158,19 @@ public class FishUtils {
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
         player.getInventory().addItem(items.toArray(new ItemStack[0]))
                 .values()
-                .forEach(item -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), item)));
+                .forEach(item -> {
+                    if (item != null) {
+                        player.getWorld().dropItem(player.getLocation(), item);
+                    }
+                });
     }
 
     public static void giveItems(ItemStack[] items, Player player) {
-        if (items.length == 0) {
-            return;
-        }
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
-        player.getInventory().addItem(items)
-                .values()
-                .forEach(item -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), item)));
+        giveItems(Arrays.asList(items), player);
     }
 
     public static void giveItem(ItemStack item, Player player) {
-        if (item == null) {
-            return;
-        }
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
-        player.getInventory().addItem(item)
-                .values()
-                .forEach(loopItem -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), loopItem)));
+        giveItems(List.of(item), player);
     }
 
     public static boolean checkRegion(Location l, List<String> whitelistedRegions) {
