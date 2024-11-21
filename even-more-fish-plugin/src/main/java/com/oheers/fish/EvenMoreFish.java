@@ -396,7 +396,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                 "desc_general_gui", new Message(ConfigMessage.HELP_GENERAL_GUI).getRawMessage(),
                 "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(),
                 "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(),
-                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage()
+                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(),
+                "desc_general_applybaits", new Message(ConfigMessage.HELP_GENERAL_APPLYBAITS).getRawMessage()
         );
 
 

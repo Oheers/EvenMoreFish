@@ -10,6 +10,7 @@ import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
+import com.oheers.fish.gui.guis.ApplyBaitsGUI;
 import com.oheers.fish.gui.guis.MainMenuGUI;
 import com.oheers.fish.gui.guis.SellGUI;
 import com.oheers.fish.permissions.AdminPerms;
@@ -113,9 +114,14 @@ public class EMFCommand extends BaseCommand {
             new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender);
             return;
         }
-
         new SellHelper(sender.getInventory(), sender).sellFish();
     }
 
+    @Subcommand("applybaits")
+    @CommandPermission(UserPerms.APPLYBAITS)
+    @Description("%desc_general_applybaits%")
+    public void onApplyBaits(final Player sender) {
+        new ApplyBaitsGUI(sender, null).open();
+    }
 
 }
