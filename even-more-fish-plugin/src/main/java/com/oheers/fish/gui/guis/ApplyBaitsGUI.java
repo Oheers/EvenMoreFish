@@ -85,19 +85,23 @@ public class ApplyBaitsGUI implements EMFGUI {
                 continue;
             }
             ApplicationResult result;
+
+            // Try to apply all the baits.
             try {
                 result = BaitNBTManager.applyBaitedRodNBT(handItem, bait, item.getAmount());
                 EvenMoreFish.getInstance().incrementMetricBaitsApplied(item.getAmount());
+            // When a specific bait is maxed.
             } catch (MaxBaitReachedException exception) {
-                new Message(ConfigMessage.BAITS_MAXED).broadcast(this.player);
-                // We should now start to ignore this bait.
-                ignoredBaits.add(bait.getName());
-                result = exception.getRecoveryResult();
-            } catch (MaxBaitsReachedException exception) {
                 Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
                 message.setBaitTheme(bait.getTheme());
                 message.setBait(bait.getName());
                 message.broadcast(this.player);
+                // We should now start to ignore this bait.
+                ignoredBaits.add(bait.getName());
+                continue;
+            // When the rod cannot contain any more baits.
+            } catch (MaxBaitsReachedException exception) {
+                new Message(ConfigMessage.BAITS_MAXED).broadcast(this.player);
                 // Return here as the fishing rod cannot fit any more baits.
                 return;
             }
