@@ -171,7 +171,7 @@ public class Bait {
             // The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
             // the method isn't given an empty list.
             if (!fishListRarities.contains(fishRarity)) {
-                fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), FishManager.getInstance().getRarityMap().get(fishRarity), true);
+                fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), FishManager.getInstance().getFishForRarity(fishRarity), true);
             } else {
                 fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFishList(), true);
             }
