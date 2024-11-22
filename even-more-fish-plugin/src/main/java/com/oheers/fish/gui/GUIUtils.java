@@ -20,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -219,16 +220,16 @@ public class GUIUtils {
         Map<String, GuiElement.Action> newActionMap = new HashMap<>();
         // Exiting the main menu should close the GUI
         newActionMap.put("full-exit", click -> {
-            if (gui instanceof SellGUI sellGUI) {
-                sellGUI.doRescue();
+            if (gui != null) {
+                gui.doRescue();
             }
             click.getGui().close();
             return true;
         });
         // Exiting a sub-menu should open the main menu
         newActionMap.put("open-main-menu", click -> {
-            if (gui instanceof SellGUI sellGUI) {
-                sellGUI.doRescue();
+            if (gui != null) {
+                gui.doRescue();
             }
             new MainMenuGUI(click.getWhoClicked()).open();
             return true;
@@ -244,8 +245,8 @@ public class GUIUtils {
         // The shop action should just open the shop menu
         newActionMap.put("open-shop", click -> {
 
-            if (gui instanceof SellGUI sellGUI) {
-                sellGUI.doRescue();
+            if (gui != null) {
+                gui.doRescue();
             }
 
             HumanEntity humanEntity = click.getWhoClicked();
@@ -289,8 +290,8 @@ public class GUIUtils {
                 return true;
             }
             new SellHelper(click.getWhoClicked().getInventory(), player).sellFish();
-            if (gui instanceof SellGUI sellGUI) {
-                sellGUI.doRescue();
+            if (gui != null) {
+                gui.doRescue();
             }
             click.getGui().close();
             return true;
@@ -301,8 +302,8 @@ public class GUIUtils {
             return true;
         });
         newActionMap.put("open-baits-menu", click -> {
-            if (gui instanceof SellGUI sellGUI) {
-                sellGUI.doRescue();
+            if (gui != null) {
+                gui.doRescue();
             }
             new BaitsGUI(click.getWhoClicked()).open();
             return true;
@@ -316,6 +317,12 @@ public class GUIUtils {
             newActionMap.putAll(externalActionMap);
         }
         return newActionMap;
+    }
+
+    // Returns all items from the provided inventory to the player.
+    public static void doRescue(@NotNull Inventory inventory, @NotNull Player player) {
+        FishUtils.giveItems(inventory.getContents(), player);
+        inventory.clear();
     }
 
 }

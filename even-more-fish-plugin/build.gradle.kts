@@ -166,7 +166,8 @@ bukkit {
                 "emf.use_rod",
                 "emf.sellall",
                 "emf.help",
-                "emf.next"
+                "emf.next",
+                "emf.applybaits"
             )
         }
 

@@ -15,7 +15,6 @@ import com.oheers.fish.utils.nbt.NbtUtils;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
@@ -36,7 +35,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -154,30 +155,20 @@ public class FishUtils {
         if (items.isEmpty()) {
             return;
         }
+        // Remove null items
+        items = items.stream().filter(Objects::nonNull).toList();
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
         player.getInventory().addItem(items.toArray(new ItemStack[0]))
                 .values()
-                .forEach(item -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), item)));
+                .forEach(item -> player.getWorld().dropItem(player.getLocation(), item));
     }
 
     public static void giveItems(ItemStack[] items, Player player) {
-        if (items.length == 0) {
-            return;
-        }
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
-        player.getInventory().addItem(items)
-                .values()
-                .forEach(item -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), item)));
+        giveItems(Arrays.asList(items), player);
     }
 
     public static void giveItem(ItemStack item, Player player) {
-        if (item == null) {
-            return;
-        }
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
-        player.getInventory().addItem(item)
-                .values()
-                .forEach(loopItem -> EvenMoreFish.getScheduler().runTask(() -> player.getWorld().dropItem(player.getLocation(), loopItem)));
+        giveItems(List.of(item), player);
     }
 
     public static boolean checkRegion(Location l, List<String> whitelistedRegions) {

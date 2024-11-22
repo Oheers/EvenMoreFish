@@ -8,4 +8,6 @@ public interface EMFGUI {
 
     void open();
 
+    void doRescue();
+
 }

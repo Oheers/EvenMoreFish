@@ -129,6 +129,7 @@ help-general:
   admin: "[noPrefix]Admin command help page."
   sellall: "[noPrefix]Sell all the fish in your inventory."
   next: "[noPrefix]Show how much time is until the next competition."
+  applybaits: "[noPrefix]Apply baits to your fishing rod."
 
 help-list:
   fish: "[noPrefix]Display all fish in a specific rarity."
@@ -249,4 +250,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 6
+config-version: 7

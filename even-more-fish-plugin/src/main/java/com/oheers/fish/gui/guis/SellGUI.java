@@ -8,7 +8,6 @@ import com.oheers.fish.config.GUIFillerConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.gui.GUIUtils;
 import com.oheers.fish.selling.SellHelper;
-import com.oheers.fish.selling.WorthNBT;
 import de.themoep.inventorygui.GuiStorageElement;
 import de.themoep.inventorygui.InventoryGui;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
@@ -16,11 +15,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class SellGUI implements EMFGUI {
@@ -90,18 +90,9 @@ public class SellGUI implements EMFGUI {
         gui.close();
     }
 
-    // for each item in the menu, if it isn't a default menu item, it's dropped at the player's feet
+    @Override
     public void doRescue() {
-        List<ItemStack> throwing = new ArrayList<>();
-        for (ItemStack i : this.fishInventory.getContents()) {
-            if (i != null) {
-                if (!WorthNBT.isDefault(i)) {
-                    throwing.add(i);
-                }
-            }
-        }
-        FishUtils.giveItems(throwing, this.player);
-        this.fishInventory.clear();
+        GUIUtils.doRescue(this.fishInventory, this.player);
     }
 
     @Override

@@ -54,6 +54,9 @@ public class BaitsGUI implements EMFGUI {
     }
 
     @Override
+    public void doRescue() {}
+
+    @Override
     public InventoryGui getGui() {
         return this.gui;
     }

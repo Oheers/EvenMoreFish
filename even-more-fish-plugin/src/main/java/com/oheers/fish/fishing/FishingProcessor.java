@@ -34,7 +34,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
