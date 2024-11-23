@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Competition {
 
@@ -647,12 +648,11 @@ public class Competition {
     }
 
     public boolean chooseFish() {
-        String competitionName = this.competitionName;
-        boolean adminStart = this.adminStarted;
-        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStart);
+        final Logger logger = EvenMoreFish.getInstance().getLogger();
+        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStarted);
 
         if (configRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competitionName + " competition config section.");
+            logger.severe(() -> "No allowed-rarities list found in the %s competition config section.".formatted(competitionName));
             return false;
         }
 
@@ -669,36 +669,39 @@ public class Competition {
         }
 
         if (allowedRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competitionName + " competition config contains no loaded rarities!");
-            EvenMoreFish.getInstance().getLogger().severe("Configured Rarities: " + configRarities);
-            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList());
+            logger.severe(() -> "The allowed-rarities list found in the %s competition config contains no loaded rarities!".formatted(competitionName));
+            logger.severe(() -> "Configured Rarities: %s".formatted(configRarities));
+            logger.severe(() -> "Loaded Rarities: %s".formatted(FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList()));
             return false;
         }
 
-        int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
-            r -= allowedRarities.get(idx).getWeight();
+        double r = EvenMoreFish.getInstance().getRandom().nextDouble() * totalWeight;
+        int idx = -1;
+        for (int i = 0; i < allowedRarities.size() - 1; i++) {
+            r -= allowedRarities.get(i).getWeight();
             if (r <= 0.0) {
+                idx = i;
                 break;
             }
         }
+        if (idx == -1) {
+            idx = allowedRarities.size() - 1; // Fallback to the last index if no match was found
+        }
 
         if (this.numberNeeded == 0) {
-            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
+            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStarted));
         }
 
         try {
-            Fish selectedFish = FishManager.getInstance().getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
-            if (selectedFish == null) {
+            Fish potentialFish = FishManager.getInstance().getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
+            if (potentialFish == null) {
                 // For the catch block to catch.
                 throw new IllegalArgumentException();
             }
-            this.selectedFish = selectedFish;
+            this.selectedFish = potentialFish;
             return true;
         } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
-            EvenMoreFish.getInstance()
-                    .getLogger()
-                    .severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
+            logger.severe(() -> "Could not load: %s because a random fish could not be chosen. %nIf you need support, please provide the following information:".formatted(competitionName));
             EvenMoreFish.getInstance().getLogger().severe("fish.size(): " + fish.size());
             EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + allowedRarities.size());
             // Also log the exception
@@ -708,19 +711,17 @@ public class Competition {
     }
 
     public boolean chooseRarity() {
-        String competitionName = this.competitionName;
-        boolean adminStart = this.adminStarted;
-        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStart);
+        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStarted);
 
         if (configRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competitionName + " competition config section.");
+            EvenMoreFish.getInstance().getLogger().severe(() -> "No allowed-rarities list found in the " + competitionName + " competition config section.");
             return false;
         }
 
-        setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
+        setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStarted));
 
         try {
-            String randomRarity = configRarities.get(new Random().nextInt(configRarities.size()));
+            String randomRarity = configRarities.get(EvenMoreFish.getInstance().getRandom().nextInt(configRarities.size()));
             for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
                 if (r.getValue().equalsIgnoreCase(randomRarity)) {
                     this.selectedRarity = r;
@@ -742,22 +743,24 @@ public class Competition {
     }
 
     public void initAlerts(String competitionName) {
+        final Logger logger = EvenMoreFish.getInstance().getLogger();
         for (String s : CompetitionConfig.getInstance().getAlertTimes(competitionName)) {
-
             String[] split = s.split(":");
-            if (split.length == 2) {
-                try {
-                    alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
-                } catch (NumberFormatException nfe) {
-                    EvenMoreFish.getInstance()
-                            .getLogger()
-                            .severe("Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
-                }
-            } else {
-                EvenMoreFish.getInstance().getLogger().severe(s + " is not formatted correctly. Use MM:SS");
+            if (split.length != 2) {
+                logger.severe(() -> "%s is not formatted correctly. Use MM:SS".formatted(s));
+                continue;
+            }
+
+            try {
+                final String minutes = split[0];
+                final String seconds = split[1];
+                alertTimes.add(Long.parseLong(minutes) * 60 + Integer.parseInt(seconds));
+            } catch (NumberFormatException nfe) {
+                logger.severe(() -> "Could not turn %s into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb".formatted(s));
             }
         }
     }
+
 
     public void initRewards(String competitionName, boolean adminStart) {
         Set<String> chosen;
