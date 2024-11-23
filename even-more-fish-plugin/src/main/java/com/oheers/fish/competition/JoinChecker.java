@@ -26,38 +26,41 @@ public class JoinChecker implements Listener {
      * @param userName the in-game username of the user having their data read.
      */
     public void databaseRegistration(@NotNull UUID userUUID, @NotNull String userName) {
-        if (MainConfig.getInstance().isDatabaseOnline()) {
-            EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                List<FishReport> fishReports;
-
-
-                if (EvenMoreFish.getInstance().getDatabaseV3().hasUserLog(userUUID)) {
-                    fishReports = EvenMoreFish.getInstance().getDatabaseV3().getFishReports(userUUID);
-                } else {
-                    fishReports = new ArrayList<>();
-                    if (MainConfig.getInstance().doDBVerbose()) {
-                        EvenMoreFish.getInstance().getLogger().info(userName + " has joined for the first time, creating new data handle for them.");
-                    }
-                }
-
-
-                UserReport userReport;
-
-                userReport = EvenMoreFish.getInstance().getDatabaseV3().readUserReport(userUUID);
-                if (userReport == null) {
-                    EvenMoreFish.getInstance().getDatabaseV3().createUser(userUUID);
-                    userReport = EvenMoreFish.getInstance().getDatabaseV3().readUserReport(userUUID);
-                }
-
-                if (fishReports != null && userReport != null) {
-                    DataManager.getInstance().cacheUser(userUUID, userReport, fishReports);
-                } else {
-                    EvenMoreFish.getInstance().getLogger().severe("Null value when fetching data for user (" + userName + "),\n" +
-                            "UserReport: " + (userReport == null) +
-                            ",\nFishReports: " + (fishReports != null && !fishReports.isEmpty()));
-                }
-            });
+        if (!MainConfig.getInstance().isDatabaseOnline()) {
+            return;
         }
+
+        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
+            List<FishReport> fishReports;
+
+
+            if (EvenMoreFish.getInstance().getDatabaseV3().hasUserLog(userUUID)) {
+                fishReports = EvenMoreFish.getInstance().getDatabaseV3().getFishReports(userUUID);
+            } else {
+                fishReports = new ArrayList<>();
+                if (MainConfig.getInstance().doDBVerbose()) {
+                    EvenMoreFish.getInstance().getLogger().info(userName + " has joined for the first time, creating new data handle for them.");
+                }
+            }
+
+
+            UserReport userReport;
+
+            userReport = EvenMoreFish.getInstance().getDatabaseV3().readUserReport(userUUID);
+            if (userReport == null) {
+                EvenMoreFish.getInstance().getDatabaseV3().createUser(userUUID);
+                userReport = EvenMoreFish.getInstance().getDatabaseV3().readUserReport(userUUID);
+            }
+
+            if (fishReports != null && userReport != null) {
+                DataManager.getInstance().cacheUser(userUUID, userReport, fishReports);
+            } else {
+                EvenMoreFish.getInstance().getLogger().severe("Null value when fetching data for user (" + userName + "),\n" +
+                        "UserReport: " + (userReport == null) +
+                        ",\nFishReports: " + (fishReports != null && !fishReports.isEmpty()));
+            }
+        });
+        
     }
 
     // Gives the player the active fishing bar if there's a fishing event cracking off
