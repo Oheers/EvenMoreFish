@@ -96,14 +96,16 @@ sell-gui:
 # worlds. EvenMoreFish automatically detects your protection plugin so it's important you don't run both at once.
 # Note- Changing this value requires a SERVER RESTART NOT A RELOAD.
 # Uncomment the below section to enable these feature.
-#allowed-regions:
-#  - "fishing"
+allowed-regions:
+  - "fishing"
 
-#allowed-worlds:
-#  - "world"
+allowed-worlds:
+  - "world"
 
 # This section defines the boost settings for different regions.
 # Each rarity of fish has a boost multiplier that adjusts its weight in the specified region.
+# allowed-regions and allowed-worlds must be set to enable this feature.
+# u can only use the region that is defined in the allowed-regions section.
 # To disable a boost, comment out the corresponding line.
 # Region boost settings the rarity is case-sensitive.
 #region-boosts:

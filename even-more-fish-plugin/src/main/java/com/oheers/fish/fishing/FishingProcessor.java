@@ -130,6 +130,9 @@ public class FishingProcessor implements Listener {
     }
 
     private ItemStack getFish(Player player, Location location, ItemStack fishingRod) {
+        if (!FishUtils.checkRegion(location, MainConfig.getInstance().getAllowedRegions())) {
+            return null;
+        }
         if (!FishUtils.checkWorld(location)) {
             return null;
         }
