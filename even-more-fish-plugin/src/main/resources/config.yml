@@ -99,8 +99,8 @@ sell-gui:
 #allowed-regions:
 #  - "fishing"
 
-allowed-worlds:
-  - "world"
+#allowed-worlds:
+#  - "world"
 
 # This section defines the boost settings for different regions.
 # Each rarity of fish has a boost multiplier that adjusts its weight in the specified region.
