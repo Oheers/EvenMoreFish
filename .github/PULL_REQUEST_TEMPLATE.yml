@@ -1,0 +1,28 @@
+name: "Pull Request Template"
+description: "A template to guide contributors when submitting a pull request."
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Description
+        Provide a brief description of the changes in this pull request.
+  - type: textarea
+    id: changes
+    attributes:
+      label: "What has changed?"
+      description: "Summarize the key changes in this pull request."
+      placeholder: "Describe the changes in detail..."
+  - type: textarea
+    id: issue
+    attributes:
+      label: "Related Issues"
+      description: "Link related issues or describe which problem this PR fixes."
+      placeholder: "e.g., Closes #123 or Fixes issue where..."
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      options:
+        - label: "I have added tests that prove my fix is effective or that my feature works."
+        - label: "I have updated the documentation as needed."
+        - label: "I have added any labels that fit this PR."

@@ -4,13 +4,13 @@ changelog:
   categories:
     - title: 🏕 Features
       labels:
-        - '*'
-      exclude:
-        labels:
-          - dependencies
+        - "suggestion (plugin): added"
     - title: 🛠 Bug Fixes
       labels:
         - "bug: fixed"
+    - title: 📖 Documentation
+      labels:
+        - "suggestion (documentation): added"
     - title: 👒 Dependencies
       labels:
         - dependencies
