@@ -42,7 +42,6 @@ public class Competition {
     public int numberNeeded;
     public String competitionName;
     public boolean adminStarted;
-    public String competitionID;
     public Message startMessage;
     long maxDuration, timeLeft;
     Bar statusBar;
