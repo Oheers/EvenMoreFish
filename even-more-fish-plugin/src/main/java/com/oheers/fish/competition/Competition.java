@@ -51,14 +51,12 @@ public class Competition {
     int playersNeeded;
     Sound startSound;
     MyScheduledTask timingSystem;
-    private final List<String> beginCommands;
 
-    public Competition(final Integer duration, final CompetitionType type, List<String> beginCommands) {
+    public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
         this.alertTimes = new ArrayList<>();
         this.rewards = new HashMap<>();
         this.competitionType = type;
-        this.beginCommands = beginCommands;
     }
 
     public static boolean isActive() {

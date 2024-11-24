@@ -145,7 +145,7 @@ public class AdminCommand extends BaseCommand {
             }
 
 
-            Competition comp = new Competition(duration, type, new ArrayList<>());
+            Competition comp = new Competition(duration, type);
 
             comp.setCompetitionName("[admin_started]");
             comp.setAdminStarted(true);
