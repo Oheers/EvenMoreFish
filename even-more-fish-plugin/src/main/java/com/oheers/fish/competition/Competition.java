@@ -190,46 +190,7 @@ public class Competition {
      * @return A message object that's pre-set to be compatible for the time remaining.
      */
     private Message getTypeFormat(ConfigMessage configMessage) {
-        Message message = new Message(configMessage);
-        message.setTimeFormatted(FishUtils.timeFormat(timeLeft));
-        message.setTimeRaw(FishUtils.timeRaw(timeLeft));
-        message.setCompetitionType(competitionType);
-
-        //todo delegate to the type
-        switch (competitionType) {
-            case SPECIFIC_FISH -> {
-                message.setAmount(Integer.toString(numberNeeded));
-                message.setRarityColour(selectedFish.getRarity().getColour());
-
-                if (selectedFish.getRarity().getDisplayName() != null) {
-                    message.setRarity(selectedFish.getRarity().getDisplayName());
-                } else {
-                    message.setRarity(selectedFish.getRarity().getValue());
-                }
-
-                if (selectedFish.getDisplayName() != null) {
-                    message.setFishCaught(selectedFish.getDisplayName());
-                } else {
-                    message.setFishCaught(selectedFish.getName());
-                }
-            }
-            case SPECIFIC_RARITY -> {
-                message.setAmount(Integer.toString(numberNeeded));
-                if (selectedRarity == null) {
-                    EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");
-                    return message;
-                }
-                message.setRarityColour(selectedRarity.getColour());
-
-                if (selectedRarity.getDisplayName() != null) {
-                    message.setRarity(selectedRarity.getDisplayName());
-                } else {
-                    message.setRarity(selectedRarity.getValue());
-                }
-            }
-        }
-
-        return message;
+        return competitionType.getStrategy().getTypeFormat(this,configMessage);
     }
 
     /**
