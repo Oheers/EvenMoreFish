@@ -32,14 +32,15 @@ public class Competition {
     public static Leaderboard leaderboard;
     static boolean active;
     static boolean originallyRandom;
-    public CompetitionType competitionType;
+    private CompetitionType competitionType;
     public Fish selectedFish;
     public Rarity selectedRarity;
     public int numberNeeded;
     public String competitionName;
     public boolean adminStarted;
     public Message startMessage;
-    long maxDuration, timeLeft;
+    long maxDuration;
+    long timeLeft;
     Bar statusBar;
     boolean showBar;
     long epochStartTime;
@@ -49,7 +50,6 @@ public class Competition {
     int playersNeeded;
     Sound startSound;
     MyScheduledTask timingSystem;
-    List<UUID> leaderboardMembers = new ArrayList<>();
     private final List<String> beginCommands;
 
     public Competition(final Integer duration, final CompetitionType type, List<String> beginCommands) {
@@ -339,10 +339,10 @@ public class Competition {
                 } catch (NumberFormatException nfe) {
                     EvenMoreFish.getInstance()
                             .getLogger()
-                            .severe("Could not turn " + s + " into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb");
+                            .severe(() -> "Could not turn %s into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb".formatted(s));
                 }
             } else {
-                EvenMoreFish.getInstance().getLogger().severe(s + " is not formatted correctly. Use MM:SS");
+                EvenMoreFish.getInstance().getLogger().severe(() -> "%s is not formatted correctly. Use MM:SS".formatted(s));
             }
         }
     }
@@ -422,9 +422,15 @@ public class Competition {
                 continue;
             }
 
-            rewards.getOrDefault(rewardPlace, participationRewards)
-                    .forEach(reward -> reward.rewardPlayer(player, null));
-            
+            // Does the player's place have rewards?
+            if (rewards.containsKey(rewardPlace)) {
+                rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
+            } else {
+                // Default to participation rewards if not.
+                if (participationRewardsExist) {
+                    participationRewards.forEach(reward -> reward.rewardPlayer(player, null));
+                }
+            }
 
             handleDatabaseUpdates(entry, false);
 
@@ -448,9 +454,7 @@ public class Competition {
     }
 
     public void initBar(String competitionName) {
-
-        showBar = CompetitionConfig.getInstance().getShowBar(competitionName);
-
+        this.showBar = CompetitionConfig.getInstance().getShowBar(competitionName);
         this.statusBar = new Bar();
 
         try {
@@ -541,14 +545,7 @@ public class Competition {
         return (10080 - currentTime) + competitionStartTime;
     }
 
-    private void incrementCompetitionsJoined(CompetitionEntry entry) {
-        UserReport report = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
-        if (report != null) {
-            report.incrementCompetitionsJoined(1);
-            DataManager.getInstance().putUserReportCache(entry.getPlayer(), report);
-        } else {
-            EvenMoreFish.getInstance().getLogger().severe("User " + entry.getPlayer() + " does not exist in cache. ");
-        }
+    public void setCompetitionType(CompetitionType competitionType) {
+        this.competitionType = competitionType;
     }
-
 }

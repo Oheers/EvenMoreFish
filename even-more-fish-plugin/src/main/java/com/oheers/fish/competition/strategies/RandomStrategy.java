@@ -17,8 +17,8 @@ public class RandomStrategy implements CompetitionStrategy {
     private CompetitionType randomType;
     @Override
     public boolean begin(Competition competition) {
-        competition.competitionType = getRandomType();
-        this.randomType = competition.competitionType;
+        competition.setCompetitionType(getRandomType());
+        this.randomType = competition.getCompetitionType();
         Competition.setOriginallyRandom(true);
         return true;
     }

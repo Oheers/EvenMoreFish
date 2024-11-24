@@ -47,7 +47,7 @@ public interface CompetitionStrategy {
         Message message = new Message(configMessage);
         message.setTimeFormatted(FishUtils.timeFormat(competition.timeLeft));
         message.setTimeRaw(FishUtils.timeRaw(competition.timeLeft));
-        message.setCompetitionType(competition.competitionType);
+        message.setCompetitionType(competition.getCompetitionType());
         return message;
     }
 
