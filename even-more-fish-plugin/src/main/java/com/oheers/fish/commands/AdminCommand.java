@@ -303,8 +303,9 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_version")
     public void onVersion(final CommandSender sender) {
         int fishCount = 0;
-        for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
-            fishCount += FishManager.getInstance().getRarityMap().get(r).size();
+
+        for (List<Fish> fishList : FishManager.getInstance().getRarityMap().values()) {
+            fishCount += fishList.size();
         }
         
         String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +

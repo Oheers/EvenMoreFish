@@ -19,20 +19,20 @@ public enum ConfigMessage {
     ),
     ADMIN_NBT_NOT_REQUIRED("&rChange \"require-nbt-rod\" to true in order to use this feature.", PrefixType.ERROR, false, true, "admin.nbt-not-required"),
     ADMIN_NO_BAIT_SPECIFIED("&rYou must specify a bait name.", PrefixType.ERROR, false, true, "admin.no-bait-specified"),
-    ADMIN_NOT_HOLDING_ROD("&rYou need to be holding a fishing rod to run that command.", PrefixType.ERROR, false, false, "admin.must-be-holding-rod"),
+    ADMIN_NOT_HOLDING_ROD("&rYou need to be holding a fishing rod to run that command.", PrefixType.ERROR, false, true, "admin.must-be-holding-rod"),
     ADMIN_NUMBER_FORMAT_ERROR("&r{amount} is not a valid number.", PrefixType.ERROR, false, true, "admin.number-format-error"),
     ADMIN_NUMBER_RANGE_ERROR("&r{amount} is not a number between 1-64.", PrefixType.ERROR, false, true, "admin.number-range-error"),
     ADMIN_UNKNOWN_PLAYER("&r{player} could not be found.", PrefixType.ERROR, false, true, "admin.player-not-found"),
     ADMIN_UPDATE_AVAILABLE("&rThere is an update available: " + "https://www.spigotmc.org/resources/evenmorefish.91310/updates", PrefixType.ADMIN, false, false, "admin.update-available"),
     ADMIN_LIST_REWARD_TYPES("&rRegistered Reward Types: ", PrefixType.ADMIN, false, false, "admin.list-reward-types"),
 
-    BAITS_CLEARED("&rYou have removed all {amount} baits from your fishing rod.", PrefixType.ADMIN, true, false, "admin.all-baits-cleared"),
-    BAIT_CAUGHT("&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.NONE, true, false, "bait-catch"),
-    BAIT_USED("&rYou have used one of your rod's {bait_theme}&l{bait} &rbait.", PrefixType.DEFAULT, true, false, "bait-use"),
-    BAIT_WRONG_GAMEMODE("&rYou must be in &nsurvival or adventure mode&r to apply baits to fishing rods.", PrefixType.ERROR, false, false, "bait-survival-limited"),
+    BAITS_CLEARED("&rYou have removed all {amount} baits from your fishing rod.", PrefixType.ADMIN, true, true, "admin.all-baits-cleared"),
+    BAIT_CAUGHT("&r&l{player} &rhas caught a {bait_theme}&l{bait} &rbait!", PrefixType.NONE, true, true, "bait-catch"),
+    BAIT_USED("&rYou have used one of your rod's {bait_theme}&l{bait} &rbait.", PrefixType.DEFAULT, true, true, "bait-use"),
+    BAIT_WRONG_GAMEMODE("&rYou must be in &nsurvival or adventure mode&r to apply baits to fishing rods.", PrefixType.ERROR, false, true, "bait-survival-limited"),
     BAITS_MAXED("&rYou have reached the maximum number of types of baits for this fishing rod.", PrefixType.DEFAULT, false, true, "max-baits-reached"),
-    BAITS_MAXED_ON_ROD("&rYou have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.", PrefixType.ERROR, false, false, "max-baits-reached"),
-    BAIT_ROD_PROTECTION("&rProtected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead.", PrefixType.ERROR, false, false, "bait-rod-protection"),
+    BAITS_MAXED_ON_ROD("&rYou have reached the maximum number of {bait_theme}{bait} &rbait that can be applied to one rod.", PrefixType.ERROR, false, true, "max-baits-reached"),
+    BAIT_ROD_PROTECTION("&rProtected your baited fishing rod. If you are trying to repair it, please put it in the first slot instead.", PrefixType.ERROR, false, true, "bait-rod-protection"),
 
     BAR_LAYOUT("{prefix}&r{time-formatted}&r{time-remaining}", PrefixType.NONE, true, false, "bossbar.layout"),
     BAR_SECOND("&r{second}s", PrefixType.NONE, true, false, "bossbar.second"),
@@ -42,17 +42,17 @@ public enum ConfigMessage {
 
     COMPETITION_ALREADY_RUNNING("&rThere's already a competition running.", PrefixType.ADMIN, false, true, "admin.competition-already-running"),
 
-    COMPETITION_END("&rThe fishing contest has ended.", PrefixType.DEFAULT, false, false, "contest-end"),
-    COMPETITION_JOIN("&rA fishing contest for {type} is going on.", PrefixType.DEFAULT, true, false, "contest-join"),
-    COMPETITION_START("&rA fishing contest for {type} has started.", PrefixType.DEFAULT, false, false, "contest-start"),
+    COMPETITION_END("&rThe fishing contest has ended.", PrefixType.DEFAULT, false, true, "contest-end"),
+    COMPETITION_JOIN("&rA fishing contest for {type} is going on.", PrefixType.DEFAULT, true, true, "contest-join"),
+    COMPETITION_START("&rA fishing contest for {type} has started.", PrefixType.DEFAULT, false, true, "contest-start"),
 
-    COMPETITION_TYPE_LARGEST("the largest fish", PrefixType.NONE, true, false, "competition-types.largest"),
-    COMPETITION_TYPE_LARGEST_TOTAL("the largest total fish length", PrefixType.NONE, true, false, "competition-types.largest-total"),
-    COMPETITION_TYPE_MOST("the most fish", PrefixType.NONE, true, false, "competition-types.most"),
-    COMPETITION_TYPE_SPECIFIC("{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r", PrefixType.NONE, true, false, "competition-types.specific"),
-    COMPETITION_TYPE_SPECIFIC_RARITY("{amount} {rarity_colour}&l{rarity}&r fish", PrefixType.NONE, true, false, "competition-types.specific-rarity"),
-    COMPETITION_TYPE_SHORTEST("the shortest fish", PrefixType.NONE, true, false, "competition-types.shortest"),
-    COMPETITION_TYPE_SHORTEST_TOTAL("the shortest total fish length", PrefixType.NONE, true, false, "competition-types.shortest-total"),
+    COMPETITION_TYPE_LARGEST("the largest fish", PrefixType.NONE, true, true, "competition-types.largest"),
+    COMPETITION_TYPE_LARGEST_TOTAL("the largest total fish length", PrefixType.NONE, true, true, "competition-types.largest-total"),
+    COMPETITION_TYPE_MOST("the most fish", PrefixType.NONE, true, true, "competition-types.most"),
+    COMPETITION_TYPE_SPECIFIC("{amount} {rarity_colour}&l{rarity} {rarity_colour}{fish}&r", PrefixType.NONE, true, true, "competition-types.specific"),
+    COMPETITION_TYPE_SPECIFIC_RARITY("{amount} {rarity_colour}&l{rarity}&r fish", PrefixType.NONE, true, true, "competition-types.specific-rarity"),
+    COMPETITION_TYPE_SHORTEST("the shortest fish", PrefixType.NONE, true, true, "competition-types.shortest"),
+    COMPETITION_TYPE_SHORTEST_TOTAL("the shortest total fish length", PrefixType.NONE, true, true, "competition-types.shortest-total"),
 
     COMPETITION_SINGLE_WINNER("&r{player} has won the competition for {type}. Congratulations!", PrefixType.DEFAULT, true, true, "single-winner"),
 
@@ -61,21 +61,21 @@ public enum ConfigMessage {
     ECONOMY_DISABLED("&rEvenMoreFish's economy features are disabled.", PrefixType.ERROR, false, false, "admin.economy-disabled"),
 
     FISH_CANT_BE_PLACED("&rYou cannot place this fish.", PrefixType.ERROR, true, true, "place-fish-blocked"),
-    FISH_CAUGHT("&r&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, false, "fish-caught"),
-    FISH_LENGTHLESS_CAUGHT("&r&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, false, "lengthless-fish-caught"),
+    FISH_CAUGHT("&r&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, true, "fish-caught"),
+    FISH_LENGTHLESS_CAUGHT("&r&l{player} &rhas fished a {rarity_colour}&l{rarity} {rarity_colour}{fish}!", PrefixType.NONE, true, true, "lengthless-fish-caught"),
     FISH_LORE(Arrays.asList(
             "{fisherman_lore}",
             "{length_lore}",
             "",
             "{fish_lore}",
             "{rarity_colour}&l{rarity}"
-    ), PrefixType.NONE, false, false, "fish-lore"),
+    ), PrefixType.NONE, false, true, "fish-lore"),
     FISHERMAN_LORE(Collections.singletonList(
             "&fCaught by {player}"
-    ), PrefixType.NONE, false, false, "fisherman-lore"),
+    ), PrefixType.NONE, false, true, "fisherman-lore"),
     LENGTH_LORE(Collections.singletonList(
             "&fMeasures {length}cm"
-    ), PrefixType.NONE, false, false, "length-lore"),
+    ), PrefixType.NONE, false, true, "length-lore"),
     FISH_SALE("&rYou've sold &a{amount} &ffish for &a{sell-price}&f.", PrefixType.DEFAULT, true, true, "fish-sale"),
     HELP_FORMAT(
             "[noPrefix]&b{command} &e- {description}",
@@ -264,7 +264,6 @@ public enum ConfigMessage {
         this.canHidePrefix = canHidePrefix;
         this.prefixType = prefixType;
     }
-
 
     public String getId() {
         return this.id;

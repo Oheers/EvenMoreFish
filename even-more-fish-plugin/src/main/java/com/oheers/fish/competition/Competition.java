@@ -688,7 +688,7 @@ public class Competition {
         }
 
         if (this.numberNeeded == 0) {
-            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStarted));
+            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
         }
 
         try {
