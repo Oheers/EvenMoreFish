@@ -560,38 +560,6 @@ public class Competition {
         message.broadcast(console);
     }
 
-    public boolean chooseRarity() {
-        String competitionName = this.competitionName;
-        boolean adminStart = this.adminStarted;
-        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStart);
-
-        if (configRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competitionName + " competition config section.");
-            return false;
-        }
-
-        setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
-
-        try {
-            String randomRarity = configRarities.get(new Random().nextInt(configRarities.size()));
-            Rarity rarity = FishManager.getInstance().getRarity(randomRarity);
-            if (rarity != null) {
-                this.selectedRarity = rarity;
-                return true;
-            }
-            this.selectedRarity = FishManager.getInstance().getRandomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
-            return true;
-        } catch (IllegalArgumentException exception) {
-            EvenMoreFish.getInstance()
-                    .getLogger()
-                    .severe("Could not load: " + competitionName + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
-            EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + FishManager.getInstance().getRarityMap().keySet().size());
-            EvenMoreFish.getInstance().getLogger().severe("configRarities.size(): " + configRarities.size());
-            // Also log the exception
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
-            return false;
-        }
-    }
 
     public void initAlerts(String competitionName) {
         for (String s : CompetitionConfig.getInstance().getAlertTimes(competitionName)) {
