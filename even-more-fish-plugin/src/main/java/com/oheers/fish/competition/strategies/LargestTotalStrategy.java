@@ -1,7 +1,10 @@
 package com.oheers.fish.competition.strategies;
 
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
+import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.config.messages.Message;
 
 public class LargestTotalStrategy implements CompetitionStrategy {
     @Override
@@ -15,8 +18,10 @@ public class LargestTotalStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public void applyConsoleLeaderboard() {
-
+    public Message getSingleConsoleLeaderboardMessage(Message message, CompetitionEntry entry) {
+        message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+        message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+        return message;
     }
 
     @Override

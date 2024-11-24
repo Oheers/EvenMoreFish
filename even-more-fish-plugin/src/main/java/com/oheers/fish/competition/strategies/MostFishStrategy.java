@@ -16,11 +16,6 @@ public class MostFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public void applyConsoleLeaderboard() {
-
-    }
-
-    @Override
     public void sendPlayerLeaderboard() {
 
     }

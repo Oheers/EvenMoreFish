@@ -8,9 +8,18 @@ import org.jetbrains.annotations.NotNull;
 
 public interface CompetitionStrategy {
     boolean begin(Competition competition);
+
     void applyLeaderboard();
-    void applyConsoleLeaderboard();
+
+    default Message getSingleConsoleLeaderboardMessage(Message message, CompetitionEntry entry) {
+        //todo temp, since this really isn't supposed to be the case, but was the original code. idk
+        message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+        message.setAmount(Integer.toString((int) entry.getValue()));
+        return message;
+    }
+
     void sendPlayerLeaderboard();
+
     /**
      * This creates a message object and applies all the settings to it to make it able to use the {type} variable. It
      * takes into consideration whether it's a specific fish/rarity competition.

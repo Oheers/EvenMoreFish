@@ -529,8 +529,7 @@ public class Competition {
         int pos = 0;
 
         List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
-        //todo delegate to the type
-        // Sort entries in ascending order for SHORTEST_FISH
+        // Sort entries in ascending order for SHORTEST_FISH, also find a way to delegate this to specific type..
         if (competitionType == CompetitionType.SHORTEST_FISH) {
             entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
         }
@@ -538,72 +537,24 @@ public class Competition {
         for (CompetitionEntry entry : entries) {
             pos++;
             leaderboardMembers.add(entry.getPlayer());
+
             Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
             message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
             message.setPosition(Integer.toString(pos));
+
             if (pos > competitionColours.size()) {
-                Random r = EvenMoreFish.getInstance().getRandom();
-                int s = r.nextInt(3);
+                int s = EvenMoreFish.getInstance().getRandom().nextInt(3);
                 setPositionColour(s, message);
             } else {
                 message.setPositionColour(competitionColours.get(pos - 1));
             }
 
-            switch (competitionType) {
-                case LARGEST_FISH -> {
-                    Fish fish = entry.getFish();
-                    message.setRarityColour(fish.getRarity().getColour());
-                    message.setLength(Float.toString(entry.getValue()));
-
-                    if (fish.getRarity().getDisplayName() != null) {
-                        message.setRarity(fish.getRarity().getDisplayName());
-                    } else {
-                        message.setRarity(fish.getRarity().getValue());
-                    }
-
-                    if (fish.getDisplayName() != null) {
-                        message.setFishCaught(fish.getDisplayName());
-                    } else {
-                        message.setFishCaught(fish.getName());
-                    }
-
-                    message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                }
-                case SHORTEST_FISH -> {
-                    Fish fish = entry.getFish();
-                    message.setRarityColour(fish.getRarity().getColour());
-                    message.setLength(Float.toString(entry.getValue()));
-
-                    if (fish.getRarity().getDisplayName() != null) {
-                        message.setRarity(fish.getRarity().getDisplayName());
-                    } else {
-                        message.setRarity(fish.getRarity().getValue());
-                    }
-
-                    if (fish.getDisplayName() != null) {
-                        message.setFishCaught(fish.getDisplayName());
-                    } else {
-                        message.setFishCaught(fish.getName());
-                    }
-
-                    message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_FISH);
-                }
-                case LARGEST_TOTAL -> {
-                    message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-                    message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
-                }
-                case SHORTEST_TOTAL -> {
-                    message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_TOTAL);
-                    message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
-                }
-                default -> {
-                    message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
-                    message.setAmount(Integer.toString((int) entry.getValue()));
-                }
-            }
+            message = competitionType.getStrategy().getSingleConsoleLeaderboardMessage(message, entry);
             builder.append(message.getRawMessage()).append("\n");
         }
         console.sendMessage(builder.toString());
+
+
         Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
         message.setAmount(Integer.toString(leaderboard.getSize()));
         message.broadcast(console);
@@ -755,6 +706,7 @@ public class Competition {
     }
 
     private void handleRewards() {
+        //todo possibly delegate a part of this?
         if (leaderboard.getSize() == 0) {
             if (!((competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY) && numberNeeded == 1)) {
                 new Message(ConfigMessage.NO_WINNERS).broadcast();
