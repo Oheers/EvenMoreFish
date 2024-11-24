@@ -102,6 +102,7 @@ public class Rarity {
         this.fishWeighted = fishWeighted;
     }
 
+    @NotNull
     public String getDisplayName() {
         if (displayName == null) {
             return value;

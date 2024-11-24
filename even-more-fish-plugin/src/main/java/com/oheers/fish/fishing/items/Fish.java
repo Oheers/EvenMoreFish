@@ -467,6 +467,7 @@ public class Fish implements Cloneable {
         this.weight = weight;
     }
 
+    @NotNull
     public String getDisplayName() {
         if (displayName == null) {
             return rarity.getColour() + name;
