@@ -422,16 +422,10 @@ public class Competition {
                 continue;
             }
 
-            // Does the player's place have rewards?
-            if (rewards.containsKey(rewardPlace)) {
-                rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
-            } else {
-                // Default to participation rewards if not.
-                if (participationRewardsExist) {
-                    participationRewards.forEach(reward -> reward.rewardPlayer(player, null));
-                }
-            }
+            rewards.getOrDefault(rewardPlace, participationRewards)
+                    .forEach(reward -> reward.rewardPlayer(player, null));
             
+
             handleDatabaseUpdates(entry, false);
 
             // Increment the place
