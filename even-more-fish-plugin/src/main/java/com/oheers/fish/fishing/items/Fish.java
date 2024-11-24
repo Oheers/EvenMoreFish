@@ -62,6 +62,7 @@ public class Fish implements Cloneable {
 
     /**
      * Constructs a Fish from its config section.
+     *
      * @param section The section for this fish.
      */
     public Fish(@NotNull Rarity rarity, @Nullable Section section) throws InvalidFishException {
@@ -138,21 +139,25 @@ public class Fish implements Cloneable {
     public ItemStack give(int randomIndex) {
 
         ItemStack fish = factory.createItem(getFishermanPlayer(), randomIndex);
-        if (factory.isRawMaterial()) return fish;
+        if (factory.isRawMaterial()) {
+            return fish;
+        }
         ItemMeta fishMeta = fish.getItemMeta();
 
         if (fishMeta != null) {
-            NBT.modify(fish, nbt -> {
-                nbt.modifyMeta((readOnlyNbt, meta) -> {
-                    meta.setDisplayName(FishUtils.translateColorCodes(getDisplayName()));
-                    if (!section.getBoolean("disable-lore", false)) {
-                        meta.setLore(getFishLore());
+            NBT.modify(
+                    fish, nbt -> {
+                        nbt.modifyMeta((readOnlyNbt, meta) -> {
+                            meta.setDisplayName(FishUtils.translateColorCodes(getDisplayName()));
+                            if (!section.getBoolean("disable-lore", false)) {
+                                meta.setLore(getFishLore());
+                            }
+                            meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                        });
                     }
-                    meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                });
-            });
+            );
 
             WorthNBT.setNBT(fish, this);
         }
@@ -314,21 +319,27 @@ public class Fish implements Cloneable {
                 section.getStringList("lore")
         );
 
-        newLoreLine.setVariable("{fisherman_lore}",
+        newLoreLine.setVariable(
+                "{fisherman_lore}",
                 !disableFisherman && getFishermanPlayer() != null ?
                         (new Message(ConfigMessage.FISHERMAN_LORE)).getRawMessage()
                         : ""
         );
 
-        if (!disableFisherman && getFishermanPlayer() != null) newLoreLine.setPlayer(getFishermanPlayer());
+        if (!disableFisherman && getFishermanPlayer() != null) {
+            newLoreLine.setPlayer(getFishermanPlayer());
+        }
 
-        newLoreLine.setVariable("{length_lore}",
+        newLoreLine.setVariable(
+                "{length_lore}",
                 length > 0 ?
                         (new Message(ConfigMessage.LENGTH_LORE)).getRawMessage()
                         : ""
         );
 
-        if (length > 0) newLoreLine.setLength(Float.toString(length));
+        if (length > 0) {
+            newLoreLine.setLength(Float.toString(length));
+        }
 
         newLoreLine.setRarity(this.rarity.getLorePrep());
 
@@ -376,7 +387,7 @@ public class Fish implements Cloneable {
     public void checkSellEvent() {
         sellRewards = new ArrayList<>();
         List<String> configRewards = section.getStringList("sell-event");
-        if (!configRewards.isEmpty())  {
+        if (!configRewards.isEmpty()) {
             configRewards.forEach(reward -> {
                 reward = parseEventPlaceholders(reward);
                 this.sellRewards.add(new Reward(reward));
@@ -457,7 +468,7 @@ public class Fish implements Cloneable {
         return fishRewards;
     }
 
-    public List<Reward> getSellRewards() { return sellRewards; }
+    public List<Reward> getSellRewards() {return sellRewards;}
 
     public double getWeight() {
         return weight;
@@ -467,6 +478,8 @@ public class Fish implements Cloneable {
         this.weight = weight;
     }
 
+
+    @NotNull
     public String getDisplayName() {
         if (displayName == null) {
             return rarity.getColour() + name;

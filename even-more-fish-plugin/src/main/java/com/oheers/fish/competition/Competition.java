@@ -199,19 +199,10 @@ public class Competition {
             case SPECIFIC_FISH -> {
                 message.setAmount(Integer.toString(numberNeeded));
                 message.setRarityColour(selectedFish.getRarity().getColour());
-
-                if (selectedFish.getRarity().getDisplayName() != null) {
-                    message.setRarity(selectedFish.getRarity().getDisplayName());
-                } else {
-                    message.setRarity(selectedFish.getRarity().getValue());
-                }
-
-                if (selectedFish.getDisplayName() != null) {
-                    message.setFishCaught(selectedFish.getDisplayName());
-                } else {
-                    message.setFishCaught(selectedFish.getName());
-                }
+                message.setRarity(selectedFish.getRarity().getDisplayName());
+                message.setFishCaught(selectedFish.getDisplayName());
             }
+
             case SPECIFIC_RARITY -> {
                 message.setAmount(Integer.toString(numberNeeded));
                 if (selectedRarity == null) {
@@ -219,12 +210,7 @@ public class Competition {
                     return message;
                 }
                 message.setRarityColour(selectedRarity.getColour());
-
-                if (selectedRarity.getDisplayName() != null) {
-                    message.setRarity(selectedRarity.getDisplayName());
-                } else {
-                    message.setRarity(selectedRarity.getValue());
-                }
+                message.setRarity(selectedRarity.getDisplayName());
             }
         }
 
@@ -688,7 +674,7 @@ public class Competition {
         }
 
         if (this.numberNeeded == 0) {
-            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
+            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStarted));
         }
 
         try {
