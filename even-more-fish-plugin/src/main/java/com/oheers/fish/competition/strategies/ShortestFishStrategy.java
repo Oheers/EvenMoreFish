@@ -10,6 +10,7 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class ShortestFishStrategy implements CompetitionStrategy {
 
@@ -30,7 +31,7 @@ public class ShortestFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getSingleConsoleLeaderboardMessage(Message message, CompetitionEntry entry) {
+    public Message getSingleConsoleLeaderboardMessage(@NotNull Message message, @NotNull CompetitionEntry entry) {
         Fish fish = entry.getFish();
         message.setRarityColour(fish.getRarity().getColour());
         message.setLength(Float.toString(entry.getValue()));
@@ -41,7 +42,7 @@ public class ShortestFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getSinglePlayerLeaderboard(Message message, CompetitionEntry entry) {
+    public Message getSinglePlayerLeaderboard(@NotNull Message message, @NotNull CompetitionEntry entry) {
         Fish fish = entry.getFish();
         message.setRarityColour(fish.getRarity().getColour());
         message.setLength(Float.toString(entry.getValue()));

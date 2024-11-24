@@ -8,6 +8,7 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class LargestTotalStrategy implements CompetitionStrategy {
 
@@ -27,14 +28,14 @@ public class LargestTotalStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getSingleConsoleLeaderboardMessage(Message message, CompetitionEntry entry) {
+    public Message getSingleConsoleLeaderboardMessage(@NotNull Message message, @NotNull CompetitionEntry entry) {
         message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
         message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
         return message;
     }
 
     @Override
-    public Message getSinglePlayerLeaderboard(Message message, CompetitionEntry entry) {
+    public Message getSinglePlayerLeaderboard(@NotNull Message message, @NotNull CompetitionEntry entry) {
         message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
         message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
         return message;

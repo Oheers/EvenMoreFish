@@ -29,7 +29,7 @@ public class RandomStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getSingleConsoleLeaderboardMessage(Message message, CompetitionEntry entry) {
+    public Message getSingleConsoleLeaderboardMessage(@NotNull Message message, @NotNull CompetitionEntry entry) {
         return randomType.getStrategy().getSingleConsoleLeaderboardMessage(message, entry);
     }
 
@@ -39,7 +39,7 @@ public class RandomStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getSinglePlayerLeaderboard(Message message, CompetitionEntry entry) {
+    public Message getSinglePlayerLeaderboard(@NotNull Message message, @NotNull CompetitionEntry entry) {
         return randomType.getStrategy().getSinglePlayerLeaderboard(message, entry);
     }
 
