@@ -1,7 +1,6 @@
 package com.oheers.fish.competition.strategies;
 
 
-
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
@@ -25,6 +24,7 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     public boolean begin(Competition competition) {
         return chooseRarity(competition);
     }
+
     @Override
     public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
         if (competition.selectedRarity != null &&

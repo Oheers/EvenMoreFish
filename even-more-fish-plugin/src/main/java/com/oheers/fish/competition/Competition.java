@@ -238,81 +238,6 @@ public class Competition {
         }
     }
 
-    public void sendPlayerLeaderboard(Player player) {
-        boolean reachingCount = true;
-
-        if (!active) {
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player);
-            return;
-        }
-
-        if (leaderboard.getSize() == 0) {
-            new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(player);
-            return;
-        }
-
-        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
-        StringBuilder builder = new StringBuilder();
-        int pos = 0;
-
-        List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
-        //todo delegate to the type
-        // Sort entries in ascending order for SHORTEST_FISH
-        if (competitionType == CompetitionType.SHORTEST_FISH) {
-            entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
-        }
-
-        for (CompetitionEntry entry : entries) {
-            pos++;
-            if (reachingCount) {
-                leaderboardMembers.add(entry.getPlayer());
-                Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
-                message.setPosition(Integer.toString(pos));
-                if (pos > competitionColours.size()) {
-                    Random r = EvenMoreFish.getInstance().getRandom();
-                    int s = r.nextInt(3);
-                    setPositionColour(s, message);
-                } else {
-                    message.setPositionColour(competitionColours.get(pos - 1));
-                }
-
-                message = competitionType.getStrategy().getSinglePlayerLeaderboard(message, entry);
-                builder.append(message.getRawMessage());
-
-                if (pos == Messages.getInstance().getConfig().getInt("leaderboard-count")) {
-                    if (Messages.getInstance().getConfig().getBoolean("always-show-pos")) {
-                        if (leaderboardMembers.contains(player.getUniqueId())) {
-                            break;
-                        } else {
-                            reachingCount = false;
-                        }
-                    } else {
-                        break;
-                    }
-                } else {
-                    builder.append("\n");
-                }
-            } else {
-                if (entry.getPlayer() == player.getUniqueId()) {
-                    Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
-                    message.setPosition(Integer.toString(pos));
-                    message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
-                    message.setPositionColour("&f");
-                    message = competitionType.getStrategy().getSinglePlayerLeaderboard(message, entry);
-
-                    builder.append("\n").append(message.getRawMessage());
-                }
-            }
-        }
-
-
-        player.sendMessage(builder.toString());
-        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
-        message.setAmount(Integer.toString(leaderboard.getSize()));
-        message.broadcast(player);
-    }
-
     private void setPositionColour(int place, Message message) {
         switch (place) {
             case 0 -> message.setPositionColour("&c» &r");
@@ -332,19 +257,50 @@ public class Competition {
         }
 
         List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
-        StringBuilder builder = new StringBuilder();
-        int pos = 0;
+        List<CompetitionEntry> entries = getSortedEntries(leaderboard.getEntries());
 
-        List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
-        // Sort entries in ascending order for SHORTEST_FISH, also find a way to delegate this to specific type.. todo
+        String leaderboardMessage = buildLeaderboardMessage(entries, competitionColours, true, null);
+        console.sendMessage(leaderboardMessage);
+
+        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+        message.setAmount(Integer.toString(leaderboard.getSize()));
+        message.broadcast(console);
+    }
+
+    public void sendPlayerLeaderboard(Player player) {
+        if (!active) {
+            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player);
+            return;
+        }
+        if (leaderboard.getSize() == 0) {
+            new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(player);
+            return;
+        }
+
+        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
+        List<CompetitionEntry> entries = getSortedEntries(leaderboard.getEntries());
+
+        String leaderboardMessage = buildLeaderboardMessage(entries, competitionColours, false, player.getUniqueId());
+        player.sendMessage(leaderboardMessage);
+
+        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+        message.setAmount(Integer.toString(leaderboard.getSize()));
+        message.broadcast(player);
+    }
+
+    public List<CompetitionEntry> getSortedEntries(List<CompetitionEntry> entries) {
         if (competitionType == CompetitionType.SHORTEST_FISH) {
             entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
         }
+        return entries;
+    }
+
+    private String buildLeaderboardMessage(List<CompetitionEntry> entries, List<String> competitionColours, boolean isConsole, UUID playerUuid) {
+        StringBuilder builder = new StringBuilder();
+        int pos = 0;
 
         for (CompetitionEntry entry : entries) {
             pos++;
-            leaderboardMembers.add(entry.getPlayer());
-
             Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
             message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
             message.setPosition(Integer.toString(pos));
@@ -356,16 +312,21 @@ public class Competition {
                 message.setPositionColour(competitionColours.get(pos - 1));
             }
 
-            message = competitionType.getStrategy().getSingleConsoleLeaderboardMessage(message, entry);
+            if (isConsole) {
+                message = competitionType.getStrategy().getSingleConsoleLeaderboardMessage(message, entry);
+            } else {
+                message = competitionType.getStrategy().getSinglePlayerLeaderboard(message, entry);
+                if (entry.getPlayer().equals(playerUuid)) {
+                    message.setPositionColour("&f"); // Customize player-specific logic here if needed
+                }
+            }
+
             builder.append(message.getRawMessage()).append("\n");
         }
-        console.sendMessage(builder.toString());
 
-
-        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
-        message.setAmount(Integer.toString(leaderboard.getSize()));
-        message.broadcast(console);
+        return builder.toString();
     }
+
 
 
     public void initAlerts(String competitionName) {
