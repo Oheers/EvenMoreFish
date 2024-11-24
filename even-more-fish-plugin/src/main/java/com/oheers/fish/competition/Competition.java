@@ -435,19 +435,8 @@ public class Competition {
                         Fish fish = entry.getFish();
                         message.setRarityColour(fish.getRarity().getColour());
                         message.setLength(Float.toString(fish.getLength()));
-
-                        if (fish.getRarity().getDisplayName() != null) {
-                            message.setRarity(fish.getRarity().getDisplayName());
-                        } else {
-                            message.setRarity(fish.getRarity().getValue());
-                        }
-
-                        if (fish.getDisplayName() != null) {
-                            message.setFishCaught(fish.getDisplayName());
-                        } else {
-                            message.setFishCaught(fish.getName());
-                        }
-
+                        message.setRarity(fish.getRarity().getDisplayName());
+                        message.setFishCaught(fish.getDisplayName());
                         message.setMessage(competitionType == CompetitionType.LARGEST_FISH ? ConfigMessage.LEADERBOARD_LARGEST_FISH : ConfigMessage.LEADERBOARD_SHORTEST_FISH);
                     }
                     case LARGEST_TOTAL -> {
@@ -490,19 +479,8 @@ public class Competition {
                             Fish fish = entry.getFish();
                             message.setRarityColour(fish.getRarity().getColour());
                             message.setLength(Float.toString(entry.getValue()));
-
-                            if (fish.getRarity().getDisplayName() != null) {
-                                message.setRarity(fish.getRarity().getDisplayName());
-                            } else {
-                                message.setRarity(fish.getRarity().getValue());
-                            }
-
-                            if (fish.getDisplayName() != null) {
-                                message.setFishCaught(fish.getDisplayName());
-                            } else {
-                                message.setFishCaught(fish.getName());
-                            }
-
+                            message.setRarity(fish.getRarity().getDisplayName());
+                            message.setFishCaught(fish.getDisplayName());
                             message.setMessage(competitionType == CompetitionType.LARGEST_FISH ? ConfigMessage.LEADERBOARD_LARGEST_FISH : ConfigMessage.LEADERBOARD_SHORTEST_FISH);
                         }
                         case LARGEST_TOTAL -> {
@@ -577,38 +555,16 @@ public class Competition {
                     Fish fish = entry.getFish();
                     message.setRarityColour(fish.getRarity().getColour());
                     message.setLength(Float.toString(entry.getValue()));
-
-                    if (fish.getRarity().getDisplayName() != null) {
-                        message.setRarity(fish.getRarity().getDisplayName());
-                    } else {
-                        message.setRarity(fish.getRarity().getValue());
-                    }
-
-                    if (fish.getDisplayName() != null) {
-                        message.setFishCaught(fish.getDisplayName());
-                    } else {
-                        message.setFishCaught(fish.getName());
-                    }
-
+                    message.setRarity(fish.getRarity().getDisplayName());
+                    message.setFishCaught(fish.getDisplayName());
                     message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_FISH);
                 }
                 case SHORTEST_FISH -> {
                     Fish fish = entry.getFish();
                     message.setRarityColour(fish.getRarity().getColour());
                     message.setLength(Float.toString(entry.getValue()));
-
-                    if (fish.getRarity().getDisplayName() != null) {
-                        message.setRarity(fish.getRarity().getDisplayName());
-                    } else {
-                        message.setRarity(fish.getRarity().getValue());
-                    }
-
-                    if (fish.getDisplayName() != null) {
-                        message.setFishCaught(fish.getDisplayName());
-                    } else {
-                        message.setFishCaught(fish.getName());
-                    }
-
+                    message.setRarity(fish.getRarity().getDisplayName());
+                    message.setFishCaught(fish.getDisplayName());
                     message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_FISH);
                 }
                 case LARGEST_TOTAL -> {
