@@ -34,11 +34,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.0");
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void process(PlayerFishEvent event) {
@@ -146,7 +147,7 @@ public class FishingProcessor implements Listener {
         }
 
         if (BaitFile.getInstance().getBaitCatchPercentage() > 0) {
-            if (new Random().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
+            if (EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
                 Bait caughtBait = BaitNBTManager.randomBaitCatch();
                 Message message = new Message(ConfigMessage.BAIT_CAUGHT);
                 message.setBaitTheme(caughtBait.getTheme());
@@ -199,7 +200,8 @@ public class FishingProcessor implements Listener {
         if (cEvent.isCancelled()) return null;
 
         if (!fish.isSilent()) {
-            String length = Float.toString(fish.getLength());
+            String length = decimalFormat.format(fish.getLength());
+            EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + Float.toString(fish.getLength()));
             String name = FishUtils.translateColorCodes(fish.getName());
             String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
 
@@ -211,11 +213,10 @@ public class FishingProcessor implements Listener {
 
             EvenMoreFish.getInstance().incrementMetricFishCaught(1);
 
-            if (fish.getDisplayName() != null) message.setFishCaught(fish.getDisplayName());
-            else message.setFishCaught(name);
+            fish.getDisplayName();
+            message.setFishCaught(fish.getDisplayName());
+            message.setRarity(fish.getRarity().getDisplayName());
 
-            if (fish.getRarity().getDisplayName() != null) message.setRarity(fish.getRarity().getDisplayName());
-            else message.setRarity(rarity);
 
             if (fish.getLength() == -1) {
                 message.setMessage(ConfigMessage.FISH_LENGTHLESS_CAUGHT);

@@ -8,6 +8,8 @@ import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+
 /**
  * This interface defines the behavior for competition strategies.
  */
@@ -88,6 +90,10 @@ public interface CompetitionStrategy {
         message.setTimeRaw(FishUtils.timeRaw(competition.timeLeft));
         message.setCompetitionType(competition.getCompetitionType());
         return message;
+    }
+
+    default DecimalFormat getDecimalFormat() {
+        return new DecimalFormat("#.0"); // For 1 decimal place
     }
 
 }

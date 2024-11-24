@@ -30,14 +30,14 @@ public class LargestTotalStrategy implements CompetitionStrategy {
     @Override
     public Message getSingleConsoleLeaderboardMessage(@NotNull Message message, @NotNull CompetitionEntry entry) {
         message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-        message.setAmount("%.1f".formatted(entry.getValue()));
+        message.setAmount(getDecimalFormat().format(entry.getValue()));
         return message;
     }
 
     @Override
     public Message getSinglePlayerLeaderboard(@NotNull Message message, @NotNull CompetitionEntry entry) {
         message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-        message.setAmount("%.1f".formatted(entry.getValue()));
+        message.setAmount(getDecimalFormat().format(entry.getValue()));
         return message;
     }
 }
