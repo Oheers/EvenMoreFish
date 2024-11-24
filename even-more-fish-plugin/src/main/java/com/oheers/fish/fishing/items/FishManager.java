@@ -220,13 +220,14 @@ public class FishManager {
         List<Fish> available = new ArrayList<>();
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (FishManager.getInstance().getRarityMap().get(r) == null)
-            r = getRandomWeightedRarity(p, 1, null, FishManager.getInstance().getRarityMap().keySet());
+        if (FishManager.getInstance().getFishForRarity(r).isEmpty()) {
+            r = getRandomWeightedRarity(p, 1, null, rarityMap.keySet());
+        }
 
         if (doRequirementChecks) {
             RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
 
-            for (Fish f : FishManager.getInstance().getRarityMap().get(r)) {
+            for (Fish f : getFishForRarity(r)) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;
@@ -239,7 +240,7 @@ public class FishManager {
                 available.add(f);
             }
         } else {
-            for (Fish f : FishManager.getInstance().getRarityMap().get(r)) {
+            for (Fish f : getFishForRarity(r)) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;

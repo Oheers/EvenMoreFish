@@ -660,12 +660,14 @@ public class Competition {
         List<Rarity> allowedRarities = new ArrayList<>();
         double totalWeight = 0;
 
-        for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
-            if (configRarities.contains(r.getValue())) {
-                fish.addAll(FishManager.getInstance().getRarityMap().get(r));
-                allowedRarities.add(r);
-                totalWeight += (r.getWeight());
+        for (String configRarity : configRarities) {
+            Rarity rarity = FishManager.getInstance().getRarity(configRarity);
+            if (rarity == null) {
+                continue;
             }
+            fish.addAll(FishManager.getInstance().getFishForRarity(rarity));
+            allowedRarities.add(rarity);
+            totalWeight += rarity.getWeight();
         }
 
         if (allowedRarities.isEmpty()) {
@@ -721,11 +723,10 @@ public class Competition {
 
         try {
             String randomRarity = configRarities.get(new Random().nextInt(configRarities.size()));
-            for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
-                if (r.getValue().equalsIgnoreCase(randomRarity)) {
-                    this.selectedRarity = r;
-                    return true;
-                }
+            Rarity rarity = FishManager.getInstance().getRarity(randomRarity);
+            if (rarity != null) {
+                this.selectedRarity = rarity;
+                return true;
             }
             this.selectedRarity = FishManager.getInstance().getRandomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
             return true;
