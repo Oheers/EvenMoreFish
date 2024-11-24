@@ -82,8 +82,8 @@ public class Competition {
 
             active = true;
 
-            Function<Competition, @NotNull Boolean> typeBeginLogic = competitionType.getBeginLogic();
-            if (typeBeginLogic != null && !typeBeginLogic.apply(this)) {
+            CompetitionStrategy strategy = competitionType.getStrategy();
+            if (!strategy.begin(this)) {
                 active = false;
                 return;
             }
@@ -195,6 +195,7 @@ public class Competition {
         message.setTimeRaw(FishUtils.timeRaw(timeLeft));
         message.setCompetitionType(competitionType);
 
+        //todo delegate to the type
         switch (competitionType) {
             case SPECIFIC_FISH -> {
                 message.setAmount(Integer.toString(numberNeeded));
@@ -268,6 +269,7 @@ public class Competition {
     }
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
+        //todo delegate to the type
         if (
                 competitionType == CompetitionType.SPECIFIC_FISH ||
                         competitionType == CompetitionType.SPECIFIC_RARITY ||
@@ -423,7 +425,7 @@ public class Competition {
         int pos = 0;
 
         List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
-
+        //todo delegate to the type
         // Sort entries in ascending order for SHORTEST_FISH
         if (competitionType == CompetitionType.SHORTEST_FISH) {
             entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
@@ -566,7 +568,7 @@ public class Competition {
         int pos = 0;
 
         List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
-
+        //todo delegate to the type
         // Sort entries in ascending order for SHORTEST_FISH
         if (competitionType == CompetitionType.SHORTEST_FISH) {
             entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));

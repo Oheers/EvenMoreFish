@@ -1,6 +1,7 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.competition.strategies.*;
 import com.oheers.fish.config.messages.ConfigMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,66 +13,62 @@ public enum CompetitionType {
             ConfigMessage.COMPETITION_TYPE_LARGEST,
             "Largest Fish",
             false,
-            null
+            new LargestFishStrategy()
     ),
     SPECIFIC_FISH(
             ConfigMessage.COMPETITION_TYPE_SPECIFIC,
             "Specific Fish",
             false,
-            Competition::chooseFish
+            new SpecificFishStrategy()
     ),
     MOST_FISH(
             ConfigMessage.COMPETITION_TYPE_MOST,
             "Most Fish",
             false,
-            null
+            new MostFishStrategy()
     ),
     SPECIFIC_RARITY(
             ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY,
             "Specific Rarity",
             false,
-            Competition::chooseRarity
+            new SpecificRarityStrategy()
     ),
     LARGEST_TOTAL(
             ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL,
             "Largest Total",
             false,
-            null
+            new LargestTotalStrategy()
     ),
     RANDOM(
             // Use largest here, as there's no option for RANDOM
             ConfigMessage.COMPETITION_TYPE_LARGEST,
             "Random",
             false,
-            competition -> {
-                competition.competitionType = getRandomType();
-                Competition.originallyRandom = true;
-                return true;
-            }
+            new RandomStrategy()
     ),
     SHORTEST_FISH(
             ConfigMessage.COMPETITION_TYPE_SHORTEST,
             "Shortest Fish",
             false,
-            null
+            new ShortestFishStrategy()
     ),
     SHORTEST_TOTAL(
             ConfigMessage.COMPETITION_TYPE_SHORTEST_TOTAL,
             "Shortest Total",
             true,
-            null
+            new ShortestTotalStrategy()
     );
 
     private final ConfigMessage typeVariable;
     private final String barPrefix;
     private final boolean shouldReverseLeaderboard;
-    private final Function<Competition, @NotNull Boolean> beginLogic;
+    private final CompetitionStrategy strategy;
 
-    CompetitionType(ConfigMessage typeVariable, String barPrefix, boolean shouldReverseLeaderboard, Function<Competition, @NotNull Boolean> beginLogic) {
+    CompetitionType(ConfigMessage typeVariable, String barPrefix, boolean shouldReverseLeaderboard, CompetitionStrategy strategy) {
         this.typeVariable = typeVariable;
         this.barPrefix = barPrefix;
         this.shouldReverseLeaderboard = shouldReverseLeaderboard;
-        this.beginLogic = beginLogic;
+        this.strategy = strategy;
     }
 
     public ConfigMessage getTypeVariable() {
@@ -86,14 +83,11 @@ public enum CompetitionType {
         return this.shouldReverseLeaderboard;
     }
 
-    public @Nullable Function<Competition, @NotNull Boolean> getBeginLogic() {
-        return this.beginLogic;
+    public CompetitionStrategy getStrategy() {
+        return strategy;
     }
 
-    public static CompetitionType getRandomType() {
-        // -1 from the length so that the RANDOM isn't chosen as the random value.
-        int type = EvenMoreFish.getInstance().getRandom().nextInt(values().length - 1);
-        return values()[type];
-    }
+
+
 
 }
