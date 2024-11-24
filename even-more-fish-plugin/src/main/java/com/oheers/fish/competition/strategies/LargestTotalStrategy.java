@@ -25,7 +25,9 @@ public class LargestTotalStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public void sendPlayerLeaderboard() {
-
+    public Message getSinglePlayerLeaderboard(Message message, CompetitionEntry entry) {
+        message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
+        message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
+        return message;
     }
 }

@@ -397,39 +397,7 @@ public class Competition {
                     message.setPositionColour(competitionColours.get(pos - 1));
                 }
 
-                switch (competitionType) {
-                    case LARGEST_FISH, SHORTEST_FISH -> {
-                        Fish fish = entry.getFish();
-                        message.setRarityColour(fish.getRarity().getColour());
-                        message.setLength(Float.toString(fish.getLength()));
-
-                        if (fish.getRarity().getDisplayName() != null) {
-                            message.setRarity(fish.getRarity().getDisplayName());
-                        } else {
-                            message.setRarity(fish.getRarity().getValue());
-                        }
-
-                        if (fish.getDisplayName() != null) {
-                            message.setFishCaught(fish.getDisplayName());
-                        } else {
-                            message.setFishCaught(fish.getName());
-                        }
-
-                        message.setMessage(competitionType == CompetitionType.LARGEST_FISH ? ConfigMessage.LEADERBOARD_LARGEST_FISH : ConfigMessage.LEADERBOARD_SHORTEST_FISH);
-                    }
-                    case LARGEST_TOTAL -> {
-                        message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-                        message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
-                    }
-                    case SHORTEST_TOTAL -> {
-                        message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_TOTAL);
-                        message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
-                    }
-                    default -> {
-                        message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
-                        message.setAmount(Integer.toString((int) entry.getValue()));
-                    }
-                }
+                message = competitionType.getStrategy().getSinglePlayerLeaderboard(message, entry);
                 builder.append(message.getRawMessage());
 
                 if (pos == Messages.getInstance().getConfig().getInt("leaderboard-count")) {
@@ -451,45 +419,14 @@ public class Competition {
                     message.setPosition(Integer.toString(pos));
                     message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
                     message.setPositionColour("&f");
-
-                    switch (competitionType) {
-                        case LARGEST_FISH, SHORTEST_FISH -> {
-                            Fish fish = entry.getFish();
-                            message.setRarityColour(fish.getRarity().getColour());
-                            message.setLength(Float.toString(entry.getValue()));
-
-                            if (fish.getRarity().getDisplayName() != null) {
-                                message.setRarity(fish.getRarity().getDisplayName());
-                            } else {
-                                message.setRarity(fish.getRarity().getValue());
-                            }
-
-                            if (fish.getDisplayName() != null) {
-                                message.setFishCaught(fish.getDisplayName());
-                            } else {
-                                message.setFishCaught(fish.getName());
-                            }
-
-                            message.setMessage(competitionType == CompetitionType.LARGEST_FISH ? ConfigMessage.LEADERBOARD_LARGEST_FISH : ConfigMessage.LEADERBOARD_SHORTEST_FISH);
-                        }
-                        case LARGEST_TOTAL -> {
-                            message.setMessage(ConfigMessage.LEADERBOARD_LARGEST_TOTAL);
-                            message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
-                        }
-                        case SHORTEST_TOTAL -> {
-                            message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_TOTAL);
-                            message.setAmount(Double.toString(Math.floor(entry.getValue() * 10) / 10));
-                        }
-                        default -> {
-                            message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
-                            message.setAmount(Integer.toString((int) entry.getValue()));
-                        }
-                    }
+                    message = competitionType.getStrategy().getSinglePlayerLeaderboard(message, entry);
 
                     builder.append("\n").append(message.getRawMessage());
                 }
             }
         }
+
+
         player.sendMessage(builder.toString());
         Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
         message.setAmount(Integer.toString(leaderboard.getSize()));

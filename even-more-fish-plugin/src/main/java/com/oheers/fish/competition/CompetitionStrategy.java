@@ -24,7 +24,12 @@ public interface CompetitionStrategy {
         return message;
     }
 
-    void sendPlayerLeaderboard();
+    default Message getSinglePlayerLeaderboard(Message message, CompetitionEntry entry) {
+        //todo temp, since this really isn't supposed to be the case, but was the original code. idk
+        message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+        message.setAmount(Integer.toString((int) entry.getValue()));
+        return message;
+    }
 
     /**
      * This creates a message object and applies all the settings to it to make it able to use the {type} variable. It
