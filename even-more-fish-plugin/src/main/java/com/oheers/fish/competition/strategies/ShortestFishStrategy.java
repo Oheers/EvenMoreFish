@@ -5,19 +5,28 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
+import org.bukkit.entity.Player;
 
 public class ShortestFishStrategy implements CompetitionStrategy {
-    @Override
-    public boolean begin(Competition competition) {
-        return true;
-    }
 
     @Override
-    public void applyLeaderboard() {
+    public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
+        if (fish.getLength() <= 0) return;
 
+        CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
+
+        if (entry != null) {
+            if (fish.getLength() < entry.getFish().getLength()) {
+                leaderboard.removeEntry(entry);
+                leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competition.getCompetitionType()));
+            }
+        } else {
+            leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competition.getCompetitionType()));
+        }
     }
 
     @Override

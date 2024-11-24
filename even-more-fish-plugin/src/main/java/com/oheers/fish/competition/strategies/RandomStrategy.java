@@ -3,30 +3,49 @@ package com.oheers.fish.competition.strategies;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.competition.leaderboard.Leaderboard;
+import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.fishing.items.Fish;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class RandomStrategy implements CompetitionStrategy {
+    private CompetitionType randomType;
     @Override
     public boolean begin(Competition competition) {
         competition.competitionType = getRandomType();
+        this.randomType = competition.competitionType;
         Competition.setOriginallyRandom(true);
         return true;
     }
 
     @Override
-    public void applyLeaderboard() {
-
+    public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
+        randomType.getStrategy().applyToLeaderboard(fish,fisher,leaderboard,competition);
     }
 
     @Override
-    public void applyConsoleLeaderboard() {
-
+    public Message getSingleConsoleLeaderboardMessage(Message message, CompetitionEntry entry) {
+        return randomType.getStrategy().getSingleConsoleLeaderboardMessage(message, entry);
     }
 
     @Override
-    public void sendPlayerLeaderboard() {
+    public Message getBeginMessage(Competition competition, CompetitionType type) {
+        return randomType.getStrategy().getBeginMessage(competition, type);
+    }
 
+    @Override
+    public Message getSinglePlayerLeaderboard(Message message, CompetitionEntry entry) {
+        return randomType.getStrategy().getSinglePlayerLeaderboard(message, entry);
+    }
+
+    @Override
+    public Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+        return randomType.getStrategy().getTypeFormat(competition, configMessage);
     }
 
     public CompetitionType getRandomType() {

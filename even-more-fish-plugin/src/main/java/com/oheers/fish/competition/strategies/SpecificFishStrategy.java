@@ -3,14 +3,17 @@ package com.oheers.fish.competition.strategies;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,13 +27,26 @@ public class SpecificFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public void applyLeaderboard() {
+    public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
+        if (!fish.getName().equalsIgnoreCase(competition.selectedFish.getName()) ||
+                fish.getRarity() != competition.selectedFish.getRarity()) {
+            return;
+        }
 
-    }
+        CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
+        float increaseAmount = 1.0f;
 
-    @Override
-    public void sendPlayerLeaderboard() {
+        if (entry != null) {
+            entry.incrementValue(increaseAmount);
+            leaderboard.updateEntry(entry);
+        } else {
+            leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competition.getCompetitionType()));
+        }
 
+        if (entry != null && entry.getValue() >= competition.numberNeeded) {
+            competition.singleReward(fisher);
+            competition.end(false);
+        }
     }
 
     @Override

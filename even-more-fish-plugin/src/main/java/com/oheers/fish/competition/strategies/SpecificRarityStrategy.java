@@ -4,17 +4,20 @@ package com.oheers.fish.competition.strategies;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 
 public class SpecificRarityStrategy implements CompetitionStrategy {
@@ -22,15 +25,27 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     public boolean begin(Competition competition) {
         return chooseRarity(competition);
     }
-
     @Override
-    public void applyLeaderboard() {
+    public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
+        if (competition.selectedRarity != null &&
+                !fish.getRarity().getValue().equals(competition.selectedRarity.getValue())) {
+            return; // Fish doesn't match the required rarity
+        }
 
-    }
+        CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
+        float increaseAmount = 1.0f;
 
-    @Override
-    public void sendPlayerLeaderboard() {
+        if (entry != null) {
+            entry.incrementValue(increaseAmount);
+            leaderboard.updateEntry(entry);
+        } else {
+            leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competition.getCompetitionType()));
+        }
 
+        if (entry != null && entry.getValue() >= competition.numberNeeded) {
+            competition.singleReward(fisher);
+            competition.end(false);
+        }
     }
 
     @Override
@@ -52,7 +67,7 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
         return message;
     }
 
-    public boolean chooseRarity(Competition competition) {
+    private boolean chooseRarity(Competition competition) {
         List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.competitionName, competition.adminStarted);
 
         if (configRarities.isEmpty()) {
@@ -63,7 +78,7 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
         competition.setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competition.competitionName, competition.adminStarted));
 
         try {
-            String randomRarity = configRarities.get(new Random().nextInt(configRarities.size()));
+            String randomRarity = configRarities.get(EvenMoreFish.getInstance().getRandom().nextInt(configRarities.size()));
             Rarity rarity = FishManager.getInstance().getRarity(randomRarity);
             if (rarity != null) {
                 competition.selectedRarity = rarity;

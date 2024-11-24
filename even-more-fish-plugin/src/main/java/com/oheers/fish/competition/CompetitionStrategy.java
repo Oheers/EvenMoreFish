@@ -2,14 +2,19 @@ package com.oheers.fish.competition;
 
 
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.fishing.items.Fish;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public interface CompetitionStrategy {
-    boolean begin(Competition competition);
+    default boolean begin(Competition competition) {
+        return true;
+    }
 
-    void applyLeaderboard();
+    void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition);
 
     default Message getSingleConsoleLeaderboardMessage(Message message, CompetitionEntry entry) {
         //todo temp, since this really isn't supposed to be the case, but was the original code. idk

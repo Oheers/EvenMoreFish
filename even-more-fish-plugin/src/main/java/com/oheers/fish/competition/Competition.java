@@ -16,18 +16,15 @@ import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.UserReport;
 import com.oheers.fish.fishing.items.Fish;
-import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.function.Function;
 import java.util.logging.Level;
 
 public class Competition {
@@ -41,7 +38,6 @@ public class Competition {
     public int numberNeeded;
     public String competitionName;
     public boolean adminStarted;
-    public String competitionID;
     public Message startMessage;
     long maxDuration, timeLeft;
     Bar statusBar;
@@ -190,7 +186,7 @@ public class Competition {
      * @return A message object that's pre-set to be compatible for the time remaining.
      */
     private Message getTypeFormat(ConfigMessage configMessage) {
-        return competitionType.getStrategy().getTypeFormat(this,configMessage);
+        return competitionType.getStrategy().getTypeFormat(this, configMessage);
     }
 
     /**
@@ -230,123 +226,7 @@ public class Competition {
     }
 
     public void applyToLeaderboard(Fish fish, Player fisher) {
-        //todo delegate to the type
-        if (
-                competitionType == CompetitionType.SPECIFIC_FISH ||
-                        competitionType == CompetitionType.SPECIFIC_RARITY ||
-                        competitionType == CompetitionType.MOST_FISH ||
-                        competitionType == CompetitionType.LARGEST_TOTAL ||
-                        competitionType == CompetitionType.SHORTEST_TOTAL // New type
-        ) {
-            // is the fish the specific fish or rarity?
-            if (competitionType == CompetitionType.SPECIFIC_FISH) {
-                if (!(fish.getName().equalsIgnoreCase(selectedFish.getName()) && fish.getRarity() == selectedFish.getRarity())) {
-                    return;
-                }
-            } else if (competitionType == CompetitionType.SPECIFIC_RARITY) {
-                if (this.selectedRarity != null && !fish.getRarity().getValue().equals(this.selectedRarity.getValue())) {
-                    return;
-                }
-            }
-
-            if ((competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY) && numberNeeded == 1) {
-                singleReward(fisher);
-                end(false);
-            } else {
-                CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
-
-                float increaseAmount;
-                if (this.competitionType == CompetitionType.LARGEST_TOTAL || this.competitionType == CompetitionType.SHORTEST_TOTAL) {
-                    increaseAmount = fish.getLength();
-                } else {
-                    increaseAmount = 1.0f;
-                }
-
-                if (entry != null) {
-                    if (entry.getValue() + increaseAmount >= leaderboard.getTopEntry().getValue() && leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
-                        Message message = new Message(ConfigMessage.NEW_FIRST_PLACE_NOTIFICATION);
-                        message.setLength(Float.toString(fish.getLength()));
-                        message.setRarityColour(fish.getRarity().getColour());
-                        message.setFishCaught(fish.getName());
-                        message.setRarity(fish.getRarity().getValue());
-                        message.setPlayer(fisher);
-
-                        FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
-                    }
-
-                    try {
-                        // re-adding the entry so it's sorted
-                        leaderboard.removeEntry(entry);
-                        entry.incrementValue(increaseAmount);
-                        leaderboard.addEntry(entry);
-                    } catch (Exception exception) {
-                        EvenMoreFish.getInstance().getLogger().severe("Could not delete: " + entry);
-                    }
-
-                    if (entry.getValue() == numberNeeded && (competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY)) {
-                        end(false);
-                    }
-
-                } else {
-                    CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
-                    if (this.competitionType == CompetitionType.LARGEST_TOTAL) {
-                        newEntry.incrementValue(fish.getLength() - 1);
-                    } else if (this.competitionType == CompetitionType.SHORTEST_TOTAL) {
-                        newEntry.incrementValue(fish.getLength() - 1); // Decrease for shortest total
-                    }
-                    leaderboard.addEntry(newEntry);
-                }
-            }
-        } else {
-            // If a fish has no size it shouldn't be able to join the competition
-            if (fish.getLength() <= 0) {
-                return;
-            }
-
-            CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
-
-            if (entry != null) {
-                if ((competitionType == CompetitionType.LARGEST_FISH && entry.getFish().getLength() < fish.getLength()) ||
-                        (competitionType == CompetitionType.SHORTEST_FISH && entry.getFish().getLength() > fish.getLength())) {
-
-                    if ((competitionType == CompetitionType.LARGEST_FISH && fish.getLength() > leaderboard.getTopEntry().getFish().getLength()) ||
-                            (competitionType == CompetitionType.SHORTEST_FISH && fish.getLength() < leaderboard.getTopEntry().getFish().getLength()) &&
-                                    leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
-                        Message message = new Message(ConfigMessage.NEW_FIRST_PLACE_NOTIFICATION);
-                        message.setLength(Float.toString(fish.getLength()));
-                        message.setRarityColour(fish.getRarity().getColour());
-                        message.setFishCaught(fish.getName());
-                        message.setRarity(fish.getRarity().getValue());
-                        message.setPlayer(fisher);
-
-                        FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
-                    }
-
-                    leaderboard.removeEntry(entry);
-                    leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competitionType));
-                }
-
-            } else {
-                CompetitionEntry newEntry = new CompetitionEntry(fisher.getUniqueId(), fish, competitionType);
-
-                if (leaderboard.getSize() != 0) {
-                    if ((competitionType == CompetitionType.LARGEST_FISH && fish.getLength() > leaderboard.getTopEntry().getFish().getLength()) ||
-                            (competitionType == CompetitionType.SHORTEST_FISH && fish.getLength() < leaderboard.getTopEntry().getFish().getLength()) &&
-                                    leaderboard.getTopEntry().getPlayer() != fisher.getUniqueId()) {
-                        Message message = new Message(ConfigMessage.NEW_FIRST_PLACE_NOTIFICATION);
-                        message.setLength(Float.toString(fish.getLength()));
-                        message.setRarityColour(fish.getRarity().getColour());
-                        message.setFishCaught(fish.getName());
-                        message.setRarity(fish.getRarity().getValue());
-                        message.setPlayer(fisher);
-
-                        FishUtils.broadcastFishMessage(message, fisher.getPlayer(), isDoingFirstPlaceActionBar());
-                    }
-                }
-
-                leaderboard.addEntry(newEntry);
-            }
-        }
+        competitionType.getStrategy().applyToLeaderboard(fish, fisher, leaderboard, this);
     }
 
     public void announceBegin() {
