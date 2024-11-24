@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Competition {
 
@@ -33,12 +34,12 @@ public class Competition {
     static boolean active;
     static boolean originallyRandom;
     private CompetitionType competitionType;
-    public Fish selectedFish;
-    public Rarity selectedRarity;
-    public int numberNeeded;
-    public String competitionName;
-    public boolean adminStarted;
-    public Message startMessage;
+    private Fish selectedFish;
+    private Rarity selectedRarity;
+    private int numberNeeded;
+    private String competitionName;
+    private boolean adminStarted;
+    private Message startMessage;
     long maxDuration;
     long timeLeft;
     Bar statusBar;
@@ -330,6 +331,7 @@ public class Competition {
 
 
     public void initAlerts(String competitionName) {
+        final Logger logger = EvenMoreFish.getInstance().getLogger();
         for (String s : CompetitionConfig.getInstance().getAlertTimes(competitionName)) {
 
             String[] split = s.split(":");
@@ -337,12 +339,10 @@ public class Competition {
                 try {
                     alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
                 } catch (NumberFormatException nfe) {
-                    EvenMoreFish.getInstance()
-                            .getLogger()
-                            .severe(() -> "Could not turn %s into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb".formatted(s));
+                    logger.severe(() -> "Could not turn %s into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb".formatted(s));
                 }
             } else {
-                EvenMoreFish.getInstance().getLogger().severe(() -> "%s is not formatted correctly. Use MM:SS".formatted(s));
+                logger.severe(() -> "%s is not formatted correctly. Use MM:SS".formatted(s));
             }
         }
     }
@@ -547,5 +547,33 @@ public class Competition {
 
     public void setCompetitionType(CompetitionType competitionType) {
         this.competitionType = competitionType;
+    }
+
+    public Fish getSelectedFish() {
+        return selectedFish;
+    }
+
+    public void setSelectedFish(Fish selectedFish) {
+        this.selectedFish = selectedFish;
+    }
+
+    public Rarity getSelectedRarity() {
+        return selectedRarity;
+    }
+
+    public void setSelectedRarity(Rarity selectedRarity) {
+        this.selectedRarity = selectedRarity;
+    }
+
+    public int getNumberNeeded() {
+        return numberNeeded;
+    }
+
+    public boolean isAdminStarted() {
+        return adminStarted;
+    }
+
+    public void setStartMessage(Message startMessage) {
+        this.startMessage = startMessage;
     }
 }

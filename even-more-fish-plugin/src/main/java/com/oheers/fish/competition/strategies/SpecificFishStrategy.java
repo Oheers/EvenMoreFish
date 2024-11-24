@@ -28,8 +28,8 @@ public class SpecificFishStrategy implements CompetitionStrategy {
 
     @Override
     public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
-        if (!fish.getName().equalsIgnoreCase(competition.selectedFish.getName()) ||
-                fish.getRarity() != competition.selectedFish.getRarity()) {
+        if (!fish.getName().equalsIgnoreCase(competition.getSelectedFish().getName()) ||
+                fish.getRarity() != competition.getSelectedFish().getRarity()) {
             return;
         }
 
@@ -43,7 +43,7 @@ public class SpecificFishStrategy implements CompetitionStrategy {
             leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competition.getCompetitionType()));
         }
 
-        if (entry != null && entry.getValue() >= competition.numberNeeded) {
+        if (entry != null && entry.getValue() >= competition.getNumberNeeded()) {
             competition.singleReward(fisher);
             competition.end(false);
         }
@@ -52,10 +52,10 @@ public class SpecificFishStrategy implements CompetitionStrategy {
     @Override
     public Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         Message message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
-        message.setAmount(Integer.toString(competition.numberNeeded));
-        message.setRarityColour(competition.selectedFish.getRarity().getColour());
-        message.setRarity(competition.selectedFish.getRarity().getDisplayName());
-        message.setFishCaught(competition.selectedFish.getDisplayName());
+        message.setAmount(Integer.toString(competition.getNumberNeeded()));
+        message.setRarityColour(competition.getSelectedFish().getRarity().getColour());
+        message.setRarity(competition.getSelectedFish().getRarity().getDisplayName());
+        message.setFishCaught(competition.getSelectedFish().getDisplayName());
         return message;
     }
 
@@ -65,10 +65,10 @@ public class SpecificFishStrategy implements CompetitionStrategy {
     }
 
     private boolean chooseFish(Competition competition) {
-        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.competitionName, competition.adminStarted);
+        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.getCompetitionName(), competition.isAdminStarted());
 
         if (configRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competition.competitionName + " competition config section.");
+            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competition.getCompetitionName() + " competition config section.");
             return false;
         }
 
@@ -87,7 +87,7 @@ public class SpecificFishStrategy implements CompetitionStrategy {
         }
 
         if (allowedRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competition.competitionName + " competition config contains no loaded rarities!");
+            EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competition.getCompetitionName() + " competition config contains no loaded rarities!");
             EvenMoreFish.getInstance().getLogger().severe("Configured Rarities: " + configRarities);
             EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList());
             return false;
@@ -101,8 +101,8 @@ public class SpecificFishStrategy implements CompetitionStrategy {
             }
         }
 
-        if (competition.numberNeeded == 0) {
-            competition.setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competition.competitionName, competition.adminStarted));
+        if (competition.getNumberNeeded() == 0) {
+            competition.setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competition.getCompetitionName(), competition.isAdminStarted()));
         }
 
         try {
@@ -111,12 +111,12 @@ public class SpecificFishStrategy implements CompetitionStrategy {
                 // For the catch block to catch.
                 throw new IllegalArgumentException();
             }
-            competition.selectedFish = selectedFish;
+            competition.setSelectedFish(selectedFish);
             return true;
         } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
-                    .severe("Could not load: " + competition.competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
+                    .severe("Could not load: " + competition.getCompetitionName() + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
             EvenMoreFish.getInstance().getLogger().severe("fish.size(): " + fish.size());
             EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + allowedRarities.size());
             // Also log the exception

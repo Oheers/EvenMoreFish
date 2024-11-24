@@ -27,8 +27,8 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
 
     @Override
     public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
-        if (competition.selectedRarity != null &&
-                !fish.getRarity().getValue().equals(competition.selectedRarity.getValue())) {
+        if (competition.getSelectedRarity() != null &&
+                !fish.getRarity().getValue().equals(competition.getSelectedRarity().getValue())) {
             return; // Fish doesn't match the required rarity
         }
 
@@ -42,7 +42,7 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
             leaderboard.addEntry(new CompetitionEntry(fisher.getUniqueId(), fish, competition.getCompetitionType()));
         }
 
-        if (entry != null && entry.getValue() >= competition.numberNeeded) {
+        if (entry != null && entry.getValue() >= competition.getNumberNeeded()) {
             competition.singleReward(fisher);
             competition.end(false);
         }
@@ -56,40 +56,40 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     @Override
     public Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         final Message message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
-        message.setAmount(Integer.toString(competition.numberNeeded));
-        if (competition.selectedRarity == null) {
+        message.setAmount(Integer.toString(competition.getNumberNeeded()));
+        if (competition.getSelectedRarity() == null) {
             EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");
             return message;
         }
-        message.setRarityColour(competition.selectedRarity.getColour());
-        message.setRarity(competition.selectedRarity.getDisplayName());
+        message.setRarityColour(competition.getSelectedRarity().getColour());
+        message.setRarity(competition.getSelectedRarity().getDisplayName());
 
         return message;
     }
 
     private boolean chooseRarity(Competition competition) {
-        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.competitionName, competition.adminStarted);
+        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.getCompetitionName(), competition.isAdminStarted());
 
         if (configRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competition.competitionName + " competition config section.");
+            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competition.getCompetitionName() + " competition config section.");
             return false;
         }
 
-        competition.setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competition.competitionName, competition.adminStarted));
+        competition.setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competition.getCompetitionName(), competition.isAdminStarted()));
 
         try {
             String randomRarity = configRarities.get(EvenMoreFish.getInstance().getRandom().nextInt(configRarities.size()));
             Rarity rarity = FishManager.getInstance().getRarity(randomRarity);
             if (rarity != null) {
-                competition.selectedRarity = rarity;
+                competition.setSelectedRarity(rarity);
                 return true;
             }
-            competition.selectedRarity = FishManager.getInstance().getRandomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
+            competition.setSelectedRarity(FishManager.getInstance().getRandomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet()));
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
-                    .severe("Could not load: " + competition.competitionName + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
+                    .severe("Could not load: " + competition.getCompetitionName() + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
             EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + FishManager.getInstance().getRarityMap().keySet().size());
             EvenMoreFish.getInstance().getLogger().severe("configRarities.size(): " + configRarities.size());
             // Also log the exception
