@@ -90,7 +90,7 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
             EvenMoreFish.getInstance()
                     .getLogger()
                     .severe("Could not load: " + competition.getCompetitionName() + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
-            EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + FishManager.getInstance().getRarityMap().keySet().size());
+            EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + FishManager.getInstance().getRarityMap().size());
             EvenMoreFish.getInstance().getLogger().severe("configRarities.size(): " + configRarities.size());
             // Also log the exception
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);

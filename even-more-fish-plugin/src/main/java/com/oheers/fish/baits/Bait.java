@@ -76,7 +76,9 @@ public class Bait {
         baitItem.setAmount(dropQuantity);
 
         ItemMeta meta = baitItem.getItemMeta();
-        if (meta != null) meta.setLore(createBoostLore());
+        if (meta != null) {
+            meta.setLore(createBoostLore());
+        }
         baitItem.setItemMeta(meta);
 
         return BaitNBTManager.applyBaitNBT(baitItem, this.name);
@@ -175,12 +177,16 @@ public class Bait {
             } else {
                 fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFishList(), true);
             }
-            if (fish != null) fish.setWasBaited(true);
+            if (fish != null) {
+                fish.setWasBaited(true);
+            }
 
             if (!getRarityList().contains(fishRarity) && (fish == null || !getFishList().contains(fish))) {
                 // boost effect chose a fish but the randomizer didn't pick out the right fish - they've been incorrectly boosted.
                 fish = FishManager.getInstance().getFish(fishRarity, location, player, 1, null, true);
-                if (fish != null) fish.setWasBaited(false);
+                if (fish != null) {
+                    fish.setWasBaited(false);
+                }
             } else {
                 alertUsage(player);
             }
@@ -188,7 +194,9 @@ public class Bait {
             fish = FishManager.getInstance().getFish(fishRarity, location, player, 1, null, true);
             if (getRarityList().contains(fishRarity)) {
                 alertUsage(player);
-                if (fish != null) fish.setWasBaited(true);
+                if (fish != null) {
+                    fish.setWasBaited(true);
+                }
             }
         }
 
@@ -204,12 +212,13 @@ public class Bait {
     private void alertUsage(Player player) {
         if (BaitFile.getInstance().alertOnBaitUse(this.name)) {
             return;
-        } else {
-            Message message = new Message(ConfigMessage.BAIT_USED);
-            message.setBait(this.name);
-            message.setBaitTheme(this.theme);
-            message.broadcast(player);
         }
+
+        Message message = new Message(ConfigMessage.BAIT_USED);
+        message.setBait(this.name);
+        message.setBaitTheme(this.theme);
+        message.broadcast(player);
+
     }
 
     /**
