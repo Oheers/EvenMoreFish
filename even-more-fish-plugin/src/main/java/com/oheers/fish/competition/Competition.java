@@ -560,69 +560,6 @@ public class Competition {
         message.broadcast(console);
     }
 
-    public boolean chooseFish() {
-        String competitionName = this.competitionName;
-        boolean adminStart = this.adminStarted;
-        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competitionName, adminStart);
-
-        if (configRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competitionName + " competition config section.");
-            return false;
-        }
-
-        List<Fish> fish = new ArrayList<>();
-        List<Rarity> allowedRarities = new ArrayList<>();
-        double totalWeight = 0;
-
-        for (String configRarity : configRarities) {
-            Rarity rarity = FishManager.getInstance().getRarity(configRarity);
-            if (rarity == null) {
-                continue;
-            }
-            fish.addAll(FishManager.getInstance().getFishForRarity(rarity));
-            allowedRarities.add(rarity);
-            totalWeight += rarity.getWeight();
-        }
-
-        if (allowedRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competitionName + " competition config contains no loaded rarities!");
-            EvenMoreFish.getInstance().getLogger().severe("Configured Rarities: " + configRarities);
-            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList());
-            return false;
-        }
-
-        int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < allowedRarities.size() - 1; ++idx) {
-            r -= allowedRarities.get(idx).getWeight();
-            if (r <= 0.0) {
-                break;
-            }
-        }
-
-        if (this.numberNeeded == 0) {
-            setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competitionName, adminStart));
-        }
-
-        try {
-            Fish selectedFish = FishManager.getInstance().getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
-            if (selectedFish == null) {
-                // For the catch block to catch.
-                throw new IllegalArgumentException();
-            }
-            this.selectedFish = selectedFish;
-            return true;
-        } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
-            EvenMoreFish.getInstance()
-                    .getLogger()
-                    .severe("Could not load: " + competitionName + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
-            EvenMoreFish.getInstance().getLogger().severe("fish.size(): " + fish.size());
-            EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + allowedRarities.size());
-            // Also log the exception
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
-            return false;
-        }
-    }
-
     public boolean chooseRarity() {
         String competitionName = this.competitionName;
         boolean adminStart = this.adminStarted;
