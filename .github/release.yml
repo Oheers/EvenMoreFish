@@ -5,12 +5,17 @@ changelog:
     - title: 🏕 Features
       labels:
         - "suggestion (plugin): added"
+        - "new feature"
     - title: 🛠 Bug Fixes
       labels:
         - "bug: fixed"
     - title: 📖 Documentation
       labels:
         - "suggestion (documentation): added"
+    - title: 🚀 Performance & Readability Improvements
+      labels:
+        - "optimizations (performance)"
+        - "optimizations (readability)"
     - title: 👒 Dependencies
       labels:
         - dependencies
