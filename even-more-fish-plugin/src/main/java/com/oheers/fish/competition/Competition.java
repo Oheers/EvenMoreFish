@@ -329,21 +329,22 @@ public class Competition {
     }
 
 
-
     public void initAlerts(String competitionName) {
         final Logger logger = EvenMoreFish.getInstance().getLogger();
         for (String s : CompetitionConfig.getInstance().getAlertTimes(competitionName)) {
 
             String[] split = s.split(":");
-            if (split.length == 2) {
-                try {
-                    alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
-                } catch (NumberFormatException nfe) {
-                    logger.severe(() -> "Could not turn %s into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb".formatted(s));
-                }
-            } else {
+            if (split.length != 2) {
                 logger.severe(() -> "%s is not formatted correctly. Use MM:SS".formatted(s));
+                continue;
             }
+
+            try {
+                alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
+            } catch (NumberFormatException nfe) {
+                logger.severe(() -> "Could not turn %s into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb".formatted(s));
+            }
+
         }
     }
 
@@ -379,7 +380,9 @@ public class Competition {
     }
 
     private void handleDatabaseUpdates(CompetitionEntry entry, boolean isTopEntry) {
-        if (!MainConfig.getInstance().databaseEnabled()) return;
+        if (!MainConfig.getInstance().databaseEnabled()) {
+            return;
+        }
 
         UserReport userReport = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
         if (userReport == null) {
@@ -573,7 +576,4 @@ public class Competition {
         return adminStarted;
     }
 
-    public void setStartMessage(Message startMessage) {
-        this.startMessage = startMessage;
-    }
 }
