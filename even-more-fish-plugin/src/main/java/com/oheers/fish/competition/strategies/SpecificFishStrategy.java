@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SpecificFishStrategy implements CompetitionStrategy {
     @Override
@@ -66,9 +67,9 @@ public class SpecificFishStrategy implements CompetitionStrategy {
 
     private boolean chooseFish(Competition competition) {
         List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.getCompetitionName(), competition.isAdminStarted());
-
+        final Logger logger = EvenMoreFish.getInstance().getLogger();
         if (configRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competition.getCompetitionName() + " competition config section.");
+            logger.severe(() -> "No allowed-rarities list found in the " + competition.getCompetitionName() + " competition config section.");
             return false;
         }
 
@@ -87,9 +88,9 @@ public class SpecificFishStrategy implements CompetitionStrategy {
         }
 
         if (allowedRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("The allowed-rarities list found in the " + competition.getCompetitionName() + " competition config contains no loaded rarities!");
-            EvenMoreFish.getInstance().getLogger().severe("Configured Rarities: " + configRarities);
-            EvenMoreFish.getInstance().getLogger().severe("Loaded Rarities: " + FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList());
+            logger.severe(() -> "The allowed-rarities list found in the %s competition config contains no loaded rarities!".formatted(competition.getCompetitionName()));
+            logger.severe(() -> "Configured Rarities: %s".formatted(configRarities));
+            logger.severe(() -> "Loaded Rarities: %s".formatted(FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList()));
             return false;
         }
 
@@ -114,13 +115,11 @@ public class SpecificFishStrategy implements CompetitionStrategy {
             competition.setSelectedFish(selectedFish);
             return true;
         } catch (IllegalArgumentException | IndexOutOfBoundsException exception) {
-            EvenMoreFish.getInstance()
-                    .getLogger()
-                    .severe("Could not load: " + competition.getCompetitionName() + " because a random fish could not be chosen. \nIf you need support, please provide the following information:");
-            EvenMoreFish.getInstance().getLogger().severe("fish.size(): " + fish.size());
-            EvenMoreFish.getInstance().getLogger().severe("allowedRarities.size(): " + allowedRarities.size());
+            logger.severe(() -> "Could not load: %s because a random fish could not be chosen. %nIf you need support, please provide the following information:".formatted(competition.getCompetitionName()));
+            logger.severe(() -> "fish.size(): %s".formatted(fish.size()));
+            logger.severe(() -> "allowedRarities.size(): %s".formatted(allowedRarities.size()));
             // Also log the exception
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
+            logger.log(Level.SEVERE, exception.getMessage(), exception);
             return false;
         }
     }
