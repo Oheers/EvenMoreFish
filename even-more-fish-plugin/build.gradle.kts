@@ -86,8 +86,8 @@ dependencies {
     implementation(libs.inventorygui)
     implementation(libs.bundles.adventure)
     implementation(libs.vanishchecker)
+    implementation(libs.boostedyaml)
 
-    library(libs.boostedyaml)
     library(libs.friendlyid)
     library(libs.flyway.core)
     library(libs.flyway.mysql)
@@ -254,6 +254,7 @@ tasks {
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
         relocate("net.kyori.adventure", "com.oheers.fish.libs.adventure")
         relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
+        relocate("dev.dejvokep", "com.oheers.fish.libs.boostedyaml")
 
     }
 
