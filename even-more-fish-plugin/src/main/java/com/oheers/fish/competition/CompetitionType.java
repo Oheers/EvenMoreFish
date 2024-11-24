@@ -1,12 +1,8 @@
 package com.oheers.fish.competition;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.strategies.*;
 import com.oheers.fish.config.messages.ConfigMessage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
 
 public enum CompetitionType {
     LARGEST_FISH(
