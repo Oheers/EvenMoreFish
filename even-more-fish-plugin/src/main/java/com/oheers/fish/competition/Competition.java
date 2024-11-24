@@ -350,18 +350,8 @@ public class Competition {
     }
 
     public void announceBegin() {
-        Message message;
-
-        if (competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY) {
-            message = getTypeFormat(ConfigMessage.COMPETITION_START);
-        } else {
-            message = new Message(ConfigMessage.COMPETITION_START);
-            message.setCompetitionType(this.competitionType);
-        }
-
-        startMessage = message;
-
-        message.broadcast();
+        startMessage = competitionType.getStrategy().getBeginMessage(this, competitionType);
+        startMessage.broadcast();
 
         if (startSound != null) {
             Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), startSound, 10f, 1f));
@@ -529,7 +519,7 @@ public class Competition {
         int pos = 0;
 
         List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
-        // Sort entries in ascending order for SHORTEST_FISH, also find a way to delegate this to specific type..
+        // Sort entries in ascending order for SHORTEST_FISH, also find a way to delegate this to specific type.. todo
         if (competitionType == CompetitionType.SHORTEST_FISH) {
             entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
         }

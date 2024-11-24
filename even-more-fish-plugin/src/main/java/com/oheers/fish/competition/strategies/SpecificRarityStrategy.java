@@ -5,6 +5,7 @@ package com.oheers.fish.competition.strategies;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionStrategy;
+import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -30,6 +31,11 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     @Override
     public void sendPlayerLeaderboard() {
 
+    }
+
+    @Override
+    public Message getBeginMessage(@NotNull Competition competition, CompetitionType type) {
+        return getTypeFormat(competition, ConfigMessage.COMPETITION_START);
     }
 
     @Override

@@ -4,6 +4,7 @@ package com.oheers.fish.competition.strategies;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionStrategy;
+import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -42,7 +43,12 @@ public class SpecificFishStrategy implements CompetitionStrategy {
         return message;
     }
 
-    public boolean chooseFish(Competition competition) {
+    @Override
+    public Message getBeginMessage(@NotNull Competition competition, CompetitionType type) {
+        return getTypeFormat(competition, ConfigMessage.COMPETITION_START);
+    }
+
+    private boolean chooseFish(Competition competition) {
         List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.competitionName, competition.adminStarted);
 
         if (configRarities.isEmpty()) {
@@ -102,4 +108,6 @@ public class SpecificFishStrategy implements CompetitionStrategy {
             return false;
         }
     }
+
+
 }

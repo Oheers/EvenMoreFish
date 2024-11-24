@@ -18,6 +18,12 @@ public interface CompetitionStrategy {
         return message;
     }
 
+    default Message getBeginMessage(Competition competition, CompetitionType type) {
+        Message message = new Message(ConfigMessage.COMPETITION_START);
+        message.setCompetitionType(type);
+        return message;
+    }
+
     void sendPlayerLeaderboard();
 
     /**
