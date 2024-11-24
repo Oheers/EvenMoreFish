@@ -372,14 +372,29 @@ public class Competition {
                 try {
                     this.rewards.put(Integer.parseInt(key), addingRewards);
                 } catch (NumberFormatException exception) {
-                    EvenMoreFish.getInstance().getLogger().log(Level.WARNING, key + " is not a valid number!", exception);
+                    EvenMoreFish.getInstance().getLogger().warning(() -> "%s is not a valid number!".formatted(key));
                 }
             }
         });
     }
 
+    private void handleDatabaseUpdates(CompetitionEntry entry, boolean isTopEntry) {
+        if (!MainConfig.getInstance().databaseEnabled()) return;
+
+        UserReport userReport = DataManager.getInstance().getUserReportIfExists(entry.getPlayer());
+        if (userReport == null) {
+            EvenMoreFish.getInstance().getLogger().severe("Could not fetch User Report for " + entry.getPlayer() + ", their data has not been modified.");
+            return;
+        }
+
+        if (isTopEntry) {
+            userReport.incrementCompetitionsWon(1);
+        } else {
+            userReport.incrementCompetitionsJoined(1);
+        }
+    }
+
     private void handleRewards() {
-        //todo possibly delegate a part of this?
         if (leaderboard.getSize() == 0) {
             if (!((competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY) && numberNeeded == 1)) {
                 new Message(ConfigMessage.NO_WINNERS).broadcast();
@@ -390,20 +405,10 @@ public class Competition {
         boolean databaseEnabled = MainConfig.getInstance().databaseEnabled();
         int rewardPlace = 1;
 
-        // Sort entries in ascending order for SHORTEST_FISH
-        List<CompetitionEntry> entries = new ArrayList<>(leaderboard.getEntries());
-        if (competitionType == CompetitionType.SHORTEST_FISH) {
-            entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
-        }
+        List<CompetitionEntry> entries = getSortedEntries(leaderboard.getEntries());
 
-        CompetitionEntry topEntry = entries.get(0);
-        if (topEntry != null && databaseEnabled) {
-            UserReport topReport = DataManager.getInstance().getUserReportIfExists(topEntry.getPlayer());
-            if (topReport == null) {
-                EvenMoreFish.getInstance().getLogger().severe("Could not fetch User Report for " + topEntry.getPlayer() + ", their data has not been modified.");
-            } else {
-                topReport.incrementCompetitionsWon(1);
-            }
+        if (databaseEnabled && !entries.isEmpty()) {
+            handleDatabaseUpdates(entries.get(0), true); // Top entry
         }
 
         boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
@@ -426,11 +431,8 @@ public class Competition {
                     participationRewards.forEach(reward -> reward.rewardPlayer(player, null));
                 }
             }
-
-            // Save to database if enabled
-            if (databaseEnabled) {
-                incrementCompetitionsJoined(entry);
-            }
+            
+            handleDatabaseUpdates(entry, false);
 
             // Increment the place
             rewardPlace++;
