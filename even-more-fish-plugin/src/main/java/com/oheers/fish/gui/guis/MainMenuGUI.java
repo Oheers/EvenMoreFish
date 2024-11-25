@@ -36,6 +36,9 @@ public class MainMenuGUI implements EMFGUI {
     }
 
     @Override
+    public void doRescue() {}
+
+    @Override
     public InventoryGui getGui() {
         return this.gui;
     }

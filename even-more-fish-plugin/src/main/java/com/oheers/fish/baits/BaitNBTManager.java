@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 public class BaitNBTManager {
+
     private BaitNBTManager() {
         throw new UnsupportedOperationException();
     }

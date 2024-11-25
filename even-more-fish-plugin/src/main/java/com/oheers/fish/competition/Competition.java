@@ -15,7 +15,6 @@ import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.UserReport;
-import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -661,12 +660,14 @@ public class Competition {
         List<Rarity> allowedRarities = new ArrayList<>();
         double totalWeight = 0;
 
-        for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
-            if (configRarities.contains(r.getValue())) {
-                fish.addAll(FishManager.getInstance().getRarityMap().get(r));
-                allowedRarities.add(r);
-                totalWeight += (r.getWeight());
+        for (String configRarity : configRarities) {
+            Rarity rarity = FishManager.getInstance().getRarity(configRarity);
+            if (rarity == null) {
+                continue;
             }
+            fish.addAll(FishManager.getInstance().getFishForRarity(rarity));
+            allowedRarities.add(rarity);
+            totalWeight += rarity.getWeight();
         }
 
         if (allowedRarities.isEmpty()) {
@@ -689,7 +690,7 @@ public class Competition {
         }
 
         try {
-            Fish selectedFish = FishingProcessor.getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
+            Fish selectedFish = FishManager.getInstance().getFish(allowedRarities.get(idx), null, null, 1.0d, null, false);
             if (selectedFish == null) {
                 // For the catch block to catch.
                 throw new IllegalArgumentException();
@@ -722,13 +723,12 @@ public class Competition {
 
         try {
             String randomRarity = configRarities.get(new Random().nextInt(configRarities.size()));
-            for (Rarity r : FishManager.getInstance().getRarityMap().keySet()) {
-                if (r.getValue().equalsIgnoreCase(randomRarity)) {
-                    this.selectedRarity = r;
-                    return true;
-                }
+            Rarity rarity = FishManager.getInstance().getRarity(randomRarity);
+            if (rarity != null) {
+                this.selectedRarity = rarity;
+                return true;
             }
-            this.selectedRarity = FishingProcessor.randomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
+            this.selectedRarity = FishManager.getInstance().getRandomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet());
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.getInstance()

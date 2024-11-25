@@ -226,6 +226,12 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     @Override
     public void onDisable() {
+
+        // Prevent issues when NBT preload fails.
+        if (instance == null) {
+            return;
+        }
+
         terminateGUIS();
         // Don't use the scheduler here because it will throw errors on disable
         saveUserData(false);
@@ -353,7 +359,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private void loadCommandManager() {
         PaperCommandManager manager = new PaperCommandManager(this);
 
-        manager.enableUnstableAPI("brigadier");
+        // Brigadier should stay disabled until ACF updates their implementation.
+        //manager.enableUnstableAPI("brigadier");
         manager.enableUnstableAPI("help");
 
         StringBuilder main = new StringBuilder(MainConfig.getInstance().getMainCommandName());
@@ -389,7 +396,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
                 "desc_general_gui", new Message(ConfigMessage.HELP_GENERAL_GUI).getRawMessage(),
                 "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(),
                 "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(),
-                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage()
+                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(),
+                "desc_general_applybaits", new Message(ConfigMessage.HELP_GENERAL_APPLYBAITS).getRawMessage()
         );
 
 
@@ -425,8 +433,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             }
             return fish;
         });
-        manager.getCommandCompletions().registerCompletion("baits", c -> BaitManager.getInstance().getBaitMap().keySet().stream().map(s -> s.replace(" ", "_")).collect(Collectors.toList()));
-        manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).collect(Collectors.toList()));
+        manager.getCommandCompletions().registerCompletion("baits", c -> BaitManager.getInstance().getBaitMap().keySet().stream().map(s -> s.replace(" ", "_")).toList());
+        manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList());
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
             return FishManager.getInstance().getRarityMap().get(rarity).stream().map(f -> f.getName().replace(" ", "_")).collect(Collectors.toList());
@@ -434,9 +442,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
-
-        // Make server admins aware the deprecation warning is nothing to worry about
-        getLogger().warning("The above warning, if you are on Paper, can safely be ignored for now, we are waiting for a fix from the developers of our command library.");
     }
 
 
@@ -445,7 +450,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             return false;
         }
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        permission = rsp.getProvider();
+        permission = rsp == null ? null : rsp.getProvider();
         return permission != null;
     }
 
@@ -515,7 +520,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         ItemStack customRod = itemFactory.createItem(null, 0);
         NBT.modify(customRod,nbt -> {
-            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setBoolean(NbtKeys.EMF_ROD_NBT,true);
+            nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setBoolean(NbtKeys.EMF_ROD_NBT, true);
         });
         return customRod;
     }

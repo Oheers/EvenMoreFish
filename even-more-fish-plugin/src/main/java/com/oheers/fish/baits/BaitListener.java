@@ -52,6 +52,10 @@ public class BaitListener implements Listener {
         ApplicationResult result;
         Bait bait = BaitManager.getInstance().getBait(BaitNBTManager.getBaitName(event.getCursor()));
 
+        if (bait == null) {
+            return;
+        }
+
         NbtVersion nbtVersion = NbtVersion.getVersion(potentialFishingRod);
         if (nbtVersion != NbtVersion.COMPAT) {
             convertToCompatNbtItem(nbtVersion, potentialFishingRod);

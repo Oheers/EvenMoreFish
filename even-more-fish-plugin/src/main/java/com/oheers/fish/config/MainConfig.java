@@ -8,7 +8,6 @@ import dev.dejvokep.boostedyaml.route.Route;
 import org.apache.commons.lang3.LocaleUtils;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BarStyle;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 

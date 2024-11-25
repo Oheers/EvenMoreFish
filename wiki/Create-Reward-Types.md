@@ -1,0 +1,3 @@
+## Internal RewardTypes
+
+## External RewardTypes
