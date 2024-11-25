@@ -34,8 +34,7 @@ public class CompetitionQueue {
         CompetitionType type = competitionConfig.getCompetitionType(comp);
         Competition competition = new Competition(
                 competitionConfig.getCompetitionDuration(comp) * 60,
-                type,
-                competitionConfig.getCompetitionStartCommands(comp, false)
+                type
         );
 
         competition.setCompetitionName(comp);
@@ -115,7 +114,7 @@ public class CompetitionQueue {
             return currentTimeCode;
         }
 
-        Competition competition = new Competition(-1, CompetitionType.LARGEST_FISH, new ArrayList<>());
+        Competition competition = new Competition(-1, CompetitionType.LARGEST_FISH);
         competitions.put(currentTimeCode, competition);
 
         int nextTimeCode = findNextCompetitionTimeCode(currentTimeCode);

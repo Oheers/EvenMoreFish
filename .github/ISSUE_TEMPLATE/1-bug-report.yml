@@ -28,11 +28,11 @@ body:
       label: Version
       description: What version of our software are you running?
       options:
-        - 1.7.4
-        - 1.7.3
-        - 1.7.2
-        - 1.7
-        - Development
+        - "1.7.4"
+        - "1.7.3"
+        - "1.7.2"
+        - "1.7"
+        - "Development"
     validations:
       required: true
   - type: input

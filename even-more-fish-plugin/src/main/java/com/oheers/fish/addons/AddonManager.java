@@ -173,7 +173,7 @@ public class AddonManager {
                     .toList();
 
 
-            final String message = String.format("%s new addons registered! (%s total)", registered.size(), addonMap.keySet().size());
+            final String message = String.format("%s new addons registered! (%s total)", registered.size(), addonMap.size());
             plugin.getLogger().info(message);
         });
     }

@@ -493,7 +493,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private void saveFishReports() {
         ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
-        logger.info("Saving " + allReports.keySet().size() + " fish reports.");
+        logger.info("Saving " + allReports.size() + " fish reports.");
         for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
             databaseV3.writeFishReports(entry.getKey(), entry.getValue());
 

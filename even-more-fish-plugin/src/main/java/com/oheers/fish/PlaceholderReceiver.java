@@ -120,24 +120,16 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
             }
 
             CompetitionType competitionType = EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType();
-            switch (competitionType) {
-                case LARGEST_FISH:
-                    return new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage();
-                case LARGEST_TOTAL:
-                    return new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage();
-                case MOST_FISH:
-                    return new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage();
-                case SPECIFIC_FISH:
-                    return new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage();
-                case SPECIFIC_RARITY:
-                    return new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage();
-                case SHORTEST_FISH:
-                    return new Message(ConfigMessage.COMPETITION_TYPE_SHORTEST).getRawMessage();
-                case SHORTEST_TOTAL:
-                    return new Message(ConfigMessage.COMPETITION_TYPE_SHORTEST_TOTAL).getRawMessage();
-                default:
-                    return "";
-            }
+            return switch (competitionType) {
+                case LARGEST_FISH -> new Message(ConfigMessage.COMPETITION_TYPE_LARGEST).getRawMessage();
+                case LARGEST_TOTAL -> new Message(ConfigMessage.COMPETITION_TYPE_LARGEST_TOTAL).getRawMessage();
+                case MOST_FISH -> new Message(ConfigMessage.COMPETITION_TYPE_MOST).getRawMessage();
+                case SPECIFIC_FISH -> new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC).getRawMessage();
+                case SPECIFIC_RARITY -> new Message(ConfigMessage.COMPETITION_TYPE_SPECIFIC_RARITY).getRawMessage();
+                case SHORTEST_FISH -> new Message(ConfigMessage.COMPETITION_TYPE_SHORTEST).getRawMessage();
+                case SHORTEST_TOTAL -> new Message(ConfigMessage.COMPETITION_TYPE_SHORTEST_TOTAL).getRawMessage();
+                default -> "";
+            };
         }
 
         // %emf_competition_place_player_1% would return the player in first place of any possible competition.
@@ -223,19 +215,8 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                     }
                     
                     message.setRarityColour(fish.getRarity().getColour());
-                    
-                    if (fish.getDisplayName() != null) {
-                        message.setFishCaught(fish.getDisplayName());
-                    } else {
-                        message.setFishCaught(fish.getName());
-                    }
-                    
-                    if (fish.getRarity().getDisplayName() != null) {
-                        message.setRarity(fish.getRarity().getDisplayName());
-                    } else {
-                        message.setRarity(fish.getRarity().getValue());
-                    }
-                    
+                    message.setFishCaught(fish.getDisplayName());
+                    message.setRarity(fish.getRarity().getDisplayName());
                     return message.getRawMessage();
                 }
                 

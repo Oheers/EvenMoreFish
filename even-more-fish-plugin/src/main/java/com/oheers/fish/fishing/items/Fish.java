@@ -185,9 +185,14 @@ public class Fish implements Cloneable {
         if (minSize < 0) {
             this.length = -1f;
         } else {
-            // Random logic that returns a float to 1dp
-            int len = (int) (Math.random() * (maxSize * 10 - minSize * 10 + 1) + minSize * 10);
-            this.length = (float) len / 10;
+            // Calculate the range for the random number (scaled by 10 to preserve decimal precision)
+            int range = (int) ((maxSize - minSize) * 10);
+
+            // Generate a random integer within the range (0 to range-1)
+            int randomValue = EvenMoreFish.getInstance().getRandom().nextInt(range + 1); // nextInt(bound) ensures a positive value
+
+            // Calculate the length, scaling back down by dividing by 10
+            this.length = (float) (randomValue + minSize * 10) / 10;
         }
     }
 
@@ -467,6 +472,7 @@ public class Fish implements Cloneable {
         this.weight = weight;
     }
 
+    @NotNull
     public String getDisplayName() {
         if (displayName == null) {
             return rarity.getColour() + name;

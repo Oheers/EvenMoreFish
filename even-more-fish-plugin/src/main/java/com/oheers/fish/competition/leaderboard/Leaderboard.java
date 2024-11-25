@@ -11,19 +11,20 @@ import java.util.UUID;
 
 public class Leaderboard implements LeaderboardHandler {
 
-    CompetitionType type;
-    List<CompetitionEntry> entries;
+    private final CompetitionType type;
+    private final List<CompetitionEntry> entries;
 
     public Leaderboard(CompetitionType type) {
         this.type = type;
-        entries = new ArrayList<>();
+        this.entries = new ArrayList<>();
     }
 
     @Override
     public List<CompetitionEntry> getEntries() {
         Comparator<CompetitionEntry> entryComparator = type.shouldReverseLeaderboard() ?
-                (e1, e2) -> Float.compare(e1.getValue(), e2.getValue()) :
-                (e1, e2) -> Float.compare(e2.getValue(), e1.getValue());
+                Comparator.comparingDouble(CompetitionEntry::getValue) :
+                Comparator.comparingDouble(CompetitionEntry::getValue).reversed();
+
         return entries.stream()
                 .sorted(entryComparator)
                 .toList();
@@ -52,7 +53,6 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public CompetitionEntry getEntry(UUID player) {
-        // Does not need to use the sorted list
         for (CompetitionEntry entry : entries) {
             if (entry.getPlayer().equals(player)) {
                 return entry;
@@ -64,7 +64,6 @@ public class Leaderboard implements LeaderboardHandler {
     @Override
     public CompetitionEntry getEntry(int place) {
         try {
-            // Needs to use the sorted list
             return getEntries().get(place - 1);
         } catch (IndexOutOfBoundsException exception) {
             return null;
@@ -78,13 +77,7 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public boolean hasEntry(UUID player) {
-        // Does not need to use the sorted list
-        for (CompetitionEntry entry : entries) {
-            if (entry.getPlayer().equals(player)) {
-                return true;
-            }
-        }
-        return false;
+        return getEntry(player) != null;
     }
 
     @Override
@@ -94,8 +87,16 @@ public class Leaderboard implements LeaderboardHandler {
 
     @Override
     public CompetitionEntry getTopEntry() {
-        // Needs to use the sorted list
-        return getEntries().get(0);
+        return getEntries().isEmpty() ? null : getEntries().get(0);
     }
 
+    /**
+     * Updates an entry in the leaderboard by removing it, applying the changes, and re-adding it.
+     *
+     * @param entry The updated entry.
+     */
+    public void updateEntry(CompetitionEntry entry) {
+        removeEntry(entry); // Remove the current entry
+        addEntry(entry);    // Add the updated entry
+    }
 }
