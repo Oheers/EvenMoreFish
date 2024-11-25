@@ -1,4 +1,4 @@
-# Outdated, use [Requirements Biome Sets](https://github.com/Oheers/EvenMoreFish/wiki/Requirements#biome-sets)
+# Outdated, use the [Biome Set Requirement](https://github.com/Oheers/EvenMoreFish/wiki/Requirements#biome-sets)
 It is possible to re-use create and re-use biome groups for fish requirements.
 
 Create a group by modifying your fish.yml with this info:

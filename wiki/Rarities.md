@@ -1,4 +1,4 @@
-Example rarity with all options set: (Except Requirements see https://github.com/Oheers/EvenMoreFish/wiki/Requirements)
+Example rarity with all options set: (Except Requirements, see https://github.com/Oheers/EvenMoreFish/wiki/Requirements)
 ```yaml
 rarities:
   common:
@@ -16,4 +16,4 @@ rarities:
    permission: rarity.common
 ```
 
-Latest default file available here: https://github.com/Oheers/EvenMoreFish/blob/96746264d0d077b3459df6f8cd5573a4b534749e/even-more-fish-plugin/src/main/resources/rarities.yml
+Latest default file available here: https://github.com/Oheers/EvenMoreFish/blob/master/even-more-fish-plugin/src/main/resources/rarities.yml

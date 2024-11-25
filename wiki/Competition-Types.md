@@ -1,5 +1,5 @@
 ## What are they?
-There are 5 different competition types in EvenMoreFish for your players to experience, and include: MOST_FISH, LARGEST_FISH and SPECIFIC_FISH. Each competition you choose must define a competition type for it to work, however if you want to start a competition via commands, "**/emf admin competition start <duration>**" it will default to the LARGEST_FISH competition type. An argument after duration can be used to start a chosen competition type, as is seen in the screenshot below.
+There are 7 different competition types in EvenMoreFish for your players to experience, and include: MOST_FISH, LARGEST_FISH and SPECIFIC_FISH. Each competition you choose must define a competition type for it to work, however if you want to start a competition via commands, "**/emf admin competition start <duration>**" it will default to the LARGEST_FISH competition type. An argument after duration can be used to start a chosen competition type, as is seen in the screenshot below.
 
 ![starting a fishing competition by command](https://media.discordapp.net/attachments/723194663519125618/883038254042083408/unknown.png)
 
@@ -24,6 +24,16 @@ This competition type selects a rarity at random from the list of `allowed-rarit
 ![the SPECIFIC_RARITY competition type beginning](https://media.discordapp.net/attachments/723194663519125618/981585087437086770/unknown.png)
 
 ## LARGEST_TOTAL
-When a player catches a fish, their score is increased by the size of their fish, allowing players to gradually increase their score cumulatively. At the end of the competition, the player with the highest score will win, similar to all other competitions - it's similar to the more_fish competition in that the %emf_competition_place_fish_*% placeholder isn't able to be used too.
+When a player catches a fish, their score is increased by the size of their fish, allowing players to gradually increase their score cumulatively. At the end of the competition, the player with the highest total score will win, similar to all other competitions - it's similar to the more_fish competition in that the %emf_competition_place_fish_*% placeholder isn't able to be used too.
 
 ![the leaderboard from the LARGEST_TOTAL competition](https://media.discordapp.net/attachments/723194663519125618/981639014601859132/unknown.png)
+
+## SHORTEST_TOTAL
+Almost identical to LARGEST_TOTAL, however the lowest total score wins.
+
+![the leaderboard from the SHORTEST_TOTAL competition](https://media.discordapp.net/attachments/723194663519125618/981639014601859132/unknown.png)
+
+## SHORTEST_FISH
+Almost identical to LARGEST_FISH, however the smallest fish wins.
+
+![the leaderboard from the SHORTEST_FISH competition](https://media.discordapp.net/attachments/723194663519125618/981639014601859132/unknown.png)

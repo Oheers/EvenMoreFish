@@ -16,7 +16,7 @@ Welcome to the EvenMoreFish Wiki.
 * [Reward Types](https://github.com/Oheers/EvenMoreFish/wiki/Reward-Types)
 * [Addons](https://github.com/Oheers/EvenMoreFish/wiki/Addons)
 ### Support
-* [FAQ](https://github.com/Oheers/EvenMoreFish/wiki/FAQ)
+* [FAQs](https://github.com/Oheers/EvenMoreFish/wiki/FAQs)
 * [Discord](https://discord.gg/Hb9cj3tNbb)
 ### Developers & API 
 * [Developers & API](https://github.com/Oheers/EvenMoreFish/wiki/Developers)

@@ -1,5 +1,5 @@
 ## The file
-This is the file for creating, modifying or deleting fish: if you're running the server locally or viewing the files on MultiCraft through FTP/SFTP, you can use a text-editor such as [Notepad++](https://notepad-plus-plus.org/). At some point in the very distant future I plan to add in a way of modifying this file using a web-editor like LuckPerms uses, but right now (and probably for quite a while) it's just the basic text editor.
+This is the file for creating, modifying or deleting fish: if you're running the server locally or viewing the files on a panel through FTP/SFTP, you can use a text-editor such as [Notepad++](https://notepad-plus-plus.org/). At some point in the very distant future I plan to add in a way of modifying this file using a web-editor like LuckPerms uses, but right now (and probably for quite a while) it's just the basic text editor.
 
 
 <details>
@@ -82,15 +82,14 @@ If you would like a default fish (using just the COD) material, putting `Fish: "
 The options for fish will follow as a long list, alphabetically sorted for ease of finding however you can use `CTRL + F` to search for keywords in this wiki page. None of these options are required (apart from a few which depend upon each other), so you can mix and match to create your ideal fish!
 
 #### The Settings
+##### `requirements:`
+See [Requirements](https://github.com/FireML/EvenMoreFish/wiki/Requirements)
+
 ##### `allowed-regions:`
 
 This setting **requires** that you have either RedProtect or WorldGuard installed on your server, this specifies the regions which the fish can only be found in - if the player is in no region or a region not specified in the allowed-regions value, the plugin either choose a different fish or no fish at all: you are able to specify more than one region
 
 ![The allowed-regions option in the config.](https://media.discordapp.net/attachments/723194663519125618/925130501512122468/unknown.png)
-
-##### `biomes:`
-
-Similar to the _allowed-regions_ value, this limits which biomes the fish can be found in, and is formatted exactly the same as a list of 1 or more biomes, if the player isn't in one of these mentioned biomes they won't be able to catch this fish.
 
 ##### `catch-event:`
 
