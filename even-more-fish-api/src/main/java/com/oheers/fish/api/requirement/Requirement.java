@@ -44,12 +44,12 @@ public class Requirement {
             String key = entry.getKey().toUpperCase();
             List<String> value = entry.getValue();
             if (key.isEmpty() || value.isEmpty()) {
-                EMFPlugin.getLogger().warning("Attempted to process an invalid Requirement. Please check for earlier warnings.");
+                EMFPlugin.getInstance().getLogger().warning("Attempted to process an invalid Requirement. Please check for earlier warnings.");
                 continue;
             }
             RequirementType requirementType = RequirementManager.getInstance().getRegisteredRequirements().get(key);
             if (requirementType == null) {
-                EMFPlugin.getLogger().warning("Invalid requirement. Possible typo?: " + key);
+                EMFPlugin.getInstance().getLogger().warning("Invalid requirement. Possible typo?: " + key);
                 continue;
             }
             if (!requirementType.checkRequirement(context, value)) {
