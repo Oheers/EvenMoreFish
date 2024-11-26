@@ -254,7 +254,7 @@ tasks {
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
         relocate("net.kyori.adventure", "com.oheers.fish.libs.adventure")
         relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
-        relocate("dev.dejvokep", "com.oheers.fish.libs.boostedyaml")
+        relocate("dev.dejvokep.boostedyaml", "com.oheers.fish.libs.boostedyaml")
 
     }
 
