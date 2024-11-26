@@ -75,7 +75,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
+public class EvenMoreFish extends EMFPlugin {
     private final Random random = new Random();
 
     private Permission permission = null;
@@ -139,6 +139,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             throw new RuntimeException("NBT-API wasn't initialized properly, disabling the plugin");
         }
 
+        // This should only ever be done once.
+        EMFPlugin.setInstance(this);
         instance = this;
         scheduler = UniversalScheduler.getScheduler(this);
         platformAdapter = loadAdapter();

@@ -11,7 +11,7 @@ public abstract class PlatformAdapter {
 
     public PlatformAdapter(@NotNull EMFPlugin plugin) {
         this.plugin = plugin;
-        logLoadedMessage(EMFPlugin.getLogger());
+        logLoadedMessage(plugin.getLogger());
     }
 
     public EMFPlugin getPlugin() {
