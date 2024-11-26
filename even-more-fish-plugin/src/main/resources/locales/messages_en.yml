@@ -45,7 +45,7 @@ competition-types:
   specific-rarity: "{amount} {rarity_colour}&l{rarity}&r fish"
 # Segments shown in the bossbar when competitions run
 bossbar:
-  layout: "{prefix}&r{time-formatted}&r{remaining}"
+  layout: "{prefix}&r{time-formatted} &r{remaining}"
   # The abbreviations used for different units of time in the {time-formatted} variable.
   hour: "&r{hour}h"
   minute: "&r{minute}m"
