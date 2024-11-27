@@ -68,12 +68,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
+public class EvenMoreFish extends EMFPlugin {
     private final Random random = new Random();
 
     private Permission permission = null;
     private Economy economy;
-    private Map<Integer, Set<String>> fish = new HashMap<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
     private boolean checkingIntEvent;
@@ -132,6 +131,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             throw new RuntimeException("NBT-API wasn't initialized properly, disabling the plugin");
         }
 
+        // This should only ever be done once.
+        EMFPlugin.setInstance(this);
         instance = this;
         scheduler = UniversalScheduler.getScheduler(this);
         this.api = new EMFAPI();
@@ -529,8 +530,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         terminateGUIS();
 
-        fish.clear();
-
         reloadConfig();
         saveDefaultConfig();
 
@@ -600,10 +599,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public Economy getEconomy() {
         return economy;
-    }
-
-    public Map<Integer, Set<String>> getFish() {
-        return fish;
     }
 
     public ItemStack getCustomNBTRod() {

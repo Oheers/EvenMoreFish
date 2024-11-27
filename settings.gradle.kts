@@ -2,6 +2,7 @@ rootProject.name = "even-more-fish"
 
 include(":even-more-fish-api")
 include(":even-more-fish-addons-j17")
+include(":even-more-fish-addons-j21")
 include(":even-more-fish-plugin")
 
 
@@ -38,6 +39,7 @@ dependencyResolutionManagement {
             library("nbt-api", "de.tr7zw:item-nbt-api:2.13.3-SNAPSHOT")
             library("denizen-api", "com.denizenscript:denizen:1.3.1-SNAPSHOT")
             library("oraxen", "io.th0rgal:oraxen:1.173.0") // We must use 1.173.0 as later versions require Java 21
+            library("nexo", "com.nexomc:nexo:0.1.0-dev.28")
 
             library("ecoitems-api", "com.willfp:EcoItems:5.6.1")
             library("ecoitems-libreforge", "com.willfp:libreforge:4.21.1")

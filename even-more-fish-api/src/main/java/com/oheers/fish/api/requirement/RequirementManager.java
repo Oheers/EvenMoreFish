@@ -31,7 +31,7 @@ public class RequirementManager implements Listener {
         if (!isLoaded()) {
             Bukkit.getPluginManager().callEvent(new EMFRequirementsLoadEvent());
             loaded = true;
-            EMFPlugin.getLogger().info("Loaded RequirementManager");
+            EMFPlugin.getInstance().getLogger().info("Loaded RequirementManager");
         }
     }
 
@@ -39,7 +39,7 @@ public class RequirementManager implements Listener {
         if (isLoaded()) {
             this.requirements.clear();
             loaded = false;
-            EMFPlugin.getLogger().info("Unloaded RequirementManager");
+            EMFPlugin.getInstance().getLogger().info("Unloaded RequirementManager");
         }
     }
 
@@ -55,7 +55,7 @@ public class RequirementManager implements Listener {
         if (requirements.containsKey(identifier)) {
             return false;
         }
-        EMFPlugin.getLogger().info("Registered " + identifier + " Requirement by " + requirementType.getAuthor() + " from the plugin " + requirementType.getPlugin().getName());
+        EMFPlugin.getInstance().getLogger().info("Registered " + identifier + " Requirement by " + requirementType.getAuthor() + " from the plugin " + requirementType.getPlugin().getName());
         requirements.put(identifier, requirementType);
         return true;
     }
