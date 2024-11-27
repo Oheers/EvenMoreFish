@@ -73,7 +73,6 @@ public class EvenMoreFish extends EMFPlugin {
 
     private Permission permission = null;
     private Economy economy;
-    private Map<Integer, Set<String>> fish = new HashMap<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
     private boolean checkingIntEvent;
@@ -531,8 +530,6 @@ public class EvenMoreFish extends EMFPlugin {
 
         terminateGUIS();
 
-        fish.clear();
-
         reloadConfig();
         saveDefaultConfig();
 
@@ -602,10 +599,6 @@ public class EvenMoreFish extends EMFPlugin {
 
     public Economy getEconomy() {
         return economy;
-    }
-
-    public Map<Integer, Set<String>> getFish() {
-        return fish;
     }
 
     public ItemStack getCustomNBTRod() {
