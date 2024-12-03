@@ -18,7 +18,10 @@ public class Economy {
     private PlayerPointsAPI playerPointsEconomy = null;
     private GriefPrevention griefPreventionEconomy = null;
 
-    public Economy(EconomyType type) {
+    // TODO rework to support multiple economy types
+    public Economy() {
+        // TODO this should not be here, temporary added to prevent compile issues.
+        EconomyType type = EconomyType.VAULT;
         enabled = false;
         EvenMoreFish emf = EvenMoreFish.getInstance();
         switch (type) {
