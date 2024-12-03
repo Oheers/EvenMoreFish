@@ -453,12 +453,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private boolean setupEconomy() {
-        if (MainConfig.getInstance().isEconomyEnabled()) {
-            economy = new Economy(MainConfig.getInstance().economyType());
-            return economy.isEnabled();
-        } else {
-            return false;
-        }
+        economy = new Economy();
+        return economy.isEnabled();
     }
 
     // gets called on server shutdown to simulate all players closing their GUIs
