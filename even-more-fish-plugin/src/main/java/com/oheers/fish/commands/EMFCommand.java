@@ -84,7 +84,7 @@ public class EMFCommand extends BaseCommand {
     @CommandPermission(UserPerms.SHOP)
     @Description("%desc_general_shop")
     public void onShop(final CommandSender sender, @Optional final OnlinePlayer onlinePlayer) {
-        if (MainConfig.getInstance().isEconomyDisabled()) {
+        if (!EvenMoreFish.getInstance().getEconomy().isEnabled()) {
             new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender);
             return;
         }
@@ -110,7 +110,7 @@ public class EMFCommand extends BaseCommand {
     @CommandPermission(UserPerms.SELL_ALL)
     @Description("%desc_general_sellall")
     public void onSellAll(final Player sender) {
-        if (MainConfig.getInstance().isEconomyDisabled()) {
+        if (!EvenMoreFish.getInstance().getEconomy().isEnabled()) {
             new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender);
             return;
         }
