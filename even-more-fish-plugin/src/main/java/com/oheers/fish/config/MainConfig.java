@@ -3,6 +3,7 @@ package com.oheers.fish.config;
 import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.economy.EconomyType;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
 import dev.dejvokep.boostedyaml.route.Route;
@@ -10,6 +11,7 @@ import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import org.apache.commons.lang3.LocaleUtils;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BarStyle;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -254,6 +256,14 @@ public class MainConfig extends ConfigBase {
 
     public boolean isRegionBoostsEnabled() {
         return getConfig().contains("region-boosts") && getConfig().isSection("region-boosts");
+    }
+
+    public boolean isEconomyEnabled(@NotNull EconomyType type) {
+        return getConfig().getBoolean("economy." + type.getIdentifier() + ".enabled");
+    }
+
+    public double getEconomyMultiplier(@NotNull EconomyType type) {
+        return getConfig().getDouble("economy." + type.getIdentifier() + ".multiplier");
     }
 
     @Override
