@@ -49,13 +49,23 @@ disable-db-verbose: true
 # instead of always full durability?
 random-durability: true
 
-# Setting this to false disables /emf shop and money rewards from competitions. It's unlikely
-# you'll want to do this, but it is possible.
-enable-economy: true
-
-# Choose which economy plugin you wish to use
-# Supported values are: Vault, PlayerPoints, GriefPrevention, None
-economy-type: Vault
+# Enable/Disable different economy types here.
+# Optionally choose a multiplier for each type you have enabled.
+economy:
+  # Allows fish to pay out with your Vault economy plugin
+  Vault:
+    # Vault is enabled by default.
+    enabled: true
+    # Optional multiplier for the value of fish.
+    multiplier: 1.0
+  # Allows fish to pay out with PlayerPoints
+  PlayerPoints:
+    enabled: false
+    multiplier: 1.0
+  # Allows fish to pay out with claim blocks
+  GriefPrevention:
+    enabled: false
+    multiplier: 1.0
 
 # Setting this to change the boosbar style
 # you can use like: SEGMENTED_6 SEGMENTED_10 SEGMENTED_12 SEGMENTED_20 SOLID
@@ -175,4 +185,4 @@ biome-sets:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 4
+config-version: 5

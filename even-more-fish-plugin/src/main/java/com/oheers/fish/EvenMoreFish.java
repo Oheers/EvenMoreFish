@@ -170,11 +170,9 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             customNBTRod = createCustomNBTRod();
         }
 
-        if (MainConfig.getInstance().isEconomyEnabled()) {
-            // could not set up economy.
-            if (!setupEconomy()) {
-                EvenMoreFish.getInstance().getLogger().warning("EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
-            }
+        // could not set up economy.
+        if (!setupEconomy()) {
+            EvenMoreFish.getInstance().getLogger().warning("EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
         }
 
         setupPermissions();

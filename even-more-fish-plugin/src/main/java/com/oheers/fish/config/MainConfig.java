@@ -4,7 +4,9 @@ import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
 import dev.dejvokep.boostedyaml.route.Route;
+import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import org.apache.commons.lang3.LocaleUtils;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BarStyle;
@@ -60,24 +62,6 @@ public class MainConfig extends ConfigBase {
 
     public List<String> getAllowedWorlds() {
         return getConfig().getStringList("allowed-worlds");
-    }
-
-    public boolean isEconomyEnabled() {
-        return getConfig().getBoolean("enable-economy", true);
-    }
-
-    public boolean isEconomyDisabled() {
-        return !isEconomyEnabled();
-    }
-
-    public Economy.EconomyType economyType() {
-        String economyString = getConfig().getString("economy-type", "Vault");
-        return switch (economyString) {
-            case "Vault" -> Economy.EconomyType.VAULT;
-            case "PlayerPoints" -> Economy.EconomyType.PLAYER_POINTS;
-            case "GriefPrevention" -> Economy.EconomyType.GRIEF_PREVENTION;
-            default -> Economy.EconomyType.NONE;
-        };
     }
 
     public boolean shouldRespectVanish() { return getConfig().getBoolean("respect-vanished", true); }
@@ -270,6 +254,22 @@ public class MainConfig extends ConfigBase {
 
     public boolean isRegionBoostsEnabled() {
         return getConfig().contains("region-boosts") && getConfig().isSection("region-boosts");
+    }
+
+    @Override
+    public UpdaterSettings getUpdaterSettings() {
+        return UpdaterSettings.builder()
+                .setVersioning(new BasicVersioning("config-version"))
+                // Economy Rework - config version 5
+                .addCustomLogic("5", yamlDocument -> {
+                    String economyType = yamlDocument.getString("economy-type");
+                    if (economyType != null) {
+                        String path = "economy." + economyType;
+                        yamlDocument.set(path + ".enabled", true);
+                        yamlDocument.set(path + ".multiplier", 1.0);
+                    }
+                })
+                .build();
     }
 
 }
