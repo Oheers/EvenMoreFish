@@ -1,4 +1,4 @@
-package com.oheers.fish.economy.types;
+package com.oheers.fish.economy;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
@@ -21,20 +21,20 @@ public class VaultEconomyType implements EconomyType {
 
     public VaultEconomyType() {
         EvenMoreFish emf = EvenMoreFish.getInstance();
-        emf.getLogger().log(Level.INFO, "Attempting to hook into Vault Economy.");
+        emf.getLogger().log(Level.INFO, "Economy attempting to hook into Vault.");
         if (EvenMoreFish.getInstance().isUsingVault()) {
             RegisteredServiceProvider<Economy> rsp = emf.getServer().getServicesManager().getRegistration(Economy.class);
             if (rsp == null) {
                 return;
             }
             economy = rsp.getProvider();
-            emf.getLogger().log(Level.INFO, "Hooked into Vault Economy.");
+            emf.getLogger().log(Level.INFO, "Economy hooked into Vault.");
         }
     }
 
     @Override
     public String getIdentifier() {
-        return "VAULT";
+        return "Vault";
     }
 
     @Override

@@ -30,6 +30,8 @@ import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.UserReport;
+import com.oheers.fish.economy.PlayerPointsEconomyType;
+import com.oheers.fish.economy.VaultEconomyType;
 import com.oheers.fish.events.*;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
@@ -169,6 +171,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (MainConfig.getInstance().requireNBTRod()) {
             customNBTRod = createCustomNBTRod();
         }
+
+        loadEconomy();
 
         // could not set up economy.
         if (!Economy.getInstance().isEnabled()) {
@@ -701,6 +705,10 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return api;
     }
 
+    private void loadEconomy() {
+        new VaultEconomyType().register();
+        new PlayerPointsEconomyType().register();
+    }
 
     private void loadRewardManager() {
         // Load RewardManager

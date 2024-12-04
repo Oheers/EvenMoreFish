@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class Economy {
 
-    private List<EconomyType> registeredEconomies;
+    private final List<EconomyType> registeredEconomies;
     private static Economy instance = null;
 
     private Economy() {
