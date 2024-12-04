@@ -1,0 +1,12 @@
+id: mainCompetition
+type: LARGEST_FISH
+duration: 10
+times:
+  - "00:00"
+  - "06:00"
+  - "12:00"
+  - "18:00"
+blacklisted-days:
+  - "Sunday"
+bossbar-colour: GREEN
+bossbar-prefix: "&a&lFishing Contest: "
