@@ -5,6 +5,7 @@ Welcome to the EvenMoreFish Wiki.
 * [Spigot](https://www.spigotmc.org/resources/evenmorefish-%E2%96%AA-extensive-fishing-plugin-%E2%96%AA.91310/)
 * [Development Builds](https://ci.codemc.io/job/Oheers/job/EvenMoreFish/)
 ### Configuration
+* [Economy](https://github.com/Oheers/EvenMoreFish/wiki/Economy)
 * [Competition Types](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Types)
 * [Competitions.yml](https://github.com/Oheers/EvenMoreFish/wiki/competitions.yml)
 * [Fish.yml](https://github.com/Oheers/EvenMoreFish/wiki/Fish.yml)
