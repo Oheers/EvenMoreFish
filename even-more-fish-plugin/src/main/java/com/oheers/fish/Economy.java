@@ -19,11 +19,7 @@ import java.util.stream.Collectors;
 public class Economy {
 
     private List<EconomyType> registeredEconomies;
-    private net.milkbowl.vault.economy.Economy vaultEconomy = null;
-    private PlayerPointsAPI playerPointsEconomy = null;
-    private GriefPrevention griefPreventionEconomy = null;
-
-    // TODO rework to support multiple economy types
+    
     public Economy() {
         registeredEconomies = new ArrayList<>(List.of(
                 new VaultEconomyType()
