@@ -25,7 +25,7 @@ start-commands:
   - "say The main competition has started!"
   - "give @a diamond 1"
 
-# Days this competition should NOT run on.
+# Days this competition should not run on.
 blacklisted-days:
   - "Monday"
   - "Wednesday"
@@ -33,11 +33,14 @@ blacklisted-days:
   - "Sunday"
 
 # Days this competition SHOULD run on.
+# This is an alternative to using both blacklisted-days and times.
 days:
-  - "Monday"
-  - "Wednesday"
-  - "Friday"
-  - "Sunday"
+  Saturday:
+    - "03:00"
+    - "15:00"
+  Sunday:
+    - "03:00"
+    - "15:00"
 
 # Rarities to use for the SPECIFIC_FISH or SPECIFIC_RARITY types.
 allowed-rarities:
