@@ -47,6 +47,11 @@ allowed-rarities:
   - "Common"
   - "Junk"
 
+# Controls the broadcast range of the "fish caught" message, in blocks squared. Set to -1 to disable.
+# A value of 100 means the message would be sent to players 10 blocks in each direction.
+# TODO this is not properly represented in the code.
+broadcast-range: -1
+
 # The number of fish needed for the SPECIFIC_FISH or SPECIFIC_RARITY types.
 number-needed: 3
 
