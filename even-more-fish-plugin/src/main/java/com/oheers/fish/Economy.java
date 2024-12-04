@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class Economy {
 
     private List<EconomyType> registeredEconomies;
-    
+
     public Economy() {
         registeredEconomies = new ArrayList<>(List.of(
                 new VaultEconomyType()

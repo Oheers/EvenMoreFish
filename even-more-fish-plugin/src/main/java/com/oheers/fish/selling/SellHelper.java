@@ -32,8 +32,7 @@ public class SellHelper {
 
     private final Inventory inventory;
     private final Player player;
-
-    private double value;
+    
     private int fishCount;
 
     public static void sellInventoryGui(@NotNull InventoryGui gui, @NotNull HumanEntity humanEntity) {
@@ -146,7 +145,6 @@ public class SellHelper {
             totalValue += sold.getTotalValue();
             count += sold.getAmount();
         }
-        this.value = totalValue;
         this.fishCount = count;
 
         return Math.floor(totalValue * 10) / 10;
