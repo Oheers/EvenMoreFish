@@ -1,9 +1,9 @@
 package com.oheers.fish.config;
 
-import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.economy.EconomyType;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
 import dev.dejvokep.boostedyaml.route.Route;
@@ -22,6 +22,7 @@ public class MainConfig extends ConfigBase {
     public MainConfig() {
         super("config.yml", "config.yml", EvenMoreFish.getInstance(), true);
         instance = this;
+        applyOneTimeConversions();
     }
 
     public static MainConfig getInstance() {
@@ -259,27 +260,28 @@ public class MainConfig extends ConfigBase {
     }
 
     public boolean isEconomyEnabled(@NotNull EconomyType type) {
-        return getConfig().getBoolean("economy." + type.getIdentifier() + ".enabled");
+        return getConfig().getBoolean("economy." + type.getIdentifier().toLowerCase() + ".enabled");
     }
 
     public double getEconomyMultiplier(@NotNull EconomyType type) {
-        return getConfig().getDouble("economy." + type.getIdentifier() + ".multiplier");
+        return getConfig().getDouble("economy." + type.getIdentifier().toLowerCase() + ".multiplier");
     }
 
-    @Override
-    public UpdaterSettings getUpdaterSettings() {
-        return UpdaterSettings.builder()
-                .setVersioning(new BasicVersioning("config-version"))
-                // Economy Rework - config version 5
-                .addCustomLogic("5", yamlDocument -> {
-                    String economyType = yamlDocument.getString("economy-type");
-                    if (economyType != null) {
-                        String path = "economy." + economyType;
-                        yamlDocument.set(path + ".enabled", true);
-                        yamlDocument.set(path + ".multiplier", 1.0);
-                    }
-                })
-                .build();
+    private void applyOneTimeConversions() {
+        YamlDocument yamlDocument = getConfig();
+
+        // Economy Rework - Requires the config to contain the new format first.
+        String economyType = yamlDocument.getString("economy-type");
+        if (economyType != null) {
+            yamlDocument.remove("enable-economy");
+            yamlDocument.remove("economy-type");
+            if (!economyType.equalsIgnoreCase("NONE")) {
+                String path = "economy." + economyType.toLowerCase();
+                yamlDocument.set(path + ".enabled", true);
+            }
+        }
+
+        save();
     }
 
 }
