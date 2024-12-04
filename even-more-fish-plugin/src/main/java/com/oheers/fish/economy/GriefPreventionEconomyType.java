@@ -3,6 +3,7 @@ package com.oheers.fish.economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.economy.EconomyType;
 import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.config.messages.Message;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.Bukkit;
@@ -90,11 +91,13 @@ public class GriefPreventionEconomyType implements EconomyType {
             return null;
         }
         int worth = (int) prepareValue(totalWorth, applyMultiplier);
-        if (worth == 1) {
-            return worth + " Claim Block";
-        } else {
-            return worth + " Claim Blocks";
+        String display = MainConfig.getInstance().getEconomyDisplay(this);
+        if (display == null) {
+            display = "{amount} Claim Block(s)";
         }
+        Message message = new Message(display);
+        message.setVariable("{amount}", String.valueOf(worth));
+        return message.getRawMessage();
     }
 
     @Override

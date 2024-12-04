@@ -10,6 +10,7 @@ import org.apache.commons.lang3.LocaleUtils;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BarStyle;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -263,6 +264,10 @@ public class MainConfig extends ConfigBase {
 
     public double getEconomyMultiplier(@NotNull EconomyType type) {
         return getConfig().getDouble("economy." + type.getIdentifier().toLowerCase() + ".multiplier");
+    }
+
+    public @Nullable String getEconomyDisplay(@NotNull EconomyType type) {
+        return getConfig().getString("economy." + type.getIdentifier().toLowerCase() + ".display");
     }
 
     private void applyOneTimeConversions() {

@@ -92,9 +92,16 @@ public class VaultEconomyType implements EconomyType {
         if (!isAvailable()) {
             return null;
         }
+        double worth = prepareValue(totalWorth, applyMultiplier);
+        String display = MainConfig.getInstance().getEconomyDisplay(this);
+        if (display != null) {
+            Message message = new Message(display);
+            message.setVariable("{amount}", String.valueOf(worth));
+            return message.getRawMessage();
+        }
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
         DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(), symbols);
-        return format.format(prepareValue(totalWorth, applyMultiplier));
+        return format.format(worth);
     }
 
 }
