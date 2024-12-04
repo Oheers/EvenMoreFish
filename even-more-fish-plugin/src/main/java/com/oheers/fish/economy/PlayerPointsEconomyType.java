@@ -69,6 +69,9 @@ public class PlayerPointsEconomyType implements EconomyType {
 
     @Override
     public double prepareValue(double value, boolean applyMultiplier) {
+        if (applyMultiplier) {
+            return Math.floor(value * getMultiplier());
+        }
         return Math.floor(value);
     }
 
