@@ -29,19 +29,25 @@ public class ConfigBase {
     private YamlDocument config = null;
     private File file = null;
 
+    public ConfigBase(@NotNull File file, @NotNull Plugin plugin, boolean configUpdater) {
+        this.fileName = file.getName();
+        this.resourceName = null;
+        this.plugin = plugin;
+        this.configUpdater = configUpdater;
+        reload(file);
+        update();
+    }
+
     public ConfigBase(@NotNull String fileName, @NotNull String resourceName, @NotNull Plugin plugin, boolean configUpdater) {
         this.fileName = fileName;
         this.resourceName = resourceName;
         this.plugin = plugin;
         this.configUpdater = configUpdater;
-        reload();
+        reload(new File(getPlugin().getDataFolder(), getFileName()));
         update();
     }
 
-    public void reload() {
-        // BoostedYAML handles the file creation for us
-        File configFile = new File(getPlugin().getDataFolder(), getFileName());
-
+    public void reload(@NotNull File configFile) {
         List<Settings> settingsList = new ArrayList<>(Arrays.asList(
                 getGeneralSettings(),
                 getDumperSettings(),
@@ -55,7 +61,7 @@ public class ConfigBase {
         final Settings[] settings = settingsList.toArray(new Settings[0]);
 
         try {
-            InputStream resource = getPlugin().getResource(getResourceName());
+            InputStream resource = getResourceName() == null ? null : getPlugin().getResource(getResourceName());
             if (resource == null) {
                 this.config = YamlDocument.create(configFile, settings);
             } else {
@@ -65,6 +71,10 @@ public class ConfigBase {
         } catch (IOException ex) {
             plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
+    }
+
+    public void reload() {
+        reload(this.file);
     }
 
     public final YamlDocument getConfig() {
