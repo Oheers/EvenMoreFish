@@ -120,8 +120,8 @@ help-admin:
   - "&f&m &#ffedeb&m &#ffdcd7&m &#ffcac3&m &#ffb8b0&m &#ffa69d&m &#ff948a&m &#ff8078&m &#ff6c66&m &c&m &f &c&lEvenMoreFish &c&m &#ff6c66&m&m &#ff8078&m &#ff948a&m &#ffa69d&m &#ffb8b0&m &#ffcac3&m &#ffdcd7&m &#ffedeb&m &f&m &f"
   - "&f/emf admin competition <start/end> <duration> <type> - Rozpoczyna lub kończy konkurs"
   - "&f/emf admin clearbait - Usuwa wszystkie zastosowane przynęty z wędki."
-  - "&f/emf admin reload - Przeładowuje pliki konfiguracyjne pluginu"
-  - "&f/emf admin version - Wyświetla informacje o pluginie".
+  - "&f/emf admin reload - Przeładowuje pliki konfiguracyjne pluginu."
+  - "&f/emf admin version - Wyświetla informacje o pluginie."
 
 # Shown when the emf competition placeholders request a position in the leaderboard that doesn't exist
 no-player-in-place: "Zacznij łowić, by zająć to miejsce"
@@ -161,41 +161,41 @@ place-fish-blocked: "&rNie możesz umieścić tej ryby."
 
 admin:
   # Opens an /emf shop for another player
-  open-fish-shop: "&rOpened a shop inventory for {player}."
+  open-fish-shop: "&rOtwarto sklep dla gracza {player}."
   # When a fish is given to a player
-  given-player-fish: "&rYou have given {player} a {fish}."
+  given-player-fish: "&rDałeś graczowi {player} rybę: {fish}."
   # When a bait is given to a player
-  given-player-bait: "&rYou have given {player} a {bait}."
+  given-player-bait: "&rdałeś graczowi {player} przynętę: {bait}."
   # When an admin runs /emf admin bait without a bait name.
-  no-bait-specified: "&rYou must specify a bait name."
+  no-bait-specified: "&rMusisz podać nazwę przynęty."
   # When the admin tries the command /emf admin clearbaits whe not holding a fishing rod.
-  must-be-holding-rod: "&rYou need to be holding a fishing rod to run that command."
+  must-be-holding-rod: "&rMusisz trzymać wędkę, aby użyć tej komendy."
   # When /emf admin clearbaits command is run.
-  all-baits-cleared: "&rYou have removed all {amount} baits from your fishing rod."
+  all-baits-cleared: "&rusunąłeś {amount} przynęt z Twojej wędki."
   # /emf admin clearbaits is run, but there are no baits on the rod.
-  no-baits-on-rod: "&rThe fishing rod does not have any baits applied."
+  no-baits-on-rod: "&rNie użyto przynęty na wędce."
 
   # When economy is disabled for the plugin
-  economy-disabled: "&rEvenMoreFish's economy features are disabled."
+  economy-disabled: "&rEkonomia dla pluginu EvenMoreFish jest za blokowana."
 
   # When the specified player can't be found when using -p: parameter.
-  player-not-found: "&r{player} could not be found."
+  player-not-found: "&rgracz {player} nie został odnaleziony."
   # When the specified number in -q: is not a number.
-  number-format-error: "&r{amount} is not a valid number."
+  number-format-error: "&r{amount} nie jest liczbą."
   # When the specified number in -q: is not within the minecraft stack range (1-64)
-  number-range-error: "&r{amount} is not a number between 1-64."
+  number-range-error: "&r{amount} nie jest liczbą z zakresu 1-64."
   # When a command cannot be run from the console
-  cannot-run-on-console: "&rCommand cannot be run from console."
+  cannot-run-on-console: "&rTa komenda nie może być użyta z poziomu konsoli."
 
   # Sent when a competition is already running when using /emf admin competition start
-  competition-already-running: "&rThere's already a competition running."
+  competition-already-running: "&rZawody są już w trakcie."
   # When an invalid competition type is tried to be started
-  competition-type-invalid: "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+  competition-type-invalid: "&rBłędny typ zawodów, dostępne opcje: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
 
   # When there's a spigot update available, don't translate the URL otherwise it won't direct to the correct page.
-  update-available: "&rThere is an update available: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
+  update-available: "&rDostępna jest nowa wersja: https://www.spigotmc.org/resources/evenmorefish.91310/updates"
   # When the plugin is reloaded
-  reload: "&rSuccessfully reloaded the plugin."
+  reload: "&rPlugin przeładowany poprawnie."
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
