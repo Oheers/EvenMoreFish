@@ -30,6 +30,7 @@ import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.UserReport;
+import com.oheers.fish.economy.GriefPreventionEconomyType;
 import com.oheers.fish.economy.PlayerPointsEconomyType;
 import com.oheers.fish.economy.VaultEconomyType;
 import com.oheers.fish.events.*;
@@ -706,8 +707,17 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     }
 
     private void loadEconomy() {
-        new VaultEconomyType().register();
-        new PlayerPointsEconomyType().register();
+        PluginManager pm = Bukkit.getPluginManager();
+
+        if (pm.isPluginEnabled("Vault")) {
+            new VaultEconomyType().register();
+        }
+        if (pm.isPluginEnabled("PlayerPoints")) {
+            new PlayerPointsEconomyType().register();
+        }
+        if (pm.isPluginEnabled("GriefPrevention")) {
+            new GriefPreventionEconomyType().register();
+        }
     }
 
     private void loadRewardManager() {
