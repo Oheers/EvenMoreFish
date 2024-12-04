@@ -6,6 +6,7 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Sound;
 
 import java.util.*;
+
 public class CompetitionConfig extends ConfigBase {
 
     private static CompetitionConfig instance;

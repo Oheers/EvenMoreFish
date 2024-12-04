@@ -1,0 +1,20 @@
+id: weekendCompetition
+type: SPECIFIC_FISH
+duration: 60
+allowed-rarities:
+  - "Uncommon"
+  - "Epic"
+  - "Legendary"
+days:
+  Saturday:
+    - "03:00"
+    - "15:00"
+  Sunday:
+    - "03:00"
+    - "15:00"
+rewards:
+  1:
+    - "MONEY:5000"
+    - "MESSAGE:&eCongratulations!"
+  2:
+    - "MONEY:2000"
