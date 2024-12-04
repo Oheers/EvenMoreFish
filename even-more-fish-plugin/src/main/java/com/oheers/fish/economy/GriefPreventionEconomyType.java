@@ -86,6 +86,9 @@ public class GriefPreventionEconomyType implements EconomyType {
 
     @Override
     public @Nullable String formatWorth(double totalWorth, boolean applyMultiplier) {
+        if (!isAvailable()) {
+            return null;
+        }
         int worth = (int) prepareValue(totalWorth, applyMultiplier);
         if (worth == 1) {
             return worth + " Claim Block";
