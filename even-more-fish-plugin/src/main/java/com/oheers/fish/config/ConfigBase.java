@@ -35,6 +35,7 @@ public class ConfigBase {
         this.plugin = plugin;
         this.configUpdater = configUpdater;
         reload();
+        update();
     }
 
     public void reload() {
@@ -43,11 +44,11 @@ public class ConfigBase {
 
         List<Settings> settingsList = new ArrayList<>(Arrays.asList(
                 getGeneralSettings(),
-                getDumperSettings()
+                getDumperSettings(),
+                getLoaderSettings()
         ));
 
         if (configUpdater) {
-            settingsList.add(getLoaderSettings());
             settingsList.add(getUpdaterSettings());
         }
 
@@ -61,9 +62,6 @@ public class ConfigBase {
                 this.config = YamlDocument.create(configFile, resource, settings);
             }
             this.file = configFile;
-            if (configUpdater) {
-                this.config.update();
-            }
         } catch (IOException ex) {
             plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -93,11 +91,11 @@ public class ConfigBase {
     }
 
     public LoaderSettings getLoaderSettings() {
-        return LoaderSettings.builder().setAutoUpdate(true).build();
+        return LoaderSettings.DEFAULT;
     }
 
     public UpdaterSettings getUpdaterSettings() {
-        return UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build();
+        return UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).setKeepAll(true).build();
     }
 
     public void save() {
@@ -105,6 +103,14 @@ public class ConfigBase {
             getConfig().save();
         } catch (IOException exception) {
             EvenMoreFish.getInstance().getLogger().warning("Failed to save " + getFileName());
+        }
+    }
+
+    public void update() {
+        try {
+            getConfig().update();
+        } catch (IOException exception) {
+            EvenMoreFish.getInstance().getLogger().warning("Failed to update " + getFileName());
         }
     }
 

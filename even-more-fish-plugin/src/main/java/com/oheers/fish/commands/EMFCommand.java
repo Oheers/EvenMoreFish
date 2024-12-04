@@ -5,6 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -84,7 +85,7 @@ public class EMFCommand extends BaseCommand {
     @CommandPermission(UserPerms.SHOP)
     @Description("%desc_general_shop")
     public void onShop(final CommandSender sender, @Optional final OnlinePlayer onlinePlayer) {
-        if (MainConfig.getInstance().isEconomyDisabled()) {
+        if (!Economy.getInstance().isEnabled()) {
             new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender);
             return;
         }
@@ -110,7 +111,7 @@ public class EMFCommand extends BaseCommand {
     @CommandPermission(UserPerms.SELL_ALL)
     @Description("%desc_general_sellall")
     public void onSellAll(final Player sender) {
-        if (MainConfig.getInstance().isEconomyDisabled()) {
+        if (!Economy.getInstance().isEnabled()) {
             new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender);
             return;
         }

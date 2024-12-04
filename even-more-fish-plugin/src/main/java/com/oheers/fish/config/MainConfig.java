@@ -1,13 +1,16 @@
 package com.oheers.fish.config;
 
-import com.oheers.fish.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.economy.EconomyType;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.dejvokep.boostedyaml.route.Route;
 import org.apache.commons.lang3.LocaleUtils;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BarStyle;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -18,6 +21,7 @@ public class MainConfig extends ConfigBase {
     public MainConfig() {
         super("config.yml", "config.yml", EvenMoreFish.getInstance(), true);
         instance = this;
+        applyOneTimeConversions();
     }
 
     public static MainConfig getInstance() {
@@ -60,24 +64,6 @@ public class MainConfig extends ConfigBase {
 
     public List<String> getAllowedWorlds() {
         return getConfig().getStringList("allowed-worlds");
-    }
-
-    public boolean isEconomyEnabled() {
-        return getConfig().getBoolean("enable-economy", true);
-    }
-
-    public boolean isEconomyDisabled() {
-        return !isEconomyEnabled();
-    }
-
-    public Economy.EconomyType economyType() {
-        String economyString = getConfig().getString("economy-type", "Vault");
-        return switch (economyString) {
-            case "Vault" -> Economy.EconomyType.VAULT;
-            case "PlayerPoints" -> Economy.EconomyType.PLAYER_POINTS;
-            case "GriefPrevention" -> Economy.EconomyType.GRIEF_PREVENTION;
-            default -> Economy.EconomyType.NONE;
-        };
     }
 
     public boolean shouldRespectVanish() { return getConfig().getBoolean("respect-vanished", true); }
@@ -270,6 +256,35 @@ public class MainConfig extends ConfigBase {
 
     public boolean isRegionBoostsEnabled() {
         return getConfig().contains("region-boosts") && getConfig().isSection("region-boosts");
+    }
+
+    public boolean isEconomyEnabled(@NotNull EconomyType type) {
+        return getConfig().getBoolean("economy." + type.getIdentifier().toLowerCase() + ".enabled");
+    }
+
+    public double getEconomyMultiplier(@NotNull EconomyType type) {
+        return getConfig().getDouble("economy." + type.getIdentifier().toLowerCase() + ".multiplier");
+    }
+
+    public @Nullable String getEconomyDisplay(@NotNull EconomyType type) {
+        return getConfig().getString("economy." + type.getIdentifier().toLowerCase() + ".display");
+    }
+
+    private void applyOneTimeConversions() {
+        YamlDocument yamlDocument = getConfig();
+
+        // Economy Rework - Requires the config to contain the new format first.
+        String economyType = yamlDocument.getString("economy-type");
+        if (economyType != null) {
+            yamlDocument.remove("enable-economy");
+            yamlDocument.remove("economy-type");
+            if (!economyType.equalsIgnoreCase("NONE")) {
+                String path = "economy." + economyType.toLowerCase();
+                yamlDocument.set(path + ".enabled", true);
+            }
+        }
+
+        save();
     }
 
 }

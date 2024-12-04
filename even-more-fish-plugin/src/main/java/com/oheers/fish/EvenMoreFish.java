@@ -8,6 +8,7 @@ import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskSchedule
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
+import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
@@ -29,6 +30,9 @@ import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.UserReport;
+import com.oheers.fish.economy.GriefPreventionEconomyType;
+import com.oheers.fish.economy.PlayerPointsEconomyType;
+import com.oheers.fish.economy.VaultEconomyType;
 import com.oheers.fish.events.*;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
@@ -72,7 +76,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private final Random random = new Random();
 
     private Permission permission = null;
-    private Economy economy;
     private Map<Integer, Set<String>> fish = new HashMap<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
@@ -170,11 +173,11 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             customNBTRod = createCustomNBTRod();
         }
 
-        if (MainConfig.getInstance().isEconomyEnabled()) {
-            // could not set up economy.
-            if (!setupEconomy()) {
-                EvenMoreFish.getInstance().getLogger().warning("EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
-            }
+        loadEconomy();
+
+        // could not set up economy.
+        if (!Economy.getInstance().isEnabled()) {
+            EvenMoreFish.getInstance().getLogger().warning("EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
         }
 
         setupPermissions();
@@ -454,15 +457,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return permission != null;
     }
 
-    private boolean setupEconomy() {
-        if (MainConfig.getInstance().isEconomyEnabled()) {
-            economy = new Economy(MainConfig.getInstance().economyType());
-            return economy.isEnabled();
-        } else {
-            return false;
-        }
-    }
-
     // gets called on server shutdown to simulate all players closing their GUIs
     private void terminateGUIS() {
         getServer().getOnlinePlayers().forEach(player -> {
@@ -543,8 +537,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         RaritiesFile.getInstance().reload();
         BaitFile.getInstance().reload();
 
-        setupEconomy();
-
         FishManager.getInstance().reload();
         BaitManager.getInstance().reload();
 
@@ -596,10 +588,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public Permission getPermission() {
         return permission;
-    }
-
-    public Economy getEconomy() {
-        return economy;
     }
 
     public Map<Integer, Set<String>> getFish() {
@@ -718,6 +706,19 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return api;
     }
 
+    private void loadEconomy() {
+        PluginManager pm = Bukkit.getPluginManager();
+
+        if (pm.isPluginEnabled("Vault")) {
+            new VaultEconomyType().register();
+        }
+        if (pm.isPluginEnabled("PlayerPoints")) {
+            new PlayerPointsEconomyType().register();
+        }
+        if (pm.isPluginEnabled("GriefPrevention")) {
+            new GriefPreventionEconomyType().register();
+        }
+    }
 
     private void loadRewardManager() {
         // Load RewardManager
@@ -780,8 +781,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (getPermission() != null && getPermission().isEnabled()) {
             new PermissionRewardType().register();
         }
-        // Only enable the MONEY type if the economy is loaded.
-        if (getEconomy() != null && getEconomy().isEnabled()) {
+        // Only enable the Money RewardType is Vault is enabled.
+        if (pm.isPluginEnabled("Vault")) {
             new MoneyRewardType().register();
         }
     }
