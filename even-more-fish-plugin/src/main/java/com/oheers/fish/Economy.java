@@ -12,11 +12,9 @@ import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Economy {
 
@@ -70,12 +68,10 @@ public class Economy {
     }
 
     public @NotNull String getWorthFormat(double value, boolean applyMultiplier) {
-        StringBuilder builder = new StringBuilder();
-        registeredEconomies.forEach(type -> {
-            builder.append(type.formatWorth(value, applyMultiplier));
-            builder.append(", ");
-        });
-        return builder.toString();
+        return registeredEconomies.stream()
+                .map(type -> type.formatWorth(value, applyMultiplier))
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining(", "));
     }
 
 }

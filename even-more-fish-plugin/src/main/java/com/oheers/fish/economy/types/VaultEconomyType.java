@@ -9,6 +9,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -87,7 +88,10 @@ public class VaultEconomyType implements EconomyType {
     }
 
     @Override
-    public String formatWorth(double totalWorth, boolean applyMultiplier) {
+    public @Nullable String formatWorth(double totalWorth, boolean applyMultiplier) {
+        if (!isAvailable()) {
+            return null;
+        }
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
         DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(), symbols);
         return format.format(prepareValue(totalWorth, applyMultiplier));

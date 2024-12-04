@@ -2,6 +2,7 @@ package com.oheers.fish.economy;
 
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface EconomyType {
 
@@ -31,7 +32,7 @@ public interface EconomyType {
      * @param applyMultiplier Should the multiplier be applied to the value?
      * @return A String to represent this value.
      */
-    String formatWorth(double totalWorth, boolean applyMultiplier);
+    @Nullable String formatWorth(double totalWorth, boolean applyMultiplier);
 
     boolean isAvailable();
 

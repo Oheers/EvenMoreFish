@@ -82,7 +82,7 @@ public class SellHelper {
         // sending the sell message to the player
 
         Message message = new Message(ConfigMessage.FISH_SALE);
-        if (economy == null) {
+        if (economy == null || !economy.isEnabled()) {
             message.setSellPrice("0");
         } else {
             message.setSellPrice(economy.getWorthFormat(sellPrice, true));
