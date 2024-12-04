@@ -1,4 +1,4 @@
-package com.oheers.fish.economy;
+package com.oheers.fish.api.economy;
 
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -35,5 +35,9 @@ public interface EconomyType {
     @Nullable String formatWorth(double totalWorth, boolean applyMultiplier);
 
     boolean isAvailable();
+
+    default boolean register() {
+        return Economy.getInstance().registerEconomyType(this);
+    }
 
 }

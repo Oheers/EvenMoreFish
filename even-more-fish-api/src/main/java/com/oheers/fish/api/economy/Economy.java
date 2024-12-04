@@ -1,29 +1,26 @@
-package com.oheers.fish;
+package com.oheers.fish.api.economy;
 
-import com.oheers.fish.economy.EconomyType;
-import com.oheers.fish.economy.types.VaultEconomyType;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import me.ryanhamshire.GriefPrevention.PlayerData;
-import org.black_ixx.playerpoints.PlayerPoints;
-import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Economy {
 
     private List<EconomyType> registeredEconomies;
+    private static Economy instance = null;
 
-    public Economy() {
-        registeredEconomies = new ArrayList<>(List.of(
-                new VaultEconomyType()
-        ));
+    private Economy() {
+        registeredEconomies = new ArrayList<>();
+    }
+
+    public static Economy getInstance() {
+        if (instance == null) {
+            instance = new Economy();
+        }
+        return instance;
     }
 
     public List<EconomyType> getRegisteredEconomies() { return List.copyOf(registeredEconomies); }
@@ -68,6 +65,13 @@ public class Economy {
                 .map(type -> type.formatWorth(value, applyMultiplier))
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining(", "));
+    }
+
+    public boolean registerEconomyType(@NotNull EconomyType economyType) {
+        if (getEconomyType(economyType.getIdentifier()) != null) {
+            return false;
+        }
+        return registeredEconomies.add(economyType);
     }
 
 }

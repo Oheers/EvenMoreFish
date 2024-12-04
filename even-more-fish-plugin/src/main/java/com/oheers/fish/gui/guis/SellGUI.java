@@ -1,7 +1,7 @@
 package com.oheers.fish.gui.guis;
 
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
-import com.oheers.fish.Economy;
+import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
@@ -49,7 +49,7 @@ public class SellGUI implements EMFGUI {
         }
         // Add filler and configured elements
         gui.setFiller(GUIUtils.getFillerItem(section.getString("filler"), Material.GRAY_STAINED_GLASS_PANE));
-        Economy economy = EvenMoreFish.getInstance().getEconomy();
+        Economy economy = Economy.getInstance();
         gui.addElements(GUIUtils.getElements(section, this, () -> {
             Map<String, String> replacements = new HashMap<>();
             SellHelper playerHelper = new SellHelper(player.getInventory(), player);

@@ -8,6 +8,7 @@ import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskSchedule
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
+import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
@@ -72,7 +73,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private final Random random = new Random();
 
     private Permission permission = null;
-    private Economy economy;
     private Map<Integer, Set<String>> fish = new HashMap<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
@@ -171,7 +171,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         }
 
         // could not set up economy.
-        if (!setupEconomy()) {
+        if (!Economy.getInstance().isEnabled()) {
             EvenMoreFish.getInstance().getLogger().warning("EvenMoreFish won't be hooking into economy. If this wasn't by choice in config.yml, please install Economy handling plugins.");
         }
 
@@ -452,11 +452,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return permission != null;
     }
 
-    private boolean setupEconomy() {
-        economy = new Economy();
-        return economy.isEnabled();
-    }
-
     // gets called on server shutdown to simulate all players closing their GUIs
     private void terminateGUIS() {
         getServer().getOnlinePlayers().forEach(player -> {
@@ -537,8 +532,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         RaritiesFile.getInstance().reload();
         BaitFile.getInstance().reload();
 
-        setupEconomy();
-
         FishManager.getInstance().reload();
         BaitManager.getInstance().reload();
 
@@ -590,10 +583,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public Permission getPermission() {
         return permission;
-    }
-
-    public Economy getEconomy() {
-        return economy;
     }
 
     public Map<Integer, Set<String>> getFish() {
@@ -774,8 +763,8 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         if (getPermission() != null && getPermission().isEnabled()) {
             new PermissionRewardType().register();
         }
-        // Only enable the MONEY type if the economy is loaded.
-        if (getEconomy() != null && getEconomy().isEnabled()) {
+        // Only enable the Money RewardType is Vault is enabled.
+        if (pm.isPluginEnabled("Vault")) {
             new MoneyRewardType().register();
         }
     }
