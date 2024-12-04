@@ -32,7 +32,7 @@ blacklisted-days:
   - "Friday"
   - "Sunday"
 
-# Days this competition SHOULD run on.
+# Days and times this competition should run on.
 # This is an alternative to using both blacklisted-days and times.
 days:
   Saturday:
