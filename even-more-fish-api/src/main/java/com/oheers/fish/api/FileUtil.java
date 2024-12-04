@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -34,6 +35,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -143,6 +145,34 @@ public class FileUtil {
             }
         }
         return configFile;
+    }
+
+    /**
+     * Retrieves all files in the given directory.
+     *
+     * @param directory The directory to search
+     * @param recursive Should this also search subdirectories?
+     * @return A list of files in the directory. Returns an empty list if none.
+     */
+    public static List<File> getFilesInDirectory(@NotNull File directory, boolean recursive) {
+        List<File> finalList = new ArrayList<>();
+        if (!directory.exists() || !directory.isDirectory()) {
+            return finalList;
+        }
+        File[] fileArray = directory.listFiles();
+        if (fileArray == null) {
+            return finalList;
+        }
+        for (File file : fileArray) {
+            if (file.isDirectory()) {
+                if (recursive) {
+                    finalList.addAll(getFilesInDirectory(file, true));
+                }
+            } else {
+                finalList.add(file);
+            }
+        }
+        return finalList;
     }
 
 }
