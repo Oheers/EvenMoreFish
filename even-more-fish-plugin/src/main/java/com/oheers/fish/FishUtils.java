@@ -34,7 +34,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -489,6 +491,14 @@ public class FishUtils {
             }
         }
         return totalWeight;
+    }
+
+    public static @Nullable DayOfWeek getDay(@NotNull String day) {
+        try {
+            return DayOfWeek.valueOf(day.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
     }
 
 }
