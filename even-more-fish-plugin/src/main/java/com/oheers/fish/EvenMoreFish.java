@@ -162,7 +162,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new FishFile();
         new RaritiesFile();
         new BaitFile();
-        new CompetitionConfig();
 
         new GUIConfig();
         new GUIFillerConfig();
@@ -530,7 +529,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         MainConfig.getInstance().reload();
         Messages.getInstance().reload();
-        CompetitionConfig.getInstance().reload();
         GUIConfig.getInstance().reload();
         GUIFillerConfig.getInstance().reload();
         FishFile.getInstance().reload();

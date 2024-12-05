@@ -139,6 +139,10 @@ public class AdminCommand extends BaseCommand {
                             @Default("LARGEST_FISH") @Optional CompetitionType type,
                             @Default("1") @Conditions("limits:min=1") @Optional Integer amount
         ) {
+            if (true) {
+                sender.sendMessage("Temporarily disabled.");
+                return;
+            }
             if (Competition.isActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
                 return;
@@ -146,13 +150,6 @@ public class AdminCommand extends BaseCommand {
 
 
             Competition comp = new Competition(duration, type);
-
-            comp.setCompetitionName("[admin_started]");
-            comp.setAdminStarted(true);
-            comp.initRewards(null, true);
-            comp.initBar(null);
-            comp.setNumberNeeded(amount);
-            comp.initStartSound(null);
 
             EvenMoreFish.getInstance().setActiveCompetition(comp);
             comp.begin(true);

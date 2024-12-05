@@ -68,18 +68,17 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     }
 
     private boolean chooseRarity(Competition competition) {
-        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.getCompetitionName(), competition.isAdminStarted());
+        List<Rarity> configRarities = competition.getCompetitionFile().getAllowedRarities();
 
         if (configRarities.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competition.getCompetitionName() + " competition config section.");
+            EvenMoreFish.getInstance().getLogger().severe("No allowed-rarities list found in the " + competition.getCompetitionFile().getFileName() + " competition config file.");
             return false;
         }
 
-        competition.setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competition.getCompetitionName(), competition.isAdminStarted()));
+        competition.setNumberNeeded(competition.getCompetitionFile().getNumberNeeded());
 
         try {
-            String randomRarity = configRarities.get(EvenMoreFish.getInstance().getRandom().nextInt(configRarities.size()));
-            Rarity rarity = FishManager.getInstance().getRarity(randomRarity);
+            Rarity rarity = configRarities.get(EvenMoreFish.getInstance().getRandom().nextInt(configRarities.size()));
             if (rarity != null) {
                 competition.setSelectedRarity(rarity);
                 return true;
