@@ -501,4 +501,12 @@ public class FishUtils {
         }
     }
 
+    public static @Nullable Integer getInteger(@NotNull String intString) {
+        try {
+            return Integer.parseInt(intString);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
 }
