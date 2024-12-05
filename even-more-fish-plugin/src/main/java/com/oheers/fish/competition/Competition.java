@@ -62,7 +62,7 @@ public class Competition {
         this.competitionName = competitionFile.getId();
         this.playersNeeded = competitionFile.getPlayersNeeded();
         this.startSound = competitionFile.getStartSound();
-        this.maxDuration = competitionFile.getDuration();
+        this.maxDuration = competitionFile.getDuration() * 60L;
         this.alertTimes = competitionFile.getAlertTimes();
         this.rewards = competitionFile.getRewards();
         this.competitionType = competitionFile.getType();
