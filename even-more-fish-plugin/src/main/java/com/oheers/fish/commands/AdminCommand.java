@@ -12,7 +12,7 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.competition.CompetitionFile;
+import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -135,30 +135,7 @@ public class AdminCommand extends BaseCommand {
 
         @Subcommand("start")
         @Description("%desc_competition_start")
-        public void onStart(final CommandSender sender,
-                            @Default("%duration") @Conditions("limits:min=1") @Optional Integer duration,
-                            @Default("LARGEST_FISH") @Optional CompetitionType type,
-                            @Default("1") @Conditions("limits:min=1") @Optional Integer amount
-        ) {
-            if (true) {
-                sender.sendMessage("Temporarily disabled.");
-                return;
-            }
-            if (Competition.isActive()) {
-                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
-                return;
-            }
-
-            Competition comp = new Competition(duration, type);
-
-            EvenMoreFish.getInstance().setActiveCompetition(comp);
-            comp.begin();
-        }
-
-        @Subcommand("startConfigured")
-        // TODO need to write this.
-        @Description("")
-        public void onStartConfigured(final CommandSender sender, final String competitionId) {
+        public void onStart(final CommandSender sender, final String competitionId) {
             if (Competition.isActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
                 return;
