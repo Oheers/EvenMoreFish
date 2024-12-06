@@ -7,7 +7,6 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;

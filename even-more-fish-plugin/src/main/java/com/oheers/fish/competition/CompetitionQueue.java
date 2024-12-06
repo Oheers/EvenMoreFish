@@ -8,7 +8,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.nio.file.StandardCopyOption;
 import java.time.DayOfWeek;
 import java.util.*;
 import java.util.logging.Level;

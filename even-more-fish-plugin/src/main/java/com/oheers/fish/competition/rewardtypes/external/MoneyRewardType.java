@@ -1,9 +1,9 @@
 package com.oheers.fish.competition.rewardtypes.external;
 
-import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.api.reward.RewardType;
+import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.api.economy.EconomyType;
+import com.oheers.fish.api.reward.RewardType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

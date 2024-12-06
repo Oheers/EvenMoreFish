@@ -1,15 +1,12 @@
 package com.oheers.fish.competition.configs;
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.api.FileUtil;
 import com.oheers.fish.config.ConfigBase;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 /**

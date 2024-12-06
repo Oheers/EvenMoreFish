@@ -9,7 +9,6 @@ import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
-import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
