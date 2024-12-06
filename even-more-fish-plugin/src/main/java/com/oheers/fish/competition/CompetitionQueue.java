@@ -2,7 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.FileUtil;
-import com.sk89q.worldedit.regions.TransformRegion;
+import com.oheers.fish.competition.configs.CompetitionFile;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
