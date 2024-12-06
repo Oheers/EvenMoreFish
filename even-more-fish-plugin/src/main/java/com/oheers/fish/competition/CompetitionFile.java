@@ -42,11 +42,6 @@ public class CompetitionFile extends ConfigBase {
             logger.warning("Competition invalid: 'type' missing in " + getFileName());
             throw new InvalidConfigurationException("A type has not been found in " + getFileName() + ". Please correct this.");
         }
-        // Check for either `times` or `days`, as both are usable for scheduling.
-        if (getConfig().getStringList("times").isEmpty() && getConfig().getSection("days") == null) {
-            logger.warning("Competition invalid: 'times' or 'days' missing or empty in " + getFileName());
-            throw new InvalidConfigurationException("Scheduled times have not been found in " + getFileName() + ". Please correct this.");
-        }
         if (getConfig().getInt("duration", -1) == -1) {
             logger.warning("Competition invalid: 'duration' missing in " + getFileName());
             throw new InvalidConfigurationException("A duration has not been found in " + getFileName() + ". Please correct this.");
@@ -72,6 +67,25 @@ public class CompetitionFile extends ConfigBase {
      */
     public @NotNull List<String> getTimes() {
         return getConfig().getStringList("times");
+    }
+
+    /**
+     * @return A map of days and times to run this competition on.
+     */
+    public @NotNull Map<DayOfWeek, List<String>> getScheduledDays() {
+        Section section = getConfig().getSection("days");
+        Map<DayOfWeek, List<String>> dayMap = new HashMap<>();
+        if (section == null) {
+            return dayMap;
+        }
+        for (String dayStr : section.getRoutesAsStrings(false)) {
+            DayOfWeek day = FishUtils.getDay(dayStr);
+            if (day == null) {
+                continue;
+            }
+            dayMap.put(day, section.getStringList(dayStr));
+        }
+        return dayMap;
     }
 
     /**

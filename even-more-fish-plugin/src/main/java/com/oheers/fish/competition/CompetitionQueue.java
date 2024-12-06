@@ -2,12 +2,13 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.FileUtil;
-import com.oheers.fish.config.CompetitionConfig;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.time.DayOfWeek;
 import java.util.*;
+import java.util.logging.Level;
 
 public class CompetitionQueue {
 
@@ -24,7 +25,7 @@ public class CompetitionQueue {
         }
 
         competitionFiles.forEach(file -> {
-            System.out.println("Loading " + file.getName());
+            EvenMoreFish.debug("Loading " + file.getName() + " competition");
             CompetitionFile competitionFile;
             try {
                 competitionFile = new CompetitionFile(file);
@@ -33,13 +34,36 @@ public class CompetitionQueue {
             }
             Competition competition = new Competition(competitionFile);
             System.out.println("Loading Timing for " + file.getName());
-            loadRepeatedTiming(competition);
+            if (loadSpecificDayTimes(competition)) {
+                return;
+            }
+            if (loadRepeatedTiming(competition)) {
+                return;
+            }
+            EvenMoreFish.debug(Level.WARNING, file.getName() + "'s timings are not configured properly. This competition will never start.");
         });
     }
 
-    private void loadRepeatedTiming(Competition competition) {
+    private boolean loadSpecificDayTimes(@NotNull Competition competition) {
+        Map<DayOfWeek, List<String>> scheduledDays = competition.getCompetitionFile().getScheduledDays();
+        if (scheduledDays.isEmpty()) {
+            return false;
+        }
+        scheduledDays.forEach((day, times) ->
+                times.forEach(time ->
+                        competitions.put(generateTimeCode(day, time), competition)
+                )
+        );
+        return true;
+    }
+
+    private boolean loadRepeatedTiming(@NotNull Competition competition) {
         CompetitionFile file = competition.getCompetitionFile();
         List<String> repeatedTimes = file.getTimes();
+
+        if (repeatedTimes.isEmpty()) {
+            return false;
+        }
 
         // Get a list of days we can use.
         List<DayOfWeek> daysToUse = new ArrayList<>(Arrays.asList(DayOfWeek.values()));
@@ -50,6 +74,7 @@ public class CompetitionQueue {
                 competitions.put(generateTimeCode(day, time), competition);
             }
         }
+        return true;
     }
 
     // Converts "Wednesday, 14:30" for example, into the minute of the week, Wednesday 14:30 becomes (24*60*2) + (14*60) + 30

@@ -9,7 +9,6 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.BaitFile;
-import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -202,7 +201,7 @@ public class FishingProcessor implements Listener {
 
         if (!fish.isSilent()) {
             String length = decimalFormat.format(fish.getLength());
-            EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + Float.toString(fish.getLength()));
+            EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + fish.getLength());
             String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
 
             Message message = new Message(ConfigMessage.FISH_CAUGHT);
