@@ -7,7 +7,7 @@ Welcome to the EvenMoreFish Wiki.
 ### Configuration
 * [Economy](https://github.com/Oheers/EvenMoreFish/wiki/Economy)
 * [Competition Types](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Types)
-* [Competitions.yml](https://github.com/Oheers/EvenMoreFish/wiki/competitions.yml)
+* [Competition Configs](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Configs)
 * [Fish.yml](https://github.com/Oheers/EvenMoreFish/wiki/Fish.yml)
 * [Rarities](https://github.com/Oheers/EvenMoreFish/wiki/Rarities)
 * [Messages.yml](https://github.com/Oheers/EvenMoreFish/wiki/Messages.yml)
