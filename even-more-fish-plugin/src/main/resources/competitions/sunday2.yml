@@ -1,4 +1,5 @@
 id: sundayCompetition2
+disabled: false
 type: MOST_FISH
 duration: 45
 days:

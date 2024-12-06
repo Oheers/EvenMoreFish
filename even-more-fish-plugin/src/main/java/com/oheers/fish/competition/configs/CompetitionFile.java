@@ -70,6 +70,13 @@ public class CompetitionFile extends ConfigBase {
     }
 
     /**
+     * @return Should this competition be disabled?
+     */
+    public boolean isDisabled() {
+        return getConfig().getBoolean("disabled");
+    }
+
+    /**
      * @return This competition's type.
      */
     public @NotNull CompetitionType getType() {

@@ -1,4 +1,5 @@
 id: weekendCompetition
+disabled: false
 type: SPECIFIC_FISH
 duration: 60
 allowed-rarities:

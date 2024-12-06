@@ -40,6 +40,10 @@ public class CompetitionQueue {
             } catch (InvalidConfigurationException e) {
                 return;
             }
+            // Skip disabled files.
+            if (competitionFile.isDisabled()) {
+                return;
+            }
             System.out.println("Checking for existence. Need to make sure this is case-insensitive.");
             if (fileMap.containsKey(competitionFile.getId())) {
                 EvenMoreFish.getInstance().getLogger().warning("A competition with the id: " + competitionFile.getId() + " already exists! Skipping.");

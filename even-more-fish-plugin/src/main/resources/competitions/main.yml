@@ -1,4 +1,5 @@
 id: mainCompetition
+disabled: false
 type: LARGEST_FISH
 duration: 10
 times:

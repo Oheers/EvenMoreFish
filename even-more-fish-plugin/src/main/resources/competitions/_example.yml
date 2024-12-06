@@ -5,6 +5,9 @@
 # Please only use english characters. This is a limitation of the Brigadier command library.
 id: exampleCompetition
 
+# Should this competition be disabled?
+disabled: false
+
 # Which type of competition should this be?
 # See valid types here: https://github.com/Oheers/EvenMoreFish/wiki/Competition-Types
 type: LARGEST_FISH
