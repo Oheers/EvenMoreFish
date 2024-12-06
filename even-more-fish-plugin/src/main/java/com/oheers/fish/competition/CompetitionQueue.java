@@ -136,8 +136,6 @@ public class CompetitionQueue {
             }
         }
 
-        System.out.println("Time Code: " + beginning);
-
         return beginning;
     }
 
