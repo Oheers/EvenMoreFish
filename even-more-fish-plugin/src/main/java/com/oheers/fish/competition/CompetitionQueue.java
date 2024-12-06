@@ -2,11 +2,13 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.FileUtil;
+import com.oheers.fish.competition.configs.CompetitionConversions;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.nio.file.StandardCopyOption;
 import java.time.DayOfWeek;
 import java.util.*;
 import java.util.logging.Level;
@@ -19,6 +21,9 @@ public class CompetitionQueue {
     public CompetitionQueue() {
         competitions = new TreeMap<>();
         fileMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        // Check for old file format and convert if it exists.
+        new CompetitionConversions().performCheck();
     }
 
     public void load() {
@@ -26,6 +31,7 @@ public class CompetitionQueue {
         fileMap.clear();
 
         File compsFolder = new File(EvenMoreFish.getInstance().getDataFolder(), "competitions");
+        loadDefaultFiles(compsFolder);
         List<File> competitionFiles = FileUtil.getFilesInDirectory(compsFolder, true, true);
 
         if (competitionFiles.isEmpty()) {
@@ -37,6 +43,7 @@ public class CompetitionQueue {
             CompetitionFile competitionFile;
             try {
                 competitionFile = new CompetitionFile(file);
+            // Skip invalid configs.
             } catch (InvalidConfigurationException e) {
                 return;
             }
@@ -44,14 +51,13 @@ public class CompetitionQueue {
             if (competitionFile.isDisabled()) {
                 return;
             }
-            System.out.println("Checking for existence. Need to make sure this is case-insensitive.");
+            // Skip duplicate IDs
             if (fileMap.containsKey(competitionFile.getId())) {
                 EvenMoreFish.getInstance().getLogger().warning("A competition with the id: " + competitionFile.getId() + " already exists! Skipping.");
                 return;
             }
             fileMap.put(competitionFile.getId(), competitionFile);
             Competition competition = new Competition(competitionFile);
-            System.out.println("Loading Timing for " + file.getName());
             if (loadSpecificDayTimes(competition)) {
                 return;
             }
@@ -60,6 +66,17 @@ public class CompetitionQueue {
             }
             EvenMoreFish.debug(Level.WARNING, file.getName() + "'s timings are not configured properly. This competition will never automatically start.");
         });
+    }
+
+    private void loadDefaultFiles(@NotNull File targetDirectory) {
+        // Delete _example.yml file for regeneration
+        new File(targetDirectory, "_example.yml").delete();
+
+        FileUtil.loadFileOrResource(targetDirectory, "_example.yml", "competitions/_example.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "default-main.yml", "competitions/default-main.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "default-sunday1.yml", "competitions/default-sunday1.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "default-sunday2.yml", "competitions/default-sunday2.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "default-weekend.yml", "competitions/default-weekend.yml", EvenMoreFish.getInstance());
     }
 
     public TreeMap<String, CompetitionFile> getFileMap() {
