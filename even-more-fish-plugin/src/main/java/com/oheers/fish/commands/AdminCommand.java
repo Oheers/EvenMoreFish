@@ -134,6 +134,7 @@ public class AdminCommand extends BaseCommand {
     public class CompetitionSubCommand extends BaseCommand {
 
         @Subcommand("start")
+        @CommandCompletion("@competitionId")
         @Description("%desc_competition_start")
         public void onStart(final CommandSender sender, final String competitionId) {
             if (Competition.isActive()) {
