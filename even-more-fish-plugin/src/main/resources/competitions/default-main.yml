@@ -1,4 +1,4 @@
-id: mainCompetition
+id: defaultMainCompetition
 disabled: false
 type: LARGEST_FISH
 duration: 10

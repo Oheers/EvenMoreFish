@@ -1,4 +1,4 @@
-id: weekendCompetition
+id: defaultWeekendCompetition
 disabled: false
 type: SPECIFIC_FISH
 duration: 60
