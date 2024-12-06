@@ -153,6 +153,22 @@ public class AdminCommand extends BaseCommand {
             competition.begin();
         }
 
+        @Subcommand("test")
+        public void onTest(final CommandSender sender,
+                           @Default("%duration") @Conditions("limits:min=1") Integer duration,
+                           @Default("LARGEST_FISH") CompetitionType type
+        ) {
+            if (Competition.isActive()) {
+                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
+                return;
+            }
+            CompetitionFile file = new CompetitionFile("adminTest", type, duration);
+            Competition competition = new Competition(file);
+            competition.setAdminStarted(true);
+            EvenMoreFish.getInstance().setActiveCompetition(competition);
+            competition.begin();
+        }
+
         @Subcommand("end")
         @Description("%desc_competition_end")
         public void onEnd(final CommandSender sender) {

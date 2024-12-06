@@ -9,6 +9,7 @@ import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -31,6 +32,17 @@ public class CompetitionFile extends ConfigBase {
     public CompetitionFile(@NotNull File file) throws InvalidConfigurationException {
         super(file, EvenMoreFish.getInstance(), false);
         performRequiredConfigChecks();
+    }
+
+    /**
+     * Creates a new CompetitionFile with the provided values.
+     * Used for the '/emf admin competition test' command.
+     */
+    public CompetitionFile(@NotNull String id, @NotNull CompetitionType type, int duration) {
+        super();
+        getConfig().set("id", id);
+        getConfig().set("type", type.toString());
+        getConfig().set("duration", duration);
     }
 
     // Current required config: id, type, times

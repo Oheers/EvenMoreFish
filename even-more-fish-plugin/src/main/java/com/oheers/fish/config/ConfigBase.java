@@ -21,6 +21,7 @@ import java.util.logging.Level;
 
 public class ConfigBase {
 
+    private final boolean preventIO;
     private final String fileName;
     private final String resourceName;
     private final Plugin plugin;
@@ -30,6 +31,7 @@ public class ConfigBase {
     private File file = null;
 
     public ConfigBase(@NotNull File file, @NotNull Plugin plugin, boolean configUpdater) {
+        this.preventIO = false;
         this.fileName = file.getName();
         this.resourceName = null;
         this.plugin = plugin;
@@ -39,6 +41,7 @@ public class ConfigBase {
     }
 
     public ConfigBase(@NotNull String fileName, @NotNull String resourceName, @NotNull Plugin plugin, boolean configUpdater) {
+        this.preventIO = false;
         this.fileName = fileName;
         this.resourceName = resourceName;
         this.plugin = plugin;
@@ -47,18 +50,31 @@ public class ConfigBase {
         update();
     }
 
-    public void reload(@NotNull File configFile) {
-        List<Settings> settingsList = new ArrayList<>(Arrays.asList(
-                getGeneralSettings(),
-                getDumperSettings(),
-                getLoaderSettings()
-        ));
+    /**
+     * Creates an instance of ConfigBase with a blank file. This disables all I/O methods.
+     */
+    public ConfigBase() {
+        this.preventIO = true;
+        this.fileName = null;
+        this.resourceName = null;
+        this.plugin = null;
+        this.configUpdater = false;
 
-        if (configUpdater) {
-            settingsList.add(getUpdaterSettings());
+        try {
+            this.config = YamlDocument.create(InputStream.nullInputStream(), getSettings());
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
 
-        final Settings[] settings = settingsList.toArray(new Settings[0]);
+    }
+
+    public void reload(@NotNull File configFile) {
+
+        if (preventIO) {
+            return;
+        }
+
+        final Settings[] settings = getSettings();
 
         try {
             InputStream resource = getResourceName() == null ? null : getPlugin().getResource(getResourceName());
@@ -74,6 +90,9 @@ public class ConfigBase {
     }
 
     public void reload() {
+        if (preventIO) {
+            return;
+        }
         reload(this.file);
     }
 
@@ -92,6 +111,20 @@ public class ConfigBase {
 
     public final String getResourceName() { return this.resourceName; }
 
+    public Settings[] getSettings() {
+        List<Settings> settingsList = new ArrayList<>(Arrays.asList(
+                getGeneralSettings(),
+                getDumperSettings(),
+                getLoaderSettings()
+        ));
+
+        if (configUpdater) {
+            settingsList.add(getUpdaterSettings());
+        }
+
+        return settingsList.toArray(Settings[]::new);
+    }
+
     public GeneralSettings getGeneralSettings() {
         return GeneralSettings.builder().setUseDefaults(false).build();
     }
@@ -109,6 +142,9 @@ public class ConfigBase {
     }
 
     public void save() {
+        if (preventIO) {
+            return;
+        }
         try {
             getConfig().save();
         } catch (IOException exception) {
@@ -117,6 +153,9 @@ public class ConfigBase {
     }
 
     public void update() {
+        if (preventIO) {
+            return;
+        }
         try {
             getConfig().update();
         } catch (IOException exception) {
