@@ -18,7 +18,6 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.boss.BarColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Competition {
 
@@ -43,7 +41,6 @@ public class Competition {
     long maxDuration;
     long timeLeft;
     Bar statusBar;
-    boolean showBar;
     long epochStartTime;
     List<Long> alertTimes;
     Map<Integer, List<Reward>> rewards;

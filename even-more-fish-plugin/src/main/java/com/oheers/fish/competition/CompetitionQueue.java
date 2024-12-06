@@ -2,6 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.FileUtil;
+import com.sk89q.worldedit.regions.TransformRegion;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,9 +14,16 @@ import java.util.logging.Level;
 public class CompetitionQueue {
 
     Map<Integer, Competition> competitions;
+    TreeMap<String, CompetitionFile> fileMap;
+
+    public CompetitionQueue() {
+        competitions = new TreeMap<>();
+        fileMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    }
 
     public void load() {
-        competitions = new TreeMap<>();
+        competitions.clear();
+        fileMap.clear();
 
         File compsFolder = new File(EvenMoreFish.getInstance().getDataFolder(), "competitions");
         List<File> competitionFiles = FileUtil.getFilesInDirectory(compsFolder, true, true);
@@ -32,6 +40,12 @@ public class CompetitionQueue {
             } catch (InvalidConfigurationException e) {
                 return;
             }
+            System.out.println("Checking for existence. Need to make sure this is case-insensitive.");
+            if (fileMap.containsKey(competitionFile.getId())) {
+                EvenMoreFish.getInstance().getLogger().warning("A competition with the id: " + competitionFile.getId() + " already exists! Skipping.");
+                return;
+            }
+            fileMap.put(competitionFile.getId(), competitionFile);
             Competition competition = new Competition(competitionFile);
             System.out.println("Loading Timing for " + file.getName());
             if (loadSpecificDayTimes(competition)) {
@@ -40,7 +54,7 @@ public class CompetitionQueue {
             if (loadRepeatedTiming(competition)) {
                 return;
             }
-            EvenMoreFish.debug(Level.WARNING, file.getName() + "'s timings are not configured properly. This competition will never start.");
+            EvenMoreFish.debug(Level.WARNING, file.getName() + "'s timings are not configured properly. This competition will never automatically start.");
         });
     }
 
