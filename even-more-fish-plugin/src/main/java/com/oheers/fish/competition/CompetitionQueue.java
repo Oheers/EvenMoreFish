@@ -58,6 +58,10 @@ public class CompetitionQueue {
         });
     }
 
+    public TreeMap<String, CompetitionFile> getFileMap() {
+        return new TreeMap<>(fileMap);
+    }
+
     private boolean loadSpecificDayTimes(@NotNull Competition competition) {
         Map<DayOfWeek, List<String>> scheduledDays = competition.getCompetitionFile().getScheduledDays();
         if (scheduledDays.isEmpty()) {

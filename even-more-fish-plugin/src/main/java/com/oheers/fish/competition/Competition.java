@@ -36,7 +36,7 @@ public class Competition {
     private Rarity selectedRarity;
     private int numberNeeded;
     private String competitionName;
-    private boolean adminStarted;
+    private boolean adminStarted = false;
     private Message startMessage;
     long maxDuration;
     long timeLeft;
@@ -50,10 +50,6 @@ public class Competition {
     private CompetitionFile competitionFile;
 
     public Competition(final @NotNull CompetitionFile competitionFile) {
-        // TODO instanceof AdminCompetitionFile
-        if (false) {
-            this.adminStarted = true;
-        }
         this.competitionFile = competitionFile;
         this.competitionName = competitionFile.getId();
         this.playersNeeded = competitionFile.getPlayersNeeded();
@@ -80,9 +76,9 @@ public class Competition {
         Competition.originallyRandom = originallyRandom;
     }
 
-    public void begin(boolean adminStart) {
+    public void begin() {
         try {
-            if (!adminStart && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
+            if (!isAdminStarted() && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
                 new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast();
                 active = false;
                 return;
@@ -502,6 +498,10 @@ public class Competition {
 
     public boolean isAdminStarted() {
         return adminStarted;
+    }
+
+    public void setAdminStarted(boolean adminStarted) {
+        this.adminStarted = adminStarted;
     }
 
 }

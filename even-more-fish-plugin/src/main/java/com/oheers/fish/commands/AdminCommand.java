@@ -12,6 +12,7 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionFile;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -148,11 +149,30 @@ public class AdminCommand extends BaseCommand {
                 return;
             }
 
-
             Competition comp = new Competition(duration, type);
 
             EvenMoreFish.getInstance().setActiveCompetition(comp);
-            comp.begin(true);
+            comp.begin();
+        }
+
+        @Subcommand("startConfigured")
+        // TODO need to write this.
+        @Description("")
+        public void onStartConfigured(final CommandSender sender, final String competitionId) {
+            if (Competition.isActive()) {
+                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
+                return;
+            }
+            CompetitionFile file = EvenMoreFish.getInstance().getCompetitionQueue().getFileMap().get(competitionId);
+            if (file == null) {
+                // TODO needs a proper message.
+                sender.sendMessage("That is not a valid competition id.");
+                return;
+            }
+            Competition competition = new Competition(file);
+            competition.setAdminStarted(true);
+            EvenMoreFish.getInstance().setActiveCompetition(competition);
+            competition.begin();
         }
 
         @Subcommand("end")
