@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 
 public class SpigotAdapter extends PlatformAdapter {
 
-    public SpigotAdapter(@NotNull EMFPlugin plugin) {
-        super(plugin);
+    public SpigotAdapter() {
+        super();
     }
 
     @Override
-    public void logLoadedMessage(@NotNull Logger logger) {
-        logger.info("Using API provided by Spigot.");
+    public void logLoadedMessage() {
+        EMFPlugin.getInstance().getLogger().info("Using API provided by Spigot.");
     }
 }

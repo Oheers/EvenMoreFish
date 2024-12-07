@@ -824,17 +824,17 @@ public class EvenMoreFish extends EMFPlugin {
     private static PlatformAdapter loadAdapter() {
         // Class names taken from PaperLib's initialize method
         if (FishUtils.classExists(("com.destroystokyo.paper.PaperConfig"))) {
-            return new PaperAdapter(instance);
+            return new PaperAdapter();
         } else if (FishUtils.classExists("io.papermc.paper.configuration.Configuration")) {
-            return new PaperAdapter(instance);
+            return new PaperAdapter();
         }
-        return new SpigotAdapter(instance);
+        return new SpigotAdapter();
     }
 
     public static @NotNull PlatformAdapter getAdapter() {
         if (platformAdapter == null) {
             instance.getLogger().warning("No PlatformAdapter found! Defaulting to SpigotAdapter.");
-            platformAdapter = new SpigotAdapter(instance);
+            platformAdapter = new SpigotAdapter();
         }
         return platformAdapter;
     }
