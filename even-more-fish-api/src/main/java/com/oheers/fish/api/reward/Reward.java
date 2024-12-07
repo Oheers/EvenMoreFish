@@ -1,7 +1,6 @@
 package com.oheers.fish.api.reward;
 
 import com.oheers.fish.api.plugin.EMFPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
