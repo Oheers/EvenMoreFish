@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -51,8 +52,12 @@ public class Reward {
         getRewardType().doReward(player, getKey(), getValue(), hookLocation);
     }
 
-    public void setFishVelocity(Vector fishVelocity) {
+    public void setFishVelocity(@Nullable Vector fishVelocity) {
         this.fishVelocity = fishVelocity;
+    }
+
+    public @Nullable Vector getFishVelocity() {
+        return this.fishVelocity;
     }
 
 }
