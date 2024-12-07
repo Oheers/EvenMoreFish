@@ -511,4 +511,13 @@ public class FishUtils {
         }
     }
 
+    public static boolean classExists(@NotNull String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException exception) {
+            return false;
+        }
+    }
+
 }
