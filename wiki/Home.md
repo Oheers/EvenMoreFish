@@ -16,7 +16,7 @@ This is a feature-rich plugin providing a new experience to fishing on Minecraft
 
 ### Downloading
 
-The latest version of the plugin will always be available at the [official SpigotMC page](https://www.spigotmc.org/resources/evenmorefish-%E2%96%AA-extensive-fishing-plugin-%E2%96%AA.91310/updates). To run it on your server, insert the .jar file into your server's `plugin` folder and **restart** the server completely.
+The latest version of the plugin will always be available at the official [SpigotMC page](https://www.spigotmc.org/resources/evenmorefish-%E2%96%AA-extensive-fishing-plugin-%E2%96%AA.91310/updates) or [Modrinth page](https://modrinth.com/plugin/evenmorefish). To run it on your server, insert the .jar file into your server's `plugin` folder and **restart** the server completely.
 
 ### Development Builds
 Untested, bleeding edge builds are available at [Jenkins](https://ci.codemc.io/job/Oheers/job/EvenMoreFish/)
