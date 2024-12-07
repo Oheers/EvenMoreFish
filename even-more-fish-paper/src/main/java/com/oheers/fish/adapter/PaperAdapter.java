@@ -23,7 +23,7 @@ public class PaperAdapter extends PlatformAdapter {
 
     @Override
     public void logLoadedMessage() {
-        EMFPlugin.getInstance().getLogger().info("Using improved API provided by Paper.");
+        EMFPlugin.getInstance().getComponentLogger().info("Using improved API provided by Paper.");
     }
 
     @Override
