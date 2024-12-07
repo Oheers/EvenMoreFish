@@ -39,7 +39,7 @@ dependencyResolutionManagement {
             library("nbt-api", "de.tr7zw:item-nbt-api:2.13.3-SNAPSHOT")
             library("denizen-api", "com.denizenscript:denizen:1.3.1-SNAPSHOT")
             library("oraxen", "io.th0rgal:oraxen:1.173.0") // We must use 1.173.0 as later versions require Java 21
-            library("nexo", "com.nexomc:nexo:0.1.0-dev.28")
+            library("nexo", "com.nexomc:nexo:0.4.0-dev.2")
 
             library("ecoitems-api", "com.willfp:EcoItems:5.6.1")
             library("ecoitems-libreforge", "com.willfp:libreforge:4.21.1")
