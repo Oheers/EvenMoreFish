@@ -2,8 +2,6 @@ plugins {
     id("com.oheers.evenmorefish.java-conventions")
 }
 
-version = 1.7
-
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
 }
