@@ -126,7 +126,7 @@ bukkit {
         "GriefPrevention"
     )
     loadBefore = listOf("AntiAC")
-    apiVersion = "1.16"
+    apiVersion = "1.18"
 
     commands {
         register("evenmorefish") {
