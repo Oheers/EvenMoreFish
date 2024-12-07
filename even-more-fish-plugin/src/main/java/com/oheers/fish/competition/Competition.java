@@ -3,12 +3,11 @@ package com.oheers.fish.competition;
 import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
 import com.oheers.fish.api.EMFCompetitionStartEvent;
 import com.oheers.fish.api.reward.Reward;
+import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
-import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -19,14 +18,13 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.boss.BarColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Competition {
 
@@ -38,19 +36,30 @@ public class Competition {
     private Rarity selectedRarity;
     private int numberNeeded;
     private String competitionName;
-    private boolean adminStarted;
+    private boolean adminStarted = false;
     private Message startMessage;
     long maxDuration;
     long timeLeft;
     Bar statusBar;
-    boolean showBar;
     long epochStartTime;
     List<Long> alertTimes;
     Map<Integer, List<Reward>> rewards;
-    List<Reward> participationRewards;
     int playersNeeded;
     Sound startSound;
     MyScheduledTask timingSystem;
+    private CompetitionFile competitionFile;
+
+    public Competition(final @NotNull CompetitionFile competitionFile) {
+        this.competitionFile = competitionFile;
+        this.competitionName = competitionFile.getId();
+        this.playersNeeded = competitionFile.getPlayersNeeded();
+        this.startSound = competitionFile.getStartSound();
+        this.maxDuration = competitionFile.getDuration() * 60L;
+        this.alertTimes = competitionFile.getAlertTimes();
+        this.rewards = competitionFile.getRewards();
+        this.competitionType = competitionFile.getType();
+        this.statusBar = competitionFile.createBossbar();
+    }
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
@@ -67,9 +76,9 @@ public class Competition {
         Competition.originallyRandom = originallyRandom;
     }
 
-    public void begin(boolean adminStart) {
+    public void begin() {
         try {
-            if (!adminStart && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
+            if (!isAdminStarted() && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
                 new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast();
                 active = false;
                 return;
@@ -87,10 +96,8 @@ public class Competition {
 
             leaderboard = new Leaderboard(competitionType);
 
-            if (showBar) {
-                statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
-                statusBar.show();
-            }
+            statusBar.show();
+
             initTimer();
             announceBegin();
             EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(this);
@@ -98,8 +105,7 @@ public class Competition {
             epochStartTime = Instant.now().getEpochSecond();
 
             // Execute start commands
-            List<String> startCommands = CompetitionConfig.getInstance().getCompetitionStartCommands(competitionName, adminStart);
-            startCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
+            getCompetitionFile().getStartCommands().forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
 
             EvenMoreFish.getInstance().getDecidedRarities().clear();
         } catch (Exception ex) {
@@ -149,9 +155,7 @@ public class Competition {
         this.timingSystem = new UniversalRunnable() {
             @Override
             public void run() {
-                if (showBar) {
-                    statusBar.timerUpdate(timeLeft, maxDuration);
-                }
+                statusBar.timerUpdate(timeLeft, maxDuration);
                 if (decreaseTime()) {
                     cancel();
                 }
@@ -255,7 +259,7 @@ public class Competition {
             return;
         }
 
-        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
+        List<String> competitionColours = competitionFile.getPositionColours();
         List<CompetitionEntry> entries = getSortedEntries(leaderboard.getEntries());
 
         String leaderboardMessage = buildLeaderboardMessage(entries, competitionColours, true, null);
@@ -276,7 +280,7 @@ public class Competition {
             return;
         }
 
-        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
+        List<String> competitionColours = competitionFile.getPositionColours();
         List<CompetitionEntry> entries = getSortedEntries(leaderboard.getEntries());
 
         String leaderboardMessage = buildLeaderboardMessage(entries, competitionColours, false, player.getUniqueId());
@@ -326,57 +330,6 @@ public class Competition {
         return builder.toString();
     }
 
-
-    public void initAlerts(String competitionName) {
-        final Logger logger = EvenMoreFish.getInstance().getLogger();
-        for (String s : CompetitionConfig.getInstance().getAlertTimes(competitionName)) {
-
-            String[] split = s.split(":");
-            if (split.length != 2) {
-                logger.severe(() -> "%s is not formatted correctly. Use MM:SS".formatted(s));
-                continue;
-            }
-
-            try {
-                alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
-            } catch (NumberFormatException nfe) {
-                logger.severe(() -> "Could not turn %s into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb".formatted(s));
-            }
-
-        }
-    }
-
-    public void initRewards(String competitionName, boolean adminStart) {
-        Set<String> chosen;
-        String path;
-
-        // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the competition's reward config
-        Set<String> positions = CompetitionConfig.getInstance().getRewardPositions(competitionName);
-        if (adminStart || positions.isEmpty()) {
-            chosen = CompetitionConfig.getInstance().getRewardPositions();
-            path = "rewards.";
-        } else {
-            chosen = positions;
-            path = "competitions." + competitionName + ".rewards.";
-        }
-
-        chosen.forEach(key -> {
-            List<Reward> addingRewards = CompetitionConfig.getInstance().getStringList(path + key).stream()
-                    .map(Reward::new)
-                    .toList();
-
-            if (key.equals("participation")) {
-                this.participationRewards = addingRewards;
-            } else {
-                try {
-                    this.rewards.put(Integer.parseInt(key), addingRewards);
-                } catch (NumberFormatException exception) {
-                    EvenMoreFish.getInstance().getLogger().warning(() -> "%s is not a valid number!".formatted(key));
-                }
-            }
-        });
-    }
-
     private void handleDatabaseUpdates(CompetitionEntry entry, boolean isTopEntry) {
         if (!MainConfig.getInstance().databaseEnabled()) {
             return;
@@ -412,8 +365,6 @@ public class Competition {
             handleDatabaseUpdates(entries.get(0), true); // Top entry
         }
 
-        boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
-
         for (CompetitionEntry entry : entries) {
             Player player = Bukkit.getPlayer(entry.getPlayer());
 
@@ -428,8 +379,9 @@ public class Competition {
                 rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
             } else {
                 // Default to participation rewards if not.
-                if (participationRewardsExist) {
-                    participationRewards.forEach(reward -> reward.rewardPlayer(player, null));
+                List<Reward> participation = rewards.get(-1);
+                if (participation != null) {
+                    participation.forEach(reward -> reward.rewardPlayer(player, null));
                 }
             }
 
@@ -454,32 +406,6 @@ public class Competition {
         }
     }
 
-    public void initBar(String competitionName) {
-        this.showBar = CompetitionConfig.getInstance().getShowBar(competitionName);
-        this.statusBar = new Bar();
-
-        try {
-            this.statusBar.setColour(BarColor.valueOf(CompetitionConfig.getInstance().getBarColour(competitionName).toUpperCase()));
-        } catch (IllegalArgumentException iae) {
-            EvenMoreFish.getInstance().getLogger().severe(CompetitionConfig.getInstance().getBarColour(competitionName) + " is not a valid bossbar colour, check ");
-        }
-
-        this.statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)));
-    }
-
-    public void initGetNumbersNeeded(String competitionName) {
-        this.playersNeeded = CompetitionConfig.getInstance().getPlayersNeeded(competitionName);
-    }
-
-    /**
-     * The sound that gets sent to players when the competition begins, defined in competitions.yml
-     *
-     * @param competitionName The name of the competition as stated in the competitions.yml file.
-     */
-    public void initStartSound(String competitionName) {
-        this.startSound = CompetitionConfig.getInstance().getStartNoise(competitionName);
-    }
-
     public Bar getStatusBar() {
         return this.statusBar;
     }
@@ -500,16 +426,16 @@ public class Competition {
         return leaderboard;
     }
 
-    public void setAdminStarted(boolean adminStarted) {
-        this.adminStarted = adminStarted;
-    }
-
     public Message getStartMessage() {
         return startMessage;
     }
 
     public String getCompetitionName() {
         return competitionName;
+    }
+
+    public CompetitionFile getCompetitionFile() {
+        return this.competitionFile;
     }
 
     public void setCompetitionName(String competitionName) {
@@ -572,6 +498,10 @@ public class Competition {
 
     public boolean isAdminStarted() {
         return adminStarted;
+    }
+
+    public void setAdminStarted(boolean adminStarted) {
+        this.adminStarted = adminStarted;
     }
 
 }

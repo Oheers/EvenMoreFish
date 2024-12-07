@@ -14,11 +14,16 @@ public class Bar {
 
     String title;
     BossBar bar;
+    private boolean shouldShow = true;
 
     String prefix;
 
     public Bar() {
         createBar();
+    }
+
+    public void setShouldShow(boolean shouldShow) {
+        this.shouldShow = shouldShow;
     }
 
     public void timerUpdate(long timeLeft, long totalTime) {
@@ -59,6 +64,9 @@ public class Bar {
     }
 
     public void show() {
+        if (!shouldShow) {
+            return;
+        }
         Bukkit.getOnlinePlayers().forEach(this::addPlayer);
         bar.setVisible(true);
     }
@@ -75,11 +83,17 @@ public class Bar {
 
     // Shows the bar to all players online
     public void renderBars() {
+        if (!shouldShow) {
+            return;
+        }
         bar.setVisible(true);
         Bukkit.getOnlinePlayers().forEach(bar::addPlayer);
     }
 
     public void addPlayer(Player player) {
+        if (!shouldShow) {
+            return;
+        }
         bar.addPlayer(player);
     }
 

@@ -2,7 +2,7 @@ package com.oheers.fish;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
-import com.oheers.fish.config.CompetitionConfig;
+import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -34,7 +34,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -373,9 +375,11 @@ public class FishUtils {
             return;
         }
 
-        int rangeSquared = CompetitionConfig.getInstance().getBroadcastRange(); // 10 blocks squared
+        CompetitionFile activeCompetitionFile = EvenMoreFish.getInstance().getActiveCompetition().getCompetitionFile();
 
-        if (CompetitionConfig.getInstance().broadcastOnlyRods()) {
+        int rangeSquared = activeCompetitionFile.getBroadcastRange(); // 10 blocks squared
+
+        if (activeCompetitionFile.shouldBroadcastOnlyRods()) {
             // sends it to all players holding ords
             if (actionBar) {
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -489,6 +493,22 @@ public class FishUtils {
             }
         }
         return totalWeight;
+    }
+
+    public static @Nullable DayOfWeek getDay(@NotNull String day) {
+        try {
+            return DayOfWeek.valueOf(day.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable Integer getInteger(@NotNull String intString) {
+        try {
+            return Integer.parseInt(intString);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
     }
 
 }

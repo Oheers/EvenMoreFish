@@ -1,0 +1,13 @@
+id: defaultSundayCompetition2
+disabled: false
+type: MOST_FISH
+duration: 45
+days:
+  Sunday:
+    - "20:00"
+alerts:
+  - "30:00"
+  - "15:00"
+  - "5:00"
+bossbar-colour: BLUE
+bossbar-prefix: "&b&lFishing Contest: "

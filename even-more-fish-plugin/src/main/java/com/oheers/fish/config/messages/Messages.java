@@ -20,7 +20,9 @@ public class Messages extends ConfigBase {
     }
 
     public String getSTDPrefix() {
-        return getConfig().getString("prefix-regular") + getConfig().getString("prefix") + "&r";
+        Message message = new Message("");
+        message.usePrefix(PrefixType.DEFAULT);
+        return message.getRawMessage() + "&r";
     }
 
     @Override

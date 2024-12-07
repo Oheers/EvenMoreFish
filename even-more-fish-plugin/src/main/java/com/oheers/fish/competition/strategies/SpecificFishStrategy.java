@@ -7,7 +7,6 @@ import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
-import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
@@ -66,10 +65,10 @@ public class SpecificFishStrategy implements CompetitionStrategy {
     }
 
     private boolean chooseFish(Competition competition) {
-        List<String> configRarities = CompetitionConfig.getInstance().allowedRarities(competition.getCompetitionName(), competition.isAdminStarted());
+        List<Rarity> configRarities = competition.getCompetitionFile().getAllowedRarities();
         final Logger logger = EvenMoreFish.getInstance().getLogger();
         if (configRarities.isEmpty()) {
-            logger.severe(() -> "No allowed-rarities list found in the " + competition.getCompetitionName() + " competition config section.");
+            logger.severe(() -> "No allowed-rarities list found in the " + competition.getCompetitionFile().getFileName() + " competition config file.");
             return false;
         }
 
@@ -77,21 +76,10 @@ public class SpecificFishStrategy implements CompetitionStrategy {
         List<Rarity> allowedRarities = new ArrayList<>();
         double totalWeight = 0;
 
-        for (String configRarity : configRarities) {
-            Rarity rarity = FishManager.getInstance().getRarity(configRarity);
-            if (rarity == null) {
-                continue;
-            }
+        for (Rarity rarity : configRarities) {
             fish.addAll(FishManager.getInstance().getFishForRarity(rarity));
             allowedRarities.add(rarity);
             totalWeight += rarity.getWeight();
-        }
-
-        if (allowedRarities.isEmpty()) {
-            logger.severe(() -> "The allowed-rarities list found in the %s competition config contains no loaded rarities!".formatted(competition.getCompetitionName()));
-            logger.severe(() -> "Configured Rarities: %s".formatted(configRarities));
-            logger.severe(() -> "Loaded Rarities: %s".formatted(FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList()));
-            return false;
         }
 
         int idx = 0;
@@ -103,7 +91,7 @@ public class SpecificFishStrategy implements CompetitionStrategy {
         }
 
         if (competition.getNumberNeeded() == 0) {
-            competition.setNumberNeeded(CompetitionConfig.getInstance().getNumberFishNeeded(competition.getCompetitionName(), competition.isAdminStarted()));
+            competition.setNumberNeeded(competition.getCompetitionFile().getNumberNeeded());
         }
 
         try {

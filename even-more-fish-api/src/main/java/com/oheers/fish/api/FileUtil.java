@@ -22,6 +22,7 @@
 package com.oheers.fish.api;
 
 
+import com.oheers.fish.api.plugin.EMFPlugin;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -143,6 +144,49 @@ public class FileUtil {
             }
         }
         return configFile;
+    }
+
+    /**
+     * Retrieves all files in the given directory.
+     *
+     * @param directory The directory to search
+     * @param ignoreUnderscoreFiles Should files that start with an underscore be ignored?
+     * @param recursive Should this also search subdirectories?
+     * @return A list of files in the directory. Returns an empty list if none.
+     */
+    public static List<File> getFilesInDirectory(@NotNull File directory, boolean ignoreUnderscoreFiles, boolean recursive) {
+        List<File> finalList = new ArrayList<>();
+        if (!directory.exists() || !directory.isDirectory()) {
+            return finalList;
+        }
+        try {
+            File[] fileArray = directory.listFiles();
+            if (fileArray == null) {
+                return finalList;
+            }
+            for (File file : fileArray) {
+                if (ignoreUnderscoreFiles && file.getName().startsWith("_")) {
+                    continue;
+                }
+                if (file.isDirectory() && recursive) {
+                    finalList.addAll(getFilesInDirectory(file, ignoreUnderscoreFiles, true));
+                } else if (file.isFile()) {
+                    finalList.add(file);
+                }
+            }
+        } catch (SecurityException exception) {
+            EMFPlugin.getLogger().log(Level.WARNING, "Failed to retrieve files in " + directory.getAbsolutePath() + ": Access Denied.", exception);
+        }
+        return finalList;
+    }
+
+    public static boolean doesDirectoryContainFile(@NotNull File directory, @NotNull String fileName, boolean recursive) {
+        for (File file : getFilesInDirectory(directory, false, recursive)) {
+            if (file.getName().equals(fileName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

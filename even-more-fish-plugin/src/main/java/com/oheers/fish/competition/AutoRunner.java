@@ -2,6 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -22,7 +23,7 @@ public class AutoRunner {
                 if (queue.competitions.containsKey(weekMinute)) {
                     if (!Competition.isActive()) {
                         EvenMoreFish.getInstance().setActiveCompetition(queue.competitions.get(weekMinute));
-                        EvenMoreFish.getInstance().getActiveCompetition().begin(false);
+                        EvenMoreFish.getInstance().getActiveCompetition().begin();
                     }
                 }
             }
@@ -39,7 +40,7 @@ public class AutoRunner {
         timeKey = String.format("%02d", LocalTime.now().getHour()) + ":" + String.format("%02d", LocalTime.now().getMinute());
 
         // Obtaining how many minutes have passed since midnight last Sunday
-        String day = LocalDate.now().getDayOfWeek().toString();
+        DayOfWeek day = LocalDate.now().getDayOfWeek();
         return EvenMoreFish.getInstance().getCompetitionQueue().generateTimeCode(day, timeKey);
     }
 

@@ -162,7 +162,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         new FishFile();
         new RaritiesFile();
         new BaitFile();
-        new CompetitionConfig();
 
         new GUIConfig();
         new GUIFillerConfig();
@@ -442,6 +441,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             final Rarity rarity = c.getContextValue(Rarity.class);
             return FishManager.getInstance().getRarityMap().get(rarity).stream().map(f -> f.getName().replace(" ", "_")).collect(Collectors.toList());
         });
+        manager.getCommandCompletions().registerCompletion("competitionId", c -> getCompetitionQueue().getFileMap().keySet());
 
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
@@ -530,7 +530,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         MainConfig.getInstance().reload();
         Messages.getInstance().reload();
-        CompetitionConfig.getInstance().reload();
         GUIConfig.getInstance().reload();
         GUIFillerConfig.getInstance().reload();
         FishFile.getInstance().reload();

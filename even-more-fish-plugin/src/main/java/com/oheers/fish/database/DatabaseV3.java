@@ -247,6 +247,7 @@ public class DatabaseV3 {
      *
      * @param competition The competition object, this must have finished to record accurate data. An ID is auto-generated.
      */
+    // TODO please add a column for whether this competition was started by an admin to reflect the new system.
     public void createCompetitionReport(@NotNull final Competition competition) {
         final String none = "\"None\"";
         final String sql = "INSERT INTO ${table.prefix}competitions (competition_name, winner_uuid, winner_fish, winner_score, contestants) " +

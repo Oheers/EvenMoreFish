@@ -13,6 +13,7 @@ import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -133,29 +134,39 @@ public class AdminCommand extends BaseCommand {
     public class CompetitionSubCommand extends BaseCommand {
 
         @Subcommand("start")
+        @CommandCompletion("@competitionId")
         @Description("%desc_competition_start")
-        public void onStart(final CommandSender sender,
-                            @Default("%duration") @Conditions("limits:min=1") @Optional Integer duration,
-                            @Default("LARGEST_FISH") @Optional CompetitionType type,
-                            @Default("1") @Conditions("limits:min=1") @Optional Integer amount
+        public void onStart(final CommandSender sender, final String competitionId) {
+            if (Competition.isActive()) {
+                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
+                return;
+            }
+            CompetitionFile file = EvenMoreFish.getInstance().getCompetitionQueue().getFileMap().get(competitionId);
+            if (file == null) {
+                // TODO needs a proper message.
+                sender.sendMessage("That is not a valid competition id.");
+                return;
+            }
+            Competition competition = new Competition(file);
+            competition.setAdminStarted(true);
+            EvenMoreFish.getInstance().setActiveCompetition(competition);
+            competition.begin();
+        }
+
+        @Subcommand("test")
+        public void onTest(final CommandSender sender,
+                           @Default("%duration") @Conditions("limits:min=1") Integer duration,
+                           @Default("LARGEST_FISH") CompetitionType type
         ) {
             if (Competition.isActive()) {
                 new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
                 return;
             }
-
-
-            Competition comp = new Competition(duration, type);
-
-            comp.setCompetitionName("[admin_started]");
-            comp.setAdminStarted(true);
-            comp.initRewards(null, true);
-            comp.initBar(null);
-            comp.setNumberNeeded(amount);
-            comp.initStartSound(null);
-
-            EvenMoreFish.getInstance().setActiveCompetition(comp);
-            comp.begin(true);
+            CompetitionFile file = new CompetitionFile("adminTest", type, duration);
+            Competition competition = new Competition(file);
+            competition.setAdminStarted(true);
+            EvenMoreFish.getInstance().setActiveCompetition(competition);
+            competition.begin();
         }
 
         @Subcommand("end")

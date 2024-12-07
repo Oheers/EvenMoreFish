@@ -9,7 +9,6 @@ import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.BaitFile;
-import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
@@ -24,6 +23,7 @@ import com.oheers.fish.utils.nbt.NbtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -201,7 +201,7 @@ public class FishingProcessor implements Listener {
 
         if (!fish.isSilent()) {
             String length = decimalFormat.format(fish.getLength());
-            EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + Float.toString(fish.getLength()));
+            EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + fish.getLength());
             String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
 
             Message message = new Message(ConfigMessage.FISH_CAUGHT);
@@ -265,14 +265,12 @@ public class FishingProcessor implements Listener {
 
     private void competitionCheck(Fish fish, Player fisherman, Location location) {
         if (Competition.isActive()) {
-            List<String> competitionWorlds = CompetitionConfig.getInstance().getRequiredWorlds();
+            List<World> competitionWorlds = EvenMoreFish.getInstance().getActiveCompetition().getCompetitionFile().getRequiredWorlds();
             if (!competitionWorlds.isEmpty()) {
                 if (location.getWorld() != null) {
-                    if (!competitionWorlds.contains(location.getWorld().getName())) {
+                    if (!competitionWorlds.contains(location.getWorld())) {
                         return;
                     }
-                } else {
-                    EvenMoreFish.getInstance().getLogger().severe(fisherman.getName() + " was unable to be checked for \"general.required-worlds\" in competitions.yml because their world is null.");
                 }
             }
 
