@@ -288,7 +288,7 @@ public class Message {
     /**
      * The player's name to replace the {player} variable.
      *
-     * @param playerName The name of the player.
+     * @param player The player.
      */
     public void setPlayer(@NotNull final OfflinePlayer player) {
         relevantPlayer = player;

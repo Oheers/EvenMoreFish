@@ -265,27 +265,26 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                 return null;
             }
         }
-        
-        if (identifier.equals("competition_time_left")) {
-            return Competition.getNextCompetitionMessage().getRawMessage();
-        }
 
-        if (identifier.equals("competition_active")) {
-            return Boolean.toString(Competition.isActive());
-        }
-
-        if (identifier.equals("custom_fishing_boolean")) {
-            return Boolean.toString(plugin.isCustomFishing(player));
-        }
-
-        if (identifier.equals("custom_fishing_status")) {
-            if (plugin.isCustomFishing(player)) {
-                return new Message(ConfigMessage.CUSTOM_FISHING_ENABLED).getRawMessage();
-            } else {
-                return new Message(ConfigMessage.CUSTOM_FISHING_DISABLED).getRawMessage();
+        switch (identifier) {
+            case "competition_time_left" -> {
+                return Competition.getNextCompetitionMessage().getRawMessage();
+            }
+            case "competition_active" -> {
+                return Boolean.toString(Competition.isActive());
+            }
+            case "custom_fishing_boolean" -> {
+                return Boolean.toString(plugin.isCustomFishing(player));
+            }
+            case "custom_fishing_status" -> {
+                if (plugin.isCustomFishing(player)) {
+                    return new Message(ConfigMessage.CUSTOM_FISHING_ENABLED).getRawMessage();
+                } else {
+                    return new Message(ConfigMessage.CUSTOM_FISHING_DISABLED).getRawMessage();
+                }
             }
         }
-        
+
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
         // was provided
         return null;

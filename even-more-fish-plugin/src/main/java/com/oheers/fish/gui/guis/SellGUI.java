@@ -30,10 +30,8 @@ public class SellGUI implements EMFGUI {
     private final Player player;
     private final Inventory fishInventory;
     private MyScheduledTask task;
-    private final SellState sellState;
 
     public SellGUI(@NotNull Player player, @NotNull SellState sellState, @Nullable Inventory fishInventory) {
-        this.sellState = sellState;
         this.player = player;
         Section section;
         if (sellState == SellState.NORMAL) {

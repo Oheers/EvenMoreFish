@@ -529,7 +529,7 @@ public class ItemFactory {
                 }
             }
 
-            product.setItemMeta((ItemMeta) nonDamaged);
+            product.setItemMeta(nonDamaged);
         }
     }
 
