@@ -12,8 +12,8 @@ import java.util.Arrays;
 
 public class Reward {
 
-    private @NotNull String key;
-    private @NotNull String value;
+    private final @NotNull String key;
+    private final @NotNull String value;
     private RewardType rewardType = null;
     private Vector fishVelocity;
 

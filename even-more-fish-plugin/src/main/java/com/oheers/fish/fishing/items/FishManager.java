@@ -23,7 +23,7 @@ public class FishManager {
 
     private static FishManager instance;
 
-    private Map<Rarity, List<Fish>> rarityMap;
+    private final Map<Rarity, List<Fish>> rarityMap;
     private boolean loaded = false;
 
     private FishManager() {

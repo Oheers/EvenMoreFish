@@ -76,7 +76,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
     private final Random random = new Random();
 
     private Permission permission = null;
-    private Map<Integer, Set<String>> fish = new HashMap<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
     private boolean checkingIntEvent;
@@ -515,8 +514,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
         terminateGUIS();
 
-        fish.clear();
-
         reloadConfig();
         saveDefaultConfig();
 
@@ -579,10 +576,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     public Permission getPermission() {
         return permission;
-    }
-
-    public Map<Integer, Set<String>> getFish() {
-        return fish;
     }
 
     public ItemStack getCustomNBTRod() {
