@@ -1,5 +1,7 @@
 package com.oheers.fish.api.adapter;
 
+import org.jetbrains.annotations.NotNull;
+
 public abstract class PlatformAdapter {
 
     public PlatformAdapter() {
@@ -7,5 +9,7 @@ public abstract class PlatformAdapter {
     }
 
     public abstract void logLoadedMessage();
+
+    public abstract String translateColorCodes(@NotNull String message);
 
 }
