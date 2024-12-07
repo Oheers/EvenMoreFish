@@ -43,12 +43,9 @@ public class Reward {
     public @NotNull String getValue() { return this.value; }
 
     // Ignore deprecation warnings, we need to keep the old event for outdated addons.
-    @SuppressWarnings("deprecation")
     public void rewardPlayer(@NotNull Player player, Location hookLocation) {
         if (getRewardType() == null) {
-            EMFPlugin.getLogger().warning("No reward type found for key: " + getKey() + ". Falling back to the deprecated event-based rewards.");
-            EMFRewardEvent event = new EMFRewardEvent(this, player, fishVelocity, hookLocation);
-            Bukkit.getPluginManager().callEvent(event);
+            EMFPlugin.getLogger().warning("No reward type found for key: " + getKey());
             return;
         }
         getRewardType().doReward(player, getKey(), getValue(), hookLocation);

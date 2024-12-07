@@ -120,14 +120,6 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         return addonManager;
     }
 
-    /**
-     * @deprecated Use {@link FishManager#getRarityMap()} instead. This method will be removed in EMF 1.8
-     */
-    @Deprecated(forRemoval = true)
-    public Map<Rarity, List<Fish>> getFishCollection() {
-        return FishManager.getInstance().getRarityMap();
-    }
-
     @Override
     public void onEnable() {
 

@@ -106,7 +106,7 @@ public class Fish implements Cloneable {
      * If possible, prefer {@link Fish#Fish(Rarity, Section)} instead.
      */
     public Fish(@NotNull Rarity rarity, @NotNull String name) throws InvalidFishException {
-        // Manually obtain the section when this deprecated constructor is used.
+        // Manually obtain the section for this.
         this(rarity, FishFile.getInstance().getConfig().getSection("fish." + rarity.getValue() + "." + name));
     }
 
