@@ -41,8 +41,7 @@ public class Reward {
     public @NotNull String getKey() { return this.key; }
 
     public @NotNull String getValue() { return this.value; }
-
-    // Ignore deprecation warnings, we need to keep the old event for outdated addons.
+    
     public void rewardPlayer(@NotNull Player player, Location hookLocation) {
         if (getRewardType() == null) {
             EMFPlugin.getInstance().getLogger().warning("No reward type found for key: " + getKey());
