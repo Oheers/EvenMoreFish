@@ -3,12 +3,13 @@ rootProject.name = "even-more-fish"
 include(":even-more-fish-api")
 include(":even-more-fish-addons-j17")
 include(":even-more-fish-plugin")
-
+include(":even-more-fish-paper")
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             library("spigot-api", "org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
+            library("paper-api", "io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("placeholder-api", "me.clip:placeholderapi:2.11.6")
             library("bstats", "org.bstats:bstats-bukkit:3.0.2")
@@ -68,12 +69,6 @@ dependencyResolutionManagement {
 
             plugin("shadow", "com.gradleup.shadow").version("8.3.3")
             plugin("bukkit-yml", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
-
-            version("adventure", "4.18.0-SNAPSHOT")
-            library("adventure-api", "net.kyori","adventure-api").versionRef("adventure")
-            library("adventure-minimessage", "net.kyori","adventure-text-minimessage").versionRef("adventure")
-            library("adventure-legacy", "net.kyori","adventure-text-serializer-legacy").versionRef("adventure")
-            bundle("adventure", listOf("adventure-api", "adventure-minimessage", "adventure-legacy"))
 
             library("boostedyaml", "dev.dejvokep:boosted-yaml:1.3.7")
 

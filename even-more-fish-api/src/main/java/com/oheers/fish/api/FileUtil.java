@@ -175,7 +175,7 @@ public class FileUtil {
                 }
             }
         } catch (SecurityException exception) {
-            EMFPlugin.getLogger().log(Level.WARNING, "Failed to retrieve files in " + directory.getAbsolutePath() + ": Access Denied.", exception);
+            EMFPlugin.getInstance().getLogger().log(Level.WARNING, "Failed to retrieve files in " + directory.getAbsolutePath() + ": Access Denied.", exception);
         }
         return finalList;
     }

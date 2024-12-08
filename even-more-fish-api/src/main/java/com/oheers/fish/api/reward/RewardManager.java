@@ -31,7 +31,7 @@ public class RewardManager implements Listener {
         if (!isLoaded()) {
             Bukkit.getPluginManager().callEvent(new EMFRewardsLoadEvent());
             loaded = true;
-            EMFPlugin.getLogger().info("Loaded RewardManager");
+            EMFPlugin.getInstance().getLogger().info("Loaded RewardManager");
         }
     }
 
@@ -39,7 +39,7 @@ public class RewardManager implements Listener {
         if (isLoaded()) {
             this.rewardTypes.clear();
             loaded = false;
-            EMFPlugin.getLogger().info("Unloaded RewardManager");
+            EMFPlugin.getInstance().getLogger().info("Unloaded RewardManager");
         }
     }
 
@@ -59,7 +59,7 @@ public class RewardManager implements Listener {
         if (rewardTypes.containsKey(identifier.toUpperCase())) {
             return false;
         }
-        EMFPlugin.getLogger().info("Registered " + rewardType.getIdentifier() + " RewardType by " + rewardType.getAuthor() + " from the plugin " + rewardType.getPlugin().getName());
+        EMFPlugin.getInstance().getLogger().info("Registered " + rewardType.getIdentifier() + " RewardType by " + rewardType.getAuthor() + " from the plugin " + rewardType.getPlugin().getName());
         rewardTypes.put(identifier.toUpperCase(), rewardType);
         return true;
     }

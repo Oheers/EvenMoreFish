@@ -21,10 +21,6 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.ParsingException;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -41,13 +37,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FishUtils {
-
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '§';
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
@@ -244,35 +236,8 @@ public class FishUtils {
         }
     }
 
-    // credit to https://www.spigotmc.org/members/elementeral.717560/
     public static String translateColorCodes(String message) {
-        // Replace all Section symbols with Ampersands so MiniMessage doesn't explode.
-        message = message.replace(ChatColor.COLOR_CHAR, '&');
-
-        try {
-            // Parse MiniMessage
-            LegacyComponentSerializer legacyAmpersandSerializer = LegacyComponentSerializer.builder()
-                    .hexColors()
-                    .useUnusualXRepeatedCharacterHexFormat()
-                    .build();
-            Component component = MiniMessage.builder().strict(true).build().deserialize(message);
-            // Get legacy color codes from MiniMessage
-            message = legacyAmpersandSerializer.serialize(component);
-        } catch (ParsingException exception) {
-            // Ignore. If MiniMessage throws an exception, we'll only use legacy colors.
-        }
-
-        Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
-        while (matcher.find()) {
-            String group = matcher.group(1);
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
-                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
-                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5)
-            );
-        }
-        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+        return EvenMoreFish.getAdapter().translateColorCodes(message);
     }
 
     //gets the item with a custom texture
@@ -508,6 +473,15 @@ public class FishUtils {
             return Integer.parseInt(intString);
         } catch (NumberFormatException exception) {
             return null;
+        }
+    }
+
+    public static boolean classExists(@NotNull String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException exception) {
+            return false;
         }
     }
 
