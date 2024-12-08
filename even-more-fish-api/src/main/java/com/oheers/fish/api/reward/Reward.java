@@ -1,18 +1,18 @@
 package com.oheers.fish.api.reward;
 
 import com.oheers.fish.api.plugin.EMFPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
 public class Reward {
 
-    private @NotNull String key;
-    private @NotNull String value;
+    private final @NotNull String key;
+    private final @NotNull String value;
     private RewardType rewardType = null;
     private Vector fishVelocity;
 
@@ -43,20 +43,20 @@ public class Reward {
     public @NotNull String getValue() { return this.value; }
 
     // Ignore deprecation warnings, we need to keep the old event for outdated addons.
-    @SuppressWarnings("deprecation")
     public void rewardPlayer(@NotNull Player player, Location hookLocation) {
         if (getRewardType() == null) {
-            EMFPlugin.getInstance().getLogger().warning("No reward type found for key: " + getKey() + ". Falling back to the deprecated event-based rewards.");
-            // Ignore deprecation warnings, we need to keep this here for any outdated addons.
-            EMFRewardEvent event = new EMFRewardEvent(this, player, fishVelocity, hookLocation);
-            Bukkit.getPluginManager().callEvent(event);
+            EMFPlugin.getInstance().getLogger().warning("No reward type found for key: " + getKey());
             return;
         }
         getRewardType().doReward(player, getKey(), getValue(), hookLocation);
     }
 
-    public void setFishVelocity(Vector fishVelocity) {
+    public void setFishVelocity(@Nullable Vector fishVelocity) {
         this.fishVelocity = fishVelocity;
+    }
+
+    public @Nullable Vector getFishVelocity() {
+        return this.fishVelocity;
     }
 
 }

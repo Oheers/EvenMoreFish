@@ -79,7 +79,6 @@ public class EvenMoreFish extends EMFPlugin {
     private final Random random = new Random();
 
     private Permission permission = null;
-    private Map<Integer, Set<String>> fish = new HashMap<>();
     private ItemStack customNBTRod;
     private boolean checkingEatEvent;
     private boolean checkingIntEvent;
@@ -122,14 +121,6 @@ public class EvenMoreFish extends EMFPlugin {
 
     public AddonManager getAddonManager() {
         return addonManager;
-    }
-
-    /**
-     * @deprecated Use {@link FishManager#getRarityMap()} instead. This method will be removed in EMF 1.8
-     */
-    @Deprecated(forRemoval = true)
-    public Map<Rarity, List<Fish>> getFishCollection() {
-        return FishManager.getInstance().getRarityMap();
     }
 
     @Override
@@ -530,8 +521,6 @@ public class EvenMoreFish extends EMFPlugin {
 
         terminateGUIS();
 
-        fish.clear();
-
         reloadConfig();
         saveDefaultConfig();
 
@@ -594,10 +583,6 @@ public class EvenMoreFish extends EMFPlugin {
 
     public Permission getPermission() {
         return permission;
-    }
-
-    public Map<Integer, Set<String>> getFish() {
-        return fish;
     }
 
     public ItemStack getCustomNBTRod() {

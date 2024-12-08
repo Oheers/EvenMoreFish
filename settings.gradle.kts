@@ -8,7 +8,7 @@ include(":even-more-fish-paper")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("spigot-api", "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+            library("spigot-api", "org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
             library("paper-api", "io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("placeholder-api", "me.clip:placeholderapi:2.11.6")
