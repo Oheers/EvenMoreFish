@@ -86,8 +86,8 @@ public interface CompetitionStrategy {
      */
     default Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         Message message = new Message(configMessage);
-        message.setTimeFormatted(FishUtils.timeFormat(competition.timeLeft));
-        message.setTimeRaw(FishUtils.timeRaw(competition.timeLeft));
+        message.setTimeFormatted(FishUtils.timeFormat(competition.getTimeLeft()));
+        message.setTimeRaw(FishUtils.timeRaw(competition.getTimeLeft()));
         message.setCompetitionType(competition.getCompetitionType());
         return message;
     }
