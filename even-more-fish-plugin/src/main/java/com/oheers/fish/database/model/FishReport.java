@@ -1,4 +1,4 @@
-package com.oheers.fish.database;
+package com.oheers.fish.database.model;
 
 import com.oheers.fish.fishing.items.Fish;
 import org.jetbrains.annotations.NotNull;
