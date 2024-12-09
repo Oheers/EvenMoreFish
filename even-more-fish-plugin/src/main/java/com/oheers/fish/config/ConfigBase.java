@@ -37,7 +37,9 @@ public class ConfigBase {
         this.plugin = plugin;
         this.configUpdater = configUpdater;
         reload(file);
-        update();
+        if (configUpdater) {
+            update();
+        }
     }
 
     public ConfigBase(@NotNull String fileName, @NotNull String resourceName, @NotNull Plugin plugin, boolean configUpdater) {
@@ -47,7 +49,9 @@ public class ConfigBase {
         this.plugin = plugin;
         this.configUpdater = configUpdater;
         reload(new File(getPlugin().getDataFolder(), getFileName()));
-        update();
+        if (configUpdater) {
+            update();
+        }
     }
 
     /**
@@ -153,7 +157,7 @@ public class ConfigBase {
     }
 
     public void update() {
-        if (preventIO) {
+        if (preventIO || !configUpdater) {
             return;
         }
         try {
