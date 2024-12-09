@@ -1,8 +1,13 @@
 package com.oheers.fish.config.messages;
 
+import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
+import net.royawesome.jlibnoise.module.modifier.Abs;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public enum ConfigMessage {
 
@@ -293,9 +298,70 @@ public enum ConfigMessage {
         return prefixType;
     }
 
-    // TODO fill this.
-    public Message getMessage() {
-        return null;
+    public AbstractMessage getMessage() {
+        String message = "";
+        if (isListForm()) {
+            List<String> list = getStringList(getNormalList(), getId());
+            for (String line : list) {
+                if (this.canHidePrefix && line.startsWith("[noPrefix]")) {
+                    message = message.concat(line.substring(10));
+                } else {
+                    message = message.concat(getPrefixType().getPrefix().getRawMessage() + line);
+                }
+
+                if (!Objects.equals(line, list.get(list.size() - 1))) {
+                    message = message.concat("\n");
+                }
+            }
+        } else {
+            String line = getString(getNormal(), getId());
+
+            if (this.canHidePrefix && line.startsWith("[noPrefix]")) {
+                message = line.substring(10);
+            } else {
+                message = getPrefixType().getPrefix().getRawMessage() + line;
+            }
+        }
+        return EvenMoreFish.getAdapter().createMessage(message);
+    }
+
+    /**
+     * If there is a value in the config that matches the id of this enum, that is returned. If not though, the default
+     * value stored will be returned and a message is outputted to the console alerting of a missing value.
+     *
+     * @return The string from config that matches the value of id.
+     */
+    private String getString(String normal, String id) {
+        Messages messageConfig = Messages.getInstance();
+        String string = messageConfig.getConfig().getString(id, null);
+        if (string == null) {
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
+            messageConfig.getConfig().set(id, normal);
+            messageConfig.save();
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default value.");
+            return normal;
+        }
+        return string;
+    }
+
+    /**
+     * If there is a value in the config that matches the id of this enum, that is returned. If not though, the default
+     * value stored will be returned and a message is outputted to the console alerting of a missing value. This is for
+     * string values however rather than just strings.
+     *
+     * @return The string list from config that matches the value of id.
+     */
+    private List<String> getStringList(List<String> normal, String id) {
+        Messages messageConfig = Messages.getInstance();
+        List<String> list = messageConfig.getConfig().getStringList(id);
+        if (list.isEmpty()) {
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
+            messageConfig.getConfig().set(id, null);
+            messageConfig.save();
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default value.");
+            return normal;
+        }
+        return list;
     }
 
 }
