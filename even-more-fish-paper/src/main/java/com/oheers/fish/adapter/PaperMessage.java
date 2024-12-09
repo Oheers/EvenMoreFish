@@ -33,7 +33,7 @@ public class PaperMessage extends AbstractMessage {
 
     @Override
     public String formatColours(@NotNull String message) {
-        message = ChatColor.translateAlternateColorCodes('&', message);
+        message = ChatColor.translateAlternateColorCodes('&', message).replace("&#", "§#");
         // If the message contains legacy, convert to MiniMessage
         if (message.contains("§")) {
             // Fix for MiniMessage not serializing a reset tag.
