@@ -153,7 +153,7 @@ public class ConfigBase {
     }
 
     public void update() {
-        if (preventIO) {
+        if (preventIO || !configUpdater) {
             return;
         }
         try {
