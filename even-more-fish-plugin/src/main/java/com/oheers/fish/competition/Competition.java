@@ -38,15 +38,15 @@ public class Competition {
     private String competitionName;
     private boolean adminStarted = false;
     private Message startMessage;
-    long maxDuration;
-    long timeLeft;
-    Bar statusBar;
-    long epochStartTime;
-    List<Long> alertTimes;
-    Map<Integer, List<Reward>> rewards;
-    int playersNeeded;
-    Sound startSound;
-    MyScheduledTask timingSystem;
+    private long maxDuration;
+    private long timeLeft;
+    private Bar statusBar;
+    private long epochStartTime;
+    private List<Long> alertTimes;
+    private Map<Integer, List<Reward>> rewards;
+    private int playersNeeded;
+    private Sound startSound;
+    private MyScheduledTask timingSystem;
     private CompetitionFile competitionFile;
 
     public Competition(final @NotNull CompetitionFile competitionFile) {
@@ -502,6 +502,10 @@ public class Competition {
 
     public void setAdminStarted(boolean adminStarted) {
         this.adminStarted = adminStarted;
+    }
+
+    public long getTimeLeft() {
+        return this.timeLeft;
     }
 
 }

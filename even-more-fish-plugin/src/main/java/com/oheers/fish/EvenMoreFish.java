@@ -5,9 +5,12 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
+import com.oheers.fish.adapter.PaperAdapter;
+import com.oheers.fish.adapter.SpigotAdapter;
 import com.oheers.fish.addons.AddonManager;
 import com.oheers.fish.addons.DefaultAddons;
 import com.oheers.fish.api.EMFAPI;
+import com.oheers.fish.api.adapter.PlatformAdapter;
 import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import com.oheers.fish.api.requirement.RequirementManager;
@@ -72,7 +75,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
+public class EvenMoreFish extends EMFPlugin {
     private final Random random = new Random();
 
     private Permission permission = null;
@@ -105,6 +108,7 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
 
     private static EvenMoreFish instance;
     private static TaskScheduler scheduler;
+    private static PlatformAdapter platformAdapter;
     private EMFAPI api;
 
     private AddonManager addonManager;
@@ -126,10 +130,13 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
             throw new RuntimeException("NBT-API wasn't initialized properly, disabling the plugin");
         }
 
+        // This should only ever be done once.
+        EMFPlugin.setInstance(this);
         instance = this;
         scheduler = UniversalScheduler.getScheduler(this);
-        this.api = new EMFAPI();
+        platformAdapter = loadAdapter();
 
+        this.api = new EMFAPI();
 
         decidedRarities = new HashMap<>();
 
@@ -797,6 +804,24 @@ public class EvenMoreFish extends JavaPlugin implements EMFPlugin {
         NamespacedKey key = new NamespacedKey(this, "fish-enabled");
         String toggleValue = pdc.getOrDefault(key, PersistentDataType.STRING, "true");
         return toggleValue.equals("true");
+    }
+
+    private static PlatformAdapter loadAdapter() {
+        // Class names taken from PaperLib's initialize method
+        if (FishUtils.classExists(("com.destroystokyo.paper.PaperConfig"))) {
+            return new PaperAdapter();
+        } else if (FishUtils.classExists("io.papermc.paper.configuration.Configuration")) {
+            return new PaperAdapter();
+        }
+        return new SpigotAdapter();
+    }
+
+    public static @NotNull PlatformAdapter getAdapter() {
+        if (platformAdapter == null) {
+            instance.getLogger().warning("No PlatformAdapter found! Defaulting to SpigotAdapter.");
+            platformAdapter = new SpigotAdapter();
+        }
+        return platformAdapter;
     }
 
 }

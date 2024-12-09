@@ -19,7 +19,7 @@ public class Reward {
     public Reward(@NotNull String identifier) {
         String[] split = identifier.split(":");
         if (split.length < 2) {
-            EMFPlugin.getLogger().warning(identifier + " is not formatted correctly. It won't be given as a reward");
+            EMFPlugin.getInstance().getLogger().warning(identifier + " is not formatted correctly. It won't be given as a reward");
             this.key = "";
             this.value = "";
         } else {
@@ -41,11 +41,10 @@ public class Reward {
     public @NotNull String getKey() { return this.key; }
 
     public @NotNull String getValue() { return this.value; }
-
-    // Ignore deprecation warnings, we need to keep the old event for outdated addons.
+    
     public void rewardPlayer(@NotNull Player player, Location hookLocation) {
         if (getRewardType() == null) {
-            EMFPlugin.getLogger().warning("No reward type found for key: " + getKey());
+            EMFPlugin.getInstance().getLogger().warning("No reward type found for key: " + getKey());
             return;
         }
         getRewardType().doReward(player, getKey(), getValue(), hookLocation);

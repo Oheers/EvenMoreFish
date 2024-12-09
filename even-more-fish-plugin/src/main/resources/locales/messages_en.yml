@@ -1,6 +1,7 @@
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
-# These messages partially support the MiniMessage format (Things like hoverable and clickable text will not work).
+# Important: Read the following if you are on a Paper server.
+# These messages partially support the MiniMessage format if you are on a Paper server. (Things like hoverable and clickable text will not work).
 # MiniMessage is in strict mode, meaning all tags need to be closed in order to work.
 # You are able to mix MiniMessage with the existing legacy codes, however this is not recommended.
 # Here is the MiniMessage Pull Request for more info: https://github.com/Oheers/EvenMoreFish/pull/387
