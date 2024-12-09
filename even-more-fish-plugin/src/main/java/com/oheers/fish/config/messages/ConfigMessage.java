@@ -299,30 +299,32 @@ public enum ConfigMessage {
     }
 
     public AbstractMessage getMessage() {
-        String message = "";
+        AbstractMessage message = EvenMoreFish.getAdapter().createMessage("");
         if (isListForm()) {
             List<String> list = getStringList(getNormalList(), getId());
             for (String line : list) {
                 if (this.canHidePrefix && line.startsWith("[noPrefix]")) {
-                    message = message.concat(line.substring(10));
+                    message.appendString(line.substring(10));
                 } else {
-                    message = message.concat(getPrefixType().getPrefix().getLegacyMessage() + line);
+                    message.appendMessage(getPrefixType().getPrefix());
+                    message.appendString(line);
                 }
 
                 if (!Objects.equals(line, list.get(list.size() - 1))) {
-                    message = message.concat("\n");
+                    message.appendString("\n");
                 }
             }
         } else {
             String line = getString(getNormal(), getId());
 
             if (this.canHidePrefix && line.startsWith("[noPrefix]")) {
-                message = line.substring(10);
+                message.appendString(line.substring(10));
             } else {
-                message = getPrefixType().getPrefix().getLegacyMessage() + line;
+                message.appendMessage(getPrefixType().getPrefix());
+                message.appendString(line);
             }
         }
-        return EvenMoreFish.getAdapter().createMessage(message);
+        return message;
     }
 
     /**
