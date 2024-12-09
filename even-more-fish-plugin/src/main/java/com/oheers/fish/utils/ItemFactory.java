@@ -559,7 +559,7 @@ public class ItemFactory {
         AbstractMessage lore = EvenMoreFish.getAdapter().createMessage(loreConfig);
         lore.setVariables(replacements);
 
-        meta.setLore(lore.getRawListMessage());
+        meta.setLore(lore.getLegacyListMessage());
         product.setItemMeta(meta);
     }
 

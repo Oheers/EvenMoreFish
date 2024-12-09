@@ -73,7 +73,7 @@ public class ItemBuilder {
             meta.setDisplayName(EvenMoreFish.getAdapter().createMessage(this.display).getLegacyMessage());
         }
         if (!this.lore.isEmpty()) {
-            meta.setLore(EvenMoreFish.getAdapter().createMessage(this.lore).getRawListMessage());
+            meta.setLore(EvenMoreFish.getAdapter().createMessage(this.lore).getLegacyListMessage());
         }
         stack.setItemMeta(meta);
         if (this.glowing) {
