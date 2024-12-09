@@ -1,9 +1,9 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.UserReport;
@@ -69,11 +69,11 @@ public class JoinChecker implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         if (Competition.isActive()) {
             EvenMoreFish.getInstance().getActiveCompetition().getStatusBar().addPlayer(event.getPlayer());
-            Message startMessage = EvenMoreFish.getInstance().getActiveCompetition().getStartMessage();
+            AbstractMessage startMessage = EvenMoreFish.getInstance().getActiveCompetition().getStartMessage();
             if (startMessage != null) {
-                startMessage.setMessage(ConfigMessage.COMPETITION_JOIN);
+                startMessage.setMessage(ConfigMessage.COMPETITION_JOIN.getMessage());
             }
-            EvenMoreFish.getScheduler().runTaskLater(() -> EvenMoreFish.getInstance().getActiveCompetition().getStartMessage().broadcast(event.getPlayer()), 20 * 3);
+            EvenMoreFish.getScheduler().runTaskLater(() -> EvenMoreFish.getInstance().getActiveCompetition().getStartMessage().send(event.getPlayer()), 20 * 3);
         }
 
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> databaseRegistration(event.getPlayer().getUniqueId(), event.getPlayer().getName()));

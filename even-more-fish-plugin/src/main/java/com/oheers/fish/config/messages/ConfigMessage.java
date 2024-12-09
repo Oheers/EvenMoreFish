@@ -1,8 +1,12 @@
 package com.oheers.fish.config.messages;
 
+import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public enum ConfigMessage {
 
@@ -228,7 +232,7 @@ public enum ConfigMessage {
 
     /**
      * This is the config enum for a value in the messages.yml file. It does not store the actual data but references
-     * where to look in the file for the data. This must be passed through a Message object before it can be sent to
+     * where to look in the file for the data. This must be passed through an AbstractMessage object before it can be sent to
      * players. In there, it is possible to add variable options, and it will be colour formatted too.
      *
      * @param id            The id in messages.yml for the ConfigMessage.
@@ -247,7 +251,7 @@ public enum ConfigMessage {
 
     /**
      * This is the config enum for a list value in the messages.yml file. It does not store the actual data but references
-     * where to look in the file for the data. This must be passed through a Message object before it can be sent to
+     * where to look in the file for the data. This must be passed through an AbstractMessage object before it can be sent to
      * players. In there, it is possible to add variable options, and it will be colour formatted too. It also must be
      * a list within the file.
      *
@@ -292,5 +296,74 @@ public enum ConfigMessage {
     public PrefixType getPrefixType() {
         return prefixType;
     }
+
+    public AbstractMessage getMessage() {
+        AbstractMessage message = EvenMoreFish.getAdapter().createMessage("");
+        if (isListForm()) {
+            List<String> list = getStringList(getNormalList(), getId());
+            for (String line : list) {
+                if (this.canHidePrefix && line.startsWith("[noPrefix]")) {
+                    message.appendString(line.substring(10));
+                } else {
+                    message.appendMessage(getPrefixType().getPrefix());
+                    message.appendString(line);
+                }
+
+                if (!Objects.equals(line, list.get(list.size() - 1))) {
+                    message.appendString("\n");
+                }
+            }
+        } else {
+            String line = getString(getNormal(), getId());
+
+            if (this.canHidePrefix && line.startsWith("[noPrefix]")) {
+                message.appendString(line.substring(10));
+            } else {
+                message.appendMessage(getPrefixType().getPrefix());
+                message.appendString(line);
+            }
+        }
+        return message;
+    }
+
+    /**
+     * If there is a value in the config that matches the id of this enum, that is returned. If not though, the default
+     * value stored will be returned and a message is outputted to the console alerting of a missing value.
+     *
+     * @return The string from config that matches the value of id.
+     */
+    private String getString(String normal, String id) {
+        Messages messageConfig = Messages.getInstance();
+        String string = messageConfig.getConfig().getString(id, null);
+        if (string == null) {
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
+            messageConfig.getConfig().set(id, normal);
+            messageConfig.save();
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default value.");
+            return normal;
+        }
+        return string;
+    }
+
+    /**
+     * If there is a value in the config that matches the id of this enum, that is returned. If not though, the default
+     * value stored will be returned and a message is outputted to the console alerting of a missing value. This is for
+     * string values however rather than just strings.
+     *
+     * @return The string list from config that matches the value of id.
+     */
+    private List<String> getStringList(List<String> normal, String id) {
+        Messages messageConfig = Messages.getInstance();
+        List<String> list = messageConfig.getConfig().getStringList(id);
+        if (list.isEmpty()) {
+            EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
+            messageConfig.getConfig().set(id, null);
+            messageConfig.save();
+            EvenMoreFish.getInstance().getLogger().info("Filled " + id + " in your messages.yml with the default value.");
+            return normal;
+        }
+        return list;
+    }
+
 }
 

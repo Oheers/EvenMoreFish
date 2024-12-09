@@ -8,7 +8,7 @@ import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -50,8 +50,8 @@ public class SpecificFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
-        Message message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
+    public AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+        AbstractMessage message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
         message.setAmount(Integer.toString(competition.getNumberNeeded()));
         message.setRarityColour(competition.getSelectedFish().getRarity().getColour());
         message.setRarity(competition.getSelectedFish().getRarity().getDisplayName());
@@ -60,7 +60,7 @@ public class SpecificFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getBeginMessage(@NotNull Competition competition, CompetitionType type) {
+    public AbstractMessage getBeginMessage(@NotNull Competition competition, CompetitionType type) {
         return getTypeFormat(competition, ConfigMessage.COMPETITION_START);
     }
 

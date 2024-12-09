@@ -2,11 +2,11 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
@@ -24,7 +24,10 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -306,22 +309,25 @@ public class Fish implements Cloneable {
      */
     private List<String> getFishLore() {
         List<String> loreOverride = section.getStringList("lore-override");
-        Message newLoreLine;
+        AbstractMessage newLoreLine;
         if (!loreOverride.isEmpty()) {
-            newLoreLine = new Message(loreOverride);
+            newLoreLine = EvenMoreFish.getAdapter().createMessage(loreOverride);
         } else {
-            newLoreLine = new Message(ConfigMessage.FISH_LORE);
+            newLoreLine = ConfigMessage.FISH_LORE.getMessage();
         }
         newLoreLine.setRarityColour(rarity.getColour());
 
-        newLoreLine.addLore(
+        List<String> fishLore = section.getStringList("lore");
+        String replacement = fishLore.isEmpty() ? "" : String.join("\n", fishLore);
+
+        newLoreLine.setVariable(
                 "{fish_lore}",
-                section.getStringList("lore")
+                replacement
         );
 
         newLoreLine.setVariable("{fisherman_lore}",
                 !disableFisherman && getFishermanPlayer() != null ?
-                        (new Message(ConfigMessage.FISHERMAN_LORE)).getRawMessage()
+                        (ConfigMessage.FISHERMAN_LORE.getMessage()).getLegacyMessage()
                         : ""
         );
 
@@ -329,7 +335,7 @@ public class Fish implements Cloneable {
 
         newLoreLine.setVariable("{length_lore}",
                 length > 0 ?
-                        (new Message(ConfigMessage.LENGTH_LORE)).getRawMessage()
+                        ConfigMessage.LENGTH_LORE.getMessage().getLegacyMessage()
                         : ""
         );
 
@@ -337,7 +343,7 @@ public class Fish implements Cloneable {
 
         newLoreLine.setRarity(this.rarity.getLorePrep());
 
-        List<String> newLore = Arrays.asList(newLoreLine.getRawMessage().split("\n"));
+        List<String> newLore = newLoreLine.getLegacyListMessage();
         if (getFishermanPlayer() != null && EvenMoreFish.getInstance().isUsingPAPI()) {
             return newLore.stream().map(l -> PlaceholderAPI.setPlaceholders(getFishermanPlayer(), l)).collect(Collectors.toList());
         }

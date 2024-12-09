@@ -1,11 +1,9 @@
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
 # Important: Read the following if you are on a Paper server.
-# These messages partially support the MiniMessage format if you are on a Paper server. (Things like hoverable and clickable text will not work).
-# MiniMessage is in strict mode, meaning all tags need to be closed in order to work.
-# You are able to mix MiniMessage with the existing legacy codes, however this is not recommended.
-# Here is the MiniMessage Pull Request for more info: https://github.com/Oheers/EvenMoreFish/pull/387
-# Here are the MiniMessage Docs: https://docs.advntr.dev/minimessage/format.html
+# These messages are able to support the MiniMessage format if you are on a Paper server.
+# Do not mix Legacy and MiniMessage on the same line, Legacy will always take priority.
+# Here are the MiniMessage Docs for help with using MiniMessage: https://docs.advntr.dev/minimessage/format.html
 
 # Sent to players when they fish an EvenMoreFish fish
 fish-caught: "&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!"

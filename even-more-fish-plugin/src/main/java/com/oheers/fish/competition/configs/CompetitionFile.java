@@ -2,11 +2,11 @@ package com.oheers.fish.competition.configs;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.competition.Bar;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.ConfigBase;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
@@ -254,9 +254,9 @@ public class CompetitionFile extends ConfigBase {
     /**
      * @return The prefix for this competition's bossbar.
      */
-    public Message getBossbarPrefix() {
+    public AbstractMessage getBossbarPrefix() {
         String prefix = getConfig().getString("bossbar-prefix", "&a&lFishing Contest: ");
-        return new Message(prefix);
+        return EvenMoreFish.getAdapter().createMessage(prefix);
     }
 
     /**
@@ -266,7 +266,7 @@ public class CompetitionFile extends ConfigBase {
         Bar bar = new Bar();
         bar.setShouldShow(shouldShowBossbar());
         bar.setColour(getBossbarColour());
-        bar.setPrefix(getBossbarPrefix().getRawMessage());
+        bar.setPrefix(getBossbarPrefix().getLegacyMessage());
         return bar;
     }
 

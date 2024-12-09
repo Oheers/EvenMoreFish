@@ -1,5 +1,8 @@
 package com.oheers.fish.config.messages;
 
+import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
+
 public enum PrefixType {
 
     NONE(null, null),
@@ -26,10 +29,11 @@ public enum PrefixType {
      *
      * @return The unformatted prefix, unless the type is NONE.
      */
-    public String getPrefix() {
-        if (id == null) return "";
-        else {
-            return new Message(Messages.getInstance().getConfig().getString(id, normal)).getRawMessage();
+    public AbstractMessage getPrefix() {
+        if (id == null) {
+            return EvenMoreFish.getAdapter().createMessage("");
+        } else {
+            return EvenMoreFish.getAdapter().createMessage(Messages.getInstance().getConfig().getString(id, normal));
         }
     }
 }

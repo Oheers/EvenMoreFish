@@ -6,7 +6,7 @@ import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -30,24 +30,24 @@ public class ShortestFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getSingleConsoleLeaderboardMessage(@NotNull Message message, @NotNull CompetitionEntry entry) {
+    public AbstractMessage getSingleConsoleLeaderboardMessage(@NotNull AbstractMessage message, @NotNull CompetitionEntry entry) {
         Fish fish = entry.getFish();
         message.setRarityColour(fish.getRarity().getColour());
         message.setLength("%.1f".formatted(entry.getValue()));
         message.setRarity(fish.getRarity().getDisplayName());
         message.setFishCaught(fish.getDisplayName());
-        message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_FISH);
+        message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_FISH.getMessage());
         return message;
     }
 
     @Override
-    public Message getSinglePlayerLeaderboard(@NotNull Message message, @NotNull CompetitionEntry entry) {
+    public AbstractMessage getSinglePlayerLeaderboard(@NotNull AbstractMessage message, @NotNull CompetitionEntry entry) {
         Fish fish = entry.getFish();
         message.setRarityColour(fish.getRarity().getColour());
         message.setLength("%.1f".formatted(entry.getValue()));
         message.setRarity(fish.getRarity().getDisplayName());
         message.setFishCaught(fish.getDisplayName());
-        message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_FISH);
+        message.setMessage(ConfigMessage.LEADERBOARD_SHORTEST_FISH.getMessage());
         return message;
     }
 }
