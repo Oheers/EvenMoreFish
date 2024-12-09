@@ -1,6 +1,6 @@
 package com.oheers.fish.adapter;
 
-import com.oheers.fish.api.adapter.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.adapter.PlatformAdapter;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import org.bukkit.ChatColor;
@@ -41,13 +41,13 @@ public class SpigotAdapter extends PlatformAdapter {
 
     // TODO not null.
     @Override
-    public Message createMessage(@NotNull String message) {
+    public AbstractMessage createMessage(@NotNull String message) {
         return null;
     }
 
     // TODO not null.
     @Override
-    public Message createMessage(@NotNull List<String> messageList) {
+    public AbstractMessage createMessage(@NotNull List<String> messageList) {
         return null;
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class Message {
+public abstract class AbstractMessage {
 
     private final PlatformAdapter platformAdapter;
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
@@ -19,12 +19,12 @@ public abstract class Message {
     private boolean canHidePrefix = false;
     private OfflinePlayer relevantPlayer;
 
-    public Message(@NotNull final String message, @NotNull PlatformAdapter platformAdapter) {
+    protected AbstractMessage(@NotNull final String message, @NotNull PlatformAdapter platformAdapter) {
         this.message = formatColours(message);
         this.platformAdapter = platformAdapter;
     }
 
-    public Message(@NotNull final List<String> messageList, @NotNull PlatformAdapter platformAdapter) {
+    protected AbstractMessage(@NotNull final List<String> messageList, @NotNull PlatformAdapter platformAdapter) {
         this.message = String.join("\n", messageList.stream().map(this::formatColours).toList());
         this.platformAdapter = platformAdapter;
     }
@@ -97,7 +97,7 @@ public abstract class Message {
      * Adds the provided message to the end of this message.
      * @param message The message to append
      */
-    public void appendMessage(@NotNull Message message) {
+    public void appendMessage(@NotNull AbstractMessage message) {
         appendString(message.getRawMessage());
     }
 
@@ -113,9 +113,9 @@ public abstract class Message {
      * Adds the provided messages to the end of this message.
      * @param messages The messages to append
      */
-    public void appendMessageList(@NotNull List<Message> messages) {
+    public void appendMessageList(@NotNull List<AbstractMessage> messages) {
         StringBuilder newMessage = new StringBuilder(this.message);
-        for (Message message : messages) {
+        for (AbstractMessage message : messages) {
             newMessage.append(message.getRawMessage());
         }
         this.message = newMessage.toString();
@@ -133,7 +133,7 @@ public abstract class Message {
      * Adds the provided message to the start of this message.
      * @param message The message to prepend
      */
-    public void prependMessage(@NotNull Message message) {
+    public void prependMessage(@NotNull AbstractMessage message) {
         prependString(message.getRawMessage());
     }
 
@@ -149,9 +149,9 @@ public abstract class Message {
      * Adds the provided messages to the start of this message.
      * @param messages The messages to prepend
      */
-    public void prependMessageList(@NotNull List<Message> messages) {
+    public void prependMessageList(@NotNull List<AbstractMessage> messages) {
         StringBuilder newMessage = new StringBuilder();
-        for (Message message : messages) {
+        for (AbstractMessage message : messages) {
             newMessage.append(message.getRawMessage());
         }
         this.message = newMessage.toString() + this.message;

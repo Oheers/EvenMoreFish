@@ -14,8 +14,8 @@ public abstract class PlatformAdapter {
 
     public abstract String translateColorCodes(@NotNull String message);
 
-    public abstract Message createMessage(@NotNull String message);
+    public abstract AbstractMessage createMessage(@NotNull String message);
 
-    public abstract Message createMessage(@NotNull List<String> messageList);
+    public abstract AbstractMessage createMessage(@NotNull List<String> messageList);
 
 }
