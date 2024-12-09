@@ -15,7 +15,6 @@ public abstract class AbstractMessage {
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     private String message;
     private boolean canSilent = false;
-    private boolean canHidePrefix = false;
     private OfflinePlayer relevantPlayer;
 
     protected AbstractMessage(@NotNull final String message, @NotNull PlatformAdapter platformAdapter) {
@@ -204,20 +203,6 @@ public abstract class AbstractMessage {
      */
     public boolean silentCheck() {
         return canSilent && this.message.endsWith(" -s");
-    }
-
-    /**
-     * @param canSilent Can this message hide its prefix?
-     */
-    public void setCanHidePrefix(boolean canHidePrefix) {
-        this.canHidePrefix = canHidePrefix;
-    }
-
-    /**
-     * @return Can this message hide its prefix?
-     */
-    public boolean isCanHidePrefix() {
-        return this.canHidePrefix;
     }
 
     /**
