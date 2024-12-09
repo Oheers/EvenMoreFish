@@ -296,20 +296,20 @@ public class FishUtils {
         if (hours > 0) {
             AbstractMessage message = ConfigMessage.BAR_HOUR.getMessage();
             message.setVariable("{hour}", String.valueOf(hours));
-            returning += message.getRawMessage() + " ";
+            returning += message.getLegacyMessage() + " ";
         }
 
         if (minutes > 0) {
             AbstractMessage message = ConfigMessage.BAR_MINUTE.getMessage();
             message.setVariable("{minute}", String.valueOf(minutes));
-            returning += message.getRawMessage() + " ";
+            returning += message.getLegacyMessage() + " ";
         }
 
         // Shows remaining seconds if seconds > 0 or hours and minutes are 0, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
         if (seconds > 0 || (minutes == 0 && hours == 0)) {
             AbstractMessage message = ConfigMessage.BAR_SECOND.getMessage();
             message.setVariable("{second}", String.valueOf(seconds));
-            returning += message.getRawMessage() + " ";
+            returning += message.getLegacyMessage() + " ";
         }
 
         return returning.trim();
@@ -334,7 +334,7 @@ public class FishUtils {
 
     public static void broadcastFishMessage(AbstractMessage message, Player referencePlayer, boolean actionBar) {
 
-        String formatted = message.getRawMessage();
+        String formatted = message.getLegacyMessage();
 
         if (formatted.isEmpty()) {
             return;

@@ -97,10 +97,10 @@ public class VaultEconomyType implements EconomyType {
         if (display != null) {
             AbstractMessage message = EvenMoreFish.getAdapter().createMessage(display);
             message.setVariable("{amount}", String.valueOf(worth));
-            return message.getRawMessage();
+            return message.getLegacyMessage();
         }
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
-        DecimalFormat format = new DecimalFormat(ConfigMessage.SELL_PRICE_FORMAT.getMessage().getRawMessage(), symbols);
+        DecimalFormat format = new DecimalFormat(ConfigMessage.SELL_PRICE_FORMAT.getMessage().getLegacyMessage(), symbols);
         return format.format(worth);
     }
 

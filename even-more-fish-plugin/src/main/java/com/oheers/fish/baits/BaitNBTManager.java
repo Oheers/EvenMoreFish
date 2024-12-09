@@ -378,7 +378,7 @@ public class BaitNBTManager {
                     AbstractMessage message = EvenMoreFish.getAdapter().createMessage(BaitFile.getInstance().getBaitFormat());
                     message.setAmount(bait.split(":")[1]);
                     message.setBait(getBaitFormatted(bait.split(":")[0]));
-                    lore.add(message.getRawMessage());
+                    lore.add(message.getLegacyMessage());
                 }
 
                 if (BaitFile.getInstance().showUnusedBaitSlots()) {
@@ -390,7 +390,7 @@ public class BaitNBTManager {
                 AbstractMessage message = EvenMoreFish.getAdapter().createMessage(lineAddition);
                 message.setCurrentBaits(Integer.toString(getNumBaitsApplied(itemStack)));
                 message.setMaxBaits(Integer.toString(BaitFile.getInstance().getMaxBaits()));
-                lore.add(message.getRawMessage());
+                lore.add(message.getLegacyMessage());
             }
         }
 

@@ -581,7 +581,7 @@ public class ItemFactory {
                 } else {
                     AbstractMessage display = EvenMoreFish.getAdapter().createMessage(displayName);
                     display.setVariables(replacements);
-                    meta.setDisplayName(display.getRawMessage());
+                    meta.setDisplayName(display.getLegacyMessage());
                 }
             }
 

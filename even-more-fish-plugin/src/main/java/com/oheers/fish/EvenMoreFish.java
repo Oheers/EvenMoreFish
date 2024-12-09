@@ -372,32 +372,32 @@ public class EvenMoreFish extends EMFPlugin {
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
         //desc_admin_<command>_<id>
         manager.getCommandReplacements().addReplacements(
-                "desc_admin_bait", ConfigMessage.HELP_ADMIN_BAIT.getMessage().getRawMessage(),
-                "desc_admin_competition", ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getRawMessage(),
-                "desc_admin_clearbaits", ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getRawMessage(),
-                "desc_admin_fish", ConfigMessage.HELP_ADMIN_FISH.getMessage().getRawMessage(),
-                "desc_admin_nbtrod", ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getRawMessage(),
-                "desc_admin_reload", ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getRawMessage(),
-                "desc_admin_version", ConfigMessage.HELP_ADMIN_VERSION.getMessage().getRawMessage(),
-                "desc_admin_migrate", ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getRawMessage(),
-                "desc_admin_rewardtypes", ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getRawMessage(),
-                "desc_admin_addons", ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getRawMessage(),
+                "desc_admin_bait", ConfigMessage.HELP_ADMIN_BAIT.getMessage().getLegacyMessage(),
+                "desc_admin_competition", ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getLegacyMessage(),
+                "desc_admin_clearbaits", ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getLegacyMessage(),
+                "desc_admin_fish", ConfigMessage.HELP_ADMIN_FISH.getMessage().getLegacyMessage(),
+                "desc_admin_nbtrod", ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getLegacyMessage(),
+                "desc_admin_reload", ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getLegacyMessage(),
+                "desc_admin_version", ConfigMessage.HELP_ADMIN_VERSION.getMessage().getLegacyMessage(),
+                "desc_admin_migrate", ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getLegacyMessage(),
+                "desc_admin_rewardtypes", ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getLegacyMessage(),
+                "desc_admin_addons", ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getLegacyMessage(),
 
-                "desc_list_fish", ConfigMessage.HELP_LIST_FISH.getMessage().getRawMessage(),
-                "desc_list_rarities", ConfigMessage.HELP_LIST_RARITIES.getMessage().getRawMessage(),
+                "desc_list_fish", ConfigMessage.HELP_LIST_FISH.getMessage().getLegacyMessage(),
+                "desc_list_rarities", ConfigMessage.HELP_LIST_RARITIES.getMessage().getLegacyMessage(),
 
-                "desc_competition_start", ConfigMessage.HELP_COMPETITION_START.getMessage().getRawMessage(),
-                "desc_competition_end", ConfigMessage.HELP_COMPETITION_END.getMessage().getRawMessage(),
+                "desc_competition_start", ConfigMessage.HELP_COMPETITION_START.getMessage().getLegacyMessage(),
+                "desc_competition_end", ConfigMessage.HELP_COMPETITION_END.getMessage().getLegacyMessage(),
 
-                "desc_general_top", ConfigMessage.HELP_GENERAL_TOP.getMessage().getRawMessage(),
-                "desc_general_help", ConfigMessage.HELP_GENERAL_HELP.getMessage().getRawMessage(),
-                "desc_general_shop", ConfigMessage.HELP_GENERAL_SHOP.getMessage().getRawMessage(),
-                "desc_general_toggle", ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getRawMessage(),
-                "desc_general_gui", ConfigMessage.HELP_GENERAL_GUI.getMessage().getRawMessage(),
-                "desc_general_admin", ConfigMessage.HELP_GENERAL_ADMIN.getMessage().getRawMessage(),
-                "desc_general_next", ConfigMessage.HELP_GENERAL_NEXT.getMessage().getRawMessage(),
-                "desc_general_sellall", ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getRawMessage(),
-                "desc_general_applybaits", ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getRawMessage()
+                "desc_general_top", ConfigMessage.HELP_GENERAL_TOP.getMessage().getLegacyMessage(),
+                "desc_general_help", ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage(),
+                "desc_general_shop", ConfigMessage.HELP_GENERAL_SHOP.getMessage().getLegacyMessage(),
+                "desc_general_toggle", ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getLegacyMessage(),
+                "desc_general_gui", ConfigMessage.HELP_GENERAL_GUI.getMessage().getLegacyMessage(),
+                "desc_general_admin", ConfigMessage.HELP_GENERAL_ADMIN.getMessage().getLegacyMessage(),
+                "desc_general_next", ConfigMessage.HELP_GENERAL_NEXT.getMessage().getLegacyMessage(),
+                "desc_general_sellall", ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getLegacyMessage(),
+                "desc_general_applybaits", ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getLegacyMessage()
         );
 
 

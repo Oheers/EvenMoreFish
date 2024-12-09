@@ -384,7 +384,7 @@ public class AdminCommand extends BaseCommand {
     @Subcommand("rewardtypes")
     @Description("%desc_admin_rewardtypes")
     public void onRewardTypes(final CommandSender sender) {
-        TextComponent message = new TextComponent(ConfigMessage.ADMIN_LIST_REWARD_TYPES.getMessage().getRawMessage());
+        TextComponent message = new TextComponent(ConfigMessage.ADMIN_LIST_REWARD_TYPES.getMessage().getLegacyMessage());
         ComponentBuilder builder = new ComponentBuilder(message);
 
         RewardManager.getInstance().getRegisteredRewardTypes().forEach(rewardType -> {

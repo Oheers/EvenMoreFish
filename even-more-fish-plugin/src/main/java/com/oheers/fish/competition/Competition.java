@@ -324,7 +324,7 @@ public class Competition {
                 }
             }
 
-            builder.append(message.getRawMessage()).append("\n");
+            builder.append(message.getLegacyMessage()).append("\n");
         }
 
         return builder.toString();
@@ -395,7 +395,7 @@ public class Competition {
     public void singleReward(Player player) {
         AbstractMessage message = getTypeFormat(ConfigMessage.COMPETITION_SINGLE_WINNER);
         message.setPlayer(player);
-        message.setCompetitionType(competitionType.getTypeVariable().getMessage().getRawMessage());
+        message.setCompetitionType(competitionType.getTypeVariable().getMessage().getLegacyMessage());
 
         message.broadcast();
 

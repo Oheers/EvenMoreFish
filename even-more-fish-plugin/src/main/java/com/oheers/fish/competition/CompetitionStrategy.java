@@ -45,7 +45,7 @@ public interface CompetitionStrategy {
      */
     default AbstractMessage getBeginMessage(Competition competition, CompetitionType type) {
         AbstractMessage message = ConfigMessage.COMPETITION_START.getMessage();
-        message.setCompetitionType(type.getTypeVariable().getMessage().getRawMessage());
+        message.setCompetitionType(type.getTypeVariable().getMessage().getLegacyMessage());
         return message;
     }
 
@@ -89,7 +89,7 @@ public interface CompetitionStrategy {
         AbstractMessage message = configMessage.getMessage();
         message.setTimeFormatted(FishUtils.timeFormat(competition.getTimeLeft()));
         message.setTimeRaw(FishUtils.timeRaw(competition.getTimeLeft()));
-        message.setCompetitionType(competition.getCompetitionType().getTypeVariable().getMessage().getRawMessage());
+        message.setCompetitionType(competition.getCompetitionType().getTypeVariable().getMessage().getLegacyMessage());
         return message;
     }
 

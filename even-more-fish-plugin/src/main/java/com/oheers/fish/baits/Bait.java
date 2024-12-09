@@ -125,25 +125,25 @@ public class Bait {
                     }
                     message.setAmount(Integer.toString(rarityList.size()));
                     message.setBaitTheme(theme);
-                    lore.add(message.getRawMessage());
+                    lore.add(message.getLegacyMessage());
                 }
 
                 if (!fishList.isEmpty()) {
                     AbstractMessage message = EvenMoreFish.getAdapter().createMessage(BaitFile.getInstance().getBoostFishFormat());
                     message.setAmount(Integer.toString(fishList.size()));
                     message.setBaitTheme(theme);
-                    lore.add(message.getRawMessage());
+                    lore.add(message.getLegacyMessage());
                 }
 
             } else if (lineAddition.equals("{lore}")) {
                 BaitFile.getInstance().getLore(this.name).forEach(line -> {
                     AbstractMessage message = EvenMoreFish.getAdapter().createMessage(line);
-                    lore.add(message.getRawMessage());
+                    lore.add(message.getLegacyMessage());
                 });
             } else {
                 AbstractMessage message = EvenMoreFish.getAdapter().createMessage(lineAddition);
                 message.setBaitTheme(theme);
-                lore.add(message.getRawMessage());
+                lore.add(message.getLegacyMessage());
             }
         }
 

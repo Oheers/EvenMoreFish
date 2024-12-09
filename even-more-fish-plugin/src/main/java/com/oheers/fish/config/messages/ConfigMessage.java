@@ -306,7 +306,7 @@ public enum ConfigMessage {
                 if (this.canHidePrefix && line.startsWith("[noPrefix]")) {
                     message = message.concat(line.substring(10));
                 } else {
-                    message = message.concat(getPrefixType().getPrefix().getRawMessage() + line);
+                    message = message.concat(getPrefixType().getPrefix().getLegacyMessage() + line);
                 }
 
                 if (!Objects.equals(line, list.get(list.size() - 1))) {
@@ -319,7 +319,7 @@ public enum ConfigMessage {
             if (this.canHidePrefix && line.startsWith("[noPrefix]")) {
                 message = line.substring(10);
             } else {
-                message = getPrefixType().getPrefix().getRawMessage() + line;
+                message = getPrefixType().getPrefix().getLegacyMessage() + line;
             }
         }
         return EvenMoreFish.getAdapter().createMessage(message);

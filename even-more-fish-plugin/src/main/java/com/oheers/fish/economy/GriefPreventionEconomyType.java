@@ -97,7 +97,7 @@ public class GriefPreventionEconomyType implements EconomyType {
         }
         AbstractMessage message = EvenMoreFish.getAdapter().createMessage(display);
         message.setVariable("{amount}", String.valueOf(worth));
-        return message.getRawMessage();
+        return message.getLegacyMessage();
     }
 
     @Override

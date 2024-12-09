@@ -25,7 +25,7 @@ public class Messages extends ConfigBase {
         message.prependMessage(PrefixType.DEFAULT.getPrefix());
         message.appendString("&r");
         // TODO potential shenanigans
-        return message.getRawMessage();
+        return message.getLegacyMessage();
     }
 
     @Override

@@ -70,7 +70,7 @@ public class ItemBuilder {
             return stack;
         }
         if (this.display != null) {
-            meta.setDisplayName(EvenMoreFish.getAdapter().createMessage(this.display).getRawMessage());
+            meta.setDisplayName(EvenMoreFish.getAdapter().createMessage(this.display).getLegacyMessage());
         }
         if (!this.lore.isEmpty()) {
             meta.setLore(EvenMoreFish.getAdapter().createMessage(this.lore).getRawListMessage());
