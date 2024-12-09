@@ -1,6 +1,7 @@
 package com.oheers.fish.utils;
 
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -69,10 +70,10 @@ public class ItemBuilder {
             return stack;
         }
         if (this.display != null) {
-            meta.setDisplayName(new Message(this.display).getRawMessage());
+            meta.setDisplayName(EvenMoreFish.getAdapter().createMessage(this.display).getRawMessage());
         }
         if (!this.lore.isEmpty()) {
-            meta.setLore(new Message(this.lore).getRawListMessage());
+            meta.setLore(EvenMoreFish.getAdapter().createMessage(this.lore).getRawListMessage());
         }
         stack.setItemMeta(meta);
         if (this.glowing) {

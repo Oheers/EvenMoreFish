@@ -8,7 +8,7 @@ import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -48,13 +48,13 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getBeginMessage(@NotNull Competition competition, CompetitionType type) {
+    public AbstractMessage getBeginMessage(@NotNull Competition competition, CompetitionType type) {
         return getTypeFormat(competition, ConfigMessage.COMPETITION_START);
     }
 
     @Override
-    public Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
-        final Message message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
+    public AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+        final AbstractMessage message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
         message.setAmount(Integer.toString(competition.getNumberNeeded()));
         if (competition.getSelectedRarity() == null) {
             EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");

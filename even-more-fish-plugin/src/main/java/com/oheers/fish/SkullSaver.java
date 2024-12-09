@@ -2,7 +2,7 @@ package com.oheers.fish;
 
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.selling.WorthNBT;
@@ -76,7 +76,7 @@ public class SkullSaver implements Listener {
         if (FishUtils.isFish(stack)) {
             if (MainConfig.getInstance().blockPlacingHeads()) {
                 event.setCancelled(true);
-                new Message(ConfigMessage.FISH_CANT_BE_PLACED).broadcast(event.getPlayer());
+                ConfigMessage.FISH_CANT_BE_PLACED.getMessage().send(event.getPlayer());
                 return;
             }
             

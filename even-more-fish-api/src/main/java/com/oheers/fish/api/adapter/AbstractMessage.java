@@ -6,10 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class AbstractMessage {
 
@@ -31,8 +28,12 @@ public abstract class AbstractMessage {
         this.platformAdapter = platformAdapter;
     }
 
-    protected void setMessage(@NotNull String message) {
-        this.message = message;
+    public void setMessage(@NotNull String message) {
+        this.message = formatColours(message);
+    }
+
+    public void setMessage(@NotNull AbstractMessage message) {
+        this.message = message.getRawMessage();
     }
 
     protected boolean isPAPIEnabled() {
@@ -87,9 +88,23 @@ public abstract class AbstractMessage {
     }
 
     /**
+     * @return The stored String in its raw list form, with no colors or variables applied.
+     */
+    public @NotNull List<String> getRawListMessage() {
+        return Arrays.asList(this.message.split("\n"));
+    }
+
+    /**
      * @return The formatted message as a legacy string, both colors and variables will be formatted.
      */
     public abstract String getLegacyMessage();
+
+    /**
+     * @return The formatted message as a legacy string list, both colors and variables will be formatted.
+     */
+    public @NotNull List<String> getLegacyListMessage() {
+        return Arrays.asList(getLegacyMessage().split("\n"));
+    }
 
     /**
      * Formats PlaceholderAPI placeholders.

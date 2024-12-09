@@ -27,7 +27,7 @@ import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.competition.rewardtypes.external.*;
 import com.oheers.fish.config.*;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.DatabaseV3;
@@ -372,32 +372,32 @@ public class EvenMoreFish extends EMFPlugin {
         manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
         //desc_admin_<command>_<id>
         manager.getCommandReplacements().addReplacements(
-                "desc_admin_bait", new Message(ConfigMessage.HELP_ADMIN_BAIT).getRawMessage(),
-                "desc_admin_competition", new Message(ConfigMessage.HELP_ADMIN_COMPETITION).getRawMessage(),
-                "desc_admin_clearbaits", new Message(ConfigMessage.HELP_ADMIN_CLEARBAITS).getRawMessage(),
-                "desc_admin_fish", new Message(ConfigMessage.HELP_ADMIN_FISH).getRawMessage(),
-                "desc_admin_nbtrod", new Message(ConfigMessage.HELP_ADMIN_NBTROD).getRawMessage(),
-                "desc_admin_reload", new Message(ConfigMessage.HELP_ADMIN_RELOAD).getRawMessage(),
-                "desc_admin_version", new Message(ConfigMessage.HELP_ADMIN_VERSION).getRawMessage(),
-                "desc_admin_migrate", new Message(ConfigMessage.HELP_ADMIN_MIGRATE).getRawMessage(),
-                "desc_admin_rewardtypes", new Message(ConfigMessage.HELP_ADMIN_REWARDTYPES).getRawMessage(),
-                "desc_admin_addons", new Message(ConfigMessage.HELP_ADMIN_ADDONS).getRawMessage(),
+                "desc_admin_bait", ConfigMessage.HELP_ADMIN_BAIT.getMessage().getRawMessage(),
+                "desc_admin_competition", ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getRawMessage(),
+                "desc_admin_clearbaits", ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getRawMessage(),
+                "desc_admin_fish", ConfigMessage.HELP_ADMIN_FISH.getMessage().getRawMessage(),
+                "desc_admin_nbtrod", ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getRawMessage(),
+                "desc_admin_reload", ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getRawMessage(),
+                "desc_admin_version", ConfigMessage.HELP_ADMIN_VERSION.getMessage().getRawMessage(),
+                "desc_admin_migrate", ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getRawMessage(),
+                "desc_admin_rewardtypes", ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getRawMessage(),
+                "desc_admin_addons", ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getRawMessage(),
 
-                "desc_list_fish", new Message(ConfigMessage.HELP_LIST_FISH).getRawMessage(),
-                "desc_list_rarities", new Message(ConfigMessage.HELP_LIST_RARITIES).getRawMessage(),
+                "desc_list_fish", ConfigMessage.HELP_LIST_FISH.getMessage().getRawMessage(),
+                "desc_list_rarities", ConfigMessage.HELP_LIST_RARITIES.getMessage().getRawMessage(),
 
-                "desc_competition_start", new Message(ConfigMessage.HELP_COMPETITION_START).getRawMessage(),
-                "desc_competition_end", new Message(ConfigMessage.HELP_COMPETITION_END).getRawMessage(),
+                "desc_competition_start", ConfigMessage.HELP_COMPETITION_START.getMessage().getRawMessage(),
+                "desc_competition_end", ConfigMessage.HELP_COMPETITION_END.getMessage().getRawMessage(),
 
-                "desc_general_top", new Message(ConfigMessage.HELP_GENERAL_TOP).getRawMessage(),
-                "desc_general_help", new Message(ConfigMessage.HELP_GENERAL_HELP).getRawMessage(),
-                "desc_general_shop", new Message(ConfigMessage.HELP_GENERAL_SHOP).getRawMessage(),
-                "desc_general_toggle", new Message(ConfigMessage.HELP_GENERAL_TOGGLE).getRawMessage(),
-                "desc_general_gui", new Message(ConfigMessage.HELP_GENERAL_GUI).getRawMessage(),
-                "desc_general_admin", new Message(ConfigMessage.HELP_GENERAL_ADMIN).getRawMessage(),
-                "desc_general_next", new Message(ConfigMessage.HELP_GENERAL_NEXT).getRawMessage(),
-                "desc_general_sellall", new Message(ConfigMessage.HELP_GENERAL_SELLALL).getRawMessage(),
-                "desc_general_applybaits", new Message(ConfigMessage.HELP_GENERAL_APPLYBAITS).getRawMessage()
+                "desc_general_top", ConfigMessage.HELP_GENERAL_TOP.getMessage().getRawMessage(),
+                "desc_general_help", ConfigMessage.HELP_GENERAL_HELP.getMessage().getRawMessage(),
+                "desc_general_shop", ConfigMessage.HELP_GENERAL_SHOP.getMessage().getRawMessage(),
+                "desc_general_toggle", ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getRawMessage(),
+                "desc_general_gui", ConfigMessage.HELP_GENERAL_GUI.getMessage().getRawMessage(),
+                "desc_general_admin", ConfigMessage.HELP_GENERAL_ADMIN.getMessage().getRawMessage(),
+                "desc_general_next", ConfigMessage.HELP_GENERAL_NEXT.getMessage().getRawMessage(),
+                "desc_general_sellall", ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getRawMessage(),
+                "desc_general_applybaits", ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getRawMessage()
         );
 
 
@@ -547,7 +547,7 @@ public class EvenMoreFish extends EMFPlugin {
         competitionQueue.load();
 
         if (sender != null) {
-            new Message(ConfigMessage.RELOAD_SUCCESS).broadcast(sender);
+            ConfigMessage.RELOAD_SUCCESS.getMessage().send(sender);
         }
 
     }
@@ -791,11 +791,11 @@ public class EvenMoreFish extends EMFPlugin {
         // If it is enabled, disable it
         if (isCustomFishing(player)) {
             pdc.set(key, PersistentDataType.STRING, "false");
-            new Message(ConfigMessage.TOGGLE_OFF).broadcast(player);
+            ConfigMessage.TOGGLE_OFF.getMessage().send(player);
         // If it is disabled, enable it
         } else {
             pdc.set(key, PersistentDataType.STRING, "true");
-            new Message(ConfigMessage.TOGGLE_ON).broadcast(player);
+            ConfigMessage.TOGGLE_ON.getMessage().send(player);
         }
     }
 

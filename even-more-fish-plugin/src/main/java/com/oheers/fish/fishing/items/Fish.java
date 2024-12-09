@@ -6,7 +6,7 @@ import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.selling.WorthNBT;
 import com.oheers.fish.utils.ItemFactory;
@@ -306,22 +306,22 @@ public class Fish implements Cloneable {
      */
     private List<String> getFishLore() {
         List<String> loreOverride = section.getStringList("lore-override");
-        Message newLoreLine;
+        AbstractMessage newLoreLine;
         if (!loreOverride.isEmpty()) {
-            newLoreLine = new Message(loreOverride);
+            newLoreLine = EvenMoreFish.getAdapter().createMessage(loreOverride);
         } else {
-            newLoreLine = new Message(ConfigMessage.FISH_LORE);
+            newLoreLine = ConfigMessage.FISH_LORE.getMessage();
         }
         newLoreLine.setRarityColour(rarity.getColour());
 
-        newLoreLine.addLore(
-                "{fish_lore}",
-                section.getStringList("lore")
+        newLoreLine.setVariable(
+                "{fish-lore}",
+                String.join("\n", section.getStringList("lore"))
         );
 
         newLoreLine.setVariable("{fisherman_lore}",
                 !disableFisherman && getFishermanPlayer() != null ?
-                        (new Message(ConfigMessage.FISHERMAN_LORE)).getRawMessage()
+                        (ConfigMessage.FISHERMAN_LORE.getMessage()).getRawMessage()
                         : ""
         );
 
@@ -329,7 +329,7 @@ public class Fish implements Cloneable {
 
         newLoreLine.setVariable("{length_lore}",
                 length > 0 ?
-                        (new Message(ConfigMessage.LENGTH_LORE)).getRawMessage()
+                        (ConfigMessage.LENGTH_LORE.getMessage()).getRawMessage()
                         : ""
         );
 

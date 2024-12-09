@@ -9,7 +9,7 @@ import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.GUIFillerConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.gui.GUIUtils;
@@ -92,16 +92,16 @@ public class ApplyBaitsGUI implements EMFGUI {
                 EvenMoreFish.getInstance().incrementMetricBaitsApplied(item.getAmount());
             // When a specific bait is maxed.
             } catch (MaxBaitReachedException exception) {
-                Message message = new Message(ConfigMessage.BAITS_MAXED_ON_ROD);
+                AbstractMessage message = ConfigMessage.BAITS_MAXED_ON_ROD.getMessage();
                 message.setBaitTheme(bait.getTheme());
                 message.setBait(bait.getName());
-                message.broadcast(this.player);
+                message.send(this.player);
                 // We should now start to ignore this bait.
                 ignoredBaits.add(bait.getName());
                 continue;
             // When the rod cannot contain any more baits.
             } catch (MaxBaitsReachedException exception) {
-                new Message(ConfigMessage.BAITS_MAXED).broadcast(this.player);
+                ConfigMessage.BAITS_MAXED.getMessage().send(this.player);
                 // Return here as the fishing rod cannot fit any more baits.
                 return;
             }

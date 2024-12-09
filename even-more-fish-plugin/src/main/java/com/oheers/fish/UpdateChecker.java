@@ -1,7 +1,7 @@
 package com.oheers.fish;
 
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.permissions.AdminPerms;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,7 +44,7 @@ class UpdateNotify implements Listener {
         }
 
         if (event.getPlayer().hasPermission(AdminPerms.UPDATE_NOTIFY)) {
-            new Message(ConfigMessage.ADMIN_UPDATE_AVAILABLE).broadcast(event.getPlayer());
+            ConfigMessage.ADMIN_UPDATE_AVAILABLE.getMessage().send(event.getPlayer());
         }
 
     }

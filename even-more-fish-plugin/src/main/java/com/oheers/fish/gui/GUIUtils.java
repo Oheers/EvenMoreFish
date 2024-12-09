@@ -3,7 +3,7 @@ package com.oheers.fish.gui;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
-import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.gui.guis.BaitsGUI;
 import com.oheers.fish.gui.guis.EMFGUI;
 import com.oheers.fish.gui.guis.MainMenuGUI;
@@ -109,13 +109,13 @@ public class GUIUtils {
         if (section == null) {
             return new InventoryGui(
                     EvenMoreFish.getInstance(),
-                    new Message("&cBroken GUI! Please tell an admin!").getRawMessage(),
+                    EvenMoreFish.getAdapter().createMessage("&cBroken GUI! Please tell an admin!").getRawMessage(),
                     new String[0]
             );
         }
         return new InventoryGui(
                 EvenMoreFish.getInstance(),
-                new Message(section.getString("title", "EvenMoreFish Inventory")).getRawMessage(),
+                EvenMoreFish.getAdapter().createMessage(section.getString("title", "EvenMoreFish Inventory")).getRawMessage(),
                 section.getStringList("layout").toArray(new String[0])
         );
     }
