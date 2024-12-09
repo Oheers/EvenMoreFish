@@ -1,5 +1,6 @@
 package com.oheers.fish.api.adapter;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 public abstract class AbstractMessage {
 
+    private Boolean papiEnabled = null;
     private final PlatformAdapter platformAdapter;
     private final Map<String, String> liveVariables = new LinkedHashMap<>();
     private String message;
@@ -29,6 +31,17 @@ public abstract class AbstractMessage {
         this.platformAdapter = platformAdapter;
     }
 
+    protected void setMessage(@NotNull String message) {
+        this.message = message;
+    }
+
+    protected boolean isPAPIEnabled() {
+        if (papiEnabled == null) {
+            papiEnabled = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+        }
+        return papiEnabled;
+    }
+
     /**
      * Converts colors to the format this impl requires.
      * @param message The message to process
@@ -39,7 +52,7 @@ public abstract class AbstractMessage {
     /**
      * Formats all variables in {@link #liveVariables}
      */
-    private void formatVariables() {
+    protected void formatVariables() {
         for (Map.Entry<String, String> entry : liveVariables.entrySet()) {
             String variable = entry.getKey();
             String replacement = formatColours(entry.getValue());
@@ -50,13 +63,13 @@ public abstract class AbstractMessage {
     /**
      * Sends this message to the entire server.
      */
-    abstract void broadcast();
+    public abstract void broadcast();
 
     /**
      * Sends this message to the provided target.
      * @param target The target of this message.
      */
-    abstract void send(@NotNull CommandSender target);
+    public abstract void send(@NotNull CommandSender target);
 
     /**
      * Sends this message to the provided list of targets.
@@ -74,16 +87,16 @@ public abstract class AbstractMessage {
     }
 
     /**
-     * @return The formatted message, both colors and variables will be applied.
+     * @return The formatted message as a legacy string, both colors and variables will be formatted.
      */
-    abstract String getFormattedMessage();
+    public abstract String getLegacyMessage();
 
     /**
      * Formats PlaceholderAPI placeholders.
      * <p>
      * This is abstract because the MiniMessage impl will need to handle this manually.
      */
-    abstract void formatPlaceholderAPI();
+    public abstract void formatPlaceholderAPI();
 
     /**
      * Adds the provided string to the end of this message.
@@ -169,6 +182,13 @@ public abstract class AbstractMessage {
      */
     public boolean isCanSilent() {
         return this.canSilent;
+    }
+
+    /**
+     * @return Should this message be silent?
+     */
+    public boolean silentCheck() {
+        return canSilent && this.message.endsWith(" -s");
     }
 
     /**

@@ -12,7 +12,13 @@ public abstract class PlatformAdapter {
 
     public abstract void logLoadedMessage();
 
-    public abstract String translateColorCodes(@NotNull String message);
+    /**
+     * Translates the provided message into a legacy string.
+     * @return The provided message as a legacy string.
+     */
+    public String translateColorCodes(@NotNull String message) {
+        return createMessage(message).getLegacyMessage();
+    }
 
     public abstract AbstractMessage createMessage(@NotNull String message);
 
