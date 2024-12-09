@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class SpigotMessage extends AbstractMessage {
 
-    private final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
+    private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
 
     protected SpigotMessage(@NotNull String message, @NotNull PlatformAdapter platformAdapter) {
         super(message, platformAdapter);
