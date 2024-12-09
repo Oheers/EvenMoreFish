@@ -19,7 +19,7 @@ public class PaperMessage extends AbstractMessage {
 
     private static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder()
             .hexColors()
-            .character('&')
+            .character('§')
             .build();
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
@@ -33,9 +33,9 @@ public class PaperMessage extends AbstractMessage {
 
     @Override
     public String formatColours(@NotNull String message) {
-        String checkStr = ChatColor.translateAlternateColorCodes('&', message);
+        message = ChatColor.translateAlternateColorCodes('&', message);
         // If the message contains legacy, convert to MiniMessage
-        if (checkStr.contains("§")) {
+        if (message.contains("§")) {
             // Fix for MiniMessage not serializing a reset tag.
             message = message.replaceAll("&r", "_resetchar_");
             Component legacyComponent = legacySerializer.deserialize(message);
@@ -77,8 +77,7 @@ public class PaperMessage extends AbstractMessage {
 
     @Override
     public String getLegacyMessage() {
-        String legacyAmpersandMessage = legacySerializer.serialize(getComponentMessage());
-        return ChatColor.translateAlternateColorCodes('&', legacyAmpersandMessage);
+        return legacySerializer.serialize(getComponentMessage());
     }
 
     @Override
