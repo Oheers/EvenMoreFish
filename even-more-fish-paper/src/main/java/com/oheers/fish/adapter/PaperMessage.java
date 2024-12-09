@@ -19,6 +19,7 @@ public class PaperMessage extends AbstractMessage {
 
     private static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder()
             .hexColors()
+            .useUnusualXRepeatedCharacterHexFormat()
             .character('§')
             .build();
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -33,7 +34,8 @@ public class PaperMessage extends AbstractMessage {
 
     @Override
     public String formatColours(@NotNull String message) {
-        message = ChatColor.translateAlternateColorCodes('&', message).replace("&#", "§#");
+        message = ChatColor.translateAlternateColorCodes('&', message);
+        message = message.replace("&#", "§#");
         // If the message contains legacy, convert to MiniMessage
         if (message.contains("§")) {
             // Fix for MiniMessage not serializing a reset tag.
