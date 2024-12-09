@@ -71,7 +71,7 @@ public abstract class Message {
     /**
      * @return The stored String in its raw form, with no colors or variables applied.
      */
-    public String getRawMessage() {
+    public @NotNull String getRawMessage() {
         return this.message;
     }
 
