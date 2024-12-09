@@ -314,9 +314,12 @@ public class Fish implements Cloneable {
         }
         newLoreLine.setRarityColour(rarity.getColour());
 
+        List<String> fishLore = section.getStringList("lore");
+        String replacement = fishLore.isEmpty() ? "" : String.join("\n", fishLore);
+
         newLoreLine.setVariable(
-                "{fish-lore}",
-                String.join("\n", section.getStringList("lore"))
+                "{fish_lore}",
+                replacement
         );
 
         newLoreLine.setVariable("{fisherman_lore}",
@@ -329,7 +332,7 @@ public class Fish implements Cloneable {
 
         newLoreLine.setVariable("{length_lore}",
                 length > 0 ?
-                        (ConfigMessage.LENGTH_LORE.getMessage()).getLegacyMessage()
+                        ConfigMessage.LENGTH_LORE.getMessage().getLegacyMessage()
                         : ""
         );
 
@@ -337,7 +340,7 @@ public class Fish implements Cloneable {
 
         newLoreLine.setRarity(this.rarity.getLorePrep());
 
-        List<String> newLore = Arrays.asList(newLoreLine.getLegacyMessage().split("\n"));
+        List<String> newLore = newLoreLine.getLegacyListMessage();
         if (getFishermanPlayer() != null && EvenMoreFish.getInstance().isUsingPAPI()) {
             return newLore.stream().map(l -> PlaceholderAPI.setPlaceholders(getFishermanPlayer(), l)).collect(Collectors.toList());
         }
