@@ -36,8 +36,11 @@ public class PaperMessage extends AbstractMessage {
         String checkStr = ChatColor.translateAlternateColorCodes('&', message);
         // If the message contains legacy, convert to MiniMessage
         if (checkStr.contains("§")) {
+            // Fix for MiniMessage not serializing a reset tag.
+            message = message.replaceAll("&r", "_resetchar_");
             Component legacyComponent = legacySerializer.deserialize(message);
             message = miniMessage.serialize(legacyComponent);
+            message = message.replaceAll("_resetchar_", "<reset>");
         }
         return message;
     }
