@@ -3,7 +3,6 @@ package com.oheers.fish.gui;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
-import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.gui.guis.BaitsGUI;
 import com.oheers.fish.gui.guis.EMFGUI;
 import com.oheers.fish.gui.guis.MainMenuGUI;

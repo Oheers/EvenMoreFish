@@ -1,7 +1,5 @@
 package com.oheers.fish.fishing.items;
 
-import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.requirement.Requirement;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.jetbrains.annotations.NotNull;

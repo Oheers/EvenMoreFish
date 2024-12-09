@@ -1,9 +1,9 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.FishReport;
 import com.oheers.fish.database.UserReport;

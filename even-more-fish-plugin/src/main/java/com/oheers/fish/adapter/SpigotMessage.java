@@ -1,6 +1,5 @@
 package com.oheers.fish.adapter;
 
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.adapter.PlatformAdapter;
 import me.clip.placeholderapi.PlaceholderAPI;

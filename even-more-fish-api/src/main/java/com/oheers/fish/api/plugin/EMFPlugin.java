@@ -6,8 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.logging.Logger;
-
 public abstract class EMFPlugin extends JavaPlugin {
 
     private static EMFPlugin instance;

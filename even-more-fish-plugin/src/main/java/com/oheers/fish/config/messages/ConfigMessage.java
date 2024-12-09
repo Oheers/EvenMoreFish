@@ -2,7 +2,6 @@ package com.oheers.fish.config.messages;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.adapter.AbstractMessage;
-import net.royawesome.jlibnoise.module.modifier.Abs;
 
 import java.util.Arrays;
 import java.util.Collections;
