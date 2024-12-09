@@ -1,10 +1,12 @@
 package com.oheers.fish.adapter;
 
+import com.oheers.fish.api.adapter.Message;
 import com.oheers.fish.api.adapter.PlatformAdapter;
 import com.oheers.fish.api.plugin.EMFPlugin;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,5 +37,17 @@ public class SpigotAdapter extends PlatformAdapter {
             );
         }
         return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+    }
+
+    // TODO not null.
+    @Override
+    public Message createMessage(@NotNull String message) {
+        return null;
+    }
+
+    // TODO not null.
+    @Override
+    public Message createMessage(@NotNull List<String> messageList) {
+        return null;
     }
 }

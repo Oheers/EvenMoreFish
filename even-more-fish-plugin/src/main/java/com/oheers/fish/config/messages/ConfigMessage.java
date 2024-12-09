@@ -292,5 +292,11 @@ public enum ConfigMessage {
     public PrefixType getPrefixType() {
         return prefixType;
     }
+
+    // TODO fill this.
+    public Message getMessage() {
+        return null;
+    }
+
 }
 

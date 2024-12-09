@@ -1,6 +1,5 @@
 package com.oheers.fish.api.adapter;
 
-import com.oheers.fish.api.Message;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

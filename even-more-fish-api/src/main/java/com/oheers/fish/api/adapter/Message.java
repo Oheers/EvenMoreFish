@@ -1,7 +1,5 @@
-package com.oheers.fish.api;
+package com.oheers.fish.api.adapter;
 
-import com.oheers.fish.api.adapter.PlatformAdapter;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
