@@ -1,4 +1,4 @@
-package com.oheers.fish.database;
+package com.oheers.fish.database.model;
 
 import java.util.UUID;
 

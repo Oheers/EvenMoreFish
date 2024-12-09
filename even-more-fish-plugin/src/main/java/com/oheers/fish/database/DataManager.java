@@ -3,6 +3,8 @@ package com.oheers.fish.database;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
+import com.oheers.fish.database.model.FishReport;
+import com.oheers.fish.database.model.UserReport;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 

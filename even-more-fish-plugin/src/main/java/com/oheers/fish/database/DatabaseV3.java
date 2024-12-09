@@ -9,6 +9,8 @@ import com.oheers.fish.database.connection.ConnectionFactory;
 import com.oheers.fish.database.connection.MySqlConnectionFactory;
 import com.oheers.fish.database.connection.SqliteConnectionFactory;
 import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
+import com.oheers.fish.database.model.FishReport;
+import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
 import org.flywaydb.core.api.MigrationVersion;

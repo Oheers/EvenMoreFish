@@ -171,10 +171,10 @@ public abstract class ConnectionFactory {
                         "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
                         "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)",
                         "v6.alter.columns", !MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("sqlite") ?
-                                "ALTER TABLE `${table.prefix}competitions` ALTER COLUMN contestants text;" +
-                                        "ALTER TABLE `${table.prefix}fish` ADD PRIMARY KEY (fish_name);" +
-                                        "ALTER TABLE `${table.prefix}fish_log` ADD CONSTRAINT FK_FishLog_User FOREIGN KEY(id) REFERENCES `${table.prefix}users(id)`;" +
-                                        "ALTER TABLE `${table.prefix}users_sales` ADD CONSTRAINT FK_UsersSales_Transaction FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`;"
+                                "ALTER TABLE `${table.prefix}competitions` ALTER COLUMN contestants text;".replace("${table.prefix}",MainConfig.getInstance().getPrefix()) +
+                                        "ALTER TABLE `${table.prefix}fish` ADD PRIMARY KEY (fish_name);".replace("${table.prefix}",MainConfig.getInstance().getPrefix())  +
+                                        "ALTER TABLE `${table.prefix}fish_log` ADD CONSTRAINT FK_FishLog_User FOREIGN KEY(id) REFERENCES `${table.prefix}users(id)`;".replace("${table.prefix}",MainConfig.getInstance().getPrefix())  +
+                                        "ALTER TABLE `${table.prefix}users_sales` ADD CONSTRAINT FK_UsersSales_Transaction FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`;".replace("${table.prefix}",MainConfig.getInstance().getPrefix())
                                 : ""
                 ))
                 .validateMigrationNaming(true)
