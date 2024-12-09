@@ -24,7 +24,6 @@ public class Messages extends ConfigBase {
         AbstractMessage message = EvenMoreFish.getAdapter().createMessage("");
         message.prependMessage(PrefixType.DEFAULT.getPrefix());
         message.appendString("&r");
-        // TODO potential shenanigans
         return message.getLegacyMessage();
     }
 
