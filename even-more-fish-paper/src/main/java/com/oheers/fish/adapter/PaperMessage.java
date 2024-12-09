@@ -37,7 +37,7 @@ public class PaperMessage extends AbstractMessage {
         // If the message contains legacy, convert to MiniMessage
         if (message.contains("§")) {
             // Fix for MiniMessage not serializing a reset tag.
-            message = message.replaceAll("&r", "_resetchar_");
+            message = message.replaceAll("§r", "_resetchar_");
             Component legacyComponent = legacySerializer.deserialize(message);
             message = miniMessage.serialize(legacyComponent);
             message = message.replaceAll("_resetchar_", "<reset>");
