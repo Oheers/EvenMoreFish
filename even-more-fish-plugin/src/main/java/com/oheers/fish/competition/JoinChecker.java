@@ -67,13 +67,14 @@ public class JoinChecker implements Listener {
     // Gives the player the active fishing bar if there's a fishing event cracking off
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        if (Competition.isActive()) {
-            EvenMoreFish.getInstance().getActiveCompetition().getStatusBar().addPlayer(event.getPlayer());
-            AbstractMessage startMessage = EvenMoreFish.getInstance().getActiveCompetition().getStartMessage();
+        Competition activeComp = Competition.getCurrentlyActive();
+        if (activeComp != null) {
+            activeComp.getStatusBar().addPlayer(event.getPlayer());
+            AbstractMessage startMessage = activeComp.getStartMessage();
             if (startMessage != null) {
                 startMessage.setMessage(ConfigMessage.COMPETITION_JOIN.getMessage());
             }
-            EvenMoreFish.getScheduler().runTaskLater(() -> EvenMoreFish.getInstance().getActiveCompetition().getStartMessage().send(event.getPlayer()), 20 * 3);
+            EvenMoreFish.getScheduler().runTaskLater(() -> activeComp.getStartMessage().send(event.getPlayer()), 20 * 3);
         }
 
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> databaseRegistration(event.getPlayer().getUniqueId(), event.getPlayer().getName()));
@@ -83,8 +84,9 @@ public class JoinChecker implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
 
-        if (Competition.isActive()) {
-            EvenMoreFish.getInstance().getActiveCompetition().getStatusBar().removePlayer(event.getPlayer());
+        Competition activeComp = Competition.getCurrentlyActive();
+        if (activeComp != null) {
+            activeComp.getStatusBar().removePlayer(event.getPlayer());
         }
 
         if (!MainConfig.getInstance().isDatabaseOnline()) {

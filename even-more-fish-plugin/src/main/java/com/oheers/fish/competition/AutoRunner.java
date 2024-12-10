@@ -22,8 +22,7 @@ public class AutoRunner {
                 CompetitionQueue queue = EvenMoreFish.getInstance().getCompetitionQueue();
                 if (queue.competitions.containsKey(weekMinute)) {
                     if (!Competition.isActive()) {
-                        EvenMoreFish.getInstance().setActiveCompetition(queue.competitions.get(weekMinute));
-                        EvenMoreFish.getInstance().getActiveCompetition().begin();
+                        queue.competitions.get(weekMinute).begin();
                     }
                 }
             }

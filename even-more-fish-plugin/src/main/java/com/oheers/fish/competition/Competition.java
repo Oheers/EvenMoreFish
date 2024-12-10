@@ -21,6 +21,7 @@ import org.bukkit.Sound;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.*;
@@ -28,9 +29,9 @@ import java.util.logging.Level;
 
 public class Competition {
 
-    public static Leaderboard leaderboard;
-    static boolean active;
-    static boolean originallyRandom;
+    private static Competition active;
+    private static boolean originallyRandom;
+    private Leaderboard leaderboard;
     private CompetitionType competitionType;
     private Fish selectedFish;
     private Rarity selectedRarity;
@@ -69,26 +70,33 @@ public class Competition {
     }
 
     public static boolean isActive() {
-        return active;
+        return getCurrentlyActive() != null;
     }
 
     public static void setOriginallyRandom(boolean originallyRandom) {
         Competition.originallyRandom = originallyRandom;
     }
 
+    public static @Nullable Competition getCurrentlyActive() {
+        return active;
+    }
+
     public void begin() {
         try {
             if (!isAdminStarted() && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
                 ConfigMessage.NOT_ENOUGH_PLAYERS.getMessage().broadcast();
-                active = false;
                 return;
             }
 
-            active = true;
+            // Make sure the active competition has ended.
+            if (active != null) {
+                active.end(false);
+            }
+            active = this;
 
             CompetitionStrategy strategy = competitionType.getStrategy();
             if (!strategy.begin(this)) {
-                active = false;
+                active = null;
                 return;
             }
 
@@ -146,7 +154,7 @@ public class Competition {
         } catch (Exception exception) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "An exception was thrown while the competition was being ended!", exception);
         } finally {
-            active = false;
+            active = null;
         }
     }
 
@@ -224,7 +232,7 @@ public class Competition {
         boolean isSupportedActionBarType = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance()
                 .getConfig()
                 .getStringList("action-bar-types")
-                .contains(EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().toString());
+                .contains(getCompetitionType().toString());
         return doActionBarMessage && isSupportedActionBarType;
     }
 
@@ -250,7 +258,7 @@ public class Competition {
     }
 
     public void sendConsoleLeaderboard(ConsoleCommandSender console) {
-        if (!active) {
+        if (!isActive()) {
             ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(console);
             return;
         }
@@ -271,7 +279,7 @@ public class Competition {
     }
 
     public void sendPlayerLeaderboard(Player player) {
-        if (!active) {
+        if (!isActive()) {
             ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(player);
             return;
         }

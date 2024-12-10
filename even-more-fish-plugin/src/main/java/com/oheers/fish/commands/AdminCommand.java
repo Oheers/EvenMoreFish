@@ -149,7 +149,6 @@ public class AdminCommand extends BaseCommand {
             }
             Competition competition = new Competition(file);
             competition.setAdminStarted(true);
-            EvenMoreFish.getInstance().setActiveCompetition(competition);
             competition.begin();
         }
 
@@ -165,15 +164,15 @@ public class AdminCommand extends BaseCommand {
             CompetitionFile file = new CompetitionFile("adminTest", type, duration);
             Competition competition = new Competition(file);
             competition.setAdminStarted(true);
-            EvenMoreFish.getInstance().setActiveCompetition(competition);
             competition.begin();
         }
 
         @Subcommand("end")
         @Description("%desc_competition_end")
         public void onEnd(final CommandSender sender) {
-            if (Competition.isActive()) {
-                EvenMoreFish.getInstance().getActiveCompetition().end(false);
+            Competition active = Competition.getCurrentlyActive();
+            if (active != null) {
+                active.end(false);
                 return;
             }
 
