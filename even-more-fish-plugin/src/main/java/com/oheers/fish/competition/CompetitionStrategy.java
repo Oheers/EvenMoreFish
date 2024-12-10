@@ -84,7 +84,7 @@ public interface CompetitionStrategy {
      * @param configMessage The configmessage to use. Must have the {type} variable in it.
      * @return A message object that's pre-set to be compatible for the time remaining.
      */
-    default AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+    default @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         AbstractMessage message = configMessage.getMessage();
         message.setTimeFormatted(FishUtils.timeFormat(competition.getTimeLeft()));
         message.setTimeRaw(FishUtils.timeRaw(competition.getTimeLeft()));

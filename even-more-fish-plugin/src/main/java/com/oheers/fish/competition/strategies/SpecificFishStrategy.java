@@ -50,7 +50,7 @@ public class SpecificFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+    public @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         AbstractMessage message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
         message.setAmount(Integer.toString(competition.getNumberNeeded()));
         message.setRarityColour(competition.getSelectedFish().getRarity().getColour());

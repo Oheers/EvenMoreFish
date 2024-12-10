@@ -44,7 +44,7 @@ public class RandomStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+    public @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         return randomType.getStrategy().getTypeFormat(competition, configMessage);
     }
 
