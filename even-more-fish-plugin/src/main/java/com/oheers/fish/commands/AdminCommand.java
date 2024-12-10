@@ -143,8 +143,7 @@ public class AdminCommand extends BaseCommand {
             }
             CompetitionFile file = EvenMoreFish.getInstance().getCompetitionQueue().getFileMap().get(competitionId);
             if (file == null) {
-                // TODO needs a proper message.
-                sender.sendMessage("That is not a valid competition id.");
+                ConfigMessage.INVALID_COMPETITION_ID.getMessage().send(sender);
                 return;
             }
             Competition competition = new Competition(file);
