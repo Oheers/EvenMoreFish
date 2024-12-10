@@ -287,6 +287,9 @@ public class Competition {
     }
 
     public void sendPlayerLeaderboard(Player player) {
+        if (player == null) {
+            return;
+        }
         if (!isActive()) {
             ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(player);
             return;
