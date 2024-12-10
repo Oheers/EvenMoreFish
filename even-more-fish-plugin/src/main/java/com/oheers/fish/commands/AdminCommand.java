@@ -136,7 +136,7 @@ public class AdminCommand extends BaseCommand {
         @Subcommand("start")
         @CommandCompletion("@competitionId")
         @Description("%desc_competition_start")
-        public void onStart(final CommandSender sender, final String competitionId) {
+        public void onStart(final CommandSender sender, final String competitionId, @Optional @Conditions("limits:min=1") Integer duration) {
             if (Competition.isActive()) {
                 ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
                 return;
@@ -149,6 +149,9 @@ public class AdminCommand extends BaseCommand {
             }
             Competition competition = new Competition(file);
             competition.setAdminStarted(true);
+            if (duration != null) {
+                competition.setMaxDuration(duration);
+            }
             competition.begin();
         }
 
