@@ -30,7 +30,7 @@ import java.util.logging.Level;
 public class Competition {
 
     private static Competition active;
-    private static boolean originallyRandom;
+    private boolean originallyRandom;
     private Leaderboard leaderboard;
     private CompetitionType competitionType;
     private Fish selectedFish;
@@ -77,8 +77,12 @@ public class Competition {
         return getCurrentlyActive() != null;
     }
 
-    public static void setOriginallyRandom(boolean originallyRandom) {
-        Competition.originallyRandom = originallyRandom;
+    public void setOriginallyRandom(boolean originallyRandom) {
+        this.originallyRandom = originallyRandom;
+    }
+
+    public boolean isOriginallyRandom() {
+        return this.originallyRandom;
     }
 
     public static @Nullable Competition getCurrentlyActive() {

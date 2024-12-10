@@ -19,7 +19,7 @@ public class RandomStrategy implements CompetitionStrategy {
     public boolean begin(Competition competition) {
         competition.setCompetitionType(getRandomType());
         this.randomType = competition.getCompetitionType();
-        Competition.setOriginallyRandom(true);
+        competition.setOriginallyRandom(true);
         return true;
     }
 
