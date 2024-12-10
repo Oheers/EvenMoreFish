@@ -310,7 +310,7 @@ public class Competition {
         message.send(player);
     }
 
-    public List<CompetitionEntry> getSortedEntries(List<CompetitionEntry> entries) {
+    public @NotNull List<CompetitionEntry> getSortedEntries(List<CompetitionEntry> entries) {
         if (competitionType == CompetitionType.SHORTEST_FISH) {
             entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
         }
