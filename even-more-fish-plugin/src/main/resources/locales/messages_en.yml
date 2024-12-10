@@ -232,8 +232,10 @@ admin:
 
   # Sent when a competition is already running when using /emf admin competition start
   competition-already-running: "&rThere's already a competition running."
-  # When an invalid competition type is tried to be started
+  # When an invalid competition type is provided
   competition-type-invalid: "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+  # When an invalid competition id is provided
+  competition-id-invalid: "&rThat isn't a valid competition id."
 
   # When the command /emf admin nbt-rod is run.
   nbt-rod-given: "&rYou have given {player} a NBT rod, make sure \"require-nbt-rod\" is set to &atrue &rfor this to be different from any other fishing rod."
@@ -249,4 +251,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 7
+config-version: 8

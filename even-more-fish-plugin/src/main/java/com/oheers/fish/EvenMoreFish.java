@@ -82,7 +82,6 @@ public class EvenMoreFish extends EMFPlugin {
     private boolean checkingIntEvent;
     // Do some fish in some rarities have the comp-check-exempt: true.
     private boolean raritiesCompCheckExempt = false;
-    private Competition active;
     private CompetitionQueue competitionQueue;
     private Logger logger;
     private PluginManager pluginManager;
@@ -235,7 +234,8 @@ public class EvenMoreFish extends EMFPlugin {
         saveUserData(false);
 
         // Ends the current competition in case the plugin is being disabled when the server will continue running
-        if (Competition.isActive()) {
+        Competition active = Competition.getCurrentlyActive();
+        if (active != null) {
             active.end(false);
         }
 
@@ -609,14 +609,6 @@ public class EvenMoreFish extends EMFPlugin {
 
     public void setRaritiesCompCheckExempt(boolean bool) {
         this.raritiesCompCheckExempt = bool;
-    }
-
-    public Competition getActiveCompetition() {
-        return active;
-    }
-
-    public void setActiveCompetition(Competition competition) {
-        this.active = competition;
     }
 
     public CompetitionQueue getCompetitionQueue() {

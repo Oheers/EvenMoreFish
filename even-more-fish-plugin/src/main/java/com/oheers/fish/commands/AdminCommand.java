@@ -136,20 +136,21 @@ public class AdminCommand extends BaseCommand {
         @Subcommand("start")
         @CommandCompletion("@competitionId")
         @Description("%desc_competition_start")
-        public void onStart(final CommandSender sender, final String competitionId) {
+        public void onStart(final CommandSender sender, final String competitionId, @Optional @Conditions("limits:min=1") Integer duration) {
             if (Competition.isActive()) {
                 ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
                 return;
             }
             CompetitionFile file = EvenMoreFish.getInstance().getCompetitionQueue().getFileMap().get(competitionId);
             if (file == null) {
-                // TODO needs a proper message.
-                sender.sendMessage("That is not a valid competition id.");
+                ConfigMessage.INVALID_COMPETITION_ID.getMessage().send(sender);
                 return;
             }
             Competition competition = new Competition(file);
             competition.setAdminStarted(true);
-            EvenMoreFish.getInstance().setActiveCompetition(competition);
+            if (duration != null) {
+                competition.setMaxDuration(duration);
+            }
             competition.begin();
         }
 
@@ -165,15 +166,15 @@ public class AdminCommand extends BaseCommand {
             CompetitionFile file = new CompetitionFile("adminTest", type, duration);
             Competition competition = new Competition(file);
             competition.setAdminStarted(true);
-            EvenMoreFish.getInstance().setActiveCompetition(competition);
             competition.begin();
         }
 
         @Subcommand("end")
         @Description("%desc_competition_end")
         public void onEnd(final CommandSender sender) {
-            if (Competition.isActive()) {
-                EvenMoreFish.getInstance().getActiveCompetition().end(false);
+            Competition active = Competition.getCurrentlyActive();
+            if (active != null) {
+                active.end(false);
                 return;
             }
 

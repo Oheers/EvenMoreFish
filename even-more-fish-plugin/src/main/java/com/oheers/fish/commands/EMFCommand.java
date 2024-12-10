@@ -65,18 +65,20 @@ public class EMFCommand extends BaseCommand {
     @CommandPermission(UserPerms.TOP)
     @Description("%desc_general_top")
     public void onTop(final CommandSender sender) {
-        if (!Competition.isActive()) {
+        Competition active = Competition.getCurrentlyActive();
+
+        if (active == null) {
             ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(sender);
             return;
         }
 
         if (sender instanceof Player player) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard(player);
+            active.sendPlayerLeaderboard(player);
             return;
         }
 
         if (sender instanceof ConsoleCommandSender consoleCommandSender) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendConsoleLeaderboard(consoleCommandSender);
+            active.sendConsoleLeaderboard(consoleCommandSender);
         }
     }
 

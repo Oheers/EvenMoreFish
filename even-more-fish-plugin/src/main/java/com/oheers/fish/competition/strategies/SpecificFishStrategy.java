@@ -28,9 +28,12 @@ public class SpecificFishStrategy implements CompetitionStrategy {
 
     @Override
     public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
-        if (!fish.getName().equalsIgnoreCase(competition.getSelectedFish().getName()) ||
-                fish.getRarity() != competition.getSelectedFish().getRarity()) {
-            return;
+        Fish selected = competition.getSelectedFish();
+        if (selected != null) {
+            if (!fish.getName().equalsIgnoreCase(selected.getName()) ||
+                    fish.getRarity() != selected.getRarity()) {
+                return;
+            }
         }
 
         CompetitionEntry entry = leaderboard.getEntry(fisher.getUniqueId());
@@ -50,12 +53,15 @@ public class SpecificFishStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+    public @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+        Fish selectedFish = competition.getSelectedFish();
         AbstractMessage message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
         message.setAmount(Integer.toString(competition.getNumberNeeded()));
-        message.setRarityColour(competition.getSelectedFish().getRarity().getColour());
-        message.setRarity(competition.getSelectedFish().getRarity().getDisplayName());
-        message.setFishCaught(competition.getSelectedFish().getDisplayName());
+        if (selectedFish != null) {
+            message.setRarityColour(selectedFish.getRarity().getColour());
+            message.setRarity(selectedFish.getRarity().getDisplayName());
+            message.setFishCaught(selectedFish.getDisplayName());
+        }
         return message;
     }
 

@@ -3,6 +3,7 @@ package com.oheers.fish;
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import com.oheers.fish.api.adapter.AbstractMessage;
+import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -334,12 +335,13 @@ public class FishUtils {
     public static void broadcastFishMessage(AbstractMessage message, Player referencePlayer, boolean actionBar) {
 
         String formatted = message.getLegacyMessage();
+        Competition activeComp = Competition.getCurrentlyActive();
 
-        if (formatted.isEmpty()) {
+        if (formatted.isEmpty() || activeComp == null) {
             return;
         }
 
-        CompetitionFile activeCompetitionFile = EvenMoreFish.getInstance().getActiveCompetition().getCompetitionFile();
+        CompetitionFile activeCompetitionFile = activeComp.getCompetitionFile();
 
         int rangeSquared = activeCompetitionFile.getBroadcastRange(); // 10 blocks squared
 

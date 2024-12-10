@@ -126,6 +126,7 @@ public enum ConfigMessage {
     HELP_COMPETITION_START("[noPrefix]Starts a competition of a specified duration", PrefixType.ADMIN, false, true, "help-competition.start"),
     HELP_COMPETITION_END("[noPrefix]Ends the current competition (if there is one)", PrefixType.ADMIN, false, true, "help-competition.end"),
     INVALID_COMPETITION_TYPE("&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH", PrefixType.ADMIN, false, false, "admin.competition-type-invalid"),
+    INVALID_COMPETITION_ID("&rThat isn't a valid competition id.", PrefixType.ADMIN, false, false, "admin.competition-id-invalid"),
 
     LEADERBOARD_LARGEST_FISH(
             "&r#{position} | {pos_colour}{player} &r({rarity_colour}&l{rarity} {rarity_colour}{fish}&r, {length}cm&r)",

@@ -264,17 +264,18 @@ public class FishingProcessor implements Listener {
     }
 
     private void competitionCheck(Fish fish, Player fisherman, Location location) {
-        if (Competition.isActive()) {
-            List<World> competitionWorlds = EvenMoreFish.getInstance().getActiveCompetition().getCompetitionFile().getRequiredWorlds();
-            if (!competitionWorlds.isEmpty()) {
-                if (location.getWorld() != null) {
-                    if (!competitionWorlds.contains(location.getWorld())) {
-                        return;
-                    }
+        Competition active = Competition.getCurrentlyActive();
+        if (active == null) {
+            return;
+        }
+        List<World> competitionWorlds = active.getCompetitionFile().getRequiredWorlds();
+        if (!competitionWorlds.isEmpty()) {
+            if (location.getWorld() != null) {
+                if (!competitionWorlds.contains(location.getWorld())) {
+                    return;
                 }
             }
-
-            EvenMoreFish.getInstance().getActiveCompetition().applyToLeaderboard(fish, fisherman);
         }
+        active.applyToLeaderboard(fish, fisherman);
     }
 }

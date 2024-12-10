@@ -19,7 +19,7 @@ public class RandomStrategy implements CompetitionStrategy {
     public boolean begin(Competition competition) {
         competition.setCompetitionType(getRandomType());
         this.randomType = competition.getCompetitionType();
-        Competition.setOriginallyRandom(true);
+        competition.setOriginallyRandom(true);
         return true;
     }
 
@@ -44,7 +44,7 @@ public class RandomStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+    public @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         return randomType.getStrategy().getTypeFormat(competition, configMessage);
     }
 
