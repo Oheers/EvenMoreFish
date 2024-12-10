@@ -43,8 +43,8 @@ public class Competition {
     private long timeLeft;
     private Bar statusBar;
     private long epochStartTime;
-    private List<Long> alertTimes;
-    private Map<Integer, List<Reward>> rewards;
+    private final List<Long> alertTimes;
+    private final Map<Integer, List<Reward>> rewards;
     private int playersNeeded;
     private Sound startSound;
     private MyScheduledTask timingSystem;
