@@ -429,11 +429,11 @@ public class Competition {
         }
     }
 
-    public Bar getStatusBar() {
+    public @NotNull Bar getStatusBar() {
         return this.statusBar;
     }
 
-    public CompetitionType getCompetitionType() {
+    public @NotNull CompetitionType getCompetitionType() {
         return competitionType;
     }
 
@@ -445,7 +445,7 @@ public class Competition {
         return leaderboard.getSize();
     }
 
-    public Leaderboard getLeaderboard() {
+    public @NotNull Leaderboard getLeaderboard() {
         return leaderboard;
     }
 
@@ -453,19 +453,19 @@ public class Competition {
         return startMessage;
     }
 
-    public String getCompetitionName() {
+    public @NotNull String getCompetitionName() {
         return competitionName;
     }
 
-    public CompetitionFile getCompetitionFile() {
+    public @NotNull CompetitionFile getCompetitionFile() {
         return this.competitionFile;
     }
 
-    public void setCompetitionName(String competitionName) {
+    public void setCompetitionName(@NotNull String competitionName) {
         this.competitionName = competitionName;
     }
 
-    public static AbstractMessage getNextCompetitionMessage() {
+    public static @NotNull AbstractMessage getNextCompetitionMessage() {
         if (Competition.isActive()) {
             return ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP.getMessage();
         }
@@ -499,19 +499,19 @@ public class Competition {
         this.competitionType = competitionType;
     }
 
-    public Fish getSelectedFish() {
+    public @Nullable Fish getSelectedFish() {
         return selectedFish;
     }
 
-    public void setSelectedFish(Fish selectedFish) {
+    public void setSelectedFish(@Nullable Fish selectedFish) {
         this.selectedFish = selectedFish;
     }
 
-    public Rarity getSelectedRarity() {
+    public @Nullable Rarity getSelectedRarity() {
         return selectedRarity;
     }
 
-    public void setSelectedRarity(Rarity selectedRarity) {
+    public void setSelectedRarity(@Nullable Rarity selectedRarity) {
         this.selectedRarity = selectedRarity;
     }
 

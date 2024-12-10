@@ -26,8 +26,8 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
 
     @Override
     public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
-        if (competition.getSelectedRarity() != null &&
-                !fish.getRarity().getValue().equals(competition.getSelectedRarity().getValue())) {
+        Rarity compRarity = competition.getSelectedRarity();
+        if (compRarity != null && !fish.getRarity().getValue().equals(compRarity.getValue())) {
             return; // Fish doesn't match the required rarity
         }
 
@@ -56,12 +56,13 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     public @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         final AbstractMessage message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
         message.setAmount(Integer.toString(competition.getNumberNeeded()));
-        if (competition.getSelectedRarity() == null) {
+        Rarity selectedRarity = competition.getSelectedRarity();
+        if (selectedRarity == null) {
             EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");
             return message;
         }
-        message.setRarityColour(competition.getSelectedRarity().getColour());
-        message.setRarity(competition.getSelectedRarity().getDisplayName());
+        message.setRarityColour(selectedRarity.getColour());
+        message.setRarity(selectedRarity.getDisplayName());
 
         return message;
     }
