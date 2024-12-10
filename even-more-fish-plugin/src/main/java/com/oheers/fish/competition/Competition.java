@@ -442,7 +442,7 @@ public class Competition {
         return leaderboard;
     }
 
-    public AbstractMessage getStartMessage() {
+    public @Nullable AbstractMessage getStartMessage() {
         return startMessage;
     }
 
