@@ -317,7 +317,11 @@ public class Competition {
         return entries;
     }
 
-    private String buildLeaderboardMessage(List<CompetitionEntry> entries, List<String> competitionColours, boolean isConsole, UUID playerUuid) {
+    private @NotNull String buildLeaderboardMessage(List<CompetitionEntry> entries, List<String> competitionColours, boolean isConsole, UUID playerUuid) {
+        if (entries == null) {
+            entries = List.of();
+        }
+
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
