@@ -68,6 +68,10 @@ public class Competition {
         this.competitionType = type;
     }
 
+    public void setMaxDuration(int duration) {
+        this.maxDuration = duration  * 60L;
+    }
+
     public static boolean isActive() {
         return active;
     }
