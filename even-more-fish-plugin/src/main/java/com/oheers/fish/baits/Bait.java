@@ -167,7 +167,7 @@ public class Bait {
         Set<Rarity> boostedRarities = new HashSet<>(getRarityList());
         boostedRarities.addAll(fishListRarities);
 
-        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, getBoostRate(), boostedRarities, FishManager.getInstance().getRarityMap().keySet());
+        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, getBoostRate(), boostedRarities, FishManager.getInstance().getRarityMapOld().keySet());
         Fish fish;
 
         if (!getFishList().isEmpty()) {

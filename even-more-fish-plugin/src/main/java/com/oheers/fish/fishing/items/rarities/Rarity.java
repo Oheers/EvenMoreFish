@@ -3,6 +3,8 @@ package com.oheers.fish.fishing.items.rarities;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.exceptions.InvalidFishException;
+import com.oheers.fish.fishing.items.Fish;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
@@ -12,14 +14,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Rarity extends ConfigBase {
 
     private static final Logger logger = EvenMoreFish.getInstance().getLogger();
 
-    boolean fishWeighted;
-    Requirement requirement = new Requirement();
+    private boolean fishWeighted;
+    private Requirement requirement = new Requirement();
+    private final List<Fish> fishList;
 
     /**
      * Constructs a Rarity from its config file.
@@ -29,11 +33,7 @@ public class Rarity extends ConfigBase {
         super(file, EvenMoreFish.getInstance(), false);
         performRequiredConfigChecks();
         updateRequirementFormats();
-    }
-
-    @Deprecated(forRemoval = true)
-    public Rarity(@NotNull Section section) {
-        // This should never be null, but we have this check just to be safe.
+        fishList = loadFish();
     }
 
     // Current required config: id
@@ -48,6 +48,10 @@ public class Rarity extends ConfigBase {
 
     public @NotNull String getId() {
         return Objects.requireNonNull(getConfig().getString("id"));
+    }
+
+    public boolean isDisabled() {
+        return getConfig().getBoolean("disabled");
     }
 
     public @NotNull String getColour() {
@@ -129,6 +133,27 @@ public class Rarity extends ConfigBase {
     }
 
     // Loading stuff
+
+    private List<Fish> loadFish() {
+        Section rootFishSection = getConfig().getSection("fish");
+        if (rootFishSection == null) {
+            return List.of();
+        }
+        List<Fish> fishList = new ArrayList<>();
+        rootFishSection.getRoutesAsStrings(false).forEach(fishStr -> {
+            Section fishSection = rootFishSection.getSection(fishStr);
+            if (fishSection == null) {
+                fishSection = rootFishSection.createSection(fishStr);
+            }
+            try {
+                fishList.add(new Fish(this, fishSection));
+            } catch (InvalidFishException exception) {
+                EvenMoreFish.getInstance().getLogger().log(Level.WARNING, exception.getMessage(), exception);
+            }
+        });
+        // Creates an immutable list.
+        return List.copyOf(fishList);
+    }
 
     private Requirement loadRequirements() {
         Section requirementSection = getConfig().getSection("requirements");

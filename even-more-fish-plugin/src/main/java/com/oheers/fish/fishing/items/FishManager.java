@@ -2,6 +2,7 @@ package com.oheers.fish.fishing.items;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.FileUtil;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.competition.Competition;
@@ -13,10 +14,12 @@ import com.oheers.fish.fishing.items.rarities.Rarity;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Location;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -24,11 +27,16 @@ public class FishManager {
 
     private static FishManager instance;
 
-    private final Map<Rarity, List<Fish>> rarityMap;
+    private final Map<Rarity, List<Fish>> rarityMapOld;
+    private final TreeMap<String, Rarity> rarityMap;
     private boolean loaded = false;
 
     private FishManager() {
-        rarityMap = new HashMap<>();
+        rarityMapOld = new HashMap<>();
+        rarityMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        // TODO perform conversions
+        // new RarityConversions().performCheck();
     }
 
     public static FishManager getInstance() {
@@ -51,6 +59,7 @@ public class FishManager {
         if (!isLoaded()) {
             return;
         }
+        rarityMapOld.clear();
         rarityMap.clear();
         loadRarities();
         logLoadedItems();
@@ -60,6 +69,7 @@ public class FishManager {
         if (!isLoaded()) {
             return;
         }
+        rarityMapOld.clear();
         rarityMap.clear();
         loaded = false;
     }
@@ -81,7 +91,7 @@ public class FishManager {
     // Getters for Rarities and Fish
 
     public @Nullable Rarity getRarity(@NotNull String rarityName) {
-        for (Rarity rarity : rarityMap.keySet()) {
+        for (Rarity rarity : rarityMapOld.keySet()) {
             if (rarity.getId().equalsIgnoreCase(rarityName)) {
                 return rarity;
             }
@@ -97,7 +107,7 @@ public class FishManager {
         if (rarity == null) {
             return List.of();
         }
-        return rarityMap.get(rarity);
+        return rarityMapOld.get(rarity);
     }
 
     public @Nullable Fish getFish(@NotNull String rarityName, @NotNull String fishName) {
@@ -130,7 +140,7 @@ public class FishManager {
 
         if (fisher != null) {
             String region = FishUtils.getRegionName(fisher.getLocation());
-            for (Rarity rarity : FishManager.getInstance().getRarityMap().keySet()) {
+            for (Rarity rarity : FishManager.getInstance().getRarityMapOld().keySet()) {
                 if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
                     continue;
                 }
@@ -222,7 +232,7 @@ public class FishManager {
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
         if (FishManager.getInstance().getFishForRarity(r).isEmpty()) {
-            r = getRandomWeightedRarity(p, 1, null, rarityMap.keySet());
+            r = getRandomWeightedRarity(p, 1, null, rarityMapOld.keySet());
         }
 
         if (doRequirementChecks) {
@@ -269,62 +279,54 @@ public class FishManager {
         }
     }
 
-    public Map<Rarity, List<Fish>> getRarityMap() {
-        return rarityMap;
+    public Map<Rarity, List<Fish>> getRarityMapOld() {
+        return rarityMapOld;
     }
 
     // Loading things
 
     private void logLoadedItems() {
         int allFish = 0;
-        for (List<Fish> fishList : rarityMap.values()) {
+        for (List<Fish> fishList : rarityMapOld.values()) {
             allFish += fishList.size();
         }
-        EvenMoreFish.getInstance().getLogger().info("Loaded FishManager with " + rarityMap.size() + " Rarities and " + allFish + " Fish.");
+        EvenMoreFish.getInstance().getLogger().info("Loaded FishManager with " + rarityMapOld.size() + " Rarities and " + allFish + " Fish.");
     }
 
     private void loadRarities() {
 
-        Section raritiesSection = getRarityConfiguration().getSection("rarities");
+        File raritiesFolder = new File(EvenMoreFish.getInstance().getDataFolder(), "rarities");
+        loadDefaultFiles(raritiesFolder);
+        List<File> rarityFiles = FileUtil.getFilesInDirectory(raritiesFolder, true, true);
 
-        if (raritiesSection == null) {
+        if (rarityFiles.isEmpty()) {
             return;
         }
 
-        List<Rarity> rarityList = new ArrayList<>();
-
-        // Collect the rarities
-        raritiesSection.getRoutesAsStrings(false).forEach(rarityString -> {
-            Section raritySection = raritiesSection.getSection(rarityString);
-            if (raritySection == null) {
-                raritySection = raritiesSection.createSection(rarityString);
-            }
-            rarityList.add(new Rarity(raritySection));
-        });
-
-        // Collect the fish in each rarity
-        Section parentFishSection = getFishConfiguration().getSection("fish");
-        rarityList.forEach(rarity -> {
-            String rarityStr = rarity.getId();
-            Section raritySection = parentFishSection.getSection(rarityStr);
-            if (raritySection == null) {
+        rarityFiles.forEach(file -> {
+            EvenMoreFish.debug("Loading " + file.getName() + " rarity");
+            Rarity rarity;
+            try {
+                rarity = new Rarity(file);
+            // Skip invalid configs.
+            } catch (InvalidConfigurationException exception) {
                 return;
             }
-            List<Fish> rarityFish = new ArrayList<>();
-            raritySection.getRoutesAsStrings(false).forEach(fishStr -> {
-                Section fishSection = raritySection.getSection(fishStr);
-                if (fishSection == null) {
-                    fishSection = raritySection.createSection(fishStr);
-                }
-                try {
-                    rarityFish.add(new Fish(rarity, fishSection));
-                } catch (InvalidFishException exception) {
-                    EvenMoreFish.getInstance().getLogger().log(Level.WARNING, exception.getMessage(), exception);
-                }
-            });
-            // Add the rarity and fish list to the map.
-            rarityMap.put(rarity, rarityFish);
+            // Skip disabled files.
+            if (rarity.isDisabled()) {
+                return;
+            }
+            // Skip duplicate IDs
+            String id = rarity.getId();
+            if (rarityMap.containsKey(id)) {
+                EvenMoreFish.getInstance().getLogger().warning("A rarity with the id: " + id + " already exists! Skipping.");
+                return;
+            }
+            rarityMap.put(id, rarity);
         });
+    }
+
+    private void loadDefaultFiles(@NotNull File targetDirectory) {
 
     }
 
