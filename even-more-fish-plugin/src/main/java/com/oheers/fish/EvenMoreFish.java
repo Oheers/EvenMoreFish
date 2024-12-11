@@ -39,7 +39,7 @@ import com.oheers.fish.events.*;
 import com.oheers.fish.fishing.FishingProcessor;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
-import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.fishing.items.rarities.Rarity;
 import com.oheers.fish.requirements.*;
 import com.oheers.fish.utils.AntiCraft;
 import com.oheers.fish.utils.HeadDBIntegration;

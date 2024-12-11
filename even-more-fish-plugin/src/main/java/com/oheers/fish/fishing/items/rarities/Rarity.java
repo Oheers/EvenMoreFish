@@ -1,4 +1,4 @@
-package com.oheers.fish.fishing.items;
+package com.oheers.fish.fishing.items.rarities;
 
 import com.oheers.fish.api.requirement.Requirement;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
