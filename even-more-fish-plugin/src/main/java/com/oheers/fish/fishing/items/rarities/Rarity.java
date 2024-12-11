@@ -113,8 +113,8 @@ public class Rarity extends ConfigBase {
         return getConfig().getDouble("size.maxSize");
     }
 
+    // TODO this was set to always be false at some point, we need to re-add the removed code.
     public boolean hasCompExemptFish() {
-        // TODO this was always false.
         return false;
     }
 
