@@ -111,7 +111,7 @@ public class Fish implements Cloneable {
      */
     public Fish(@NotNull Rarity rarity, @NotNull String name) throws InvalidFishException {
         // Manually obtain the section for this.
-        this(rarity, FishFile.getInstance().getConfig().getSection("fish." + rarity.getValue() + "." + name));
+        this(rarity, FishFile.getInstance().getConfig().getSection("fish." + rarity.getId() + "." + name));
     }
 
     private void handleRequirements() {
@@ -531,7 +531,7 @@ public class Fish implements Cloneable {
         // {rarity} Placeholder
         String rarityReplacement = "";
         if (rarity != null) {
-            rarityReplacement = rarity.getValue();
+            rarityReplacement = rarity.getId();
         }
         rewardString = rewardString.replace("{rarity}", rarityReplacement);
 

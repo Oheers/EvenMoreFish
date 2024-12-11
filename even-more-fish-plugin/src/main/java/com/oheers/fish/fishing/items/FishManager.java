@@ -82,7 +82,7 @@ public class FishManager {
 
     public @Nullable Rarity getRarity(@NotNull String rarityName) {
         for (Rarity rarity : rarityMap.keySet()) {
-            if (rarity.getValue().equalsIgnoreCase(rarityName)) {
+            if (rarity.getId().equalsIgnoreCase(rarityName)) {
                 return rarity;
             }
         }
@@ -142,7 +142,7 @@ public class FishManager {
                 Requirement requirement = rarity.getRequirement();
                 RequirementContext context = new RequirementContext(fisher.getWorld(), fisher.getLocation(), fisher, null, null);
                 if (requirement.meetsRequirements(context)) {
-                    double regionBoost = MainConfig.getInstance().getRegionBoost(region, rarity.getValue());
+                    double regionBoost = MainConfig.getInstance().getRegionBoost(region, rarity.getId());
                     for (int i = 0; i < regionBoost; i++) {
                         allowedRarities.add(rarity);
                     }
@@ -253,7 +253,7 @@ public class FishManager {
 
         // if the config doesn't define any fish that can be fished in this biome.
         if (available.isEmpty()) {
-            EvenMoreFish.getInstance().getLogger().warning("There are no fish of the rarity " + r.getValue() + " that can be fished at (x=" + l.getX() + ", y=" + l.getY() + ", z=" + l.getZ() + ")");
+            EvenMoreFish.getInstance().getLogger().warning("There are no fish of the rarity " + r.getId() + " that can be fished at (x=" + l.getX() + ", y=" + l.getY() + ", z=" + l.getZ() + ")");
             return null;
         }
 
@@ -305,7 +305,7 @@ public class FishManager {
         // Collect the fish in each rarity
         Section parentFishSection = getFishConfiguration().getSection("fish");
         rarityList.forEach(rarity -> {
-            String rarityStr = rarity.getValue();
+            String rarityStr = rarity.getId();
             Section raritySection = parentFishSection.getSection(rarityStr);
             if (raritySection == null) {
                 return;

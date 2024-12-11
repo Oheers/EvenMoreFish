@@ -141,7 +141,7 @@ public class DatabaseV3 {
         if (cachedReports == null) {
             return new ArrayList<>(Collections.singletonList(
                     new FishReport(
-                            fish.getRarity().getValue(),
+                            fish.getRarity().getId(),
                             fish.getName(),
                             fish.getLength(),
                             1,
@@ -151,7 +151,7 @@ public class DatabaseV3 {
         }
 
         for (FishReport report : cachedReports) {
-            if (report.getRarity().equals(fish.getRarity().getValue()) && report.getName().equals(fish.getName())) {
+            if (report.getRarity().equals(fish.getRarity().getId()) && report.getName().equals(fish.getName())) {
                 report.addFish(fish);
                 return cachedReports;
             }
@@ -159,7 +159,7 @@ public class DatabaseV3 {
 
         cachedReports.add(
                 new FishReport(
-                        fish.getRarity().getValue(),
+                        fish.getRarity().getId(),
                         fish.getName(),
                         fish.getLength(),
                         1,
@@ -185,7 +185,7 @@ public class DatabaseV3 {
         UserReport report = DataManager.getInstance().getUserReportIfExists(uuid);
 
         if (report != null) {
-            String fishID = fish.getRarity().getValue() + ":" + fish.getName();
+            String fishID = fish.getRarity().getId() + ":" + fish.getName();
 
             report.setRecentFish(fishID);
             report.incrementFishCaught(1);
@@ -263,7 +263,7 @@ public class DatabaseV3 {
                 if (leaderboard.getSize() > 0) {
                     prep.setString(2, leaderboard.getTopEntry().getPlayer().toString());
                     Fish topFish = leaderboard.getEntry(0).getFish();
-                    prep.setString(3, topFish.getRarity().getValue() + ":" + topFish.getName());
+                    prep.setString(3, topFish.getRarity().getId() + ":" + topFish.getName());
                     prep.setFloat(4, leaderboard.getTopEntry().getValue());
                     StringBuilder contestants = new StringBuilder();
                     for (CompetitionEntry entry : leaderboard.getEntries()) {
@@ -601,7 +601,7 @@ public class DatabaseV3 {
         executeStatement(c -> {
             try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 prep.setString(1, fish.getName());
-                prep.setString(2, fish.getRarity().getValue());
+                prep.setString(2, fish.getRarity().getId());
                 prep.setString(3, uuid.toString());
                 prep.setDouble(4, 1);
                 prep.setFloat(5, Math.round(fish.getLength() * 10f) / 10f);
@@ -626,7 +626,7 @@ public class DatabaseV3 {
         return Boolean.TRUE.equals(getStatement(f -> {
             try (PreparedStatement statement = f.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish WHERE fish_name = ? AND fish_rarity = ?", f))) {
                 statement.setString(1, fish.getName());
-                statement.setString(2, fish.getRarity().getValue());
+                statement.setString(2, fish.getRarity().getId());
                 return statement.executeQuery().next();
             } catch (SQLException exception) {
                 EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not check if " + fish.getName() + " is present in the database.", exception);
@@ -645,7 +645,7 @@ public class DatabaseV3 {
         String sql = "UPDATE ${table.prefix}fish SET total_caught = total_caught + 1 WHERE fish_rarity = ? AND fish_name = ?;";
         executeStatement(c -> {
             try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
-                prep.setString(1, fish.getRarity().getValue());
+                prep.setString(1, fish.getRarity().getId());
                 prep.setString(2, fish.getName());
                 prep.execute();
             } catch (SQLException exception) {
@@ -667,7 +667,7 @@ public class DatabaseV3 {
         Float largestFishSize;
         largestFishSize = getStatement(f -> {
             try (PreparedStatement prep = f.prepareStatement(DatabaseUtil.parseSqlString(sql, f))) {
-                prep.setString(1, fish.getRarity().getValue());
+                prep.setString(1, fish.getRarity().getId());
                 prep.setString(2, fish.getName());
                 try (ResultSet resultSet = prep.executeQuery()) {
                     if (resultSet.next()) {
@@ -698,7 +698,7 @@ public class DatabaseV3 {
             try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString(sql, c))) {
                 prep.setFloat(1, roundedFloatLength);
                 prep.setString(2, uuid.toString());
-                prep.setString(3, fish.getRarity().getValue());
+                prep.setString(3, fish.getRarity().getId());
                 prep.setString(4, fish.getName());
                 prep.execute();
             } catch (SQLException exception) {

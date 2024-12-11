@@ -27,7 +27,7 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     @Override
     public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
         Rarity compRarity = competition.getSelectedRarity();
-        if (compRarity != null && !fish.getRarity().getValue().equals(compRarity.getValue())) {
+        if (compRarity != null && !fish.getRarity().getId().equals(compRarity.getId())) {
             return; // Fish doesn't match the required rarity
         }
 
