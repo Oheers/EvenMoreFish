@@ -63,9 +63,9 @@ public class ItemFactory {
         this.product = getType(null);
     }
 
-    public ItemFactory(@NotNull String configLocation) {
+    public ItemFactory(@NotNull Section configurationFile, @NotNull String configLocation) {
         this.configLocation = configLocation + ".";
-        this.configurationFile = getConfiguration();
+        this.configurationFile = configurationFile;
         this.rawMaterial = false;
         this.product = getType(null);
     }
@@ -629,19 +629,6 @@ public class ItemFactory {
             if (itemDyeCheck) meta.addItemFlags(ItemFlag.HIDE_DYE);
             if (itemGlowCheck) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             this.product.setItemMeta(meta);
-        }
-    }
-
-    private YamlDocument getConfiguration() {
-        if (this.configLocation.startsWith("fish.")) {
-            return FishFile.getInstance().getConfig();
-        } else if (this.configLocation.startsWith("baits.")) {
-            return BaitFile.getInstance().getConfig();
-        } else if (this.configLocation.startsWith("nbt-rod-item")) {
-            return MainConfig.getInstance().getConfig();
-        } else {
-            EvenMoreFish.getInstance().getLogger().severe("Could not fetch file configuration for: " + this.configLocation);
-            return null;
         }
     }
 
