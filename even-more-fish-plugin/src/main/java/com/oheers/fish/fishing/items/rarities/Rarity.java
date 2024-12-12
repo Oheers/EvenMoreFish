@@ -191,23 +191,37 @@ public class Rarity extends ConfigBase {
     }
 
     private void updateRequirementFormats() {
-        Section ingameSection = getConfig().getSection("requirements.ingame-time");
+        updateRequirementFormats(getConfig());
+        Section fishSect = getConfig().getSection("fish");
+        if (fishSect != null) {
+            fishSect.getRoutesAsStrings(false).forEach(fishName -> {
+                Section section = fishSect.getSection(fishName);
+                if (section == null) {
+                    return;
+                }
+                updateRequirementFormats(section);
+            });
+        }
+        save();
+    }
+
+    private void updateRequirementFormats(@NotNull Section section) {
+        Section ingameSection = section.getSection("requirements.ingame-time");
         if (ingameSection != null) {
             int min = ingameSection.getInt("minTime");
             int max = ingameSection.getInt("maxTime");
             ingameSection.remove("minTime");
             ingameSection.remove("maxTime");
-            getConfig().set("requirements.ingame-time", min + "-" + max);
+            section.set("requirements.ingame-time", min + "-" + max);
         }
-        Section irlSection = getConfig().getSection("requirements.irl-time");
+        Section irlSection = section.getSection("requirements.irl-time");
         if (irlSection != null) {
             String min = irlSection.getString("minTime");
             String max = irlSection.getString("maxTime");
             irlSection.remove("minTime");
             irlSection.remove("maxTime");
-            getConfig().set("requirements.irl-time", min + "-" + max);
+            section.set("requirements.irl-time", min + "-" + max);
         }
-        save();
     }
 
 }
