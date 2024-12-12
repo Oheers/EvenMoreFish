@@ -5,7 +5,6 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.reward.Reward;
-import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.rarities.Rarity;
@@ -443,6 +442,10 @@ public class Fish implements Cloneable {
 
     public void setCompExemptFish(boolean compExemptFish) {
         isCompExemptFish = compExemptFish;
+    }
+
+    public double getSetWorth() {
+        return setWorth;
     }
 
     public String getName() {

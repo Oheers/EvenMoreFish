@@ -1,7 +1,6 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.config.FishFile;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.rarities.Rarity;
@@ -67,20 +66,22 @@ public class WorthNBT {
 
         // it's a fish so it'll definitely have these NBT values
         Float length = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
-        String rarity = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
+        String rarityStr = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
         String name = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
 
-        // gets a possible set-worth in the fish.yml
+        // gets a possible set-worth in the fish config
         try {
-            int configValue = FishFile.getInstance().getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            Rarity rarity = FishManager.getInstance().getRarity(rarityStr);
+            Fish fish = rarity.getFish(name);
+            double value = fish.getSetWorth();
 
-            if (configValue == 0) {
+            if (value == 0) {
                 throw new NullPointerException();
             }
-            return configValue;
+            return value;
         } catch (NullPointerException npe) {
             // there's no set-worth so we're calculating the worth ourselves
-            return length != null && length > 0 ? getMultipliedValue(length, rarity, name) : 0;
+            return length != null && length > 0 ? getMultipliedValue(length, rarityStr, name) : 0;
         }
     }
 

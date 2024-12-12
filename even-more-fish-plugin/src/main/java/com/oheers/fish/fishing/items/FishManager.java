@@ -6,7 +6,6 @@ import com.oheers.fish.api.FileUtil;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.competition.Competition;
-import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.fishing.items.rarities.Rarity;
 import dev.dejvokep.boostedyaml.YamlDocument;

@@ -153,7 +153,6 @@ public class EvenMoreFish extends EMFPlugin {
         this.addonManager = new AddonManager(this);
         this.addonManager.load();
 
-        new FishFile();
         new BaitFile();
 
         new GUIConfig();
@@ -524,7 +523,6 @@ public class EvenMoreFish extends EMFPlugin {
         Messages.getInstance().reload();
         GUIConfig.getInstance().reload();
         GUIFillerConfig.getInstance().reload();
-        FishFile.getInstance().reload();
         BaitFile.getInstance().reload();
 
         FishManager.getInstance().reload();
