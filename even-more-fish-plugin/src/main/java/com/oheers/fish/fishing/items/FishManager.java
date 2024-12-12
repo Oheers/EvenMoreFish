@@ -251,6 +251,8 @@ public class FishManager {
 
     private void loadRarities() {
 
+        rarityMap.clear();
+
         File raritiesFolder = new File(EvenMoreFish.getInstance().getDataFolder(), "rarities");
         loadDefaultFiles(raritiesFolder);
         List<File> rarityFiles = FileUtil.getFilesInDirectory(raritiesFolder, true, true);
