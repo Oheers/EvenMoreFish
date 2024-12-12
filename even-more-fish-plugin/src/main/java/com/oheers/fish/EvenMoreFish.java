@@ -432,10 +432,10 @@ public class EvenMoreFish extends EMFPlugin {
             return fish;
         });
         manager.getCommandCompletions().registerCompletion("baits", c -> BaitManager.getInstance().getBaitMap().keySet().stream().map(s -> s.replace(" ", "_")).toList());
-        manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMapOld().keySet().stream().map(Rarity::getId).toList());
+        manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMap().values().stream().map(Rarity::getId).toList());
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
-            return FishManager.getInstance().getRarityMapOld().get(rarity).stream().map(f -> f.getName().replace(" ", "_")).collect(Collectors.toList());
+            return rarity.getFish().stream().map(f -> f.getName().replace(" ", "_")).toList();
         });
         manager.getCommandCompletions().registerCompletion("competitionId", c -> getCompetitionQueue().getFileMap().keySet());
 

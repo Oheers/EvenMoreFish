@@ -98,7 +98,7 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_list_fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
             BaseComponent[] baseComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
-            for (Fish fish : FishManager.getInstance().getRarityMapOld().get(rarity)) {
+            for (Fish fish : rarity.getFish()) {
                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour() + "] "));
                 for (BaseComponent component : textComponent) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to receive fish"))));
@@ -113,7 +113,7 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_list_rarities")
         public void onRarity(final CommandSender sender) {
             BaseComponent[] baseComponent = TextComponent.fromLegacyText("");
-            for (Rarity rarity : FishManager.getInstance().getRarityMapOld().keySet()) {
+            for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
                 for (BaseComponent component : textComponent) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish."))));
@@ -316,8 +316,8 @@ public class AdminCommand extends BaseCommand {
     public void onVersion(final CommandSender sender) {
         int fishCount = 0;
 
-        for (List<Fish> fishList : FishManager.getInstance().getRarityMapOld().values()) {
-            fishCount += fishList.size();
+        for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
+            fishCount += rarity.getFish().size();
         }
         
         String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +
@@ -326,7 +326,7 @@ public class AdminCommand extends BaseCommand {
                 Messages.getInstance().getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
                 Messages.getInstance().getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
-                Messages.getInstance().getSTDPrefix() + "Loaded: Rarities(" + FishManager.getInstance().getRarityMapOld().size() + ") Fish(" +
+                Messages.getInstance().getSTDPrefix() + "Loaded: Rarities(" + FishManager.getInstance().getRarityMap().size() + ") Fish(" +
                 fishCount + ") Baits(" + BaitManager.getInstance().getBaitMap().size() + ") Competitions(" + EvenMoreFish.getInstance().getCompetitionQueue().getSize() + ")\n" +
                 Messages.getInstance().getSTDPrefix();
 

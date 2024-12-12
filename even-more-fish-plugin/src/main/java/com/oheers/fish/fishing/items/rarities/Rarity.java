@@ -122,6 +122,10 @@ public class Rarity extends ConfigBase {
         return false;
     }
 
+    public List<Fish> getFish() {
+        return fishList;
+    }
+
     // External variables
 
     public boolean isFishWeighted() {

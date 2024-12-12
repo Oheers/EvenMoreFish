@@ -27,12 +27,10 @@ public class FishManager {
 
     private static FishManager instance;
 
-    private final Map<Rarity, List<Fish>> rarityMapOld;
     private final TreeMap<String, Rarity> rarityMap;
     private boolean loaded = false;
 
     private FishManager() {
-        rarityMapOld = new HashMap<>();
         rarityMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
         // TODO perform conversions
@@ -59,7 +57,6 @@ public class FishManager {
         if (!isLoaded()) {
             return;
         }
-        rarityMapOld.clear();
         rarityMap.clear();
         loadRarities();
         logLoadedItems();
@@ -69,7 +66,6 @@ public class FishManager {
         if (!isLoaded()) {
             return;
         }
-        rarityMapOld.clear();
         rarityMap.clear();
         loaded = false;
     }
@@ -91,23 +87,7 @@ public class FishManager {
     // Getters for Rarities and Fish
 
     public @Nullable Rarity getRarity(@NotNull String rarityName) {
-        for (Rarity rarity : rarityMapOld.keySet()) {
-            if (rarity.getId().equalsIgnoreCase(rarityName)) {
-                return rarity;
-            }
-        }
-        return null;
-    }
-
-    public List<Fish> getFishForRarity(@NotNull String rarityName) {
-        return getFishForRarity(getRarity(rarityName));
-    }
-
-    public List<Fish> getFishForRarity(@Nullable Rarity rarity) {
-        if (rarity == null) {
-            return List.of();
-        }
-        return rarityMapOld.get(rarity);
+        return rarityMap.get(rarityName);
     }
 
     public @Nullable Fish getFish(@NotNull String rarityName, @NotNull String fishName) {
@@ -118,7 +98,7 @@ public class FishManager {
         if (rarity == null) {
             return null;
         }
-        List<Fish> fishList = getFishForRarity(rarity);
+        List<Fish> fishList = rarity.getFish();
         for (Fish fish : fishList) {
             if (fish.getName().equalsIgnoreCase(fishName)) {
                 return fish;
@@ -140,7 +120,7 @@ public class FishManager {
 
         if (fisher != null) {
             String region = FishUtils.getRegionName(fisher.getLocation());
-            for (Rarity rarity : FishManager.getInstance().getRarityMapOld().keySet()) {
+            for (Rarity rarity : rarityMap.values()) {
                 if (boostedRarities != null && boostRate == -1 && !boostedRarities.contains(rarity)) {
                     continue;
                 }
@@ -231,14 +211,14 @@ public class FishManager {
         List<Fish> available = new ArrayList<>();
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (FishManager.getInstance().getFishForRarity(r).isEmpty()) {
-            r = getRandomWeightedRarity(p, 1, null, rarityMapOld.keySet());
+        if (r.getFish().isEmpty()) {
+            r = getRandomWeightedRarity(p, 1, null, Set.copyOf(rarityMap.values()));
         }
 
         if (doRequirementChecks) {
             RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
 
-            for (Fish f : getFishForRarity(r)) {
+            for (Fish f : r.getFish()) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;
@@ -251,7 +231,7 @@ public class FishManager {
                 available.add(f);
             }
         } else {
-            for (Fish f : getFishForRarity(r)) {
+            for (Fish f : r.getFish()) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;
@@ -279,18 +259,18 @@ public class FishManager {
         }
     }
 
-    public Map<Rarity, List<Fish>> getRarityMapOld() {
-        return rarityMapOld;
+    public TreeMap<String, Rarity> getRarityMap() {
+        return rarityMap;
     }
 
     // Loading things
 
     private void logLoadedItems() {
         int allFish = 0;
-        for (List<Fish> fishList : rarityMapOld.values()) {
-            allFish += fishList.size();
+        for (Rarity rarity : rarityMap.values()) {
+            allFish += rarity.getFish().size();
         }
-        EvenMoreFish.getInstance().getLogger().info("Loaded FishManager with " + rarityMapOld.size() + " Rarities and " + allFish + " Fish.");
+        EvenMoreFish.getInstance().getLogger().info("Loaded FishManager with " + rarityMap.size() + " Rarities and " + allFish + " Fish.");
     }
 
     private void loadRarities() {

@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class SpecificRarityStrategy implements CompetitionStrategy {
@@ -83,13 +84,13 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
                 competition.setSelectedRarity(rarity);
                 return true;
             }
-            competition.setSelectedRarity(FishManager.getInstance().getRandomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMapOld().keySet()));
+            competition.setSelectedRarity(FishManager.getInstance().getRandomWeightedRarity(null, 0, null, Set.copyOf(FishManager.getInstance().getRarityMap().values())));
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
                     .severe("Could not load: " + competition.getCompetitionName() + " because a random rarity could not be chosen. \nIf you need support, please provide the following information:");
-            EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + FishManager.getInstance().getRarityMapOld().size());
+            EvenMoreFish.getInstance().getLogger().severe("rarities.size(): " + FishManager.getInstance().getRarityMap().size());
             EvenMoreFish.getInstance().getLogger().severe("configRarities.size(): " + configRarities.size());
             // Also log the exception
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
