@@ -2,7 +2,6 @@ package com.oheers.fish.selling;
 
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.FishFile;
-import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.rarities.Rarity;

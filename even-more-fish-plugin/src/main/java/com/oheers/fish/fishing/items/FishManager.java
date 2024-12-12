@@ -8,7 +8,6 @@ import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.fishing.items.rarities.Rarity;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import org.bukkit.Location;
@@ -69,16 +68,6 @@ public class FishManager {
 
     public boolean isLoaded() {
         return loaded;
-    }
-
-    // Getters for config files
-
-    public YamlDocument getFishConfiguration() {
-        return FishFile.getInstance().getConfig();
-    }
-
-    public YamlDocument getRarityConfiguration() {
-        return RaritiesFile.getInstance().getConfig();
     }
 
     // Getters for Rarities and Fish
