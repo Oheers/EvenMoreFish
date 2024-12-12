@@ -1,4 +1,5 @@
 id: Legendary
+disabled: false
 weight: 1
 colour: '&6'
 worth-multiplier: 0.2

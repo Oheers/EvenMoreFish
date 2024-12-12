@@ -1,4 +1,5 @@
 id: Rare
+disabled: false
 weight: 10
 colour: '&b'
 worth-multiplier: 0.2

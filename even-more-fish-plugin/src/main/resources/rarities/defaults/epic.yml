@@ -1,4 +1,5 @@
 id: Epic
+disabled: false
 weight: 3
 colour: '&d'
 worth-multiplier: 0.15

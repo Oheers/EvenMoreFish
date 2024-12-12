@@ -1,4 +1,5 @@
 id: Common
+disabled: false
 weight: 100
 colour: '&7'
 worth-multiplier: 0.1
