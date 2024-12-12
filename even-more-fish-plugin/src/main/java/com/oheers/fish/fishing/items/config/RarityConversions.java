@@ -7,8 +7,6 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 public class RarityConversions {
 

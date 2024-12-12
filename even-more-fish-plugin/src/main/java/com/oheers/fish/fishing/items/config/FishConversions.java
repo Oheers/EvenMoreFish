@@ -2,7 +2,6 @@ package com.oheers.fish.fishing.items.config;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.ConfigBase;
-import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.jetbrains.annotations.NotNull;
 

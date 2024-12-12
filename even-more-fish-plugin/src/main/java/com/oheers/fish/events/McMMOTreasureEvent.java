@@ -2,7 +2,6 @@ package com.oheers.fish.events;
 
 import com.gmail.nossr50.events.McMMOReplaceVanillaTreasureEvent;
 import com.gmail.nossr50.events.skills.fishing.McMMOPlayerFishingTreasureEvent;
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import org.bukkit.event.EventHandler;

@@ -2,7 +2,6 @@ package com.oheers.fish.events;
 
 import com.archyx.aureliumskills.api.event.LootDropCause;
 import com.archyx.aureliumskills.api.event.PlayerLootDropEvent;
-import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import org.bukkit.event.EventHandler;

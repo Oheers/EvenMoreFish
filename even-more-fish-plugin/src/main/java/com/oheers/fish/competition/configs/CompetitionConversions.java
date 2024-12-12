@@ -7,7 +7,6 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * Exists solely to switch to 2.0's new competition config files.
