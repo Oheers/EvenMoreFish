@@ -420,7 +420,9 @@ public class Fish implements Cloneable {
 
     @Override
     public Fish clone() throws CloneNotSupportedException {
-        return (Fish) super.clone();
+        Fish clone = (Fish) super.clone();
+        clone.factory = new ItemFactory(null, section);
+        return clone;
     }
 
     public boolean hasFishermanDisabled() {
