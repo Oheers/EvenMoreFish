@@ -63,6 +63,7 @@ public class Fish implements Cloneable {
     boolean disableFisherman;
 
     private int day = -1;
+    private double setWorth;
 
     /**
      * Constructs a Fish from its config section.
@@ -86,6 +87,8 @@ public class Fish implements Cloneable {
 
         this.disableFisherman = section.getBoolean("disable-fisherman", rarity.isShouldDisableFisherman());
 
+        this.setWorth = section.getDouble("set-worth");
+
         this.factory = new ItemFactory(null, section);
         checkDisplayName();
 
@@ -103,15 +106,6 @@ public class Fish implements Cloneable {
 
         checkSellEvent();
         handleRequirements();
-    }
-
-    /**
-     * Constructs a fish with the provided values.
-     * If possible, prefer {@link Fish#Fish(Rarity, Section)} instead.
-     */
-    public Fish(@NotNull Rarity rarity, @NotNull String name) throws InvalidFishException {
-        // Manually obtain the section for this.
-        this(rarity, FishFile.getInstance().getConfig().getSection("fish." + rarity.getId() + "." + name));
     }
 
     private void handleRequirements() {
