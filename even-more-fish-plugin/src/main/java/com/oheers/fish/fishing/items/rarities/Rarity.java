@@ -122,8 +122,17 @@ public class Rarity extends ConfigBase {
         return false;
     }
 
-    public List<Fish> getFish() {
+    public @NotNull List<Fish> getFishList() {
         return fishList;
+    }
+
+    public @Nullable Fish getFish(@NotNull String name) {
+        for (Fish fish : fishList) {
+            if (fish.getName().equalsIgnoreCase(name)) {
+                return fish;
+            }
+        }
+        return null;
     }
 
     // External variables

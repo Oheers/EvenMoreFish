@@ -125,7 +125,7 @@ public class BaitManager {
                     } else {
                         List<String> fishNames = getBaitConfiguration().getStringList("baits." + baitName + ".fish." + rarityString);
                         for (String fishName : fishNames) {
-                            Fish fish = FishManager.getInstance().getFish(rarity, fishName);
+                            Fish fish = rarity.getFish(fishName);
                             if (fish == null) {
                                 EvenMoreFish.getInstance().getLogger().severe(fishName + " could not be found in the " + rarity.getId() + " config. It was not added to the " + baitName + " bait.");
                                 continue;

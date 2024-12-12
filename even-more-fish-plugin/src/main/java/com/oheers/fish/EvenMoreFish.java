@@ -71,7 +71,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class EvenMoreFish extends EMFPlugin {
     private final Random random = new Random();
@@ -422,9 +421,9 @@ public class EvenMoreFish extends EMFPlugin {
         manager.getCommandContexts().registerContext(Fish.class, c -> {
             final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
             final String fishId = c.popFirstArg();
-            Fish fish = FishManager.getInstance().getFish(rarity, fishId);
+            Fish fish = rarity.getFish(fishId);
             if (fish == null) {
-                fish = FishManager.getInstance().getFish(rarity, fishId.replace("_", " "));
+                fish = rarity.getFish(fishId.replace("_", " "));
             }
             if (fish == null) {
                 throw new InvalidCommandArgument("No such fish: " + fishId);
@@ -435,7 +434,7 @@ public class EvenMoreFish extends EMFPlugin {
         manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMap().values().stream().map(Rarity::getId).toList());
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
-            return rarity.getFish().stream().map(f -> f.getName().replace(" ", "_")).toList();
+            return rarity.getFishList().stream().map(f -> f.getName().replace(" ", "_")).toList();
         });
         manager.getCommandCompletions().registerCompletion("competitionId", c -> getCompetitionQueue().getFileMap().keySet());
 

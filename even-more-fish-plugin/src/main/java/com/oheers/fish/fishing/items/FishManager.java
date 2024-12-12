@@ -9,10 +9,8 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.RaritiesFile;
-import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.rarities.Rarity;
 import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
@@ -21,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
-import java.util.logging.Level;
 
 public class FishManager {
 
@@ -91,20 +88,11 @@ public class FishManager {
     }
 
     public @Nullable Fish getFish(@NotNull String rarityName, @NotNull String fishName) {
-        return getFish(getRarity(rarityName), fishName);
-    }
-
-    public @Nullable Fish getFish(@Nullable Rarity rarity, @NotNull String fishName) {
+        Rarity rarity = getRarity(rarityName);
         if (rarity == null) {
             return null;
         }
-        List<Fish> fishList = rarity.getFish();
-        for (Fish fish : fishList) {
-            if (fish.getName().equalsIgnoreCase(fishName)) {
-                return fish;
-            }
-        }
-        return null;
+        return rarity.getFish(fishName);
     }
 
     // TODO cleanup
@@ -211,14 +199,14 @@ public class FishManager {
         List<Fish> available = new ArrayList<>();
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (r.getFish().isEmpty()) {
+        if (r.getFishList().isEmpty()) {
             r = getRandomWeightedRarity(p, 1, null, Set.copyOf(rarityMap.values()));
         }
 
         if (doRequirementChecks) {
             RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
 
-            for (Fish f : r.getFish()) {
+            for (Fish f : r.getFishList()) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;
@@ -231,7 +219,7 @@ public class FishManager {
                 available.add(f);
             }
         } else {
-            for (Fish f : r.getFish()) {
+            for (Fish f : r.getFishList()) {
 
                 if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
                     continue;
@@ -268,7 +256,7 @@ public class FishManager {
     private void logLoadedItems() {
         int allFish = 0;
         for (Rarity rarity : rarityMap.values()) {
-            allFish += rarity.getFish().size();
+            allFish += rarity.getFishList().size();
         }
         EvenMoreFish.getInstance().getLogger().info("Loaded FishManager with " + rarityMap.size() + " Rarities and " + allFish + " Fish.");
     }

@@ -98,7 +98,7 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_list_fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
             BaseComponent[] baseComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
-            for (Fish fish : rarity.getFish()) {
+            for (Fish fish : rarity.getFishList()) {
                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour() + "] "));
                 for (BaseComponent component : textComponent) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to receive fish"))));
@@ -317,7 +317,7 @@ public class AdminCommand extends BaseCommand {
         int fishCount = 0;
 
         for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
-            fishCount += rarity.getFish().size();
+            fishCount += rarity.getFishList().size();
         }
         
         String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +
