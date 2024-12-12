@@ -7,6 +7,7 @@ import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.fishing.items.config.FishConversions;
 import com.oheers.fish.fishing.items.config.RarityConversions;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -29,6 +30,7 @@ public class FishManager {
 
         // TODO perform fish conversions
         new RarityConversions().performCheck();
+        new FishConversions().performCheck();
     }
 
     public static FishManager getInstance() {

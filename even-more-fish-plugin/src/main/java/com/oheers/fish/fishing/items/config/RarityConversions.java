@@ -47,7 +47,7 @@ public class RarityConversions {
     /**
      * @return The 'rarities' directory. This may not exist yet.
      */
-    private File getRaritiesDirectory() {
+    public File getRaritiesDirectory() {
         return new File(EvenMoreFish.getInstance().getDataFolder(), "rarities");
     }
 
