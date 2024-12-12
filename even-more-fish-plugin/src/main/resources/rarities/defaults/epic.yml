@@ -1,0 +1,8 @@
+id: Epic
+weight: 3
+colour: '&d'
+worth-multiplier: 0.15
+broadcast: true
+size:
+  minSize: 125
+  maxSize: 800

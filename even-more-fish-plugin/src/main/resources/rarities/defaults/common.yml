@@ -1,0 +1,8 @@
+id: Common
+weight: 100
+colour: '&7'
+worth-multiplier: 0.1
+broadcast: false
+size:
+  minSize: 1
+  maxSize: 30

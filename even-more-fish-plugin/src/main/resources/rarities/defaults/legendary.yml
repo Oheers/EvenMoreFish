@@ -1,0 +1,8 @@
+id: Legendary
+weight: 1
+colour: '&6'
+worth-multiplier: 0.2
+broadcast: true
+size:
+  minSize: 800
+  maxSize: 4000

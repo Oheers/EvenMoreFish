@@ -1,0 +1,8 @@
+id: Junk
+weight: 5
+colour: '&#888888'
+worth-multiplier: 0.2
+broadcast: false
+size:
+  minSize: 15
+  maxSize: 45

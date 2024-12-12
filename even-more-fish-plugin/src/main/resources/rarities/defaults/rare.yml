@@ -1,0 +1,8 @@
+id: Rare
+weight: 10
+colour: '&b'
+worth-multiplier: 0.2
+broadcast: false
+size:
+  minSize: 20
+  maxSize: 150
