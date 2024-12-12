@@ -200,6 +200,10 @@ public class Fish implements Cloneable {
         }
     }
 
+    public double getWorthMultiplier() {
+        return section.getDouble("worth-multiplier", 0.0D);
+    }
+
     public boolean hasEatRewards() {
         if (eventType != null) {
             return eventType.equals("eat");

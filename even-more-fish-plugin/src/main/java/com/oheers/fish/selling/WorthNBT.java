@@ -4,6 +4,8 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
+import com.oheers.fish.fishing.items.rarities.Rarity;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -96,11 +98,19 @@ public class WorthNBT {
         return sortFunkyDecimals(value);
     }
 
-    private static double getWorthMultiplier(final String rarity, final String name) {
-        double value = FishFile.getInstance().getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
+    private static double getWorthMultiplier(final String rarityStr, final String name) {
+        Rarity rarity = FishManager.getInstance().getRarity(rarityStr);
+        if (rarity == null) {
+            return 0.0D;
+        }
+        Fish fish = rarity.getFish(name);
+        if (fish == null) {
+            return 0.0D;
+        }
+        double value = fish.getWorthMultiplier();
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            return RaritiesFile.getInstance().getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+            return rarity.getWorthMultiplier();
         }
 
         return value;

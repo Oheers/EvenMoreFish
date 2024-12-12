@@ -135,6 +135,10 @@ public class Rarity extends ConfigBase {
         return null;
     }
 
+    public double getWorthMultiplier() {
+        return getConfig().getDouble("worth-multiplier", 0.0D);
+    }
+
     // External variables
 
     public boolean isFishWeighted() {
