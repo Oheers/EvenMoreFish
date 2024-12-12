@@ -8,7 +8,7 @@ import com.oheers.fish.competition.Bar;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.fishing.items.FishManager;
-import com.oheers.fish.fishing.items.rarities.Rarity;
+import com.oheers.fish.fishing.items.Rarity;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;

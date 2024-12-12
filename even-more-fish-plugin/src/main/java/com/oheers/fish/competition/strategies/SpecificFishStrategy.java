@@ -11,7 +11,7 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
-import com.oheers.fish.fishing.items.rarities.Rarity;
+import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

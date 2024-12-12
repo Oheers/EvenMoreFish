@@ -7,8 +7,7 @@ import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.requirement.RequirementContext;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.fishing.items.rarities.Rarity;
-import dev.dejvokep.boostedyaml.YamlDocument;
+import com.oheers.fish.fishing.items.config.RarityConversions;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
@@ -28,8 +27,8 @@ public class FishManager {
     private FishManager() {
         rarityMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-        // TODO perform conversions
-        // new RarityConversions().performCheck();
+        // TODO perform fish conversions
+        new RarityConversions().performCheck();
     }
 
     public static FishManager getInstance() {

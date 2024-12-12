@@ -40,13 +40,6 @@ public class CompetitionConversions {
     }
 
     private void finalizeConversion(@NotNull ConfigBase competitionsConfig) {
-        // Add comments to file
-        competitionsConfig.getConfig().addComments(List.of(
-                "This file has been replaced with the competitions folder. Please use that instead.",
-                "You can safely delete this file if all your competitions are working correctly."
-        ));
-        // Save the file
-        competitionsConfig.save();
         // Rename the file to competitions.yml.old
         File file = competitionsConfig.getFile();
         file.renameTo(new File(EvenMoreFish.getInstance().getDataFolder(), "competitions.yml.old"));
