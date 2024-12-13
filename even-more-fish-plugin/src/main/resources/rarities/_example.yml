@@ -23,9 +23,6 @@ use-this-casing: false
 # Changes how this rarity is displayed to players, this overrides `use-this-casing`.
 displayname: "&eExample Rarity"
 
-# Unknown.
-override-lore:
-
 # The permission required to fish this rarity.
 permission: "emf.rarity.example"
 
