@@ -9,6 +9,7 @@ import com.oheers.fish.database.connection.ConnectionFactory;
 import com.oheers.fish.database.connection.MySqlConnectionFactory;
 import com.oheers.fish.database.connection.SqliteConnectionFactory;
 import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
+import com.oheers.fish.database.connection.MigrationManager;
 import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.fishing.items.Fish;
@@ -32,10 +33,9 @@ import java.util.logging.Level;
 public class DatabaseV3 {
     private boolean usingV2;
     private final ConnectionFactory connectionFactory;
+    private final MigrationManager migrationManager;
 
-    public void setUsingV2(boolean usingV2) {
-        this.usingV2 = usingV2;
-    }
+
 
     /**
      * This is a reference to all database activity within the EMF plugin. It improves on the previous DatabaseV2 in that
@@ -60,16 +60,22 @@ public class DatabaseV3 {
 
         this.connectionFactory.init();
 
+        this.migrationManager = new MigrationManager(connectionFactory);
+
         this.usingV2 = checkV2(plugin);
         if (this.usingV2) {
             return;
         }
 
-        if (this.connectionFactory.getDatabaseVersion().equals(MigrationVersion.fromVersion("5"))) {
-            this.connectionFactory.flyway5toLatest();
+        if (this.migrationManager.getDatabaseVersion().equals(MigrationVersion.fromVersion("5"))) {
+            this.migrationManager.migrateFromV5ToLatest();
         } else {
-            this.connectionFactory.flyway6toLatest();
+            this.migrationManager.migrateFromV6ToLatest();
         }
+    }
+
+    public void setUsingV2(boolean usingV2) {
+        this.usingV2 = usingV2;
     }
 
     private boolean checkV2(@NotNull EvenMoreFish plugin) {
