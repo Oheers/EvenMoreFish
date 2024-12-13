@@ -2,13 +2,13 @@ package com.oheers.fish.competition.strategies;
 
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -83,7 +83,7 @@ public class SpecificFishStrategy implements CompetitionStrategy {
         double totalWeight = 0;
 
         for (Rarity rarity : configRarities) {
-            fish.addAll(FishManager.getInstance().getFishForRarity(rarity));
+            fish.addAll(rarity.getFishList());
             allowedRarities.add(rarity);
             totalWeight += rarity.getWeight();
         }

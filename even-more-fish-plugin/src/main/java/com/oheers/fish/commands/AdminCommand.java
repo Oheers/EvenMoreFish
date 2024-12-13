@@ -98,11 +98,11 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_list_fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
             BaseComponent[] baseComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
-            for (Fish fish : FishManager.getInstance().getRarityMap().get(rarity)) {
+            for (Fish fish : rarity.getFishList()) {
                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour() + "] "));
                 for (BaseComponent component : textComponent) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to receive fish"))));
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName().replace(" ", "_")));
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getId() + " " + fish.getName().replace(" ", "_")));
                     baseComponent[0].addExtra(component);
                 }
             }
@@ -113,11 +113,11 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_list_rarities")
         public void onRarity(final CommandSender sender) {
             BaseComponent[] baseComponent = TextComponent.fromLegacyText("");
-            for (Rarity rarity : FishManager.getInstance().getRarityMap().keySet()) {
+            for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
                 for (BaseComponent component : textComponent) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish."))));
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getId()));
                     baseComponent[0].addExtra(component);
                 }
             }
@@ -316,8 +316,8 @@ public class AdminCommand extends BaseCommand {
     public void onVersion(final CommandSender sender) {
         int fishCount = 0;
 
-        for (List<Fish> fishList : FishManager.getInstance().getRarityMap().values()) {
-            fishCount += fishList.size();
+        for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
+            fishCount += rarity.getFishList().size();
         }
         
         String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +

@@ -1,0 +1,56 @@
+id: defaultCommon
+disabled: false
+weight: 100
+colour: '&7'
+worth-multiplier: 0.1
+broadcast: false
+size:
+  minSize: 1
+  maxSize: 30
+
+fish:
+  Cod: ""
+  Atlantic Cod:
+    requirements:
+      biome:
+        - COLD_OCEAN
+        - DEEP_COLD_OCEAN
+        - DEEP_LUKEWARM_OCEAN
+        - DEEP_OCEAN
+        - LUKEWARM_OCEAN
+        - OCEAN
+        - WARM_OCEAN
+  Rockfish: ""
+  Tuna: ""
+  Mackerel: ""
+  Spanish Mackerel:
+    lore:
+      - "&7Hola!"
+  Salmon:
+    item:
+      material: SALMON
+  Pufferfish:
+    item:
+      material: PUFFERFISH
+    effect: "POISON:1:2"
+  Tropical Fish:
+    item:
+      material: TROPICAL_FISH
+  Red Mullet: ""
+  Anchovy: ""
+  Haddock: ""
+  Bluefish: ""
+  Carp: ""
+  Silver Carp: ""
+  Grass Carp: ""
+  Koi Carp: ""
+  Black Carp: ""
+  Lemon Shark: ""
+  Sea Snail:
+    item:
+      material: NAUTILUS_SHELL
+  Eel: ""
+  Tadpole: ""
+  Seagull Feather:
+    item:
+      material: FEATHER

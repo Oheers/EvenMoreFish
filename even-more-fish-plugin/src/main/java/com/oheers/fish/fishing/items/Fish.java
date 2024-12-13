@@ -5,7 +5,6 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.requirement.Requirement;
 import com.oheers.fish.api.reward.Reward;
-import com.oheers.fish.config.FishFile;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.selling.WorthNBT;
@@ -62,6 +61,7 @@ public class Fish implements Cloneable {
     boolean disableFisherman;
 
     private int day = -1;
+    private double setWorth;
 
     /**
      * Constructs a Fish from its config section.
@@ -85,6 +85,8 @@ public class Fish implements Cloneable {
 
         this.disableFisherman = section.getBoolean("disable-fisherman", rarity.isShouldDisableFisherman());
 
+        this.setWorth = section.getDouble("set-worth");
+
         this.factory = new ItemFactory(null, section);
         checkDisplayName();
 
@@ -102,15 +104,6 @@ public class Fish implements Cloneable {
 
         checkSellEvent();
         handleRequirements();
-    }
-
-    /**
-     * Constructs a fish with the provided values.
-     * If possible, prefer {@link Fish#Fish(Rarity, Section)} instead.
-     */
-    public Fish(@NotNull Rarity rarity, @NotNull String name) throws InvalidFishException {
-        // Manually obtain the section for this.
-        this(rarity, FishFile.getInstance().getConfig().getSection("fish." + rarity.getValue() + "." + name));
     }
 
     private void handleRequirements() {
@@ -197,6 +190,10 @@ public class Fish implements Cloneable {
             // Calculate the length, scaling back down by dividing by 10
             this.length = (float) (randomValue + minSize * 10) / 10;
         }
+    }
+
+    public double getWorthMultiplier() {
+        return section.getDouble("worth-multiplier", 0.0D);
     }
 
     public boolean hasEatRewards() {
@@ -421,7 +418,9 @@ public class Fish implements Cloneable {
 
     @Override
     public Fish clone() throws CloneNotSupportedException {
-        return (Fish) super.clone();
+        Fish clone = (Fish) super.clone();
+        clone.factory = new ItemFactory(null, section);
+        return clone;
     }
 
     public boolean hasFishermanDisabled() {
@@ -442,6 +441,10 @@ public class Fish implements Cloneable {
 
     public void setCompExemptFish(boolean compExemptFish) {
         isCompExemptFish = compExemptFish;
+    }
+
+    public double getSetWorth() {
+        return setWorth;
     }
 
     public String getName() {
@@ -530,7 +533,7 @@ public class Fish implements Cloneable {
         // {rarity} Placeholder
         String rarityReplacement = "";
         if (rarity != null) {
-            rarityReplacement = rarity.getValue();
+            rarityReplacement = rarity.getId();
         }
         rewardString = rewardString.replace("{rarity}", rarityReplacement);
 

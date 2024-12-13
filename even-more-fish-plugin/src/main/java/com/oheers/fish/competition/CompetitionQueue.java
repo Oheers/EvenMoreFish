@@ -68,14 +68,16 @@ public class CompetitionQueue {
     }
 
     private void loadDefaultFiles(@NotNull File targetDirectory) {
-        // Delete _example.yml file for regeneration
+        // Regenerate _example.yml file
         new File(targetDirectory, "_example.yml").delete();
-
         FileUtil.loadFileOrResource(targetDirectory, "_example.yml", "competitions/_example.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "default-main.yml", "competitions/default-main.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "default-sunday1.yml", "competitions/default-sunday1.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "default-sunday2.yml", "competitions/default-sunday2.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "default-weekend.yml", "competitions/default-weekend.yml", EvenMoreFish.getInstance());
+
+        // Write defaults
+        targetDirectory = new File(targetDirectory, "defaults");
+        FileUtil.loadFileOrResource(targetDirectory, "main.yml", "competitions/defaults/main.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "sunday1.yml", "competitions/defaults/sunday1.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "sunday2.yml", "competitions/defaults/sunday2.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "weekend.yml", "competitions/defaults/weekend.yml", EvenMoreFish.getInstance());
     }
 
     public TreeMap<String, CompetitionFile> getFileMap() {

@@ -25,7 +25,10 @@ import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.JoinChecker;
 import com.oheers.fish.competition.rewardtypes.*;
 import com.oheers.fish.competition.rewardtypes.external.*;
-import com.oheers.fish.config.*;
+import com.oheers.fish.config.BaitFile;
+import com.oheers.fish.config.GUIConfig;
+import com.oheers.fish.config.GUIFillerConfig;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
@@ -71,7 +74,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class EvenMoreFish extends EMFPlugin {
     private final Random random = new Random();
@@ -154,8 +156,6 @@ public class EvenMoreFish extends EMFPlugin {
         this.addonManager = new AddonManager(this);
         this.addonManager.load();
 
-        new FishFile();
-        new RaritiesFile();
         new BaitFile();
 
         new GUIConfig();
@@ -422,9 +422,9 @@ public class EvenMoreFish extends EMFPlugin {
         manager.getCommandContexts().registerContext(Fish.class, c -> {
             final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
             final String fishId = c.popFirstArg();
-            Fish fish = FishManager.getInstance().getFish(rarity, fishId);
+            Fish fish = rarity.getFish(fishId);
             if (fish == null) {
-                fish = FishManager.getInstance().getFish(rarity, fishId.replace("_", " "));
+                fish = rarity.getFish(fishId.replace("_", " "));
             }
             if (fish == null) {
                 throw new InvalidCommandArgument("No such fish: " + fishId);
@@ -432,10 +432,10 @@ public class EvenMoreFish extends EMFPlugin {
             return fish;
         });
         manager.getCommandCompletions().registerCompletion("baits", c -> BaitManager.getInstance().getBaitMap().keySet().stream().map(s -> s.replace(" ", "_")).toList());
-        manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMap().keySet().stream().map(Rarity::getValue).toList());
+        manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMap().values().stream().map(Rarity::getId).toList());
         manager.getCommandCompletions().registerCompletion("fish", c -> {
             final Rarity rarity = c.getContextValue(Rarity.class);
-            return FishManager.getInstance().getRarityMap().get(rarity).stream().map(f -> f.getName().replace(" ", "_")).collect(Collectors.toList());
+            return rarity.getFishList().stream().map(f -> f.getName().replace(" ", "_")).toList();
         });
         manager.getCommandCompletions().registerCompletion("competitionId", c -> getCompetitionQueue().getFileMap().keySet());
 
@@ -503,7 +503,7 @@ public class EvenMoreFish extends EMFPlugin {
     }
 
     public ItemStack createCustomNBTRod() {
-        ItemFactory itemFactory = new ItemFactory("nbt-rod-item");
+        ItemFactory itemFactory = new ItemFactory(MainConfig.getInstance().getConfig(), "nbt-rod-item");
         itemFactory.enableDefaultChecks();
         itemFactory.setItemDisplayNameCheck(true);
         itemFactory.setItemLoreCheck(true);
@@ -526,8 +526,6 @@ public class EvenMoreFish extends EMFPlugin {
         Messages.getInstance().reload();
         GUIConfig.getInstance().reload();
         GUIFillerConfig.getInstance().reload();
-        FishFile.getInstance().reload();
-        RaritiesFile.getInstance().reload();
         BaitFile.getInstance().reload();
 
         FishManager.getInstance().reload();

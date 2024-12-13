@@ -58,7 +58,7 @@ public class Bait {
         this.displayName = BaitFile.getInstance().getDisplayName(this.name);
         this.dropQuantity = BaitFile.getInstance().getDropQuantity(this.name);
 
-        this.itemFactory = new ItemFactory("baits." + name);
+        this.itemFactory = new ItemFactory(BaitFile.getInstance().getConfig(), "baits." + name);
 
         this.itemFactory.enableDefaultChecks();
         this.itemFactory.setItemDisplayNameCheck(true);
@@ -167,14 +167,14 @@ public class Bait {
         Set<Rarity> boostedRarities = new HashSet<>(getRarityList());
         boostedRarities.addAll(fishListRarities);
 
-        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, getBoostRate(), boostedRarities, FishManager.getInstance().getRarityMap().keySet());
+        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, getBoostRate(), boostedRarities, Set.copyOf(FishManager.getInstance().getRarityMap().values()));
         Fish fish;
 
         if (!getFishList().isEmpty()) {
             // The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
             // the method isn't given an empty list.
             if (!fishListRarities.contains(fishRarity)) {
-                fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), FishManager.getInstance().getFishForRarity(fishRarity), true);
+                fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), fishRarity.getFishList(), true);
             } else {
                 fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFishList(), true);
             }

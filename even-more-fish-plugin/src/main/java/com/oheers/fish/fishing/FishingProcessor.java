@@ -36,6 +36,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
@@ -115,7 +116,7 @@ public class FishingProcessor implements Listener {
      *                 {@code @returns} A random fish without any bait application.
      */
     private Fish chooseNonBaitFish(Player player, Location location) {
-        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, 1, null, FishManager.getInstance().getRarityMap().keySet());
+        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, 1, null, Set.copyOf(FishManager.getInstance().getRarityMap().values()));
         if (fishRarity == null) {
             EvenMoreFish.getInstance().getLogger().severe("Could not determine a rarity for fish for " + player.getName());
             return null;
@@ -202,7 +203,7 @@ public class FishingProcessor implements Listener {
         if (!fish.isSilent()) {
             String length = decimalFormat.format(fish.getLength());
             EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + fish.getLength());
-            String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
+            String rarity = FishUtils.translateColorCodes(fish.getRarity().getId());
 
             AbstractMessage message = ConfigMessage.FISH_CAUGHT.getMessage();
             message.setPlayer(player);
