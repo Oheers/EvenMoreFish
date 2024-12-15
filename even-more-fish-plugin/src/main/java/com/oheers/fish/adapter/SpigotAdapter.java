@@ -18,7 +18,7 @@ public class SpigotAdapter extends PlatformAdapter {
         Logger logger = EMFPlugin.getInstance().getLogger();
         logger.info("Using API provided by Spigot.");
         logger.warning("Support for Spigot servers will be removed in the future in favour of Paper.");
-        logger.warning("Paper is a drop-in replacement, and you can download it here: https://papermc.io/downloads/paper");
+        logger.warning("You can download Paper here: https://papermc.io/downloads/paper");
     }
 
     @Override
