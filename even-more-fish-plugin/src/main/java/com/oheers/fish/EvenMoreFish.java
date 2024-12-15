@@ -352,6 +352,8 @@ public class EvenMoreFish extends EMFPlugin {
         }));
 
         metrics.addCustomChart(new SimplePie("database", () -> MainConfig.getInstance().databaseEnabled() ? "true" : "false"));
+
+        metrics.addCustomChart(new SimplePie("paper-adapter", () -> (platformAdapter instanceof PaperAdapter) ? "true" : "false"));
     }
 
     private void loadCommandManager() {
