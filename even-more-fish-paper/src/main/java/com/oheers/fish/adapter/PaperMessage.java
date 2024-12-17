@@ -22,7 +22,7 @@ public class PaperMessage extends AbstractMessage {
             .useUnusualXRepeatedCharacterHexFormat()
             .character('§')
             .build();
-    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static final MiniMessage miniMessage = MiniMessage.builder().strict(true).build();
 
     protected PaperMessage(@NotNull String message, @NotNull PlatformAdapter platformAdapter) {
         super(message, platformAdapter);
@@ -38,11 +38,8 @@ public class PaperMessage extends AbstractMessage {
         message = message.replace("&#", "§#");
         // If the message contains legacy, convert to MiniMessage
         if (message.contains("§")) {
-            // Fix for MiniMessage not serializing a reset tag.
-            message = message.replaceAll("§r", "_resetchar_");
             Component legacyComponent = legacySerializer.deserialize(message);
             message = miniMessage.serialize(legacyComponent);
-            message = message.replaceAll("_resetchar_", "<reset>");
         }
         return message;
     }

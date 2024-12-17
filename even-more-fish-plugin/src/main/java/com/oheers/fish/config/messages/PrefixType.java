@@ -33,9 +33,7 @@ public enum PrefixType {
         if (id == null) {
             return EvenMoreFish.getAdapter().createMessage("");
         } else {
-            AbstractMessage message = EvenMoreFish.getAdapter().createMessage(Messages.getInstance().getConfig().getString(id, normal));
-            message.appendString("&r");
-            return message;
+            return EvenMoreFish.getAdapter().createMessage(Messages.getInstance().getConfig().getString(id, normal));
         }
     }
 }
