@@ -202,7 +202,6 @@ public class FishingProcessor implements Listener {
 
         if (!fish.isSilent()) {
             String length = decimalFormat.format(fish.getLength());
-            EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + fish.getLength());
             String rarity = FishUtils.translateColorCodes(fish.getRarity().getId());
 
             AbstractMessage message = ConfigMessage.FISH_CAUGHT.getMessage();
