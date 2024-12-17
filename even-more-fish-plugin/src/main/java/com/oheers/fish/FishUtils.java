@@ -22,8 +22,6 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Skull;
