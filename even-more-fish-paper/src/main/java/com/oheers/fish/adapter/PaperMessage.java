@@ -48,12 +48,6 @@ public class PaperMessage extends AbstractMessage {
     }
 
     @Override
-    public void broadcast() {
-        send(Bukkit.getConsoleSender());
-        Bukkit.getOnlinePlayers().forEach(this::send);
-    }
-
-    @Override
     public void send(@NotNull CommandSender target) {
         if (getRawMessage().isEmpty() || silentCheck()) {
             return;
@@ -66,6 +60,23 @@ public class PaperMessage extends AbstractMessage {
         }
 
         target.sendMessage(getComponentMessage());
+
+        setMessage(originalMessage);
+    }
+
+    @Override
+    public void sendActionBar(@NotNull CommandSender target) {
+        if (getRawMessage().isEmpty() || silentCheck()) {
+            return;
+        }
+
+        String originalMessage = getRawMessage();
+
+        if (target instanceof Player player) {
+            setPlayer(player);
+        }
+
+        target.sendActionBar(getComponentMessage());
 
         setMessage(originalMessage);
     }

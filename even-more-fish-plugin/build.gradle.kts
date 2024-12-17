@@ -76,7 +76,9 @@ dependencies {
     }
 
     compileOnly(libs.griefprevention)
-    compileOnly(libs.mcmmo)
+    compileOnly(libs.mcmmo) {
+        exclude("com.sk89q.worldguard", "worldguard-legacy")
+    }
     compileOnly(libs.headdatabase.api)
     compileOnly(libs.playerpoints)
 
