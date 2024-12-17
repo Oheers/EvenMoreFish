@@ -23,7 +23,8 @@ public abstract class AbstractMessage {
     }
 
     protected AbstractMessage(@NotNull final List<String> messageList, @NotNull PlatformAdapter platformAdapter) {
-        this.message = String.join("\n", messageList.stream().map(this::formatColours).toList());
+        String reset = formatColours("&r");
+        this.message = String.join( reset + "\n", messageList.stream().map(this::formatColours).toList());
         this.platformAdapter = platformAdapter;
     }
 

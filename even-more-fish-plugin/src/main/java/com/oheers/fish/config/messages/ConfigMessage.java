@@ -291,7 +291,7 @@ public enum ConfigMessage {
     }
 
     public boolean isListForm() {
-        return this.normal == null;
+        return !Messages.getInstance().getConfig().getStringList(getId()).isEmpty();
     }
 
     public PrefixType getPrefixType() {

@@ -36,7 +36,7 @@ dependencyResolutionManagement {
             library("griefprevention", "com.github.TechFortress:GriefPrevention:16.17.1")
 
             library("itemsadder-api", "com.github.LoneDev6:API-ItemsAdder:3.6.1")
-            library("nbt-api", "de.tr7zw:item-nbt-api:2.13.3-SNAPSHOT")
+            library("nbt-api", "de.tr7zw:item-nbt-api:2.14.1")
             library("denizen-api", "com.denizenscript:denizen:1.3.1-SNAPSHOT")
             library("oraxen", "io.th0rgal:oraxen:1.173.0") // We must use 1.173.0 as later versions require Java 21
 
