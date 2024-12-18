@@ -22,8 +22,6 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Skull;
@@ -34,10 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.DayOfWeek;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class FishUtils {
 
@@ -348,44 +343,18 @@ public class FishUtils {
 
         int rangeSquared = activeCompetitionFile.getBroadcastRange(); // 10 blocks squared
 
-        if (activeCompetitionFile.shouldBroadcastOnlyRods()) {
-            // sends it to all players holding ords
-            if (actionBar) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
-                        continue;
-                    }
-                    if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || player.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(formatted));
-                    }
-                }
-            } else {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
-                        continue;
-                    }
-                    if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || player.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        player.sendMessage(formatted);
-                    }
-                }
-            }
-            // sends it to everyone
+        Collection<? extends Player> validPlayers = Bukkit.getOnlinePlayers();
+
+        if (rangeSquared > -1) {
+            validPlayers = validPlayers.stream()
+                    .filter(player -> isWithinRange(referencePlayer, player, rangeSquared))
+                    .toList();
+        }
+
+        if (actionBar) {
+            validPlayers.forEach(message::sendActionBar);
         } else {
-            if (actionBar) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
-                        continue;
-                    }
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(formatted));
-                }
-            } else {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
-                        continue;
-                    }
-                    player.sendMessage(formatted);
-                }
-            }
+            validPlayers.forEach(message::send);
         }
     }
 

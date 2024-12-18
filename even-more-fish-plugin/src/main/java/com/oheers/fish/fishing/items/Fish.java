@@ -318,7 +318,7 @@ public class Fish implements Cloneable {
         String replacement = fishLore.isEmpty() ? "" : String.join("\n", fishLore);
 
         newLoreLine.setVariable(
-                "{fish_lore}",
+                "\n{fish_lore}",
                 replacement
         );
 

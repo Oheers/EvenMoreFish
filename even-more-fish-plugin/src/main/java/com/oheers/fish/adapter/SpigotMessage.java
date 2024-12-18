@@ -3,7 +3,7 @@ package com.oheers.fish.adapter;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.adapter.PlatformAdapter;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -42,12 +42,6 @@ public class SpigotMessage extends AbstractMessage {
     }
 
     @Override
-    public void broadcast() {
-        send(Bukkit.getConsoleSender());
-        Bukkit.getOnlinePlayers().forEach(this::send);
-    }
-
-    @Override
     public void send(@NotNull CommandSender target) {
         if (getRawMessage().isEmpty() || silentCheck()) {
             return;
@@ -60,6 +54,23 @@ public class SpigotMessage extends AbstractMessage {
         }
 
         target.sendMessage(getLegacyMessage());
+
+        setMessage(originalMessage);
+    }
+
+    @Override
+    public void sendActionBar(@NotNull CommandSender target) {
+        if (getRawMessage().isEmpty() || silentCheck()) {
+            return;
+        }
+
+        String originalMessage = getRawMessage();
+
+        if (target instanceof Player player) {
+            setPlayer(player);
+        }
+
+        target.spigot().sendMessage(TextComponent.fromLegacyText(getLegacyMessage()));
 
         setMessage(originalMessage);
     }
