@@ -2,7 +2,7 @@
 
 # Important: Read the following if you are on a Paper server.
 # These messages are able to support the MiniMessage format (in strict mode) if you are on a Paper server.
-# Do not mix Legacy and MiniMessage on the same line, Legacy will always take priority.
+# You are able to mix both formats on the same line, however this is not recommended.
 # Here are the MiniMessage Docs for help with using MiniMessage: https://docs.advntr.dev/minimessage/format.html
 
 # Sent to players when they fish an EvenMoreFish fish
