@@ -23,8 +23,7 @@ public abstract class AbstractMessage {
     }
 
     protected AbstractMessage(@NotNull final List<String> messageList, @NotNull PlatformAdapter platformAdapter) {
-        String reset = formatColours("&r");
-        this.message = String.join( reset + "\n", messageList.stream().map(this::formatColours).toList());
+        this.message = String.join("\n", messageList.stream().map(this::formatColours).toList());
         this.platformAdapter = platformAdapter;
     }
 
@@ -64,7 +63,10 @@ public abstract class AbstractMessage {
     /**
      * Sends this message to the entire server.
      */
-    public abstract void broadcast();
+    public void broadcast() {
+        send(Bukkit.getConsoleSender());
+        Bukkit.getOnlinePlayers().forEach(this::send);
+    }
 
     /**
      * Sends this message to the provided target.
@@ -78,6 +80,27 @@ public abstract class AbstractMessage {
      */
     public void send(@NotNull List<CommandSender> targets) {
         targets.forEach(this::send);
+    }
+
+    /**
+     * Sends this message to the entire server as an action bar.
+     */
+    public void broadcastActionBar() {
+        Bukkit.getOnlinePlayers().forEach(this::sendActionBar);
+    }
+
+    /**
+     * Sends this message to the provided target as an action bar.
+     * @param target The target of this message.
+     */
+    public abstract void sendActionBar(@NotNull CommandSender target);
+
+    /**
+     * Sends this message to the provided list of targets as an action bar.
+     * @param targets The targets of this message.
+     */
+    public void sendActionBar(@NotNull List<CommandSender> targets) {
+        targets.forEach(this::sendActionBar);
     }
 
     /**
