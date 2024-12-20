@@ -36,7 +36,6 @@ public class DatabaseV3 {
     private final MigrationManager migrationManager;
 
 
-
     /**
      * This is a reference to all database activity within the EMF plugin. It improves on the previous DatabaseV2 in that
      * when the config states that data must be stored in MySQL it won't then go and store the data in flat-file format.
@@ -67,11 +66,18 @@ public class DatabaseV3 {
             return;
         }
 
-        if (this.migrationManager.getDatabaseVersion().equals(MigrationVersion.fromVersion("5"))) {
-            this.migrationManager.migrateFromV5ToLatest();
-        } else {
-            this.migrationManager.migrateFromV6ToLatest();
+        switch (this.migrationManager.getDatabaseVersion().getVersion()) {
+            case "5":
+                this.migrationManager.migrateFromV5ToLatest();
+                break;
+            case "6":
+                this.migrationManager.migrateFromV6ToLatest();
+                break;
+            default:
+                this.migrationManager.migrateFromVersion(this.migrationManager.getDatabaseVersion().getVersion(), true);
+                break;
         }
+
     }
 
     public void setUsingV2(boolean usingV2) {
@@ -287,13 +293,13 @@ public class DatabaseV3 {
                 prep.executeUpdate();
 
                 if (MainConfig.getInstance().doDBVerbose()) {
-                    EvenMoreFish.getInstance().getLogger().info(() -> "Written competition report for (" + competition.getCompetitionName() + ") to the database.");
+                    EvenMoreFish.getInstance().getLogger().info(() -> "Written competition report for (%s) to the database.".formatted(competition.getCompetitionName()));
                 }
 
             } catch (SQLException exception) {
                 EvenMoreFish.getInstance()
                         .getLogger()
-                        .log(Level.SEVERE, "Could not add the current competition (" + competition.getCompetitionName() + ") in the table: emf_competitions.", exception);
+                        .log(Level.SEVERE, "Could not add the current competition (%s) in the table: emf_competitions.".formatted(competition.getCompetitionName()), exception);
             }
         });
 
@@ -316,7 +322,7 @@ public class DatabaseV3 {
                 prep.executeUpdate();
 
                 if (MainConfig.getInstance().doDBVerbose()) {
-                    EvenMoreFish.getInstance().getLogger().info(() -> "Written empty user report for (" + uuid + ") to the database.");
+                    EvenMoreFish.getInstance().getLogger().info(() -> "Written empty user report for (%s) to the database.".formatted(uuid));
                 }
             } catch (SQLException exception) {
                 EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not add " + uuid + " in the table: Users.", exception);
@@ -440,8 +446,9 @@ public class DatabaseV3 {
         executeStatement(c -> {
             try (PreparedStatement statement = c.prepareStatement(
                     DatabaseUtil.parseSqlString(
-                    "INSERT INTO ${table.prefix}fish_log " +
-                    "(id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (?,?,?,?,?,?);", c))) {
+                            "INSERT INTO ${table.prefix}fish_log " +
+                                    "(id, rarity, fish, quantity, first_catch_time, largest_length) VALUES (?,?,?,?,?,?);", c
+                    ))) {
                 statement.setInt(1, userID);
                 statement.setString(2, report.getRarity());
                 statement.setString(3, report.getName());
@@ -469,8 +476,10 @@ public class DatabaseV3 {
      */
     public void updateUserFish(@NotNull final FishReport report, final int userID) {
         executeStatement(c -> {
-            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString("UPDATE ${table.prefix}fish_log SET quantity = ?, largest_length = ? " +
-                    "WHERE id = ? AND rarity = ? AND fish = ?;", c))) {
+            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString(
+                    "UPDATE ${table.prefix}fish_log SET quantity = ?, largest_length = ? " +
+                            "WHERE id = ? AND rarity = ? AND fish = ?;", c
+            ))) {
                 statement.setInt(1, report.getNumCaught());
                 statement.setFloat(2, report.getLargestLength());
                 statement.setInt(3, userID);
@@ -517,10 +526,12 @@ public class DatabaseV3 {
      */
     public void writeUserReport(@NotNull final UUID uuid, @NotNull final UserReport report) {
         executeStatement(c -> {
-            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString("UPDATE ${table.prefix}users SET first_fish = ?, last_fish = ?, " +
-                    "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, " +
-                    "competitions_joined = ?, fish_sold = ?, money_earned = ? " +
-                    "WHERE uuid = ?;", c))) {
+            try (PreparedStatement statement = c.prepareStatement(DatabaseUtil.parseSqlString(
+                    "UPDATE ${table.prefix}users SET first_fish = ?, last_fish = ?, " +
+                            "largest_fish = ?, largest_length = ?, num_fish_caught = ?, total_fish_length = ?, competitions_won = ?, " +
+                            "competitions_joined = ?, fish_sold = ?, money_earned = ? " +
+                            "WHERE uuid = ?;", c
+            ))) {
 
                 statement.setString(1, report.getFirstFish());
                 statement.setString(2, report.getRecentFish());
