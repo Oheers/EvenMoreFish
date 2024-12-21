@@ -1,4 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import org.jooq.meta.jaxb.Property
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -10,6 +11,7 @@ plugins {
     alias(libs.plugins.bukkit.yml)
     alias(libs.plugins.shadow)
     alias(libs.plugins.grgit)
+    alias(libs.plugins.jooq)
 }
 
 group = "com.oheers.evenmorefish"
@@ -97,6 +99,41 @@ dependencies {
     library(libs.commons.codec)
 
     library(libs.json.simple)
+
+    library(libs.jooq)
+    library(libs.jooq.codegen)
+    library(libs.jooq.meta)
+    jooqGenerator(libs.jooq.mysql.connector)
+    jooqGenerator(libs.jooq.meta.extensions)
+}
+
+jooq {
+    version.set(libs.versions.jooq)
+    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
+
+    configurations {
+        create("main") {
+            generateSchemaSourceOnCompilation.set(false)
+            jooqConfiguration.apply {
+                jdbc = null
+                generator.apply {
+                    val schemaPath = "src/main/resources/db/migrations/V6_1__Create_normalized_tables.sql"
+                    database.apply {
+                        name = "org.jooq.meta.extensions.ddl.DDLDatabase"
+                        properties.add(Property().withKey("scripts").withValue(schemaPath))
+                        // properties.add(Property().withKey("dialect").withValue("MYSQL")) //need to check if we can make this agnostic.
+                        properties.add(Property().withKey("sort").withValue("flyway"))
+                        properties.add(Property().withKey("unqualifiedSchema").withValue("none"))
+                    }
+                    target.apply {
+                        packageName = "com.oheers.fish.database.generated"
+                        directory = "src/main/generated/"
+                    }
+                }
+
+            }
+        }
+    }
 }
 
 bukkit {
