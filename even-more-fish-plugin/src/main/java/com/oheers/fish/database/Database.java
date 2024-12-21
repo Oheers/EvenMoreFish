@@ -1,10 +1,9 @@
 package com.oheers.fish.database;
 
 
-import org.jooq.conf.MappedSchema;
-import org.jooq.conf.MappedTable;
-import org.jooq.conf.RenderMapping;
-import org.jooq.conf.Settings;
+import org.jooq.conf.*;
+
+import java.util.regex.Pattern;
 
 public class Database {
     private Settings jooqSettings;
@@ -20,13 +19,12 @@ public class Database {
                         new MappedSchema().withInput("")
                                 .withOutput(dbName)
                                 .withTables(
-                                        new MappedTable().withInput("${table.prefix}competitions").withOutput(tablePrefix + "competitions"),
-                                        new MappedTable().withInput("${table.prefix}fish").withOutput(tablePrefix + "fish"),
-                                        new MappedTable().withInput("${table.prefix}fish_log").withOutput(tablePrefix + "fish_log"),
-                                        new MappedTable().withInput("${table.prefix}users").withOutput(tablePrefix + "users"),
-                                        new MappedTable().withInput("${table.prefix}users_sales").withOutput(tablePrefix + "users_sales"),
-                                        new MappedTable().withInput("${table.prefix}transactions").withOutput(tablePrefix + "transactions")
+                                        new MappedTable()
+                                                .withInputExpression(Pattern.compile("\\$\\{table.prefix}_(.*)"))
+                                                .withOutput(tablePrefix + "$1"
+                                                )
                                         )
+
                 )
         );
     }

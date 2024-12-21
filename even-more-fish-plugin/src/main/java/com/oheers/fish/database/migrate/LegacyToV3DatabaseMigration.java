@@ -8,6 +8,7 @@ import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.database.DatabaseUtil;
 import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.database.connection.ConnectionFactory;
+import com.oheers.fish.database.connection.MigrationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -27,10 +28,12 @@ import java.util.logging.Level;
 public class LegacyToV3DatabaseMigration {
     private final DatabaseV3 database;
     private final ConnectionFactory connectionFactory;
+    private final MigrationManager migrationManager;
     
-    public LegacyToV3DatabaseMigration(final DatabaseV3 database, final ConnectionFactory connectionFactory) {
+    public LegacyToV3DatabaseMigration(final DatabaseV3 database, final ConnectionFactory connectionFactory, final MigrationManager migrationManager) {
         this.database = database;
         this.connectionFactory = connectionFactory;
+        this.migrationManager = migrationManager;
     }
     
     /**
@@ -52,7 +55,7 @@ public class LegacyToV3DatabaseMigration {
             });
             return;
         }
-        connectionFactory.legacyInitVersion();
+        migrationManager.legacyInitVersion();
     }
     
     /**
@@ -165,7 +168,7 @@ public class LegacyToV3DatabaseMigration {
         
         try {
             translateFishDataV2();
-            this.connectionFactory.legacyFlywayBaseline();
+            this.migrationManager.legacyFlywayBaseline();
             
             for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
                 Type fishReportList = new TypeToken<List<LegacyFishReport>>() {
@@ -208,6 +211,6 @@ public class LegacyToV3DatabaseMigration {
 
         database.setUsingV2(false);
         //Run the rest of the migrations, and ensure it's properly setup.
-        connectionFactory.flyway5toLatest();
+        migrationManager.migrateFromV5ToLatest();
     }
 }

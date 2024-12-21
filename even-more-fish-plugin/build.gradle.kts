@@ -1,10 +1,12 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import nu.studer.gradle.jooq.JooqExtension
+import org.jooq.meta.jaxb.MatchersForeignKeyType
 import org.jooq.meta.jaxb.Property
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 plugins {
     `java-library`
@@ -112,42 +114,7 @@ dependencies {
     jooqGenerator(libs.connectors.h2)
 }
 
-fun JooqExtension.configureDialect(dialect: String, latestSchema: String) {
-    configurations {
-        create(dialect) {
-            generateSchemaSourceOnCompilation.set(false)
-            jooqConfiguration.apply {
-                jdbc = null
-                generator.apply {
-                    strategy.name = "com.oheers.fish.database.extras.PrefixNamingStrategy"
-                    database.apply {
-                        name = "org.jooq.meta.extensions.ddl.DDLDatabase"
-                        properties.add(Property().withKey("scripts").withValue(latestSchema))
-                        properties.add(Property().withKey("dialect").withValue(dialect.uppercase()))
-                        properties.add(Property().withKey("sort").withValue("flyway"))
-                        properties.add(Property().withKey("unqualifiedSchema").withValue("none"))
-                    }
-                    target.apply {
-                        packageName = "com.oheers.fish.database.generated.${dialect}"
-                        directory = "src/main/generated/"
-                    }
-                }
-            }
-        }
-    }
-}
 
-jooq {
-    version.set(libs.versions.jooq)
-    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
-
-    val dialects = listOf("mysql", "sqlite", "h2")
-    val latestSchema = "V6_1__Create_normalized_tables.sql"
-    dialects.forEach { dialect ->
-        val schemaPath = "src/main/resources/db/migrations/${dialect}/${latestSchema}"
-        configureDialect(dialect, schemaPath)
-    }
-}
 
 bukkit {
     name = "EvenMoreFish"
@@ -251,14 +218,33 @@ bukkit {
 
     }
 }
-
+sourceSets {
+    main {
+        java.srcDirs.add(File("src/main/generated"))
+    }
+}
 tasks {
     build {
-        dependsOn(shadowJar)
+        dependsOn(
+        "generateMysqlJooq",
+            shadowJar)
 
         doLast {
             val file = project.layout.buildDirectory.file("libs/even-more-fish-plugin-${version}.jar").get()
             file.asFile.delete()
+        }
+
+
+    }
+
+    jooq {
+        version.set(libs.versions.jooq)
+
+        val dialects = listOf("mysql")
+        val latestSchema = "V6_1__Create_normalized_tables.sql"
+        dialects.forEach { dialect ->
+            val schemaPath = "src/main/resources/db/migrations/${dialect}/${latestSchema}"
+            configureDialect(dialect, schemaPath)
         }
     }
 
@@ -336,5 +322,31 @@ fun getBuildNumberOrDate(): String? {
         .format(Instant.now())
 
     return time
+}
+
+fun JooqExtension.configureDialect(dialect: String, latestSchema: String) {
+    configurations {
+        create(dialect) {
+            generateSchemaSourceOnCompilation.set(false)
+            jooqConfiguration.apply {
+                jdbc = null
+                generator.apply {
+                    //https://www.jooq.org/doc/latest/manual/sql-building/dsl-context/custom-settings/settings-parser/
+                    strategy.name = "com.oheers.fish.database.extras.PrefixNamingStrategy"
+                    database.apply {
+                        name = "org.jooq.meta.extensions.ddl.DDLDatabase"
+                        properties.add(Property().withKey("scripts").withValue(latestSchema))
+                        properties.add(Property().withKey("dialect").withValue(dialect.uppercase()))
+                        properties.add(Property().withKey("sort").withValue("flyway"))
+                        properties.add(Property().withKey("unqualifiedSchema").withValue("none"))
+                    }
+                    target.apply {
+                        packageName = "com.oheers.fish.database.generated.${dialect}"
+                        directory = "src/main/generated/"
+                    }
+                }
+            }
+        }
+    }
 }
 

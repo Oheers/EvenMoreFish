@@ -221,7 +221,7 @@ public class DatabaseV3 {
      * @param initiator The person who started the migration.
      */
     public void migrateLegacy(CommandSender initiator) {
-        LegacyToV3DatabaseMigration legacy = new LegacyToV3DatabaseMigration(this, connectionFactory);
+        LegacyToV3DatabaseMigration legacy = new LegacyToV3DatabaseMigration(this, connectionFactory, migrationManager);
         legacy.migrate(initiator);
     }
 

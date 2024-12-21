@@ -5,7 +5,9 @@ import org.jooq.codegen.DefaultGeneratorStrategy;
 import org.jooq.meta.Definition;
 import org.jooq.tools.StringUtils;
 
+// This is needed to ensure prefix placeholders don't stay during code generation.
 public class PrefixNamingStrategy extends DefaultGeneratorStrategy {
+
     @Override
     public String getJavaClassName(final Definition definition, final Mode mode) {
         String name = replacePrefix(super.getJavaClassName(definition, mode));
@@ -20,6 +22,7 @@ public class PrefixNamingStrategy extends DefaultGeneratorStrategy {
 
 
     private @NotNull String replacePrefix(final @NotNull String name) {
-        return name.replace("{TABLE.PREFIX}", "").replace("{table.prefix}", "").replace("_7bprefix_7d", "").replace("_7bPREFIX_7d", "");
+        return name.replace("${TABLEPREFIX}", "").replace("${tablePrefix}", "").replace("$_7btablePrefix_7d", "").replace("$_7bTABLEPREFIX_7d", "");
     }
+
 }

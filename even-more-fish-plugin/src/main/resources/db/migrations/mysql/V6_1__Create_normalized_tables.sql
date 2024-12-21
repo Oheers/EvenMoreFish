@@ -28,7 +28,9 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}fish_log` (
    first_catch_time LONGBLOB NOT NULL,
    largest_length REAL NOT NULL,
    CONSTRAINT FK_FishLog_User
+   -- [jooq ignore start]
    FOREIGN KEY (id) REFERENCES `${table.prefix}users(id)`,
+   -- [jooq ignore stop]
    PRIMARY KEY (id)
 );
 
@@ -52,7 +54,9 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}transactions` (
   id VARCHAR(22) NOT NULL,
   user_id INTEGER NOT NULL,
   timestamp TIMESTAMP NOT NULL,
+  -- [jooq ignore start]
   FOREIGN KEY (user_id) REFERENCES `${table.prefix}users(id)`,
+  -- [jooq ignore stop]
   PRIMARY KEY (id)
 );
 
@@ -65,6 +69,8 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}users_sales` (
   fish_length DOUBLE NOT NULL,
   price_sold DOUBLE NOT NULL,
   CONSTRAINT FK_UsersSales_Transaction
+  -- [jooq ignore start]
   FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`,
+  -- [jooq ignore stop]
   PRIMARY KEY (id)
 );
