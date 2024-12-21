@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.flywaydb.core.api.configuration.FluentConfiguration;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,12 +108,19 @@ public class MigrationManager {
         }
     }
 
+    @Contract(pure = true)
+    private @NotNull String getMigrationLocation(final String dialect) {
+        return "src/resources/migrations/" + dialect;
+    }
+
     private FluentConfiguration getBaseFlywayConfiguration(ConnectionFactory connectionFactory) {
+
         return Flyway.configure(getClass().getClassLoader())
                 .dataSource(connectionFactory.dataSource)
                 .placeholders(Map.of(
                         "table.prefix", MainConfig.getInstance().getPrefix()
                 ))
+                .locations(getMigrationLocation(MainConfig.getInstance().getDatabaseType()))
                 .validateMigrationNaming(true)
                 .createSchemas(true)
                 .baselineOnMigrate(true)

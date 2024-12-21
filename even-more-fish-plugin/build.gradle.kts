@@ -1,4 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import nu.studer.gradle.jooq.JooqExtension
 import org.jooq.meta.jaxb.Property
 import java.time.Instant
 import java.time.ZoneId
@@ -107,32 +108,39 @@ dependencies {
     jooqGenerator(libs.jooq.meta.extensions)
 }
 
-jooq {
-    version.set(libs.versions.jooq)
-    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
-
+fun JooqExtension.configureDialect(dialect: String, latestSchema: String) {
     configurations {
-        create("main") {
+        create(dialect) {
             generateSchemaSourceOnCompilation.set(false)
             jooqConfiguration.apply {
                 jdbc = null
                 generator.apply {
-                    val schemaPath = "src/main/resources/db/migrations/V6_1__Create_normalized_tables.sql"
                     database.apply {
                         name = "org.jooq.meta.extensions.ddl.DDLDatabase"
-                        properties.add(Property().withKey("scripts").withValue(schemaPath))
-                        // properties.add(Property().withKey("dialect").withValue("MYSQL")) //need to check if we can make this agnostic.
+                        properties.add(Property().withKey("scripts").withValue(latestSchema))
+                        properties.add(Property().withKey("dialect").withValue(dialect.uppercase()))
                         properties.add(Property().withKey("sort").withValue("flyway"))
                         properties.add(Property().withKey("unqualifiedSchema").withValue("none"))
                     }
                     target.apply {
-                        packageName = "com.oheers.fish.database.generated"
+                        packageName = "com.oheers.fish.database.generated.${dialect}"
                         directory = "src/main/generated/"
                     }
                 }
-
             }
         }
+    }
+}
+
+jooq {
+    version.set(libs.versions.jooq)
+    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
+
+    val dialects = listOf("mysql", "sqlite")
+    val latestSchema = "V6_1__Create_normalized_tables.sql"
+    dialects.forEach { dialect ->
+        val schemaPath = "src/main/resources/db/migrations/${dialect}/${latestSchema}"
+        configureDialect(dialect, schemaPath)
     }
 }
 
