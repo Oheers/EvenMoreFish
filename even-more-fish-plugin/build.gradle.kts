@@ -104,8 +104,12 @@ dependencies {
     library(libs.jooq)
     library(libs.jooq.codegen)
     library(libs.jooq.meta)
-    jooqGenerator(libs.jooq.mysql.connector)
+
+    jooqGenerator(project(":even-more-fish-database-extras"))
     jooqGenerator(libs.jooq.meta.extensions)
+    jooqGenerator(libs.connectors.mysql)
+    jooqGenerator(libs.connectors.sqlite)
+    jooqGenerator(libs.connectors.h2)
 }
 
 fun JooqExtension.configureDialect(dialect: String, latestSchema: String) {
@@ -115,6 +119,7 @@ fun JooqExtension.configureDialect(dialect: String, latestSchema: String) {
             jooqConfiguration.apply {
                 jdbc = null
                 generator.apply {
+                    strategy.name = "com.oheers.fish.database.extras.PrefixNamingStrategy"
                     database.apply {
                         name = "org.jooq.meta.extensions.ddl.DDLDatabase"
                         properties.add(Property().withKey("scripts").withValue(latestSchema))
@@ -136,7 +141,7 @@ jooq {
     version.set(libs.versions.jooq)
     edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
 
-    val dialects = listOf("mysql", "sqlite")
+    val dialects = listOf("mysql", "sqlite", "h2")
     val latestSchema = "V6_1__Create_normalized_tables.sql"
     dialects.forEach { dialect ->
         val schemaPath = "src/main/resources/db/migrations/${dialect}/${latestSchema}"

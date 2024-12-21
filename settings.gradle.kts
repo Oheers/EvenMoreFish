@@ -80,9 +80,11 @@ dependencyResolutionManagement {
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
             library("jooq-meta-extensions","org.jooq","jooq-meta-extensions").versionRef("jooq")
-            library("jooq-mysql-connector", "com.mysql:mysql-connector-j:9.1.0")
             plugin("jooq", "nu.studer.jooq").version("9.0")
 
+            library("connectors-mysql", "com.mysql:mysql-connector-j:9.1.0")
+            library("connectors-sqlite", "org.xerial:sqlite-jdbc:3.47.1.0")
+            library("connectors-h2", "com.h2database:h2:2.3.232")
         }
     }
 }
