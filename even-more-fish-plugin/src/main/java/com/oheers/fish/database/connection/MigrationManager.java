@@ -107,20 +107,10 @@ public class MigrationManager {
     }
 
     private FluentConfiguration getBaseFlywayConfiguration(ConnectionFactory connectionFactory) {
-        final String alterColumns = "ALTER TABLE `${table.prefix}competitions` ALTER COLUMN contestants text;" +
-                "ALTER TABLE `${table.prefix}fish` ADD PRIMARY KEY (fish_name);"  +
-                "ALTER TABLE `${table.prefix}fish_log` ADD CONSTRAINT FK_FishLog_User FOREIGN KEY(id) REFERENCES `${table.prefix}users(id)`;"  +
-                "ALTER TABLE `${table.prefix}users_sales` ADD CONSTRAINT FK_UsersSales_Transaction FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`;";
-
         return Flyway.configure(getClass().getClassLoader())
                 .dataSource(connectionFactory.dataSource)
                 .placeholders(Map.of(
-                        "table.prefix", MainConfig.getInstance().getPrefix(),
-                        "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
-                        "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)",
-                        "v6.alter.columns", !MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("sqlite") ?
-                                alterColumns.replace("${table.prefix}",MainConfig.getInstance().getPrefix())
-                                : ""
+                        "table.prefix", MainConfig.getInstance().getPrefix()
                 ))
                 .validateMigrationNaming(true)
                 .createSchemas(true)

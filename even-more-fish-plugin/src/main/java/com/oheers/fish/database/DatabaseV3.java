@@ -14,7 +14,6 @@ import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.command.CommandSender;
-import org.flywaydb.core.api.MigrationVersion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

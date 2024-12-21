@@ -14,5 +14,5 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}users_sales` (
    fish_amount INTEGER NOT NULL,
    fish_length DOUBLE NOT NULL,
    price_sold DOUBLE NOT NULL,
-   ${primary.key}
+   PRIMARY KEY (id AUTOINCREMENT)
 );

@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS `${table.prefix}competitions` (
-   id INTEGER NOT NULL ${auto.increment},
+   id INTEGER NOT NULL,
    competition_name VARCHAR(256) NOT NULL,
    winner_uuid VARCHAR(128) NOT NULL,
    winner_fish VARCHAR(256) NOT NULL,
    winner_score REAL NOT NULL,
    contestants TEXT NOT NULL,
-   ${primary.key}
+   PRIMARY KEY (id AUTOINCREMENT)
 );
 
 
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}fish` (
 );
 
 CREATE TABLE IF NOT EXISTS `${table.prefix}fish_log` (
-   id INT NOT NULL,
+   id INT NOT NULL, --user id
    rarity VARCHAR(128) NOT NULL,
    fish VARCHAR(128) NOT NULL,
    quantity INT NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}fish_log` (
 );
 
 CREATE TABLE IF NOT EXISTS `${table.prefix}users` (
-   id INTEGER NOT NULL ${auto.increment}, -- user_id
+   id INTEGER NOT NULL, -- user_id
    uuid VARCHAR(128) NOT NULL,
    first_fish VARCHAR(256) NOT NULL,
    last_fish VARCHAR(256) NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}users` (
    competitions_joined INT NOT NULL,
    fish_sold INTEGER DEFAULT 0,
    money_earned DOUBLE DEFAULT 0,
-   ${primary.key}
+   PRIMARY KEY (id AUTOINCREMENT)
 );
 
 CREATE TABLE IF NOT EXISTS `${table.prefix}transactions` (
@@ -66,5 +66,5 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}users_sales` (
   price_sold DOUBLE NOT NULL,
   CONSTRAINT FK_UsersSales_Transaction
   FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`,
-  ${primary.key}
+  PRIMARY KEY (id AUTOINCREMENT)
 );

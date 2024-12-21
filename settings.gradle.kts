@@ -4,6 +4,7 @@ include(":even-more-fish-api")
 include(":even-more-fish-addons-j17")
 include(":even-more-fish-plugin")
 include(":even-more-fish-paper")
+include(":even-more-fish-database-extras")
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -73,6 +74,14 @@ dependencyResolutionManagement {
             library("boostedyaml", "dev.dejvokep:boosted-yaml:1.3.7")
 
             plugin("grgit", "org.ajoberstar.grgit").version("5.2.2")
+
+            version("jooq", "3.19.16")
+            library("jooq", "org.jooq","jooq").versionRef("jooq")
+            library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
+            library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
+            library("jooq-meta-extensions","org.jooq","jooq-meta-extensions").versionRef("jooq")
+            library("jooq-mysql-connector", "com.mysql:mysql-connector-j:9.1.0")
+            plugin("jooq", "nu.studer.jooq").version("9.0")
 
         }
     }
