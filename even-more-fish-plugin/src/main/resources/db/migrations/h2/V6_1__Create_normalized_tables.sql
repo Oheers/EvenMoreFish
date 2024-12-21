@@ -58,10 +58,10 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}users_sales` (
   id INTEGER AUTO_INCREMENT NOT NULL,
   transaction_id VARCHAR(22) NOT NULL,
   fish_name VARCHAR(256) NOT NULL,
-   fish_rarity VARCHAR(256) NOT NULL,
-   fish_amount INTEGER NOT NULL,
-   fish_length DOUBLE NOT NULL,
-   price_sold DOUBLE NOT NULL,
-   CONSTRAINT FK_UsersSales_Transaction FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`,
-   PRIMARY KEY (id)
+  fish_rarity VARCHAR(256) NOT NULL,
+  fish_amount INTEGER NOT NULL,
+  fish_length DOUBLE NOT NULL,
+  price_sold DOUBLE NOT NULL,
+  CONSTRAINT FK_UsersSales_Transaction FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`,
+  PRIMARY KEY (id)
 );
