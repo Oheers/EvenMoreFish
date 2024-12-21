@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}transactions` (
   id VARCHAR(22) NOT NULL,
   user_id INTEGER NOT NULL,
   timestamp TIMESTAMP NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES ${table.prefix}users(id),
+  FOREIGN KEY (user_id) REFERENCES `${table.prefix}users(id)`,
   PRIMARY KEY (id)
 );
 
