@@ -324,6 +324,7 @@ public enum ConfigMessage {
                 message.appendString(line);
             }
         }
+        message.setCanSilent(this.canSilent);
         return message;
     }
 
