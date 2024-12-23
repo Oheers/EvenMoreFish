@@ -230,42 +230,42 @@ public class BaitNBTManager {
      */
     // TODO look into why this throws IndexOutOfBoundsException
     public static @Nullable Bait randomBaitApplication(ItemStack fishingRod) {
-        try {
-            if (fishingRod.getItemMeta() == null) {
-                return null;
-            }
-
-            String[] baitNameList = NbtUtils.getBaitArray(fishingRod);
-            List<Bait> baitList = new ArrayList<>();
-
-            for (String baitName : baitNameList) {
-
-                Bait bait = BaitManager.getInstance().getBait(baitName.split(":")[0]);
-                if (bait != null) {
-                    baitList.add(bait);
-                }
-
-            }
-
-            double totalWeight = 0;
-
-            // Weighted random logic (nabbed from stackoverflow)
-            for (Bait bait : baitList) {
-                totalWeight += (bait.getApplicationWeight());
-            }
-
-            int idx = 0;
-            for (double r = Math.random() * totalWeight; idx < baitList.size() - 1; ++idx) {
-                r -= baitList.get(idx).getApplicationWeight();
-                if (r <= 0.0) {
-                    break;
-                }
-            }
-            return baitList.get(idx);
-        } catch (IndexOutOfBoundsException exception) {
-            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Could not find a valid bait!");
+        if (fishingRod.getItemMeta() == null) {
             return null;
         }
+
+        String[] baitNameList = NbtUtils.getBaitArray(fishingRod);
+        List<Bait> baitList = new ArrayList<>();
+
+        for (String baitName : baitNameList) {
+
+            Bait bait = BaitManager.getInstance().getBait(baitName.split(":")[0]);
+            if (bait != null) {
+                baitList.add(bait);
+            }
+
+        }
+
+        // Fix IndexOutOfBoundsException caused by the list being empty.
+        if (baitList.isEmpty()) {
+            return null;
+        }
+
+        double totalWeight = 0;
+
+        // Weighted random logic (nabbed from stackoverflow)
+        for (Bait bait : baitList) {
+            totalWeight += (bait.getApplicationWeight());
+        }
+
+        int idx = 0;
+        for (double r = Math.random() * totalWeight; idx < baitList.size() - 1; ++idx) {
+            r -= baitList.get(idx).getApplicationWeight();
+            if (r <= 0.0) {
+                break;
+            }
+        }
+        return baitList.get(idx);
     }
 
     /**
@@ -276,29 +276,29 @@ public class BaitNBTManager {
      */
     // TODO look into why this throws IndexOutOfBoundsException
     public static @Nullable Bait randomBaitCatch() {
-        try {
-            double totalWeight = 0;
+        double totalWeight = 0;
 
-            List<Bait> baitList = new ArrayList<>(BaitManager.getInstance().getBaitMap().values());
+        List<Bait> baitList = new ArrayList<>(BaitManager.getInstance().getBaitMap().values());
 
-            // Weighted random logic (nabbed from stackoverflow)
-            for (Bait bait : baitList) {
-                totalWeight += (bait.getCatchWeight());
-            }
-
-            int idx = 0;
-            for (double r = Math.random() * totalWeight; idx < BaitManager.getInstance().getBaitMap().size() - 1; ++idx) {
-                r -= baitList.get(idx).getCatchWeight();
-                if (r <= 0.0) {
-                    break;
-                }
-            }
-
-            return baitList.get(idx);
-        } catch (IndexOutOfBoundsException exception) {
-            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Could not find a valid bait!");
+        // Fix IndexOutOfBoundsException caused by the list being empty.
+        if (baitList.isEmpty()) {
             return null;
         }
+
+        // Weighted random logic (nabbed from stackoverflow)
+        for (Bait bait : baitList) {
+            totalWeight += (bait.getCatchWeight());
+        }
+
+        int idx = 0;
+        for (double r = Math.random() * totalWeight; idx < BaitManager.getInstance().getBaitMap().size() - 1; ++idx) {
+            r -= baitList.get(idx).getCatchWeight();
+            if (r <= 0.0) {
+                break;
+            }
+        }
+
+        return baitList.get(idx);
     }
 
     /**
