@@ -1,6 +1,7 @@
 package com.oheers.fish.utils;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -64,17 +65,14 @@ public class ItemBuilder {
             return null;
         }
         ItemStack stack = new ItemStack(this.material);
-        ItemMeta meta = stack.getItemMeta();
-        if (meta == null) {
-            return stack;
-        }
-        if (this.display != null) {
-            meta.setDisplayName(EvenMoreFish.getAdapter().createMessage(this.display).getLegacyMessage());
-        }
-        if (!this.lore.isEmpty()) {
-            meta.setLore(EvenMoreFish.getAdapter().createMessage(this.lore).getLegacyListMessage());
-        }
-        stack.setItemMeta(meta);
+        FishUtils.editMeta(stack, meta -> {
+            if (this.display != null) {
+                meta.setDisplayName(EvenMoreFish.getAdapter().createMessage(this.display).getLegacyMessage());
+            }
+            if (!this.lore.isEmpty()) {
+                meta.setLore(EvenMoreFish.getAdapter().createMessage(this.lore).getLegacyListMessage());
+            }
+        });
         if (this.glowing) {
             ItemUtils.glowify(stack);
         }
