@@ -228,9 +228,8 @@ public class BaitNBTManager {
      * @param fishingRod The fishing rod.
      * @return A random bait applied to the fishing rod.
      */
-    // TODO look into why this throws IndexOutOfBoundsException
     public static @Nullable Bait randomBaitApplication(ItemStack fishingRod) {
-        if (fishingRod.getItemMeta() == null) {
+        if (fishingRod == null || fishingRod.getItemMeta() == null) {
             return null;
         }
 
@@ -274,7 +273,6 @@ public class BaitNBTManager {
      *
      * @return A random bait weighted by its catch-weight.
      */
-    // TODO look into why this throws IndexOutOfBoundsException
     public static @Nullable Bait randomBaitCatch() {
         double totalWeight = 0;
 
