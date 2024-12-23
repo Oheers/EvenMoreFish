@@ -461,6 +461,8 @@ public class FishUtils {
         }
     }
 
+    // #editMeta methods. These can be safely replaced with Paper's API once we drop Spigot.
+
     public static boolean editMeta(@NotNull ItemStack item, @NotNull Consumer<ItemMeta> consumer) {
         return editMeta(item, ItemMeta.class, consumer);
     }
