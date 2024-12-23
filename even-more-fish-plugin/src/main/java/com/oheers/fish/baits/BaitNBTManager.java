@@ -251,12 +251,7 @@ public class BaitNBTManager {
             return null;
         }
 
-        double totalWeight = 0;
-
-        // Weighted random logic (nabbed from stackoverflow)
-        for (Bait bait : baitList) {
-            totalWeight += (bait.getApplicationWeight());
-        }
+        double totalWeight = baitList.stream().mapToDouble(Bait::getApplicationWeight).sum();
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < baitList.size() - 1; ++idx) {
@@ -275,7 +270,6 @@ public class BaitNBTManager {
      * @return A random bait weighted by its catch-weight.
      */
     public static @Nullable Bait randomBaitCatch() {
-        double totalWeight = 0;
 
         Map<String, Bait> baitMap = BaitManager.getInstance().getBaitMap();
         List<Bait> baitList = new ArrayList<>(baitMap.values());
@@ -285,10 +279,7 @@ public class BaitNBTManager {
             return null;
         }
 
-        // Weighted random logic (nabbed from stackoverflow)
-        for (Bait bait : baitList) {
-            totalWeight += (bait.getCatchWeight());
-        }
+        double totalWeight = baitList.stream().mapToDouble(Bait::getCatchWeight).sum();
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < baitList.size() - 1; ++idx) {
