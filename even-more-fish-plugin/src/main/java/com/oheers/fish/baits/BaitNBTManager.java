@@ -385,7 +385,12 @@ public class BaitNBTManager {
                 for (String bait : rodNBT.split(",")) {
                     baitCount++;
                     AbstractMessage message = EvenMoreFish.getAdapter().createMessage(BaitFile.getInstance().getBaitFormat());
-                    message.setAmount(bait.split(":")[1]);
+                    // TODO this is to prevent an ArrayIndexOutOfBoundsException, but it should be handled in a better way.
+                    try {
+                        message.setAmount(bait.split(":")[1]);
+                    } catch (ArrayIndexOutOfBoundsException exception) {
+                        message.setAmount("N/A");
+                    }
                     message.setBait(getBaitFormatted(bait.split(":")[0]));
                     lore.add(message.getLegacyMessage());
                 }
@@ -474,4 +479,5 @@ public class BaitNBTManager {
         }
         return FishUtils.translateColorCodes(bait.getDisplayName());
     }
+
 }
