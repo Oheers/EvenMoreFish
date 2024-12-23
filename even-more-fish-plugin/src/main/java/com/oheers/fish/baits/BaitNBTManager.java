@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -276,7 +277,8 @@ public class BaitNBTManager {
     public static @Nullable Bait randomBaitCatch() {
         double totalWeight = 0;
 
-        List<Bait> baitList = new ArrayList<>(BaitManager.getInstance().getBaitMap().values());
+        Map<String, Bait> baitMap = BaitManager.getInstance().getBaitMap();
+        List<Bait> baitList = new ArrayList<>(baitMap.values());
 
         // Fix IndexOutOfBoundsException caused by the list being empty.
         if (baitList.isEmpty()) {
@@ -289,7 +291,7 @@ public class BaitNBTManager {
         }
 
         int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < BaitManager.getInstance().getBaitMap().size() - 1; ++idx) {
+        for (double r = Math.random() * totalWeight; idx < baitList.size() - 1; ++idx) {
             r -= baitList.get(idx).getCatchWeight();
             if (r <= 0.0) {
                 break;
