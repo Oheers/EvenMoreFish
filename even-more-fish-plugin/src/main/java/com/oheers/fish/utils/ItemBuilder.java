@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class ItemBuilder {
         this.material = material;
     }
 
-    public ItemBuilder(@NotNull String materialName, @NotNull Material defaultMaterial) {
+    public ItemBuilder(@Nullable String materialName, @NotNull Material defaultMaterial) {
         this.material = ItemUtils.getMaterial(materialName, defaultMaterial);
     }
 
@@ -30,7 +31,7 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder withMaterial(@NotNull String materialName, @NotNull Material defaultMaterial) {
+    public ItemBuilder withMaterial(@Nullable String materialName, @NotNull Material defaultMaterial) {
         this.material = ItemUtils.getMaterial(materialName, defaultMaterial);
         return this;
     }
