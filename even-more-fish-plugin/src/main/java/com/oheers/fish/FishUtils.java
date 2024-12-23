@@ -25,14 +25,17 @@ import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Skull;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.DayOfWeek;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class FishUtils {
 
@@ -456,6 +459,21 @@ public class FishUtils {
         } catch (ClassNotFoundException exception) {
             return false;
         }
+    }
+
+    public static boolean editMeta(@NotNull ItemStack item, @NotNull Consumer<ItemMeta> consumer) {
+        return editMeta(item, ItemMeta.class, consumer);
+    }
+
+    public static <M extends ItemMeta> boolean editMeta(@NotNull ItemStack item, @NotNull Class<M> metaClass, @NotNull Consumer<M> consumer) {
+        ItemMeta meta = item.getItemMeta();
+        if (metaClass.isInstance(meta)) {
+            M checked = metaClass.cast(meta);
+            consumer.accept(checked);
+            item.setItemMeta(checked);
+            return true;
+        }
+        return false;
     }
 
 }
