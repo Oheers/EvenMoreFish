@@ -109,8 +109,10 @@ public class PaperMessage extends AbstractMessage {
 
     @Override
     public String getLegacyMessage() {
-        // Raw Message should always be legacy.
-        return getRawMessage();
+        formatVariables();
+        formatPlaceholderAPI();
+        
+        return formatColours(getRawMessage());
     }
 
     @Override

@@ -10,6 +10,7 @@ Welcome to the EvenMoreFish Wiki.
 * [Competition Configs](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Configs)
 * [Rarities](https://github.com/Oheers/EvenMoreFish/wiki/Rarities)
 * [Messages.yml](https://github.com/Oheers/EvenMoreFish/wiki/Messages.yml)
+* [GUI Action Types](https://github.com/Oheers/EvenMoreFish/wiki/GUI-Actions)
 * [Requirements](https://github.com/Oheers/EvenMoreFish/wiki/Requirements)
 * [Biome Sets](https://github.com/Oheers/EvenMoreFish/wiki/Biome-Sets)
 ### Additional Features
