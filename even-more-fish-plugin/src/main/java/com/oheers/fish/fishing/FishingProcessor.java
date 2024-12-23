@@ -150,13 +150,15 @@ public class FishingProcessor implements Listener {
         if (BaitFile.getInstance().getBaitCatchPercentage() > 0) {
             if (EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
                 Bait caughtBait = BaitNBTManager.randomBaitCatch();
-                AbstractMessage message = ConfigMessage.BAIT_CAUGHT.getMessage();
-                message.setBaitTheme(caughtBait.getTheme());
-                message.setBait(caughtBait.getName());
-                message.setPlayer(player);
-                message.send(player);
+                if (caughtBait != null) {
+                    AbstractMessage message = ConfigMessage.BAIT_CAUGHT.getMessage();
+                    message.setBaitTheme(caughtBait.getTheme());
+                    message.setBait(caughtBait.getName());
+                    message.setPlayer(player);
+                    message.send(player);
 
-                return caughtBait.create(player);
+                    return caughtBait.create(player);
+                }
             }
         }
 
@@ -174,7 +176,7 @@ public class FishingProcessor implements Listener {
                         ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
                         fishingRod.setItemMeta(newMeta);
                         EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
-                    } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
+                    } catch (MaxBaitsReachedException | MaxBaitReachedException | NullPointerException exception) {
                         EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
                     }
                 } else {
