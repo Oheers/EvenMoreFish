@@ -40,8 +40,14 @@ public class SkullSaver implements Listener {
         
         try {
             Fish f = FishUtils.getFish(skullMeta, event.getPlayer());
-            
-            stack.setItemMeta(f.give(f.getFactory().getChosenRandomIndex()).getItemMeta());
+            if (f == null) {
+                return;
+            }
+            ItemStack fishItem = f.give(f.getFactory().getChosenRandomIndex());
+            if (fishItem == null) {
+                return;
+            }
+            stack.setItemMeta(fishItem.getItemMeta());
             block.setType(Material.AIR);
             block.getWorld().dropItem(block.getLocation(), stack);
             block.getWorld().playSound(block.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 1);

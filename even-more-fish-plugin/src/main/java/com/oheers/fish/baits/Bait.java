@@ -76,11 +76,7 @@ public class Bait {
         ItemStack baitItem = itemFactory.createItem(player, -1);
         baitItem.setAmount(dropQuantity);
 
-        ItemMeta meta = baitItem.getItemMeta();
-        if (meta != null) {
-            meta.setLore(createBoostLore());
-        }
-        baitItem.setItemMeta(meta);
+        FishUtils.editMeta(baitItem, meta -> meta.setLore(createBoostLore()));
 
         return BaitNBTManager.applyBaitNBT(baitItem, this.name);
     }

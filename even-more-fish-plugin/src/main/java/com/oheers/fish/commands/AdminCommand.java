@@ -278,10 +278,7 @@ public class AdminCommand extends BaseCommand {
 
         int totalDeleted = BaitNBTManager.deleteAllBaits(fishingRod);
         if (totalDeleted > 0) {
-            ItemMeta meta = fishingRod.getItemMeta();
-            List<String> updatedLore = BaitNBTManager.deleteOldLore(fishingRod);
-            meta.setLore(updatedLore);
-            fishingRod.setItemMeta(meta);
+            FishUtils.editMeta(fishingRod, meta -> meta.setLore(BaitNBTManager.deleteOldLore(fishingRod)));
         }
 
         AbstractMessage message = ConfigMessage.BAITS_CLEARED.getMessage();

@@ -1,5 +1,6 @@
 package com.oheers.fish.utils;
 
+import com.oheers.fish.FishUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -41,15 +42,10 @@ public class ItemUtils {
         }
     }
 
-    public static void glowify(@NotNull ItemStack i) {
+    public static void glowify(@NotNull ItemStack item) {
         // plops on the unbreaking 1 enchantment to make it glow
-        i.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
-        ItemMeta meta = i.getItemMeta();
-        if (meta != null) {
-            // hides the unbreaking 1 enchantment from showing in the lore
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            i.setItemMeta(meta);
-        }
+        item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        FishUtils.editMeta(item, meta -> meta.addItemFlags(ItemFlag.HIDE_ENCHANTS));
     }
 
 }

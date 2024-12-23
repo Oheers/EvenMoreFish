@@ -6,6 +6,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
 import com.oheers.fish.api.adapter.AbstractMessage;
+import com.oheers.fish.baits.ApplicationResult;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
@@ -162,7 +163,7 @@ public class FishingProcessor implements Listener {
             }
         }
 
-        Fish fish;
+        Fish fish = null;
 
         if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !Competition.isActive())) {
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
@@ -172,23 +173,28 @@ public class FishingProcessor implements Listener {
                 fish = applyingBait.chooseFish(player, location);
                 if (fish.isWasBaited()) {
                     fish.setFisherman(player.getUniqueId());
+                    // Lots of nesting here, but I cannot think of a better way to do this.
                     try {
-                        ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
-                        fishingRod.setItemMeta(newMeta);
-                        EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
+                        ApplicationResult result = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1);
+                        if (result != null) {
+                            ItemStack newFishingRod = result.getFishingRod();
+                            if (newFishingRod != null) {
+                                fishingRod.setItemMeta(newFishingRod.getItemMeta());
+                                EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
+                            }
+                        }
                     } catch (MaxBaitsReachedException | MaxBaitReachedException | NullPointerException exception) {
                         EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
                     }
-                } else {
-                    fish = chooseNonBaitFish(player, location);
                 }
             }
-        } else {
-            fish = chooseNonBaitFish(player, location);
         }
 
         if (fish == null) {
-            return null;
+            fish = chooseNonBaitFish(player, location);
+            if (fish == null) {
+                return null;
+            }
         }
 
         fish.init();
