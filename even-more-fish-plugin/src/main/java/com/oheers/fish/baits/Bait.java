@@ -21,15 +21,19 @@ import java.util.*;
 
 public class Bait {
 
+    private final Section section;
     private final ItemFactory itemFactory;
     private final String name, displayName, theme;
     private final int maxApplications, dropQuantity;
     List<Fish> fishList = new ArrayList<>();
     List<Rarity> rarityList = new ArrayList<>();
     Set<Rarity> fishListRarities = new HashSet<>();
-    double boostRate, applicationWeight, catchWeight;
+    double boostRate;
+    double applicationWeight;
+    double catchWeight;
 
     public Bait(@NotNull Section section) {
+        this.section = section;
         this.name = Objects.requireNonNull(section.getNameAsString());
 
         this.theme = FishUtils.translateColorCodes(section.getString("bait-theme", "&e"));
@@ -42,7 +46,10 @@ public class Bait {
         this.displayName = section.getString("item.displayname");
         this.dropQuantity = section.getInt("drop-quantity", 1);
 
-        ItemFactory factory = new ItemFactory("", section);
+        loadRarities();
+        loadFish();
+
+        ItemFactory factory = new ItemFactory(null, section);
         factory.enableDefaultChecks();
         factory.setItemDisplayNameCheck(true);
         factory.setDisplayName(FishUtils.translateColorCodes("&e" + name));
@@ -61,6 +68,7 @@ public class Bait {
      * @param name The name of the bait to be referenced from the baits.yml file
      */
     public Bait(String name) {
+        this.section = null;
         this.name = name;
 
         if (BaitFile.getInstance().getBaitTheme(name) != null) {
@@ -116,12 +124,49 @@ public class Bait {
     }
 
     /**
-     * This adds all the fish within a rarity to the boosted fish that this bait will affect.
-     *
-     * @param r The rarity having its fish added.
+     * @return All configured rarities from this bait's configuration.
      */
-    public void addRarity(Rarity r) {
-        rarityList.add(r);
+    public @NotNull List<Rarity> getRarities() {
+        List<String> rarityStrings = section.getStringList("rarities");
+        return rarityStrings.stream()
+                .map(FishManager.getInstance()::getRarity)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private void loadRarities() {
+        for (String rarityName : section.getStringList("rarities")) {
+            Rarity rarity = FishManager.getInstance().getRarity(rarityName);
+            if (rarity == null) {
+                continue;
+            }
+            rarityList.add(rarity);
+        }
+    }
+
+    private void loadFish() {
+        Section fishSection = section.getSection("fish");
+        if (fishSection == null) {
+            return;
+        }
+        for (String rarityName : fishSection.getRoutesAsStrings(false)) {
+            Rarity rarity = FishManager.getInstance().getRarity(rarityName);
+            if (rarity == null) {
+                continue;
+            }
+            List<String> fishNames = fishSection.getStringList(rarityName);
+            for (String fishName : fishNames) {
+                Fish fish = rarity.getFish(fishName);
+                if (fish == null) {
+                    continue;
+                }
+                fishList.add(fish);
+            }
+        }
+    }
+
+    public @NotNull List<Fish> getFish() {
+        return fishList;
     }
 
     /**
@@ -183,25 +228,25 @@ public class Bait {
      * @return A chosen fish.
      */
     public Fish chooseFish(Player player, Location location) {
-        Set<Rarity> boostedRarities = new HashSet<>(getRarityList());
+        Set<Rarity> boostedRarities = new HashSet<>(getRarities());
         boostedRarities.addAll(fishListRarities);
 
         Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, getBoostRate(), boostedRarities, Set.copyOf(FishManager.getInstance().getRarityMap().values()));
         Fish fish;
 
-        if (!getFishList().isEmpty()) {
+        if (!getFish().isEmpty()) {
             // The bait has both rarities: and fish: set but the plugin chose a rarity with no boosted fish. This ensures
             // the method isn't given an empty list.
             if (!fishListRarities.contains(fishRarity)) {
                 fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), fishRarity.getFishList(), true);
             } else {
-                fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFishList(), true);
+                fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFish(), true);
             }
             if (fish != null) {
                 fish.setWasBaited(true);
             }
 
-            if (!getRarityList().contains(fishRarity) && (fish == null || !getFishList().contains(fish))) {
+            if (!getRarities().contains(fishRarity) && (fish == null || !getFish().contains(fish))) {
                 // boost effect chose a fish but the randomizer didn't pick out the right fish - they've been incorrectly boosted.
                 fish = FishManager.getInstance().getFish(fishRarity, location, player, 1, null, true);
                 if (fish != null) {
@@ -212,7 +257,7 @@ public class Bait {
             }
         } else {
             fish = FishManager.getInstance().getFish(fishRarity, location, player, 1, null, true);
-            if (getRarityList().contains(fishRarity)) {
+            if (getRarities().contains(fishRarity)) {
                 alertUsage(player);
                 if (fish != null) {
                     fish.setWasBaited(true);
@@ -281,20 +326,6 @@ public class Bait {
      */
     public void setBoostRate(double boostRate) {
         this.boostRate = boostRate;
-    }
-
-    /**
-     * @return The list of fish this bait will boost the chances of catching.
-     */
-    public List<Fish> getFishList() {
-        return this.fishList;
-    }
-
-    /**
-     * @return The list of rarities this bait will boost the chances of catching.
-     */
-    public List<Rarity> getRarityList() {
-        return this.rarityList;
     }
 
     /**
