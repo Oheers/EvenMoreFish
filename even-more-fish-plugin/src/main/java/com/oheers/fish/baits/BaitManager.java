@@ -97,45 +97,12 @@ public class BaitManager {
         if (section == null) {
             return;
         }
-
         for (String baitName : section.getRoutesAsStrings(false)) {
-            Bait bait = new Bait(baitName);
-
-            List<String> rarityList = getBaitConfiguration().getStringList("baits." + baitName + ".rarities");
-
-            if (!rarityList.isEmpty()) {
-                for (String rarityName : rarityList) {
-                    Rarity rarity = FishManager.getInstance().getRarity(rarityName);
-                    if (rarity == null) {
-                        EvenMoreFish.getInstance().getLogger().severe(rarityName + " is not a valid rarity. It was not added to the " + baitName + " bait.");
-                        continue;
-                    }
-                    bait.addRarity(rarity);
-                }
+            Section baitSection = section.getSection(baitName);
+            if (baitSection == null) {
+                continue;
             }
-
-            Section fishSection = getBaitConfiguration().getSection("baits." + baitName + ".fish");
-
-            if (fishSection != null) {
-                for (String rarityString : fishSection.getRoutesAsStrings(false)) {
-                    Rarity rarity = FishManager.getInstance().getRarity(rarityString);
-
-                    if (rarity == null) {
-                        EvenMoreFish.getInstance().getLogger().severe(rarityString + " is not a loaded rarity value. It was not added to the " + baitName + " bait.");
-                    } else {
-                        List<String> fishNames = getBaitConfiguration().getStringList("baits." + baitName + ".fish." + rarityString);
-                        for (String fishName : fishNames) {
-                            Fish fish = rarity.getFish(fishName);
-                            if (fish == null) {
-                                EvenMoreFish.getInstance().getLogger().severe(fishName + " could not be found in the " + rarity.getId() + " config. It was not added to the " + baitName + " bait.");
-                                continue;
-                            }
-                            bait.addFish(fish);
-                        }
-                    }
-                }
-            }
-
+            Bait bait = new Bait(baitSection);
             baitMap.put(baitName.toUpperCase(), bait);
         }
     }

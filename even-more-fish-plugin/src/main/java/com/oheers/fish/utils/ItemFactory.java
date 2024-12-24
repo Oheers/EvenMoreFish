@@ -50,18 +50,11 @@ public class ItemFactory {
      * @param configurationFile The config to check
      */
     public ItemFactory(@Nullable String configLocation, @NotNull Section configurationFile) {
-        if (configLocation != null) {
+        if (configLocation != null && !configLocation.isEmpty()) {
             this.configLocation = configLocation + ".";
         } else {
             this.configLocation = "";
         }
-        this.configurationFile = configurationFile;
-        this.rawMaterial = false;
-        this.product = getType(null);
-    }
-
-    public ItemFactory(@NotNull Section configurationFile, @NotNull String configLocation) {
-        this.configLocation = configLocation + ".";
         this.configurationFile = configurationFile;
         this.rawMaterial = false;
         this.product = getType(null);
