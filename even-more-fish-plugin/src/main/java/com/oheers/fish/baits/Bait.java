@@ -9,16 +9,15 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.ItemFactory;
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Bait {
 
@@ -29,6 +28,26 @@ public class Bait {
     List<Rarity> rarityList = new ArrayList<>();
     Set<Rarity> fishListRarities = new HashSet<>();
     double boostRate, applicationWeight, catchWeight;
+
+    public Bait(@NotNull Section section) {
+        this.name = Objects.requireNonNull(section.getNameAsString());
+
+        this.theme = FishUtils.translateColorCodes(section.getString("bait-theme", "&e"));
+
+        this.applicationWeight = section.getDouble("application-weight");
+        this.catchWeight = section.getDouble("catch-weight");
+
+        this.boostRate = BaitFile.getInstance().getBoostRate();
+        this.maxApplications = section.getInt("max-baits", -1);
+        this.displayName = section.getString("item.displayname");
+        this.dropQuantity = section.getInt("drop-quantity", 1);
+
+        ItemFactory factory = new ItemFactory("", section);
+        factory.enableDefaultChecks();
+        factory.setItemDisplayNameCheck(true);
+        factory.setDisplayName(FishUtils.translateColorCodes("&e" + name));
+        this.itemFactory = factory;
+    }
 
     /**
      * This represents a bait, which can be used to boost the likelihood that a certain fish or fish rarity appears from
@@ -58,7 +77,7 @@ public class Bait {
         this.displayName = BaitFile.getInstance().getDisplayName(this.name);
         this.dropQuantity = BaitFile.getInstance().getDropQuantity(this.name);
 
-        this.itemFactory = new ItemFactory(BaitFile.getInstance().getConfig(), "baits." + name);
+        this.itemFactory = new ItemFactory("baits." + name, BaitFile.getInstance().getConfig());
 
         this.itemFactory.enableDefaultChecks();
         this.itemFactory.setItemDisplayNameCheck(true);

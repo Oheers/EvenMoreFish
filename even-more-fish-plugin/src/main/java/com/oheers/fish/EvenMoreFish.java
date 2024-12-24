@@ -505,7 +505,7 @@ public class EvenMoreFish extends EMFPlugin {
     }
 
     public ItemStack createCustomNBTRod() {
-        ItemFactory itemFactory = new ItemFactory(MainConfig.getInstance().getConfig(), "nbt-rod-item");
+        ItemFactory itemFactory = new ItemFactory("nbt-rod-item", MainConfig.getInstance().getConfig());
         itemFactory.enableDefaultChecks();
         itemFactory.setItemDisplayNameCheck(true);
         itemFactory.setItemLoreCheck(true);
