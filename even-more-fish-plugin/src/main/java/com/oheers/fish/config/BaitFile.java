@@ -41,10 +41,6 @@ public class BaitFile extends ConfigBase {
         return getConfig().getString("format.unused-slot", "&7+ Available Slot");
     }
 
-    public String getBaitTheme(String bait) {
-        return getConfig().getString("baits." + bait + ".bait-theme");
-    }
-
     public List<String> getBaitLoreFormat() {
         return getConfig().getStringList("format.bait-lore");
     }
@@ -61,14 +57,6 @@ public class BaitFile extends ConfigBase {
         return getConfig().getString("format.boosts-rarities");
     }
 
-    public double getCatchWeight(String bait) {
-        return getConfig().getDouble("baits." + bait + ".catch-weight");
-    }
-
-    public double getApplicationWeight(String bait) {
-        return getConfig().getDouble("baits." + bait + ".application-weight");
-    }
-
     public double getBoostRate() {
         return getConfig().getDouble("general.boost", 1.0);
     }
@@ -81,27 +69,4 @@ public class BaitFile extends ConfigBase {
         return getConfig().getDouble("general.catch-percentage");
     }
 
-    public int getMaxBaitApplication(String baitName) {
-        return getConfig().getInt("baits." + baitName + ".max-baits", -1);
-    }
-
-    public String getDisplayName(String baitName) {
-        return getConfig().getString("baits." + baitName + ".item.displayname");
-    }
-
-    public List<String> getLore(String baitName) {
-        return getConfig().getStringList("baits." + baitName + ".lore");
-    }
-
-    public int getDropQuantity(String baitName) {
-        return getConfig().getInt("baits." + baitName + ".drop-quantity", 1);
-    }
-
-    public boolean isBaitInfinite(String baitName) {
-        return getConfig().getBoolean("baits." + baitName + ".infinite", false);
-    }
-
-    public boolean alertOnBaitUse(String baitName) {
-        return getConfig().getBoolean("baits." + baitName + ".disable-use-alert", false);
-    }
 }

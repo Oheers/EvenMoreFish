@@ -173,7 +173,7 @@ public class Bait {
                 }
 
             } else if (lineAddition.equals("{lore}")) {
-                BaitFile.getInstance().getLore(this.name).forEach(line -> {
+                section.getStringList("lore").forEach(line -> {
                     AbstractMessage message = EvenMoreFish.getAdapter().createMessage(line);
                     lore.add(message.getLegacyMessage());
                 });
@@ -185,6 +185,14 @@ public class Bait {
         }
 
         return lore;
+    }
+
+    public boolean isInfinite() {
+        return section.getBoolean("infinite", false);
+    }
+
+    public boolean shouldDisableUseAlert() {
+        return section.getBoolean("disable-use-alert", false);
     }
 
     /**
@@ -248,7 +256,7 @@ public class Bait {
      */
 
     private void alertUsage(Player player) {
-        if (BaitFile.getInstance().alertOnBaitUse(this.name)) {
+        if (shouldDisableUseAlert()) {
             return;
         }
 
