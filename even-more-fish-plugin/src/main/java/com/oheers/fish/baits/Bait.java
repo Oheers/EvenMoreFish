@@ -32,6 +32,16 @@ public class Bait {
     double applicationWeight;
     double catchWeight;
 
+    /**
+     * This represents a bait, which can be used to boost the likelihood that a certain fish or fish rarity appears from
+     * the rod. All data is fetched from the config when the Bait object is created and then can be given out using
+     * the create() method.
+     * <p>
+     * The plugin recognises the bait item from the create() method using NBT data, which can be applied using the
+     * BaitNBTManager class, which handles all the NBT thingies.
+     *
+     * @param section The config section of the bait from the baits.yml file
+     */
     public Bait(@NotNull Section section) {
         this.section = section;
         this.name = Objects.requireNonNull(section.getNameAsString());
