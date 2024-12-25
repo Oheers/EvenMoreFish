@@ -6,14 +6,12 @@ import com.oheers.fish.api.plugin.EMFPlugin;
 import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent;
 import io.th0rgal.oraxen.items.ItemBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
-
 public class OraxenItemAddon extends ItemAddon implements Listener {
+
     private boolean oraxenLoaded = false;
     
     @Override
@@ -52,7 +50,7 @@ public class OraxenItemAddon extends ItemAddon implements Listener {
         getLogger().info("Reloading EMF.");
         this.oraxenLoaded = true;
 
-        ((EMFPlugin) Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish"))).reload(null);
+        EMFPlugin.getInstance().reload(null);
     }
 
 }

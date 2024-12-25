@@ -6,6 +6,7 @@ import com.willfp.ecoitems.items.EcoItems;
 import org.bukkit.inventory.ItemStack;
 
 public class EcoItemsItemAddon extends ItemAddon {
+
     @Override
     public String getPrefix() {
         return "ecoitems";
