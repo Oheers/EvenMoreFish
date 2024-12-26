@@ -41,6 +41,9 @@ public class FishConversions extends RarityConversions {
         File file = fishConfig.getFile();
         file.renameTo(new File(EvenMoreFish.getInstance().getDataFolder(), "fish.yml.old"));
         file.delete();
+
+        EvenMoreFish.getInstance().getLogger().severe("Your fish configs have been automatically converted to the new format.");
+        EvenMoreFish.getInstance().getLogger().severe("They are now located in the rarity files.");
     }
 
     private void convertSectionToFile(@NotNull Section section) {
