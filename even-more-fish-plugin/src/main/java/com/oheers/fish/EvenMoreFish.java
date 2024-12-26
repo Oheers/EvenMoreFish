@@ -552,20 +552,15 @@ public class EvenMoreFish extends EMFPlugin {
 
     // Checks for updates, surprisingly
     private boolean checkUpdate() {
-
-        String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
-        String[] serverVersion = getDescription().getVersion().split("\\.");
-
-        for (int i = 0; i < serverVersion.length; i++) {
-            if (i < spigotVersion.length) {
-                if (Integer.parseInt(spigotVersion[i]) > Integer.parseInt(serverVersion[i])) {
-                    return true;
-                }
-            } else {
-                return false;
-            }
+        // Removes the dots from the version numbers and turns them into ints.
+        // If spigotVersion's int is bigger than serverVersion's int, there is an update available.
+        try {
+            int spigotVersion = Integer.parseInt(new UpdateChecker(this, 91310).getVersion().replace(".", ""));
+            int serverVersion = Integer.parseInt(getDescription().getVersion().replace(".", ""));
+            return spigotVersion > serverVersion;
+        } catch (NumberFormatException exception) {
+            return false;
         }
-        return false;
     }
 
     private void checkPapi() {
