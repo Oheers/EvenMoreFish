@@ -44,11 +44,12 @@ public class Database implements DatabaseWrapper {
                                                 .withInputExpression(Pattern.compile("\\$\\{table.prefix}(.*)"))
                                                 .withOutput(tablePrefix + "$1"
                                                 )
-                                        )
+                                )
 
                 )
         );
     }
+
     public void executeStatement(@NotNull Consumer<DSLContext> consumer) {
         try (Connection connection = this.connectionFactory.getConnection()) {
             consumer.accept(this.getContext(connection));
@@ -84,8 +85,9 @@ public class Database implements DatabaseWrapper {
     @Override
     public boolean hasUserLog(@NotNull UUID uuid) {
         final int userId = getUserId(uuid);
-        if (userId == 0)
+        if (userId == 0) {
             return false;
+        }
 
         return new ExecuteQuery<Boolean>(connectionFactory) {
             @Override
@@ -124,7 +126,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public int getUserId(@NotNull UUID uuid) {
-        return new ExecuteQuery<Integer>(connectionFactory){
+        return new ExecuteQuery<Integer>(connectionFactory) {
             @Override
             protected Integer onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
@@ -164,8 +166,49 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public UserReport readUserReport(@NotNull UUID uuid) {
+        return new ExecuteQuery<UserReport>(connectionFactory) {
+            @Override
+            protected UserReport onRunQuery(DSLContext dslContext) throws Exception {
+                org.jooq.Record tableRecord = dslContext.select()
+                        .from(Tables.USERS)
+                        .where(Tables.USERS.UUID.eq(uuid.toString()))
+                        .fetchOne();
 
-        return null;
+                DatabaseUtil.writeDbVerbose("Read user report for user (%s)".formatted(uuid.toString()));
+                int id = tableRecord.getValue(Tables.USERS.ID);
+                int numFishCaught = tableRecord.getValue(Tables.USERS.NUM_FISH_CAUGHT);
+                int competitionsWon = tableRecord.getValue(Tables.USERS.COMPETITIONS_WON);
+                int competitionsJoined = tableRecord.getValue(Tables.USERS.COMPETITIONS_JOINED);
+                String firstFish = tableRecord.getValue(Tables.USERS.FIRST_FISH);
+                String lastFish = tableRecord.getValue(Tables.USERS.LAST_FISH);
+                String largestFish = tableRecord.getValue(Tables.USERS.LARGEST_FISH);
+                float totalFishLength = tableRecord.getValue(Tables.USERS.TOTAL_FISH_LENGTH);
+                float largestLength = tableRecord.getValue(Tables.USERS.LARGEST_LENGTH);
+                String uuid = tableRecord.getValue(Tables.USERS.UUID);
+                int fishSold = tableRecord.getValue(Tables.USERS.FISH_SOLD);
+                double moneyEarned = tableRecord.getValue(Tables.USERS.MONEY_EARNED);
+                return new UserReport(
+                        id,
+                        numFishCaught,
+                        competitionsWon,
+                        competitionsJoined,
+                        firstFish,
+                        lastFish,
+                        largestFish,
+                        totalFishLength,
+                        largestLength,
+                        uuid,
+                        fishSold,
+                        moneyEarned
+                );
+            }
+
+            @Override
+            protected UserReport empty() {
+                DatabaseUtil.writeDbVerbose("User report for (%s) does not exist in the database.".formatted(uuid));
+                return null;
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override
