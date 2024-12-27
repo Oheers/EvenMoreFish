@@ -287,7 +287,17 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void updateLargestFish(@NotNull Fish fish, @NotNull UUID uuid) {
+        new ExecuteUpdate(connectionFactory) {
+            @Override
+            protected int onRunUpdate(DSLContext dslContext) {
+                return dslContext.update(Tables.FISH)
+                        .set(Tables.FISH.LARGEST_FISH,Math.round(fish.getLength() * 10f) / 10f /* todo use decimal format */)
+                        .set(Tables.FISH.LARGEST_FISHER, uuid.toString())
+                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getValue()).and(Tables.FISH.FISH_NAME.eq(fish.getName())))
+                        .execute();
 
+            }
+        }.executeUpdate();
     }
 
     @Override
@@ -296,7 +306,7 @@ public class Database implements DatabaseWrapper {
     }
 
     @Override
-    public List<FishReport> getCachedReportsOrReports(@NotNull UUID uuid, @NotNull Fish fish) {
+    public List<FishReport> getReports(@NotNull UUID uuid, @NotNull Fish fish) {
         return List.of();
     }
 

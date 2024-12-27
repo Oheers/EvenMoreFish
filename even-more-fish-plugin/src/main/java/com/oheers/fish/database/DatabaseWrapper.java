@@ -43,7 +43,7 @@ public interface DatabaseWrapper {
     // Fish report methods
     List<FishReport> getFishReports(@NotNull UUID uuid);
 
-    List<FishReport> getCachedReportsOrReports(@NotNull UUID uuid, @NotNull Fish fish);
+    List<FishReport> getReports(@NotNull UUID uuid, @NotNull Fish fish);
 
     void handleFishCatch(@NotNull UUID uuid, @NotNull Fish fish);
 

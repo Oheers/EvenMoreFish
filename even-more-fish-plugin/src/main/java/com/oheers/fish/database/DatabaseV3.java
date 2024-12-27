@@ -615,6 +615,7 @@ public class DatabaseV3 {
      * @param fish The fish to be registered
      * @param uuid The first person to have caught this fish.
      */
+    @Deprecated
     public void createFishData(@NotNull final Fish fish, @NotNull final UUID uuid) {
         String sql = "INSERT INTO ${table.prefix}fish (fish_name, fish_rarity, first_fisher, total_caught, largest_fish, largest_fisher, first_catch_time) VALUES (?,?,?,?,?,?,?);";
         // starts a field for the new fish that's been fished for the first time
@@ -642,6 +643,7 @@ public class DatabaseV3 {
      * @param fish The fish being queried.
      * @return If the fish is present or not. If an SQLException occurs, true will be returned.
      */
+    @Deprecated
     public boolean hasFishData(@NotNull final Fish fish) {
         return Boolean.TRUE.equals(getStatement(f -> {
             try (PreparedStatement statement = f.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}fish WHERE fish_name = ? AND fish_rarity = ?", f))) {
@@ -661,6 +663,7 @@ public class DatabaseV3 {
      *
      * @param fish The fish to be increased.
      */
+    @Deprecated
     public void incrementFish(@NotNull final Fish fish) {
         String sql = "UPDATE ${table.prefix}fish SET total_caught = total_caught + 1 WHERE fish_rarity = ? AND fish_name = ?;";
         executeStatement(c -> {
@@ -682,6 +685,7 @@ public class DatabaseV3 {
      * @return The float length of the largest fish ever caught in the server's database history. If an error occurs, the
      * max float value is returned.
      */
+    @Deprecated
     public float getLargestFishSize(@NotNull final Fish fish) {
         String sql = "SELECT largest_fish FROM ${table.prefix}fish WHERE fish_rarity = ? AND fish_name = ?;";
         Float largestFishSize;
