@@ -122,9 +122,7 @@ public class BaitNBTManager {
         if (isBaitedRod(item)) {
             try {
                 if (doingLoreStuff) {
-                    ItemMeta meta = item.getItemMeta();
-                    meta.setLore(deleteOldLore(item));
-                    item.setItemMeta(meta);
+                    FishUtils.editMeta(item, meta -> meta.setLore(deleteOldLore(item)));
                 }
             } catch (IndexOutOfBoundsException exception) {
                 EvenMoreFish.getInstance()
@@ -165,9 +163,7 @@ public class BaitNBTManager {
                 if (getNumBaitsApplied(item) >= BaitFile.getInstance().getMaxBaits()) {
                     // the lore's been taken out, we're not going to be doing anymore here, so we're just re-adding it now.
                     if (doingLoreStuff) {
-                        ItemMeta rodMeta = item.getItemMeta();
-                        rodMeta.setLore(newApplyLore(item));
-                        item.setItemMeta(rodMeta);
+                        FishUtils.editMeta(item, meta -> meta.setLore(newApplyLore(item)));
                     }
                     throw new MaxBaitsReachedException("Max baits reached.", new ApplicationResult(item, cursorModifier.get()));
                 }
@@ -210,9 +206,7 @@ public class BaitNBTManager {
         }
 
         if (doingLoreStuff && !combined.isEmpty()) {
-            ItemMeta meta = item.getItemMeta();
-            meta.setLore(newApplyLore(item));
-            item.setItemMeta(meta);
+            FishUtils.editMeta(item, meta -> meta.setLore(newApplyLore(item)));
         }
 
         if (maxBait.get()) {
@@ -347,7 +341,6 @@ public class BaitNBTManager {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).removeKey(NbtKeys.EMF_APPLIED_BAIT);
         });
 
-        itemStack.setItemMeta(itemStack.getItemMeta()); // Update item meta to reflect changes
         return totalDeleted;
     }
 
