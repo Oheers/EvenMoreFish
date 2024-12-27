@@ -20,9 +20,13 @@ public class PrefixNamingStrategy extends DefaultGeneratorStrategy {
         return replacePrefix(super.getJavaIdentifier(definition));
     }
 
-
     private @NotNull String replacePrefix(final @NotNull String name) {
-        return name.replace("${TABLEPREFIX}", "").replace("${tablePrefix}", "").replace("$_7btablePrefix_7d", "").replace("$_7bTABLEPREFIX_7d", "");
+        return name
+                .replaceAll("\\$\\{(TABLEPREFIX|tablePrefix|table_Prefix|TABLE_PREFIX)}", "")  // Matches variations of ${TABLEPREFIX}
+                .replaceAll("\\$_7b(TABLEPREFIX|tablePrefix|table_Prefix|TABLE_PREFIX)_7d", "") // Matches variations of $_7bTABLEPREFIX_7d
+                .replaceAll("\\$\\{.*?}", "") // Generic fallback for any unmatched ${PLACEHOLDER}
+                .replaceAll("\\$_7b.*?_7d", ""); // Generic fallback for any unmatched $_7bPLACEHOLDER_7d
     }
+
 
 }
