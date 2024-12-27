@@ -268,7 +268,21 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public float getLargestFishSize(@NotNull Fish fish) {
-        return 0;
+        return new ExecuteQuery<Float>(connectionFactory) {
+            @Override
+            protected Float onRunQuery(DSLContext dslContext) throws Exception {
+                return dslContext.select()
+                        .from(Tables.FISH)
+                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getValue())
+                                .and(Tables.FISH.FISH_NAME.eq(fish.getName())))
+                        .fetchOne(Tables.FISH.LARGEST_FISH);
+            }
+
+            @Override
+            protected Float empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override
