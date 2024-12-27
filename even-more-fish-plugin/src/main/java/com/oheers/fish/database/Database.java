@@ -82,7 +82,25 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public boolean hasUserLog(@NotNull UUID uuid) {
-        return false;
+        final int userId = getUserId(uuid);
+        if (userId == 0)
+            return false;
+
+        return new ExecuteQuery<Boolean>(connectionFactory) {
+            @Override
+            protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
+                return dslContext.select()
+                        .from(Tables.FISH_LOG)
+                        .where(Tables.FISH_LOG.ID.eq(userId))
+                        .fetch()
+                        .isNotEmpty();
+            }
+
+            @Override
+            protected Boolean empty() {
+                return false;
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override
@@ -92,7 +110,21 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public int getUserId(@NotNull UUID uuid) {
-        return 0;
+        return new ExecuteQuery<Integer>(connectionFactory){
+            @Override
+            protected Integer onRunQuery(DSLContext dslContext) throws Exception {
+                return dslContext.select()
+                        .from(Tables.USERS)
+                        .where(Tables.USERS.UUID.eq(uuid.toString()))
+                        .fetchOne(Tables.USERS.ID)
+                        ;
+            }
+
+            @Override
+            protected Integer empty() {
+                return 0;
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override
