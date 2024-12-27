@@ -1,6 +1,7 @@
 package com.oheers.fish.database;
 
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.SQLDialect;
@@ -53,6 +54,12 @@ public class DatabaseUtil {
         } catch (IllegalArgumentException e) {
             // No match found
             return SQLDialect.DEFAULT;
+        }
+    }
+
+    public static void writeDbVerbose(final String message) {
+        if (MainConfig.getInstance().doDBVerbose()) {
+            EvenMoreFish.getInstance().getLogger().info(() -> message);
         }
     }
 

@@ -143,11 +143,28 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void writeUserReport(@NotNull UUID uuid, @NotNull UserReport report) {
+        new ExecuteUpdate(connectionFactory) {
+            @Override
+            protected int onRunUpdate(DSLContext dslContext) {
+                int rowsUpdated = dslContext.insertInto(Tables.USERS)
+                        .set(Tables.USERS.UUID, uuid.toString())
+                        .set(Tables.USERS.FIRST_FISH, report.getFirstFish())
+                        .set(Tables.USERS.LAST_FISH, report.getRecentFish())
+                        .set(Tables.USERS.LARGEST_FISH, report.getLargestFish())
+                        .set(Tables.USERS.LARGEST_LENGTH, report.getLargestLength())
+                        .set(Tables.USERS.NUM_FISH_CAUGHT, report.getNumFishCaught())
+                        .set(Tables.USERS.TOTAL_FISH_LENGTH, report.getTotalFishLength())
+                        .execute();
 
+                DatabaseUtil.writeDbVerbose("Written user report for (%s) to the database.".formatted(uuid));
+                return rowsUpdated;
+            }
+        }.executeUpdate();
     }
 
     @Override
     public UserReport readUserReport(@NotNull UUID uuid) {
+
         return null;
     }
 
