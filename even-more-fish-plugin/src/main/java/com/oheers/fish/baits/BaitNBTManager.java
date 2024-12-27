@@ -30,10 +30,6 @@ public class BaitNBTManager {
         throw new UnsupportedOperationException();
     }
 
-    public static boolean isBaitInfinite(ItemStack fishingRod, String baitName) {
-        return BaitFile.getInstance().isBaitInfinite(baitName);
-    }
-
     /**
      * Checks whether the item has nbt to suggest it is a bait object.
      *
@@ -137,7 +133,7 @@ public class BaitNBTManager {
 
             for (String baitName : baitList) {
                 if (baitName.split(":")[0].equals(bait.getName())) {
-                    if (isBaitInfinite(item, bait.getName())) {
+                    if (bait.isInfinite()) {
                         combined.append(baitName.split(":")[0]).append(":∞,");
                     } else {
                         int newQuantity = Integer.parseInt(baitName.split(":")[1]) + quantity;
