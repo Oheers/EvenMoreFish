@@ -239,7 +239,7 @@ public class Database implements DatabaseWrapper {
         new ExecuteUpdate(connectionFactory){
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
-                int rowUpdated = dslContext.insertInto(Tables.FISH)
+                return dslContext.insertInto(Tables.FISH)
                         .set(Tables.FISH.FISH_NAME, fish.getName())
                         .set(Tables.FISH.FISH_RARITY, fish.getRarity().getValue())
                         .set(Tables.FISH.FIRST_FISHER, uuid.toString())
@@ -248,14 +248,22 @@ public class Database implements DatabaseWrapper {
                         .set(Tables.FISH.FIRST_FISHER, uuid.toString())
                         .set(Tables.FISH.FIRST_CATCH_TIME, ByteBuffer.allocate(Long.BYTES).putLong(Instant.now().getEpochSecond()).array())
                         .execute();
-                return rowUpdated;
             }
         }.executeUpdate();
     }
 
     @Override
     public void incrementFish(@NotNull Fish fish) {
-
+        new ExecuteUpdate(connectionFactory) {
+            @Override
+            protected int onRunUpdate(DSLContext dslContext) {
+                return dslContext.update(Tables.FISH)
+                        .set(Tables.FISH.TOTAL_CAUGHT,Tables.FISH.TOTAL_CAUGHT.plus(1))
+                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getValue())
+                                .and(Tables.FISH.FISH_NAME.eq(fish.getName())))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
