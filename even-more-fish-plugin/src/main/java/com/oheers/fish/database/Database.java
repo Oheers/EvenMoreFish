@@ -5,6 +5,7 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.database.connection.ConnectionFactory;
 import com.oheers.fish.database.execute.ExecuteQuery;
+import com.oheers.fish.database.execute.ExecuteUpdate;
 import com.oheers.fish.database.generated.mysql.Tables;
 import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
@@ -105,7 +106,20 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void createUser(@NotNull UUID uuid) {
-
+        new ExecuteUpdate(connectionFactory) {
+            @Override
+            protected int onRunUpdate(DSLContext dslContext) {
+                return dslContext.insertInto(Tables.USERS)
+                        .set(Tables.USERS.UUID, uuid.toString())
+                        .set(Tables.USERS.FIRST_FISH, "None")
+                        .set(Tables.USERS.LAST_FISH, "None")
+                        .set(Tables.USERS.LARGEST_FISH, "None")
+                        .set(Tables.USERS.LARGEST_LENGTH, 0F)
+                        .set(Tables.USERS.NUM_FISH_CAUGHT, 0)
+                        .set(Tables.USERS.TOTAL_FISH_LENGTH, 0F)
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override

@@ -310,6 +310,7 @@ public class DatabaseV3 {
      *
      * @param uuid The user field to be created.
      */
+    @Deprecated
     public void createUser(UUID uuid) {
         String sql = "INSERT INTO ${table.prefix}users (uuid, first_fish, last_fish, largest_fish, largest_length, num_fish_caught, total_fish_length," +
                 "competitions_won, competitions_joined) VALUES (?, \"None\",\"None\",\"None\", 0, 0, 0, 0, 0);";
@@ -335,6 +336,7 @@ public class DatabaseV3 {
      * @param uuid the UUID of the user to check for.
      * @return true if the user exists, false otherwise.
      */
+    @Deprecated
     public boolean hasUser(@NotNull final UUID uuid) {
         return Boolean.TRUE.equals(getStatement(c -> {
             try (PreparedStatement prep = c.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}users WHERE uuid = ?;", c))) {
@@ -352,6 +354,7 @@ public class DatabaseV3 {
      * @param uuid the UUID of the user to check for a log entry.
      * @return true if there is a log entry for the user, false otherwise.
      */
+    @Deprecated
     public boolean hasUserLog(final UUID uuid) {
         if (!hasUser(uuid)) {
             return false;
