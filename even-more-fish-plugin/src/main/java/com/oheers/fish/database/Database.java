@@ -15,9 +15,11 @@ import org.jooq.DSLContext;
 import org.jooq.conf.*;
 import org.jooq.impl.DSL;
 
+import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -234,7 +236,21 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void createFishData(@NotNull Fish fish, @NotNull UUID uuid) {
-
+        new ExecuteUpdate(connectionFactory){
+            @Override
+            protected int onRunUpdate(DSLContext dslContext) {
+                int rowUpdated = dslContext.insertInto(Tables.FISH)
+                        .set(Tables.FISH.FISH_NAME, fish.getName())
+                        .set(Tables.FISH.FISH_RARITY, fish.getRarity().getValue())
+                        .set(Tables.FISH.FIRST_FISHER, uuid.toString())
+                        .set(Tables.FISH.TOTAL_CAUGHT, 1)
+                        .set(Tables.FISH.LARGEST_FISH, Math.round(fish.getLength() * 10f) / 10f /* todo use decimal format here */)
+                        .set(Tables.FISH.FIRST_FISHER, uuid.toString())
+                        .set(Tables.FISH.FIRST_CATCH_TIME, ByteBuffer.allocate(Long.BYTES).putLong(Instant.now().getEpochSecond()).array())
+                        .execute();
+                return rowUpdated;
+            }
+        }.executeUpdate();
     }
 
     @Override
