@@ -213,7 +213,23 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public boolean hasFishData(@NotNull Fish fish) {
-        return false;
+        return new ExecuteQuery<Boolean>(connectionFactory){
+            @Override
+            protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
+                return dslContext.select()
+                        .from(Tables.FISH)
+                        .where(Tables.FISH.FISH_NAME.eq(fish.getName())
+                                .and(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getValue())))
+                        .limit(1)
+                        .fetch()
+                        .isNotEmpty();
+            }
+
+            @Override
+            protected Boolean empty() {
+                return false;
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override

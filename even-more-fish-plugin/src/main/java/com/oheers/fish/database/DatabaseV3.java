@@ -570,6 +570,7 @@ public class DatabaseV3 {
      * @param uuid The uuid of the user being fetched from the database.
      * @return A user report detailing their fishing history on this server. If the user is not present, null is returned.
      */
+    @Deprecated
     public UserReport readUserReport(@NotNull final UUID uuid) {
         return getStatement(f -> {
             try (PreparedStatement statement = f.prepareStatement(DatabaseUtil.parseSqlString("SELECT * FROM ${table.prefix}users WHERE uuid = ?", f))) {
