@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.inventorygui)
     implementation(libs.vanishchecker)
     implementation(libs.boostedyaml)
+    implementation(libs.maven.artifact)
 
     library(libs.friendlyid)
     library(libs.flyway.core)

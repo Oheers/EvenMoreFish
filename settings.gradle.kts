@@ -49,6 +49,7 @@ dependencyResolutionManagement {
             library("commons-codec", "commons-codec:commons-codec:1.17.0")
             library("caffeine", "com.github.ben-manes.caffeine:caffeine:3.1.8")
             library("annotations", "org.jetbrains:annotations:24.1.0")
+            library("maven-artifact", "org.apache.maven:maven-artifact:3.9.9")
 
             version("flyway", "10.17.0")
             library("flyway-core", "org.flywaydb","flyway-core").versionRef("flyway")

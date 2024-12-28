@@ -52,6 +52,7 @@ import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.milkbowl.vault.permission.Permission;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -552,20 +553,9 @@ public class EvenMoreFish extends EMFPlugin {
 
     // Checks for updates, surprisingly
     private boolean checkUpdate() {
-
-        String[] spigotVersion = new UpdateChecker(this, 91310).getVersion().split("\\.");
-        String[] serverVersion = getDescription().getVersion().split("\\.");
-
-        for (int i = 0; i < serverVersion.length; i++) {
-            if (i < spigotVersion.length) {
-                if (Integer.parseInt(spigotVersion[i]) > Integer.parseInt(serverVersion[i])) {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        }
-        return false;
+        ComparableVersion spigotVersion = new ComparableVersion(new UpdateChecker(this, 91310).getVersion());
+        ComparableVersion serverVersion = new ComparableVersion(getDescription().getVersion());
+        return spigotVersion.compareTo(serverVersion) > 0;
     }
 
     private void checkPapi() {
