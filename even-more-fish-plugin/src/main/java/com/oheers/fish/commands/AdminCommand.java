@@ -413,7 +413,7 @@ public class AdminCommand extends BaseCommand {
     }
 
     @Subcommand("rawItem")
-    @Description("Outputs this item's raw NBT form")
+    @Description("Outputs this item's raw NBT form for use in YAML")
     public void onRawItem(final CommandSender sender) {
         if (!(sender instanceof Player player)) {
             ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
