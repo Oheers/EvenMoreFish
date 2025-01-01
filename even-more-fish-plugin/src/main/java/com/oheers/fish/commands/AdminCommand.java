@@ -15,6 +15,7 @@ import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.configs.CompetitionFile;
+import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Messages;
@@ -23,6 +24,7 @@ import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.permissions.AdminPerms;
 import de.tr7zw.changeme.nbtapi.NBT;
+import dev.dejvokep.boostedyaml.YamlDocument;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
@@ -419,6 +421,13 @@ public class AdminCommand extends BaseCommand {
         }
         ItemStack handItem = player.getInventory().getItemInMainHand();
         String handItemNbt = NBT.itemStackToNBT(handItem).toString();
+
+        // Ensure the handItemNbt is escaped for use in YAML
+        // This could be slightly inefficient, but it is the only way I can currently think of.
+        YamlDocument document = new ConfigBase().getConfig();
+        document.set("rawItem", handItemNbt);
+        handItemNbt = document.dump().replaceFirst("rawItem: ", "");
+
         TextComponent component = new TextComponent(handItemNbt);
         component.setHoverEvent(new HoverEvent(
                 HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to copy to clipboard."))
