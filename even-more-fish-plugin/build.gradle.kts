@@ -19,8 +19,7 @@ description = "A fishing extension bringing an exciting new experience to fishin
 
 repositories {
     mavenCentral()
-    // Adventure Snapshots
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") // Adventure Snapshots
     maven("https://hub.spigotmc.org/nexus/content/groups/public/")
     maven("https://github.com/deanveloper/SkullCreator/raw/mvn-repo/")
     maven("https://jitpack.io")
@@ -89,8 +88,8 @@ dependencies {
     implementation(libs.inventorygui)
     implementation(libs.vanishchecker)
     implementation(libs.boostedyaml)
-    implementation(libs.maven.artifact)
 
+    library(libs.maven.artifact)
     library(libs.friendlyid)
     library(libs.flyway.core)
     library(libs.flyway.mysql)
@@ -98,7 +97,6 @@ dependencies {
     library(libs.caffeine)
     library(libs.commons.lang3)
     library(libs.commons.codec)
-
     library(libs.json.simple)
 }
 
