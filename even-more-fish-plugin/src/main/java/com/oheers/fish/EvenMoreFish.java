@@ -512,10 +512,20 @@ public class EvenMoreFish extends EMFPlugin {
         itemFactory.setItemLoreCheck(true);
 
         ItemStack customRod = itemFactory.createItem(null, 0);
-        NBT.modify(customRod,nbt -> {
+
+        setCustomNBTRod(customRod);
+
+        return customRod;
+    }
+
+    /**
+     * Allows external plugins to set their own items as an EMF NBT-rod.
+     * @param item The item to set as an EMF NBT-rod.
+     */
+    public void setCustomNBTRod(@NotNull ItemStack item) {
+        NBT.modify(item, nbt -> {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setBoolean(NbtKeys.EMF_ROD_NBT, true);
         });
-        return customRod;
     }
 
     public void reload(@Nullable CommandSender sender) {
