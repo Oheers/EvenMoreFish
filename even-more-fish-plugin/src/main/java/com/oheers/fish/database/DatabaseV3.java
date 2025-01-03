@@ -381,6 +381,7 @@ public class DatabaseV3 {
      * @param uuid The UUID of the user, NOT the id stored in emf_users.
      * @return A list of fish reports associated with the user.
      */
+    @Deprecated
     public List<FishReport> getFishReports(@NotNull final UUID uuid) {
         int userID = getUserID(uuid);
 

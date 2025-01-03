@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
+//todo, this is caching manager, and really shouldn't be here in the database..
 public class DataManager {
 
     private static DataManager instance;

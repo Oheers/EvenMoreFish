@@ -41,9 +41,9 @@ public interface DatabaseWrapper {
     void updateLargestFish(@NotNull Fish fish, @NotNull UUID uuid);
 
     // Fish report methods
-    List<FishReport> getFishReports(@NotNull UUID uuid);
+    List<FishReport> getFishReportsForPlayer(@NotNull UUID uuid);
 
-    List<FishReport> getReports(@NotNull UUID uuid, @NotNull Fish fish);
+    List<FishReport> getReportsForFish(@NotNull UUID uuid, @NotNull Fish fish);
 
     void handleFishCatch(@NotNull UUID uuid, @NotNull Fish fish);
 
