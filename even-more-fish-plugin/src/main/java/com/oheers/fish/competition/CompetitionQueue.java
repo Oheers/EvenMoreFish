@@ -74,6 +74,7 @@ public class CompetitionQueue {
 
         // Write defaults
         targetDirectory = new File(targetDirectory, "defaults");
+        FileUtil.loadFileOrResource(targetDirectory, "README.txt", "competitions/defaults/README.txt", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "main.yml", "competitions/defaults/main.yml", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "sunday1.yml", "competitions/defaults/sunday1.yml", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "sunday2.yml", "competitions/defaults/sunday2.yml", EvenMoreFish.getInstance());
