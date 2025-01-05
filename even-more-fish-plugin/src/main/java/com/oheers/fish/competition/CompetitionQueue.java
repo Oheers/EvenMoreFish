@@ -76,6 +76,7 @@ public class CompetitionQueue {
     }
 
     private void loadDefaultFiles(@NotNull File targetDirectory) {
+        EvenMoreFish.getInstance().getLogger().info("Loading default competition configs.");
         FileUtil.loadFileOrResource(targetDirectory, "main.yml", "competitions/main.yml", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "sunday1.yml", "competitions/sunday1.yml", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "sunday2.yml", "competitions/sunday2.yml", EvenMoreFish.getInstance());

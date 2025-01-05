@@ -294,6 +294,7 @@ public class FishManager {
     }
 
     private void loadDefaultFiles(@NotNull File targetDirectory) {
+        EvenMoreFish.getInstance().getLogger().info("Loading default rarity configs.");
         FileUtil.loadFileOrResource(targetDirectory, "common.yml", "rarities/common.yml", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "junk.yml", "rarities/junk.yml", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "rare.yml", "rarities/rare.yml", EvenMoreFish.getInstance());
