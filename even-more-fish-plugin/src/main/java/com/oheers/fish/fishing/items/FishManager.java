@@ -292,6 +292,7 @@ public class FishManager {
 
         // Load defaults into the defaults subdirectory
         targetDirectory = new File(targetDirectory, "defaults");
+        FileUtil.loadFileOrResource(targetDirectory, "README.txt", "rarities/defaults/README.txt", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "common.yml", "rarities/defaults/common.yml", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "junk.yml", "rarities/defaults/junk.yml", EvenMoreFish.getInstance());
         FileUtil.loadFileOrResource(targetDirectory, "rare.yml", "rarities/defaults/rare.yml", EvenMoreFish.getInstance());
