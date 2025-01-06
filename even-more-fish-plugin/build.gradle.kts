@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "com.oheers.evenmorefish"
-version = "1.7.4"
+version = "2.0.0"
 
 description = "A fishing extension bringing an exciting new experience to fishing."
 
@@ -42,6 +42,7 @@ repositories {
 
 dependencies {
     api(project(":even-more-fish-api"))
+    implementation(project(":even-more-fish-paper"))
 
     compileOnly(libs.spigot.api)
     compileOnly(libs.vault.api)
@@ -75,7 +76,9 @@ dependencies {
     }
 
     compileOnly(libs.griefprevention)
-    compileOnly(libs.mcmmo)
+    compileOnly(libs.mcmmo) {
+        exclude("com.sk89q.worldguard", "worldguard-legacy")
+    }
     compileOnly(libs.headdatabase.api)
     compileOnly(libs.playerpoints)
 
@@ -84,9 +87,9 @@ dependencies {
     implementation(libs.universalscheduler)
     implementation(libs.acf)
     implementation(libs.inventorygui)
-    implementation(libs.bundles.adventure)
     implementation(libs.vanishchecker)
     implementation(libs.boostedyaml)
+    implementation(libs.maven.artifact)
 
     library(libs.friendlyid)
     library(libs.flyway.core)
@@ -126,7 +129,7 @@ bukkit {
         "GriefPrevention"
     )
     loadBefore = listOf("AntiAC")
-    apiVersion = "1.16"
+    apiVersion = "1.18"
 
     commands {
         register("evenmorefish") {
@@ -252,7 +255,6 @@ tasks {
         relocate("co.aikar.commands", "com.oheers.fish.libs.acf")
         relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
-        relocate("net.kyori.adventure", "com.oheers.fish.libs.adventure")
         relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
         relocate("dev.dejvokep.boostedyaml", "com.oheers.fish.libs.boostedyaml")
 

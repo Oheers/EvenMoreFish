@@ -1,9 +1,9 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -14,11 +14,16 @@ public class Bar {
 
     String title;
     BossBar bar;
+    private boolean shouldShow = true;
 
     String prefix;
 
     public Bar() {
         createBar();
+    }
+
+    public void setShouldShow(boolean shouldShow) {
+        this.shouldShow = shouldShow;
     }
 
     public void timerUpdate(long timeLeft, long totalTime) {
@@ -51,14 +56,17 @@ public class Bar {
     }
 
     public void setTitle(long timeLeft) {
-        Message layoutMessage = new Message(ConfigMessage.BAR_LAYOUT);
+        AbstractMessage layoutMessage = ConfigMessage.BAR_LAYOUT.getMessage();
         layoutMessage.setVariable("{prefix}", prefix);
         layoutMessage.setVariable("{time-formatted}", FishUtils.translateColorCodes(FishUtils.timeFormat(timeLeft)));
-        layoutMessage.setVariable("{remaining}", new Message(ConfigMessage.BAR_REMAINING).getRawMessage());
-        bar.setTitle(layoutMessage.getRawMessage());
+        layoutMessage.setVariable("{remaining}", ConfigMessage.BAR_REMAINING.getMessage().getLegacyMessage());
+        bar.setTitle(layoutMessage.getLegacyMessage());
     }
 
     public void show() {
+        if (!shouldShow) {
+            return;
+        }
         Bukkit.getOnlinePlayers().forEach(this::addPlayer);
         bar.setVisible(true);
     }
@@ -75,11 +83,17 @@ public class Bar {
 
     // Shows the bar to all players online
     public void renderBars() {
+        if (!shouldShow) {
+            return;
+        }
         bar.setVisible(true);
         Bukkit.getOnlinePlayers().forEach(bar::addPlayer);
     }
 
     public void addPlayer(Player player) {
+        if (!shouldShow) {
+            return;
+        }
         bar.addPlayer(player);
     }
 

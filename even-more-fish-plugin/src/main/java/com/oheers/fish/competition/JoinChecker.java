@@ -1,12 +1,12 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
-import com.oheers.fish.database.FishReport;
-import com.oheers.fish.database.UserReport;
+import com.oheers.fish.database.model.FishReport;
+import com.oheers.fish.database.model.UserReport;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -67,13 +67,14 @@ public class JoinChecker implements Listener {
     // Gives the player the active fishing bar if there's a fishing event cracking off
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        if (Competition.isActive()) {
-            EvenMoreFish.getInstance().getActiveCompetition().getStatusBar().addPlayer(event.getPlayer());
-            Message startMessage = EvenMoreFish.getInstance().getActiveCompetition().getStartMessage();
+        Competition activeComp = Competition.getCurrentlyActive();
+        if (activeComp != null) {
+            activeComp.getStatusBar().addPlayer(event.getPlayer());
+            AbstractMessage startMessage = activeComp.getStartMessage();
             if (startMessage != null) {
-                startMessage.setMessage(ConfigMessage.COMPETITION_JOIN);
+                startMessage.setMessage(ConfigMessage.COMPETITION_JOIN.getMessage());
+                EvenMoreFish.getScheduler().runTaskLater(() -> startMessage.send(event.getPlayer()), 20 * 3);
             }
-            EvenMoreFish.getScheduler().runTaskLater(() -> EvenMoreFish.getInstance().getActiveCompetition().getStartMessage().broadcast(event.getPlayer()), 20 * 3);
         }
 
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> databaseRegistration(event.getPlayer().getUniqueId(), event.getPlayer().getName()));
@@ -83,8 +84,9 @@ public class JoinChecker implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
 
-        if (Competition.isActive()) {
-            EvenMoreFish.getInstance().getActiveCompetition().getStatusBar().removePlayer(event.getPlayer());
+        Competition activeComp = Competition.getCurrentlyActive();
+        if (activeComp != null) {
+            activeComp.getStatusBar().removePlayer(event.getPlayer());
         }
 
         if (!MainConfig.getInstance().isDatabaseOnline()) {

@@ -2,10 +2,11 @@ package com.oheers.fish;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
-import com.oheers.fish.config.CompetitionConfig;
+import com.oheers.fish.api.adapter.AbstractMessage;
+import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.InvalidFishException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
@@ -21,31 +22,22 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.ParsingException;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Skull;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.time.DayOfWeek;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class FishUtils {
-
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '§';
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
@@ -86,27 +78,28 @@ public class FishUtils {
         }
 
         // setting the correct length so it's an exact replica.
+        Fish loadedFish = rarity.getFish(nameString);
+        Fish finalFish;
         try {
-            Fish fish = new Fish(rarity, nameString);
-            if (randomIndex != null) {
-                fish.getFactory().setType(randomIndex);
-            }
-            fish.setLength(lengthFloat);
-            try {
-                if (playerString != null) {
-                    fish.setFisherman(UUID.fromString(playerString));
-                }
-            } catch (Exception ex) {
-                fish.setFisherman(null);
-            }
-
-            return fish;
-        } catch (InvalidFishException exception) {
+            // Ignore NPE warning here, it is caught in the catch block.
+            finalFish = loadedFish.clone();
+        } catch (NullPointerException | CloneNotSupportedException exception) {
             EvenMoreFish.getInstance().getLogger().severe("Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
                     "deleted the fish since this fish was caught.");
+            return null;
         }
-
-        return null;
+        if (randomIndex != null) {
+            finalFish.getFactory().setType(randomIndex);
+        }
+        finalFish.setLength(lengthFloat);
+        if (playerString != null) {
+            try {
+                finalFish.setFisherman(UUID.fromString(playerString));
+            } catch (IllegalArgumentException exception) {
+                finalFish.setFisherman(null);
+            }
+        }
+        return finalFish;
     }
 
     public static Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
@@ -129,26 +122,28 @@ public class FishUtils {
         }
 
         // setting the correct length and randomIndex, so it's an exact replica.
-        Fish fish = new Fish(rarity, nameString);
-        fish.setLength(lengthFloat);
-        if (randomIndex != null) {
-            fish.getFactory().setType(randomIndex);
-        }
+        Fish loadedFish = rarity.getFish(nameString);
+        Fish finalFish;
         try {
-            if (playerString != null) {
-                try {
-                    fish.setFisherman(UUID.fromString(playerString));
-                } catch (IllegalArgumentException ex) {
-                    fish.setFisherman(fisher.getUniqueId());
-                }
-            } else {
-                fish.setFisherman(fisher.getUniqueId());
+            finalFish = loadedFish.clone();
+        } catch (NullPointerException | CloneNotSupportedException exception) {
+            return null;
+        }
+        finalFish.setLength(lengthFloat);
+        if (randomIndex != null) {
+            finalFish.getFactory().setType(randomIndex);
+        }
+        if (playerString != null) {
+            try {
+                finalFish.setFisherman(UUID.fromString(playerString));
+            } catch (IllegalArgumentException exception) {
+                finalFish.setFisherman(null);
             }
-        } catch (IllegalArgumentException exception) {
-            fish.setFisherman(null);
+        } else {
+            finalFish.setFisherman(fisher.getUniqueId());
         }
 
-        return fish;
+        return finalFish;
     }
 
     public static void giveItems(List<ItemStack> items, Player player) {
@@ -242,35 +237,8 @@ public class FishUtils {
         }
     }
 
-    // credit to https://www.spigotmc.org/members/elementeral.717560/
     public static String translateColorCodes(String message) {
-        // Replace all Section symbols with Ampersands so MiniMessage doesn't explode.
-        message = message.replace(ChatColor.COLOR_CHAR, '&');
-
-        try {
-            // Parse MiniMessage
-            LegacyComponentSerializer legacyAmpersandSerializer = LegacyComponentSerializer.builder()
-                    .hexColors()
-                    .useUnusualXRepeatedCharacterHexFormat()
-                    .build();
-            Component component = MiniMessage.builder().strict(true).build().deserialize(message);
-            // Get legacy color codes from MiniMessage
-            message = legacyAmpersandSerializer.serialize(component);
-        } catch (ParsingException exception) {
-            // Ignore. If MiniMessage throws an exception, we'll only use legacy colors.
-        }
-
-        Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
-        while (matcher.find()) {
-            String group = matcher.group(1);
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
-                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
-                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5)
-            );
-        }
-        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+        return EvenMoreFish.getAdapter().translateColorCodes(message);
     }
 
     //gets the item with a custom texture
@@ -327,22 +295,22 @@ public class FishUtils {
         long seconds = timeLeft % 60;
 
         if (hours > 0) {
-            Message message = new Message(ConfigMessage.BAR_HOUR);
+            AbstractMessage message = ConfigMessage.BAR_HOUR.getMessage();
             message.setVariable("{hour}", String.valueOf(hours));
-            returning += message.getRawMessage() + " ";
+            returning += message.getLegacyMessage() + " ";
         }
 
         if (minutes > 0) {
-            Message message = new Message(ConfigMessage.BAR_MINUTE);
+            AbstractMessage message = ConfigMessage.BAR_MINUTE.getMessage();
             message.setVariable("{minute}", String.valueOf(minutes));
-            returning += message.getRawMessage() + " ";
+            returning += message.getLegacyMessage() + " ";
         }
 
         // Shows remaining seconds if seconds > 0 or hours and minutes are 0, e.g. "1 minutes and 0 seconds left" and "5 seconds left"
         if (seconds > 0 || (minutes == 0 && hours == 0)) {
-            Message message = new Message(ConfigMessage.BAR_SECOND);
+            AbstractMessage message = ConfigMessage.BAR_SECOND.getMessage();
             message.setVariable("{second}", String.valueOf(seconds));
-            returning += message.getRawMessage() + " ";
+            returning += message.getLegacyMessage() + " ";
         }
 
         return returning.trim();
@@ -365,54 +333,31 @@ public class FishUtils {
         return returning;
     }
 
-    public static void broadcastFishMessage(Message message, Player referencePlayer, boolean actionBar) {
+    public static void broadcastFishMessage(AbstractMessage message, Player referencePlayer, boolean actionBar) {
 
-        String formatted = message.getRawMessage();
+        String formatted = message.getLegacyMessage();
+        Competition activeComp = Competition.getCurrentlyActive();
 
-        if (formatted.isEmpty()) {
+        if (formatted.isEmpty() || activeComp == null) {
             return;
         }
 
-        int rangeSquared = CompetitionConfig.getInstance().getBroadcastRange(); // 10 blocks squared
+        CompetitionFile activeCompetitionFile = activeComp.getCompetitionFile();
 
-        if (CompetitionConfig.getInstance().broadcastOnlyRods()) {
-            // sends it to all players holding ords
-            if (actionBar) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
-                        continue;
-                    }
-                    if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || player.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(formatted));
-                    }
-                }
-            } else {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
-                        continue;
-                    }
-                    if (player.getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD) || player.getInventory().getItemInOffHand().getType().equals(Material.FISHING_ROD)) {
-                        player.sendMessage(formatted);
-                    }
-                }
-            }
-            // sends it to everyone
+        int rangeSquared = activeCompetitionFile.getBroadcastRange(); // 10 blocks squared
+
+        Collection<? extends Player> validPlayers = Bukkit.getOnlinePlayers();
+
+        if (rangeSquared > -1) {
+            validPlayers = validPlayers.stream()
+                    .filter(player -> isWithinRange(referencePlayer, player, rangeSquared))
+                    .toList();
+        }
+
+        if (actionBar) {
+            validPlayers.forEach(message::sendActionBar);
         } else {
-            if (actionBar) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
-                        continue;
-                    }
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(formatted));
-                }
-            } else {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (rangeSquared > -1 && !isWithinRange(referencePlayer, player, rangeSquared)) {
-                        continue;
-                    }
-                    player.sendMessage(formatted);
-                }
-            }
+            validPlayers.forEach(message::send);
         }
     }
 
@@ -489,6 +434,48 @@ public class FishUtils {
             }
         }
         return totalWeight;
+    }
+
+    public static @Nullable DayOfWeek getDay(@NotNull String day) {
+        try {
+            return DayOfWeek.valueOf(day.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
+    }
+
+    public static @Nullable Integer getInteger(@NotNull String intString) {
+        try {
+            return Integer.parseInt(intString);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    public static boolean classExists(@NotNull String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException exception) {
+            return false;
+        }
+    }
+
+    // #editMeta methods. These can be safely replaced with Paper's API once we drop Spigot.
+
+    public static boolean editMeta(@NotNull ItemStack item, @NotNull Consumer<ItemMeta> consumer) {
+        return editMeta(item, ItemMeta.class, consumer);
+    }
+
+    public static <M extends ItemMeta> boolean editMeta(@NotNull ItemStack item, @NotNull Class<M> metaClass, @NotNull Consumer<M> consumer) {
+        ItemMeta meta = item.getItemMeta();
+        if (metaClass.isInstance(meta)) {
+            M checked = metaClass.cast(meta);
+            consumer.accept(checked);
+            item.setItemMeta(checked);
+            return true;
+        }
+        return false;
     }
 
 }

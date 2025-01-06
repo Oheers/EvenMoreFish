@@ -3,54 +3,64 @@ package com.oheers.fish.competition;
 import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFCompetitionEndEvent;
 import com.oheers.fish.api.EMFCompetitionStartEvent;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.reward.Reward;
+import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
-import com.oheers.fish.config.CompetitionConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
-import com.oheers.fish.database.UserReport;
+import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.boss.BarColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Competition {
 
-    public static Leaderboard leaderboard;
-    static boolean active;
-    static boolean originallyRandom;
+    private static Competition active;
+    private boolean originallyRandom;
+    private Leaderboard leaderboard;
     private CompetitionType competitionType;
     private Fish selectedFish;
     private Rarity selectedRarity;
     private int numberNeeded;
     private String competitionName;
-    private boolean adminStarted;
-    private Message startMessage;
-    long maxDuration;
-    long timeLeft;
-    Bar statusBar;
-    boolean showBar;
-    long epochStartTime;
-    List<Long> alertTimes;
-    Map<Integer, List<Reward>> rewards;
-    List<Reward> participationRewards;
-    int playersNeeded;
-    Sound startSound;
-    MyScheduledTask timingSystem;
+    private boolean adminStarted = false;
+    private AbstractMessage startMessage;
+    private long maxDuration;
+    private long timeLeft;
+    private Bar statusBar;
+    private long epochStartTime;
+    private final List<Long> alertTimes;
+    private final Map<Integer, List<Reward>> rewards;
+    private int playersNeeded;
+    private Sound startSound;
+    private MyScheduledTask timingSystem;
+    private CompetitionFile competitionFile;
+
+    public Competition(final @NotNull CompetitionFile competitionFile) {
+        this.competitionFile = competitionFile;
+        this.competitionName = competitionFile.getId();
+        this.playersNeeded = competitionFile.getPlayersNeeded();
+        this.startSound = competitionFile.getStartSound();
+        this.maxDuration = competitionFile.getDuration() * 60L;
+        this.alertTimes = competitionFile.getAlertTimes();
+        this.rewards = competitionFile.getRewards();
+        this.competitionType = competitionFile.getType();
+        this.statusBar = competitionFile.createBossbar();
+    }
 
     public Competition(final Integer duration, final CompetitionType type) {
         this.maxDuration = duration;
@@ -59,27 +69,42 @@ public class Competition {
         this.competitionType = type;
     }
 
+    public void setMaxDuration(int duration) {
+        this.maxDuration = duration  * 60L;
+    }
+
     public static boolean isActive() {
+        return getCurrentlyActive() != null;
+    }
+
+    public void setOriginallyRandom(boolean originallyRandom) {
+        this.originallyRandom = originallyRandom;
+    }
+
+    public boolean isOriginallyRandom() {
+        return this.originallyRandom;
+    }
+
+    public static @Nullable Competition getCurrentlyActive() {
         return active;
     }
 
-    public static void setOriginallyRandom(boolean originallyRandom) {
-        Competition.originallyRandom = originallyRandom;
-    }
-
-    public void begin(boolean adminStart) {
+    public void begin() {
         try {
-            if (!adminStart && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
-                new Message(ConfigMessage.NOT_ENOUGH_PLAYERS).broadcast();
-                active = false;
+            if (!isAdminStarted() && EvenMoreFish.getInstance().getVisibleOnlinePlayers().size() < playersNeeded) {
+                ConfigMessage.NOT_ENOUGH_PLAYERS.getMessage().broadcast();
                 return;
             }
 
-            active = true;
+            // Make sure the active competition has ended.
+            if (active != null) {
+                active.end(false);
+            }
+            active = this;
 
             CompetitionStrategy strategy = competitionType.getStrategy();
             if (!strategy.begin(this)) {
-                active = false;
+                active = null;
                 return;
             }
 
@@ -87,10 +112,8 @@ public class Competition {
 
             leaderboard = new Leaderboard(competitionType);
 
-            if (showBar) {
-                statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)), competitionType);
-                statusBar.show();
-            }
+            statusBar.show();
+
             initTimer();
             announceBegin();
             EMFCompetitionStartEvent startEvent = new EMFCompetitionStartEvent(this);
@@ -98,8 +121,7 @@ public class Competition {
             epochStartTime = Instant.now().getEpochSecond();
 
             // Execute start commands
-            List<String> startCommands = CompetitionConfig.getInstance().getCompetitionStartCommands(competitionName, adminStart);
-            startCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
+            getCompetitionFile().getStartCommands().forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
 
             EvenMoreFish.getInstance().getDecidedRarities().clear();
         } catch (Exception ex) {
@@ -120,7 +142,7 @@ public class Competition {
                 EMFCompetitionEndEvent endEvent = new EMFCompetitionEndEvent(this);
                 Bukkit.getServer().getPluginManager().callEvent(endEvent);
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    new Message(ConfigMessage.COMPETITION_END).broadcast(player);
+                    ConfigMessage.COMPETITION_END.getMessage().send(player);
                     sendPlayerLeaderboard(player);
                 }
                 handleRewards();
@@ -140,7 +162,7 @@ public class Competition {
         } catch (Exception exception) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "An exception was thrown while the competition was being ended!", exception);
         } finally {
-            active = false;
+            active = null;
         }
     }
 
@@ -149,9 +171,7 @@ public class Competition {
         this.timingSystem = new UniversalRunnable() {
             @Override
             public void run() {
-                if (showBar) {
-                    statusBar.timerUpdate(timeLeft, maxDuration);
-                }
+                statusBar.timerUpdate(timeLeft, maxDuration);
                 if (decreaseTime()) {
                     cancel();
                 }
@@ -168,7 +188,7 @@ public class Competition {
      */
     private boolean processCompetitionSecond(long timeLeft) {
         if (alertTimes.contains(timeLeft)) {
-            Message message = getTypeFormat(ConfigMessage.TIME_ALERT);
+            AbstractMessage message = getTypeFormat(ConfigMessage.TIME_ALERT);
             message.broadcast();
         } else if (timeLeft <= 0) {
             end(false);
@@ -184,7 +204,7 @@ public class Competition {
      * @param configMessage The configmessage to use. Must have the {type} variable in it.
      * @return A message object that's pre-set to be compatible for the time remaining.
      */
-    private Message getTypeFormat(ConfigMessage configMessage) {
+    private @NotNull AbstractMessage getTypeFormat(ConfigMessage configMessage) {
         return competitionType.getStrategy().getTypeFormat(this, configMessage);
     }
 
@@ -220,7 +240,7 @@ public class Competition {
         boolean isSupportedActionBarType = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance()
                 .getConfig()
                 .getStringList("action-bar-types")
-                .contains(EvenMoreFish.getInstance().getActiveCompetition().getCompetitionType().toString());
+                .contains(getCompetitionType().toString());
         return doActionBarMessage && isSupportedActionBarType;
     }
 
@@ -237,7 +257,7 @@ public class Competition {
         }
     }
 
-    private void setPositionColour(int place, Message message) {
+    private void setPositionColour(int place, AbstractMessage message) {
         switch (place) {
             case 0 -> message.setPositionColour("&c» &r");
             case 1 -> message.setPositionColour("&c_ &r");
@@ -246,61 +266,68 @@ public class Competition {
     }
 
     public void sendConsoleLeaderboard(ConsoleCommandSender console) {
-        if (!active) {
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(console);
+        if (!isActive()) {
+            ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(console);
             return;
         }
         if (leaderboard.getSize() == 0) {
-            new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(console);
+            ConfigMessage.NO_FISH_CAUGHT.getMessage().send(console);
             return;
         }
 
-        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
+        List<String> competitionColours = competitionFile.getPositionColours();
         List<CompetitionEntry> entries = getSortedEntries(leaderboard.getEntries());
 
         String leaderboardMessage = buildLeaderboardMessage(entries, competitionColours, true, null);
         console.sendMessage(leaderboardMessage);
 
-        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+        AbstractMessage message = ConfigMessage.LEADERBOARD_TOTAL_PLAYERS.getMessage();
         message.setAmount(Integer.toString(leaderboard.getSize()));
-        message.broadcast(console);
+        message.send(console);
     }
 
     public void sendPlayerLeaderboard(Player player) {
-        if (!active) {
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(player);
+        if (player == null) {
+            return;
+        }
+        if (!isActive()) {
+            ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(player);
             return;
         }
         if (leaderboard.getSize() == 0) {
-            new Message(ConfigMessage.NO_FISH_CAUGHT).broadcast(player);
+            ConfigMessage.NO_FISH_CAUGHT.getMessage().send(player);
             return;
         }
 
-        List<String> competitionColours = CompetitionConfig.getInstance().getPositionColours();
+        List<String> competitionColours = competitionFile.getPositionColours();
         List<CompetitionEntry> entries = getSortedEntries(leaderboard.getEntries());
 
         String leaderboardMessage = buildLeaderboardMessage(entries, competitionColours, false, player.getUniqueId());
         player.sendMessage(leaderboardMessage);
 
-        Message message = new Message(ConfigMessage.LEADERBOARD_TOTAL_PLAYERS);
+        AbstractMessage message = ConfigMessage.LEADERBOARD_TOTAL_PLAYERS.getMessage();
         message.setAmount(Integer.toString(leaderboard.getSize()));
-        message.broadcast(player);
+        message.send(player);
     }
 
-    public List<CompetitionEntry> getSortedEntries(List<CompetitionEntry> entries) {
+    public @NotNull List<CompetitionEntry> getSortedEntries(List<CompetitionEntry> entries) {
         if (competitionType == CompetitionType.SHORTEST_FISH) {
             entries.sort(Comparator.comparingDouble(entry -> entry.getFish().getLength()));
         }
         return entries;
     }
 
-    private String buildLeaderboardMessage(List<CompetitionEntry> entries, List<String> competitionColours, boolean isConsole, UUID playerUuid) {
+    private @NotNull String buildLeaderboardMessage(List<CompetitionEntry> entries, List<String> competitionColours, boolean isConsole, UUID playerUuid) {
+        if (entries == null) {
+            entries = List.of();
+        }
+
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
         for (CompetitionEntry entry : entries) {
             pos++;
-            Message message = new Message(ConfigMessage.LEADERBOARD_LARGEST_FISH);
+            AbstractMessage message = ConfigMessage.LEADERBOARD_LARGEST_FISH.getMessage();
             message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
             message.setPosition(Integer.toString(pos));
 
@@ -320,61 +347,10 @@ public class Competition {
                 }
             }
 
-            builder.append(message.getRawMessage()).append("\n");
+            builder.append(message.getLegacyMessage()).append("\n");
         }
 
         return builder.toString();
-    }
-
-
-    public void initAlerts(String competitionName) {
-        final Logger logger = EvenMoreFish.getInstance().getLogger();
-        for (String s : CompetitionConfig.getInstance().getAlertTimes(competitionName)) {
-
-            String[] split = s.split(":");
-            if (split.length != 2) {
-                logger.severe(() -> "%s is not formatted correctly. Use MM:SS".formatted(s));
-                continue;
-            }
-
-            try {
-                alertTimes.add((long) Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]));
-            } catch (NumberFormatException nfe) {
-                logger.severe(() -> "Could not turn %s into an alert time. If you need support, feel free to join the discord server: https://discord.gg/Hb9cj3tNbb".formatted(s));
-            }
-
-        }
-    }
-
-    public void initRewards(String competitionName, boolean adminStart) {
-        Set<String> chosen;
-        String path;
-
-        // If the competition is an admin start or doesn't have its own rewards, we use the non-specific rewards, else we use the competition's reward config
-        Set<String> positions = CompetitionConfig.getInstance().getRewardPositions(competitionName);
-        if (adminStart || positions.isEmpty()) {
-            chosen = CompetitionConfig.getInstance().getRewardPositions();
-            path = "rewards.";
-        } else {
-            chosen = positions;
-            path = "competitions." + competitionName + ".rewards.";
-        }
-
-        chosen.forEach(key -> {
-            List<Reward> addingRewards = CompetitionConfig.getInstance().getStringList(path + key).stream()
-                    .map(Reward::new)
-                    .toList();
-
-            if (key.equals("participation")) {
-                this.participationRewards = addingRewards;
-            } else {
-                try {
-                    this.rewards.put(Integer.parseInt(key), addingRewards);
-                } catch (NumberFormatException exception) {
-                    EvenMoreFish.getInstance().getLogger().warning(() -> "%s is not a valid number!".formatted(key));
-                }
-            }
-        });
     }
 
     private void handleDatabaseUpdates(CompetitionEntry entry, boolean isTopEntry) {
@@ -398,7 +374,7 @@ public class Competition {
     private void handleRewards() {
         if (leaderboard.getSize() == 0) {
             if (!((competitionType == CompetitionType.SPECIFIC_FISH || competitionType == CompetitionType.SPECIFIC_RARITY) && numberNeeded == 1)) {
-                new Message(ConfigMessage.NO_WINNERS).broadcast();
+                ConfigMessage.NO_WINNERS.getMessage().broadcast();
             }
             return;
         }
@@ -411,8 +387,6 @@ public class Competition {
         if (databaseEnabled && !entries.isEmpty()) {
             handleDatabaseUpdates(entries.get(0), true); // Top entry
         }
-
-        boolean participationRewardsExist = (participationRewards != null && !participationRewards.isEmpty());
 
         for (CompetitionEntry entry : entries) {
             Player player = Bukkit.getPlayer(entry.getPlayer());
@@ -428,8 +402,9 @@ public class Competition {
                 rewards.get(rewardPlace).forEach(reward -> reward.rewardPlayer(player, null));
             } else {
                 // Default to participation rewards if not.
-                if (participationRewardsExist) {
-                    participationRewards.forEach(reward -> reward.rewardPlayer(player, null));
+                List<Reward> participation = rewards.get(-1);
+                if (participation != null) {
+                    participation.forEach(reward -> reward.rewardPlayer(player, null));
                 }
             }
 
@@ -441,9 +416,9 @@ public class Competition {
     }
 
     public void singleReward(Player player) {
-        Message message = getTypeFormat(ConfigMessage.COMPETITION_SINGLE_WINNER);
+        AbstractMessage message = getTypeFormat(ConfigMessage.COMPETITION_SINGLE_WINNER);
         message.setPlayer(player);
-        message.setCompetitionType(competitionType);
+        message.setCompetitionType(competitionType.getTypeVariable().getMessage().getLegacyMessage());
 
         message.broadcast();
 
@@ -454,37 +429,11 @@ public class Competition {
         }
     }
 
-    public void initBar(String competitionName) {
-        this.showBar = CompetitionConfig.getInstance().getShowBar(competitionName);
-        this.statusBar = new Bar();
-
-        try {
-            this.statusBar.setColour(BarColor.valueOf(CompetitionConfig.getInstance().getBarColour(competitionName).toUpperCase()));
-        } catch (IllegalArgumentException iae) {
-            EvenMoreFish.getInstance().getLogger().severe(CompetitionConfig.getInstance().getBarColour(competitionName) + " is not a valid bossbar colour, check ");
-        }
-
-        this.statusBar.setPrefix(FishUtils.translateColorCodes(CompetitionConfig.getInstance().getBarPrefix(competitionName)));
-    }
-
-    public void initGetNumbersNeeded(String competitionName) {
-        this.playersNeeded = CompetitionConfig.getInstance().getPlayersNeeded(competitionName);
-    }
-
-    /**
-     * The sound that gets sent to players when the competition begins, defined in competitions.yml
-     *
-     * @param competitionName The name of the competition as stated in the competitions.yml file.
-     */
-    public void initStartSound(String competitionName) {
-        this.startSound = CompetitionConfig.getInstance().getStartNoise(competitionName);
-    }
-
-    public Bar getStatusBar() {
+    public @NotNull Bar getStatusBar() {
         return this.statusBar;
     }
 
-    public CompetitionType getCompetitionType() {
+    public @NotNull CompetitionType getCompetitionType() {
         return competitionType;
     }
 
@@ -496,34 +445,34 @@ public class Competition {
         return leaderboard.getSize();
     }
 
-    public Leaderboard getLeaderboard() {
+    public @NotNull Leaderboard getLeaderboard() {
         return leaderboard;
     }
 
-    public void setAdminStarted(boolean adminStarted) {
-        this.adminStarted = adminStarted;
-    }
-
-    public Message getStartMessage() {
+    public @Nullable AbstractMessage getStartMessage() {
         return startMessage;
     }
 
-    public String getCompetitionName() {
+    public @NotNull String getCompetitionName() {
         return competitionName;
     }
 
-    public void setCompetitionName(String competitionName) {
+    public @NotNull CompetitionFile getCompetitionFile() {
+        return this.competitionFile;
+    }
+
+    public void setCompetitionName(@NotNull String competitionName) {
         this.competitionName = competitionName;
     }
 
-    public static Message getNextCompetitionMessage() {
+    public static @NotNull AbstractMessage getNextCompetitionMessage() {
         if (Competition.isActive()) {
-            return new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP);
+            return ConfigMessage.PLACEHOLDER_TIME_REMAINING_DURING_COMP.getMessage();
         }
 
         int remainingTime = getRemainingTime();
 
-        Message message = new Message(ConfigMessage.PLACEHOLDER_TIME_REMAINING);
+        AbstractMessage message = ConfigMessage.PLACEHOLDER_TIME_REMAINING.getMessage();
         message.setDays(Integer.toString(remainingTime / 1440));
         message.setHours(Integer.toString((remainingTime % 1440) / 60));
         message.setMinutes(Integer.toString((((remainingTime % 1440) % 60) % 60)));
@@ -550,19 +499,19 @@ public class Competition {
         this.competitionType = competitionType;
     }
 
-    public Fish getSelectedFish() {
+    public @Nullable Fish getSelectedFish() {
         return selectedFish;
     }
 
-    public void setSelectedFish(Fish selectedFish) {
+    public void setSelectedFish(@Nullable Fish selectedFish) {
         this.selectedFish = selectedFish;
     }
 
-    public Rarity getSelectedRarity() {
+    public @Nullable Rarity getSelectedRarity() {
         return selectedRarity;
     }
 
-    public void setSelectedRarity(Rarity selectedRarity) {
+    public void setSelectedRarity(@Nullable Rarity selectedRarity) {
         this.selectedRarity = selectedRarity;
     }
 
@@ -572,6 +521,14 @@ public class Competition {
 
     public boolean isAdminStarted() {
         return adminStarted;
+    }
+
+    public void setAdminStarted(boolean adminStarted) {
+        this.adminStarted = adminStarted;
+    }
+
+    public long getTimeLeft() {
+        return this.timeLeft;
     }
 
 }

@@ -1,81 +1,128 @@
 package com.oheers.fish.competition;
 
-import com.oheers.fish.config.CompetitionConfig;
+import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.FileUtil;
+import com.oheers.fish.competition.configs.CompetitionConversions;
+import com.oheers.fish.competition.configs.CompetitionFile;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.time.DayOfWeek;
 import java.util.*;
+import java.util.logging.Level;
 
 public class CompetitionQueue {
 
     Map<Integer, Competition> competitions;
-    List<String> days = List.of("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY");
+    TreeMap<String, CompetitionFile> fileMap;
+
+    public CompetitionQueue() {
+        competitions = new TreeMap<>();
+        fileMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        // Check for old file format and convert if it exists.
+        new CompetitionConversions().performCheck();
+    }
 
     public void load() {
-        competitions = new TreeMap<>();
-        CompetitionConfig competitionConfig = CompetitionConfig.getInstance();
+        competitions.clear();
+        fileMap.clear();
 
-        Set<String> configuredCompetitions = competitionConfig.getCompetitions();
+        File compsFolder = new File(EvenMoreFish.getInstance().getDataFolder(), "competitions");
+        loadDefaultFiles(compsFolder);
+        List<File> competitionFiles = FileUtil.getFilesInDirectory(compsFolder, true, true);
 
-        if (configuredCompetitions.isEmpty()) {
+        if (competitionFiles.isEmpty()) {
             return;
         }
 
-        configuredCompetitions.forEach(comp -> {
-            Competition competition = createCompetition(comp, competitionConfig);
-
-            if (competitionConfig.specificDayTimes(comp)) {
-                loadSpecificDayTimes(comp, competitionConfig, competition);
-            } else if (competitionConfig.doingRepeatedTiming(comp)) {
-                loadRepeatedTiming(comp, competitionConfig, competition);
+        competitionFiles.forEach(file -> {
+            EvenMoreFish.debug("Loading " + file.getName() + " competition");
+            CompetitionFile competitionFile;
+            try {
+                competitionFile = new CompetitionFile(file);
+            // Skip invalid configs.
+            } catch (InvalidConfigurationException e) {
+                return;
             }
+            // Skip disabled files.
+            if (competitionFile.isDisabled()) {
+                return;
+            }
+            // Skip duplicate IDs
+            if (fileMap.containsKey(competitionFile.getId())) {
+                EvenMoreFish.getInstance().getLogger().warning("A competition with the id: " + competitionFile.getId() + " already exists! Skipping.");
+                return;
+            }
+            fileMap.put(competitionFile.getId(), competitionFile);
+            Competition competition = new Competition(competitionFile);
+            if (loadSpecificDayTimes(competition)) {
+                return;
+            }
+            if (loadRepeatedTiming(competition)) {
+                return;
+            }
+            EvenMoreFish.debug(Level.WARNING, file.getName() + "'s timings are not configured properly. This competition will never automatically start.");
         });
     }
 
-    private Competition createCompetition(String comp, CompetitionConfig competitionConfig) {
-        CompetitionType type = competitionConfig.getCompetitionType(comp);
-        Competition competition = new Competition(
-                competitionConfig.getCompetitionDuration(comp) * 60,
-                type
+    private void loadDefaultFiles(@NotNull File targetDirectory) {
+        // Regenerate _example.yml file
+        new File(targetDirectory, "_example.yml").delete();
+        FileUtil.loadFileOrResource(targetDirectory, "_example.yml", "competitions/_example.yml", EvenMoreFish.getInstance());
+
+        // Write defaults
+        targetDirectory = new File(targetDirectory, "defaults");
+        FileUtil.loadFileOrResource(targetDirectory, "main.yml", "competitions/defaults/main.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "sunday1.yml", "competitions/defaults/sunday1.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "sunday2.yml", "competitions/defaults/sunday2.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "weekend.yml", "competitions/defaults/weekend.yml", EvenMoreFish.getInstance());
+    }
+
+    public TreeMap<String, CompetitionFile> getFileMap() {
+        return new TreeMap<>(fileMap);
+    }
+
+    private boolean loadSpecificDayTimes(@NotNull Competition competition) {
+        Map<DayOfWeek, List<String>> scheduledDays = competition.getCompetitionFile().getScheduledDays();
+        if (scheduledDays.isEmpty()) {
+            return false;
+        }
+        scheduledDays.forEach((day, times) ->
+                times.forEach(time ->
+                        competitions.put(generateTimeCode(day, time), competition)
+                )
         );
-
-        competition.setCompetitionName(comp);
-        competition.setAdminStarted(false);
-        competition.initAlerts(comp);
-        competition.initRewards(comp, false);
-        competition.initBar(comp);
-        competition.initGetNumbersNeeded(comp);
-        competition.initStartSound(comp);
-
-        return competition;
+        return true;
     }
 
-    private void loadSpecificDayTimes(String comp, CompetitionConfig competitionConfig, Competition competition) {
-        for (String day : competitionConfig.activeDays(comp)) {
-            for (String time : competitionConfig.getDayTimes(comp, day)) {
-                competitions.put(generateTimeCode(day, time), competition);
-            }
-        }
-    }
+    private boolean loadRepeatedTiming(@NotNull Competition competition) {
+        CompetitionFile file = competition.getCompetitionFile();
+        List<String> repeatedTimes = file.getTimes();
 
-    private void loadRepeatedTiming(String comp, CompetitionConfig competitionConfig, Competition competition) {
-        List<String> repeatedTimes = competitionConfig.getRepeatedTiming(comp);
-        List<String> daysToUse = new ArrayList<>(days);
-
-        if (competitionConfig.hasBlacklistedDays(comp)) {
-            daysToUse.removeAll(competitionConfig.getBlacklistedDays(comp));
+        if (repeatedTimes.isEmpty()) {
+            return false;
         }
+
+        // Get a list of days we can use.
+        List<DayOfWeek> daysToUse = new ArrayList<>(Arrays.asList(DayOfWeek.values()));
+        daysToUse.removeAll(file.getBlacklistedDays());
 
         for (String time : repeatedTimes) {
-            for (String day : daysToUse) {
+            for (DayOfWeek day : daysToUse) {
                 competitions.put(generateTimeCode(day, time), competition);
             }
         }
+        return true;
     }
 
     // Converts "Wednesday, 14:30" for example, into the minute of the week, Wednesday 14:30 becomes (24*60*2) + (14*60) + 30
     // day = the day, tfh = 24h format, like 14:30 or 08:15
-    public int generateTimeCode(String day, String tfh) {
+    public int generateTimeCode(DayOfWeek day, String tfh) {
+
         // Gets how many minutes have passed before midnight of the "day" variable
-        int beginning = days.indexOf(day.toUpperCase()) * 24 * 60;
+        int beginning = Arrays.asList(DayOfWeek.values()).indexOf(day) * 24 * 60;
 
         if (tfh != null) {
             String[] time = tfh.split(":");

@@ -8,7 +8,7 @@ plugin for your server.
 
 ---
 
-Supported Versions: 1.16.5, 1.17.1, 1.18.2, 1.19.4, 1.20.6, 1.21.1, 1.21.3 (Experimental, Dev Builds)
+Supported Versions: 1.18.2, 1.19.4, 1.20.6, 1.21.1, 1.21.4 (Experimental, Dev Builds)
 
 If you encounter any issues with the plugin, please do the following before reporting the problem:
 - Create a Spigot or Paper test server using one of the supported versions.

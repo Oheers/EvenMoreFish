@@ -1,9 +1,9 @@
 package com.oheers.fish.selling;
 
 import com.oheers.fish.FishUtils;
-import com.oheers.fish.config.FishFile;
-import com.oheers.fish.config.RaritiesFile;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
+import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import com.oheers.fish.utils.nbt.NbtUtils;
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -30,7 +30,7 @@ public class WorthNBT {
                 emfCompound.setString(NbtKeys.EMF_FISH_PLAYER, fish.getFisherman().toString());
             }
             emfCompound.setString(NbtKeys.EMF_FISH_NAME, fish.getName());
-            emfCompound.setString(NbtKeys.EMF_FISH_RARITY, fish.getRarity().getValue());
+            emfCompound.setString(NbtKeys.EMF_FISH_RARITY, fish.getRarity().getId());
             emfCompound.setInteger(NbtKeys.EMF_FISH_RANDOM_INDEX, fish.getFactory().getChosenRandomIndex());
         });
 
@@ -54,7 +54,7 @@ public class WorthNBT {
             itemMeta.set(nbtplayer, PersistentDataType.STRING, fish.getFisherman().toString());
         }
         itemMeta.set(nbtrandomIndex, PersistentDataType.INTEGER, fish.getFactory().getChosenRandomIndex());
-        itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getValue());
+        itemMeta.set(nbtrarity, PersistentDataType.STRING, fish.getRarity().getId());
         itemMeta.set(nbtname, PersistentDataType.STRING, fish.getName());
     }
 
@@ -66,20 +66,22 @@ public class WorthNBT {
 
         // it's a fish so it'll definitely have these NBT values
         Float length = NbtUtils.getFloat(item, NbtKeys.EMF_FISH_LENGTH);
-        String rarity = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
+        String rarityStr = NbtUtils.getString(item, NbtKeys.EMF_FISH_RARITY);
         String name = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
 
-        // gets a possible set-worth in the fish.yml
+        // gets a possible set-worth in the fish config
         try {
-            int configValue = FishFile.getInstance().getConfig().getInt("fish." + rarity + "." + name + ".set-worth");
+            Rarity rarity = FishManager.getInstance().getRarity(rarityStr);
+            Fish fish = rarity.getFish(name);
+            double value = fish.getSetWorth();
 
-            if (configValue == 0) {
+            if (value == 0) {
                 throw new NullPointerException();
             }
-            return configValue;
+            return value;
         } catch (NullPointerException npe) {
             // there's no set-worth so we're calculating the worth ourselves
-            return length != null && length > 0 ? getMultipliedValue(length, rarity, name) : 0;
+            return length != null && length > 0 ? getMultipliedValue(length, rarityStr, name) : 0;
         }
     }
 
@@ -96,11 +98,19 @@ public class WorthNBT {
         return sortFunkyDecimals(value);
     }
 
-    private static double getWorthMultiplier(final String rarity, final String name) {
-        double value = FishFile.getInstance().getConfig().getDouble("fish." + rarity + "." + name + ".worth-multiplier");
+    private static double getWorthMultiplier(final String rarityStr, final String name) {
+        Rarity rarity = FishManager.getInstance().getRarity(rarityStr);
+        if (rarity == null) {
+            return 0.0D;
+        }
+        Fish fish = rarity.getFish(name);
+        if (fish == null) {
+            return 0.0D;
+        }
+        double value = fish.getWorthMultiplier();
         // Is there a value set for the specific fish?
         if (value == 0.0) {
-            return RaritiesFile.getInstance().getConfig().getDouble("rarities." + rarity + ".worth-multiplier");
+            return rarity.getWorthMultiplier();
         }
 
         return value;

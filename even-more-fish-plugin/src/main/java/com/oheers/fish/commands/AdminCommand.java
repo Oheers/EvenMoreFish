@@ -6,6 +6,7 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.addons.AddonManager;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.addons.Addon;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
@@ -13,9 +14,9 @@ import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
@@ -49,7 +50,7 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_fish")
     public void onFish(final CommandSender sender, final Rarity rarity, final Fish fish, @Optional @Default("1") @Conditions("limits:min=1") Integer quantity, @Optional OnlinePlayer player) {
         if (player == null && !(sender instanceof Player)) {
-            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
+            ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
             return;
         }
 
@@ -70,10 +71,10 @@ public class AdminCommand extends BaseCommand {
 
         FishUtils.giveItems(Collections.singletonList(fishItem), target);
 
-        Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_FISH);
+        AbstractMessage message = ConfigMessage.ADMIN_GIVE_PLAYER_FISH.getMessage();
         message.setPlayer(target);
         message.setFishCaught(fish.getName());
-        message.broadcast(sender);
+        message.send(sender);
         //give fish to target
     }
 
@@ -97,11 +98,11 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_list_fish")
         public void onFish(final CommandSender sender, final Rarity rarity) {
             BaseComponent[] baseComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
-            for (Fish fish : FishManager.getInstance().getRarityMap().get(rarity)) {
+            for (Fish fish : rarity.getFishList()) {
                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour() + "] "));
                 for (BaseComponent component : textComponent) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to receive fish"))));
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getValue() + " " + fish.getName().replace(" ", "_")));
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin fish " + rarity.getId() + " " + fish.getName().replace(" ", "_")));
                     baseComponent[0].addExtra(component);
                 }
             }
@@ -112,11 +113,11 @@ public class AdminCommand extends BaseCommand {
         @Description("%desc_list_rarities")
         public void onRarity(final CommandSender sender) {
             BaseComponent[] baseComponent = TextComponent.fromLegacyText("");
-            for (Rarity rarity : FishManager.getInstance().getRarityMap().keySet()) {
+            for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
                 for (BaseComponent component : textComponent) {
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish."))));
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getValue()));
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getId()));
                     baseComponent[0].addExtra(component);
                 }
             }
@@ -133,40 +134,51 @@ public class AdminCommand extends BaseCommand {
     public class CompetitionSubCommand extends BaseCommand {
 
         @Subcommand("start")
+        @CommandCompletion("@competitionId")
         @Description("%desc_competition_start")
-        public void onStart(final CommandSender sender,
-                            @Default("%duration") @Conditions("limits:min=1") @Optional Integer duration,
-                            @Default("LARGEST_FISH") @Optional CompetitionType type,
-                            @Default("1") @Conditions("limits:min=1") @Optional Integer amount
-        ) {
+        public void onStart(final CommandSender sender, final String competitionId, @Optional @Conditions("limits:min=1") Integer duration) {
             if (Competition.isActive()) {
-                new Message(ConfigMessage.COMPETITION_ALREADY_RUNNING).broadcast(sender);
+                ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
                 return;
             }
+            CompetitionFile file = EvenMoreFish.getInstance().getCompetitionQueue().getFileMap().get(competitionId);
+            if (file == null) {
+                ConfigMessage.INVALID_COMPETITION_ID.getMessage().send(sender);
+                return;
+            }
+            Competition competition = new Competition(file);
+            competition.setAdminStarted(true);
+            if (duration != null) {
+                competition.setMaxDuration(duration);
+            }
+            competition.begin();
+        }
 
-
-            Competition comp = new Competition(duration, type);
-
-            comp.setCompetitionName("[admin_started]");
-            comp.setAdminStarted(true);
-            comp.initRewards(null, true);
-            comp.initBar(null);
-            comp.setNumberNeeded(amount);
-            comp.initStartSound(null);
-
-            EvenMoreFish.getInstance().setActiveCompetition(comp);
-            comp.begin(true);
+        @Subcommand("test")
+        public void onTest(final CommandSender sender,
+                           @Default("%duration") @Conditions("limits:min=1") Integer duration,
+                           @Default("LARGEST_FISH") CompetitionType type
+        ) {
+            if (Competition.isActive()) {
+                ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
+                return;
+            }
+            CompetitionFile file = new CompetitionFile("adminTest", type, duration);
+            Competition competition = new Competition(file);
+            competition.setAdminStarted(true);
+            competition.begin();
         }
 
         @Subcommand("end")
         @Description("%desc_competition_end")
         public void onEnd(final CommandSender sender) {
-            if (Competition.isActive()) {
-                EvenMoreFish.getInstance().getActiveCompetition().end(false);
+            Competition active = Competition.getCurrentlyActive();
+            if (active != null) {
+                active.end(false);
                 return;
             }
 
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender);
+            ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(sender);
         }
 
     }
@@ -176,7 +188,7 @@ public class AdminCommand extends BaseCommand {
     @CommandCompletion("@players")
     public void onNbtRod(final CommandSender sender, @Optional OnlinePlayer playerName) {
         if (!MainConfig.getInstance().requireNBTRod()) {
-            new Message(ConfigMessage.ADMIN_NBT_NOT_REQUIRED).broadcast(sender);
+            ConfigMessage.ADMIN_NBT_NOT_REQUIRED.getMessage().send(sender);
             return;
         }
 
@@ -188,14 +200,14 @@ public class AdminCommand extends BaseCommand {
         }
 
         if (player == null) {
-            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
+            ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
             return;
         }
 
         FishUtils.giveItems(Collections.singletonList(EvenMoreFish.getInstance().getCustomNBTRod()), player);
-        Message giveMessage = new Message(ConfigMessage.ADMIN_NBT_ROD_GIVEN);
+        AbstractMessage giveMessage = ConfigMessage.ADMIN_NBT_ROD_GIVEN.getMessage();
         giveMessage.setPlayer(player);
-        giveMessage.broadcast(sender);
+        giveMessage.send(sender);
     }
 
     @Subcommand("bait")
@@ -212,7 +224,7 @@ public class AdminCommand extends BaseCommand {
 
         if (player == null) {
             if (!(sender instanceof Player)) {
-                new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
+                ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
                 return;
             }
 
@@ -225,10 +237,10 @@ public class AdminCommand extends BaseCommand {
         ItemStack baitItem = bait.create(player.player);
         baitItem.setAmount(quantity);
         FishUtils.giveItems(Collections.singletonList(baitItem), player.player);
-        Message message = new Message(ConfigMessage.ADMIN_GIVE_PLAYER_BAIT);
+        AbstractMessage message = ConfigMessage.ADMIN_GIVE_PLAYER_BAIT.getMessage();
         message.setPlayer(player.player);
         message.setBait(baitId);
-        message.broadcast(sender);
+        message.send(sender);
     }
 
     private String getBaitIdFromName(final String baitName) {
@@ -245,7 +257,7 @@ public class AdminCommand extends BaseCommand {
     @Description("%desc_admin_clearbaits")
     public void onClearBaits(final CommandSender sender, @Optional Player player) {
         if (player == null && !(sender instanceof Player)) {
-            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
+            ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
             return;
         }
 
@@ -254,27 +266,24 @@ public class AdminCommand extends BaseCommand {
         }
 
         if (player.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD) {
-            new Message(ConfigMessage.ADMIN_NOT_HOLDING_ROD).broadcast(player);
+            ConfigMessage.ADMIN_NOT_HOLDING_ROD.getMessage().send(player);
             return;
         }
 
         ItemStack fishingRod = player.getInventory().getItemInMainHand();
         if (!BaitNBTManager.isBaitedRod(fishingRod)) {
-            new Message(ConfigMessage.NO_BAITS).broadcast(player);
+            ConfigMessage.NO_BAITS.getMessage().send(player);
             return;
         }
 
         int totalDeleted = BaitNBTManager.deleteAllBaits(fishingRod);
         if (totalDeleted > 0) {
-            ItemMeta meta = fishingRod.getItemMeta();
-            List<String> updatedLore = BaitNBTManager.deleteOldLore(fishingRod);
-            meta.setLore(updatedLore);
-            fishingRod.setItemMeta(meta);
+            FishUtils.editMeta(fishingRod, meta -> meta.setLore(BaitNBTManager.deleteOldLore(fishingRod)));
         }
 
-        Message message = new Message(ConfigMessage.BAITS_CLEARED);
+        AbstractMessage message = ConfigMessage.BAITS_CLEARED.getMessage();
         message.setAmount(Integer.toString(totalDeleted));
-        message.broadcast(player);
+        message.send(player);
     }
 
 
@@ -296,7 +305,7 @@ public class AdminCommand extends BaseCommand {
             messageList.add(String.format(messageFormat, prefix, addonManager.isLoading(prefix)));
         }
 
-        new Message(messageList).broadcast(sender);
+        EvenMoreFish.getAdapter().createMessage(messageList).send(sender);
     }
 
     @Subcommand("version")
@@ -304,8 +313,8 @@ public class AdminCommand extends BaseCommand {
     public void onVersion(final CommandSender sender) {
         int fishCount = 0;
 
-        for (List<Fish> fishList : FishManager.getInstance().getRarityMap().values()) {
-            fishCount += fishList.size();
+        for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
+            fishCount += rarity.getFishList().size();
         }
         
         String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +
@@ -320,8 +329,8 @@ public class AdminCommand extends BaseCommand {
 
         msgString += "Database Engine: " + getDatabaseVersion();
 
-        Message msg = new Message(msgString);
-        msg.broadcast(sender);
+        AbstractMessage msg = EvenMoreFish.getAdapter().createMessage(msgString);
+        msg.send(sender);
     }
 
     private String getFeatureBranchName() {
@@ -373,7 +382,7 @@ public class AdminCommand extends BaseCommand {
     @Subcommand("rewardtypes")
     @Description("%desc_admin_rewardtypes")
     public void onRewardTypes(final CommandSender sender) {
-        TextComponent message = new TextComponent(new Message(ConfigMessage.ADMIN_LIST_REWARD_TYPES).getRawMessage());
+        TextComponent message = new TextComponent(ConfigMessage.ADMIN_LIST_REWARD_TYPES.getMessage().getLegacyMessage());
         ComponentBuilder builder = new ComponentBuilder(message);
 
         RewardManager.getInstance().getRegisteredRewardTypes().forEach(rewardType -> {
@@ -395,7 +404,7 @@ public class AdminCommand extends BaseCommand {
     @CommandPermission(AdminPerms.MIGRATE)
     public void onMigrate(final CommandSender sender) {
         if (!MainConfig.getInstance().databaseEnabled()) {
-            new Message("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.").broadcast(sender);
+            EvenMoreFish.getAdapter().createMessage("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.").send(sender);
             return;
         }
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
@@ -405,7 +414,7 @@ public class AdminCommand extends BaseCommand {
     @Description("Outputs this item's raw NBT form")
     public void onRawItem(final CommandSender sender) {
         if (!(sender instanceof Player player)) {
-            new Message(ConfigMessage.ADMIN_CANT_BE_CONSOLE).broadcast(sender);
+            ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
             return;
         }
         ItemStack handItem = player.getInventory().getItemInMainHand();

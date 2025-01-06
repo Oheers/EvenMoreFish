@@ -1,10 +1,9 @@
 # If a message contains EvenMoreFish placeholders, e.g. {player} or {rarity} it also supports placeholderapi placeholders.
 
-# These messages partially support the MiniMessage format (Things like hoverable and clickable text will not work).
-# MiniMessage is in strict mode, meaning all tags need to be closed in order to work.
-# You are able to mix MiniMessage with the existing legacy codes, however this is not recommended.
-# Here is the MiniMessage Pull Request for more info: https://github.com/Oheers/EvenMoreFish/pull/387
-# Here are the MiniMessage Docs: https://docs.advntr.dev/minimessage/format.html
+# Important: Read the following if you are on a Paper server.
+# These messages are able to support the MiniMessage format (in strict mode) if you are on a Paper server.
+# You are able to mix both formats on the same line, however this is not recommended.
+# Here are the MiniMessage Docs for help with using MiniMessage: https://docs.advntr.dev/minimessage/format.html
 
 # Sent to players when they fish an EvenMoreFish fish
 fish-caught: "&l{player} &rhas fished a {rarity_colour}{length}cm &l{rarity} {rarity_colour}{fish}!"
@@ -233,8 +232,10 @@ admin:
 
   # Sent when a competition is already running when using /emf admin competition start
   competition-already-running: "&rThere's already a competition running."
-  # When an invalid competition type is tried to be started
+  # When an invalid competition type is provided
   competition-type-invalid: "&rThat isn't a type of competition type, available types: MOST_FISH, LARGEST_FISH, SPECIFIC_FISH"
+  # When an invalid competition id is provided
+  competition-id-invalid: "&rThat isn't a valid competition id."
 
   # When the command /emf admin nbt-rod is run.
   nbt-rod-given: "&rYou have given {player} a NBT rod, make sure \"require-nbt-rod\" is set to &atrue &rfor this to be different from any other fishing rod."
@@ -250,4 +251,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 7
+config-version: 8

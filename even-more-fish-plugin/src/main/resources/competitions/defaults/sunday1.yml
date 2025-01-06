@@ -1,0 +1,7 @@
+id: sundayCompetition1
+disabled: false
+type: LARGEST_FISH
+duration: 30
+days:
+  Sunday:
+    - "13:00"

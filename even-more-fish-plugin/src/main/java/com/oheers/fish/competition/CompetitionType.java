@@ -2,6 +2,7 @@ package com.oheers.fish.competition;
 
 import com.oheers.fish.competition.strategies.*;
 import com.oheers.fish.config.messages.ConfigMessage;
+import org.jetbrains.annotations.Nullable;
 
 
 public enum CompetitionType {
@@ -83,7 +84,15 @@ public enum CompetitionType {
         return strategy;
     }
 
-
-
+    public static @Nullable CompetitionType getType(String name) {
+        if (name == null) {
+            return null;
+        }
+        try {
+            return valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
+    }
 
 }

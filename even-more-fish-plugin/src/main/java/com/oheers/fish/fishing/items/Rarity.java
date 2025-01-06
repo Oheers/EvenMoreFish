@@ -1,69 +1,181 @@
 package com.oheers.fish.fishing.items;
 
-import com.oheers.fish.FishUtils;
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.requirement.Requirement;
+import com.oheers.fish.config.ConfigBase;
+import com.oheers.fish.exceptions.InvalidFishException;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Rarity {
+public class Rarity extends ConfigBase {
 
-    public String loreOverride;
-    public String permission;
-    String value, colour;
-    double weight;
-    boolean announce;
-    boolean fishWeighted;
-    boolean hasCompExemptFish;
-    boolean useConfigCasing;
-    boolean shouldDisableFisherman;
-    String displayName;
-    Requirement requirement = new Requirement();
-    double minSize;
-    double maxSize;
+    private static final Logger logger = EvenMoreFish.getInstance().getLogger();
+
+    private boolean fishWeighted;
+    private Requirement requirement = new Requirement();
+    private final List<Fish> fishList;
 
     /**
-     * Constructs a Rarity from its config section.
-     * @param section The section for this rarity.
+     * Constructs a Rarity from its config file.
+     * @param section The file for this rarity.
      */
-    public Rarity(@NotNull Section section) {
-        // This should never be null, but we have this check just to be safe.
-        this.value = Objects.requireNonNull(section.getNameAsString());
-        this.colour = section.getString("colour", "&f");
-        this.weight = section.getDouble("weight");
-        this.announce = section.getBoolean("broadcast");
-        this.loreOverride = section.getString("override-lore");
-        this.useConfigCasing = section.getBoolean("use-this-casing");
-        this.permission = section.getString("permission");
-        this.displayName = section.getString("displayname");
-        this.shouldDisableFisherman = section.getBoolean("disable-fisherman", false);
-        this.minSize = section.getDouble("size.minSize");
-        this.maxSize = section.getDouble("size.maxSize");
-        handleRequirements(section);
+    public Rarity(@NotNull File file) throws InvalidConfigurationException {
+        super(file, EvenMoreFish.getInstance(), false);
+        performRequiredConfigChecks();
+        updateRequirementFormats();
+        fishList = loadFish();
     }
 
-    /**
-     * Constructs a rarity with the provided values.
-     * @deprecated Use {@link Rarity#Rarity(Section)} instead. This constructor will be removed for EMF 1.8.
-     */
-    @Deprecated(forRemoval = true)
-    public Rarity(String value, String colour, double weight, boolean announce, boolean useConfigCasing, String loreOverride) {
-        this.value = value;
-        this.colour = colour;
-        this.weight = weight;
-        this.announce = announce;
-        this.loreOverride = loreOverride;
-        this.useConfigCasing = useConfigCasing;
+    // Current required config: id
+    private void performRequiredConfigChecks() throws InvalidConfigurationException {
+        if (getConfig().getString("id") == null) {
+            logger.warning("Rarity invalid: 'id' missing in " + getFileName());
+            throw new InvalidConfigurationException("An ID has not been found in " + getFileName() + ". Please correct this.");
+        }
     }
 
-    private void handleRequirements(@NotNull Section raritySection) {
-        Section requirementSection = raritySection.getSection("requirements");
-        requirement = new Requirement();
+    // Config getters
+
+    public @NotNull String getId() {
+        return Objects.requireNonNull(getConfig().getString("id"));
+    }
+
+    public boolean isDisabled() {
+        return getConfig().getBoolean("disabled");
+    }
+
+    public @NotNull String getColour() {
+        return getConfig().getString("colour", "&f");
+    }
+
+    public double getWeight() {
+        return getConfig().getDouble("weight");
+    }
+
+    public boolean getAnnounce() {
+        return getConfig().getBoolean("broadcast");
+    }
+
+    public boolean getUseConfigCasing() {
+        return getConfig().getBoolean("use-this-casing");
+    }
+
+    public @NotNull String getDisplayName() {
+        String displayName = getConfig().getString("displayname");
+        if (displayName == null) {
+            return getId();
+        }
+        return displayName;
+    }
+
+    public @NotNull String getLorePrep() {
+        String loreOverride = getConfig().getString("override-lore");
+        if (loreOverride != null) {
+            return loreOverride;
+        }
+        String displayName = getConfig().getString("displayname");
+        if (displayName != null) {
+            return displayName;
+        }
+        String finalName = getId();
+        if (!getUseConfigCasing()) {
+            finalName = finalName.toUpperCase();
+        }
+        return this.getColour() + "&l" + finalName;
+    }
+
+    public @Nullable String getPermission() {
+        return getConfig().getString("permission");
+    }
+
+    public Requirement getRequirement() {
+        if (requirement == null) {
+            requirement = loadRequirements();
+        }
+        return requirement;
+    }
+
+    public boolean isShouldDisableFisherman() {
+        return getConfig().getBoolean("disable-fisherman", false);
+    }
+
+    public double getMinSize() {
+        return getConfig().getDouble("size.minSize");
+    }
+
+    public double getMaxSize() {
+        return getConfig().getDouble("size.maxSize");
+    }
+
+    // TODO this was set to always be false at some point, we need to re-add the removed code.
+    public boolean hasCompExemptFish() {
+        return false;
+    }
+
+    public @NotNull List<Fish> getFishList() {
+        return fishList;
+    }
+
+    public @Nullable Fish getFish(@NotNull String name) {
+        for (Fish fish : fishList) {
+            if (fish.getName().equalsIgnoreCase(name)) {
+                return fish;
+            }
+        }
+        return null;
+    }
+
+    public double getWorthMultiplier() {
+        return getConfig().getDouble("worth-multiplier", 0.0D);
+    }
+
+    // External variables
+
+    public boolean isFishWeighted() {
+        return fishWeighted;
+    }
+
+    public void setFishWeighted(boolean fishWeighted) {
+        this.fishWeighted = fishWeighted;
+    }
+
+    // Loading stuff
+
+    private List<Fish> loadFish() {
+        Section rootFishSection = getConfig().getSection("fish");
+        if (rootFishSection == null) {
+            return List.of();
+        }
+        List<Fish> fishList = new ArrayList<>();
+        rootFishSection.getRoutesAsStrings(false).forEach(fishStr -> {
+            Section fishSection = rootFishSection.getSection(fishStr);
+            if (fishSection == null) {
+                fishSection = rootFishSection.createSection(fishStr);
+            }
+            try {
+                fishList.add(new Fish(this, fishSection));
+            } catch (InvalidFishException exception) {
+                EvenMoreFish.getInstance().getLogger().log(Level.WARNING, exception.getMessage(), exception);
+            }
+        });
+        // Creates an immutable list.
+        return List.copyOf(fishList);
+    }
+
+    private Requirement loadRequirements() {
+        Section requirementSection = getConfig().getSection("requirements");
+        Requirement requirement = new Requirement();
         if (requirementSection == null) {
-            return;
+            return requirement;
         }
         requirementSection.getRoutesAsStrings(false).forEach(requirementString -> {
             List<String> values = new ArrayList<>();
@@ -74,95 +186,41 @@ public class Rarity {
             }
             requirement.add(requirementString, values);
         });
-    }
-
-    public String getValue() {
-        return this.value;
-    }
-
-    public String getColour() {
-        return this.colour;
-    }
-
-    public double getWeight() {
-        return this.weight;
-    }
-
-    public boolean getAnnounce() {
-        return this.announce;
-    }
-
-    public boolean getUseConfigCasing() { return this.useConfigCasing; }
-
-    public boolean isFishWeighted() {
-        return fishWeighted;
-    }
-
-    public void setFishWeighted(boolean fishWeighted) {
-        this.fishWeighted = fishWeighted;
-    }
-
-    @NotNull
-    public String getDisplayName() {
-        if (displayName == null) {
-            return value;
-        }
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setRequirement(Requirement requirement) {
-        this.requirement = requirement;
-    }
-
-    public String getLorePrep() {
-        if (loreOverride != null) return FishUtils.translateColorCodes(loreOverride);
-        else {
-            if (this.displayName != null) {
-                return this.displayName;
-            } else {
-                String finalName = this.getValue();
-                if (!useConfigCasing) {
-                    finalName = finalName.toUpperCase();
-                }
-                return this.getColour() + "&l" + finalName;
-            }
-        }
-    }
-
-    public String getPermission() {
-        return permission;
-    }
-
-    public void setPermission(String permission) {
-        this.permission = permission;
-    }
-
-    public boolean hasCompExemptFish() {
-        return hasCompExemptFish;
-    }
-
-    public void setHasCompExemptFish(boolean hasCompExemptFish) {
-        this.hasCompExemptFish = hasCompExemptFish;
-    }
-
-    public Requirement getRequirement() {
         return requirement;
     }
 
-    public boolean isShouldDisableFisherman() {
-        return shouldDisableFisherman;
+    private void updateRequirementFormats() {
+        updateRequirementFormats(getConfig());
+        Section fishSect = getConfig().getSection("fish");
+        if (fishSect != null) {
+            fishSect.getRoutesAsStrings(false).forEach(fishName -> {
+                Section section = fishSect.getSection(fishName);
+                if (section == null) {
+                    return;
+                }
+                updateRequirementFormats(section);
+            });
+        }
+        save();
     }
 
-    public double getMinSize() {
-        return minSize;
-    }
-
-    public double getMaxSize() {
-        return maxSize;
+    private void updateRequirementFormats(@NotNull Section section) {
+        Section ingameSection = section.getSection("requirements.ingame-time");
+        if (ingameSection != null) {
+            int min = ingameSection.getInt("minTime");
+            int max = ingameSection.getInt("maxTime");
+            ingameSection.remove("minTime");
+            ingameSection.remove("maxTime");
+            section.set("requirements.ingame-time", min + "-" + max);
+        }
+        Section irlSection = section.getSection("requirements.irl-time");
+        if (irlSection != null) {
+            String min = irlSection.getString("minTime");
+            String max = irlSection.getString("maxTime");
+            irlSection.remove("minTime");
+            irlSection.remove("maxTime");
+            section.set("requirements.irl-time", min + "-" + max);
+        }
     }
 
 }
