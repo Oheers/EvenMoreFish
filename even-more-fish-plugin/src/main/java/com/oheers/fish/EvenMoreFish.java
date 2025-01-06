@@ -77,6 +77,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EvenMoreFish extends EMFPlugin {
+
     private final Random random = new Random();
 
     private Permission permission = null;
