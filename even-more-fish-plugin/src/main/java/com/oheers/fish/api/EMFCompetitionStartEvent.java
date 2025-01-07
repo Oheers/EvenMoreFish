@@ -9,9 +9,9 @@ public class EMFCompetitionStartEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
-    Competition competition;
+    private final Competition competition;
 
-    public EMFCompetitionStartEvent(Competition competition) {
+    public EMFCompetitionStartEvent(@NotNull Competition competition) {
         this.competition = competition;
     }
 
@@ -27,7 +27,7 @@ public class EMFCompetitionStartEvent extends Event {
     /**
      * @return the Competition object that has been begun
      */
-    public Competition getCompetition() {
+    public @NotNull Competition getCompetition() {
         return this.competition;
     }
 }
