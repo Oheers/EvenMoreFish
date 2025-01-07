@@ -4,6 +4,8 @@ public enum DefaultAddons {
     J8("8"),
     J17("17")
     ;
+    J17("17"),
+    J21("21");
 
     private final String targetJavaVersion;
     private final String fullFileName;

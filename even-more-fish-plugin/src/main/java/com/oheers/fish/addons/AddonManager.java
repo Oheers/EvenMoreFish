@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public class AddonManager {
+
     private static final String ADDON_FOLDER = "addons";
     private final EvenMoreFish plugin;
     private final File folder;
@@ -44,7 +45,6 @@ public class AddonManager {
     @Nullable
     public ItemStack getItemStack(final String prefix, final String id) throws NoPrefixException {
         if (!addonMap.containsKey(prefix)) {
-
             if (!loadingMap.getOrDefault(prefix, true)) {
                 throw new NoPrefixException(prefix);
             }
@@ -78,7 +78,6 @@ public class AddonManager {
             Bukkit.getPluginManager().registerEvents(listener, plugin);
         }
         return true;
-
     }
 
     public Optional<Addon> registerAddon(final @NotNull Class<? extends Addon> addon) {
@@ -125,7 +124,6 @@ public class AddonManager {
             if (ex.getCause() instanceof LinkageError) {
                 throw (LinkageError) ex.getCause();
             }
-
             plugin.getLogger().warning("There was an issue with loading an addon.");
             return null;
         }
@@ -172,7 +170,6 @@ public class AddonManager {
                     .map(Optional::get)
                     .toList();
 
-
             final String message = String.format("%s new addons registered! (%s total)", registered.size(), addonMap.size());
             plugin.getLogger().info(message);
         });
@@ -199,4 +196,5 @@ public class AddonManager {
     public boolean isLoading(final String prefix) {
         return loadingMap.getOrDefault(prefix, true);
     }
+
 }
