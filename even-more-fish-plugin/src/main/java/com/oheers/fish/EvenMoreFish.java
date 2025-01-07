@@ -77,6 +77,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EvenMoreFish extends EMFPlugin {
+
     private final Random random = new Random();
 
     private Permission permission = null;
@@ -772,7 +773,7 @@ public class EvenMoreFish extends EMFPlugin {
         if (isCustomFishing(player)) {
             pdc.set(key, PersistentDataType.STRING, "false");
             ConfigMessage.TOGGLE_OFF.getMessage().send(player);
-        // If it is disabled, enable it
+            // If it is disabled, enable it
         } else {
             pdc.set(key, PersistentDataType.STRING, "true");
             ConfigMessage.TOGGLE_ON.getMessage().send(player);
