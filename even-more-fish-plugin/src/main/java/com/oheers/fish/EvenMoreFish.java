@@ -77,6 +77,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EvenMoreFish extends EMFPlugin {
+
     private final Random random = new Random();
 
     private Permission permission = null;
@@ -517,10 +518,20 @@ public class EvenMoreFish extends EMFPlugin {
         itemFactory.setItemLoreCheck(true);
 
         ItemStack customRod = itemFactory.createItem(null, 0);
-        NBT.modify(customRod,nbt -> {
+
+        setCustomNBTRod(customRod);
+
+        return customRod;
+    }
+
+    /**
+     * Allows external plugins to set their own items as an EMF NBT-rod.
+     * @param item The item to set as an EMF NBT-rod.
+     */
+    public void setCustomNBTRod(@NotNull ItemStack item) {
+        NBT.modify(item, nbt -> {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).setBoolean(NbtKeys.EMF_ROD_NBT, true);
         });
-        return customRod;
     }
 
     public void reload(@Nullable CommandSender sender) {
@@ -777,7 +788,7 @@ public class EvenMoreFish extends EMFPlugin {
         if (isCustomFishing(player)) {
             pdc.set(key, PersistentDataType.STRING, "false");
             ConfigMessage.TOGGLE_OFF.getMessage().send(player);
-        // If it is disabled, enable it
+            // If it is disabled, enable it
         } else {
             pdc.set(key, PersistentDataType.STRING, "true");
             ConfigMessage.TOGGLE_ON.getMessage().send(player);

@@ -1,7 +1,7 @@
 ## How to use EMF's new economy system:
 As of EvenMoreFish 2.0, the plugin is capable of supporting multiple economies at the same time.
 
-Below is the default config as of December 4th 2024:
+Below is the default config (found in config.yml) as of December 4th 2024:
 ```
 # Enable/Disable different economy types here.
 # Optionally choose a multiplier for each type you have enabled.

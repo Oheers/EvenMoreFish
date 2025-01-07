@@ -1,6 +1,5 @@
 package com.oheers.fish.api.plugin;
 
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
