@@ -404,7 +404,7 @@ public class BaitNBTManager {
         }
 
         List<String> lore = itemStack.getItemMeta().getLore();
-        if (lore == null) {
+        if (lore == null || lore.isEmpty()) {
             return Collections.emptyList();
         }
 
