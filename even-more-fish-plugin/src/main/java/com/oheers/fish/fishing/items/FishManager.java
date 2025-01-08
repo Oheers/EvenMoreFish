@@ -255,7 +255,10 @@ public class FishManager {
         rarityMap.clear();
 
         File raritiesFolder = new File(EvenMoreFish.getInstance().getDataFolder(), "rarities");
-        loadDefaultFiles(raritiesFolder);
+        if (EvenMoreFish.getInstance().isFirstLoad()) {
+            loadDefaultFiles(raritiesFolder);
+        }
+        regenExampleFile(raritiesFolder);
         List<File> rarityFiles = FileUtil.getFilesInDirectory(raritiesFolder, true, true);
 
         if (rarityFiles.isEmpty()) {
@@ -285,18 +288,18 @@ public class FishManager {
         });
     }
 
-    private void loadDefaultFiles(@NotNull File targetDirectory) {
-        // Regenerate _example.yml file
+    private void regenExampleFile(@NotNull File targetDirectory) {
         new File(targetDirectory, "_example.yml").delete();
         FileUtil.loadFileOrResource(targetDirectory, "_example.yml", "rarities/_example.yml", EvenMoreFish.getInstance());
+    }
 
-        // Load defaults into the defaults subdirectory
-        targetDirectory = new File(targetDirectory, "defaults");
-        FileUtil.loadFileOrResource(targetDirectory, "common.yml", "rarities/defaults/common.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "junk.yml", "rarities/defaults/junk.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "rare.yml", "rarities/defaults/rare.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "epic.yml", "rarities/defaults/epic.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "legendary.yml", "rarities/defaults/legendary.yml", EvenMoreFish.getInstance());
+    private void loadDefaultFiles(@NotNull File targetDirectory) {
+        EvenMoreFish.getInstance().getLogger().info("Loading default rarity configs.");
+        FileUtil.loadFileOrResource(targetDirectory, "common.yml", "rarities/common.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "junk.yml", "rarities/junk.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "rare.yml", "rarities/rare.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "epic.yml", "rarities/epic.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "legendary.yml", "rarities/legendary.yml", EvenMoreFish.getInstance());
     }
 
 }

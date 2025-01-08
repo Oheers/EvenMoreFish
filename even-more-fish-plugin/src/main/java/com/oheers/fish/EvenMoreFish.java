@@ -92,6 +92,7 @@ public class EvenMoreFish extends EMFPlugin {
     private int metric_fishCaught = 0;
     private int metric_baitsUsed = 0;
     private int metric_baitsApplied = 0;
+    private boolean firstLoad = false;
 
     // this is for pre-deciding a rarity and running particles if it will be chosen
     // it's a work-in-progress solution and probably won't stick.
@@ -133,6 +134,10 @@ public class EvenMoreFish extends EMFPlugin {
 
         // This should only ever be done once.
         EMFPlugin.setInstance(this);
+
+        // If EMF folder does not exist, this is the first load.
+        firstLoad = !getDataFolder().exists();
+
         instance = this;
         scheduler = UniversalScheduler.getScheduler(this);
         platformAdapter = loadAdapter();
@@ -147,9 +152,6 @@ public class EvenMoreFish extends EMFPlugin {
         usingVault = Bukkit.getPluginManager().isPluginEnabled("Vault");
         usingGriefPrevention = Bukkit.getPluginManager().isPluginEnabled("GriefPrevention");
         usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
-
-        getConfig().options().copyDefaults();
-        saveDefaultConfig();
 
         new MainConfig();
         new Messages();
@@ -221,6 +223,9 @@ public class EvenMoreFish extends EMFPlugin {
         }
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
+
+        // Set this to false as the plugin is now loaded.
+        firstLoad = false;
     }
 
     @Override
@@ -813,6 +818,10 @@ public class EvenMoreFish extends EMFPlugin {
             platformAdapter = new SpigotAdapter();
         }
         return platformAdapter;
+    }
+
+    public boolean isFirstLoad() {
+        return firstLoad;
     }
 
 }
