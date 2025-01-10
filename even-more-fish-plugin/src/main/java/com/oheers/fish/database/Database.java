@@ -2,6 +2,7 @@ package com.oheers.fish.database;
 
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
@@ -14,6 +15,7 @@ import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.fishing.items.Fish;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.Conversion;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.*;
 import org.jooq.Record;
@@ -250,7 +252,7 @@ public class Database implements DatabaseWrapper {
                         .set(Tables.FISH.FISH_RARITY, fish.getRarity().getValue())
                         .set(Tables.FISH.FIRST_FISHER, uuid.toString())
                         .set(Tables.FISH.TOTAL_CAUGHT, 1)
-                        .set(Tables.FISH.LARGEST_FISH, Math.round(fish.getLength() * 10f) / 10f /* todo use decimal format here */)
+                        .set(Tables.FISH.LARGEST_FISH, Math.round(fish.getLength() * 10f) / 10f)
                         .set(Tables.FISH.FIRST_FISHER, uuid.toString())
                         .set(Tables.FISH.FIRST_CATCH_TIME, ByteBuffer.allocate(Long.BYTES).putLong(Instant.now().getEpochSecond()).array())
                         .execute();
@@ -495,7 +497,7 @@ public class Database implements DatabaseWrapper {
                         .set(Tables.USERS_SALES.FISH_RARITY, fishRarity)
                         .set(Tables.USERS_SALES.FISH_AMOUNT, fishAmount)
                         .set(Tables.USERS_SALES.FISH_LENGTH, fishLength)
-                        .set(Tables.USERS_SALES.PRICE_SOLD, (Math.floor(priceSold * 10) / 10) /* TODO*/ )
+                        .set(Tables.USERS_SALES.PRICE_SOLD, Math.round(priceSold * 10) / 10.0)
                         .execute();
             }
         }.executeUpdate();

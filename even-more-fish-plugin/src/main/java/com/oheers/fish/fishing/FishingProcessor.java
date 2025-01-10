@@ -34,12 +34,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
-    private final DecimalFormat decimalFormat = new DecimalFormat("#.0");
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void process(PlayerFishEvent event) {
@@ -200,7 +198,7 @@ public class FishingProcessor implements Listener {
         if (cEvent.isCancelled()) return null;
 
         if (!fish.isSilent()) {
-            String length = decimalFormat.format(fish.getLength());
+            String length = FishUtils.DECIMAL_FORMAT.format(fish.getLength());
             EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + fish.getLength());
             String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
 
