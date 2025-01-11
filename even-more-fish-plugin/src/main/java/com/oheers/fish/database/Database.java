@@ -6,7 +6,8 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
-import com.oheers.fish.database.connection.ConnectionFactory;
+import com.oheers.fish.config.MainConfig;
+import com.oheers.fish.database.connection.*;
 import com.oheers.fish.database.execute.ExecuteQuery;
 import com.oheers.fish.database.execute.ExecuteUpdate;
 import com.oheers.fish.database.generated.mysql.Tables;
@@ -26,7 +27,7 @@ import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,10 +38,43 @@ import java.util.regex.Pattern;
 public class Database implements DatabaseWrapper {
     private final Settings settings;
     private final ConnectionFactory connectionFactory;
+    private final MigrationManager migrationManager;
 
-    public Database(final ConnectionFactory connectionFactory) {
+    public Database() {
         this.settings = new Settings();
-        this.connectionFactory = connectionFactory;
+        this.connectionFactory = getConnectionFactory(MainConfig.getInstance().getDatabaseType().toLowerCase());
+        this.connectionFactory.init();
+
+        this.migrationManager = new MigrationManager(connectionFactory);
+        if (migrationManager.usingV2()) {
+            return;
+        }
+
+        switch (this.migrationManager.getDatabaseVersion().getVersion()) {
+            case "5":
+                this.migrationManager.migrateFromV5ToLatest();
+                break;
+            case "6":
+                this.migrationManager.migrateFromV6ToLatest();
+                break;
+            default:
+                this.migrationManager.migrateFromVersion(this.migrationManager.getDatabaseVersion().getVersion(), true);
+                break;
+        }
+
+        initSettings(MainConfig.getInstance().getPrefix(), MainConfig.getInstance().getDatabase());
+    }
+
+    public MigrationManager getMigrationManager() {
+        return migrationManager;
+    }
+
+    private @NotNull ConnectionFactory getConnectionFactory(final @NotNull String type) {
+        return switch(type) {
+            case "mysql": yield new MySqlConnectionFactory(); //todo check for credentials.
+            case "sqlite": yield new SqliteConnectionFactory();
+            default: yield new H2ConnectionFactory();
+        };
     }
 
     public void initSettings(final String tablePrefix, final String dbName) {
@@ -67,6 +101,14 @@ public class Database implements DatabaseWrapper {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
         }
 
+    }
+
+    //todo should be in mainconfig, out of scope for this pr
+    private boolean hasCredentials() {
+        return MainConfig.getInstance().getUsername() != null &&
+                MainConfig.getInstance().getPassword() != null &&
+                MainConfig.getInstance().getAddress() != null &&
+                MainConfig.getInstance().getDatabase() != null;
     }
 
     private @NotNull DSLContext getContext(Connection connection) {
@@ -254,7 +296,7 @@ public class Database implements DatabaseWrapper {
                         .set(Tables.FISH.TOTAL_CAUGHT, 1)
                         .set(Tables.FISH.LARGEST_FISH, Math.round(fish.getLength() * 10f) / 10f)
                         .set(Tables.FISH.FIRST_FISHER, uuid.toString())
-                        .set(Tables.FISH.FIRST_CATCH_TIME, ByteBuffer.allocate(Long.BYTES).putLong(Instant.now().getEpochSecond()).array())
+                        .set(Tables.FISH.FIRST_CATCH_TIME, LocalDateTime.now())
                         .execute();
             }
         }.executeUpdate();
@@ -331,7 +373,7 @@ public class Database implements DatabaseWrapper {
                     final String fish = recordResult.getValue(Tables.FISH_LOG.FISH);
                     final float largestLength = recordResult.getValue(Tables.FISH_LOG.LARGEST_LENGTH);
                     final int quantity = recordResult.getValue(Tables.FISH_LOG.QUANTITY);
-                    final long firstCatchTime = recordResult.getValue(Tables.FISH_LOG.FIRST_CATCH_TIME); // convert to long, or maybe store as long?
+                    final LocalDateTime firstCatchTime = recordResult.getValue(Tables.FISH_LOG.FIRST_CATCH_TIME); // convert to long, or maybe store as long?
                     reports.add(new FishReport(rarity, fish, largestLength, quantity, firstCatchTime));
                 }
                 return reports;
@@ -369,7 +411,7 @@ public class Database implements DatabaseWrapper {
                     final String fish = recordResult.getValue(Tables.FISH_LOG.FISH);
                     final float largestLength = recordResult.getValue(Tables.FISH_LOG.LARGEST_LENGTH);
                     final int quantity = recordResult.getValue(Tables.FISH_LOG.QUANTITY);
-                    final long firstCatchTime = recordResult.getValue(Tables.FISH_LOG.FIRST_CATCH_TIME); // convert to long, or maybe store as long?
+                    final LocalDateTime firstCatchTime = recordResult.getValue(Tables.FISH_LOG.FIRST_CATCH_TIME); // convert to long, or maybe store as long?
                     reports.add(new FishReport(rarity, fish, largestLength, quantity, firstCatchTime));
                 }
                 return reports;
@@ -383,12 +425,6 @@ public class Database implements DatabaseWrapper {
     }
 
     @Override
-    public void handleFishCatch(@NotNull UUID uuid, @NotNull Fish fish) {
-        //todo, in the original code, this doesn't make any changes to the database, not really.
-        //todo so this should be in the datamanager, and not in this class
-    }
-
-    @Override
     public void addUserFish(@NotNull FishReport report, int userId) {
         new ExecuteUpdate(connectionFactory) {
             @Override
@@ -398,7 +434,7 @@ public class Database implements DatabaseWrapper {
                         .set(Tables.FISH_LOG.RARITY, report.getRarity())
                         .set(Tables.FISH_LOG.FISH, report.getName())
                         .set(Tables.FISH_LOG.QUANTITY, report.getNumCaught())
-                        .set(Tables.FISH_LOG.FIRST_CATCH_TIME, report.getTimeEpoch()) //convert to bytes
+                        .set(Tables.FISH_LOG.FIRST_CATCH_TIME, report.getLocalDateTime()) //convert to bytes
                         .set(Tables.FISH_LOG.LARGEST_LENGTH, report.getLargestLength())
                         .execute();
             }
@@ -472,8 +508,11 @@ public class Database implements DatabaseWrapper {
                             .execute();
                 }
 
-                //set default values todo ("None")
-                return common.execute();
+                return common.set(Tables.COMPETITIONS.WINNER_UUID, "None")
+                        .set(Tables.COMPETITIONS.WINNER_FISH, "None")
+                        .set(Tables.COMPETITIONS.WINNER_SCORE, 0f)
+                        .set(Tables.COMPETITIONS.CONTESTANTS, "None")
+                        .execute();
             }
         }.executeUpdate();
     }

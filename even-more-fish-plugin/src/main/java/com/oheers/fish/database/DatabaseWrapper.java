@@ -45,8 +45,6 @@ public interface DatabaseWrapper {
 
     List<FishReport> getReportsForFish(@NotNull UUID uuid, @NotNull Fish fish);
 
-    void handleFishCatch(@NotNull UUID uuid, @NotNull Fish fish);
-
     void addUserFish(@NotNull FishReport report, int userId);
 
     void updateUserFish(@NotNull FishReport report, int userId);
