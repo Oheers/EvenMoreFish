@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 
+@Deprecated
 public class DatabaseV3 {
     private boolean usingV2;
     private final ConnectionFactory connectionFactory;
