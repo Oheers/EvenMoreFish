@@ -41,16 +41,10 @@ public class PaperMessage extends AbstractMessage {
 
         try {
             // Parse MiniMessage
-            LegacyComponentSerializer legacyAmpersandSerializer = LegacyComponentSerializer.builder()
-                    .hexColors()
-                    .useUnusualXRepeatedCharacterHexFormat()
-                    .build();
-            Component component = MiniMessage.builder().strict(true).build().deserialize(message);
+            Component component = miniMessage.deserialize(message);
             // Get legacy color codes from MiniMessage
-            message = legacyAmpersandSerializer.serialize(component);
-        } catch (ParsingException exception) {
-            // Ignore. If MiniMessage throws an exception, we'll only use legacy colors.
-        }
+            message = legacySerializer.serialize(component);
+        } catch (ParsingException exception) { /* Ignore. If MiniMessage throws an exception, we'll only use legacy colors. */ }
 
         char COLOR_CHAR = '§';
         Matcher matcher = HEX_PATTERN.matcher(message);

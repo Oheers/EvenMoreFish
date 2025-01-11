@@ -56,7 +56,7 @@ public class FishUtils {
         return NbtUtils.hasKey(skull, NbtKeys.EMF_FISH_NAME);
     }
 
-    public static Fish getFish(ItemStack item) {
+    public static @Nullable Fish getFish(ItemStack item) {
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
 
         String nameString = NbtUtils.getString(item, NbtKeys.EMF_FISH_NAME);
@@ -102,7 +102,7 @@ public class FishUtils {
         return finalFish;
     }
 
-    public static Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
+    public static @Nullable Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
         // all appropriate null checks can be safely assumed to have passed to get to a point where we're running this method.
         final String nameString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_NAME).toString()));
         final String playerString = NBT.getPersistentData(skull, nbt -> nbt.getString(NbtUtils.getNamespacedKey(NbtKeys.EMF_FISH_PLAYER).toString()));
@@ -200,7 +200,7 @@ public class FishUtils {
         }
     }
 
-    public static String getRegionName(Location location) {
+    public static @Nullable String getRegionName(Location location) {
         if (MainConfig.getInstance().isRegionBoostsEnabled()) {
             Plugin worldGuard = EvenMoreFish.getInstance().getServer().getPluginManager().getPlugin("WorldGuard");
             if (worldGuard != null && worldGuard.isEnabled()) {
@@ -237,12 +237,12 @@ public class FishUtils {
         }
     }
 
-    public static String translateColorCodes(String message) {
+    public static @NotNull String translateColorCodes(String message) {
         return EvenMoreFish.getAdapter().translateColorCodes(message);
     }
 
     //gets the item with a custom texture
-    public static ItemStack getSkullFromBase64(String base64EncodedString) {
+    public static @NotNull ItemStack getSkullFromBase64(String base64EncodedString) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         UUID headUuid = UUID.randomUUID();
         // 1.20.5+ handling
@@ -270,7 +270,7 @@ public class FishUtils {
     }
 
     //gets the item with a custom uuid
-    public static ItemStack getSkullFromUUID(UUID uuid) {
+    public static @NotNull ItemStack getSkullFromUUID(UUID uuid) {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         // 1.20.5+ handling
         if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
@@ -288,7 +288,7 @@ public class FishUtils {
         return skull;
     }
 
-    public static String timeFormat(long timeLeft) {
+    public static @NotNull String timeFormat(long timeLeft) {
         String returning = "";
         long hours = timeLeft / 3600;
         long minutes = (timeLeft % 3600) / 60;
@@ -316,7 +316,7 @@ public class FishUtils {
         return returning.trim();
     }
 
-    public static String timeRaw(long timeLeft) {
+    public static @NotNull String timeRaw(long timeLeft) {
         String returning = "";
         long hours = timeLeft / 3600;
 
@@ -334,7 +334,6 @@ public class FishUtils {
     }
 
     public static void broadcastFishMessage(AbstractMessage message, Player referencePlayer, boolean actionBar) {
-
         String formatted = message.getLegacyMessage();
         Competition activeComp = Competition.getCurrentlyActive();
 
@@ -394,7 +393,7 @@ public class FishUtils {
         }
     }
 
-    public static Biome getBiome(@NotNull String keyString) {
+    public static @Nullable Biome getBiome(@NotNull String keyString) {
         // Force lowercase
         keyString = keyString.toLowerCase();
         // If no namespace, assume minecraft

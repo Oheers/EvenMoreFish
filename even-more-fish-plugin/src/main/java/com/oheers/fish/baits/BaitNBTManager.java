@@ -340,10 +340,10 @@ public class BaitNBTManager {
     }
 
     public static List<String> newApplyLore(ItemStack itemStack) {
-        if (itemStack.getItemMeta() == null) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
             return Collections.emptyList();
         }
-        ItemMeta meta = itemStack.getItemMeta();
 
         List<String> lore = meta.getLore();
         if (lore == null) {
@@ -404,7 +404,7 @@ public class BaitNBTManager {
         }
 
         List<String> lore = itemStack.getItemMeta().getLore();
-        if (lore == null) {
+        if (lore == null || lore.isEmpty()) {
             return Collections.emptyList();
         }
 

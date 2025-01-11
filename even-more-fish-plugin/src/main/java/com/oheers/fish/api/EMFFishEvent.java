@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 public class EMFFishEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
-    Fish fish;
-    Player player;
-    boolean cancel;
+    private final Fish fish;
+    private final Player player;
+    private boolean cancel;
 
-    public EMFFishEvent(Fish fish, Player player) {
+    public EMFFishEvent(@NotNull Fish fish, @NotNull Player player) {
         this.fish = fish;
         this.player = player;
     }
@@ -31,14 +31,14 @@ public class EMFFishEvent extends Event implements Cancellable {
     /**
      * @return The fish that the player is receiving
      */
-    public Fish getFish() {
+    public @NotNull Fish getFish() {
         return fish;
     }
 
     /**
      * @return The player that has fished the fish
      */
-    public Player getPlayer() {
+    public @NotNull Player getPlayer() {
         return player;
     }
 
