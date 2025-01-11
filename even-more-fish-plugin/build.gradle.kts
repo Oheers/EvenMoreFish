@@ -1,6 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import nu.studer.gradle.jooq.JooqExtension
-import org.jooq.meta.jaxb.MatchersForeignKeyType
 import org.jooq.meta.jaxb.Property
 import java.time.Instant
 import java.time.ZoneId
@@ -113,7 +112,6 @@ dependencies {
     jooqGenerator(libs.connectors.sqlite)
     jooqGenerator(libs.connectors.h2)
 }
-
 
 
 bukkit {
@@ -241,7 +239,7 @@ tasks {
         version.set(libs.versions.jooq)
 
         val dialects = listOf("mysql")
-        val latestSchema = "V7_0__Create_normalized_tables.sql"
+        val latestSchema = "V7_0__Create_Tables.sql"
         dialects.forEach { dialect ->
             val schemaPath = "src/main/resources/db/migrations/${dialect}/${latestSchema}"
             configureDialect(dialect, schemaPath)
@@ -304,6 +302,14 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
         vendor.set(JvmVendorSpec.ADOPTIUM)
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("src/main/generated")
+        }
     }
 }
 

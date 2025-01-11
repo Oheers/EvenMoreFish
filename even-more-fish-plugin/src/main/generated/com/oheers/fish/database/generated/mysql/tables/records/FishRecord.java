@@ -6,6 +6,8 @@ package com.oheers.fish.database.generated.mysql.tables.records;
 
 import com.oheers.fish.database.generated.mysql.tables.Fish;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -105,15 +107,15 @@ public class FishRecord extends UpdatableRecordImpl<FishRecord> {
     /**
      * Setter for <code>${table.prefix}fish.FIRST_CATCH_TIME</code>.
      */
-    public void setFirstCatchTime(byte[] value) {
+    public void setFirstCatchTime(LocalDateTime value) {
         set(6, value);
     }
 
     /**
      * Getter for <code>${table.prefix}fish.FIRST_CATCH_TIME</code>.
      */
-    public byte[] getFirstCatchTime() {
-        return (byte[]) get(6);
+    public LocalDateTime getFirstCatchTime() {
+        return (LocalDateTime) get(6);
     }
 
     // -------------------------------------------------------------------------
@@ -139,7 +141,7 @@ public class FishRecord extends UpdatableRecordImpl<FishRecord> {
     /**
      * Create a detached, initialised FishRecord
      */
-    public FishRecord(String fishName, String fishRarity, String firstFisher, Integer totalCaught, Float largestFish, String largestFisher, byte[] firstCatchTime) {
+    public FishRecord(String fishName, String fishRarity, String firstFisher, Integer totalCaught, Float largestFish, String largestFisher, LocalDateTime firstCatchTime) {
         super(Fish.FISH);
 
         setFishName(fishName);

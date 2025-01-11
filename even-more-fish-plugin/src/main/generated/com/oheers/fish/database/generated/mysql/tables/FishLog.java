@@ -8,6 +8,7 @@ import com.oheers.fish.database.generated.mysql.DefaultSchema;
 import com.oheers.fish.database.generated.mysql.Keys;
 import com.oheers.fish.database.generated.mysql.tables.records.FishLogRecord;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.jooq.Condition;
@@ -72,7 +73,7 @@ public class FishLog extends TableImpl<FishLogRecord> {
     /**
      * The column <code>${table.prefix}fish_log.FIRST_CATCH_TIME</code>.
      */
-    public final TableField<FishLogRecord, byte[]> FIRST_CATCH_TIME = createField(DSL.name("FIRST_CATCH_TIME"), SQLDataType.BLOB.nullable(false), this, "");
+    public final TableField<FishLogRecord, LocalDateTime> FIRST_CATCH_TIME = createField(DSL.name("FIRST_CATCH_TIME"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
     /**
      * The column <code>${table.prefix}fish_log.LARGEST_LENGTH</code>.

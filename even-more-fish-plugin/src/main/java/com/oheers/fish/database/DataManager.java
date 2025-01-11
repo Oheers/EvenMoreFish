@@ -3,14 +3,15 @@ package com.oheers.fish.database;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
+import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 
 //todo, this is caching manager, and really shouldn't be here in the database..
@@ -61,6 +62,19 @@ public class DataManager {
         fishReportCache = Caffeine.newBuilder().expireAfter(fishReportExpiry).build();
     }
 
+    public void loadUserReportsIntoCache() {
+        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
+            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                UserReport playerReport = EvenMoreFish.getInstance().getDatabase().readUserReport(player.getUniqueId());
+                if (playerReport == null) {
+                    EvenMoreFish.getInstance().getLogger().warning("Could not read report for player (" + player.getUniqueId() + ")");
+                    continue;
+                }
+                DataManager.getInstance().putUserReportCache(player.getUniqueId(), playerReport);
+            }
+        });
+    }
+
     /**
      * Checks whether the user is still online, if they are still online we want to keep the user report cached to prevent
      * uncaching and therefore having to fetch their data from the database, wasting resources. To achieve this, the value
@@ -73,7 +87,8 @@ public class DataManager {
     private long getCacheDuration(UUID uuid) {
         if (Bukkit.getPlayer(uuid) != null) {
             return Long.MAX_VALUE;
-        } else return 0;
+        } else
+            return 0;
     }
 
     /**
@@ -97,8 +112,8 @@ public class DataManager {
      * Adds a user to the cache storage with the uuid of the user as they key. This will be saved until the user logs out
      * from the server.
      *
-     * @param uuid The UUID of the user.
-     * @param userReport The user's relevant user report.
+     * @param uuid        The UUID of the user.
+     * @param userReport  The user's relevant user report.
      * @param fishReports A list of fish reports relevant to the user.
      */
     public void cacheUser(UUID uuid, UserReport userReport, List<FishReport> fishReports) {
@@ -121,7 +136,7 @@ public class DataManager {
      * Sets the cached list of fish reports related to the user to be accessed going forward. This should be a modified
      * version of a previously fetched list of FishReports, otherwise data loss may occur.
      *
-     * @param uuid The UUID of the user to have this list set to them in the cache.
+     * @param uuid    The UUID of the user to have this list set to them in the cache.
      * @param reports An arraylist of fish reports to be set to the user.
      */
     public void putFishReportsCache(@NotNull final UUID uuid, @NotNull final List<FishReport> reports) {
@@ -132,7 +147,7 @@ public class DataManager {
      * Setting a user report for the user. This will be used to save data to the database so make sure it is kept up
      * to date to prevent data loss.
      *
-     * @param uuid The UUID of the user owning the UserReport.
+     * @param uuid   The UUID of the user owning the UserReport.
      * @param report The report to be set to the user.
      */
     public void putUserReportCache(@NotNull final UUID uuid, @NotNull final UserReport report) {
@@ -189,4 +204,72 @@ public class DataManager {
         }
     }
 
+
+    /**
+     * Adds the fish data to the live fish reports list, or changes the existing matching fish report. The plugin will
+     * also account for a new top fish record and set any other data to a new fishing report for example the epoch
+     * time.
+     *
+     * @param uuid The UUID of the user.
+     * @param fish The fish object.
+     */
+    public void handleFishCatch(@NotNull final UUID uuid, @NotNull final Fish fish) {
+        List<FishReport> cachedReports = getCachedReportsOrReports(uuid, fish);
+        DataManager.getInstance().putFishReportsCache(uuid, cachedReports);
+
+        UserReport report = DataManager.getInstance().getUserReportIfExists(uuid);
+
+        if (report != null) {
+            String fishID = fish.getRarity().getValue() + ":" + fish.getName();
+
+            report.setRecentFish(fishID);
+            report.incrementFishCaught(1);
+            report.incrementTotalLength(fish.getLength());
+            if (report.getFirstFish().equals("None")) {
+                report.setFirstFish(fishID);
+            }
+            if (fish.getLength() > report.getLargestLength()) {
+                report.setLargestFish(fishID);
+                report.setLargestLength(fish.getLength());
+            }
+
+            DataManager.getInstance().putUserReportCache(uuid, report);
+        }
+    }
+
+
+    private List<FishReport> getCachedReportsOrReports(final UUID uuid, final Fish fish) {
+        List<FishReport> cachedReports = DataManager.getInstance().getFishReportsIfExists(uuid);
+        if (cachedReports == null) {
+            return List.of(
+                    new FishReport(
+                            fish.getRarity().getValue(),
+                            fish.getName(),
+                            fish.getLength(),
+                            1,
+                            -1
+                    )
+            );
+        }
+
+        for (FishReport report : cachedReports) {
+            if (report.getRarity().equals(fish.getRarity().getValue()) && report.getName().equals(fish.getName())) {
+                report.addFish(fish);
+                return cachedReports;
+            }
+        }
+
+        cachedReports.add(
+                new FishReport(
+                        fish.getRarity().getValue(),
+                        fish.getName(),
+                        fish.getLength(),
+                        1,
+                        -1
+                )
+        );
+        return cachedReports;
+
+
+    }
 }

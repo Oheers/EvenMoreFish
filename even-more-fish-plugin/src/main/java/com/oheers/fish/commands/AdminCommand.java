@@ -374,11 +374,11 @@ public class AdminCommand extends BaseCommand {
             return "None";
         }
 
-        if (EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2()) {
+        if (EvenMoreFish.getInstance().getDatabase().getMigrationManager().usingV2()) {
             return "V2";
         }
 
-        return "V3";
+        return "V"+EvenMoreFish.getInstance().getDatabase().getMigrationManager().getDatabaseVersion().getVersion();
     }
 
     @Subcommand("rewardtypes")

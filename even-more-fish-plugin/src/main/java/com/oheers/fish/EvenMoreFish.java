@@ -30,6 +30,7 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
+import com.oheers.fish.database.Database;
 import com.oheers.fish.database.DatabaseV3;
 import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
@@ -102,7 +103,9 @@ public class EvenMoreFish extends EMFPlugin {
     private boolean usingPlayerPoints;
     private boolean usingGriefPrevention;
 
+    @Deprecated
     private DatabaseV3 databaseV3;
+    private Database database;
     private HeadDatabaseAPI HDBapi;
 
     private static EvenMoreFish instance;
@@ -202,22 +205,11 @@ public class EvenMoreFish extends EMFPlugin {
         AutoRunner.init();
 
         if (MainConfig.getInstance().databaseEnabled()) {
-
             DataManager.init();
 
             databaseV3 = new DatabaseV3(this);
-            //load user reports into cache
-            getScheduler().runTaskAsynchronously(() -> {
-                for (Player player : getServer().getOnlinePlayers()) {
-                    UserReport playerReport = databaseV3.readUserReport(player.getUniqueId());
-                    if (playerReport == null) {
-                        EvenMoreFish.getInstance().getLogger().warning("Could not read report for player (" + player.getUniqueId() + ")");
-                        continue;
-                    }
-                    DataManager.getInstance().putUserReportCache(player.getUniqueId(), playerReport);
-                }
-            });
-
+            database = new Database();
+            DataManager.getInstance().loadUserReportsIntoCache();
         }
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
@@ -682,6 +674,10 @@ public class EvenMoreFish extends EMFPlugin {
 
     public DatabaseV3 getDatabaseV3() {
         return databaseV3;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 
     public HeadDatabaseAPI getHDBapi() {
