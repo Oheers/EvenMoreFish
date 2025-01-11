@@ -94,7 +94,7 @@ public class SellHelper {
             // TODO temporary fix until database PR is merged.
             try {
                 logSoldFish(player.getUniqueId(), soldFish);
-            } catch (NullPointerException exception) { /* Ignored */ }
+            } catch (Exception exception) { /* Ignored */ }
         }
         return totalWorth != 0.0;
 
