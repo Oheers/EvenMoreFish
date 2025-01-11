@@ -1,11 +1,14 @@
 package com.oheers.fish.database.connection;
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.MigrationInfoService;
 import org.flywaydb.core.api.MigrationVersion;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -14,6 +17,8 @@ import java.util.Map;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +26,10 @@ public class MigrationManager {
     private final Logger logger = LoggerFactory.getLogger(MigrationManager.class.getName());
     private final FluentConfiguration baseFlywayConfiguration;
     private final Flyway defaultFlyway;
+    private final ConnectionFactory connectionFactory;
 
     public MigrationManager(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
         this.baseFlywayConfiguration = getBaseFlywayConfiguration(connectionFactory);
         this.defaultFlyway = this.baseFlywayConfiguration.load();
     }
@@ -39,6 +46,26 @@ public class MigrationManager {
             logger.info("Database successfully migrated starting from version: {}", baselineVersion);
         } catch (FlywayException e) {
             logger.error("Database migration failed for version: {}", baselineVersion, e);
+        }
+    }
+
+    public boolean usingV2() {
+        boolean dataFolder = Files.isDirectory(Paths.get(EvenMoreFish.getInstance().getDataFolder() + "/data/"));
+        return dataFolder || queryTableExistence("Fish2");
+    }
+
+    private boolean queryTableExistence(final String tableName) {
+        try {
+            DSLContext dsl = DSL.using(connectionFactory.getConnection());
+
+            return dsl.fetchExists(
+                    DSL.select()
+                            .from("information_schema.tables")
+                            .where(DSL.field("table_name").eq(tableName))
+                            .and(DSL.noCondition())
+            );
+        } catch (SQLException e) {
+            return false;
         }
     }
 
