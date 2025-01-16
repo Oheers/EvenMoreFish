@@ -90,7 +90,12 @@ public class SellHelper {
 
         this.player.playSound(this.player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.06f);
 
-        if (MainConfig.getInstance().databaseEnabled()) logSoldFish(player.getUniqueId(), soldFish);
+        if (MainConfig.getInstance().databaseEnabled()) {
+            // TODO temporary fix until database PR is merged.
+            try {
+                logSoldFish(player.getUniqueId(), soldFish);
+            } catch (Exception exception) { /* Ignored */ }
+        }
         return totalWorth != 0.0;
 
     }
