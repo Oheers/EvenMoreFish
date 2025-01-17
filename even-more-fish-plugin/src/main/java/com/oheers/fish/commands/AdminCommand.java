@@ -172,7 +172,7 @@ public class AdminCommand {
 
     private CommandAPICommand getNbtRod() {
         commandUsages.putIfAbsent(
-                "admin  nbt-rod",
+                "admin nbt-rod",
                 ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("nbt-rod")

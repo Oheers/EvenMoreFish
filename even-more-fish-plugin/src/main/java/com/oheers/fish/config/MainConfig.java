@@ -185,6 +185,14 @@ public class MainConfig extends ConfigBase {
 
     public int getNearbyPlayersRequirementRange() { return getConfig().getInt("requirements.nearby-players.range", 0); }
 
+    public boolean isAdminShortcutCommandEnabled() {
+        return getConfig().getBoolean("command.admin-shortcut.enabled", true);
+    }
+
+    public String getAdminShortcutCommandName() {
+        return getConfig().getString("command.admin-shortcut.name", "emfa");
+    }
+
     public String getMainCommandName() {
         if (mainCommandName == null) {
             mainCommandName = getConfig().getString("command.main", "emf");

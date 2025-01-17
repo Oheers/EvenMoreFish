@@ -500,7 +500,13 @@ public class EvenMoreFish extends EMFPlugin {
 
     private void registerCommands() {
         new EMFCommand().getCommand().register(this);
-        new AdminCommand("emfa").getCommand().register(this);
+
+        // Shortcut command for /emf admin
+        if (MainConfig.getInstance().isAdminShortcutCommandEnabled()) {
+            new AdminCommand(
+                    MainConfig.getInstance().getAdminShortcutCommandName()
+            ).getCommand().register(this);
+        }
     }
 
     // Checks for updates, surprisingly
