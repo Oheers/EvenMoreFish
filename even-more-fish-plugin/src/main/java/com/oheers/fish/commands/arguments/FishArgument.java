@@ -33,7 +33,7 @@ public class FishArgument {
                     if (rarity == null) {
                         return new String[0];
                     }
-                    return rarity.getFishList().stream().map(Fish::getName).toArray(String[]::new);
+                    return rarity.getFishList().stream().map(fish -> fish.getName().replace(" ", "_")).toArray(String[]::new);
                 }
         ));
     }
