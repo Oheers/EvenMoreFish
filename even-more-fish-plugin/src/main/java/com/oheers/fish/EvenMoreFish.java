@@ -463,6 +463,9 @@ public class EvenMoreFish extends EMFPlugin {
 
     public void reload(@Nullable CommandSender sender) {
 
+        // If EMF folder does not exist, assume first load again.
+        firstLoad = !getDataFolder().exists();
+
         terminateGUIS();
 
         reloadConfig();
@@ -491,6 +494,8 @@ public class EvenMoreFish extends EMFPlugin {
         if (sender != null) {
             ConfigMessage.RELOAD_SUCCESS.getMessage().send(sender);
         }
+        
+        firstLoad = false;
 
     }
 
