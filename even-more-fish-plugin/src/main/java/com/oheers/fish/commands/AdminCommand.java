@@ -86,7 +86,7 @@ public class AdminCommand {
                         RarityArgument.create(),
                         FishArgument.create(),
                         new IntegerArgument("amount", 1).setOptional(true),
-                        new EntitySelectorArgument.OnePlayer("target").setOptional(true)
+                        ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes((sender, arguments) -> {
                     final Fish fish = (Fish) arguments.get("fish");
@@ -177,7 +177,7 @@ public class AdminCommand {
         );
         return new CommandAPICommand("nbt-rod")
                 .withArguments(
-                        new EntitySelectorArgument.OnePlayer("target").setOptional(true)
+                        ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes(((sender, args) -> {
                     if (!MainConfig.getInstance().requireNBTRod()) {
@@ -212,7 +212,7 @@ public class AdminCommand {
                 .withArguments(
                         BaitArgument.create(),
                         new IntegerArgument("quantity", 1).setOptional(true),
-                        new EntitySelectorArgument.OnePlayer("target").setOptional(true)
+                        ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes((sender, args) -> {
                     final Bait bait = (Bait) Objects.requireNonNull(args.get("bait"));
@@ -246,7 +246,7 @@ public class AdminCommand {
         );
         return new CommandAPICommand("clearbaits")
                 .withArguments(
-                        new EntitySelectorArgument.OnePlayer("target").setOptional(true)
+                        ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes(((sender, args) -> {
                     final Player player = (Player) args.getOptional("target").orElseGet(() -> {

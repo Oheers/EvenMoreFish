@@ -3,6 +3,7 @@ package com.oheers.fish.commands;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.economy.Economy;
+import com.oheers.fish.commands.arguments.ArgumentHelper;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
@@ -130,7 +131,7 @@ public class EMFCommand {
         return new CommandAPICommand("shop")
                 .withPermission(UserPerms.SHOP)
                 .withArguments(
-                        new EntitySelectorArgument.OnePlayer("target").setOptional(true)
+                        ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes((sender, args) -> {
                     Player player = (Player) args.get("target");
