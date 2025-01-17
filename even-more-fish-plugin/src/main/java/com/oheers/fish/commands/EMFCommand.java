@@ -37,14 +37,14 @@ public class EMFCommand {
                     getShop(),
                     getSellAll(),
                     getApplyBaits(),
-                    new AdminCommand().getCommand()
+                    new AdminCommand("admin").getCommand()
             )
             .executes(info -> {
                 sendHelpMessage(info.sender());
             });
 
-    public void registerCommand() {
-        command.register(EvenMoreFish.getInstance());
+    public CommandAPICommand getCommand() {
+        return command;
     }
 
     private CommandAPICommand getNext() {

@@ -14,6 +14,7 @@ import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.BaitListener;
 import com.oheers.fish.baits.BaitManager;
+import com.oheers.fish.commands.AdminCommand;
 import com.oheers.fish.commands.EMFCommand;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
@@ -204,9 +205,7 @@ public class EvenMoreFish extends EMFPlugin {
         getScheduler().runTaskAsynchronously(() -> isUpdateAvailable = checkUpdate());
 
         listeners();
-
-        // Register the plugin's command
-        new EMFCommand().registerCommand();
+        registerCommands();
 
         if (!MainConfig.getInstance().debugSession()) {
             metrics();
@@ -497,6 +496,11 @@ public class EvenMoreFish extends EMFPlugin {
 
         firstLoad = false;
 
+    }
+
+    private void registerCommands() {
+        new EMFCommand().getCommand().register(this);
+        new AdminCommand("emfa").getCommand().register(this);
     }
 
     // Checks for updates, surprisingly

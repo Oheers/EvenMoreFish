@@ -45,8 +45,8 @@ public class AdminCommand {
     private final Map<String, String> commandUsages = new HashMap<>();
     private final CommandAPICommand command;
 
-    public AdminCommand() {
-        this.command = new CommandAPICommand("admin")
+    public AdminCommand(@NotNull String name) {
+        this.command = new CommandAPICommand(name)
                 .withPermission(AdminPerms.ADMIN)
                 .executes(info -> {
                     sendHelpMessage(info.sender());
@@ -68,7 +68,7 @@ public class AdminCommand {
                 );
     }
 
-    protected CommandAPICommand getCommand() {
+    public CommandAPICommand getCommand() {
         return command;
     }
 
