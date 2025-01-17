@@ -19,6 +19,9 @@ public class FishArgument {
             }
             Fish fish = rarity.getFish(info.input());
             if (fish == null) {
+                fish = rarity.getFish(info.input().replace("_", " "));
+            }
+            if (fish == null) {
                 throw CustomArgument.CustomArgumentException.fromMessageBuilder(
                         new CustomArgument.MessageBuilder("Unknown fish: ").appendArgInput()
                 );
