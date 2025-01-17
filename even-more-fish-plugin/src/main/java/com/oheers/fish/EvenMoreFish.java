@@ -494,7 +494,7 @@ public class EvenMoreFish extends EMFPlugin {
         if (sender != null) {
             ConfigMessage.RELOAD_SUCCESS.getMessage().send(sender);
         }
-        
+
         firstLoad = false;
 
     }
