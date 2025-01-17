@@ -84,6 +84,11 @@ public class SpigotMessage extends AbstractMessage {
     }
 
     @Override
+    public String getPlainTextMessage() {
+        return ChatColor.stripColor(getLegacyMessage());
+    }
+
+    @Override
     public void formatPlaceholderAPI() {
         if (isPAPIEnabled()) {
             setMessage(PlaceholderAPI.setPlaceholders(getRelevantPlayer(), getRawMessage()));

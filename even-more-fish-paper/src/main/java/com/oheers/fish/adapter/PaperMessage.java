@@ -110,6 +110,11 @@ public class PaperMessage extends AbstractMessage {
     }
 
     @Override
+    public String getPlainTextMessage() {
+        return ChatColor.stripColor(getLegacyMessage());
+    }
+
+    @Override
     public void formatPlaceholderAPI() {
         if (!isPAPIEnabled()) {
             return;

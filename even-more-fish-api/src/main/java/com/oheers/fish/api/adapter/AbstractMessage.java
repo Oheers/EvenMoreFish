@@ -130,6 +130,18 @@ public abstract class AbstractMessage {
     }
 
     /**
+     * @return The formatted message as a plain text string. All formatting will be removed.
+     */
+    public abstract String getPlainTextMessage();
+
+    /**
+     * @return The formatted message as a plain text string list. All formatting will be removed.
+     */
+    public @NotNull List<String> getPlainTextListMessage() {
+        return Arrays.asList(getPlainTextMessage().split("\n"));
+    }
+
+    /**
      * Formats PlaceholderAPI placeholders.
      * <p>
      * This is abstract because the MiniMessage impl will need to handle this manually.
