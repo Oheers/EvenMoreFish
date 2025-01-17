@@ -14,17 +14,17 @@ import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellHelper;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
-import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.LiteralArgument;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EMFCommand {
+
+    private final Map<String, String> commandUsages = new HashMap<>();
 
     private final CommandAPICommand command = new CommandAPICommand(MainConfig.getInstance().getMainCommandName())
             .withAliases(MainConfig.getInstance().getMainCommandAliases().toArray(String[]::new))
@@ -37,20 +37,23 @@ public class EMFCommand {
                     getShop(),
                     getSellAll(),
                     getApplyBaits(),
-                    new AdminCommand(this).getCommand()
+                    new AdminCommand().getCommand()
             )
             .executes(info -> {
                 sendHelpMessage(info.sender());
             });
 
-    public CommandAPICommand getCommand() {
-        return command;
+    public void registerCommand() {
+        command.register(EvenMoreFish.getInstance());
     }
 
     private CommandAPICommand getNext() {
+        commandUsages.putIfAbsent(
+                "/emf next",
+                ConfigMessage.HELP_GENERAL_NEXT.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("next")
                 .withPermission(UserPerms.NEXT)
-                .withFullDescription(ConfigMessage.HELP_GENERAL_NEXT.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     AbstractMessage message = Competition.getNextCompetitionMessage();
                     message.prependMessage(PrefixType.DEFAULT.getPrefix());
@@ -59,36 +62,48 @@ public class EMFCommand {
     }
 
     private CommandAPICommand getToggle() {
+        commandUsages.putIfAbsent(
+                "/emf toggle",
+                ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("toggle")
                 .withPermission(UserPerms.TOGGLE)
-                .withFullDescription(ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     EvenMoreFish.getInstance().performFishToggle(info.sender());
                 });
     }
 
     private CommandAPICommand getGui() {
+        commandUsages.putIfAbsent(
+                "/emf gui",
+                ConfigMessage.HELP_GENERAL_GUI.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("gui")
                 .withPermission(UserPerms.GUI)
-                .withFullDescription(ConfigMessage.HELP_GENERAL_GUI.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     new MainMenuGUI(info.sender()).open();
                 });
     }
 
     private CommandAPICommand getHelp() {
+        commandUsages.putIfAbsent(
+                "/emf help",
+                ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("help")
                 .withPermission(UserPerms.HELP)
-                .withFullDescription(ConfigMessage.HELP_GENERAL_HELP.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     sendHelpMessage(info.sender());
                 });
     }
 
     private CommandAPICommand getTop() {
+        commandUsages.putIfAbsent(
+                "/emf top",
+                ConfigMessage.HELP_GENERAL_TOP.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("top")
                 .withPermission(UserPerms.TOP)
-                .withFullDescription(ConfigMessage.HELP_GENERAL_TOP.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     Competition active = Competition.getCurrentlyActive();
                     if (active == null) {
@@ -108,9 +123,12 @@ public class EMFCommand {
     }
 
     private CommandAPICommand getShop() {
+        commandUsages.putIfAbsent(
+                "/emf shop",
+                ConfigMessage.HELP_GENERAL_SHOP.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("shop")
                 .withPermission(UserPerms.SHOP)
-                .withFullDescription(ConfigMessage.HELP_GENERAL_SHOP.getMessage().getPlainTextMessage())
                 .withArguments(
                         new EntitySelectorArgument.OnePlayer("target").setOptional(true)
                 )
@@ -142,9 +160,12 @@ public class EMFCommand {
     }
 
     private CommandAPICommand getSellAll() {
+        commandUsages.putIfAbsent(
+                "/emf sellall",
+                ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("sellall")
                 .withPermission(UserPerms.SELL_ALL)
-                .withFullDescription(ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     Player player = info.sender();
                     if (checkEconomy(player)) {
@@ -154,25 +175,19 @@ public class EMFCommand {
     }
 
     private CommandAPICommand getApplyBaits() {
+        commandUsages.putIfAbsent(
+                "/emf applybaits",
+                ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("applybaits")
                 .withPermission(UserPerms.APPLYBAITS)
-                .withFullDescription(ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     new ApplyBaitsGUI(info.sender(), null).open();
                 });
     }
 
-    // TODO we need a custom HelpMessageBuilder for this.
-    public void sendHelpMessage(@NotNull CommandSender sender) {
-        ConfigMessage.HELP_GENERAL_TITLE.getMessage().send(sender);
-        /*
-        help.getHelpEntries().forEach(helpEntry -> {
-            AbstractMessage helpMessage = ConfigMessage.HELP_FORMAT.getMessage();
-            helpMessage.setVariable("{command}", "/" + helpEntry.getCommand());
-            helpMessage.setVariable("{description}", helpEntry.getDescription());
-            helpMessage.send(sender);
-        });
-         */
+    private void sendHelpMessage(@NotNull CommandSender sender) {
+        HelpMessageBuilder.create(commandUsages).sendMessage(sender);
     }
 
     private boolean checkEconomy(@NotNull CommandSender sender) {

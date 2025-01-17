@@ -116,6 +116,7 @@ public class EvenMoreFish extends EMFPlugin {
     private EMFAPI api;
 
     private AddonManager addonManager;
+    private Map<String, String> commandUsages = new HashMap<>();
 
     public static EvenMoreFish getInstance() {
         return instance;
@@ -379,7 +380,7 @@ public class EvenMoreFish extends EMFPlugin {
     }
 
     private void loadCommandManager() {
-        new EMFCommand().getCommand().register(this);
+        new EMFCommand().registerCommand();
         System.out.println("Registered EMFCommand");
 
         /*
@@ -472,6 +473,9 @@ public class EvenMoreFish extends EMFPlugin {
          */
     }
 
+    public Map<String, String> getCommandUsages() {
+        return commandUsages;
+    }
 
     private boolean setupPermissions() {
         if (!usingVault) {

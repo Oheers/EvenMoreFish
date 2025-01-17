@@ -1,0 +1,50 @@
+package com.oheers.fish.commands;
+
+import com.oheers.fish.api.adapter.AbstractMessage;
+import com.oheers.fish.config.messages.ConfigMessage;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+
+public class HelpMessageBuilder {
+
+    private final Map<String, String> usages;
+
+    private HelpMessageBuilder(@NotNull Map<String, String> usages) {
+        this.usages = usages;
+    }
+
+    /**
+     * Creates a HelpMessageBuilder instance
+     */
+    public static HelpMessageBuilder create(@NotNull Map<String, String> usages) {
+        return new HelpMessageBuilder(usages);
+    }
+
+    /**
+     * Creates the final message.
+     * @return The created help message
+     */
+    public AbstractMessage buildMessage() {
+        final AbstractMessage message = ConfigMessage.HELP_GENERAL_TITLE.getMessage();
+        usages.forEach((key, value) -> {
+            AbstractMessage usage = ConfigMessage.HELP_FORMAT.getMessage();
+            usage.setVariable("{command}", key);
+            usage.setVariable("{usage}", value);
+            message.appendString("\n");
+            message.appendMessage(usage);
+        });
+        return message;
+    }
+
+    /**
+     * Sends the final message to the provided sender.
+     * @param sender The sender to send the message to.
+     */
+    public void sendMessage(@NotNull CommandSender sender) {
+        buildMessage().send(sender);
+    }
+
+
+}

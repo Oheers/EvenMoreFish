@@ -30,6 +30,7 @@ import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.units.qual.C;
@@ -39,13 +40,14 @@ import java.util.*;
 
 public class AdminCommand {
 
+    private final Map<String, String> commandUsages = new HashMap<>();
     private final CommandAPICommand command;
 
-    public AdminCommand(@NotNull EMFCommand command) {
+    public AdminCommand() {
         this.command = new CommandAPICommand("admin")
                 .withPermission(AdminPerms.ADMIN)
                 .executes(info -> {
-                    command.sendHelpMessage(info.sender());
+                    sendHelpMessage(info.sender());
                 })
                 .withSubcommands(
                         getFish(),
@@ -63,14 +65,20 @@ public class AdminCommand {
                 );
     }
 
-    public CommandAPICommand getCommand() {
+    protected CommandAPICommand getCommand() {
         return command;
     }
 
-    // TODO this may not work. Test a lot.
+    private void sendHelpMessage(@NotNull CommandSender sender) {
+        HelpMessageBuilder.create(commandUsages).sendMessage(sender);
+    }
+
     private CommandAPICommand getFish() {
+        commandUsages.putIfAbsent(
+                "/emf admin fish",
+                ConfigMessage.HELP_ADMIN_FISH.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("fish")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_FISH.getMessage().getPlainTextMessage())
                 .withArguments(
                         RarityArgument.create(),
                         FishArgument.create(),
@@ -160,8 +168,11 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getNbtRod() {
+        commandUsages.putIfAbsent(
+                "/emf admin nbt-rod",
+                ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("nbt-rod")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getPlainTextMessage())
                 .withArguments(
                         new EntitySelectorArgument.OnePlayer("target").setOptional(true)
                 )
@@ -190,8 +201,11 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getBait() {
+        commandUsages.putIfAbsent(
+                "/emf admin bait",
+                ConfigMessage.HELP_ADMIN_BAIT.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("bait")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_BAIT.getMessage().getPlainTextMessage())
                 .withArguments(
                         BaitArgument.create(),
                         new IntegerArgument("quantity", 1).setOptional(true),
@@ -223,8 +237,11 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getClearBaits() {
+        commandUsages.putIfAbsent(
+                "/emf admin clearbaits",
+                ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("clearbaits")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getPlainTextMessage())
                 .withArguments(
                         new EntitySelectorArgument.OnePlayer("target").setOptional(true)
                 )
@@ -264,14 +281,21 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getReload() {
+        commandUsages.putIfAbsent(
+                "/emf admin reload",
+                ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("reload")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     EvenMoreFish.getInstance().reload(info.sender());
                 });
     }
 
     private CommandAPICommand getAddons() {
+        commandUsages.putIfAbsent(
+                "/emf admin addons",
+                ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("addons")
                 .withFullDescription(ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getPlainTextMessage())
                 .executes(info -> {
@@ -288,8 +312,11 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getVersion() {
+        commandUsages.putIfAbsent(
+                "/emf admin version",
+                ConfigMessage.HELP_ADMIN_VERSION.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("version")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_VERSION.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     int fishCount = 0;
 
@@ -315,8 +342,11 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getRewardTypes() {
+        commandUsages.putIfAbsent(
+                "/emf admin rewardtypes",
+                ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("rewardtypes")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     TextComponent message = new TextComponent(ConfigMessage.ADMIN_LIST_REWARD_TYPES.getMessage().getLegacyMessage());
                     ComponentBuilder builder = new ComponentBuilder(message);
@@ -337,8 +367,11 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getMigrate() {
+        commandUsages.putIfAbsent(
+                "/emf admin migrate",
+                ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("migrate")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     if (!MainConfig.getInstance().databaseEnabled()) {
                         EvenMoreFish.getAdapter().createMessage("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.").send(info.sender());
@@ -349,8 +382,11 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getRawItem() {
+        commandUsages.putIfAbsent(
+                "/emf admin rawItem",
+                ConfigMessage.HELP_ADMIN_RAWITEM.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("rawItem")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_RAWITEM.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     ItemStack handItem = info.sender().getInventory().getItemInMainHand();
                     String handItemNbt = NBT.itemStackToNBT(handItem).toString();
@@ -373,8 +409,11 @@ public class AdminCommand {
     // COMPETITION BRANCH
 
     private CommandAPICommand getCompetition() {
+        commandUsages.putIfAbsent(
+                "/emf admin competition",
+                ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getLegacyMessage()
+        );
         return new CommandAPICommand("competition")
-                .withFullDescription(ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getPlainTextMessage())
                 .withSubcommands(
                         getCompetitionStart(),
                         getCompetitionEnd(),
