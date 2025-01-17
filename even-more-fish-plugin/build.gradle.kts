@@ -131,13 +131,6 @@ bukkit {
     loadBefore = listOf("AntiAC")
     apiVersion = "1.18"
 
-    commands {
-        register("evenmorefish") {
-            usage = "/<command> [name]"
-            aliases = listOf("emf")
-        }
-    }
-
     permissions {
         register("emf.*") {
             children = listOf(

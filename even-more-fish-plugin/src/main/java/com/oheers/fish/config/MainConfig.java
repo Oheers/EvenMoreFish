@@ -32,10 +32,6 @@ public class MainConfig extends ConfigBase {
         return getConfig().getString("locale", "en");
     }
 
-    public int getCompetitionDuration() {
-        return getConfig().getInt("competitions.duration");
-    }
-
     public boolean doingRandomDurability() {
         return getConfig().getBoolean("random-durability", true);
     }

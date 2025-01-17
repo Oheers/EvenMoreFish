@@ -17,8 +17,8 @@ import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.BaitListener;
 import com.oheers.fish.baits.BaitManager;
+import com.oheers.fish.commands.EMFCommand;
 import com.oheers.fish.commands.acf.AdminCommand;
-import com.oheers.fish.commands.acf.EMFCommand;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
@@ -379,6 +379,9 @@ public class EvenMoreFish extends EMFPlugin {
     }
 
     private void loadCommandManager() {
+        new EMFCommand().getCommand().register(this);
+        System.out.println("Registered EMFCommand");
+        /*
         PaperCommandManager manager = new PaperCommandManager(this);
 
         // Brigadier should stay disabled until ACF updates their implementation.
@@ -465,6 +468,7 @@ public class EvenMoreFish extends EMFPlugin {
 
         manager.registerCommand(new EMFCommand());
         manager.registerCommand(new AdminCommand());
+         */
     }
 
 

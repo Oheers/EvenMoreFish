@@ -33,9 +33,13 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class FishUtils {
 
@@ -475,6 +479,52 @@ public class FishUtils {
             return true;
         }
         return false;
+    }
+
+    public static String getFeatureBranchName() {
+        try (InputStream inputStream = FishUtils.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
+
+            if (inputStream != null) {
+                Manifest manifest = new Manifest(inputStream);
+
+                // Access attributes from the manifest file
+                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_TITLE);
+            } else {
+                return "main";
+            }
+
+        } catch (IOException e) {
+            return "main";
+        }
+    }
+
+    public static String getFeatureBranchBuildOrDate() {
+        try (InputStream inputStream = FishUtils.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
+
+            if (inputStream != null) {
+                Manifest manifest = new Manifest(inputStream);
+
+                // Access attributes from the manifest file
+                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+            } else {
+                return "";
+            }
+
+        } catch (IOException e) {
+            return "";
+        }
+    }
+
+    public static String getDatabaseVersion() {
+        if (!MainConfig.getInstance().databaseEnabled()) {
+            return "None";
+        }
+
+        if (EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2()) {
+            return "V2";
+        }
+
+        return "V3";
     }
 
 }
