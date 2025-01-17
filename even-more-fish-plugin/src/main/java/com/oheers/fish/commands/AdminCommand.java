@@ -103,14 +103,9 @@ public class AdminCommand {
                     fish.setFisherman(target.getUniqueId());
 
                     final ItemStack fishItem = fish.give(-1);
+                    fishItem.setAmount(amount);
 
-                    // Fix: Prevent weird stacking issues
-                    List<ItemStack> itemList = new ArrayList<>();
-                    for (int i = 0; i < amount; i++) {
-                        itemList.add(fishItem);
-                    }
-
-                    FishUtils.giveItems(itemList, target);
+                    FishUtils.giveItem(fishItem, target);
 
                     AbstractMessage message = ConfigMessage.ADMIN_GIVE_PLAYER_FISH.getMessage();
                     message.setPlayer(target);
