@@ -209,7 +209,9 @@ public class EvenMoreFish extends EMFPlugin {
         getScheduler().runTaskAsynchronously(() -> isUpdateAvailable = checkUpdate());
 
         listeners();
-        loadCommandManager();
+
+        // Register the plugin's command
+        new EMFCommand().registerCommand();
 
         if (!MainConfig.getInstance().debugSession()) {
             metrics();
@@ -377,100 +379,6 @@ public class EvenMoreFish extends EMFPlugin {
         metrics.addCustomChart(new SimplePie("database", () -> MainConfig.getInstance().databaseEnabled() ? "true" : "false"));
 
         metrics.addCustomChart(new SimplePie("paper-adapter", () -> (platformAdapter instanceof PaperAdapter) ? "true" : "false"));
-    }
-
-    private void loadCommandManager() {
-        new EMFCommand().registerCommand();
-        System.out.println("Registered EMFCommand");
-
-        /*
-        PaperCommandManager manager = new PaperCommandManager(this);
-
-        // Brigadier should stay disabled until ACF updates their implementation.
-        //manager.enableUnstableAPI("brigadier");
-        manager.enableUnstableAPI("help");
-
-        StringBuilder main = new StringBuilder(MainConfig.getInstance().getMainCommandName());
-        List<String> aliases = MainConfig.getInstance().getMainCommandAliases();
-        if (!aliases.isEmpty()) {
-            aliases.forEach(alias -> main.append("|").append(alias));
-        }
-        manager.getCommandReplacements().addReplacement("main", main.toString());
-        manager.getCommandReplacements().addReplacement("duration", String.valueOf(MainConfig.getInstance().getCompetitionDuration() * 60));
-        //desc_admin_<command>_<id>
-        manager.getCommandReplacements().addReplacements(
-                "desc_admin_bait", ConfigMessage.HELP_ADMIN_BAIT.getMessage().getLegacyMessage(),
-                "desc_admin_competition", ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getLegacyMessage(),
-                "desc_admin_clearbaits", ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getLegacyMessage(),
-                "desc_admin_fish", ConfigMessage.HELP_ADMIN_FISH.getMessage().getLegacyMessage(),
-                "desc_admin_nbtrod", ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getLegacyMessage(),
-                "desc_admin_reload", ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getLegacyMessage(),
-                "desc_admin_version", ConfigMessage.HELP_ADMIN_VERSION.getMessage().getLegacyMessage(),
-                "desc_admin_migrate", ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getLegacyMessage(),
-                "desc_admin_rewardtypes", ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getLegacyMessage(),
-                "desc_admin_addons", ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getLegacyMessage(),
-
-                "desc_list_fish", ConfigMessage.HELP_LIST_FISH.getMessage().getLegacyMessage(),
-                "desc_list_rarities", ConfigMessage.HELP_LIST_RARITIES.getMessage().getLegacyMessage(),
-
-                "desc_competition_start", ConfigMessage.HELP_COMPETITION_START.getMessage().getLegacyMessage(),
-                "desc_competition_end", ConfigMessage.HELP_COMPETITION_END.getMessage().getLegacyMessage(),
-
-                "desc_general_top", ConfigMessage.HELP_GENERAL_TOP.getMessage().getLegacyMessage(),
-                "desc_general_help", ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage(),
-                "desc_general_shop", ConfigMessage.HELP_GENERAL_SHOP.getMessage().getLegacyMessage(),
-                "desc_general_toggle", ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getLegacyMessage(),
-                "desc_general_gui", ConfigMessage.HELP_GENERAL_GUI.getMessage().getLegacyMessage(),
-                "desc_general_admin", ConfigMessage.HELP_GENERAL_ADMIN.getMessage().getLegacyMessage(),
-                "desc_general_next", ConfigMessage.HELP_GENERAL_NEXT.getMessage().getLegacyMessage(),
-                "desc_general_sellall", ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getLegacyMessage(),
-                "desc_general_applybaits", ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getLegacyMessage()
-        );
-
-
-        manager.getCommandConditions().addCondition(Integer.class, "limits", (c, exec, value) -> {
-            if (value == null) {
-                return;
-            }
-            if (c.hasConfig("min") && c.getConfigValue("min", 0) > value) {
-                throw new ConditionFailedException("Min value must be " + c.getConfigValue("min", 0));
-            }
-
-            if (c.hasConfig("max") && c.getConfigValue("max", 0) < value) {
-                throw new ConditionFailedException("Max value must be " + c.getConfigValue("max", 0));
-            }
-        });
-        manager.getCommandContexts().registerContext(Rarity.class, c -> {
-            final String rarityId = c.popFirstArg().replace("\"", "");
-            Rarity rarity = FishManager.getInstance().getRarity(rarityId);
-            if (rarity == null) {
-                throw new InvalidCommandArgument("No such rarity: " + rarityId);
-            }
-            return rarity;
-        });
-        manager.getCommandContexts().registerContext(Fish.class, c -> {
-            final Rarity rarity = (Rarity) c.getResolvedArg(Rarity.class);
-            final String fishId = c.popFirstArg();
-            Fish fish = rarity.getFish(fishId);
-            if (fish == null) {
-                fish = rarity.getFish(fishId.replace("_", " "));
-            }
-            if (fish == null) {
-                throw new InvalidCommandArgument("No such fish: " + fishId);
-            }
-            return fish;
-        });
-        manager.getCommandCompletions().registerCompletion("baits", c -> BaitManager.getInstance().getBaitMap().keySet().stream().map(s -> s.replace(" ", "_")).toList());
-        manager.getCommandCompletions().registerCompletion("rarities", c -> FishManager.getInstance().getRarityMap().values().stream().map(Rarity::getId).toList());
-        manager.getCommandCompletions().registerCompletion("fish", c -> {
-            final Rarity rarity = c.getContextValue(Rarity.class);
-            return rarity.getFishList().stream().map(f -> f.getName().replace(" ", "_")).toList();
-        });
-        manager.getCommandCompletions().registerCompletion("competitionId", c -> getCompetitionQueue().getFileMap().keySet());
-
-        manager.registerCommand(new EMFCommand());
-        manager.registerCommand(new AdminCommand());
-         */
     }
 
     public Map<String, String> getCommandUsages() {
