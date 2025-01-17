@@ -1,8 +1,6 @@
 package com.oheers.fish.commands.arguments;
 
 import com.oheers.fish.competition.CompetitionType;
-import com.oheers.fish.fishing.items.Fish;
-import com.oheers.fish.fishing.items.Rarity;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.CustomArgument;

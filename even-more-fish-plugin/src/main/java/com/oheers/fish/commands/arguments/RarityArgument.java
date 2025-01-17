@@ -5,7 +5,6 @@ import com.oheers.fish.fishing.items.Rarity;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.CustomArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
-import org.jetbrains.annotations.NotNull;
 
 public class RarityArgument {
 

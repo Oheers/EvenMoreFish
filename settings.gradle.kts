@@ -68,8 +68,6 @@ dependencyResolutionManagement {
             library("vanishchecker", "uk.firedev:VanishChecker:1.0.4")
 
             library("commandapi", "dev.jorel:commandapi-bukkit-shade:9.7.0")
-            // TODO remove.
-            library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("inventorygui", "de.themoep:inventorygui:1.6.4-SNAPSHOT")
 
             plugin("shadow", "com.gradleup.shadow").version("8.3.3")
