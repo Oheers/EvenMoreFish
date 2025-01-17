@@ -9,11 +9,9 @@ import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.baits.BaitNBTManager;
-import com.oheers.fish.commands.arguments.BaitArgument;
-import com.oheers.fish.commands.arguments.CompetitionTypeArgument;
-import com.oheers.fish.commands.arguments.FishArgument;
-import com.oheers.fish.commands.arguments.RarityArgument;
+import com.oheers.fish.commands.arguments.*;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.competition.CompetitionQueue;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.ConfigBase;
@@ -440,7 +438,10 @@ public class AdminCommand {
     private CommandAPICommand getCompetitionStart() {
         return new CommandAPICommand("start")
                 .withArguments(
-                        new StringArgument("competitionId"),
+                        // StringArgument containing all loaded competition ids
+                        ArgumentHelper.getAsyncStringsArgument("competitionId",
+                                info -> EvenMoreFish.getInstance().getCompetitionQueue().getFileMap().keySet().toArray(String[]::new)
+                        ),
                         new IntegerArgument("duration", 1).setOptional(true)
                 )
                 .executes((sender, arguments) -> {
