@@ -17,8 +17,8 @@ import com.oheers.fish.api.requirement.RequirementManager;
 import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.BaitListener;
 import com.oheers.fish.baits.BaitManager;
-import com.oheers.fish.commands.AdminCommand;
-import com.oheers.fish.commands.EMFCommand;
+import com.oheers.fish.commands.acf.AdminCommand;
+import com.oheers.fish.commands.acf.EMFCommand;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
@@ -50,6 +50,8 @@ import com.oheers.fish.utils.ItemFactory;
 import com.oheers.fish.utils.nbt.NbtKeys;
 import de.themoep.inventorygui.InventoryGui;
 import de.tr7zw.changeme.nbtapi.NBT;
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.milkbowl.vault.permission.Permission;
 import org.apache.maven.artifact.versioning.ComparableVersion;
@@ -126,6 +128,15 @@ public class EvenMoreFish extends EMFPlugin {
     }
 
     @Override
+    public void onLoad() {
+        CommandAPIBukkitConfig config = new CommandAPIBukkitConfig(this)
+                .shouldHookPaperReload(true)
+                .usePluginNamespace()
+                .missingExecutorImplementationMessage("You are not able to use this command!");
+        CommandAPI.onLoad(config);
+    }
+
+    @Override
     public void onEnable() {
 
         if (!NBT.preloadApi()) {
@@ -134,6 +145,8 @@ public class EvenMoreFish extends EMFPlugin {
 
         // This should only ever be done once.
         EMFPlugin.setInstance(this);
+
+        CommandAPI.onEnable();
 
         // If EMF folder does not exist, this is the first load.
         firstLoad = !getDataFolder().exists();
@@ -235,6 +248,8 @@ public class EvenMoreFish extends EMFPlugin {
         if (instance == null) {
             return;
         }
+
+        CommandAPI.onDisable();
 
         terminateGUIS();
         // Don't use the scheduler here because it will throw errors on disable

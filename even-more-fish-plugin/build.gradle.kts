@@ -84,6 +84,8 @@ dependencies {
     implementation(libs.nbt.api)
     implementation(libs.bstats)
     implementation(libs.universalscheduler)
+    implementation(libs.commandapi)
+    // TODO remove.
     implementation(libs.acf)
     implementation(libs.inventorygui)
     implementation(libs.vanishchecker)
@@ -255,7 +257,7 @@ tasks {
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
         relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
         relocate("dev.dejvokep.boostedyaml", "com.oheers.fish.libs.boostedyaml")
-
+        relocate("dev.jorel.commandapi", "com.oheers.fish.libs.commandapi")
     }
 
     compileJava {

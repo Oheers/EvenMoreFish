@@ -1,4 +1,4 @@
-package com.oheers.fish.commands;
+package com.oheers.fish.commands.acf;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
