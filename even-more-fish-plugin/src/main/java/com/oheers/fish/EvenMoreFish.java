@@ -381,6 +381,7 @@ public class EvenMoreFish extends EMFPlugin {
     private void loadCommandManager() {
         new EMFCommand().getCommand().register(this);
         System.out.println("Registered EMFCommand");
+
         /*
         PaperCommandManager manager = new PaperCommandManager(this);
 

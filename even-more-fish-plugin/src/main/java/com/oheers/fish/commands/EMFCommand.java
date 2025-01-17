@@ -50,6 +50,7 @@ public class EMFCommand {
     private CommandAPICommand getNext() {
         return new CommandAPICommand("next")
                 .withPermission(UserPerms.NEXT)
+                .withFullDescription(ConfigMessage.HELP_GENERAL_NEXT.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     AbstractMessage message = Competition.getNextCompetitionMessage();
                     message.prependMessage(PrefixType.DEFAULT.getPrefix());
@@ -60,6 +61,7 @@ public class EMFCommand {
     private CommandAPICommand getToggle() {
         return new CommandAPICommand("toggle")
                 .withPermission(UserPerms.TOGGLE)
+                .withFullDescription(ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     EvenMoreFish.getInstance().performFishToggle(info.sender());
                 });
@@ -68,6 +70,7 @@ public class EMFCommand {
     private CommandAPICommand getGui() {
         return new CommandAPICommand("gui")
                 .withPermission(UserPerms.GUI)
+                .withFullDescription(ConfigMessage.HELP_GENERAL_GUI.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     new MainMenuGUI(info.sender()).open();
                 });
@@ -76,6 +79,7 @@ public class EMFCommand {
     private CommandAPICommand getHelp() {
         return new CommandAPICommand("help")
                 .withPermission(UserPerms.HELP)
+                .withFullDescription(ConfigMessage.HELP_GENERAL_HELP.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     sendHelpMessage(info.sender());
                 });
@@ -84,6 +88,7 @@ public class EMFCommand {
     private CommandAPICommand getTop() {
         return new CommandAPICommand("top")
                 .withPermission(UserPerms.TOP)
+                .withFullDescription(ConfigMessage.HELP_GENERAL_TOP.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     Competition active = Competition.getCurrentlyActive();
                     if (active == null) {
@@ -105,6 +110,7 @@ public class EMFCommand {
     private CommandAPICommand getShop() {
         return new CommandAPICommand("shop")
                 .withPermission(UserPerms.SHOP)
+                .withFullDescription(ConfigMessage.HELP_GENERAL_SHOP.getMessage().getPlainTextMessage())
                 .withArguments(
                         new EntitySelectorArgument.OnePlayer("target").setOptional(true)
                 )
@@ -138,6 +144,7 @@ public class EMFCommand {
     private CommandAPICommand getSellAll() {
         return new CommandAPICommand("sellall")
                 .withPermission(UserPerms.SELL_ALL)
+                .withFullDescription(ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     Player player = info.sender();
                     if (checkEconomy(player)) {
@@ -149,6 +156,7 @@ public class EMFCommand {
     private CommandAPICommand getApplyBaits() {
         return new CommandAPICommand("applybaits")
                 .withPermission(UserPerms.APPLYBAITS)
+                .withFullDescription(ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     new ApplyBaitsGUI(info.sender(), null).open();
                 });

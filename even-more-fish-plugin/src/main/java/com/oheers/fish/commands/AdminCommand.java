@@ -70,6 +70,7 @@ public class AdminCommand {
     // TODO this may not work. Test a lot.
     private CommandAPICommand getFish() {
         return new CommandAPICommand("fish")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_FISH.getMessage().getPlainTextMessage())
                 .withArguments(
                         RarityArgument.create(),
                         FishArgument.create(),
@@ -165,6 +166,7 @@ public class AdminCommand {
 
     private CommandAPICommand getNbtRod() {
         return new CommandAPICommand("nbt-rod")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getPlainTextMessage())
                 .withArguments(
                         new EntitySelectorArgument.OnePlayer("target").setOptional(true)
                 )
@@ -194,6 +196,7 @@ public class AdminCommand {
 
     private CommandAPICommand getBait() {
         return new CommandAPICommand("bait")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_BAIT.getMessage().getPlainTextMessage())
                 .withArguments(
                         BaitArgument.create(),
                         new IntegerArgument("quantity", 1).setOptional(true),
@@ -226,6 +229,7 @@ public class AdminCommand {
 
     private CommandAPICommand getClearBaits() {
         return new CommandAPICommand("clearbaits")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getPlainTextMessage())
                 .withArguments(
                         new EntitySelectorArgument.OnePlayer("target").setOptional(true)
                 )
@@ -266,6 +270,7 @@ public class AdminCommand {
 
     private CommandAPICommand getReload() {
         return new CommandAPICommand("reload")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     EvenMoreFish.getInstance().reload(info.sender());
                 });
@@ -273,6 +278,7 @@ public class AdminCommand {
 
     private CommandAPICommand getAddons() {
         return new CommandAPICommand("addons")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     final AddonManager addonManager = EvenMoreFish.getInstance().getAddonManager();
                     final String messageFormat = "Addon: %s, Loading: %b";
@@ -288,6 +294,7 @@ public class AdminCommand {
 
     private CommandAPICommand getVersion() {
         return new CommandAPICommand("version")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_VERSION.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     int fishCount = 0;
 
@@ -314,6 +321,7 @@ public class AdminCommand {
 
     private CommandAPICommand getRewardTypes() {
         return new CommandAPICommand("rewardtypes")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     TextComponent message = new TextComponent(ConfigMessage.ADMIN_LIST_REWARD_TYPES.getMessage().getLegacyMessage());
                     ComponentBuilder builder = new ComponentBuilder(message);
@@ -335,6 +343,7 @@ public class AdminCommand {
 
     private CommandAPICommand getMigrate() {
         return new CommandAPICommand("migrate")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     if (!MainConfig.getInstance().databaseEnabled()) {
                         EvenMoreFish.getAdapter().createMessage("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.").send(info.sender());
@@ -346,6 +355,7 @@ public class AdminCommand {
 
     private CommandAPICommand getRawItem() {
         return new CommandAPICommand("rawItem")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_RAWITEM.getMessage().getPlainTextMessage())
                 .executesPlayer(info -> {
                     ItemStack handItem = info.sender().getInventory().getItemInMainHand();
                     String handItemNbt = NBT.itemStackToNBT(handItem).toString();
@@ -369,6 +379,7 @@ public class AdminCommand {
 
     private CommandAPICommand getCompetition() {
         return new CommandAPICommand("competition")
+                .withFullDescription(ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getPlainTextMessage())
                 .withSubcommands(
                         getCompetitionStart(),
                         getCompetitionEnd(),
