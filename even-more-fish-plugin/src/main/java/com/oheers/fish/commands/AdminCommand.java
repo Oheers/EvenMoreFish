@@ -61,7 +61,8 @@ public class AdminCommand {
                         getVersion(),
                         getRewardTypes(),
                         getMigrate(),
-                        getRawItem()
+                        getRawItem(),
+                        getHelp()
                 );
     }
 
@@ -403,6 +404,17 @@ public class AdminCommand {
                     ));
                     component.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, handItemNbt));
                     info.sender().spigot().sendMessage(component);
+                });
+    }
+
+    private CommandAPICommand getHelp() {
+        commandUsages.putIfAbsent(
+                "/emf admin help",
+                ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("help")
+                .executes(info -> {
+                    sendHelpMessage(info.sender());
                 });
     }
 
