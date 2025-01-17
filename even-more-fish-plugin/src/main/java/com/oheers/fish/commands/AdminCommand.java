@@ -78,7 +78,7 @@ public class AdminCommand {
 
     private CommandAPICommand getFish() {
         commandUsages.putIfAbsent(
-                "/emf admin fish",
+                "admin fish",
                 ConfigMessage.HELP_ADMIN_FISH.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("fish")
@@ -172,7 +172,7 @@ public class AdminCommand {
 
     private CommandAPICommand getNbtRod() {
         commandUsages.putIfAbsent(
-                "/emf admin nbt-rod",
+                "admin  nbt-rod",
                 ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("nbt-rod")
@@ -205,7 +205,7 @@ public class AdminCommand {
 
     private CommandAPICommand getBait() {
         commandUsages.putIfAbsent(
-                "/emf admin bait",
+                "admin bait",
                 ConfigMessage.HELP_ADMIN_BAIT.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("bait")
@@ -241,7 +241,7 @@ public class AdminCommand {
 
     private CommandAPICommand getClearBaits() {
         commandUsages.putIfAbsent(
-                "/emf admin clearbaits",
+                "admin clearbaits",
                 ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("clearbaits")
@@ -285,7 +285,7 @@ public class AdminCommand {
 
     private CommandAPICommand getReload() {
         commandUsages.putIfAbsent(
-                "/emf admin reload",
+                "admin reload",
                 ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("reload")
@@ -296,7 +296,7 @@ public class AdminCommand {
 
     private CommandAPICommand getAddons() {
         commandUsages.putIfAbsent(
-                "/emf admin addons",
+                "admin addons",
                 ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("addons")
@@ -316,7 +316,7 @@ public class AdminCommand {
 
     private CommandAPICommand getVersion() {
         commandUsages.putIfAbsent(
-                "/emf admin version",
+                "admin version",
                 ConfigMessage.HELP_ADMIN_VERSION.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("version")
@@ -346,7 +346,7 @@ public class AdminCommand {
 
     private CommandAPICommand getRewardTypes() {
         commandUsages.putIfAbsent(
-                "/emf admin rewardtypes",
+                "admin rewardtypes",
                 ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("rewardtypes")
@@ -371,7 +371,7 @@ public class AdminCommand {
 
     private CommandAPICommand getMigrate() {
         commandUsages.putIfAbsent(
-                "/emf admin migrate",
+                "admin migrate",
                 ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("migrate")
@@ -386,7 +386,7 @@ public class AdminCommand {
 
     private CommandAPICommand getRawItem() {
         commandUsages.putIfAbsent(
-                "/emf admin rawItem",
+                "admin rawItem",
                 ConfigMessage.HELP_ADMIN_RAWITEM.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("rawItem")
@@ -411,7 +411,7 @@ public class AdminCommand {
 
     private CommandAPICommand getHelp() {
         commandUsages.putIfAbsent(
-                "/emf admin help",
+                "admin help",
                 ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("help")
@@ -424,7 +424,7 @@ public class AdminCommand {
 
     private CommandAPICommand getCompetition() {
         commandUsages.putIfAbsent(
-                "/emf admin competition",
+                "admin competition",
                 ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("competition")

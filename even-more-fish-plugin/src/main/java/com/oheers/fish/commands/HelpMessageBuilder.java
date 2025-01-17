@@ -1,6 +1,7 @@
 package com.oheers.fish.commands;
 
 import com.oheers.fish.api.adapter.AbstractMessage;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -30,12 +31,19 @@ public class HelpMessageBuilder {
         final AbstractMessage message = ConfigMessage.HELP_GENERAL_TITLE.getMessage();
         usages.forEach((key, value) -> {
             AbstractMessage usage = ConfigMessage.HELP_FORMAT.getMessage();
-            usage.setVariable("{command}", key);
+            usage.setVariable("{command}", correctCommand(key));
             usage.setVariable("{description}", value);
             message.appendString("\n");
             message.appendString(usage.getLegacyMessage());
         });
         return message;
+    }
+
+    /**
+     * Adds "/[commandname] " to the start of the provided usage.
+     */
+    private String correctCommand(@NotNull String key) {
+        return "/" + MainConfig.getInstance().getMainCommandName() + " " + key;
     }
 
     /**

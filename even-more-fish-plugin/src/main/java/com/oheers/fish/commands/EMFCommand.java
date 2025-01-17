@@ -49,7 +49,7 @@ public class EMFCommand {
 
     private CommandAPICommand getNext() {
         commandUsages.putIfAbsent(
-                "/emf next",
+                "next",
                 ConfigMessage.HELP_GENERAL_NEXT.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("next")
@@ -63,7 +63,7 @@ public class EMFCommand {
 
     private CommandAPICommand getToggle() {
         commandUsages.putIfAbsent(
-                "/emf toggle",
+                "toggle",
                 ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("toggle")
@@ -75,7 +75,7 @@ public class EMFCommand {
 
     private CommandAPICommand getGui() {
         commandUsages.putIfAbsent(
-                "/emf gui",
+                "gui",
                 ConfigMessage.HELP_GENERAL_GUI.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("gui")
@@ -87,7 +87,7 @@ public class EMFCommand {
 
     private CommandAPICommand getHelp() {
         commandUsages.putIfAbsent(
-                "/emf help",
+                "help",
                 ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("help")
@@ -99,7 +99,7 @@ public class EMFCommand {
 
     private CommandAPICommand getTop() {
         commandUsages.putIfAbsent(
-                "/emf top",
+                "top",
                 ConfigMessage.HELP_GENERAL_TOP.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("top")
@@ -124,7 +124,7 @@ public class EMFCommand {
 
     private CommandAPICommand getShop() {
         commandUsages.putIfAbsent(
-                "/emf shop",
+                "shop",
                 ConfigMessage.HELP_GENERAL_SHOP.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("shop")
@@ -161,7 +161,7 @@ public class EMFCommand {
 
     private CommandAPICommand getSellAll() {
         commandUsages.putIfAbsent(
-                "/emf sellall",
+                "sellall",
                 ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("sellall")
@@ -176,7 +176,7 @@ public class EMFCommand {
 
     private CommandAPICommand getApplyBaits() {
         commandUsages.putIfAbsent(
-                "/emf applybaits",
+                "applybaits",
                 ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getLegacyMessage()
         );
         return new CommandAPICommand("applybaits")
