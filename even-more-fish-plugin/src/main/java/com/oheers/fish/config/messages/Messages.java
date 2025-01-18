@@ -4,7 +4,6 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
-import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 
 public class Messages extends ConfigBase {
