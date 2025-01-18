@@ -45,6 +45,7 @@ public class Database implements DatabaseWrapper {
 
         this.migrationManager = new MigrationManager(connectionFactory);
         if (migrationManager.usingV2()) {
+            this.version = "2";
             return;
         }
 
@@ -580,10 +581,6 @@ public class Database implements DatabaseWrapper {
     public String getDatabaseVersion() {
         if (!MainConfig.getInstance().databaseEnabled())
             return "Disabled";
-
-        if (EvenMoreFish.getInstance().getDatabase().getMigrationManager().usingV2()) {
-            return "V2";
-        }
 
         return "V"+this.version;
     }
