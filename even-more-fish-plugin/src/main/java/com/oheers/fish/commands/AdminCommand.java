@@ -127,7 +127,8 @@ public class AdminCommand {
     private CommandAPICommand getList() {
         return new CommandAPICommand("list")
                 .withArguments(
-                        new MultiLiteralArgument("listTarget",
+                        new MultiLiteralArgument(
+                                "listTarget",
                                 "fish", "rarities"
                         ),
                         RarityArgument.create().setOptional(true)
@@ -158,7 +159,10 @@ public class AdminCommand {
                             for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
                                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + rarity.getDisplayName() + "] "));
                                 for (BaseComponent component : textComponent) {
-                                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish."))));
+                                    component.setHoverEvent(new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            new Text(TextComponent.fromLegacyText("Click to view " + rarity.getDisplayName() + " fish."))
+                                    ));
                                     component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/emf admin list fish " + rarity.getId()));
                                     baseComponent[0].addExtra(component);
                                 }
@@ -384,7 +388,9 @@ public class AdminCommand {
         return new CommandAPICommand("migrate")
                 .executes(info -> {
                     if (!MainConfig.getInstance().databaseEnabled()) {
-                        EvenMoreFish.getAdapter().createMessage("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.").send(info.sender());
+                        EvenMoreFish.getAdapter()
+                                .createMessage("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.")
+                                .send(info.sender());
                         return;
                     }
                     EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabase().getMigrationManager().migrateLegacy(info.sender()));
@@ -447,7 +453,8 @@ public class AdminCommand {
         return new CommandAPICommand("start")
                 .withArguments(
                         // StringArgument containing all loaded competition ids
-                        ArgumentHelper.getAsyncStringsArgument("competitionId",
+                        ArgumentHelper.getAsyncStringsArgument(
+                                "competitionId",
                                 info -> EvenMoreFish.getInstance().getCompetitionQueue().getFileMap().keySet().toArray(String[]::new)
                         ),
                         new IntegerArgument("duration", 1).setOptional(true)
