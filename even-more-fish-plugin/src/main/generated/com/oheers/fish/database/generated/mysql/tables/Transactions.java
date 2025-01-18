@@ -103,7 +103,7 @@ public class Transactions extends TableImpl<TransactionsRecord> {
 
     @Override
     public UniqueKey<TransactionsRecord> getPrimaryKey() {
-        return Keys.CONSTRAINT_F;
+        return Keys.FK_TRANSACTIONS_USER;
     }
 
     @Override

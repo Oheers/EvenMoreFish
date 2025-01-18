@@ -37,7 +37,7 @@ public class Keys {
     public static final UniqueKey<CompetitionsRecord> CONSTRAINT_9 = Internal.createUniqueKey(Competitions.COMPETITIONS, DSL.name("CONSTRAINT_9"), new TableField[] { Competitions.COMPETITIONS.ID }, true);
     public static final UniqueKey<FishRecord> CONSTRAINT_E = Internal.createUniqueKey(Fish.FISH, DSL.name("CONSTRAINT_E"), new TableField[] { Fish.FISH.FISH_NAME }, true);
     public static final UniqueKey<FishLogRecord> FK_FISHLOG_USER = Internal.createUniqueKey(FishLog.FISH_LOG, DSL.name("FK_FISHLOG_USER"), new TableField[] { FishLog.FISH_LOG.ID }, true);
-    public static final UniqueKey<TransactionsRecord> CONSTRAINT_F = Internal.createUniqueKey(Transactions.TRANSACTIONS, DSL.name("CONSTRAINT_F"), new TableField[] { Transactions.TRANSACTIONS.ID }, true);
+    public static final UniqueKey<TransactionsRecord> FK_TRANSACTIONS_USER = Internal.createUniqueKey(Transactions.TRANSACTIONS, DSL.name("FK_TRANSACTIONS_USER"), new TableField[] { Transactions.TRANSACTIONS.ID }, true);
     public static final UniqueKey<UsersRecord> CONSTRAINT_A = Internal.createUniqueKey(Users.USERS, DSL.name("CONSTRAINT_A"), new TableField[] { Users.USERS.ID }, true);
     public static final UniqueKey<UsersSalesRecord> FK_USERSSALES_TRANSACTION = Internal.createUniqueKey(UsersSales.USERS_SALES, DSL.name("FK_USERSSALES_TRANSACTION"), new TableField[] { UsersSales.USERS_SALES.ID }, true);
 }

@@ -105,14 +105,14 @@ dependencies {
     library(libs.jooq)
     library(libs.jooq.codegen)
     library(libs.jooq.meta)
+    library(libs.connectors.h2)
+
+    library(libs.maven.artifact)
 
     jooqGenerator(project(":even-more-fish-database-extras"))
     jooqGenerator(libs.jooq.meta.extensions)
     jooqGenerator(libs.connectors.mysql)
-    jooqGenerator(libs.connectors.sqlite)
-    jooqGenerator(libs.connectors.h2)
 }
-
 
 bukkit {
     name = "EvenMoreFish"
@@ -221,11 +221,15 @@ sourceSets {
         java.srcDirs.add(File("src/main/generated"))
     }
 }
+tasks.named("compileJava") {
+    dependsOn(":even-more-fish-plugin:generateMysqlJooq")
+}
+
 tasks {
     build {
         dependsOn(
-        "generateMysqlJooq",
-            shadowJar)
+            shadowJar
+        )
 
         doLast {
             val file = project.layout.buildDirectory.file("libs/even-more-fish-plugin-${version}.jar").get()
@@ -239,7 +243,7 @@ tasks {
         version.set(libs.versions.jooq)
 
         val dialects = listOf("mysql")
-        val latestSchema = "V7_0__Create_Tables.sql"
+        val latestSchema = "V7_1__Create_Tables.sql"
         dialects.forEach { dialect ->
             val schemaPath = "src/main/resources/db/migrations/${dialect}/${latestSchema}"
             configureDialect(dialect, schemaPath)
@@ -269,6 +273,7 @@ tasks {
             attributes["Specification-Version"] = project.version
             attributes["Implementation-Title"] = grgit.branch.current().name
             attributes["Implementation-Version"] = buildNumberOrDate
+            attributes["Database-Baseline-Version"] = "7.0"
         }
 
         minimize {
@@ -355,4 +360,5 @@ fun JooqExtension.configureDialect(dialect: String, latestSchema: String) {
         }
     }
 }
+
 

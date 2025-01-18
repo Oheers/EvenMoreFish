@@ -12,6 +12,7 @@ import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Message;
+import com.oheers.fish.database.DataManager;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
@@ -235,17 +236,17 @@ public class FishingProcessor implements Listener {
         if (MainConfig.getInstance().isDatabaseOnline()) {
             Fish finalFish = fish;
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                if (EvenMoreFish.getInstance().getDatabaseV3().hasFishData(finalFish)) {
-                    EvenMoreFish.getInstance().getDatabaseV3().incrementFish(finalFish);
+                if (EvenMoreFish.getInstance().getDatabase().hasFishData(finalFish)) {
+                    EvenMoreFish.getInstance().getDatabase().incrementFish(finalFish);
 
-                    if (EvenMoreFish.getInstance().getDatabaseV3().getLargestFishSize(finalFish) < finalFish.getLength()) {
-                        EvenMoreFish.getInstance().getDatabaseV3().updateLargestFish(finalFish, player.getUniqueId());
+                    if (EvenMoreFish.getInstance().getDatabase().getLargestFishSize(finalFish) < finalFish.getLength()) {
+                        EvenMoreFish.getInstance().getDatabase().updateLargestFish(finalFish, player.getUniqueId());
                     }
                 } else {
-                    EvenMoreFish.getInstance().getDatabaseV3().createFishData(finalFish, player.getUniqueId());
+                    EvenMoreFish.getInstance().getDatabase().createFishData(finalFish, player.getUniqueId());
                 }
 
-                EvenMoreFish.getInstance().getDatabaseV3().handleFishCatch(player.getUniqueId(), finalFish);
+                DataManager.getInstance().handleFishCatch(player.getUniqueId(), finalFish);
             });
         }
 

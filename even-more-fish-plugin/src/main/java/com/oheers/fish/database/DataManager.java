@@ -204,6 +204,27 @@ public class DataManager {
         }
     }
 
+    public void saveFishReports() {
+        ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
+        EvenMoreFish.getInstance().getLogger().info("Saving " + allReports.size() + " fish reports.");
+        for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
+            EvenMoreFish.getInstance().getDatabase().writeFishReports(entry.getKey(), entry.getValue());
+
+
+            if (!EvenMoreFish.getInstance().getDatabase().hasUser(entry.getKey())) {
+                EvenMoreFish.getInstance().getDatabase().createUser(entry.getKey());
+            }
+
+        }
+    }
+
+    public void saveUserReports() {
+        EvenMoreFish.getInstance().getLogger().info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
+        for (UserReport report : DataManager.getInstance().getAllUserReports()) {
+            EvenMoreFish.getInstance().getDatabase().writeUserReport(report.getUUID(), report);
+        }
+    }
+
 
     /**
      * Adds the fish data to the live fish reports list, or changes the existing matching fish report. The plugin will

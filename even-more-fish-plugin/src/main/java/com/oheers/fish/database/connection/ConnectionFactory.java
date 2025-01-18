@@ -1,6 +1,7 @@
 package com.oheers.fish.database.connection;
 
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -61,6 +62,7 @@ public abstract class ConnectionFactory {
         overrideProperties(properties);
         setProperties(config, properties);
 
+        initDriver();
         this.dataSource = new HikariDataSource(config);
         logger.info("Connected to database!");
     }
@@ -97,4 +99,24 @@ public abstract class ConnectionFactory {
 
         return connection;
     }
+
+    public String getDriverClass() {
+        return "";
+    }
+
+    /**
+     * Sometimes it may be necessary to init a driver ahead of time, use this in that case
+     */
+    protected void initDriver() {
+        if (getDriverClass().isEmpty())
+            return;
+
+        try {
+            Class.forName(getDriverClass());
+        } catch (ClassNotFoundException e) {
+            EvenMoreFish.getInstance().getLogger().severe("Tried to init driver: %s, but could not find it.".formatted(getDriverClass()));
+        }
+    }
+
+
 }

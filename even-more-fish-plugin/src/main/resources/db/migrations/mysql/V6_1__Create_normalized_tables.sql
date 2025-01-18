@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}fish` (
 );
 
 CREATE TABLE IF NOT EXISTS `${table.prefix}fish_log` (
-   id INT NOT NULL, --user id
+   id INTEGER NOT NULL AUTO_INCREMENT,
+   user_id VARCHAR(128) NOT NULL, -- user id
    rarity VARCHAR(128) NOT NULL,
    fish VARCHAR(128) NOT NULL,
    quantity INT NOT NULL,
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}fish_log` (
    largest_length REAL NOT NULL,
    CONSTRAINT FK_FishLog_User
    -- [jooq ignore start]
-   FOREIGN KEY (id) REFERENCES `${table.prefix}users(id)`,
+   FOREIGN KEY (user_id) REFERENCES `${table.prefix}users(id)`,
    -- [jooq ignore stop]
    PRIMARY KEY (id)
 );
@@ -54,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}transactions` (
   id VARCHAR(22) NOT NULL,
   user_id INTEGER NOT NULL,
   timestamp TIMESTAMP NOT NULL,
+  CONSTRAINT FK_Transactions_User
   -- [jooq ignore start]
   FOREIGN KEY (user_id) REFERENCES `${table.prefix}users(id)`,
   -- [jooq ignore stop]

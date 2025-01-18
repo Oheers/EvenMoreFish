@@ -22,6 +22,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.permissions.AdminPerms;
+import com.oheers.fish.utils.ManifestUtil;
 import de.tr7zw.changeme.nbtapi.NBT;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
@@ -336,37 +337,11 @@ public class AdminCommand extends BaseCommand {
     }
 
     private String getFeatureBranchName() {
-        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
-
-            if (inputStream != null) {
-                Manifest manifest = new Manifest(inputStream);
-
-                // Access attributes from the manifest file
-                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_TITLE);
-            } else {
-                return "main";
-            }
-
-        } catch (IOException e) {
-            return "main";
-        }
+        return ManifestUtil.getAttributeFromManifest(Attributes.Name.IMPLEMENTATION_TITLE.toString(), "main");
     }
 
     private String getFeatureBranchBuildOrDate() {
-        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
-
-            if (inputStream != null) {
-                Manifest manifest = new Manifest(inputStream);
-
-                // Access attributes from the manifest file
-                return manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION);
-            } else {
-                return "";
-            }
-
-        } catch (IOException e) {
-            return "";
-        }
+        return ManifestUtil.getAttributeFromManifest(Attributes.Name.IMPLEMENTATION_VERSION.toString(), "");
     }
 
     private String getDatabaseVersion() {
@@ -409,7 +384,7 @@ public class AdminCommand extends BaseCommand {
             new Message("You cannot run migrations when the database is disabled. Please set database.enabled: true. And restart the server.").broadcast(sender);
             return;
         }
-        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabaseV3().migrateLegacy(sender));
+        EvenMoreFish.getScheduler().runTaskAsynchronously(() -> EvenMoreFish.getInstance().getDatabase().getMigrationManager().migrateLegacy(sender));
     }
 
     @Subcommand("rawItem")

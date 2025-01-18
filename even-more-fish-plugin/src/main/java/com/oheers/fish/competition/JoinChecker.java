@@ -35,8 +35,8 @@ public class JoinChecker implements Listener {
             List<FishReport> fishReports;
 
 
-            if (EvenMoreFish.getInstance().getDatabaseV3().hasUserLog(userUUID)) {
-                fishReports = EvenMoreFish.getInstance().getDatabaseV3().getFishReports(userUUID);
+            if (EvenMoreFish.getInstance().getDatabase().hasUserLog(userUUID)) {
+                fishReports = EvenMoreFish.getInstance().getDatabase().getFishReportsForPlayer(userUUID);
             } else {
                 fishReports = new ArrayList<>();
                 if (MainConfig.getInstance().doDBVerbose()) {
@@ -47,10 +47,10 @@ public class JoinChecker implements Listener {
 
             UserReport userReport;
 
-            userReport = EvenMoreFish.getInstance().getDatabaseV3().readUserReport(userUUID);
+            userReport = EvenMoreFish.getInstance().getDatabase().readUserReport(userUUID);
             if (userReport == null) {
-                EvenMoreFish.getInstance().getDatabaseV3().createUser(userUUID);
-                userReport = EvenMoreFish.getInstance().getDatabaseV3().readUserReport(userUUID);
+                EvenMoreFish.getInstance().getDatabase().createUser(userUUID);
+                userReport = EvenMoreFish.getInstance().getDatabase().readUserReport(userUUID);
             }
 
             if (fishReports != null && userReport != null) {
@@ -95,18 +95,18 @@ public class JoinChecker implements Listener {
         EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
             UUID userUUID = event.getPlayer().getUniqueId();
 
-            if (!EvenMoreFish.getInstance().getDatabaseV3().hasUser(userUUID)) {
-                EvenMoreFish.getInstance().getDatabaseV3().createUser(userUUID);
+            if (!EvenMoreFish.getInstance().getDatabase().hasUser(userUUID)) {
+                EvenMoreFish.getInstance().getDatabase().createUser(userUUID);
             }
 
             List<FishReport> fishReports = DataManager.getInstance().getFishReportsIfExists(userUUID);
             if (fishReports != null) {
-                EvenMoreFish.getInstance().getDatabaseV3().writeFishReports(userUUID, fishReports);
+                EvenMoreFish.getInstance().getDatabase().writeFishReports(userUUID, fishReports);
             }
 
             UserReport userReport = DataManager.getInstance().getUserReportIfExists(userUUID);
             if (userReport != null) {
-                EvenMoreFish.getInstance().getDatabaseV3().writeUserReport(userUUID, userReport);
+                EvenMoreFish.getInstance().getDatabase().writeUserReport(userUUID, userReport);
             }
 
             DataManager.getInstance().uncacheUser(userUUID);

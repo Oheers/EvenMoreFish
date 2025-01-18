@@ -136,7 +136,7 @@ public class Competition {
                 if (MainConfig.getInstance().databaseEnabled()) {
                     Competition competitionRef = this;
                     EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                        EvenMoreFish.getInstance().getDatabaseV3().createCompetitionReport(competitionRef);
+                        EvenMoreFish.getInstance().getDatabase().createCompetitionReport(competitionRef);
                         leaderboard.clear();
                     });
                 } else {

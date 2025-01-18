@@ -85,6 +85,8 @@ dependencyResolutionManagement {
             library("connectors-mysql", "com.mysql:mysql-connector-j:9.1.0")
             library("connectors-sqlite", "org.xerial:sqlite-jdbc:3.47.1.0")
             library("connectors-h2", "com.h2database:h2:2.3.232")
+
+            library("maven-artifact", "org.apache.maven:maven-artifact:4.0.0-rc-2")
         }
     }
 }

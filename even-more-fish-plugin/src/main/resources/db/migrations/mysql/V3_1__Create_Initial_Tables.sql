@@ -9,7 +9,7 @@ CREATE TABLE `${table.prefix}competitions` (
 );
 
 CREATE TABLE `${table.prefix}fish_log` (
-   id INT NOT NULL,
+   id INTEGER NOT NULL,
    rarity VARCHAR(128) NOT NULL,
    fish VARCHAR(128) NOT NULL,
    quantity INT NOT NULL,

@@ -13,6 +13,7 @@ import java.util.Collection;
 
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
@@ -53,7 +54,12 @@ public class FishLog extends TableImpl<FishLogRecord> {
     /**
      * The column <code>${table.prefix}fish_log.ID</code>.
      */
-    public final TableField<FishLogRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<FishLogRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>${table.prefix}fish_log.USER_ID</code>.
+     */
+    public final TableField<FishLogRecord, Integer> USER_ID = createField(DSL.name("USER_ID"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>${table.prefix}fish_log.RARITY</code>.
@@ -112,6 +118,11 @@ public class FishLog extends TableImpl<FishLogRecord> {
     @Override
     public Schema getSchema() {
         return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
+    }
+
+    @Override
+    public Identity<FishLogRecord, Integer> getIdentity() {
+        return (Identity<FishLogRecord, Integer>) super.getIdentity();
     }
 
     @Override

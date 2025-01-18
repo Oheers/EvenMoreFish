@@ -2,7 +2,6 @@ package com.oheers.fish.database;
 
 
 import com.oheers.fish.EvenMoreFish;
-import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
@@ -16,14 +15,14 @@ import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.fishing.items.Fish;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.Conversion;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.*;
 import org.jooq.Record;
 import org.jooq.conf.*;
 import org.jooq.impl.DSL;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -32,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
@@ -50,20 +51,23 @@ public class Database implements DatabaseWrapper {
             return;
         }
 
-        switch (this.migrationManager.getDatabaseVersion().getVersion()) {
+        final String version = this.migrationManager.getDatabaseVersion().getVersion();
+        switch (version) {
             case "5":
                 this.migrationManager.migrateFromV5ToLatest();
                 break;
-            case "6":
+            case "6.0":
                 this.migrationManager.migrateFromV6ToLatest();
                 break;
             default:
-                this.migrationManager.migrateFromVersion(this.migrationManager.getDatabaseVersion().getVersion(), true);
+                this.migrationManager.migrateFromVersion(version, true);
                 break;
         }
 
         initSettings(MainConfig.getInstance().getPrefix(), MainConfig.getInstance().getDatabase());
     }
+
+
 
     public MigrationManager getMigrationManager() {
         return migrationManager;
@@ -555,5 +559,13 @@ public class Database implements DatabaseWrapper {
                         .execute();
             }
         }.executeUpdate();
+    }
+
+    public void shutdown() {
+        try {
+            this.connectionFactory.shutdown();
+        } catch (Exception e) {
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
+        }
     }
 }

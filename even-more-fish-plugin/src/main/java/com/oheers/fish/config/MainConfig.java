@@ -43,7 +43,7 @@ public class MainConfig extends ConfigBase {
 
 
     public boolean isDatabaseOnline() {
-        return databaseEnabled() && !EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2();
+        return databaseEnabled() && !EvenMoreFish.getInstance().getDatabase().getMigrationManager().usingV2();
     }
 
     public boolean isCompetitionUnique() {
