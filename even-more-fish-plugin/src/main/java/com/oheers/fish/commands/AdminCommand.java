@@ -86,7 +86,7 @@ public class AdminCommand {
                         ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes((sender, arguments) -> {
-                    final Fish fish = (Fish) arguments.get("fish");
+                    final Fish fish = arguments.getUnchecked("fish");
                     if (fish == null) {
                         return;
                     }
@@ -131,10 +131,10 @@ public class AdminCommand {
                         RarityArgument.create().setOptional(true)
                 )
                 .executes((sender, args) -> {
-                    String listTarget = (String) Objects.requireNonNull(args.get("listTarget"));
+                    String listTarget = Objects.requireNonNull(args.getUnchecked("listTarget"));
                     switch (listTarget) {
                         case "fish" -> {
-                            final Rarity rarity = (Rarity) args.get("rarity");
+                            final Rarity rarity = args.getUnchecked("rarity");
                             if (rarity == null) {
                                 // TODO add "invalid rarity" message.
                                 sender.sendMessage("Rarity is invalid.");
@@ -212,7 +212,7 @@ public class AdminCommand {
                         ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes((sender, args) -> {
-                    final Bait bait = (Bait) Objects.requireNonNull(args.get("bait"));
+                    final Bait bait = Objects.requireNonNull(args.getUnchecked("bait"));
                     final int quantity = (int) args.getOptional("quantity").orElse(1);
                     final Player target = (Player) args.getOptional("target").orElseGet(() -> {
                         if (sender instanceof Player p) {
@@ -442,8 +442,8 @@ public class AdminCommand {
                         new IntegerArgument("duration", 1).setOptional(true)
                 )
                 .executes((sender, arguments) -> {
-                    final String id = (String) Objects.requireNonNull(arguments.get("competitionId"));
-                    final Integer duration = (Integer) arguments.get("duration");
+                    final String id = Objects.requireNonNull(arguments.getUnchecked("competitionId"));
+                    final Integer duration = arguments.getUnchecked("duration");
                     if (Competition.isActive()) {
                         ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
                         return;

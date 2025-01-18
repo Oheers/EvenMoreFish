@@ -13,7 +13,7 @@ public class FishArgument {
 
     public static Argument<Fish> create() {
         return new CustomArgument<>(new StringArgument("fish"), info -> {
-            Rarity rarity = (Rarity) info.previousArgs().get("rarity");
+            Rarity rarity = info.previousArgs().getUnchecked("rarity");
             if (rarity == null) {
                 throw CustomArgument.CustomArgumentException.fromString("Could not find a previous RarityArgument!");
             }
@@ -29,7 +29,7 @@ public class FishArgument {
             return fish;
         }).replaceSuggestions(ArgumentHelper.getAsyncSuggestions(
                 info -> {
-                    Rarity rarity = (Rarity) info.previousArgs().get("rarity");
+                    Rarity rarity = info.previousArgs().getUnchecked("rarity");
                     if (rarity == null) {
                         return new String[0];
                     }

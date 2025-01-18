@@ -133,7 +133,7 @@ public class EMFCommand {
                         ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes((sender, args) -> {
-                    Player player = (Player) args.get("target");
+                    Player player = args.getUnchecked("target");
                     if (player == null){
                         if (!(sender instanceof Player p)) {
                             ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
