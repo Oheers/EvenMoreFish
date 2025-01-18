@@ -67,7 +67,7 @@ dependencyResolutionManagement {
 
             library("vanishchecker", "uk.firedev:VanishChecker:1.0.4")
 
-            library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
+            library("commandapi", "dev.jorel:commandapi-bukkit-shade:9.7.0")
             library("inventorygui", "de.themoep:inventorygui:1.6.4-SNAPSHOT")
 
             plugin("shadow", "com.gradleup.shadow").version("8.3.3")

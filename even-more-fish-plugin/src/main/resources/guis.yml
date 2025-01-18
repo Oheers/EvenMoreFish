@@ -55,7 +55,7 @@ main-menu:
     - "126515621"
     - "23     32"
     - "4 t s h 4"
-    - "4 c j b 4"
+    - "4  j b  4"
     - "23     32"
     - "1265x5621"
   # This should be the most used filler item.
@@ -108,14 +108,6 @@ main-menu:
       - "&f&m                                 "
     character: "b"
     click-action: "open-baits-menu"
-
-  coming-soon-competitions:
-    item:
-      material: barrier
-      displayname: "&cComing Soon!"
-    lore:
-      - "&7This menu is still being worked on!"
-    character: "c"
 
   coming-soon-journal:
     item:
@@ -292,4 +284,4 @@ apply-baits-menu:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 4
+config-version: 5

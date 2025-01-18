@@ -70,9 +70,7 @@ dependencies {
         exclude("com.sk89q.worldguard", "worldguard-bukkit")
     }
     compileOnly(libs.aura.skills)
-    compileOnly(libs.aurelium.skills) {
-        exclude(libs.acf.get().group, libs.acf.get().name)
-    }
+    compileOnly(libs.aurelium.skills)
 
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo) {
@@ -84,7 +82,7 @@ dependencies {
     implementation(libs.nbt.api)
     implementation(libs.bstats)
     implementation(libs.universalscheduler)
-    implementation(libs.acf)
+    implementation(libs.commandapi)
     implementation(libs.inventorygui)
     implementation(libs.vanishchecker)
     implementation(libs.boostedyaml)
@@ -128,13 +126,6 @@ bukkit {
     )
     loadBefore = listOf("AntiAC")
     apiVersion = "1.18"
-
-    commands {
-        register("evenmorefish") {
-            usage = "/<command> [name]"
-            aliases = listOf("emf")
-        }
-    }
 
     permissions {
         register("emf.*") {
@@ -250,12 +241,10 @@ tasks {
         relocate("de.tr7zw.changeme.nbtapi", "com.oheers.fish.utils.nbtapi")
         relocate("org.bstats", "com.oheers.fish.libs.bstats")
         relocate("com.github.Anon8281.universalScheduler", "com.oheers.fish.libs.universalScheduler")
-        relocate("co.aikar.commands", "com.oheers.fish.libs.acf")
-        relocate("co.aikar.locales", "com.oheers.fish.libs.locales")
         relocate("de.themoep.inventorygui", "com.oheers.fish.libs.inventorygui")
         relocate("uk.firedev.vanishchecker", "com.oheers.fish.libs.vanishchecker")
         relocate("dev.dejvokep.boostedyaml", "com.oheers.fish.libs.boostedyaml")
-
+        relocate("dev.jorel.commandapi", "com.oheers.fish.libs.commandapi")
     }
 
     compileJava {

@@ -165,6 +165,10 @@ give-straight-to-inventory: false
 
 # Customize the plugin's command. Requires a server restart to take effect.
 command:
+  # The /emf admin shortcut command
+  admin-shortcut:
+    enabled: true
+    name: "emfa"
   # The plugin's main command
   main: "emf"
   # Aliases for the main command
@@ -185,4 +189,4 @@ biome-sets:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 5
+config-version: 6

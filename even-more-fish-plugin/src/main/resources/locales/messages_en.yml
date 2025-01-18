@@ -150,6 +150,7 @@ help-admin:
   addons: "[noPrefix]Display all addons."
   rewardtypes: "[noPrefix]Display all reward types."
   version: "[noPrefix]Displays plugin information."
+  rawitem: "[noPrefix]Displays the item in your main hand as raw NBT."
 
 # Shown when the emf %emf_competition_place_player_*% placeholder requests a position in the leaderboard that doesn't exist
 no-player-in-place: "Start fishing to take this place"
@@ -251,4 +252,4 @@ admin:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 8
+config-version: 9

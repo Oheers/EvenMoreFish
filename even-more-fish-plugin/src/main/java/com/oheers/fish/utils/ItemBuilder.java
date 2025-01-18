@@ -4,7 +4,6 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -18,7 +18,7 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -265,7 +265,7 @@ public class Competition {
         }
     }
 
-    public void sendConsoleLeaderboard(ConsoleCommandSender console) {
+    public void sendConsoleLeaderboard(CommandSender console) {
         if (!isActive()) {
             ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(console);
             return;
