@@ -30,7 +30,10 @@ public class CompetitionQueue {
         fileMap.clear();
 
         File compsFolder = new File(EvenMoreFish.getInstance().getDataFolder(), "competitions");
-        loadDefaultFiles(compsFolder);
+        if (EvenMoreFish.getInstance().isFirstLoad()) {
+            loadDefaultFiles(compsFolder);
+        }
+        regenExampleFile(compsFolder);
         List<File> competitionFiles = FileUtil.getFilesInDirectory(compsFolder, true, true);
 
         if (competitionFiles.isEmpty()) {
@@ -67,15 +70,17 @@ public class CompetitionQueue {
         });
     }
 
-    private void loadDefaultFiles(@NotNull File targetDirectory) {
-        // Delete _example.yml file for regeneration
+    private void regenExampleFile(@NotNull File targetDirectory) {
         new File(targetDirectory, "_example.yml").delete();
-
         FileUtil.loadFileOrResource(targetDirectory, "_example.yml", "competitions/_example.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "default-main.yml", "competitions/default-main.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "default-sunday1.yml", "competitions/default-sunday1.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "default-sunday2.yml", "competitions/default-sunday2.yml", EvenMoreFish.getInstance());
-        FileUtil.loadFileOrResource(targetDirectory, "default-weekend.yml", "competitions/default-weekend.yml", EvenMoreFish.getInstance());
+    }
+
+    private void loadDefaultFiles(@NotNull File targetDirectory) {
+        EvenMoreFish.getInstance().getLogger().info("Loading default competition configs.");
+        FileUtil.loadFileOrResource(targetDirectory, "main.yml", "competitions/main.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "sunday1.yml", "competitions/sunday1.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "sunday2.yml", "competitions/sunday2.yml", EvenMoreFish.getInstance());
+        FileUtil.loadFileOrResource(targetDirectory, "weekend.yml", "competitions/weekend.yml", EvenMoreFish.getInstance());
     }
 
     public TreeMap<String, CompetitionFile> getFileMap() {

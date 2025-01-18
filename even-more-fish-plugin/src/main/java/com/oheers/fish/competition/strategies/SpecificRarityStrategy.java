@@ -2,13 +2,13 @@ package com.oheers.fish.competition.strategies;
 
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class SpecificRarityStrategy implements CompetitionStrategy {
@@ -26,8 +27,8 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
 
     @Override
     public void applyToLeaderboard(Fish fish, Player fisher, Leaderboard leaderboard, Competition competition) {
-        if (competition.getSelectedRarity() != null &&
-                !fish.getRarity().getValue().equals(competition.getSelectedRarity().getValue())) {
+        Rarity compRarity = competition.getSelectedRarity();
+        if (compRarity != null && !fish.getRarity().getId().equals(compRarity.getId())) {
             return; // Fish doesn't match the required rarity
         }
 
@@ -48,20 +49,21 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getBeginMessage(@NotNull Competition competition, CompetitionType type) {
+    public AbstractMessage getBeginMessage(@NotNull Competition competition, CompetitionType type) {
         return getTypeFormat(competition, ConfigMessage.COMPETITION_START);
     }
 
     @Override
-    public Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
-        final Message message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
+    public @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+        final AbstractMessage message = CompetitionStrategy.super.getTypeFormat(competition, configMessage);
         message.setAmount(Integer.toString(competition.getNumberNeeded()));
-        if (competition.getSelectedRarity() == null) {
+        Rarity selectedRarity = competition.getSelectedRarity();
+        if (selectedRarity == null) {
             EvenMoreFish.getInstance().getLogger().warning("Null rarity found. Please check your config files.");
             return message;
         }
-        message.setRarityColour(competition.getSelectedRarity().getColour());
-        message.setRarity(competition.getSelectedRarity().getDisplayName());
+        message.setRarityColour(selectedRarity.getColour());
+        message.setRarity(selectedRarity.getDisplayName());
 
         return message;
     }
@@ -82,7 +84,7 @@ public class SpecificRarityStrategy implements CompetitionStrategy {
                 competition.setSelectedRarity(rarity);
                 return true;
             }
-            competition.setSelectedRarity(FishManager.getInstance().getRandomWeightedRarity(null, 0, null, FishManager.getInstance().getRarityMap().keySet()));
+            competition.setSelectedRarity(FishManager.getInstance().getRandomWeightedRarity(null, 0, null, Set.copyOf(FishManager.getInstance().getRarityMap().values())));
             return true;
         } catch (IllegalArgumentException exception) {
             EvenMoreFish.getInstance()

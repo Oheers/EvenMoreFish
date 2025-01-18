@@ -1,9 +1,9 @@
 package com.oheers.fish.competition;
 
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -42,9 +42,9 @@ public interface CompetitionStrategy {
      * @param type        The type of competition.
      * @return The begin message for the competition.
      */
-    default Message getBeginMessage(Competition competition, CompetitionType type) {
-        Message message = new Message(ConfigMessage.COMPETITION_START);
-        message.setCompetitionType(type);
+    default AbstractMessage getBeginMessage(Competition competition, CompetitionType type) {
+        AbstractMessage message = ConfigMessage.COMPETITION_START.getMessage();
+        message.setCompetitionType(type.getTypeVariable().getMessage().getLegacyMessage());
         return message;
     }
 
@@ -55,9 +55,9 @@ public interface CompetitionStrategy {
      * @param entry   The competition entry to get the leaderboard information from.
      * @return The single console leaderboard message.
      */
-    default Message getSingleConsoleLeaderboardMessage(@NotNull Message message, @NotNull CompetitionEntry entry) {
+    default AbstractMessage getSingleConsoleLeaderboardMessage(@NotNull AbstractMessage message, @NotNull CompetitionEntry entry) {
         //todo temp, since this really isn't supposed to be the case, but was the original code. idk
-        message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+        message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH.getMessage());
         message.setAmount(Integer.toString((int) entry.getValue()));
         return message;
     }
@@ -69,9 +69,9 @@ public interface CompetitionStrategy {
      * @param entry   The competition entry to get the leaderboard information from.
      * @return The single player leaderboard message.
      */
-    default Message getSinglePlayerLeaderboard(@NotNull Message message, @NotNull CompetitionEntry entry) {
+    default AbstractMessage getSinglePlayerLeaderboard(@NotNull AbstractMessage message, @NotNull CompetitionEntry entry) {
         //todo temp, since this really isn't supposed to be the case, but was the original code. idk
-        message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH);
+        message.setMessage(ConfigMessage.LEADERBOARD_MOST_FISH.getMessage());
         message.setAmount(Integer.toString((int) entry.getValue()));
         return message;
     }
@@ -84,11 +84,11 @@ public interface CompetitionStrategy {
      * @param configMessage The configmessage to use. Must have the {type} variable in it.
      * @return A message object that's pre-set to be compatible for the time remaining.
      */
-    default Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
-        Message message = new Message(configMessage);
+    default @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+        AbstractMessage message = configMessage.getMessage();
         message.setTimeFormatted(FishUtils.timeFormat(competition.getTimeLeft()));
         message.setTimeRaw(FishUtils.timeRaw(competition.getTimeLeft()));
-        message.setCompetitionType(competition.getCompetitionType());
+        message.setCompetitionType(competition.getCompetitionType().getTypeVariable().getMessage().getLegacyMessage());
         return message;
     }
 

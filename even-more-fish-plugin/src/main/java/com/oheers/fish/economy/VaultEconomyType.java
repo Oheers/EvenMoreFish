@@ -1,10 +1,10 @@
 package com.oheers.fish.economy;
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.economy.EconomyType;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -95,12 +95,12 @@ public class VaultEconomyType implements EconomyType {
         double worth = prepareValue(totalWorth, applyMultiplier);
         String display = MainConfig.getInstance().getEconomyDisplay(this);
         if (display != null) {
-            Message message = new Message(display);
+            AbstractMessage message = EvenMoreFish.getAdapter().createMessage(display);
             message.setVariable("{amount}", String.valueOf(worth));
-            return message.getRawMessage();
+            return message.getLegacyMessage();
         }
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(MainConfig.getInstance().getDecimalLocale());
-        DecimalFormat format = new DecimalFormat(new Message(ConfigMessage.SELL_PRICE_FORMAT).getRawMessage(), symbols);
+        DecimalFormat format = new DecimalFormat(ConfigMessage.SELL_PRICE_FORMAT.getMessage().getLegacyMessage(), symbols);
         return format.format(worth);
     }
 

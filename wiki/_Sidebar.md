@@ -8,11 +8,11 @@ Welcome to the EvenMoreFish Wiki.
 * [Economy](https://github.com/Oheers/EvenMoreFish/wiki/Economy)
 * [Competition Types](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Types)
 * [Competition Configs](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Configs)
-* [Fish.yml](https://github.com/Oheers/EvenMoreFish/wiki/Fish.yml)
 * [Rarities](https://github.com/Oheers/EvenMoreFish/wiki/Rarities)
 * [Messages.yml](https://github.com/Oheers/EvenMoreFish/wiki/Messages.yml)
+* [GUI Action Types](https://github.com/Oheers/EvenMoreFish/wiki/GUI-Actions)
 * [Requirements](https://github.com/Oheers/EvenMoreFish/wiki/Requirements)
-  * [Biome Sets](https://github.com/Oheers/EvenMoreFish/wiki/Biome-Sets)
+* [Biome Sets](https://github.com/Oheers/EvenMoreFish/wiki/Biome-Sets)
 ### Additional Features
 * [Reward Types](https://github.com/Oheers/EvenMoreFish/wiki/Reward-Types)
 * [Addons](https://github.com/Oheers/EvenMoreFish/wiki/Addons)

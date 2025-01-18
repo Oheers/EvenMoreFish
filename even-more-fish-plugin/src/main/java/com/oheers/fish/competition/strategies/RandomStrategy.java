@@ -2,13 +2,13 @@ package com.oheers.fish.competition.strategies;
 
 
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.Fish;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ public class RandomStrategy implements CompetitionStrategy {
     public boolean begin(Competition competition) {
         competition.setCompetitionType(getRandomType());
         this.randomType = competition.getCompetitionType();
-        Competition.setOriginallyRandom(true);
+        competition.setOriginallyRandom(true);
         return true;
     }
 
@@ -29,22 +29,22 @@ public class RandomStrategy implements CompetitionStrategy {
     }
 
     @Override
-    public Message getSingleConsoleLeaderboardMessage(@NotNull Message message, @NotNull CompetitionEntry entry) {
+    public AbstractMessage getSingleConsoleLeaderboardMessage(@NotNull AbstractMessage message, @NotNull CompetitionEntry entry) {
         return randomType.getStrategy().getSingleConsoleLeaderboardMessage(message, entry);
     }
 
     @Override
-    public Message getBeginMessage(Competition competition, CompetitionType type) {
+    public AbstractMessage getBeginMessage(Competition competition, CompetitionType type) {
         return randomType.getStrategy().getBeginMessage(competition, type);
     }
 
     @Override
-    public Message getSinglePlayerLeaderboard(@NotNull Message message, @NotNull CompetitionEntry entry) {
+    public AbstractMessage getSinglePlayerLeaderboard(@NotNull AbstractMessage message, @NotNull CompetitionEntry entry) {
         return randomType.getStrategy().getSinglePlayerLeaderboard(message, entry);
     }
 
     @Override
-    public Message getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
+    public @NotNull AbstractMessage getTypeFormat(@NotNull Competition competition, ConfigMessage configMessage) {
         return randomType.getStrategy().getTypeFormat(competition, configMessage);
     }
 

@@ -3,7 +3,6 @@ package com.oheers.fish.gui;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.gui.guis.BaitsGUI;
 import com.oheers.fish.gui.guis.EMFGUI;
 import com.oheers.fish.gui.guis.MainMenuGUI;
@@ -22,7 +21,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,13 +107,13 @@ public class GUIUtils {
         if (section == null) {
             return new InventoryGui(
                     EvenMoreFish.getInstance(),
-                    new Message("&cBroken GUI! Please tell an admin!").getRawMessage(),
+                    EvenMoreFish.getAdapter().createMessage("&cBroken GUI! Please tell an admin!").getLegacyMessage(),
                     new String[0]
             );
         }
         return new InventoryGui(
                 EvenMoreFish.getInstance(),
-                new Message(section.getString("title", "EvenMoreFish Inventory")).getRawMessage(),
+                EvenMoreFish.getAdapter().createMessage(section.getString("title", "EvenMoreFish Inventory")).getLegacyMessage(),
                 section.getStringList("layout").toArray(new String[0])
         );
     }
@@ -123,12 +121,7 @@ public class GUIUtils {
     public static ItemStack getFillerItem(@Nullable String materialName, @NotNull Material defaultMaterial) {
         Material material = ItemUtils.getMaterial(materialName, defaultMaterial);
         ItemStack stack = new ItemStack(material);
-        ItemMeta meta = stack.getItemMeta();
-        if (meta == null) {
-            return stack;
-        }
-        meta.setDisplayName("");
-        stack.setItemMeta(meta);
+        FishUtils.editMeta(stack, meta -> meta.setDisplayName(""));
         return stack;
     }
 

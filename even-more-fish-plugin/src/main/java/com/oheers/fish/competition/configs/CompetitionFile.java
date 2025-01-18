@@ -2,11 +2,11 @@ package com.oheers.fish.competition.configs;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.competition.Bar;
 import com.oheers.fish.competition.CompetitionType;
 import com.oheers.fish.config.ConfigBase;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
@@ -153,7 +153,7 @@ public class CompetitionFile extends ConfigBase {
      * @return The number of fish needed for SPECIFIC_* competition types.
      */
     public int getNumberNeeded() {
-        return Math.max(1, getConfig().getInt("number-needed"));
+        return Math.max(1, getConfig().getInt("number-needed", 1));
     }
 
     /**
@@ -174,7 +174,7 @@ public class CompetitionFile extends ConfigBase {
      * @return The colours to show for each winning position, if the {pos_colour} variable is used.
      */
     public @NotNull List<String> getPositionColours() {
-        return getConfig().getStringList("leaderboard.position-colours", List.of("&6", "&e", "&7", "&7", "&8"));
+        return getConfig().getStringList("leaderboard.position-colours", List.of("&6", "&e", "&7", "&7", "&#888888"));
     }
 
     public @NotNull List<Long> getAlertTimes() {
@@ -254,9 +254,9 @@ public class CompetitionFile extends ConfigBase {
     /**
      * @return The prefix for this competition's bossbar.
      */
-    public Message getBossbarPrefix() {
+    public AbstractMessage getBossbarPrefix() {
         String prefix = getConfig().getString("bossbar-prefix", "&a&lFishing Contest: ");
-        return new Message(prefix);
+        return EvenMoreFish.getAdapter().createMessage(prefix);
     }
 
     /**
@@ -266,7 +266,7 @@ public class CompetitionFile extends ConfigBase {
         Bar bar = new Bar();
         bar.setShouldShow(shouldShowBossbar());
         bar.setColour(getBossbarColour());
-        bar.setPrefix(getBossbarPrefix().getRawMessage());
+        bar.setPrefix(getBossbarPrefix().getLegacyMessage());
         return bar;
     }
 
@@ -274,7 +274,7 @@ public class CompetitionFile extends ConfigBase {
      * @return The amount of players required for this competition to start.
      */
     public int getPlayersNeeded() {
-        return Math.max(1, getConfig().getInt("minimum-players"));
+        return Math.max(1, getConfig().getInt("minimum-players", 5));
     }
 
     /**

@@ -2,16 +2,12 @@ package com.oheers.fish.adapter;
 
 import com.oheers.fish.api.adapter.PlatformAdapter;
 import com.oheers.fish.api.plugin.EMFPlugin;
-import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class SpigotAdapter extends PlatformAdapter {
-
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})");
-    private static final char COLOR_CHAR = '§';
 
     public SpigotAdapter() {
         super();
@@ -19,21 +15,19 @@ public class SpigotAdapter extends PlatformAdapter {
 
     @Override
     public void logLoadedMessage() {
-        EMFPlugin.getInstance().getLogger().info("Using API provided by Spigot.");
+        Logger logger = EMFPlugin.getInstance().getLogger();
+        logger.info("Using API provided by Spigot.");
+        logger.warning("Support for Spigot servers will be removed in the future in favour of Paper.");
+        logger.warning("You can download Paper here: https://papermc.io/downloads/paper");
     }
 
     @Override
-    public String translateColorCodes(@NotNull String message) {
-        Matcher matcher = HEX_PATTERN.matcher(message);
-        StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
-        while (matcher.find()) {
-            String group = matcher.group(1);
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
-                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
-                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5)
-            );
-        }
-        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+    public SpigotMessage createMessage(@NotNull String message) {
+        return new SpigotMessage(message, this);
+    }
+
+    @Override
+    public SpigotMessage createMessage(@NotNull List<String> messageList) {
+        return new SpigotMessage(messageList, this);
     }
 }

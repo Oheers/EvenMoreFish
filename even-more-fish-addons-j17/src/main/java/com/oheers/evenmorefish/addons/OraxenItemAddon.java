@@ -6,14 +6,12 @@ import com.oheers.fish.api.plugin.EMFPlugin;
 import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent;
 import io.th0rgal.oraxen.items.ItemBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
-
 public class OraxenItemAddon extends ItemAddon implements Listener {
+
     private boolean oraxenLoaded = false;
     
     @Override
@@ -40,7 +38,7 @@ public class OraxenItemAddon extends ItemAddon implements Listener {
         final ItemBuilder item = OraxenItems.getItemById(id);
 
         if (item == null) {
-            getLogger().info(() -> String.format("Could not obtain oraxen item %s", id));
+            getLogger().info(() -> String.format("Could not obtain Oraxen item %s", id));
             return null;
         }
         return item.build();
@@ -48,11 +46,11 @@ public class OraxenItemAddon extends ItemAddon implements Listener {
 
     @EventHandler
     public void onItemsLoad(OraxenItemsLoadedEvent event) {
-        getLogger().info("Detected that oraxen has finished loading all items...");
+        getLogger().info("Detected that Oraxen has finished loading all items...");
         getLogger().info("Reloading EMF.");
         this.oraxenLoaded = true;
 
-        ((EMFPlugin) Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("EvenMoreFish"))).reload(null);
+        EMFPlugin.getInstance().reload(null);
     }
 
 }

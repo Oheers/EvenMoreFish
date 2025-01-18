@@ -6,6 +6,7 @@ import com.oheers.fish.api.addons.ItemAddon;
 import org.bukkit.inventory.ItemStack;
 
 public class DenizenItemAddon extends ItemAddon {
+
     @Override
     public String getPrefix() {
         return "denizen";

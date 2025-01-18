@@ -5,13 +5,14 @@ import com.gmail.nossr50.util.player.UserManager;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.EMFFishEvent;
+import com.oheers.fish.api.adapter.AbstractMessage;
+import com.oheers.fish.baits.ApplicationResult;
 import com.oheers.fish.baits.Bait;
 import com.oheers.fish.baits.BaitNBTManager;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
@@ -33,9 +34,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
@@ -61,7 +62,7 @@ public class FishingProcessor implements Listener {
             //check if player have permssion to fish emf fishes
             if (!event.getPlayer().hasPermission(UserPerms.USE_ROD)) {
                 if (event.getState() == PlayerFishEvent.State.FISHING) {//send msg only when throw the lure
-                    new Message(ConfigMessage.NO_PERMISSION_FISHING).broadcast(event.getPlayer());
+                    ConfigMessage.NO_PERMISSION_FISHING.getMessage().send(event.getPlayer());
                 }
                 return;
             }
@@ -114,7 +115,7 @@ public class FishingProcessor implements Listener {
      *                 {@code @returns} A random fish without any bait application.
      */
     private Fish chooseNonBaitFish(Player player, Location location) {
-        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, 1, null, FishManager.getInstance().getRarityMap().keySet());
+        Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, 1, null, Set.copyOf(FishManager.getInstance().getRarityMap().values()));
         if (fishRarity == null) {
             EvenMoreFish.getInstance().getLogger().severe("Could not determine a rarity for fish for " + player.getName());
             return null;
@@ -148,17 +149,19 @@ public class FishingProcessor implements Listener {
         if (BaitFile.getInstance().getBaitCatchPercentage() > 0) {
             if (EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
                 Bait caughtBait = BaitNBTManager.randomBaitCatch();
-                Message message = new Message(ConfigMessage.BAIT_CAUGHT);
-                message.setBaitTheme(caughtBait.getTheme());
-                message.setBait(caughtBait.getName());
-                message.setPlayer(player);
-                message.broadcast(player);
+                if (caughtBait != null) {
+                    AbstractMessage message = ConfigMessage.BAIT_CAUGHT.getMessage();
+                    message.setBaitTheme(caughtBait.getTheme());
+                    message.setBait(caughtBait.getName());
+                    message.setPlayer(player);
+                    message.send(player);
 
-                return caughtBait.create(player);
+                    return caughtBait.create(player);
+                }
             }
         }
 
-        Fish fish;
+        Fish fish = null;
 
         if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !Competition.isActive())) {
             Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
@@ -168,23 +171,28 @@ public class FishingProcessor implements Listener {
                 fish = applyingBait.chooseFish(player, location);
                 if (fish.isWasBaited()) {
                     fish.setFisherman(player.getUniqueId());
+                    // Lots of nesting here, but I cannot think of a better way to do this.
                     try {
-                        ItemMeta newMeta = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1).getFishingRod().getItemMeta();
-                        fishingRod.setItemMeta(newMeta);
-                        EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
-                    } catch (MaxBaitsReachedException | MaxBaitReachedException exception) {
+                        ApplicationResult result = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1);
+                        if (result != null) {
+                            ItemStack newFishingRod = result.getFishingRod();
+                            if (newFishingRod != null) {
+                                fishingRod.setItemMeta(newFishingRod.getItemMeta());
+                                EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
+                            }
+                        }
+                    } catch (MaxBaitsReachedException | MaxBaitReachedException | NullPointerException exception) {
                         EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
                     }
-                } else {
-                    fish = chooseNonBaitFish(player, location);
                 }
             }
-        } else {
-            fish = chooseNonBaitFish(player, location);
         }
 
         if (fish == null) {
-            return null;
+            fish = chooseNonBaitFish(player, location);
+            if (fish == null) {
+                return null;
+            }
         }
 
         fish.init();
@@ -200,10 +208,9 @@ public class FishingProcessor implements Listener {
 
         if (!fish.isSilent()) {
             String length = FishUtils.DECIMAL_FORMAT.format(fish.getLength());
-            EvenMoreFish.getInstance().getLogger().warning("Fish Length:" + fish.getLength());
-            String rarity = FishUtils.translateColorCodes(fish.getRarity().getValue());
+            String rarity = FishUtils.translateColorCodes(fish.getRarity().getId());
 
-            Message message = new Message(ConfigMessage.FISH_CAUGHT);
+            AbstractMessage message = ConfigMessage.FISH_CAUGHT.getMessage();
             message.setPlayer(player);
             message.setRarityColour(fish.getRarity().getColour());
             message.setRarity(rarity);
@@ -217,13 +224,13 @@ public class FishingProcessor implements Listener {
 
 
             if (fish.getLength() == -1) {
-                message.setMessage(ConfigMessage.FISH_LENGTHLESS_CAUGHT);
+                message.setMessage(ConfigMessage.FISH_LENGTHLESS_CAUGHT.getMessage());
             }
 
             if (fish.getRarity().getAnnounce()) {
                 FishUtils.broadcastFishMessage(message, player, false);
             } else {
-                message.broadcast(player);
+                message.send(player);
             }
         }
 
@@ -263,17 +270,18 @@ public class FishingProcessor implements Listener {
     }
 
     private void competitionCheck(Fish fish, Player fisherman, Location location) {
-        if (Competition.isActive()) {
-            List<World> competitionWorlds = EvenMoreFish.getInstance().getActiveCompetition().getCompetitionFile().getRequiredWorlds();
-            if (!competitionWorlds.isEmpty()) {
-                if (location.getWorld() != null) {
-                    if (!competitionWorlds.contains(location.getWorld())) {
-                        return;
-                    }
+        Competition active = Competition.getCurrentlyActive();
+        if (active == null) {
+            return;
+        }
+        List<World> competitionWorlds = active.getCompetitionFile().getRequiredWorlds();
+        if (!competitionWorlds.isEmpty()) {
+            if (location.getWorld() != null) {
+                if (!competitionWorlds.contains(location.getWorld())) {
+                    return;
                 }
             }
-
-            EvenMoreFish.getInstance().getActiveCompetition().applyToLeaderboard(fish, fisherman);
         }
+        active.applyToLeaderboard(fish, fisherman);
     }
 }

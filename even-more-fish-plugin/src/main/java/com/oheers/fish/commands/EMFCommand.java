@@ -1,14 +1,12 @@
 package com.oheers.fish.commands;
 
-import co.aikar.commands.BaseCommand;
-import co.aikar.commands.CommandHelp;
-import co.aikar.commands.annotation.*;
-import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.oheers.fish.EvenMoreFish;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.economy.Economy;
+import com.oheers.fish.commands.arguments.ArgumentHelper;
 import com.oheers.fish.competition.Competition;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.config.messages.PrefixType;
 import com.oheers.fish.gui.guis.ApplyBaitsGUI;
 import com.oheers.fish.gui.guis.MainMenuGUI;
@@ -16,112 +14,188 @@ import com.oheers.fish.gui.guis.SellGUI;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellHelper;
+import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 
-@CommandAlias("%main")
-public class EMFCommand extends BaseCommand {
+public class EMFCommand {
 
-    @Subcommand("next")
-    @Description("%desc_general_next")
-    @CommandPermission(UserPerms.NEXT)
-    public void onNext(final CommandSender sender) {
-        Message message = Competition.getNextCompetitionMessage();
-        message.usePrefix(PrefixType.DEFAULT);
-        message.broadcast(sender);
+    private final Map<String, String> commandUsages = new HashMap<>();
+
+    private final CommandAPICommand command = new CommandAPICommand(MainConfig.getInstance().getMainCommandName())
+            .withAliases(MainConfig.getInstance().getMainCommandAliases().toArray(String[]::new))
+            .withSubcommands(
+                    getNext(),
+                    getToggle(),
+                    getGui(),
+                    getHelp(),
+                    getTop(),
+                    getShop(),
+                    getSellAll(),
+                    getApplyBaits(),
+                    new AdminCommand("admin").getCommand()
+            )
+            .executes(info -> {
+                sendHelpMessage(info.sender());
+            });
+
+    public CommandAPICommand getCommand() {
+        return command;
     }
 
-    @Subcommand("toggle")
-    @Description("%desc_general_toggle")
-    @CommandPermission(UserPerms.TOGGLE)
-    public void onToggle(final Player player) {
-        EvenMoreFish.getInstance().performFishToggle(player);
+    private CommandAPICommand getNext() {
+        commandUsages.putIfAbsent(
+                "next",
+                ConfigMessage.HELP_GENERAL_NEXT.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("next")
+                .withPermission(UserPerms.NEXT)
+                .executes(info -> {
+                    AbstractMessage message = Competition.getNextCompetitionMessage();
+                    message.prependMessage(PrefixType.DEFAULT.getPrefix());
+                    message.send(info.sender());
+                });
     }
 
-    @Subcommand("gui")
-    @Description("%desc_general_gui")
-    @CommandPermission(UserPerms.GUI)
-    public void onGui(final Player player) {
-        new MainMenuGUI(player).open();
+    private CommandAPICommand getToggle() {
+        commandUsages.putIfAbsent(
+                "toggle",
+                ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("toggle")
+                .withPermission(UserPerms.TOGGLE)
+                .executesPlayer(info -> {
+                    EvenMoreFish.getInstance().performFishToggle(info.sender());
+                });
     }
 
-    @Default
-    @HelpCommand
-    @CommandPermission(UserPerms.HELP)
-    @Description("%desc_general_help")
-    public void onHelp(final CommandHelp help, final CommandSender sender) {
-        new Message(ConfigMessage.HELP_GENERAL_TITLE).broadcast(sender);
-        help.getHelpEntries().forEach(helpEntry -> {
-            Message helpMessage = new Message(ConfigMessage.HELP_FORMAT);
-            helpMessage.setVariable("{command}", "/" + helpEntry.getCommand());
-            helpMessage.setVariable("{description}", helpEntry.getDescription());
-            helpMessage.broadcast(sender);
-        });
+    private CommandAPICommand getGui() {
+        commandUsages.putIfAbsent(
+                "gui",
+                ConfigMessage.HELP_GENERAL_GUI.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("gui")
+                .withPermission(UserPerms.GUI)
+                .executesPlayer(info -> {
+                    new MainMenuGUI(info.sender()).open();
+                });
     }
 
-    @Subcommand("top")
-    @CommandPermission(UserPerms.TOP)
-    @Description("%desc_general_top")
-    public void onTop(final CommandSender sender) {
-        if (!Competition.isActive()) {
-            new Message(ConfigMessage.NO_COMPETITION_RUNNING).broadcast(sender);
-            return;
-        }
-
-        if (sender instanceof Player player) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendPlayerLeaderboard(player);
-            return;
-        }
-
-        if (sender instanceof ConsoleCommandSender consoleCommandSender) {
-            EvenMoreFish.getInstance().getActiveCompetition().sendConsoleLeaderboard(consoleCommandSender);
-        }
+    private CommandAPICommand getHelp() {
+        commandUsages.putIfAbsent(
+                "help",
+                ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("help")
+                .withPermission(UserPerms.HELP)
+                .executes(info -> {
+                    sendHelpMessage(info.sender());
+                });
     }
 
-    @Subcommand("shop")
-    @CommandPermission(UserPerms.SHOP)
-    @Description("%desc_general_shop")
-    public void onShop(final CommandSender sender, @Optional final OnlinePlayer onlinePlayer) {
+    private CommandAPICommand getTop() {
+        commandUsages.putIfAbsent(
+                "top",
+                ConfigMessage.HELP_GENERAL_TOP.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("top")
+                .withPermission(UserPerms.TOP)
+                .executesPlayer(info -> {
+                    Competition active = Competition.getCurrentlyActive();
+                    if (active == null) {
+                        ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(info.sender());
+                        return;
+                    }
+                    active.sendPlayerLeaderboard(info.sender());
+                })
+                .executes(info -> {
+                    Competition active = Competition.getCurrentlyActive();
+                    if (active == null) {
+                        ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(info.sender());
+                        return;
+                    }
+                    active.sendConsoleLeaderboard(info.sender());
+                });
+    }
+
+    private CommandAPICommand getShop() {
+        commandUsages.putIfAbsent(
+                "shop",
+                ConfigMessage.HELP_GENERAL_SHOP.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("shop")
+                .withPermission(UserPerms.SHOP)
+                .withArguments(
+                        ArgumentHelper.getPlayerArgument("target").setOptional(true)
+                )
+                .executes((sender, args) -> {
+                    Player player = (Player) args.get("target");
+                    if (player == null){
+                        if (!(sender instanceof Player p)) {
+                            ConfigMessage.ADMIN_CANT_BE_CONSOLE.getMessage().send(sender);
+                            return;
+                        }
+                        player = p;
+                    }
+                    if (!checkEconomy(player)) {
+                        return;
+                    }
+                    if (sender == player) {
+                        new SellGUI(player, SellGUI.SellState.NORMAL, null).open();
+                        return;
+                    }
+                    if (!sender.hasPermission(AdminPerms.ADMIN)) {
+                        ConfigMessage.NO_PERMISSION.getMessage().send(sender);
+                        return;
+                    }
+                    new SellGUI(player, SellGUI.SellState.NORMAL, null).open();
+                    AbstractMessage message = ConfigMessage.ADMIN_OPEN_FISH_SHOP.getMessage();
+                    message.setPlayer(player);
+                    message.send(sender);
+                });
+    }
+
+    private CommandAPICommand getSellAll() {
+        commandUsages.putIfAbsent(
+                "sellall",
+                ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("sellall")
+                .withPermission(UserPerms.SELL_ALL)
+                .executesPlayer(info -> {
+                    Player player = info.sender();
+                    if (checkEconomy(player)) {
+                        new SellHelper(player.getInventory(), player).sellFish();
+                    }
+                });
+    }
+
+    private CommandAPICommand getApplyBaits() {
+        commandUsages.putIfAbsent(
+                "applybaits",
+                ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getLegacyMessage()
+        );
+        return new CommandAPICommand("applybaits")
+                .withPermission(UserPerms.APPLYBAITS)
+                .executesPlayer(info -> {
+                    new ApplyBaitsGUI(info.sender(), null).open();
+                });
+    }
+
+    private void sendHelpMessage(@NotNull CommandSender sender) {
+        HelpMessageBuilder.create(commandUsages).sendMessage(sender);
+    }
+
+    private boolean checkEconomy(@NotNull CommandSender sender) {
         if (!Economy.getInstance().isEnabled()) {
-            new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender);
-            return;
+            ConfigMessage.ECONOMY_DISABLED.getMessage().send(sender);
+            return false;
         }
-
-        if (onlinePlayer == null) {
-            if (!(sender instanceof Player player)) {
-                new Message("&cYou must specify a player when running from console.").broadcast(sender);
-                return;
-            }
-            new SellGUI(player, SellGUI.SellState.NORMAL, null).open();
-            return;
-        }
-
-        if (sender.hasPermission(AdminPerms.ADMIN)) {
-            new SellGUI(onlinePlayer.player, SellGUI.SellState.NORMAL, null).open();
-            Message message = new Message(ConfigMessage.ADMIN_OPEN_FISH_SHOP);
-            message.setPlayer(onlinePlayer.player);
-            message.broadcast(sender);
-        }
-    }
-
-    @Subcommand("sellall")
-    @CommandPermission(UserPerms.SELL_ALL)
-    @Description("%desc_general_sellall")
-    public void onSellAll(final Player sender) {
-        if (!Economy.getInstance().isEnabled()) {
-            new Message(ConfigMessage.ECONOMY_DISABLED).broadcast(sender);
-            return;
-        }
-        new SellHelper(sender.getInventory(), sender).sellFish();
-    }
-
-    @Subcommand("applybaits")
-    @CommandPermission(UserPerms.APPLYBAITS)
-    @Description("%desc_general_applybaits%")
-    public void onApplyBaits(final Player sender) {
-        new ApplyBaitsGUI(sender, null).open();
+        return true;
     }
 
 }

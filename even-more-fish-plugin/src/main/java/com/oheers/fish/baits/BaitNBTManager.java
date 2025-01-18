@@ -2,8 +2,8 @@ package com.oheers.fish.baits;
 
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
+import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.config.BaitFile;
-import com.oheers.fish.config.messages.Message;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.utils.nbt.NbtKeys;
@@ -19,18 +19,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 public class BaitNBTManager {
 
     private BaitNBTManager() {
         throw new UnsupportedOperationException();
-    }
-
-    public static boolean isBaitInfinite(ItemStack fishingRod, String baitName) {
-        return BaitFile.getInstance().isBaitInfinite(baitName);
     }
 
     /**
@@ -121,9 +117,7 @@ public class BaitNBTManager {
         if (isBaitedRod(item)) {
             try {
                 if (doingLoreStuff) {
-                    ItemMeta meta = item.getItemMeta();
-                    meta.setLore(deleteOldLore(item));
-                    item.setItemMeta(meta);
+                    FishUtils.editMeta(item, meta -> meta.setLore(deleteOldLore(item)));
                 }
             } catch (IndexOutOfBoundsException exception) {
                 EvenMoreFish.getInstance()
@@ -138,7 +132,7 @@ public class BaitNBTManager {
 
             for (String baitName : baitList) {
                 if (baitName.split(":")[0].equals(bait.getName())) {
-                    if (isBaitInfinite(item, bait.getName())) {
+                    if (bait.isInfinite()) {
                         combined.append(baitName.split(":")[0]).append(":∞,");
                     } else {
                         int newQuantity = Integer.parseInt(baitName.split(":")[1]) + quantity;
@@ -164,9 +158,7 @@ public class BaitNBTManager {
                 if (getNumBaitsApplied(item) >= BaitFile.getInstance().getMaxBaits()) {
                     // the lore's been taken out, we're not going to be doing anymore here, so we're just re-adding it now.
                     if (doingLoreStuff) {
-                        ItemMeta rodMeta = item.getItemMeta();
-                        rodMeta.setLore(newApplyLore(item));
-                        item.setItemMeta(rodMeta);
+                        FishUtils.editMeta(item, meta -> meta.setLore(newApplyLore(item)));
                     }
                     throw new MaxBaitsReachedException("Max baits reached.", new ApplicationResult(item, cursorModifier.get()));
                 }
@@ -209,9 +201,7 @@ public class BaitNBTManager {
         }
 
         if (doingLoreStuff && !combined.isEmpty()) {
-            ItemMeta meta = item.getItemMeta();
-            meta.setLore(newApplyLore(item));
-            item.setItemMeta(meta);
+            FishUtils.editMeta(item, meta -> meta.setLore(newApplyLore(item)));
         }
 
         if (maxBait.get()) {
@@ -228,8 +218,8 @@ public class BaitNBTManager {
      * @param fishingRod The fishing rod.
      * @return A random bait applied to the fishing rod.
      */
-    public static Bait randomBaitApplication(ItemStack fishingRod) {
-        if (fishingRod.getItemMeta() == null) {
+    public static @Nullable Bait randomBaitApplication(ItemStack fishingRod) {
+        if (fishingRod == null || fishingRod.getItemMeta() == null) {
             return null;
         }
 
@@ -245,12 +235,12 @@ public class BaitNBTManager {
 
         }
 
-        double totalWeight = 0;
-
-        // Weighted random logic (nabbed from stackoverflow)
-        for (Bait bait : baitList) {
-            totalWeight += (bait.getApplicationWeight());
+        // Fix IndexOutOfBoundsException caused by the list being empty.
+        if (baitList.isEmpty()) {
+            return null;
         }
+
+        double totalWeight = baitList.stream().mapToDouble(Bait::getApplicationWeight).sum();
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < baitList.size() - 1; ++idx) {
@@ -259,13 +249,7 @@ public class BaitNBTManager {
                 break;
             }
         }
-
-        try {
-            return baitList.get(idx);
-        } catch (IndexOutOfBoundsException exception) {
-            EvenMoreFish.getInstance().getLogger().log(Level.WARNING, "Could not find a valid bait!", exception);
-            return null;
-        }
+        return baitList.get(idx);
     }
 
     /**
@@ -274,18 +258,20 @@ public class BaitNBTManager {
      *
      * @return A random bait weighted by its catch-weight.
      */
-    public static Bait randomBaitCatch() {
-        double totalWeight = 0;
+    public static @Nullable Bait randomBaitCatch() {
 
-        List<Bait> baitList = new ArrayList<>(BaitManager.getInstance().getBaitMap().values());
+        Map<String, Bait> baitMap = BaitManager.getInstance().getBaitMap();
+        List<Bait> baitList = new ArrayList<>(baitMap.values());
 
-        // Weighted random logic (nabbed from stackoverflow)
-        for (Bait bait : baitList) {
-            totalWeight += (bait.getCatchWeight());
+        // Fix IndexOutOfBoundsException caused by the list being empty.
+        if (baitList.isEmpty()) {
+            return null;
         }
 
+        double totalWeight = baitList.stream().mapToDouble(Bait::getCatchWeight).sum();
+
         int idx = 0;
-        for (double r = Math.random() * totalWeight; idx < BaitManager.getInstance().getBaitMap().size() - 1; ++idx) {
+        for (double r = Math.random() * totalWeight; idx < baitList.size() - 1; ++idx) {
             r -= baitList.get(idx).getCatchWeight();
             if (r <= 0.0) {
                 break;
@@ -303,6 +289,9 @@ public class BaitNBTManager {
      * @return If the fishing rod contains the bait or not.
      */
     public static boolean hasBaitApplied(ItemStack itemStack, String bait) {
+        if (itemStack == null) {
+            return false;
+        }
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) {
             return false;
@@ -347,15 +336,14 @@ public class BaitNBTManager {
             nbt.getOrCreateCompound(NbtKeys.EMF_COMPOUND).removeKey(NbtKeys.EMF_APPLIED_BAIT);
         });
 
-        itemStack.setItemMeta(itemStack.getItemMeta()); // Update item meta to reflect changes
         return totalDeleted;
     }
 
     public static List<String> newApplyLore(ItemStack itemStack) {
-        if (itemStack.getItemMeta() == null) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
             return Collections.emptyList();
         }
-        ItemMeta meta = itemStack.getItemMeta();
 
         List<String> lore = meta.getLore();
         if (lore == null) {
@@ -375,10 +363,15 @@ public class BaitNBTManager {
 
                 for (String bait : rodNBT.split(",")) {
                     baitCount++;
-                    Message message = new Message(BaitFile.getInstance().getBaitFormat());
-                    message.setAmount(bait.split(":")[1]);
+                    AbstractMessage message = EvenMoreFish.getAdapter().createMessage(BaitFile.getInstance().getBaitFormat());
+                    // TODO this is to prevent an ArrayIndexOutOfBoundsException, but it should be handled in a better way.
+                    try {
+                        message.setAmount(bait.split(":")[1]);
+                    } catch (ArrayIndexOutOfBoundsException exception) {
+                        message.setAmount("N/A");
+                    }
                     message.setBait(getBaitFormatted(bait.split(":")[0]));
-                    lore.add(message.getRawMessage());
+                    lore.add(message.getLegacyMessage());
                 }
 
                 if (BaitFile.getInstance().showUnusedBaitSlots()) {
@@ -387,10 +380,10 @@ public class BaitNBTManager {
                     }
                 }
             } else {
-                Message message = new Message(lineAddition);
+                AbstractMessage message = EvenMoreFish.getAdapter().createMessage(lineAddition);
                 message.setCurrentBaits(Integer.toString(getNumBaitsApplied(itemStack)));
                 message.setMaxBaits(Integer.toString(BaitFile.getInstance().getMaxBaits()));
-                lore.add(message.getRawMessage());
+                lore.add(message.getLegacyMessage());
             }
         }
 
@@ -411,7 +404,7 @@ public class BaitNBTManager {
         }
 
         List<String> lore = itemStack.getItemMeta().getLore();
-        if (lore == null) {
+        if (lore == null || lore.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -465,4 +458,5 @@ public class BaitNBTManager {
         }
         return FishUtils.translateColorCodes(bait.getDisplayName());
     }
+
 }

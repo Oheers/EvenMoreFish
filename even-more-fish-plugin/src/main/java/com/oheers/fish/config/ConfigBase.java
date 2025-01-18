@@ -138,7 +138,7 @@ public class ConfigBase {
     }
 
     public UpdaterSettings getUpdaterSettings() {
-        return UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).setKeepAll(true).build();
+        return UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).setKeepAll(true).setEnableDowngrading(false).build();
     }
 
     public void save() {
@@ -153,7 +153,7 @@ public class ConfigBase {
     }
 
     public void update() {
-        if (preventIO) {
+        if (preventIO || !configUpdater) {
             return;
         }
         try {

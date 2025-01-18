@@ -59,7 +59,7 @@ To disable a competition, you have two choices:
 - Set `disabled` to true inside the file and reload.
 - Rename the file to start with an underscore.
 
-Doing either of these will prevent the competition from being started.
+Doing either of these will prevent the competition from being registered into the plugin.
 
 ## Example Config
 An example config will always be available inside your competitions folder, and contains every possible config option.

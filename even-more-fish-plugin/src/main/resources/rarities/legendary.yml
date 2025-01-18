@@ -1,0 +1,67 @@
+id: Legendary
+disabled: false
+weight: 1
+colour: '&6'
+worth-multiplier: 0.2
+broadcast: true
+size:
+  minSize: 800
+  maxSize: 4000
+
+fish:
+  King Mackerel:
+    item:
+      head-64: "ewogICJ0aW1lc3RhbXAiIDogMTY1ODUwOTg3NzYwMiwKICAicHJvZmlsZUlkIiA6ICI5NmI1MTQxZTg0NzU0MjhjOTIzMmUxYjUyMmMzZmI1NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJGaXJlQjB5MiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mODkwZjliNmU0YjJmYjkzNjJiODQ2YTA0ZTZhNTdjN2FiY2Y0NDUyNjQxOTM2YjIxY2YyZjA0YTM0YWFhZWFkIgogICAgfQogIH0KfQ=="
+  Salmon of Knowledge:
+    item:
+      material: SALMON
+  Wumpus:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmRhODYzYzNjODkzNTdhNzI3ZDYxZDliODJkMTJhNDJiYjJmMTcxMWJkOTVlMjIxMTA3MzQwZGZkYTJkODUyZSJ9fX0="
+  Golden Frog:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNlYzMzYTI2MTA2ZTQ1NjE2Njk0ZWJjNDYwMmMwZmUyMTZmYTk2MDE0YjIyYmJlMzE2N2RhYmJlODFiMGQ2NiJ9fX0="
+  Chinese White Dolphin:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTQyMDhmYTBmYTY5MDFlYjIzZmUwZGU0YTAyYjU3Y2I2NjFhYzllZDlkNGYwMWRmZGYyZDA3MzM5NzEwNWVjMSJ9fX0="
+  Green Axolotl:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTI5MGMxMTU1MzExMjAwOWM2NzcxNjcyMjE5MWQ5NDg5YjM3MzQ2ZmVjZWE5ZmYwN2E0OGUzMzliNTUxYTkwMiJ9fX0="
+  Blue Axolotl:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzU5NTgxOTM1OWM3ZWQ5ZTk3OWJkNTNhNDliMjg2MTYyMDIzMmQ2YTg3ZWVkNzA2ODdjY2QwYmYwZDNjZThmMyJ9fX0="
+  Starfish:
+    item:
+      material: NETHER_STAR
+  Spongebob:
+    glowing: true
+    item:
+      material: SPONGE
+  Golden Hermit Crab:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDhiNWU0MjdkY2Y3NzFmYjhkYTY2YmUyYjc0ODBlYjE1NjhlYTUxMDA4OGZmZWM4NzAxOTRiNGUxZmQ1NmVlZSJ9fX0="
+    size:
+      minSize: 50
+      maxSize: 60
+  Golden Skull:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWI1MjIxYjI3NjRjZWY2Nzg2YWMxNWVhMDc1NzY4N2UyM2I5NTM2ODY0NTIwMzI0ZGQ0MzkzYjdhYmVhZDFkMSJ9fX0="
+  BLAHAJ:
+    displayname: BLÅHAJ
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTIxODhiYzk1YjhhM2M3MWZmYzQwNjZmYTNkZGYyMDRlMDYxYTNiM2NlNGUxODY3YzA0YjI1ZmRmNjhhMjA3MCJ9fX0="
+    lore:
+      - "&7&oDen bästa hajen"
+  MrCrayfish:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdjM2QxNTg5Y2U2NzMzMzFmNjkwYjY5MmRiMmEzNTVjMzNmYjYzZTc1NGIxNzY3YmVkZWU2NmI4ZjM3In19fQ=="
+  Flower Fish:
+    requirements:
+      biome:
+        - FLOWER_FOREST
+    item:
+      custom-model-data: 1020304
+      material: OXEYE_DAISY
+  Copper Golem:
+    item:
+      head-64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWY0ZmNkZmYxNTdhMzZkMzIwNjFjYjdkZDBiNjlmN2Y3ODg1ZmQzZGRmOTlkZTQ3MWI2N2E4NGNjODY3N2NiMyJ9fX0="
