@@ -63,7 +63,8 @@ public class AdminCommand {
                         getRewardTypes(),
                         getMigrate(),
                         getRawItem(),
-                        getHelp()
+                        getHelp(),
+                        new AdminDatabaseCommand()
                 );
     }
 

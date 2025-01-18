@@ -123,7 +123,7 @@ public class MigrationManager {
     public MigrationVersion getDatabaseVersion() {
         MigrationInfoService infoService = baseFlywayConfiguration.load().info();
         if (infoService.current() == null) {
-            return MigrationVersion.fromVersion("7.0"); //todo incorrect, we want latest, this assumes that this is the first load, maybe load this in using meta inf properties..
+            return MigrationVersion.fromVersion("7.0");
         }
         return baseFlywayConfiguration.load().info().current().getVersion();
     }

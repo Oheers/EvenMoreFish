@@ -80,7 +80,7 @@ public class Database implements DatabaseWrapper {
 
     public void initSettings(final String tablePrefix, final String dbName) {
         settings.setExecuteLogging(true);
-
+        settings.withRenderFormatted(true);
         settings.withRenderMapping(
                 new RenderMapping().withSchemata(
                         new MappedSchema()
@@ -103,14 +103,6 @@ public class Database implements DatabaseWrapper {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
         }
 
-    }
-
-    //todo should be in mainconfig, out of scope for this pr
-    private boolean hasCredentials() {
-        return MainConfig.getInstance().getUsername() != null &&
-                MainConfig.getInstance().getPassword() != null &&
-                MainConfig.getInstance().getAddress() != null &&
-                MainConfig.getInstance().getDatabase() != null;
     }
 
     private @NotNull DSLContext getContext(Connection connection) {

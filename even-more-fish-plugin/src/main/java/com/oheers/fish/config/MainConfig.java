@@ -282,4 +282,11 @@ public class MainConfig extends ConfigBase {
         save();
     }
 
+    public boolean hasCredentials() {
+        return MainConfig.getInstance().getUsername() != null &&
+                MainConfig.getInstance().getPassword() != null &&
+                MainConfig.getInstance().getAddress() != null &&
+                MainConfig.getInstance().getDatabase() != null;
+    }
+
 }

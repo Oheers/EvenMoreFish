@@ -53,7 +53,7 @@ dependencyResolutionManagement {
             library("caffeine", "com.github.ben-manes.caffeine:caffeine:3.1.8")
             library("annotations", "org.jetbrains:annotations:24.1.0")
 
-            version("flyway", "10.17.0")
+            version("flyway", "11.2.0")
             library("flyway-core", "org.flywaydb","flyway-core").versionRef("flyway")
             library("flyway-mysql", "org.flywaydb","flyway-mysql").versionRef("flyway")
             bundle("flyway", listOf("flyway-core", "flyway-mysql"))

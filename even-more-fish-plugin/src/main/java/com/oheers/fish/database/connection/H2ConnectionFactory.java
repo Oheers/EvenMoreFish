@@ -8,7 +8,7 @@ import java.util.Map;
 public class H2ConnectionFactory extends ConnectionFactory {
     @Override
     protected void configureDatabase(@NotNull HikariConfig config, String address, int port, String databaseName, String username, String password) {
-        config.setJdbcUrl("jdbc:h2:plugins/EvenMoreFish/" + databaseName + ".mv.db");
+        config.setJdbcUrl("jdbc:h2:~/EvenMoreFish/" + databaseName + ".mv.db;AUTO_SERVER=TRUE");
         config.setUsername(username);
         config.setPassword(password);
     }
