@@ -141,7 +141,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public boolean hasUserLog(@NotNull UUID uuid) {
-        if (hasUser(uuid))
+        if (!hasUser(uuid))
             return false;
 
         final int userId = getUserId(uuid);
@@ -178,6 +178,8 @@ public class Database implements DatabaseWrapper {
                         .set(Tables.USERS.LARGEST_FISH, "None")
                         .set(Tables.USERS.LARGEST_LENGTH, 0F)
                         .set(Tables.USERS.NUM_FISH_CAUGHT, 0)
+                        .set(Tables.USERS.COMPETITIONS_WON, 0)
+                        .set(Tables.USERS.COMPETITIONS_JOINED, 0)
                         .set(Tables.USERS.TOTAL_FISH_LENGTH, 0F)
                         .execute();
             }
@@ -208,14 +210,16 @@ public class Database implements DatabaseWrapper {
         new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
-                int rowsUpdated = dslContext.insertInto(Tables.USERS)
-                        .set(Tables.USERS.UUID, uuid.toString())
+                int rowsUpdated = dslContext.update(Tables.USERS)
                         .set(Tables.USERS.FIRST_FISH, report.getFirstFish())
                         .set(Tables.USERS.LAST_FISH, report.getRecentFish())
                         .set(Tables.USERS.LARGEST_FISH, report.getLargestFish())
                         .set(Tables.USERS.LARGEST_LENGTH, report.getLargestLength())
                         .set(Tables.USERS.NUM_FISH_CAUGHT, report.getNumFishCaught())
                         .set(Tables.USERS.TOTAL_FISH_LENGTH, report.getTotalFishLength())
+                        .set(Tables.USERS.COMPETITIONS_WON, report.getCompetitionsWon())
+                        .set(Tables.USERS.COMPETITIONS_JOINED, report.getCompetitionsJoined())
+                        .where(Tables.USERS.UUID.eq(uuid.toString()))
                         .execute();
 
                 DatabaseUtil.writeDbVerbose("Written user report for (%s) to the database.".formatted(uuid));
@@ -233,6 +237,8 @@ public class Database implements DatabaseWrapper {
                         .from(Tables.USERS)
                         .where(Tables.USERS.UUID.eq(uuid.toString()))
                         .fetchOne();
+                if (tableRecord == null)
+                    return empty();
 
                 DatabaseUtil.writeDbVerbose("Read user report for user (%s)".formatted(uuid.toString()));
                 final int id = tableRecord.getValue(Tables.USERS.ID);
@@ -247,6 +253,7 @@ public class Database implements DatabaseWrapper {
                 final String uuid = tableRecord.getValue(Tables.USERS.UUID);
                 final int fishSold = tableRecord.getValue(Tables.USERS.FISH_SOLD);
                 final double moneyEarned = tableRecord.getValue(Tables.USERS.MONEY_EARNED);
+
                 return new UserReport(
                         id,
                         numFishCaught,
@@ -304,6 +311,7 @@ public class Database implements DatabaseWrapper {
                         .set(Tables.FISH.TOTAL_CAUGHT, 1)
                         .set(Tables.FISH.LARGEST_FISH, Math.round(fish.getLength() * 10f) / 10f)
                         .set(Tables.FISH.FIRST_FISHER, uuid.toString())
+                        .set(Tables.FISH.LARGEST_FISHER, uuid.toString())
                         .set(Tables.FISH.FIRST_CATCH_TIME, LocalDateTime.now())
                         .execute();
             }
@@ -438,7 +446,7 @@ public class Database implements DatabaseWrapper {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.insertInto(Tables.FISH_LOG)
-                        .set(Tables.FISH_LOG.ID, userId)
+                        .set(Tables.FISH_LOG.USER_ID, userId)
                         .set(Tables.FISH_LOG.RARITY, report.getRarity())
                         .set(Tables.FISH_LOG.FISH, report.getName())
                         .set(Tables.FISH_LOG.QUANTITY, report.getNumCaught())
@@ -457,7 +465,7 @@ public class Database implements DatabaseWrapper {
                 return dslContext.update(Tables.FISH_LOG)
                         .set(Tables.FISH_LOG.QUANTITY, report.getNumCaught())
                         .set(Tables.FISH_LOG.LARGEST_LENGTH, report.getLargestLength())
-                        .where(Tables.FISH_LOG.ID.eq(userId)
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId)
                                 .and(Tables.FISH_LOG.RARITY.eq(report.getRarity()))
                                 .and(Tables.FISH_LOG.FISH.eq(report.getName())))
                         .execute();
