@@ -141,6 +141,9 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public boolean hasUserLog(@NotNull UUID uuid) {
+        if (hasUser(uuid))
+            return false;
+
         final int userId = getUserId(uuid);
         if (userId == 0) {
             return false;
