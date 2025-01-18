@@ -30,11 +30,13 @@ public class CompetitionConversions {
             finalizeConversion(config);
             return;
         }
-        Section generalSection = config.getConfig().getSection("general");
+        Section rewards = config.getConfig().getSection("rewards");
+        Section leaderboard = config.getConfig().getSection("leaderboard");
+        Section general = config.getConfig().getSection("general");
         for (String competitionKey : competitionSection.getRoutesAsStrings(false)) {
             Section section = competitionSection.getSection(competitionKey);
             if (section != null) {
-                convertSectionToFile(section, generalSection);
+                convertSectionToFile(section, general, leaderboard, rewards);
             }
         }
         finalizeConversion(config);
@@ -56,7 +58,7 @@ public class CompetitionConversions {
         return new File(EvenMoreFish.getInstance().getDataFolder(), "competitions");
     }
 
-    private void convertSectionToFile(@NotNull Section section, @Nullable Section generalSection) {
+    private void convertSectionToFile(@NotNull Section section, @Nullable Section general, @Nullable Section leaderboard, @Nullable Section rewards) {
         String id = section.getNameAsString();
         if (id == null) {
             return;
@@ -67,16 +69,30 @@ public class CompetitionConversions {
         config.setAll(section.getRouteMappedValues(true));
         config.set("id", id);
 
+        applyGeneralSection(config, general, leaderboard, rewards);
+
+        configBase.save();
+    }
+
+    private void applyGeneralSection(@NotNull YamlDocument config, @Nullable Section general, @Nullable Section leaderboard, @Nullable Section rewards) {
         // Account for the "general" section.
-        if (generalSection != null) {
-            for (String key : generalSection.getRoutesAsStrings(true)) {
+        if (general != null) {
+            for (String key : general.getRoutesAsStrings(true)) {
                 if (!config.contains(key)) {
-                    config.set(key, generalSection.get(key));
+                    config.set(key, general.get(key));
                 }
             }
         }
 
-        configBase.save();
+        // Add "rewards" section if needed
+        if (rewards != null && !config.contains("rewards")) {
+            config.set("rewards", rewards);
+        }
+
+        // Add "leaderboard" section if needed
+        if (leaderboard != null && !config.contains("leaderboard")) {
+            config.set("leaderboard", leaderboard);
+        }
     }
 
 }
