@@ -241,7 +241,7 @@ public class DataManager {
         UserReport report = DataManager.getInstance().getUserReportIfExists(uuid);
 
         if (report != null) {
-            String fishID = fish.getRarity().getValue() + ":" + fish.getName();
+            String fishID = fish.getRarity().getId() + ":" + fish.getName();
 
             report.setRecentFish(fishID);
             report.incrementFishCaught(1);
@@ -264,7 +264,7 @@ public class DataManager {
         if (cachedReports == null) {
             return List.of(
                     new FishReport(
-                            fish.getRarity().getValue(),
+                            fish.getRarity().getId(),
                             fish.getName(),
                             fish.getLength(),
                             1,
@@ -274,7 +274,7 @@ public class DataManager {
         }
 
         for (FishReport report : cachedReports) {
-            if (report.getRarity().equals(fish.getRarity().getValue()) && report.getName().equals(fish.getName())) {
+            if (report.getRarity().equals(fish.getRarity().getId()) && report.getName().equals(fish.getName())) {
                 report.addFish(fish);
                 return cachedReports;
             }
@@ -282,7 +282,7 @@ public class DataManager {
 
         cachedReports.add(
                 new FishReport(
-                        fish.getRarity().getValue(),
+                        fish.getRarity().getId(),
                         fish.getName(),
                         fish.getLength(),
                         1,

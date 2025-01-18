@@ -37,6 +37,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.jar.Attributes;
 
 public class AdminCommand {
 
@@ -421,7 +422,10 @@ public class AdminCommand {
                 "admin help",
                 ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage()
         );
-        return new CommandAPICommand("help").executes(info -> sendHelpMessage(info.sender()));
+        return new CommandAPICommand("help")
+                .executes(info -> {
+                    sendHelpMessage(info.sender());
+                });
     }
 
     // COMPETITION BRANCH

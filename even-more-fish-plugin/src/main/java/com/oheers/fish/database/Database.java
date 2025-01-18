@@ -21,8 +21,6 @@ import org.jooq.Record;
 import org.jooq.conf.*;
 import org.jooq.impl.DSL;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -31,12 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class Database implements DatabaseWrapper {
+    private final String version;
     private final Settings settings;
     private final ConnectionFactory connectionFactory;
     private final MigrationManager migrationManager;
@@ -51,7 +48,7 @@ public class Database implements DatabaseWrapper {
             return;
         }
 
-        final String version = this.migrationManager.getDatabaseVersion().getVersion();
+        this.version = this.migrationManager.getDatabaseVersion().getVersion();
         switch (version) {
             case "5":
                 this.migrationManager.migrateFromV5ToLatest();
@@ -66,7 +63,6 @@ public class Database implements DatabaseWrapper {
 
         initSettings(MainConfig.getInstance().getPrefix(), MainConfig.getInstance().getDatabase());
     }
-
 
 
     public MigrationManager getMigrationManager() {
@@ -589,6 +585,6 @@ public class Database implements DatabaseWrapper {
             return "V2";
         }
 
-        return "V"+EvenMoreFish.getInstance().getDatabase().getMigrationManager().getDatabaseVersion().getVersion();
+        return "V"+this.version;
     }
 }

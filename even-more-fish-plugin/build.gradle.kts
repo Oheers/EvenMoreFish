@@ -91,7 +91,6 @@ dependencies {
     implementation(libs.vanishchecker)
     implementation(libs.boostedyaml)
 
-    library(libs.maven.artifact)
     library(libs.friendlyid)
     library(libs.flyway.core)
     library(libs.flyway.mysql)
