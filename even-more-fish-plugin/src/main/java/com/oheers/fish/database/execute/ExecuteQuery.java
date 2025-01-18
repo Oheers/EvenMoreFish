@@ -15,9 +15,6 @@ public abstract class ExecuteQuery<T> extends ExecuteBase {
         super(connectionFactory, settings);
     }
 
-    protected ExecuteQuery(final ConnectionFactory connectionFactory) {
-        super(connectionFactory);
-    }
     /**
      * Prepares and executes a query, returning the result.
      * In case of failure, returns the fallback result from `empty()`.

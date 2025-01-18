@@ -16,9 +16,6 @@ public abstract class ExecuteUpdate extends ExecuteBase {
         super(connectionFactory, settings);
     }
 
-    protected ExecuteUpdate(final ConnectionFactory connectionFactory) {
-        super(connectionFactory);
-    }
 
     /**
      * Executes an update operation and returns the number of rows affected.

@@ -83,19 +83,20 @@ public class Database implements DatabaseWrapper {
 
     public void initSettings(final String tablePrefix, final String dbName) {
         settings.setExecuteLogging(true);
+
         settings.withRenderMapping(
                 new RenderMapping().withSchemata(
-                        new MappedSchema().withInput("")
+                        new MappedSchema()
+                                .withInput("") // Leave this if no schema is used
                                 .withOutput(dbName)
                                 .withTables(
                                         new MappedTable()
-                                                .withInputExpression(Pattern.compile("\\$\\{table.prefix}(.*)"))
-                                                .withOutput(tablePrefix + "$1"
-                                                )
+                                                .withInputExpression(Pattern.compile("\\$\\{table\\.prefix}(.*)")) // Correct escaped regex
+                                                .withOutput(tablePrefix + "$1")
                                 )
-
                 )
         );
+
     }
 
     public void executeStatement(@NotNull Consumer<DSLContext> consumer) {
@@ -121,7 +122,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public boolean hasUser(@NotNull UUID uuid) {
-        return new ExecuteQuery<Boolean>(connectionFactory) {
+        return new ExecuteQuery<Boolean>(connectionFactory, settings) {
             @Override
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
@@ -145,7 +146,7 @@ public class Database implements DatabaseWrapper {
             return false;
         }
 
-        return new ExecuteQuery<Boolean>(connectionFactory) {
+        return new ExecuteQuery<Boolean>(connectionFactory, settings) {
             @Override
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
@@ -164,7 +165,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void createUser(@NotNull UUID uuid) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.insertInto(Tables.USERS)
@@ -182,7 +183,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public int getUserId(@NotNull UUID uuid) {
-        return new ExecuteQuery<Integer>(connectionFactory) {
+        return new ExecuteQuery<Integer>(connectionFactory, settings) {
             @Override
             protected Integer onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
@@ -201,7 +202,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void writeUserReport(@NotNull UUID uuid, @NotNull UserReport report) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 int rowsUpdated = dslContext.insertInto(Tables.USERS)
@@ -222,7 +223,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public UserReport readUserReport(@NotNull UUID uuid) {
-        return new ExecuteQuery<UserReport>(connectionFactory) {
+        return new ExecuteQuery<UserReport>(connectionFactory, settings) {
             @Override
             protected UserReport onRunQuery(DSLContext dslContext) throws Exception {
                 org.jooq.Record tableRecord = dslContext.select()
@@ -269,7 +270,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public boolean hasFishData(@NotNull Fish fish) {
-        return new ExecuteQuery<Boolean>(connectionFactory) {
+        return new ExecuteQuery<Boolean>(connectionFactory, settings) {
             @Override
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
@@ -290,7 +291,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void createFishData(@NotNull Fish fish, @NotNull UUID uuid) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.insertInto(Tables.FISH)
@@ -308,7 +309,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void incrementFish(@NotNull Fish fish) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.update(Tables.FISH)
@@ -322,7 +323,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public float getLargestFishSize(@NotNull Fish fish) {
-        return new ExecuteQuery<Float>(connectionFactory) {
+        return new ExecuteQuery<Float>(connectionFactory, settings) {
             @Override
             protected Float onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
@@ -341,7 +342,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void updateLargestFish(@NotNull Fish fish, @NotNull UUID uuid) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.update(Tables.FISH)
@@ -358,7 +359,7 @@ public class Database implements DatabaseWrapper {
     public List<FishReport> getFishReportsForPlayer(@NotNull UUID uuid) {
         final int userId = getUserId(uuid);
 
-        return new ExecuteQuery<List<FishReport>>(connectionFactory) {
+        return new ExecuteQuery<List<FishReport>>(connectionFactory, settings) {
             @Override
             protected List<FishReport> onRunQuery(DSLContext dslContext) throws Exception {
                 Result<Record> result = dslContext.select()
@@ -394,7 +395,7 @@ public class Database implements DatabaseWrapper {
     public List<FishReport> getReportsForFish(@NotNull UUID uuid, @NotNull Fish fish) {
         final int userId = getUserId(uuid);
 
-        return new ExecuteQuery<List<FishReport>>(connectionFactory) {
+        return new ExecuteQuery<List<FishReport>>(connectionFactory, settings) {
             @Override
             protected List<FishReport> onRunQuery(DSLContext dslContext) throws Exception {
                 Result<Record> result = dslContext.select()
@@ -430,7 +431,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void addUserFish(@NotNull FishReport report, int userId) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.insertInto(Tables.FISH_LOG)
@@ -447,7 +448,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void updateUserFish(@NotNull FishReport report, int userId) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.update(Tables.FISH_LOG)
@@ -476,7 +477,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public boolean userHasFish(@NotNull String rarity, @NotNull String fish, int id) {
-        return new ExecuteQuery<Boolean>(connectionFactory) {
+        return new ExecuteQuery<Boolean>(connectionFactory, settings) {
             @Override
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
@@ -497,7 +498,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void createCompetitionReport(@NotNull Competition competition) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 final Leaderboard leaderboard = competition.getLeaderboard();
@@ -531,7 +532,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void createSale(@NotNull String transactionId, @NotNull String fishName, @NotNull String fishRarity, int fishAmount, double fishLength, double priceSold) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.insertInto(Tables.USERS_SALES)
@@ -549,7 +550,7 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public void createTransaction(@NotNull String transactionId, int userId, @NotNull Timestamp timestamp) {
-        new ExecuteUpdate(connectionFactory) {
+        new ExecuteUpdate(connectionFactory, settings) {
             @Override
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.insertInto(Tables.TRANSACTIONS)

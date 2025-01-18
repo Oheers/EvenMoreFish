@@ -59,7 +59,6 @@ public class MigrationManager {
             }
 
             migrate.migrate();
-            logger.info("Database successfully migrated starting from version: {}", baselineVersion);
         } catch (FlywayException e) {
             logger.error("Database migration failed for version: {}", currentDbVersion, e);
         }
