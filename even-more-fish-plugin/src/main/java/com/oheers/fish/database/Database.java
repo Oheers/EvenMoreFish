@@ -286,7 +286,7 @@ public class Database implements DatabaseWrapper {
                 return dslContext.select()
                         .from(Tables.FISH)
                         .where(Tables.FISH.FISH_NAME.eq(fish.getName())
-                                .and(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getValue())))
+                                .and(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getId())))
                         .limit(1)
                         .fetch()
                         .isNotEmpty();
@@ -306,7 +306,7 @@ public class Database implements DatabaseWrapper {
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.insertInto(Tables.FISH)
                         .set(Tables.FISH.FISH_NAME, fish.getName())
-                        .set(Tables.FISH.FISH_RARITY, fish.getRarity().getValue())
+                        .set(Tables.FISH.FISH_RARITY, fish.getRarity().getId())
                         .set(Tables.FISH.FIRST_FISHER, uuid.toString())
                         .set(Tables.FISH.TOTAL_CAUGHT, 1)
                         .set(Tables.FISH.LARGEST_FISH, Math.round(fish.getLength() * 10f) / 10f)
@@ -325,7 +325,7 @@ public class Database implements DatabaseWrapper {
             protected int onRunUpdate(DSLContext dslContext) {
                 return dslContext.update(Tables.FISH)
                         .set(Tables.FISH.TOTAL_CAUGHT, Tables.FISH.TOTAL_CAUGHT.plus(1))
-                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getValue())
+                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getId())
                                 .and(Tables.FISH.FISH_NAME.eq(fish.getName())))
                         .execute();
             }
@@ -339,7 +339,7 @@ public class Database implements DatabaseWrapper {
             protected Float onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
                         .from(Tables.FISH)
-                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getValue())
+                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getId())
                                 .and(Tables.FISH.FISH_NAME.eq(fish.getName())))
                         .fetchOne(Tables.FISH.LARGEST_FISH);
             }
@@ -359,7 +359,7 @@ public class Database implements DatabaseWrapper {
                 return dslContext.update(Tables.FISH)
                         .set(Tables.FISH.LARGEST_FISH, Math.round(fish.getLength() * 10f) / 10f /* todo use decimal format */)
                         .set(Tables.FISH.LARGEST_FISHER, uuid.toString())
-                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getValue()).and(Tables.FISH.FISH_NAME.eq(fish.getName())))
+                        .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getId()).and(Tables.FISH.FISH_NAME.eq(fish.getName())))
                         .execute();
 
             }
@@ -413,7 +413,7 @@ public class Database implements DatabaseWrapper {
                         .from(Tables.FISH_LOG)
                         .where(Tables.FISH_LOG.ID.eq(userId)
                                 .and(Tables.FISH_LOG.FISH.eq(fish.getName()))
-                                .and(Tables.FISH_LOG.RARITY.eq(fish.getRarity().getValue())))
+                                .and(Tables.FISH_LOG.RARITY.eq(fish.getRarity().getId())))
                         .fetch();
 
                 if (result.isEmpty()) {
@@ -538,7 +538,7 @@ public class Database implements DatabaseWrapper {
     }
 
     private @NotNull String prepareRarityFishString(final @NotNull Fish fish) {
-        return fish.getRarity().getValue() + ":" + fish.getName();
+        return fish.getRarity().getId() + ":" + fish.getName();
     }
 
     @Override
@@ -579,5 +579,16 @@ public class Database implements DatabaseWrapper {
         } catch (Exception e) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
         }
+    }
+
+    public String getDatabaseVersion() {
+        if (!MainConfig.getInstance().databaseEnabled())
+            return "Disabled";
+
+        if (EvenMoreFish.getInstance().getDatabase().getMigrationManager().usingV2()) {
+            return "V2";
+        }
+
+        return "V"+EvenMoreFish.getInstance().getDatabase().getMigrationManager().getDatabaseVersion().getVersion();
     }
 }
