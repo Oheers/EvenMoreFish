@@ -23,22 +23,26 @@ public class MainCommand {
     
     private final HelpMessageBuilder helpMessageBuilder = HelpMessageBuilder.create();
 
-    private final CommandAPICommand command = new CommandAPICommand(MainConfig.getInstance().getMainCommandName())
-            .withAliases(MainConfig.getInstance().getMainCommandAliases().toArray(String[]::new))
-            .withSubcommands(
-                    getNext(),
-                    getToggle(),
-                    getGui(),
-                    getHelp(),
-                    getTop(),
-                    getShop(),
-                    getSellAll(),
-                    getApplyBaits(),
-                    new AdminCommand("admin").getCommand()
-            )
-            .executes(info -> {
-                sendHelpMessage(info.sender());
-            });
+    private final CommandAPICommand command;
+
+    public MainCommand() {
+        this.command = new CommandAPICommand(MainConfig.getInstance().getMainCommandName())
+                .withAliases(MainConfig.getInstance().getMainCommandAliases().toArray(String[]::new))
+                .withSubcommands(
+                        getNext(),
+                        getToggle(),
+                        getGui(),
+                        getHelp(),
+                        getTop(),
+                        getShop(),
+                        getSellAll(),
+                        getApplyBaits(),
+                        new AdminCommand("admin").getCommand()
+                )
+                .executes(info -> {
+                    sendHelpMessage(info.sender());
+                });
+    }
 
     public CommandAPICommand getCommand() {
         return command;
