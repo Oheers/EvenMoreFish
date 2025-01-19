@@ -137,8 +137,7 @@ public class AdminCommand {
                         case "fish" -> {
                             final Rarity rarity = args.getUnchecked("rarity");
                             if (rarity == null) {
-                                // TODO add "invalid rarity" message.
-                                sender.sendMessage("Rarity is invalid.");
+                                ConfigMessage.RARITY_INVALID.getMessage().send(sender);
                                 return;
                             }
                             BaseComponent[] baseComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");

@@ -224,7 +224,8 @@ public enum ConfigMessage {
             "",
             "&e» (Left-click) sell the fish.",
             "&7» (Right-click) cancel."
-    ), PrefixType.NONE, false, false, "sell-gui-lore");
+    ), PrefixType.NONE, false, false, "sell-gui-lore"),
+    RARITY_INVALID("&rThat is not a valid rarity!", PrefixType.ERROR, false, true, "rarity-invalid");
 
     private final String id;
     private final boolean canSilent, canHidePrefix;
