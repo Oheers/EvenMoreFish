@@ -6,21 +6,38 @@ import com.oheers.fish.config.messages.ConfigMessage;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class HelpMessageBuilder {
 
-    private final Map<String, String> usages;
+    private final HashMap<String, Supplier<AbstractMessage>> usages;
 
-    private HelpMessageBuilder(@NotNull Map<String, String> usages) {
+    private HelpMessageBuilder(@NotNull HashMap<String, Supplier<AbstractMessage>> usages) {
         this.usages = usages;
     }
 
     /**
      * Creates a HelpMessageBuilder instance
      */
-    public static HelpMessageBuilder create(@NotNull Map<String, String> usages) {
+    public static HelpMessageBuilder create() {
+        return new HelpMessageBuilder(new HashMap<>());
+    }
+
+    /**
+     * Creates a HelpMessageBuilder instance with the provided usages
+     */
+    public static HelpMessageBuilder create(@NotNull HashMap<String, Supplier<AbstractMessage>> usages) {
         return new HelpMessageBuilder(usages);
+    }
+
+    /**
+     * Adds a usage to this builder
+     */
+    public HelpMessageBuilder addUsage(@NotNull String name, @NotNull Supplier<AbstractMessage> helpMessage) {
+        this.usages.putIfAbsent(name, helpMessage);
+        return this;
     }
 
     /**
@@ -32,7 +49,7 @@ public class HelpMessageBuilder {
         usages.forEach((key, value) -> {
             AbstractMessage usage = ConfigMessage.HELP_FORMAT.getMessage();
             usage.setVariable("{command}", correctCommand(key));
-            usage.setVariable("{description}", value);
+            usage.setVariable("{description}", value.get().getLegacyMessage());
             message.appendString("\n");
             message.appendString(usage.getLegacyMessage());
         });

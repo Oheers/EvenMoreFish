@@ -19,12 +19,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MainCommand {
-
-    private final Map<String, String> commandUsages = new HashMap<>();
+    
+    private final HelpMessageBuilder helpMessageBuilder = HelpMessageBuilder.create();
 
     private final CommandAPICommand command = new CommandAPICommand(MainConfig.getInstance().getMainCommandName())
             .withAliases(MainConfig.getInstance().getMainCommandAliases().toArray(String[]::new))
@@ -48,9 +45,9 @@ public class MainCommand {
     }
 
     private CommandAPICommand getNext() {
-        commandUsages.putIfAbsent(
-                "next",
-                ConfigMessage.HELP_GENERAL_NEXT.getMessage().getLegacyMessage()
+        helpMessageBuilder.addUsage(
+                "next", 
+                ConfigMessage.HELP_GENERAL_NEXT::getMessage
         );
         return new CommandAPICommand("next")
                 .withPermission(UserPerms.NEXT)
@@ -62,9 +59,9 @@ public class MainCommand {
     }
 
     private CommandAPICommand getToggle() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "toggle",
-                ConfigMessage.HELP_GENERAL_TOGGLE.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_GENERAL_TOGGLE::getMessage
         );
         return new CommandAPICommand("toggle")
                 .withPermission(UserPerms.TOGGLE)
@@ -74,9 +71,9 @@ public class MainCommand {
     }
 
     private CommandAPICommand getGui() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "gui",
-                ConfigMessage.HELP_GENERAL_GUI.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_GENERAL_GUI::getMessage
         );
         return new CommandAPICommand("gui")
                 .withPermission(UserPerms.GUI)
@@ -86,9 +83,9 @@ public class MainCommand {
     }
 
     private CommandAPICommand getHelp() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "help",
-                ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_GENERAL_HELP::getMessage
         );
         return new CommandAPICommand("help")
                 .withPermission(UserPerms.HELP)
@@ -98,9 +95,9 @@ public class MainCommand {
     }
 
     private CommandAPICommand getTop() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "top",
-                ConfigMessage.HELP_GENERAL_TOP.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_GENERAL_TOP::getMessage
         );
         return new CommandAPICommand("top")
                 .withPermission(UserPerms.TOP)
@@ -123,9 +120,9 @@ public class MainCommand {
     }
 
     private CommandAPICommand getShop() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "shop",
-                ConfigMessage.HELP_GENERAL_SHOP.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_GENERAL_SHOP::getMessage
         );
         return new CommandAPICommand("shop")
                 .withPermission(UserPerms.SHOP)
@@ -160,9 +157,9 @@ public class MainCommand {
     }
 
     private CommandAPICommand getSellAll() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "sellall",
-                ConfigMessage.HELP_GENERAL_SELLALL.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_GENERAL_SELLALL::getMessage
         );
         return new CommandAPICommand("sellall")
                 .withPermission(UserPerms.SELL_ALL)
@@ -175,9 +172,9 @@ public class MainCommand {
     }
 
     private CommandAPICommand getApplyBaits() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "applybaits",
-                ConfigMessage.HELP_GENERAL_APPLYBAITS.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_GENERAL_APPLYBAITS::getMessage
         );
         return new CommandAPICommand("applybaits")
                 .withPermission(UserPerms.APPLYBAITS)
@@ -187,7 +184,7 @@ public class MainCommand {
     }
 
     private void sendHelpMessage(@NotNull CommandSender sender) {
-        HelpMessageBuilder.create(commandUsages).sendMessage(sender);
+        helpMessageBuilder.sendMessage(sender);
     }
 
     private boolean checkEconomy(@NotNull CommandSender sender) {
