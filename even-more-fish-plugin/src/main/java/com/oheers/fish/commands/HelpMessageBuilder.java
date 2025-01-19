@@ -49,7 +49,7 @@ public class HelpMessageBuilder {
         usages.forEach((key, value) -> {
             AbstractMessage usage = ConfigMessage.HELP_FORMAT.getMessage();
             usage.setVariable("{command}", correctCommand(key));
-            usage.setVariable("{description}", value.get().getLegacyMessage());
+            usage.setVariable("{description}", value.get());
             message.appendString("\n");
             message.appendString(usage.getLegacyMessage());
         });
