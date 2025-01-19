@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EMFCommand {
+public class MainCommand {
 
     private final Map<String, String> commandUsages = new HashMap<>();
 

@@ -15,7 +15,7 @@ import com.oheers.fish.api.reward.RewardManager;
 import com.oheers.fish.baits.BaitListener;
 import com.oheers.fish.baits.BaitManager;
 import com.oheers.fish.commands.AdminCommand;
-import com.oheers.fish.commands.EMFCommand;
+import com.oheers.fish.commands.MainCommand;
 import com.oheers.fish.competition.AutoRunner;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionQueue;
@@ -499,7 +499,7 @@ public class EvenMoreFish extends EMFPlugin {
     }
 
     private void registerCommands() {
-        new EMFCommand().getCommand().register(this);
+        new MainCommand().getCommand().register(this);
 
         // Shortcut command for /emf admin
         if (MainConfig.getInstance().isAdminShortcutCommandEnabled()) {
