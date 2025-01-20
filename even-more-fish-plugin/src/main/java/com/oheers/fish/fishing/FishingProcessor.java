@@ -33,6 +33,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -115,7 +117,10 @@ public class FishingProcessor implements Listener {
      * @param location The location of the fisher.
      *                 {@code @returns} A random fish without any bait application.
      */
-    private Fish chooseNonBaitFish(Player player, Location location) {
+    private Fish chooseFish(@NotNull Player player, @NotNull Location location, @Nullable Bait bait) {
+        if (bait != null) {
+            return bait.chooseFish(player, location);
+        }
         Rarity fishRarity = FishManager.getInstance().getRandomWeightedRarity(player, 1, null, Set.copyOf(FishManager.getInstance().getRarityMap().values()));
         if (fishRarity == null) {
             EvenMoreFish.getInstance().getLogger().severe("Could not determine a rarity for fish for " + player.getName());
@@ -131,7 +136,7 @@ public class FishingProcessor implements Listener {
         return fish;
     }
 
-    private ItemStack getFish(Player player, Location location, ItemStack fishingRod) {
+    private ItemStack getFish(@NotNull Player player, @NotNull Location location, @NotNull ItemStack fishingRod) {
         if (!FishUtils.checkRegion(location, MainConfig.getInstance().getAllowedRegions())) {
             return null;
         }
@@ -139,61 +144,40 @@ public class FishingProcessor implements Listener {
             return null;
         }
 
-        if (EvenMoreFish.getInstance().isUsingMcMMO()) {
-            if (ExperienceConfig.getInstance().isFishingExploitingPrevented()) {
-                if (UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector())) {
-                    return null;
-                }
+        if (EvenMoreFish.getInstance().isUsingMcMMO()
+                && ExperienceConfig.getInstance().isFishingExploitingPrevented()
+                && UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector())) {
+            return null;
+        }
+
+        if (BaitFile.getInstance().getBaitCatchPercentage() > 0
+                && EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
+            Bait caughtBait = BaitNBTManager.randomBaitCatch();
+            if (caughtBait != null) {
+                AbstractMessage message = ConfigMessage.BAIT_CAUGHT.getMessage();
+                message.setBaitTheme(caughtBait.getTheme());
+                message.setBait(caughtBait.getName());
+                message.setPlayer(player);
+                message.send(player);
+
+                return caughtBait.create(player);
             }
         }
 
-        if (BaitFile.getInstance().getBaitCatchPercentage() > 0) {
-            if (EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
-                Bait caughtBait = BaitNBTManager.randomBaitCatch();
-                if (caughtBait != null) {
-                    AbstractMessage message = ConfigMessage.BAIT_CAUGHT.getMessage();
-                    message.setBaitTheme(caughtBait.getTheme());
-                    message.setBait(caughtBait.getName());
-                    message.setPlayer(player);
-                    message.send(player);
-
-                    return caughtBait.create(player);
-                }
-            }
-        }
-
-        Fish fish = null;
+        Bait applyingBait = null;
 
         if (BaitNBTManager.isBaitedRod(fishingRod) && (!BaitFile.getInstance().competitionsBlockBaits() || !Competition.isActive())) {
-            Bait applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
-            if (applyingBait == null) {
-                fish = chooseNonBaitFish(player, location);
-            } else {
-                fish = applyingBait.chooseFish(player, location);
-                if (fish.isWasBaited()) {
-                    fish.setFisherman(player.getUniqueId());
-                    // Lots of nesting here, but I cannot think of a better way to do this.
-                    try {
-                        ApplicationResult result = BaitNBTManager.applyBaitedRodNBT(fishingRod, applyingBait, -1);
-                        if (result != null) {
-                            ItemStack newFishingRod = result.getFishingRod();
-                            if (newFishingRod != null) {
-                                fishingRod.setItemMeta(newFishingRod.getItemMeta());
-                                EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
-                            }
-                        }
-                    } catch (MaxBaitsReachedException | MaxBaitReachedException | NullPointerException exception) {
-                        EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
-                    }
-                }
-            }
+            applyingBait = BaitNBTManager.randomBaitApplication(fishingRod);
         }
 
+        Fish fish = chooseFish(player, location, applyingBait);
+
         if (fish == null) {
-            fish = chooseNonBaitFish(player, location);
-            if (fish == null) {
-                return null;
-            }
+            return null;
+        }
+
+        if (applyingBait != null) {
+            applyingBait.handleFish(player, fish, fishingRod);
         }
 
         fish.init();
@@ -236,26 +220,21 @@ public class FishingProcessor implements Listener {
             }
         }
 
-        try {
-            competitionCheck(fish.clone(), player, location);
-        } catch (CloneNotSupportedException e) {
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed to create a clone of: " + fish, e);
-        }
+        competitionCheck(fish, player, location);
 
-        if (MainConfig.getInstance().isDatabaseOnline()) {
-            Fish finalFish = fish;
+        if (!MainConfig.getInstance().isDatabaseOnline()) {
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                if (EvenMoreFish.getInstance().getDatabaseV3().hasFishData(finalFish)) {
-                    EvenMoreFish.getInstance().getDatabaseV3().incrementFish(finalFish);
+                if (EvenMoreFish.getInstance().getDatabaseV3().hasFishData(fish)) {
+                    EvenMoreFish.getInstance().getDatabaseV3().incrementFish(fish);
 
-                    if (EvenMoreFish.getInstance().getDatabaseV3().getLargestFishSize(finalFish) < finalFish.getLength()) {
-                        EvenMoreFish.getInstance().getDatabaseV3().updateLargestFish(finalFish, player.getUniqueId());
+                    if (EvenMoreFish.getInstance().getDatabaseV3().getLargestFishSize(fish) < fish.getLength()) {
+                        EvenMoreFish.getInstance().getDatabaseV3().updateLargestFish(fish, player.getUniqueId());
                     }
                 } else {
-                    EvenMoreFish.getInstance().getDatabaseV3().createFishData(finalFish, player.getUniqueId());
+                    EvenMoreFish.getInstance().getDatabaseV3().createFishData(fish, player.getUniqueId());
                 }
 
-                EvenMoreFish.getInstance().getDatabaseV3().handleFishCatch(player.getUniqueId(), finalFish);
+                EvenMoreFish.getInstance().getDatabaseV3().handleFishCatch(player.getUniqueId(), fish);
             });
         }
 
