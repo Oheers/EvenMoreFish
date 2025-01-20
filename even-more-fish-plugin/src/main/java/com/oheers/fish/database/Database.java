@@ -50,6 +50,12 @@ public class Database implements DatabaseWrapper {
         }
 
         this.version = this.migrationManager.getDatabaseVersion().getVersion();
+        migrateFromDatabaseVersionToLatest();
+
+        initSettings(MainConfig.getInstance().getPrefix(), MainConfig.getInstance().getDatabase());
+    }
+
+    public void migrateFromDatabaseVersionToLatest() {
         switch (version) {
             case "5":
                 this.migrationManager.migrateFromV5ToLatest();
@@ -61,8 +67,6 @@ public class Database implements DatabaseWrapper {
                 this.migrationManager.migrateFromVersion(version, true);
                 break;
         }
-
-        initSettings(MainConfig.getInstance().getPrefix(), MainConfig.getInstance().getDatabase());
     }
 
 

@@ -120,6 +120,10 @@ public class MigrationManager {
         }
     }
 
+    public void repairFlyway() {
+        baseFlywayConfiguration.load().repair();
+    }
+
     public MigrationVersion getDatabaseVersion() {
         MigrationInfoService infoService = baseFlywayConfiguration.load().info();
         if (infoService.current() == null) {

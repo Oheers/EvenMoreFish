@@ -77,7 +77,7 @@ dependencyResolutionManagement {
 
             plugin("grgit", "org.ajoberstar.grgit").version("5.2.2")
 
-            version("jooq", "3.19.16")
+            version("jooq", "3.19.18")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
