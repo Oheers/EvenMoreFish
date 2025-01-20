@@ -28,7 +28,6 @@ public class FishManager {
     private FishManager() {
         rarityMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-        // TODO perform fish conversions
         new RarityConversions().performCheck();
         new FishConversions().performCheck();
     }
