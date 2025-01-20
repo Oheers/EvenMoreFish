@@ -81,28 +81,22 @@ public class FishUtils {
         }
 
         // setting the correct length so it's an exact replica.
-        Fish loadedFish = rarity.getFish(nameString);
-        Fish finalFish;
-        try {
-            // Ignore NPE warning here, it is caught in the catch block.
-            finalFish = loadedFish.clone();
-        } catch (NullPointerException | CloneNotSupportedException exception) {
-            EvenMoreFish.getInstance().getLogger().severe("Could not create fish from an ItemStack with rarity " + rarityString + " and name " + nameString + ". You may have" +
-                    "deleted the fish since this fish was caught.");
+        Fish fish = rarity.getFish(nameString);
+        if (fish == null) {
             return null;
         }
         if (randomIndex != null) {
-            finalFish.getFactory().setType(randomIndex);
+            fish.getFactory().setType(randomIndex);
         }
-        finalFish.setLength(lengthFloat);
+        fish.setLength(lengthFloat);
         if (playerString != null) {
             try {
-                finalFish.setFisherman(UUID.fromString(playerString));
+                fish.setFisherman(UUID.fromString(playerString));
             } catch (IllegalArgumentException exception) {
-                finalFish.setFisherman(null);
+                fish.setFisherman(null);
             }
         }
-        return finalFish;
+        return fish;
     }
 
     public static @Nullable Fish getFish(Skull skull, Player fisher) throws InvalidFishException {
@@ -125,28 +119,25 @@ public class FishUtils {
         }
 
         // setting the correct length and randomIndex, so it's an exact replica.
-        Fish loadedFish = rarity.getFish(nameString);
-        Fish finalFish;
-        try {
-            finalFish = loadedFish.clone();
-        } catch (NullPointerException | CloneNotSupportedException exception) {
+        Fish fish = rarity.getFish(nameString);
+        if (fish == null) {
             return null;
         }
-        finalFish.setLength(lengthFloat);
+        fish.setLength(lengthFloat);
         if (randomIndex != null) {
-            finalFish.getFactory().setType(randomIndex);
+            fish.getFactory().setType(randomIndex);
         }
         if (playerString != null) {
             try {
-                finalFish.setFisherman(UUID.fromString(playerString));
+                fish.setFisherman(UUID.fromString(playerString));
             } catch (IllegalArgumentException exception) {
-                finalFish.setFisherman(null);
+                fish.setFisherman(null);
             }
         } else {
-            finalFish.setFisherman(fisher.getUniqueId());
+            fish.setFisherman(fisher.getUniqueId());
         }
 
-        return finalFish;
+        return fish;
     }
 
     public static void giveItems(List<ItemStack> items, Player player) {
