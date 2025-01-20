@@ -33,35 +33,35 @@ import java.util.stream.Collectors;
 public class Fish implements Cloneable {
 
     private final @NotNull Section section;
-    String name;
-    Rarity rarity;
-    ItemFactory factory;
-    UUID fisherman;
-    Float length;
+    private final String name;
+    private final Rarity rarity;
+    private ItemFactory factory;
+    private UUID fisherman;
+    private Float length;
 
-    String displayName;
+    private String displayName;
 
-    List<Reward> actionRewards;
-    List<Reward> fishRewards;
-    List<Reward> sellRewards;
-    String eventType;
+    private List<Reward> actionRewards;
+    private List<Reward> fishRewards;
+    private List<Reward> sellRewards;
+    private String eventType;
 
-    Requirement requirement = new Requirement();
+    private Requirement requirement = new Requirement();
 
-    boolean wasBaited;
-    boolean silent;
+    private boolean wasBaited;
+    private boolean silent;
 
-    double weight;
+    private double weight;
 
-    double minSize;
-    double maxSize;
+    private double minSize;
+    private double maxSize;
 
-    boolean isCompExemptFish;
+    private boolean isCompExemptFish;
 
-    boolean disableFisherman;
+    private final boolean disableFisherman;
 
     private int day = -1;
-    private double setWorth;
+    private final double setWorth;
 
     /**
      * Constructs a Fish from its config section.
