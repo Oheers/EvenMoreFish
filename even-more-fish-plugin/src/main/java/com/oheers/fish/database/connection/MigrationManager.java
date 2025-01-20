@@ -121,7 +121,11 @@ public class MigrationManager {
     }
 
     public void repairFlyway() {
-        baseFlywayConfiguration.load().repair();
+        this.baseFlywayConfiguration.load().repair();
+    }
+
+    public void cleanFlyway() {
+        this.baseFlywayConfiguration.load().clean();
     }
 
     public MigrationVersion getDatabaseVersion() {
