@@ -62,7 +62,7 @@ public class Fish implements Cloneable {
 
     private int day = -1;
     private final double setWorth;
-    
+
     private Fish(@NotNull Rarity rarity, @NotNull Section section) {
         this.section = section;
         this.rarity = rarity;
@@ -430,10 +430,8 @@ public class Fish implements Cloneable {
     }
 
     @Override
-    public Fish clone() throws CloneNotSupportedException {
-        Fish clone = (Fish) super.clone();
-        clone.factory = new ItemFactory(null, section);
-        return clone;
+    public Fish clone() {
+        return create(rarity, section);
     }
 
     public boolean hasFishermanDisabled() {
