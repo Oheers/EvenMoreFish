@@ -62,15 +62,8 @@ public class Fish implements Cloneable {
 
     private int day = -1;
     private final double setWorth;
-
-    /**
-     * Constructs a Fish from its config section.
-     * @param section The section for this fish.
-     */
-    public Fish(@NotNull Rarity rarity, @Nullable Section section) throws InvalidFishException {
-        if (section == null) {
-            throw new InvalidFishException("Fish could not be fetched from the config.");
-        }
+    
+    private Fish(@NotNull Rarity rarity, @NotNull Section section) {
         this.section = section;
         this.rarity = rarity;
         // This should never be null, but we have this check just to be safe.
@@ -104,6 +97,26 @@ public class Fish implements Cloneable {
 
         checkSellEvent();
         handleRequirements();
+    }
+
+    /**
+     * Creates a Fish from its config section.
+     * @param section The section for this fish.
+     */
+    public static Fish create(@NotNull Rarity rarity, @NotNull Section section) {
+        return new Fish(rarity, section);
+    }
+
+    /**
+     * Creates a Fish from its config section.
+     * @param section The section for this fish.
+     * @throws InvalidFishException When section is null.
+     */
+    public static Fish createOrThrow(@NotNull Rarity rarity, @Nullable Section section) throws InvalidFishException {
+        if (section == null) {
+            throw new InvalidFishException("Fish could not be fetched from the config.");
+        }
+        return new Fish(rarity, section);
     }
 
     private void handleRequirements() {

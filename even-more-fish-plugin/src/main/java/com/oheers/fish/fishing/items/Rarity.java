@@ -162,7 +162,7 @@ public class Rarity extends ConfigBase {
                 fishSection = rootFishSection.createSection(fishStr);
             }
             try {
-                fishList.add(new Fish(this, fishSection));
+                fishList.add(Fish.createOrThrow(this, fishSection));
             } catch (InvalidFishException exception) {
                 EvenMoreFish.getInstance().getLogger().log(Level.WARNING, exception.getMessage(), exception);
             }
