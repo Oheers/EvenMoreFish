@@ -9,16 +9,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class BaitManager {
     
     private static BaitManager instance;
 
-    private final Map<String, Bait> baitMap;
+    private final TreeMap<String, Bait> baitMap;
     private boolean loaded;
     
     private BaitManager() {
-        baitMap = new HashMap<>();
+        baitMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     }
     
     public static BaitManager getInstance() {
@@ -66,7 +67,7 @@ public class BaitManager {
         if (baitName == null) {
             return null;
         }
-        return baitMap.get(baitName.toUpperCase());
+        return baitMap.get(baitName);
     }
 
     public @Nullable Bait getBait(@Nullable ItemStack itemStack) {
@@ -99,7 +100,7 @@ public class BaitManager {
                 continue;
             }
             Bait bait = new Bait(baitSection);
-            baitMap.put(baitName.toUpperCase(), bait);
+            baitMap.put(baitName, bait);
         }
     }
     
