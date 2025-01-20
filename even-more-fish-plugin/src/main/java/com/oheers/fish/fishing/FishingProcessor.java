@@ -197,15 +197,16 @@ public class FishingProcessor implements Listener {
         }
 
         fish.init();
+
+        EMFFishEvent cEvent = new EMFFishEvent(fish, player);
+        Bukkit.getPluginManager().callEvent(cEvent);
+        if (cEvent.isCancelled()) return null;
+
         fish.checkFishEvent();
 
         if (fish.hasFishRewards()) {
             fish.getFishRewards().forEach(fishReward -> fishReward.rewardPlayer(player, location));
         }
-
-        EMFFishEvent cEvent = new EMFFishEvent(fish, player);
-        Bukkit.getPluginManager().callEvent(cEvent);
-        if (cEvent.isCancelled()) return null;
 
         if (!fish.isSilent()) {
             String length = decimalFormat.format(fish.getLength());
