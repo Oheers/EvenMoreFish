@@ -11,15 +11,12 @@ import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.MigrationInfoService;
 import org.flywaydb.core.api.MigrationVersion;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
 import org.flywaydb.core.api.configuration.FluentConfiguration;
@@ -206,8 +203,10 @@ public class MigrationManager {
         return Flyway.configure(getClass().getClassLoader())
                 .dataSource(connectionFactory.dataSource)
                 .placeholders(Map.of(
-                        "table.prefix", MainConfig.getInstance().getPrefix()
+                        "table.prefix", MainConfig.getInstance().getPrefix(),
+                        "db.name", MainConfig.getInstance().getDatabase()
                 ))
+                .schemas(MainConfig.getInstance().getDatabase())
                 .locations(getMigrationLocation(MainConfig.getInstance().getDatabaseType()))
                 .validateMigrationNaming(true)
                 .createSchemas(true)

@@ -1,3 +1,6 @@
+CREATE SCHEMA IF NOT EXISTS `{db.name}`;
+SET SCHEMA `{db.name}`;
+
 CREATE TABLE IF NOT EXISTS `${table.prefix}competitions` (
    id INTEGER NOT NULL AUTO_INCREMENT, -- H2 uses AUTO_INCREMENT for compatibility
    competition_name VARCHAR(256) NOT NULL,
