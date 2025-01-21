@@ -21,8 +21,22 @@ java {
 }
 
 publishing {
-    repositories {
-        // We can add CodeMC here when we're ready
+    repositories { // Copied directly from CodeMC's docs
+        val mavenUrl: String? by project
+        val mavenSnapshotUrl: String? by project
+
+        (if(version.toString().endsWith("SNAPSHOT")) mavenSnapshotUrl else mavenUrl)?.let { url ->
+            maven(url) {
+                val mavenUsername: String? by project
+                val mavenPassword: String? by project
+                if(mavenUsername != null && mavenPassword != null) {
+                    credentials {
+                        username = mavenUsername
+                        password = mavenPassword
+                    }
+                }
+            }
+        }
     }
     publications {
         create<MavenPublication>("api") {
