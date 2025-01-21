@@ -278,6 +278,7 @@ publishing {
             artifactId = project.name
             version = project.version.toString()
 
+            // Publish the fat jar so all relocated dependencies are available
             from(components["shadow"])
         }
     }
