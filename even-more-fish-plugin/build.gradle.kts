@@ -254,6 +254,19 @@ tasks {
     }
 }
 
+publishing {
+    repositories {}
+    publications {
+        create<MavenPublication>("plugin") {
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+
+            from(components["shadow"])
+        }
+    }
+}
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
