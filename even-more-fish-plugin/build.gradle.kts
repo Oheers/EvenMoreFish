@@ -255,7 +255,9 @@ tasks {
 }
 
 publishing {
-    repositories {}
+    repositories {
+        // We can add CodeMC here when we're ready
+    }
     publications {
         create<MavenPublication>("plugin") {
             groupId = project.group.toString()
