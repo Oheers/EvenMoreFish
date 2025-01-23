@@ -39,7 +39,8 @@ import java.util.*;
 
 public class AdminCommand {
 
-    private final Map<String, String> commandUsages = new HashMap<>();
+    private final HelpMessageBuilder helpMessageBuilder = HelpMessageBuilder.create();
+
     private final CommandAPICommand command;
 
     public AdminCommand(@NotNull String name) {
@@ -70,13 +71,13 @@ public class AdminCommand {
     }
 
     private void sendHelpMessage(@NotNull CommandSender sender) {
-        HelpMessageBuilder.create(commandUsages).sendMessage(sender);
+        helpMessageBuilder.sendMessage(sender);
     }
 
     private CommandAPICommand getFish() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin fish",
-                ConfigMessage.HELP_ADMIN_FISH.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_FISH::getMessage
         );
         return new CommandAPICommand("fish")
                 .withArguments(
@@ -86,7 +87,7 @@ public class AdminCommand {
                         ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes((sender, arguments) -> {
-                    final Fish fish = (Fish) arguments.get("fish");
+                    final Fish fish = arguments.getUnchecked("fish");
                     if (fish == null) {
                         return;
                     }
@@ -131,13 +132,12 @@ public class AdminCommand {
                         RarityArgument.create().setOptional(true)
                 )
                 .executes((sender, args) -> {
-                    String listTarget = (String) Objects.requireNonNull(args.get("listTarget"));
+                    String listTarget = Objects.requireNonNull(args.getUnchecked("listTarget"));
                     switch (listTarget) {
                         case "fish" -> {
-                            final Rarity rarity = (Rarity) args.get("rarity");
+                            final Rarity rarity = args.getUnchecked("rarity");
                             if (rarity == null) {
-                                // TODO add "invalid rarity" message.
-                                sender.sendMessage("Rarity is invalid.");
+                                ConfigMessage.RARITY_INVALID.getMessage().send(sender);
                                 return;
                             }
                             BaseComponent[] baseComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
@@ -168,9 +168,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getNbtRod() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin nbt-rod",
-                ConfigMessage.HELP_ADMIN_NBTROD.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_NBTROD::getMessage
         );
         return new CommandAPICommand("nbt-rod")
                 .withArguments(
@@ -201,9 +201,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getBait() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin bait",
-                ConfigMessage.HELP_ADMIN_BAIT.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_BAIT::getMessage
         );
         return new CommandAPICommand("bait")
                 .withArguments(
@@ -212,7 +212,7 @@ public class AdminCommand {
                         ArgumentHelper.getPlayerArgument("target").setOptional(true)
                 )
                 .executes((sender, args) -> {
-                    final Bait bait = (Bait) Objects.requireNonNull(args.get("bait"));
+                    final Bait bait = Objects.requireNonNull(args.getUnchecked("bait"));
                     final int quantity = (int) args.getOptional("quantity").orElse(1);
                     final Player target = (Player) args.getOptional("target").orElseGet(() -> {
                         if (sender instanceof Player p) {
@@ -237,9 +237,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getClearBaits() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin clearbaits",
-                ConfigMessage.HELP_ADMIN_CLEARBAITS.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_CLEARBAITS::getMessage
         );
         return new CommandAPICommand("clearbaits")
                 .withArguments(
@@ -281,9 +281,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getReload() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin reload",
-                ConfigMessage.HELP_ADMIN_RELOAD.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_RELOAD::getMessage
         );
         return new CommandAPICommand("reload")
                 .executes(info -> {
@@ -292,9 +292,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getAddons() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin addons",
-                ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_ADDONS::getMessage
         );
         return new CommandAPICommand("addons")
                 .withFullDescription(ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getPlainTextMessage())
@@ -312,9 +312,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getVersion() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin version",
-                ConfigMessage.HELP_ADMIN_VERSION.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_VERSION::getMessage
         );
         return new CommandAPICommand("version")
                 .executes(info -> {
@@ -342,9 +342,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getRewardTypes() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin rewardtypes",
-                ConfigMessage.HELP_ADMIN_REWARDTYPES.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_REWARDTYPES::getMessage
         );
         return new CommandAPICommand("rewardtypes")
                 .executes(info -> {
@@ -367,9 +367,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getMigrate() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin migrate",
-                ConfigMessage.HELP_ADMIN_MIGRATE.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_MIGRATE::getMessage
         );
         return new CommandAPICommand("migrate")
                 .executes(info -> {
@@ -382,9 +382,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getRawItem() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin rawItem",
-                ConfigMessage.HELP_ADMIN_RAWITEM.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_RAWITEM::getMessage
         );
         return new CommandAPICommand("rawItem")
                 .executesPlayer(info -> {
@@ -407,9 +407,9 @@ public class AdminCommand {
     }
 
     private CommandAPICommand getHelp() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin help",
-                ConfigMessage.HELP_GENERAL_HELP.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_GENERAL_HELP::getMessage
         );
         return new CommandAPICommand("help")
                 .executes(info -> {
@@ -420,9 +420,9 @@ public class AdminCommand {
     // COMPETITION BRANCH
 
     private CommandAPICommand getCompetition() {
-        commandUsages.putIfAbsent(
+        helpMessageBuilder.addUsage(
                 "admin competition",
-                ConfigMessage.HELP_ADMIN_COMPETITION.getMessage().getLegacyMessage()
+                ConfigMessage.HELP_ADMIN_COMPETITION::getMessage
         );
         return new CommandAPICommand("competition")
                 .withSubcommands(
@@ -442,8 +442,8 @@ public class AdminCommand {
                         new IntegerArgument("duration", 1).setOptional(true)
                 )
                 .executes((sender, arguments) -> {
-                    final String id = (String) Objects.requireNonNull(arguments.get("competitionId"));
-                    final Integer duration = (Integer) arguments.get("duration");
+                    final String id = Objects.requireNonNull(arguments.getUnchecked("competitionId"));
+                    final Integer duration = arguments.getUnchecked("duration");
                     if (Competition.isActive()) {
                         ConfigMessage.COMPETITION_ALREADY_RUNNING.getMessage().send(sender);
                         return;
