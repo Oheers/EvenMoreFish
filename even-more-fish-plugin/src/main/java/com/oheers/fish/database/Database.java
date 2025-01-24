@@ -13,6 +13,7 @@ import com.oheers.fish.database.generated.mysql.Tables;
 import com.oheers.fish.database.generated.mysql.tables.records.CompetitionsRecord;
 import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
+import com.oheers.fish.database.strategies.DatabaseStrategyFactory;
 import com.oheers.fish.fishing.items.Fish;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -34,9 +35,10 @@ import java.util.regex.Pattern;
 
 public class Database implements DatabaseWrapper {
     private final String version;
-    private final Settings settings;
     private final ConnectionFactory connectionFactory;
     private final MigrationManager migrationManager;
+
+    private Settings settings;
 
     public Database() {
         this.settings = new Settings();
@@ -98,10 +100,7 @@ public class Database implements DatabaseWrapper {
                 )
         );
 
-        if (connectionFactory instanceof SqliteConnectionFactory) {
-            settings.withRenderSchema(false); //todo
-        }
-
+        this.settings = DatabaseStrategyFactory.getStrategy(connectionFactory).applySettings(settings, tablePrefix,dbName);
     }
 
     public void executeStatement(@NotNull Consumer<DSLContext> consumer) {
@@ -138,8 +137,9 @@ public class Database implements DatabaseWrapper {
 
     @Override
     public boolean hasUserLog(@NotNull UUID uuid) {
-        if (!hasUser(uuid))
+        if (!hasUser(uuid)) {
             return false;
+        }
 
         final int userId = getUserId(uuid);
         if (userId == 0) {

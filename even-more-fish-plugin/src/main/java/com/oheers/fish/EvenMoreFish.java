@@ -286,6 +286,12 @@ public class EvenMoreFish extends EMFPlugin {
         }
     }
 
+    public static void dbVerbose(final String message) {
+        if (MainConfig.getInstance().doDBVerbose()) {
+            getInstance().getLogger().info("DB-VERBOSE %s".formatted(message));
+        }
+    }
+
     private void listeners() {
 
         getServer().getPluginManager().registerEvents(new JoinChecker(), this);

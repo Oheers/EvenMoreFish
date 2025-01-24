@@ -18,14 +18,15 @@ CREATE TABLE IF NOT EXISTS `${table.prefix}fish` (
 );
 
 CREATE TABLE IF NOT EXISTS `${table.prefix}fish_log` (
-   id INTEGER NOT NULL, -- user id
+   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+   user_id INTEGER NOT NULL,
    rarity TEXT NOT NULL,
    fish TEXT NOT NULL,
    quantity INTEGER NOT NULL,
    first_catch_time TEXT NOT NULL,
    largest_length REAL NOT NULL,
    -- [jooq ignore start]
-   FOREIGN KEY (id) REFERENCES `${table.prefix}users`(id)
+   FOREIGN KEY (user_id) REFERENCES `${table.prefix}users`(id)
    -- [jooq ignore stop]
 );
 

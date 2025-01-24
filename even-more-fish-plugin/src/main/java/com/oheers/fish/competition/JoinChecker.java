@@ -39,9 +39,7 @@ public class JoinChecker implements Listener {
                 fishReports = EvenMoreFish.getInstance().getDatabase().getFishReportsForPlayer(userUUID);
             } else {
                 fishReports = new ArrayList<>();
-                if (MainConfig.getInstance().doDBVerbose()) {
-                    EvenMoreFish.getInstance().getLogger().info(userName + " has joined for the first time, creating new data handle for them.");
-                }
+                EvenMoreFish.dbVerbose(userName + " has joined for the first time, creating new data handle for them.");
             }
 
 

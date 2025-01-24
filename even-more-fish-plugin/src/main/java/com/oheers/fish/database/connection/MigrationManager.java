@@ -3,6 +3,7 @@ package com.oheers.fish.database.connection;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.migrate.LegacyToV3DatabaseMigration;
+import com.oheers.fish.database.strategies.DatabaseStrategyFactory;
 import com.oheers.fish.utils.ManifestUtil;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bukkit.command.CommandSender;
@@ -206,7 +207,7 @@ public class MigrationManager {
         legacy.migrate(initiator);
     }
 
-    private FluentConfiguration getBaseFlywayConfiguration(ConnectionFactory connectionFactory) {
+    private FluentConfiguration getBaseFlywayConfiguration(@NotNull ConnectionFactory connectionFactory) {
         final FluentConfiguration baseConfig = Flyway.configure(getClass().getClassLoader())
                 .dataSource(connectionFactory.dataSource)
                 .placeholders(Map.of(
@@ -219,9 +220,6 @@ public class MigrationManager {
                 .baselineOnMigrate(true)
                 .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history");
 
-        if (!(connectionFactory instanceof SqliteConnectionFactory)) {
-            baseConfig.schemas(MainConfig.getInstance().getDatabase()); //todo
-        }
-        return baseConfig;
+        return DatabaseStrategyFactory.getStrategy(connectionFactory).configureFlyway(baseConfig);
     }
 }
