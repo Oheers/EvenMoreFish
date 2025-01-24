@@ -39,6 +39,7 @@ public class JoinChecker implements Listener {
                 fishReports = EvenMoreFish.getInstance().getDatabase().getFishReportsForPlayer(userUUID);
             } else {
                 fishReports = new ArrayList<>();
+                //todo, bug here, if user joins, but doesn't participate in any comp, and then leaves, we get to this point again.
                 EvenMoreFish.dbVerbose(userName + " has joined for the first time, creating new data handle for them.");
             }
 
@@ -71,7 +72,7 @@ public class JoinChecker implements Listener {
             AbstractMessage startMessage = activeComp.getStartMessage();
             if (startMessage != null) {
                 startMessage.setMessage(ConfigMessage.COMPETITION_JOIN.getMessage());
-                EvenMoreFish.getScheduler().runTaskLater(() -> startMessage.send(event.getPlayer()), 20 * 3);
+                EvenMoreFish.getScheduler().runTaskLater(() -> startMessage.send(event.getPlayer()), 20L * 3);
             }
         }
 

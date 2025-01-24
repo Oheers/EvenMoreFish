@@ -34,7 +34,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class Database implements DatabaseWrapper {
-    private final String version;
+    private String version;
     private final ConnectionFactory connectionFactory;
     private final MigrationManager migrationManager;
 
@@ -69,6 +69,8 @@ public class Database implements DatabaseWrapper {
                 this.migrationManager.migrateFromVersion(version, true);
                 break;
         }
+
+        this.version = this.migrationManager.getDatabaseVersion().getVersion();
     }
 
 
