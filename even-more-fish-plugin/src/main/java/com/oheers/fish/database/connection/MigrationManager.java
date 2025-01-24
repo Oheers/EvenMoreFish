@@ -14,6 +14,7 @@ import org.flywaydb.core.api.MigrationVersion;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
@@ -126,6 +127,13 @@ public class MigrationManager {
     }
 
     public MigrationVersion getDatabaseVersion() {
+        try (Connection connection = connectionFactory.getConnection()) {
+            // This will create the database file if it doesn't exist
+            EvenMoreFish.debug("Attempting first connection to database...");
+        } catch (SQLException e) {
+            return MigrationVersion.fromVersion("7.0");
+        }
+
         MigrationInfoService infoService = baseFlywayConfiguration.load().info();
         if (infoService.current() == null) {
             return MigrationVersion.fromVersion("7.0");
@@ -199,18 +207,21 @@ public class MigrationManager {
     }
 
     private FluentConfiguration getBaseFlywayConfiguration(ConnectionFactory connectionFactory) {
-
-        return Flyway.configure(getClass().getClassLoader())
+        final FluentConfiguration baseConfig = Flyway.configure(getClass().getClassLoader())
                 .dataSource(connectionFactory.dataSource)
                 .placeholders(Map.of(
                         "table.prefix", MainConfig.getInstance().getPrefix(),
                         "db.name", MainConfig.getInstance().getDatabase()
                 ))
-                .schemas(MainConfig.getInstance().getDatabase())
+                .createSchemas(true)
                 .locations(getMigrationLocation(MainConfig.getInstance().getDatabaseType()))
                 .validateMigrationNaming(true)
-                .createSchemas(true)
                 .baselineOnMigrate(true)
                 .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history");
+
+        if (!(connectionFactory instanceof SqliteConnectionFactory)) {
+            baseConfig.schemas(MainConfig.getInstance().getDatabase()); //todo
+        }
+        return baseConfig;
     }
 }

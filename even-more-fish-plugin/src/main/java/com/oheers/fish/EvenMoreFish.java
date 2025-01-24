@@ -282,7 +282,7 @@ public class EvenMoreFish extends EMFPlugin {
 
     public static void debug(final Level level, final String message) {
         if (MainConfig.getInstance().debugSession()) {
-            getInstance().getLogger().log(level, () -> message);
+            getInstance().getLogger().log(level, () -> "DEBUG %s".formatted(message));
         }
     }
 

@@ -98,6 +98,10 @@ public class Database implements DatabaseWrapper {
                 )
         );
 
+        if (connectionFactory instanceof SqliteConnectionFactory) {
+            settings.withRenderSchema(false); //todo
+        }
+
     }
 
     public void executeStatement(@NotNull Consumer<DSLContext> consumer) {
