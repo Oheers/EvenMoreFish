@@ -330,7 +330,6 @@ public class AdminCommand {
                     for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
                         fishCount += rarity.getFishList().size();
                     }
-
                     String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +
                             Messages.getInstance().getSTDPrefix() + "Feature Branch: " + getFeatureBranchName() + "\n" +
                             Messages.getInstance().getSTDPrefix() + "Feature Build/Date: " + getFeatureBranchBuildOrDate() + "\n" +
@@ -342,6 +341,7 @@ public class AdminCommand {
                             Messages.getInstance().getSTDPrefix();
 
                     msgString += "Database Engine: " + EvenMoreFish.getInstance().getDatabase().getDatabaseVersion();
+                    msgString += "Database Type: " + EvenMoreFish.getInstance().getDatabase().getType();
 
                     AbstractMessage msg = EvenMoreFish.getAdapter().createMessage(msgString);
                     msg.send(info.sender());

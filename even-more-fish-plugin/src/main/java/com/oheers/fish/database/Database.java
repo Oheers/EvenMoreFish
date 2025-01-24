@@ -586,4 +586,8 @@ public class Database implements DatabaseWrapper {
 
         return "V"+this.version;
     }
+
+    public String getType() {
+        return connectionFactory.getType();
+    }
 }
