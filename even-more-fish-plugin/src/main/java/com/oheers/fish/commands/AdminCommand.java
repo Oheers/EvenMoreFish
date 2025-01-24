@@ -325,23 +325,36 @@ public class AdminCommand {
         );
         return new CommandAPICommand("version")
                 .executes(info -> {
-                    int fishCount = 0;
+                    int fishCount = FishManager.getInstance().getRarityMap().values().stream()
+                            .mapToInt(rarity -> rarity.getFishList().size())
+                            .sum();
 
-                    for (Rarity rarity : FishManager.getInstance().getRarityMap().values()) {
-                        fishCount += rarity.getFishList().size();
-                    }
-                    String msgString = Messages.getInstance().getSTDPrefix() + "EvenMoreFish by Oheers " + EvenMoreFish.getInstance().getDescription().getVersion() + "\n" +
-                            Messages.getInstance().getSTDPrefix() + "Feature Branch: " + getFeatureBranchName() + "\n" +
-                            Messages.getInstance().getSTDPrefix() + "Feature Build/Date: " + getFeatureBranchBuildOrDate() + "\n" +
-                            Messages.getInstance().getSTDPrefix() + "MCV: " + Bukkit.getServer().getVersion() + "\n" +
-                            Messages.getInstance().getSTDPrefix() + "SSV: " + Bukkit.getServer().getBukkitVersion() + "\n" +
-                            Messages.getInstance().getSTDPrefix() + "Online: " + Bukkit.getServer().getOnlineMode() + "\n" +
-                            Messages.getInstance().getSTDPrefix() + "Loaded: Rarities(" + FishManager.getInstance().getRarityMap().size() + ") Fish(" +
-                            fishCount + ") Baits(" + BaitManager.getInstance().getBaitMap().size() + ") Competitions(" + EvenMoreFish.getInstance().getCompetitionQueue().getSize() + ")\n" +
-                            Messages.getInstance().getSTDPrefix();
+                   final String msgString =
+                                    """
+                                    {prefix} EvenMoreFish by Oheers {version}\s
+                                    {prefix} Feature Branch: {branch}\s
+                                    {prefix} Feature Build/Date: {build-date}\s
+                                    {prefix} MCV: {mcv}\s
+                                    {prefix} SSV: {ssv}\s
+                                    {prefix} Online: {online}\s
+                                    {prefix} Loaded Rarities({rarities}) Fish({fish}) Baits({baits}) Competitions({competitions})\s
+                                    {prefix} Database Engine: {engine}\s
+                                    {prefix} Database Type: {type}\s
+                                    """
+                                            .replace("{prefix}", Messages.getInstance().getSTDPrefix())
+                                            .replace("{version}", EvenMoreFish.getInstance().getDescription().getVersion())
+                                            .replace("{branch}", getFeatureBranchName())
+                                            .replace("{build-date}", getFeatureBranchBuildOrDate())
+                                            .replace("{mcv}", Bukkit.getServer().getVersion())
+                                            .replace("{ssv}", Bukkit.getServer().getBukkitVersion())
+                                            .replace("{online}", String.valueOf(Bukkit.getServer().getOnlineMode()))
+                                            .replace("{rarities}", String.valueOf(FishManager.getInstance().getRarityMap().size()))
+                                            .replace("{fish}", String.valueOf(fishCount))
+                                            .replace("{baits}", String.valueOf(BaitManager.getInstance().getBaitMap().size()))
+                                            .replace("{competitions}", String.valueOf(EvenMoreFish.getInstance().getCompetitionQueue().getSize()))
+                                            .replace("{engine}", EvenMoreFish.getInstance().getDatabase().getDatabaseVersion())
+                                            .replace("{type}", EvenMoreFish.getInstance().getDatabase().getType());
 
-                    msgString += "Database Engine: " + EvenMoreFish.getInstance().getDatabase().getDatabaseVersion();
-                    msgString += "Database Type: " + EvenMoreFish.getInstance().getDatabase().getType();
 
                     AbstractMessage msg = EvenMoreFish.getAdapter().createMessage(msgString);
                     msg.send(info.sender());
