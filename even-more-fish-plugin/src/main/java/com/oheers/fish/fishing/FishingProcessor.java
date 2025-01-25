@@ -206,7 +206,9 @@ public class FishingProcessor implements Listener {
 
         EMFFishEvent cEvent = new EMFFishEvent(fish, player);
         Bukkit.getPluginManager().callEvent(cEvent);
-        if (cEvent.isCancelled()) return null;
+        if (cEvent.isCancelled()) {
+            return null;
+        }
 
         if (!fish.isSilent()) {
             String length = decimalFormat.format(fish.getLength());
@@ -262,9 +264,9 @@ public class FishingProcessor implements Listener {
     private boolean competitionOnlyCheck() {
         if (MainConfig.getInstance().isCompetitionUnique()) {
             return Competition.isActive();
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     private void competitionCheck(Fish fish, Player fisherman, Location location) {
@@ -273,13 +275,11 @@ public class FishingProcessor implements Listener {
             return;
         }
         List<World> competitionWorlds = active.getCompetitionFile().getRequiredWorlds();
-        if (!competitionWorlds.isEmpty()) {
-            if (location.getWorld() != null) {
-                if (!competitionWorlds.contains(location.getWorld())) {
-                    return;
-                }
-            }
+        if (!competitionWorlds.isEmpty() && location.getWorld() != null && !competitionWorlds.contains(location.getWorld())) {
+            return;
         }
+
+
         active.applyToLeaderboard(fish, fisherman);
     }
 }
