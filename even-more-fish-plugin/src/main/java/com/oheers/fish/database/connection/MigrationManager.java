@@ -128,16 +128,17 @@ public class MigrationManager {
     }
 
     public MigrationVersion getDatabaseVersion() {
+        final MigrationVersion latestBaseVersion = MigrationVersion.fromVersion("7.0");
         try (Connection ignored = connectionFactory.getConnection()) {
             // This will create the database file if it doesn't exist
             EvenMoreFish.debug("Attempting first connection to database...");
         } catch (SQLException e) {
-            return MigrationVersion.fromVersion("7.0");
+            return latestBaseVersion;
         }
 
         MigrationInfoService infoService = baseFlywayConfiguration.load().info();
         if (infoService.current() == null) {
-            return MigrationVersion.fromVersion("7.0");
+            return latestBaseVersion;
         }
         return baseFlywayConfiguration.load().info().current().getVersion();
     }
