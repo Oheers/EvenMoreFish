@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-public class Database implements DatabaseWrapper {
+public class Database implements DatabaseAPI {
     private String version;
     private final ConnectionFactory connectionFactory;
     private final MigrationManager migrationManager;

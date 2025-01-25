@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Interface for database operations related to the fishing system.
  */
-public interface DatabaseWrapper {
+public interface DatabaseAPI {
 
     // User-related methods
     boolean hasUser(@NotNull UUID uuid);
