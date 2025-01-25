@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MigrationManager {
+    private final String latestBaselineVersion;
     private final Logger logger = LoggerFactory.getLogger(MigrationManager.class.getName());
     private final FluentConfiguration baseFlywayConfiguration;
     private final Flyway defaultFlyway;
@@ -44,16 +45,16 @@ public class MigrationManager {
         this.connectionFactory = connectionFactory;
         this.baseFlywayConfiguration = getBaseFlywayConfiguration(connectionFactory);
         this.defaultFlyway = this.baseFlywayConfiguration.load();
+        this.latestBaselineVersion = ManifestUtil.getAttributeFromManifest("Database-Baseline-Version", "7.0");
     }
 
     public void migrateFromVersion(String currentDbVersion, boolean baseline) {
-        final String baselineVersion = ManifestUtil.getAttributeFromManifest("Database-Baseline-Version", "7.0");
         Flyway migrate = this.baseFlywayConfiguration
-                .baselineVersion(baselineVersion)
+                .baselineVersion(latestBaselineVersion)
                 .load();
 
         try {
-            if (shouldBaseline(baseline, baselineVersion, currentDbVersion)) {
+            if (shouldBaseline(baseline, latestBaselineVersion, currentDbVersion)) {
                 migrate.baseline();
             }
 
@@ -128,7 +129,7 @@ public class MigrationManager {
     }
 
     public MigrationVersion getDatabaseVersion() {
-        final MigrationVersion latestBaseVersion = MigrationVersion.fromVersion("7.0");
+        final MigrationVersion latestBaseVersion = MigrationVersion.fromVersion(latestBaselineVersion);
         try (Connection ignored = connectionFactory.getConnection()) {
             // This will create the database file if it doesn't exist
             EvenMoreFish.debug("Attempting first connection to database...");
