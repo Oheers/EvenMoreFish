@@ -13,6 +13,7 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.database.DataManager;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
@@ -235,11 +236,7 @@ public class FishingProcessor implements Listener {
             }
         }
 
-        try {
-            competitionCheck(fish.clone(), player, location);
-        } catch (CloneNotSupportedException e) {
-            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Failed to create a clone of: " + fish, e);
-        }
+        competitionCheck(fish.clone(), player, location);
 
         if (MainConfig.getInstance().isDatabaseOnline()) {
             Fish finalFish = fish;
@@ -254,7 +251,7 @@ public class FishingProcessor implements Listener {
                     EvenMoreFish.getInstance().getDatabase().createFishData(finalFish, player.getUniqueId());
                 }
 
-                EvenMoreFish.getInstance().getDatabase().handleFishCatch(player.getUniqueId(), finalFish);
+                DataManager.getInstance().handleFishCatch(player.getUniqueId(), finalFish);
             });
         }
 
