@@ -166,7 +166,7 @@ public enum ConfigMessage {
     PLACEHOLDER_FISH_MOST_FORMAT("{amount} fish", PrefixType.NONE, true, false, "emf-most-fish-format"),
     PLACEHOLDER_NO_COMPETITION_RUNNING("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running"),
     PLACEHOLDER_NO_COMPETITION_RUNNING_FISH("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running-fish"),
-    PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running"),
+    PLACEHOLDER_NO_COMPETITION_RUNNING_SIZE("No competition running right now.", PrefixType.NONE, true, false, "no-competition-running-size"),
 
     PLACEHOLDER_NO_PLAYER_IN_PLACE("Start fishing to take this place", PrefixType.NONE, true, false, "no-player-in-place"),
     PLACEHOLDER_NO_FISH_IN_PLACE("Start fishing to take this place", PrefixType.NONE, true, false, "no-fish-in-place"),
@@ -224,7 +224,8 @@ public enum ConfigMessage {
             "",
             "&e» (Left-click) sell the fish.",
             "&7» (Right-click) cancel."
-    ), PrefixType.NONE, false, false, "sell-gui-lore");
+    ), PrefixType.NONE, false, false, "sell-gui-lore"),
+    RARITY_INVALID("&rThat is not a valid rarity!", PrefixType.ERROR, false, true, "rarity-invalid");
 
     private final String id;
     private final boolean canSilent, canHidePrefix;

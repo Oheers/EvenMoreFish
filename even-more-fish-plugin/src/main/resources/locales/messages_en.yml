@@ -250,6 +250,9 @@ admin:
   # When checking the list of RewardTypes. The actual list is added to the end of this message.
   list-reward-types: "&rRegistered Reward Types: "
 
+# When an invalid rarity is provided for a command.
+rarity-invalid: "&rThat is not a valid rarity!"
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 9
+config-version: 10

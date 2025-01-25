@@ -5,6 +5,8 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.exceptions.MaxBaitReachedException;
+import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -17,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class Bait {
 
@@ -24,12 +27,12 @@ public class Bait {
     private final ItemFactory itemFactory;
     private final String name, displayName, theme;
     private final int maxApplications, dropQuantity;
-    List<Fish> fishList = new ArrayList<>();
-    List<Rarity> rarityList = new ArrayList<>();
-    Set<Rarity> fishListRarities = new HashSet<>();
-    double boostRate;
-    double applicationWeight;
-    double catchWeight;
+    private final List<Fish> fishList = new ArrayList<>();
+    private final List<Rarity> rarityList = new ArrayList<>();
+    private final Set<Rarity> fishListRarities = new HashSet<>();
+    private double boostRate;
+    private double applicationWeight;
+    private double catchWeight;
 
     /**
      * This represents a bait, which can be used to boost the likelihood that a certain fish or fish rarity appears from
@@ -203,7 +206,7 @@ public class Bait {
      *
      * @return A chosen fish.
      */
-    public Fish chooseFish(Player player, Location location) {
+    public Fish chooseFish(@NotNull Player player, @NotNull Location location) {
         Set<Rarity> boostedRarities = new HashSet<>(getRarities());
         boostedRarities.addAll(fishListRarities);
 
@@ -242,6 +245,26 @@ public class Bait {
         }
 
         return fish;
+    }
+
+    public void handleFish(@NotNull Player player, @NotNull Fish fish, @NotNull ItemStack fishingRod) {
+        if (!fish.isWasBaited()) {
+            return;
+        }
+        fish.setFisherman(player.getUniqueId());
+        try {
+            ApplicationResult result = BaitNBTManager.applyBaitedRodNBT(fishingRod, this, -1);
+            if (result == null) {
+                return;
+            }
+            ItemStack newFishingRod = result.getFishingRod();
+            if (newFishingRod != null) {
+                fishingRod.setItemMeta(newFishingRod.getItemMeta());
+                EvenMoreFish.getInstance().incrementMetricBaitsUsed(1);
+            }
+        } catch (MaxBaitsReachedException | MaxBaitReachedException | NullPointerException exception) {
+            EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, exception.getMessage(), exception);
+        }
     }
 
     /**

@@ -33,44 +33,37 @@ import java.util.stream.Collectors;
 public class Fish implements Cloneable {
 
     private final @NotNull Section section;
-    String name;
-    Rarity rarity;
-    ItemFactory factory;
-    UUID fisherman;
-    Float length;
+    private final String name;
+    private final Rarity rarity;
+    private ItemFactory factory;
+    private UUID fisherman;
+    private Float length;
 
-    String displayName;
+    private String displayName;
 
-    List<Reward> actionRewards;
-    List<Reward> fishRewards;
-    List<Reward> sellRewards;
-    String eventType;
+    private List<Reward> actionRewards;
+    private List<Reward> fishRewards;
+    private List<Reward> sellRewards;
+    private String eventType;
 
-    Requirement requirement = new Requirement();
+    private Requirement requirement = new Requirement();
 
-    boolean wasBaited;
-    boolean silent;
+    private boolean wasBaited;
+    private boolean silent;
 
-    double weight;
+    private double weight;
 
-    double minSize;
-    double maxSize;
+    private double minSize;
+    private double maxSize;
 
-    boolean isCompExemptFish;
+    private boolean isCompExemptFish;
 
-    boolean disableFisherman;
+    private final boolean disableFisherman;
 
     private int day = -1;
-    private double setWorth;
+    private final double setWorth;
 
-    /**
-     * Constructs a Fish from its config section.
-     * @param section The section for this fish.
-     */
-    public Fish(@NotNull Rarity rarity, @Nullable Section section) throws InvalidFishException {
-        if (section == null) {
-            throw new InvalidFishException("Fish could not be fetched from the config.");
-        }
+    private Fish(@NotNull Rarity rarity, @NotNull Section section) {
         this.section = section;
         this.rarity = rarity;
         // This should never be null, but we have this check just to be safe.
@@ -104,6 +97,26 @@ public class Fish implements Cloneable {
 
         checkSellEvent();
         handleRequirements();
+    }
+
+    /**
+     * Creates a Fish from its config section.
+     * @param section The section for this fish.
+     */
+    public static Fish create(@NotNull Rarity rarity, @NotNull Section section) {
+        return new Fish(rarity, section);
+    }
+
+    /**
+     * Creates a Fish from its config section.
+     * @param section The section for this fish.
+     * @throws InvalidFishException When section is null.
+     */
+    public static Fish createOrThrow(@NotNull Rarity rarity, @Nullable Section section) throws InvalidFishException {
+        if (section == null) {
+            throw new InvalidFishException("Fish could not be fetched from the config.");
+        }
+        return new Fish(rarity, section);
     }
 
     private void handleRequirements() {
@@ -417,10 +430,8 @@ public class Fish implements Cloneable {
     }
 
     @Override
-    public Fish clone() throws CloneNotSupportedException {
-        Fish clone = (Fish) super.clone();
-        clone.factory = new ItemFactory(null, section);
-        return clone;
+    public Fish clone() {
+        return create(rarity, section);
     }
 
     public boolean hasFishermanDisabled() {

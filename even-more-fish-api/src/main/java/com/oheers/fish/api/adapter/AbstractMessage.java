@@ -273,12 +273,27 @@ public abstract class AbstractMessage {
     }
 
     /**
+     * Adds a variable to be formatted when {@link #formatVariables()} is called.
+     * @param variable The variable.
+     * @param replacement The replacement for the variable.
+     */
+    public void setVariable(@NotNull final String variable, @NotNull final AbstractMessage replacement) {
+        this.liveVariables.put(variable, replacement.getRawMessage());
+    }
+
+    /**
      * Adds a map of variables to be formatted when {@link #formatVariables()} is called.
      * @param variableMap The map of variables and their replacements.
      */
-    public void setVariables(@Nullable Map<String, String> variableMap) {
+    public void setVariables(@Nullable Map<String, ?> variableMap) {
         if (variableMap == null) { return; }
-        this.liveVariables.putAll(variableMap);
+        variableMap.forEach((variable, obj) -> {
+            if (obj instanceof AbstractMessage abstractMessage) {
+                setVariable(variable, abstractMessage);
+            } else {
+                setVariable(variable, obj.toString());
+            }
+        });
     }
 
     // Variable Shortcuts

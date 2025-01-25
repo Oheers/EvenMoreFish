@@ -13,7 +13,6 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.database.DataManager;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
@@ -35,11 +34,13 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
 public class FishingProcessor implements Listener {
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.0");
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void process(PlayerFishEvent event) {
@@ -207,7 +208,7 @@ public class FishingProcessor implements Listener {
         if (cEvent.isCancelled()) return null;
 
         if (!fish.isSilent()) {
-            String length = FishUtils.DECIMAL_FORMAT.format(fish.getLength());
+            String length = decimalFormat.format(fish.getLength());
             String rarity = FishUtils.translateColorCodes(fish.getRarity().getId());
 
             AbstractMessage message = ConfigMessage.FISH_CAUGHT.getMessage();
@@ -253,7 +254,7 @@ public class FishingProcessor implements Listener {
                     EvenMoreFish.getInstance().getDatabase().createFishData(finalFish, player.getUniqueId());
                 }
 
-                DataManager.getInstance().handleFishCatch(player.getUniqueId(), finalFish);
+                EvenMoreFish.getInstance().getDatabase().handleFishCatch(player.getUniqueId(), finalFish);
             });
         }
 

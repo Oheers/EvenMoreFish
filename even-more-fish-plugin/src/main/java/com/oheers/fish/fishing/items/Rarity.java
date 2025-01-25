@@ -125,13 +125,21 @@ public class Rarity extends ConfigBase {
         return fishList;
     }
 
-    public @Nullable Fish getFish(@NotNull String name) {
+    public @Nullable Fish getEditableFish(@NotNull String name) {
         for (Fish fish : fishList) {
             if (fish.getName().equalsIgnoreCase(name)) {
                 return fish;
             }
         }
         return null;
+    }
+
+    public @Nullable Fish getFish(@NotNull String name) {
+        Fish fish = getEditableFish(name);
+        if (fish == null) {
+            return null;
+        }
+        return fish.clone();
     }
 
     public double getWorthMultiplier() {
@@ -162,7 +170,7 @@ public class Rarity extends ConfigBase {
                 fishSection = rootFishSection.createSection(fishStr);
             }
             try {
-                fishList.add(new Fish(this, fishSection));
+                fishList.add(Fish.createOrThrow(this, fishSection));
             } catch (InvalidFishException exception) {
                 EvenMoreFish.getInstance().getLogger().log(Level.WARNING, exception.getMessage(), exception);
             }
