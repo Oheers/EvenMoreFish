@@ -9,5 +9,5 @@
 ## Supported Database Types
 * MySQL
 * SQLite
-* H2—Added in 2.0.0
+* H2—Does not work yet.
 

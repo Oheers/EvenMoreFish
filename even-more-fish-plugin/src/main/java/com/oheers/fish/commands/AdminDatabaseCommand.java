@@ -13,6 +13,7 @@ public class AdminDatabaseCommand extends CommandAPICommand {
         setSubcommands(List.of(
                 dropFlywayCommand(),
                 repairFlywayCommand(),
+                cleanFlywayCommand(),
                 migrateToLatest()
         ));
     }
@@ -51,6 +52,7 @@ public class AdminDatabaseCommand extends CommandAPICommand {
     public CommandAPICommand migrateToLatest() {
         return new CommandAPICommand("migrate-to-latest")
                 .withShortDescription("Migrate to the latest DB version.")
+                .withPermission("emf.admin.debug.database.migrate")
                 .executes((commandSender, commandArguments) -> {
                     EvenMoreFish.getInstance().getDatabase().migrateFromDatabaseVersionToLatest();
                 });

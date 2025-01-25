@@ -25,7 +25,7 @@ respect-vanished: true
 # ATTENTION: Toggling this requires a full server restart.
 database:
   enabled: false
-  # Available option are: mysql, sqlite, h2
+  # Available option are: mysql, sqlite
   type: sqlite
   # The address of the database
   # (the port 3306 is automatically added in by default, if different: specify with address:port)

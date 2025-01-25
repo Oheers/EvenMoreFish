@@ -551,7 +551,7 @@ public class Database implements DatabaseAPI {
                         .set(Tables.USERS_SALES.FISH_RARITY, fishRarity)
                         .set(Tables.USERS_SALES.FISH_AMOUNT, fishAmount)
                         .set(Tables.USERS_SALES.FISH_LENGTH, fishLength)
-                        .set(Tables.USERS_SALES.PRICE_SOLD, Math.round(priceSold * 10) / 10.0)
+                        .set(Tables.USERS_SALES.PRICE_SOLD, Math.round(priceSold * 10) / 10.0) //todo use decimal format, or a util command
                         .execute();
             }
         }.executeUpdate();
