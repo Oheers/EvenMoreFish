@@ -221,16 +221,10 @@ public class Bait {
             } else {
                 fish = FishManager.getInstance().getFish(fishRarity, location, player, BaitFile.getInstance().getBoostRate(), getFish(), true);
             }
-            if (fish != null) {
-                fish.setWasBaited(true);
-            }
 
             if (!getRarities().contains(fishRarity) && (fish == null || !getFish().contains(fish))) {
                 // boost effect chose a fish but the randomizer didn't pick out the right fish - they've been incorrectly boosted.
                 fish = FishManager.getInstance().getFish(fishRarity, location, player, 1, null, true);
-                if (fish != null) {
-                    fish.setWasBaited(false);
-                }
             } else {
                 alertUsage(player);
             }
@@ -238,12 +232,12 @@ public class Bait {
             fish = FishManager.getInstance().getFish(fishRarity, location, player, 1, null, true);
             if (getRarities().contains(fishRarity)) {
                 alertUsage(player);
-                if (fish != null) {
-                    fish.setWasBaited(true);
-                }
             }
         }
-
+        if (fish != null) {
+            fish.setWasBaited(true);
+            fish.setFisherman(player.getUniqueId());
+        }
         return fish;
     }
 
