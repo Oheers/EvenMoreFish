@@ -187,7 +187,7 @@ public class FishManager {
         List<Fish> available = new ArrayList<>();
 
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (r.getFishList().isEmpty()) {
+        if (r.getOriginalFishList().isEmpty()) {
             r = getRandomWeightedRarity(p, 1, null, Set.copyOf(rarityMap.values()));
         }
 
@@ -244,7 +244,7 @@ public class FishManager {
     private void logLoadedItems() {
         int allFish = 0;
         for (Rarity rarity : rarityMap.values()) {
-            allFish += rarity.getFishList().size();
+            allFish += rarity.getOriginalFishList().size();
         }
         EvenMoreFish.getInstance().getLogger().info("Loaded FishManager with " + rarityMap.size() + " Rarities and " + allFish + " Fish.");
     }
