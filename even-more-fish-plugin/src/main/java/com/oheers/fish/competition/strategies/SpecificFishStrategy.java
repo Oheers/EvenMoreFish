@@ -83,7 +83,7 @@ public class SpecificFishStrategy implements CompetitionStrategy {
         double totalWeight = 0;
 
         for (Rarity rarity : configRarities) {
-            fish.addAll(rarity.getFishList());
+            fish.addAll(rarity.getOriginalFishList());
             allowedRarities.add(rarity);
             totalWeight += rarity.getWeight();
         }

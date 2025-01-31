@@ -121,8 +121,18 @@ public class Rarity extends ConfigBase {
         return false;
     }
 
-    public @NotNull List<Fish> getFishList() {
+    /**
+     * @return This rarity's original list of loaded fish
+     */
+    public @NotNull List<Fish> getOriginalFishList() {
         return fishList;
+    }
+
+    /**
+     * @return This rarity's list of loaded fish, but each fish is a clone of the original
+     */
+    public @NotNull List<Fish> getFishList() {
+        return fishList.stream().map(Fish::clone).toList();
     }
 
     public @Nullable Fish getEditableFish(@NotNull String name) {

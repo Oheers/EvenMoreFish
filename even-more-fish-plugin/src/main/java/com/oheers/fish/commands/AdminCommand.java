@@ -145,7 +145,7 @@ public class AdminCommand {
                                 return;
                             }
                             BaseComponent[] baseComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + rarity.getDisplayName()) + " ");
-                            for (Fish fish : rarity.getFishList()) {
+                            for (Fish fish : rarity.getOriginalFishList()) {
                                 BaseComponent[] textComponent = TextComponent.fromLegacyText(FishUtils.translateColorCodes(rarity.getColour() + "[" + fish.getDisplayName() + rarity.getColour() + "] "));
                                 for (BaseComponent component : textComponent) {
                                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText("Click to receive fish"))));
@@ -320,45 +320,45 @@ public class AdminCommand {
 
     private CommandAPICommand getVersion() {
         helpMessageBuilder.addUsage(
-                "admin version",
-                ConfigMessage.HELP_ADMIN_VERSION::getMessage
+            "admin version",
+            ConfigMessage.HELP_ADMIN_VERSION::getMessage
         );
         return new CommandAPICommand("version")
-                .executes(info -> {
-                    int fishCount = FishManager.getInstance().getRarityMap().values().stream()
-                            .mapToInt(rarity -> rarity.getFishList().size())
-                            .sum();
+            .executes(info -> {
+                int fishCount = FishManager.getInstance().getRarityMap().values().stream()
+                    .mapToInt(rarity -> rarity.getFishList().size())
+                    .sum();
 
-                   final String msgString =
-                                    """
-                                    {prefix} EvenMoreFish by Oheers {version}\s
-                                    {prefix} Feature Branch: {branch}\s
-                                    {prefix} Feature Build/Date: {build-date}\s
-                                    {prefix} MCV: {mcv}\s
-                                    {prefix} SSV: {ssv}\s
-                                    {prefix} Online: {online}\s
-                                    {prefix} Loaded Rarities({rarities}) Fish({fish}) Baits({baits}) Competitions({competitions})\s
-                                    {prefix} Database Engine: {engine}\s
-                                    {prefix} Database Type: {type}\s
-                                    """
-                                            .replace("{prefix}", Messages.getInstance().getSTDPrefix())
-                                            .replace("{version}", EvenMoreFish.getInstance().getDescription().getVersion())
-                                            .replace("{branch}", getFeatureBranchName())
-                                            .replace("{build-date}", getFeatureBranchBuildOrDate())
-                                            .replace("{mcv}", Bukkit.getServer().getVersion())
-                                            .replace("{ssv}", Bukkit.getServer().getBukkitVersion())
-                                            .replace("{online}", String.valueOf(Bukkit.getServer().getOnlineMode()))
-                                            .replace("{rarities}", String.valueOf(FishManager.getInstance().getRarityMap().size()))
-                                            .replace("{fish}", String.valueOf(fishCount))
-                                            .replace("{baits}", String.valueOf(BaitManager.getInstance().getBaitMap().size()))
-                                            .replace("{competitions}", String.valueOf(EvenMoreFish.getInstance().getCompetitionQueue().getSize()))
-                                            .replace("{engine}", EvenMoreFish.getInstance().getDatabase().getDatabaseVersion())
-                                            .replace("{type}", EvenMoreFish.getInstance().getDatabase().getType());
+                final String msgString =
+                    """
+                    {prefix} EvenMoreFish by Oheers {version}\s
+                    {prefix} Feature Branch: {branch}\s
+                    {prefix} Feature Build/Date: {build-date}\s
+                    {prefix} MCV: {mcv}\s
+                    {prefix} SSV: {ssv}\s
+                    {prefix} Online: {online}\s
+                    {prefix} Loaded Rarities({rarities}) Fish({fish}) Baits({baits}) Competitions({competitions})\s
+                    {prefix} Database Engine: {engine}\s
+                    {prefix} Database Type: {type}\s
+                    """
+                        .replace("{prefix}", Messages.getInstance().getSTDPrefix())
+                        .replace("{version}", EvenMoreFish.getInstance().getDescription().getVersion())
+                        .replace("{branch}", getFeatureBranchName())
+                        .replace("{build-date}", getFeatureBranchBuildOrDate())
+                        .replace("{mcv}", Bukkit.getServer().getVersion())
+                        .replace("{ssv}", Bukkit.getServer().getBukkitVersion())
+                        .replace("{online}", String.valueOf(Bukkit.getServer().getOnlineMode()))
+                        .replace("{rarities}", String.valueOf(FishManager.getInstance().getRarityMap().size()))
+                        .replace("{fish}", String.valueOf(fishCount))
+                        .replace("{baits}", String.valueOf(BaitManager.getInstance().getBaitMap().size()))
+                        .replace("{competitions}", String.valueOf(EvenMoreFish.getInstance().getCompetitionQueue().getSize()))
+                        .replace("{engine}", EvenMoreFish.getInstance().getDatabase().getDatabaseVersion())
+                        .replace("{type}", EvenMoreFish.getInstance().getDatabase().getType());
 
 
-                    AbstractMessage msg = EvenMoreFish.getAdapter().createMessage(msgString);
-                    msg.send(info.sender());
-                });
+                AbstractMessage msg = EvenMoreFish.getAdapter().createMessage(msgString);
+                msg.send(info.sender());
+            });
     }
 
     private String getFeatureBranchName() {

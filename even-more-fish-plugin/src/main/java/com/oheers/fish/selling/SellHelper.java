@@ -37,6 +37,10 @@ public class SellHelper {
         if (!(humanEntity instanceof Player player)) {
             return;
         }
+        if (!Economy.getInstance().isEnabled()) {
+            ConfigMessage.ECONOMY_DISABLED.getMessage().send(player);
+            return;
+        }
         gui.getElements().forEach(element -> {
             if (!(element instanceof GuiStorageElement storageElement)) {
                 return;
@@ -51,6 +55,14 @@ public class SellHelper {
     }
 
     public boolean sellFish() {
+
+        Economy economy = Economy.getInstance();
+
+        if (!economy.isEnabled()) {
+            ConfigMessage.ECONOMY_DISABLED.getMessage().send(player);
+            return false;
+        }
+
         List<SoldFish> soldFish = getTotalSoldFish();
         double totalWorth = getTotalWorth(soldFish);
         double sellPrice = Math.floor(totalWorth * 10) / 10;
@@ -67,10 +79,7 @@ public class SellHelper {
             }
         }
 
-        Economy economy = Economy.getInstance();
-        if (economy.isEnabled()) {
-            economy.deposit(this.player, totalWorth, true);
-        }
+        economy.deposit(this.player, totalWorth, true);
 
         if (!(inventory instanceof PlayerInventory)) {
             FishUtils.giveItems(Arrays.stream(inventory.getStorageContents()).filter(Objects::nonNull).toArray(ItemStack[]::new), this.player);
@@ -79,11 +88,7 @@ public class SellHelper {
         // sending the sell message to the player
 
         AbstractMessage message = ConfigMessage.FISH_SALE.getMessage();
-        if (!economy.isEnabled()) {
-            message.setSellPrice("0");
-        } else {
-            message.setSellPrice(economy.getWorthFormat(sellPrice, true));
-        }
+        message.setSellPrice(economy.getWorthFormat(sellPrice, true));
         message.setAmount(Integer.toString(fishCount));
         message.setPlayer(this.player);
         message.send(player);

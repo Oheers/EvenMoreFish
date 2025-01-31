@@ -152,25 +152,19 @@ public class FishManager {
         return null;
     }
 
-    // TODO cleanup
     public Fish getRandomWeightedFish(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
         final double totalWeight = FishUtils.getTotalWeight(fishList, boostRate, boostedFish);
 
         int idx = 0;
         for (double r = Math.random() * totalWeight; idx < fishList.size() - 1; ++idx) {
-
-            if (fishList.get(idx).getWeight() == 0.0d) {
-                if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
-                    r -= 1 * boostRate;
-                } else {
-                    r -= 1;
-                }
+            double weight = fishList.get(idx).getWeight();
+            if (weight == 0.0d) {
+                weight = 1;
+            }
+            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
+                r -= weight * boostRate;
             } else {
-                if (boostRate != -1 && boostedFish != null && boostedFish.contains(fishList.get(idx))) {
-                    r -= fishList.get(idx).getWeight() * boostRate;
-                } else {
-                    r -= fishList.get(idx).getWeight();
-                }
+                r -= weight;
             }
 
             if (r <= 0.0) break;
@@ -179,43 +173,29 @@ public class FishManager {
         return fishList.get(idx);
     }
 
-    // TODO cleanup
     public Fish getFish(Rarity r, Location l, Player p, double boostRate, List<Fish> boostedFish, boolean doRequirementChecks) {
         if (r == null) return null;
         // will store all the fish that match the player's biome or don't discriminate biomes
 
-        List<Fish> available = new ArrayList<>();
-
         // Protection against /emf admin reload causing the plugin to be unable to get the rarity
-        if (r.getFishList().isEmpty()) {
+        if (r.getOriginalFishList().isEmpty()) {
             r = getRandomWeightedRarity(p, 1, null, Set.copyOf(rarityMap.values()));
         }
 
-        if (doRequirementChecks) {
-            RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
+        RequirementContext context = new RequirementContext(l.getWorld(), l, p, null, null);
 
-            for (Fish f : r.getFishList()) {
-
-                if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
-                    continue;
+        List<Fish> available = r.getFishList().stream()
+            .filter(fish -> {
+                if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(fish))) {
+                    return false;
                 }
-
-                Requirement requirement = f.getRequirement();
-                if (!requirement.meetsRequirements(context)) {
-                    continue;
+                if (doRequirementChecks) {
+                    Requirement requirement = fish.getRequirement();
+                    return requirement.meetsRequirements(context);
                 }
-                available.add(f);
-            }
-        } else {
-            for (Fish f : r.getFishList()) {
-
-                if (!(boostRate != -1 || boostedFish == null || boostedFish.contains(f))) {
-                    continue;
-                }
-
-                available.add(f);
-            }
-        }
+                return true;
+            })
+            .toList();
 
         // if the config doesn't define any fish that can be fished in this biome.
         if (available.isEmpty()) {
@@ -244,7 +224,7 @@ public class FishManager {
     private void logLoadedItems() {
         int allFish = 0;
         for (Rarity rarity : rarityMap.values()) {
-            allFish += rarity.getFishList().size();
+            allFish += rarity.getOriginalFishList().size();
         }
         EvenMoreFish.getInstance().getLogger().info("Loaded FishManager with " + rarityMap.size() + " Rarities and " + allFish + " Fish.");
     }
