@@ -1,11 +1,11 @@
 CREATE TABLE `${table.prefix}competitions` (
-   id INTEGER NOT NULL${auto.increment},
+   id INTEGER NOT NULL,
    competition_name VARCHAR(256) NOT NULL,
    winner_uuid VARCHAR(128) NOT NULL,
    winner_fish VARCHAR(256) NOT NULL,
    winner_score REAL NOT NULL,
    contestants VARCHAR(15000) NOT NULL,
-   ${primary.key}
+   PRIMARY KEY (id AUTOINCREMENT)
 );
 
 CREATE TABLE `${table.prefix}fish_log` (
@@ -18,7 +18,7 @@ CREATE TABLE `${table.prefix}fish_log` (
 );
 
 CREATE TABLE `${table.prefix}users` (
-   id INTEGER NOT NULL ${auto.increment},
+   id INTEGER NOT NULL,
    uuid VARCHAR(128) NOT NULL,
    first_fish VARCHAR(256) NOT NULL,
    last_fish VARCHAR(256) NOT NULL,
@@ -28,5 +28,5 @@ CREATE TABLE `${table.prefix}users` (
    total_fish_length REAL NOT NULL,
    competitions_won INT NOT NULL,
    competitions_joined INT NOT NULL,
-   ${primary.key}
+   PRIMARY KEY (id AUTOINCREMENT)
 );

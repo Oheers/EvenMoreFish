@@ -41,7 +41,7 @@ public class MainConfig extends ConfigBase {
     }
 
     public boolean isDatabaseOnline() {
-        return databaseEnabled() && !EvenMoreFish.getInstance().getDatabaseV3().usingVersionV2();
+        return databaseEnabled() && !EvenMoreFish.getInstance().getDatabase().getMigrationManager().usingV2();
     }
 
     public boolean isCompetitionUnique() {
@@ -280,6 +280,13 @@ public class MainConfig extends ConfigBase {
         }
 
         save();
+    }
+
+    public boolean hasCredentials() {
+        return MainConfig.getInstance().getUsername() != null &&
+                MainConfig.getInstance().getPassword() != null &&
+                MainConfig.getInstance().getAddress() != null &&
+                MainConfig.getInstance().getDatabase() != null;
     }
 
 }

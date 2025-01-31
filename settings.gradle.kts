@@ -2,6 +2,7 @@ rootProject.name = "even-more-fish"
 
 include(":even-more-fish-api")
 include(":even-more-fish-addons-j17")
+include(":even-more-fish-database-extras")
 include(":even-more-fish-addons-j21")
 include(":even-more-fish-plugin")
 include(":even-more-fish-paper")
@@ -51,9 +52,8 @@ dependencyResolutionManagement {
             library("commons-codec", "commons-codec:commons-codec:1.17.0")
             library("caffeine", "com.github.ben-manes.caffeine:caffeine:3.1.8")
             library("annotations", "org.jetbrains:annotations:24.1.0")
-            library("maven-artifact", "org.apache.maven:maven-artifact:3.9.9")
 
-            version("flyway", "10.17.0")
+            version("flyway", "11.2.0")
             library("flyway-core", "org.flywaydb","flyway-core").versionRef("flyway")
             library("flyway-mysql", "org.flywaydb","flyway-mysql").versionRef("flyway")
             bundle("flyway", listOf("flyway-core", "flyway-mysql"))
@@ -77,6 +77,18 @@ dependencyResolutionManagement {
 
             plugin("grgit", "org.ajoberstar.grgit").version("5.2.2")
 
+            version("jooq", "3.19.18")
+            library("jooq", "org.jooq","jooq").versionRef("jooq")
+            library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
+            library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
+            library("jooq-meta-extensions","org.jooq","jooq-meta-extensions").versionRef("jooq")
+            plugin("jooq", "nu.studer.jooq").version("9.0")
+
+            library("connectors-mysql", "com.mysql:mysql-connector-j:9.1.0")
+            library("connectors-sqlite", "org.xerial:sqlite-jdbc:3.47.1.0")
+            library("connectors-h2", "com.h2database:h2:2.3.232")
+
+            library("maven-artifact", "org.apache.maven:maven-artifact:4.0.0-rc-2")
         }
     }
 }

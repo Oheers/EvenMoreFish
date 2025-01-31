@@ -4,27 +4,40 @@ import com.oheers.fish.fishing.items.Fish;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class FishReport {
-
-    private final String rarity;
     private final String name;
+    private final String rarity;
     private int numCaught;
-    private final long timeEpoch;
     private float size;
+    private final LocalDateTime localDateTime;
 
     public FishReport(String rarity, String name, float size, int numCaught, long timeEpoch) {
         this.rarity = rarity;
         this.name = name;
         this.numCaught = numCaught;
         this.size = size;
-        this.timeEpoch = calcTimeEpoch(timeEpoch);
+        this.localDateTime = getLocalDateTimeFromEpoch(timeEpoch);
     }
-    
-    private long calcTimeEpoch(long timeEpoch) {
+
+    public FishReport(String rarity, String name, float size, int numCaught, LocalDateTime time) {
+        this.rarity = rarity;
+        this.name = name;
+        this.numCaught = numCaught;
+        this.size = size;
+        this.localDateTime = time;
+    }
+
+
+
+    private LocalDateTime getLocalDateTimeFromEpoch(long timeEpoch) {
         if (timeEpoch == -1)
-            return Instant.now().getEpochSecond();
-        return timeEpoch;
+            return LocalDateTime.now();
+        return Instant.ofEpochSecond(timeEpoch)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     public int getNumCaught() {
@@ -52,7 +65,12 @@ public class FishReport {
     }
 
     public long getTimeEpoch() {
-        return timeEpoch;
+        return localDateTime.atZone(ZoneId.systemDefault()) // Use system's default time zone
+                .toEpochSecond();
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 
     public void addFish(final @NotNull Fish fish) {
@@ -64,6 +82,13 @@ public class FishReport {
 
     @Override
     public String toString() {
-        return "FishReport=[name:" + name + ", rarity:" + rarity + ", largestLength:" + size + ", numCaught:" + numCaught + "]";
+        return "FishReport{" +
+                "name='" + name + '\'' +
+                ", rarity='" + rarity + '\'' +
+                ", numCaught=" + numCaught +
+                ", size=" + size +
+                ", localDateTime=" + localDateTime +
+                '}';
     }
+
 }

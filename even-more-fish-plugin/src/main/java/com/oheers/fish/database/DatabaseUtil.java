@@ -1,8 +1,10 @@
 package com.oheers.fish.database;
 
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.SQLDialect;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,6 +35,32 @@ public class DatabaseUtil {
                 .replace("${table.prefix}", MainConfig.getInstance().getPrefix())
                 .replace("${auto.increment}", "")
                 .replace("${primary.key}", "PRIMARY KEY (id AUTOINCREMENT)");
+    }
+
+    /**
+     * Returns the corresponding SQLDialect for the given string.
+     *
+     * @param dialectString the string representing the SQL dialect
+     * @return the corresponding SQLDialect, or SQLDialect.DEFAULT if no match is found
+     */
+    public static SQLDialect getSQLDialect(String dialectString) {
+        if (dialectString == null || dialectString.isBlank()) {
+            return SQLDialect.DEFAULT;
+        }
+
+        try {
+            // Match enum names, ignoring case
+            return SQLDialect.valueOf(dialectString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            // No match found
+            return SQLDialect.DEFAULT;
+        }
+    }
+
+    public static void writeDbVerbose(final String message) {
+        if (MainConfig.getInstance().doDBVerbose()) {
+            EvenMoreFish.getInstance().getLogger().info(() -> message);
+        }
     }
 
 }
