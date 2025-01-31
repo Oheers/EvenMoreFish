@@ -222,7 +222,7 @@ public class FishingProcessor implements Listener {
 
         competitionCheck(fish, player, location);
 
-        if (!MainConfig.getInstance().isDatabaseOnline()) {
+        if (MainConfig.getInstance().isDatabaseOnline()) {
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
                 if (EvenMoreFish.getInstance().getDatabaseV3().hasFishData(fish)) {
                     EvenMoreFish.getInstance().getDatabaseV3().incrementFish(fish);
