@@ -159,13 +159,13 @@ public class SellHelper {
     }
 
     private void logSoldFish(final UUID uuid, @NotNull List<SoldFish> soldFish) {
-        int userId = EvenMoreFish.getInstance().getDatabaseV3().getUserID(uuid);
+        int userId = EvenMoreFish.getInstance().getDatabase().getUserId(uuid);
         final String transactionId = FriendlyId.createFriendlyId();
         final Timestamp timestamp = Timestamp.from(Instant.now());
 
-        EvenMoreFish.getInstance().getDatabaseV3().createTransaction(transactionId, userId, timestamp);
+        EvenMoreFish.getInstance().getDatabase().createTransaction(transactionId, userId, timestamp);
         for(final SoldFish fish: soldFish) {
-            EvenMoreFish.getInstance().getDatabaseV3().createSale(transactionId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());
+            EvenMoreFish.getInstance().getDatabase().createSale(transactionId, fish.getName(),fish.getRarity(), fish.getAmount(),fish.getLength(), fish.getTotalValue());
         }
 
         double moneyEarned = getTotalWorth(soldFish);

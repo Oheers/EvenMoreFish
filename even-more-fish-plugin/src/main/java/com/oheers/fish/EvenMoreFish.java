@@ -29,9 +29,7 @@ import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.Messages;
 import com.oheers.fish.database.DataManager;
-import com.oheers.fish.database.DatabaseV3;
-import com.oheers.fish.database.model.FishReport;
-import com.oheers.fish.database.model.UserReport;
+import com.oheers.fish.database.Database;
 import com.oheers.fish.economy.GriefPreventionEconomyType;
 import com.oheers.fish.economy.PlayerPointsEconomyType;
 import com.oheers.fish.economy.VaultEconomyType;
@@ -70,7 +68,6 @@ import uk.firedev.vanishchecker.VanishChecker;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,7 +100,7 @@ public class EvenMoreFish extends EMFPlugin {
     private boolean usingPlayerPoints;
     private boolean usingGriefPrevention;
 
-    private DatabaseV3 databaseV3;
+    private Database database;
     private HeadDatabaseAPI HDBapi;
 
     private static EvenMoreFish instance;
@@ -214,22 +211,10 @@ public class EvenMoreFish extends EMFPlugin {
         AutoRunner.init();
 
         if (MainConfig.getInstance().databaseEnabled()) {
-
             DataManager.init();
 
-            databaseV3 = new DatabaseV3(this);
-            //load user reports into cache
-            getScheduler().runTaskAsynchronously(() -> {
-                for (Player player : getServer().getOnlinePlayers()) {
-                    UserReport playerReport = databaseV3.readUserReport(player.getUniqueId());
-                    if (playerReport == null) {
-                        EvenMoreFish.getInstance().getLogger().warning("Could not read report for player (" + player.getUniqueId() + ")");
-                        continue;
-                    }
-                    DataManager.getInstance().putUserReportCache(player.getUniqueId(), playerReport);
-                }
-            });
-
+            database = new Database();
+            DataManager.getInstance().loadUserReportsIntoCache();
         }
 
         logger.log(Level.INFO, "EvenMoreFish by Oheers : Enabled");
@@ -261,7 +246,7 @@ public class EvenMoreFish extends EMFPlugin {
         RewardManager.getInstance().unload();
 
         if (MainConfig.getInstance().databaseEnabled()) {
-            databaseV3.shutdown();
+            database.shutdown();
         }
 
         FishManager.getInstance().unload();
@@ -297,7 +282,13 @@ public class EvenMoreFish extends EMFPlugin {
 
     public static void debug(final Level level, final String message) {
         if (MainConfig.getInstance().debugSession()) {
-            getInstance().getLogger().log(level, () -> message);
+            getInstance().getLogger().log(level, () -> "DEBUG %s".formatted(message));
+        }
+    }
+
+    public static void dbVerbose(final String message) {
+        if (MainConfig.getInstance().doDBVerbose()) {
+            getInstance().getLogger().info("DB-VERBOSE %s".formatted(message));
         }
     }
 
@@ -404,8 +395,8 @@ public class EvenMoreFish extends EMFPlugin {
                 return;
             }
 
-            saveFishReports();
-            saveUserReports();
+            DataManager.getInstance().saveFishReports();
+            DataManager.getInstance().saveUserReports();
 
             DataManager.getInstance().uncacheAll();
         };
@@ -416,26 +407,6 @@ public class EvenMoreFish extends EMFPlugin {
         }
     }
 
-    private void saveFishReports() {
-        ConcurrentMap<UUID, List<FishReport>> allReports = DataManager.getInstance().getAllFishReports();
-        logger.info("Saving " + allReports.size() + " fish reports.");
-        for (Map.Entry<UUID, List<FishReport>> entry : allReports.entrySet()) {
-            databaseV3.writeFishReports(entry.getKey(), entry.getValue());
-
-
-            if (!databaseV3.hasUser(entry.getKey())) {
-                databaseV3.createUser(entry.getKey());
-            }
-
-        }
-    }
-
-    private void saveUserReports() {
-        logger.info("Saving " + DataManager.getInstance().getAllUserReports().size() + " user reports.");
-        for (UserReport report : DataManager.getInstance().getAllUserReports()) {
-            databaseV3.writeUserReport(report.getUUID(), report);
-        }
-    }
 
     public ItemStack createCustomNBTRod() {
         ItemFactory itemFactory = new ItemFactory("nbt-rod-item", MainConfig.getInstance().getConfig());
@@ -619,8 +590,8 @@ public class EvenMoreFish extends EMFPlugin {
 
     public boolean isUsingGriefPrevention() {return usingGriefPrevention;}
 
-    public DatabaseV3 getDatabaseV3() {
-        return databaseV3;
+    public Database getDatabase() {
+        return database;
     }
 
     public HeadDatabaseAPI getHDBapi() {

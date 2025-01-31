@@ -13,6 +13,7 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.BaitFile;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
+import com.oheers.fish.database.DataManager;
 import com.oheers.fish.exceptions.MaxBaitReachedException;
 import com.oheers.fish.exceptions.MaxBaitsReachedException;
 import com.oheers.fish.fishing.items.Fish;
@@ -145,13 +146,13 @@ public class FishingProcessor implements Listener {
         }
 
         if (EvenMoreFish.getInstance().isUsingMcMMO()
-                && ExperienceConfig.getInstance().isFishingExploitingPrevented()
-                && UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector())) {
+            && ExperienceConfig.getInstance().isFishingExploitingPrevented()
+            && UserManager.getPlayer(player).getFishingManager().isExploitingFishing(location.toVector())) {
             return null;
         }
 
         if (BaitFile.getInstance().getBaitCatchPercentage() > 0
-                && EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
+            && EvenMoreFish.getInstance().getRandom().nextDouble() * 100.0 < BaitFile.getInstance().getBaitCatchPercentage()) {
             Bait caughtBait = BaitNBTManager.randomBaitCatch();
             if (caughtBait != null) {
                 AbstractMessage message = ConfigMessage.BAIT_CAUGHT.getMessage();
@@ -224,17 +225,17 @@ public class FishingProcessor implements Listener {
 
         if (MainConfig.getInstance().isDatabaseOnline()) {
             EvenMoreFish.getScheduler().runTaskAsynchronously(() -> {
-                if (EvenMoreFish.getInstance().getDatabaseV3().hasFishData(fish)) {
-                    EvenMoreFish.getInstance().getDatabaseV3().incrementFish(fish);
+                if (EvenMoreFish.getInstance().getDatabase().hasFishData(fish)) {
+                    EvenMoreFish.getInstance().getDatabase().incrementFish(fish);
 
-                    if (EvenMoreFish.getInstance().getDatabaseV3().getLargestFishSize(fish) < fish.getLength()) {
-                        EvenMoreFish.getInstance().getDatabaseV3().updateLargestFish(fish, player.getUniqueId());
+                    if (EvenMoreFish.getInstance().getDatabase().getLargestFishSize(fish) < fish.getLength()) {
+                        EvenMoreFish.getInstance().getDatabase().updateLargestFish(fish, player.getUniqueId());
                     }
                 } else {
-                    EvenMoreFish.getInstance().getDatabaseV3().createFishData(fish, player.getUniqueId());
+                    EvenMoreFish.getInstance().getDatabase().createFishData(fish, player.getUniqueId());
                 }
 
-                EvenMoreFish.getInstance().getDatabaseV3().handleFishCatch(player.getUniqueId(), fish);
+                DataManager.getInstance().handleFishCatch(player.getUniqueId(), fish);
             });
         }
 

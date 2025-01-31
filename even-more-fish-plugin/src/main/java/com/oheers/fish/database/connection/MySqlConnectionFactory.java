@@ -5,14 +5,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class MySqlConnectionFactory extends ConnectionFactory{
+public class MySqlConnectionFactory extends ConnectionFactory {
     @Override
     protected void configureDatabase(@NotNull HikariConfig config, String address, int port, String databaseName, String username, String password) {
-        config.setJdbcUrl("jdbc:mysql://"+address+":"+port+"/"+databaseName);
+        config.setJdbcUrl("jdbc:mysql://" + address + ":" + port + "/" + databaseName);
         config.setUsername(username);
         config.setPassword(password);
     }
-    
+
     @Override
     protected void overrideProperties(@NotNull Map<String, String> properties) {
         properties.putIfAbsent("cachePrepStmts", "true");
@@ -27,13 +27,13 @@ public class MySqlConnectionFactory extends ConnectionFactory{
         properties.putIfAbsent("maintainTimeStats", "false");
         properties.putIfAbsent("alwaysSendSetIsolation", "false");
         properties.putIfAbsent("cacheCallableStmts", "true");
-    
+
         // https://stackoverflow.com/a/54256150
         properties.putIfAbsent("serverTimezone", "UTC");
-    
+
         super.overrideProperties(properties);
     }
-    
+
     @Override
     public String getType() {
         return "MYSQL";

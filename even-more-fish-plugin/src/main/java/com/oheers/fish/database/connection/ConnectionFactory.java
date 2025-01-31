@@ -1,21 +1,15 @@
 package com.oheers.fish.database.connection;
 
 
+import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.config.MainConfig;
-import com.oheers.fish.database.DatabaseUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.FlywayException;
-import org.flywaydb.core.api.MigrationInfoService;
-import org.flywaydb.core.api.MigrationVersion;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,66 +62,9 @@ public abstract class ConnectionFactory {
         overrideProperties(properties);
         setProperties(config, properties);
 
+        initDriver();
         this.dataSource = new HikariDataSource(config);
         logger.info("Connected to database!");
-    }
-
-    public void flyway6toLatest() {
-        Flyway flyway = getBaseFlywayConfiguration()
-                .baselineVersion("6")
-                .load();
-
-        try {
-            flyway.migrate();
-        } catch (FlywayException e) {
-            logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
-        }
-    }
-
-    public void legacyFlywayBaseline() {
-        Flyway flyway = getBaseFlywayConfiguration()
-                .target("3.1")
-                .load();
-
-        flyway.migrate();
-    }
-
-    public void legacyInitVersion() {
-        Flyway flyway = getBaseFlywayConfiguration()
-                .target("3.0")
-                .load();
-
-        flyway.migrate();
-    }
-
-    /*
-    We may use .ignoreMigrationPatterns("versioned:missing") to ignore the missing migrations 3.0, 3.1 (FlywayTeams)
-    Instead we use baselineVersion 5, which assumes you were running experimental-features: true before using this version.
-    This is caused since we added some initial migrations that weren't there prior to 1.7.0 #67
-     */
-    public void flyway5toLatest() {
-        Flyway flyway = getBaseFlywayConfiguration()
-                .baselineVersion("5")
-                .load();
-
-
-        try {
-            dropFlywaySchemaHistory();
-
-            flyway.migrate();
-        } catch (FlywayException e) {
-            logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
-        }
-    }
-
-    private void dropFlywaySchemaHistory() {
-        try (Connection connection = getConnection()) {
-            try (PreparedStatement prepStatement = connection.prepareStatement(DatabaseUtil.parseSqlString("DROP TABLE IF EXISTS`${table.prefix}flyway_schema_history`", connection))) {
-                prepStatement.execute();
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to drop flyway_schema_history table", e);
-        }
     }
 
     //LP
@@ -163,31 +100,23 @@ public abstract class ConnectionFactory {
         return connection;
     }
 
-    private FluentConfiguration getBaseFlywayConfiguration() {
-        return Flyway.configure(getClass().getClassLoader())
-                .dataSource(dataSource)
-                .placeholders(Map.of(
-                        "table.prefix", MainConfig.getInstance().getPrefix(),
-                        "auto.increment", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "AUTO_INCREMENT" : "",
-                        "primary.key", MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("mysql") ? "PRIMARY KEY (id)" : "PRIMARY KEY (id AUTOINCREMENT)",
-                        "v6.alter.columns", !MainConfig.getInstance().getDatabaseType().equalsIgnoreCase("sqlite") ?
-                                "ALTER TABLE `${table.prefix}competitions` ALTER COLUMN contestants text;".replace("${table.prefix}",MainConfig.getInstance().getPrefix()) +
-                                        "ALTER TABLE `${table.prefix}fish` ADD PRIMARY KEY (fish_name);".replace("${table.prefix}",MainConfig.getInstance().getPrefix())  +
-                                        "ALTER TABLE `${table.prefix}fish_log` ADD CONSTRAINT FK_FishLog_User FOREIGN KEY(id) REFERENCES `${table.prefix}users(id)`;".replace("${table.prefix}",MainConfig.getInstance().getPrefix())  +
-                                        "ALTER TABLE `${table.prefix}users_sales` ADD CONSTRAINT FK_UsersSales_Transaction FOREIGN KEY (transaction_id) REFERENCES `${table.prefix}transactions(id)`;".replace("${table.prefix}",MainConfig.getInstance().getPrefix())
-                                : ""
-                ))
-                .validateMigrationNaming(true)
-                .createSchemas(true)
-                .baselineOnMigrate(true)
-                .table(MainConfig.getInstance().getPrefix() + "flyway_schema_history");
+    public String getDriverClass() {
+        return "";
     }
 
-    public MigrationVersion getDatabaseVersion() {
-        MigrationInfoService infoService = getBaseFlywayConfiguration().load().info();
-        if (infoService.current() == null) {
-            return MigrationVersion.fromVersion("0");
+    /**
+     * Sometimes it may be necessary to init a driver ahead of time, use this in that case
+     */
+    protected void initDriver() {
+        if (getDriverClass().isEmpty())
+            return;
+
+        try {
+            Class.forName(getDriverClass());
+        } catch (ClassNotFoundException e) {
+            EvenMoreFish.getInstance().getLogger().severe("Tried to init driver: %s, but could not find it.".formatted(getDriverClass()));
         }
-        return getBaseFlywayConfiguration().load().info().current().getVersion();
     }
+
+
 }
