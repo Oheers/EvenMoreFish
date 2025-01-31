@@ -10,19 +10,6 @@ repositories {
     maven("https://jitpack.io")
 }
 
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = groupId
-            artifactId = artifactId
-            version = version
-
-            from(components["java"])
-        }
-    }
-}
-
 tasks {
     if (project.name.contains("addons")) {
         val addonName = defaultAddonName(project.name)
