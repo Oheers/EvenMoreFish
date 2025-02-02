@@ -257,14 +257,6 @@ public class Competition {
         }
     }
 
-    private void setPositionColour(int place, AbstractMessage message) {
-        switch (place) {
-            case 0 -> message.setPositionColour("&c» &r");
-            case 1 -> message.setPositionColour("&c_ &r");
-            case 2 -> message.setPositionColour("&c&ko &r");
-        }
-    }
-
     public void sendConsoleLeaderboard(CommandSender console) {
         if (!isActive()) {
             ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(console);
