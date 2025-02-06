@@ -295,7 +295,7 @@ tasks {
 publishing {
     repositories { // Copied directly from CodeMC's docs
         maven {
-            url = uri("https://repo.codemc.io/repository/{username}/")
+            url = uri("https://repo.codemc.io/repository/Oheers/")
 
             val mavenUsername = System.getenv("GRADLE_PROJECT_MAVEN_USERNAME")
             val mavenPassword = System.getenv("GRADLE_PROJECT_MAVEN_PASSWORD")
