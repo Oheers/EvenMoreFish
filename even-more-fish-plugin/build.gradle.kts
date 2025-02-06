@@ -294,18 +294,16 @@ tasks {
 
 publishing {
     repositories { // Copied directly from CodeMC's docs
-        val mavenUrl: String? by project
-        val mavenSnapshotUrl: String? by project
+        maven {
+            url = uri("https://repo.codemc.io/repository/{username}/")
 
-        (if(version.toString().endsWith("SNAPSHOT")) mavenSnapshotUrl else mavenUrl)?.let { url ->
-            maven(url) {
-                val mavenUsername: String? by project
-                val mavenPassword: String? by project
-                if(mavenUsername != null && mavenPassword != null) {
-                    credentials {
-                        username = mavenUsername
-                        password = mavenPassword
-                    }
+            val mavenUsername = System.getenv("GRADLE_PROJECT_MAVEN_USERNAME")
+            val mavenPassword = System.getenv("GRADLE_PROJECT_MAVEN_PASSWORD")
+
+            if (mavenUsername != null && mavenPassword != null) {
+                credentials {
+                    username = mavenUsername
+                    password = mavenPassword
                 }
             }
         }
