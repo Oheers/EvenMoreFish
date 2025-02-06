@@ -40,6 +40,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 
 public class FishUtils {
@@ -338,23 +339,34 @@ public class FishUtils {
             return;
         }
 
-        CompetitionFile activeCompetitionFile = activeComp.getCompetitionFile();
-
-        int rangeSquared = activeCompetitionFile.getBroadcastRange(); // 10 blocks squared
-
-        Collection<? extends Player> validPlayers = Bukkit.getOnlinePlayers();
-
-        if (rangeSquared > -1) {
-            validPlayers = validPlayers.stream()
-                    .filter(player -> isWithinRange(referencePlayer, player, rangeSquared))
-                    .toList();
-        }
+        Stream<? extends Player> validPlayers = getPlayerStream(referencePlayer, activeComp);
 
         if (actionBar) {
             validPlayers.forEach(message::sendActionBar);
         } else {
             validPlayers.forEach(message::send);
         }
+    }
+
+    private static @NotNull Stream<? extends Player> getPlayerStream(@NotNull Player referencePlayer, @NotNull Competition activeComp) {
+        CompetitionFile activeCompetitionFile = activeComp.getCompetitionFile();
+
+        Stream<? extends Player> validPlayers = Bukkit.getOnlinePlayers().stream();
+        int rangeSquared = activeCompetitionFile.getBroadcastRange();
+
+        if (activeCompetitionFile.shouldBroadcastOnlyRods()) {
+            validPlayers = validPlayers.filter(player -> isHoldingMaterial(player, Material.FISHING_ROD));
+        }
+
+        if (rangeSquared > -1) {
+            validPlayers = validPlayers.filter(player -> isWithinRange(referencePlayer, player, rangeSquared));
+        }
+        return validPlayers;
+    }
+
+    public static boolean isHoldingMaterial(@NotNull Player player, @NotNull Material material) {
+        return player.getInventory().getItemInMainHand().getType().equals(material)
+            || player.getInventory().getItemInOffHand().getType().equals(material);
     }
 
     private static boolean isWithinRange(Player player1, Player player2, int rangeSquared) {

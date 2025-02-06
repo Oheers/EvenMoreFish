@@ -135,6 +135,7 @@ bukkit {
         "Denizen",
         "EcoItems",
         "Oraxen",
+        "Nexo",
         "HeadDatabase",
         "GriefPrevention"
     )

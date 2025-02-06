@@ -70,7 +70,7 @@ public class Competition {
     }
 
     public void setMaxDuration(int duration) {
-        this.maxDuration = duration  * 60L;
+        this.maxDuration = duration * 60L;
     }
 
     public static boolean isActive() {
@@ -257,14 +257,6 @@ public class Competition {
         }
     }
 
-    private void setPositionColour(int place, AbstractMessage message) {
-        switch (place) {
-            case 0 -> message.setPositionColour("&c» &r");
-            case 1 -> message.setPositionColour("&c_ &r");
-            case 2 -> message.setPositionColour("&c&ko &r");
-        }
-    }
-
     public void sendConsoleLeaderboard(CommandSender console) {
         if (!isActive()) {
             ConfigMessage.NO_COMPETITION_RUNNING.getMessage().send(console);
@@ -327,16 +319,15 @@ public class Competition {
 
         for (CompetitionEntry entry : entries) {
             pos++;
+            // If we're out of colours, break the loop
+            if (pos > competitionColours.size()) {
+                break;
+            }
             AbstractMessage message = ConfigMessage.LEADERBOARD_LARGEST_FISH.getMessage();
             message.setPlayer(Bukkit.getOfflinePlayer(entry.getPlayer()));
             message.setPosition(Integer.toString(pos));
 
-            if (pos > competitionColours.size()) {
-                int s = EvenMoreFish.getInstance().getRandom().nextInt(3);
-                setPositionColour(s, message);
-            } else {
-                message.setPositionColour(competitionColours.get(pos - 1));
-            }
+            message.setPositionColour(competitionColours.get(pos - 1));
 
             if (isConsole) {
                 message = competitionType.getStrategy().getSingleConsoleLeaderboardMessage(message, entry);
