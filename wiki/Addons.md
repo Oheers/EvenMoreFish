@@ -4,7 +4,7 @@
 | HeadDatabase    | headdb     | `headdb:id`               | 17       |
 | Denizen         | denizen    | `denizen:id`              | 17       |
 | EcoItems        | ecoitems   | `ecoitems:id`             | 17       |
-| Oraxen          | oraxen     | `oraxen:id`               | 17       |
+| Oraxen          | oraxen     | `oraxen:id`               | 21       |
 | Nexo            | nexo       | `nexo:id`                 | 21       |
 
 Example (ItemsAdder):

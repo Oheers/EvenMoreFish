@@ -539,7 +539,7 @@ public class ItemFactory {
 
         Material material = Material.matchMaterial(materialString);
         if (material == null) {
-            throw new IncorrectAssignedMaterialException(configLocation, materialString);
+            throw new IncorrectAssignedMaterialException(configurationFile.getNameAsString() + configLocation, materialString);
         }
 
         return new ItemStack(material);
