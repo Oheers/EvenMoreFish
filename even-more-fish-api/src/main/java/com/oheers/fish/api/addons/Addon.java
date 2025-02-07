@@ -22,6 +22,10 @@ public interface Addon {
      */
     String getPluginName();
 
+    default String getVersion() {
+        return "0.0.0";
+    }
+
 
     /**
      * This should check if the addon can be registered. I.e., required java version + required plugin.
