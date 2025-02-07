@@ -312,7 +312,7 @@ public class AdminCommand {
                     final List<String> messageList = new ArrayList<>();
                     for (final Map.Entry<String, Addon> entry : addonManager.getAddonMap().entrySet()) {
                         final String prefix = entry.getKey();
-                        messageList.add(String.format(messageFormat, prefix, addonManager.isLoading(prefix), entry.getValue()));
+                        messageList.add(String.format(messageFormat, prefix, addonManager.isLoading(prefix), entry.getValue().getVersion()));
                     }
 
                     EvenMoreFish.getAdapter().createMessage(StringUtils.join(messageList, "\n")).send(info.sender());
