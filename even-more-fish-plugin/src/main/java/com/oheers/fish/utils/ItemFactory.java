@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,14 +51,18 @@ public class ItemFactory {
      * @param configurationFile The config to check
      */
     public ItemFactory(@Nullable String configLocation, @NotNull Section configurationFile) {
-        if (configLocation != null && !configLocation.isEmpty()) {
-            this.configLocation = configLocation + ".";
-        } else {
-            this.configLocation = "";
-        }
+        this.configLocation = initializeConfigLocation(configLocation);
         this.configurationFile = configurationFile;
         this.rawMaterial = false;
         this.product = getType(null);
+    }
+
+    @Contract(pure = true)
+    private @NotNull String initializeConfigLocation(@Nullable String configLocation) {
+        if (configLocation == null || configLocation.isBlank())
+            return "";
+
+        return configLocation + ".";
     }
 
     /**
@@ -68,6 +73,14 @@ public class ItemFactory {
      */
     public ItemStack createItem(OfflinePlayer player, int randomIndex) {
         return createItem(player, randomIndex, null);
+    }
+
+    private void applyItemRandomType(OfflinePlayer player, int randomIndex) {
+        if (randomIndex == -1) {
+            this.product = getType(player);
+        } else {
+            this.product = setType(randomIndex);
+        }
     }
 
     /**
@@ -82,11 +95,7 @@ public class ItemFactory {
             return this.product;
         }
         if (itemRandom && player != null) {
-            if (randomIndex == -1) {
-                this.product = getType(player);
-            } else {
-                this.product = setType(randomIndex);
-            }
+            applyItemRandomType(player, randomIndex);
         }
 
         if (itemModelDataCheck) {
@@ -180,6 +189,7 @@ public class ItemFactory {
         }
 
         // The fish has no item type specified
+        EvenMoreFish.debug("GET TYPE: No item type specified, config location (%s)".formatted(configLocation + configurationFile.getNameAsString()));
         return new ItemStack(Material.COD);
 
     }
@@ -301,7 +311,7 @@ public class ItemFactory {
 
     private ItemStack checkMaterial(String mValue) {
         if (mValue == null || mValue.isBlank()) {
-            EvenMoreFish.debug("MATERIAL CHECK: Config Location (%s), empty string".formatted(configLocation + "item.material"));
+            EvenMoreFish.debug("MATERIAL CHECK: Config Location (%s, %s), empty string".formatted(configLocation + "item.material", configurationFile.getNameAsString()));
             return null;
         }
 
