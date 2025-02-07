@@ -59,8 +59,9 @@ public class ItemFactory {
 
     @Contract(pure = true)
     private @NotNull String initializeConfigLocation(@Nullable String configLocation) {
-        if (configLocation == null || configLocation.isBlank())
+        if (configLocation == null || configLocation.isBlank()) {
             return "";
+        }
 
         return configLocation + ".";
     }
@@ -306,9 +307,33 @@ public class ItemFactory {
      * @return Null if the setting doesn't exist, the item in ItemStack form if it does.
      */
     private ItemStack checkMaterial() {
-        return checkMaterial(this.configurationFile.getString(configLocation + "item.material"));
+        return checkMaterialWithPath("item.material");
     }
 
+    private ItemStack checkMaterialWithPath(@Nullable final String path) {
+        return checkMaterial(this.configurationFile.getString(configLocation + path));
+    }
+
+    /**
+     * Checks and retrieves an {@link ItemStack} based on the provided material value.
+     * <p>
+     * This method performs the following steps:
+     * 1. Validates the input material value (`mValue`).
+     * If it is null or blank, logs a debug message and returns null.
+     * 2. Attempts to resolve the material value as a standard {@link Material} enum value.
+     *    - If successful, returns a new {@link ItemStack} of the resolved material.
+     * 3. If the material value is not a standard material, attempts to resolve it as a custom item using the {@link #checkItem(String)} method.
+     *    - If a custom item is found, returns the corresponding {@link ItemStack}.
+     * 4. If the material value cannot be resolved as either a standard material or a custom item, logs an error and returns a default {@link ItemStack} of {@link Material#COD}.
+     *
+     * @param mValue The material value to check. This can be a standard material name (e.g., "STONE") or a custom item identifier.
+     *               If null or blank, the method will return null.
+     * @return An {@link ItemStack} representing the resolved material or custom item. Returns null if the input value is null or blank.
+     *         If the material value cannot be resolved, returns a default {@link ItemStack} of {@link Material#COD}.
+     *
+     * @see Material
+     * @see ItemStack
+     */
     private ItemStack checkMaterial(String mValue) {
         if (mValue == null || mValue.isBlank()) {
             EvenMoreFish.debug("MATERIAL CHECK: Config Location (%s, %s), empty string".formatted(configLocation + "item.material", configurationFile.getNameAsString()));
@@ -316,17 +341,17 @@ public class ItemFactory {
         }
 
         Material material = Material.getMaterial(mValue.toUpperCase());
-        if (material == null) {
-            ItemStack customItemStack = checkItem(mValue);
-            if (customItemStack != null) {
-                return customItemStack;
-            }
-            EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s", configLocation, mValue));
-            //probably errors here?
-            material = Material.COD;
+        if (material != null) {
+            return new ItemStack(material);
         }
 
-        return new ItemStack(material);
+        ItemStack customItemStack = checkItem(mValue);
+        if (customItemStack != null) {
+            return customItemStack;
+        }
+
+        EvenMoreFish.getInstance().getLogger().severe(() -> String.format("%s has an incorrect assigned material: %s", configurationFile.getNameAsString() + configLocation, mValue));
+        return new ItemStack(Material.COD);
     }
 
     private ItemStack checkItem(final String materialId) {
@@ -368,18 +393,19 @@ public class ItemFactory {
         ItemStack customItemStack = checkMaterial(lValues.get(randomIndex));
         itemRandom = true;
 
-        if (customItemStack == null) {
-            EvenMoreFish.getInstance().getLogger().severe(configLocation + "'s has an incorrect material name in its materials list.");
-            for (String material : lValues) {
-                ItemStack item = checkMaterial(material);
-                if (item != null) {
-                    return item;
-                }
-            }
-            return new ItemStack(Material.COD);
+        if (customItemStack != null) {
+            return customItemStack;
         }
 
-        return customItemStack;
+
+        EvenMoreFish.getInstance().getLogger().severe(configLocation + "'s has an incorrect material name in its materials list.");
+        for (String material : lValues) {
+            ItemStack item = checkMaterial(material);
+            if (item != null) {
+                return item;
+            }
+        }
+        return new ItemStack(Material.COD);
     }
 
     /**
@@ -417,22 +443,23 @@ public class ItemFactory {
         }
 
         List<Integer> headIDs = this.configurationFile.getIntList(configLocation + "item.multiple-headdb");
-        if (!headIDs.isEmpty()) {
-            final Random rand = EvenMoreFish.getInstance().getRandom();
-
-            if (randomIndex == -1 || randomIndex + 1 > headIDs.size()) {
-                randomIndex = rand.nextInt(headIDs.size());
-            }
-
-            this.chosenRandomIndex = randomIndex;
-
-            int headID = headIDs.get(randomIndex);
-            itemRandom = true;
-
-            return EvenMoreFish.getInstance().getHDBapi().getItemHead(Integer.toString(headID));
+        if (headIDs.isEmpty()) {
+            return null;
         }
 
-        return null;
+        final Random rand = EvenMoreFish.getInstance().getRandom();
+
+        if (randomIndex == -1 || randomIndex + 1 > headIDs.size()) {
+            randomIndex = rand.nextInt(headIDs.size());
+        }
+
+        this.chosenRandomIndex = randomIndex;
+
+        int headID = headIDs.get(randomIndex);
+        itemRandom = true;
+
+        return EvenMoreFish.getInstance().getHDBapi().getItemHead(Integer.toString(headID));
+
     }
 
     /**
@@ -443,27 +470,26 @@ public class ItemFactory {
      */
     private @Nullable ItemStack checkRandomHeadUUID(int randomIndex) {
         List<String> mhuValues = this.configurationFile.getStringList(configLocation + "item.multiple-head-uuid");
-        if (!mhuValues.isEmpty()) {
-
-            final Random rand = EvenMoreFish.getInstance().getRandom();
-
-            if (randomIndex == -1 || randomIndex + 1 > mhuValues.size()) {
-                randomIndex = rand.nextInt(mhuValues.size());
-                this.chosenRandomIndex = randomIndex;
-            }
-
-            String uuid = mhuValues.get(randomIndex);
-            itemRandom = true;
-
-            try {
-                return FishUtils.getSkullFromUUID(UUID.fromString(uuid));
-            } catch (IllegalArgumentException illegalArgumentException) {
-                EvenMoreFish.getInstance().getLogger().severe("Could not load uuid: " + uuid + " as a multiple-head-uuid option for the config location" + configLocation);
-                return new ItemStack(Material.COD);
-            }
+        if (mhuValues.isEmpty()) {
+            return null;
         }
 
-        return null;
+        final Random rand = EvenMoreFish.getInstance().getRandom();
+
+        if (randomIndex == -1 || randomIndex + 1 > mhuValues.size()) {
+            randomIndex = rand.nextInt(mhuValues.size());
+            this.chosenRandomIndex = randomIndex;
+        }
+
+        String uuid = mhuValues.get(randomIndex);
+        itemRandom = true;
+
+        try {
+            return FishUtils.getSkullFromUUID(UUID.fromString(uuid));
+        } catch (IllegalArgumentException illegalArgumentException) {
+            EvenMoreFish.getInstance().getLogger().severe("Could not load uuid: " + uuid + " as a multiple-head-uuid option for the config location" + configLocation);
+            return new ItemStack(Material.COD);
+        }
     }
 
     /**
@@ -473,16 +499,16 @@ public class ItemFactory {
      * <p>
      * {@code @returns} A skull with the player's head.
      */
-    private ItemStack checkOwnHead(OfflinePlayer player) {
+    private @Nullable ItemStack checkOwnHead(OfflinePlayer player) {
         boolean ownHead = this.configurationFile.getBoolean(configLocation + "item.own-head");
         // Causes this to run each turn the create() is called.
-        itemRandom = ownHead;
+        this.itemRandom = ownHead;
 
-        if (ownHead && player != null) {
-            return FishUtils.getSkullFromUUID(player.getUniqueId());
-        } else {
+        if (!ownHead || player == null) {
             return null;
         }
+
+        return FishUtils.getSkullFromUUID(player.getUniqueId());
     }
 
     /**
@@ -506,6 +532,7 @@ public class ItemFactory {
             final String[] split = materialString.split(":", 2);
             final String prefix = split[0];
             final String id = split[1];
+            EvenMoreFish.debug("GET ITEM for Addon(%s) Id(%s)".formatted(prefix, id));
             return EvenMoreFish.getInstance().getAddonManager().getItemStack(prefix, id);
         }
 
