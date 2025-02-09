@@ -25,8 +25,8 @@ publishing {
         maven {
             url = uri("https://repo.codemc.io/repository/Oheers/")
 
-            val mavenUsername = System.getenv("GRADLE_PROJECT_MAVEN_USERNAME")
-            val mavenPassword = System.getenv("GRADLE_PROJECT_MAVEN_PASSWORD")
+            val mavenUsername = System.getenv("JENKINS_USERNAME")
+            val mavenPassword = System.getenv("JENKINS_PASSWORD")
 
             if (mavenUsername != null && mavenPassword != null) {
                 credentials {
