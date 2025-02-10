@@ -38,12 +38,15 @@ import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 public class FishUtils {
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.0");
+
+    private FishUtils() {
+        throw new UnsupportedOperationException();
+    }
 
     // checks for the "emf-fish-name" nbt tag, to determine if this ItemStack is a fish or not.
     public static boolean isFish(ItemStack item) {
@@ -72,7 +75,7 @@ public class FishUtils {
         Integer randomIndex = NbtUtils.getInteger(item, NbtKeys.EMF_FISH_RANDOM_INDEX);
 
         if (nameString == null || rarityString == null) {
-            return null; //throw new InvalidFishException("NBT Error");
+            return null;
         }
 
 
