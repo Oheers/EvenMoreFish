@@ -391,19 +391,21 @@ public class FishUtils {
     private static @NotNull List<? extends Player> getValidPlayers(@NotNull Player referencePlayer, @NotNull Competition activeComp) {
         CompetitionFile activeCompetitionFile = activeComp.getCompetitionFile();
 
+        // Get the list of online players once and store in a variable.
         Stream<? extends Player> validPlayers = Bukkit.getOnlinePlayers().stream();
 
-        if (activeCompetitionFile.shouldBroadcastOnlyRods()) {
-            validPlayers = validPlayers.filter(player -> isHoldingMaterial(player, Material.FISHING_ROD));
-        }
-
-        int rangeSquared = activeCompetitionFile.getBroadcastRange();
-        if (rangeSquared > -1) {
-            validPlayers = validPlayers.filter(player -> isWithinRange(referencePlayer, player, rangeSquared));
+        // Combine checks for fishing rod and broadcast range, to avoid unnecessary filtering.
+        if (activeCompetitionFile.shouldBroadcastOnlyRods() || activeCompetitionFile.getBroadcastRange() > -1) {
+            validPlayers = validPlayers.filter(player -> {
+                boolean isRodHolder = !activeCompetitionFile.shouldBroadcastOnlyRods() || isHoldingMaterial(player, Material.FISHING_ROD);
+                boolean isInRange = activeCompetitionFile.getBroadcastRange() <= -1 || isWithinRange(referencePlayer, player, activeCompetitionFile.getBroadcastRange());
+                return isRodHolder && isInRange;
+            });
         }
 
         return validPlayers.toList();
     }
+
 
     public static boolean isHoldingMaterial(@NotNull Player player, @NotNull Material material) {
         return player.getInventory().getItemInMainHand().getType().equals(material)
