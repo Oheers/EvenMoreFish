@@ -22,6 +22,7 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Skull;
@@ -38,7 +39,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -336,10 +336,14 @@ public class FishUtils {
         Competition activeComp = Competition.getCurrentlyActive();
 
         if (formatted.isEmpty() || activeComp == null) {
+            EvenMoreFish.debug("Formatted (Empty Message) " + formatted.isEmpty());
+            EvenMoreFish.debug("Active Comp is null? " + (activeComp == null));
             return;
         }
 
-        Stream<? extends Player> validPlayers = getPlayerStream(referencePlayer, activeComp);
+        List<? extends Player> validPlayers = getValidPlayers(referencePlayer, activeComp);
+        List<String> playerNames = validPlayers.stream().map(Player::getName).toList();
+        EvenMoreFish.debug("Valid players: "+ StringUtils.join(playerNames, ","));
 
         if (actionBar) {
             validPlayers.forEach(message::sendActionBar);
@@ -348,20 +352,21 @@ public class FishUtils {
         }
     }
 
-    private static @NotNull Stream<? extends Player> getPlayerStream(@NotNull Player referencePlayer, @NotNull Competition activeComp) {
+    private static @NotNull List<? extends Player> getValidPlayers(@NotNull Player referencePlayer, @NotNull Competition activeComp) {
         CompetitionFile activeCompetitionFile = activeComp.getCompetitionFile();
 
         Stream<? extends Player> validPlayers = Bukkit.getOnlinePlayers().stream();
-        int rangeSquared = activeCompetitionFile.getBroadcastRange();
 
         if (activeCompetitionFile.shouldBroadcastOnlyRods()) {
             validPlayers = validPlayers.filter(player -> isHoldingMaterial(player, Material.FISHING_ROD));
         }
 
+        int rangeSquared = activeCompetitionFile.getBroadcastRange();
         if (rangeSquared > -1) {
             validPlayers = validPlayers.filter(player -> isWithinRange(referencePlayer, player, rangeSquared));
         }
-        return validPlayers;
+
+        return validPlayers.toList();
     }
 
     public static boolean isHoldingMaterial(@NotNull Player player, @NotNull Material material) {
