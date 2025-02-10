@@ -230,9 +230,9 @@ public class FishUtils {
         List<String> whitelistedWorlds = MainConfig.getInstance().getAllowedWorlds();
         if (l.getWorld() == null) {
             return false;
-        } else {
-            return whitelistedWorlds.contains(l.getWorld().getName());
         }
+
+        return whitelistedWorlds.contains(l.getWorld().getName());
     }
 
     public static @NotNull String translateColorCodes(String message) {
@@ -245,24 +245,28 @@ public class FishUtils {
         UUID headUuid = UUID.randomUUID();
         // 1.20.5+ handling
         if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
-            NBT.modifyComponents(skull, nbt -> {
-                ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
-                profileNbt.setUUID("id", headUuid);
-                ReadWriteNBT propertiesNbt = profileNbt.getCompoundList("properties").addCompound();
-                // This key is required, so we set it to an empty string.
-                propertiesNbt.setString("name", "textures");
-                propertiesNbt.setString("value", base64EncodedString);
-            });
-        // 1.20.4 and below handling
+            NBT.modifyComponents(
+                    skull, nbt -> {
+                        ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
+                        profileNbt.setUUID("id", headUuid);
+                        ReadWriteNBT propertiesNbt = profileNbt.getCompoundList("properties").addCompound();
+                        // This key is required, so we set it to an empty string.
+                        propertiesNbt.setString("name", "textures");
+                        propertiesNbt.setString("value", base64EncodedString);
+                    }
+            );
+            // 1.20.4 and below handling
         } else {
-            NBT.modify(skull, nbt -> {
-                ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
-                skullOwnerCompound.setUUID("Id", headUuid);
-                skullOwnerCompound.getOrCreateCompound("Properties")
-                        .getCompoundList("textures")
-                        .addCompound()
-                        .setString("Value", base64EncodedString);
-            });
+            NBT.modify(
+                    skull, nbt -> {
+                        ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
+                        skullOwnerCompound.setUUID("Id", headUuid);
+                        skullOwnerCompound.getOrCreateCompound("Properties")
+                                .getCompoundList("textures")
+                                .addCompound()
+                                .setString("Value", base64EncodedString);
+                    }
+            );
         }
         return skull;
     }
@@ -272,16 +276,20 @@ public class FishUtils {
         final ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         // 1.20.5+ handling
         if (MinecraftVersion.isNewerThan(MinecraftVersion.MC1_20_R3)) {
-            NBT.modifyComponents(skull, nbt -> {
-                ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
-                profileNbt.setUUID("id", uuid);
-            });
+            NBT.modifyComponents(
+                    skull, nbt -> {
+                        ReadWriteNBT profileNbt = nbt.getOrCreateCompound("minecraft:profile");
+                        profileNbt.setUUID("id", uuid);
+                    }
+            );
             // 1.20.4 and below handling
         } else {
-            NBT.modify(skull, nbt -> {
-                ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
-                skullOwnerCompound.setUUID("Id", uuid);
-            });
+            NBT.modify(
+                    skull, nbt -> {
+                        ReadWriteNBT skullOwnerCompound = nbt.getOrCreateCompound("SkullOwner");
+                        skullOwnerCompound.setUUID("Id", uuid);
+                    }
+            );
         }
         return skull;
     }
@@ -343,7 +351,7 @@ public class FishUtils {
 
         List<? extends Player> validPlayers = getValidPlayers(referencePlayer, activeComp);
         List<String> playerNames = validPlayers.stream().map(Player::getName).toList();
-        EvenMoreFish.debug("Valid players: "+ StringUtils.join(playerNames, ","));
+        EvenMoreFish.debug("Valid players: " + StringUtils.join(playerNames, ","));
 
         if (actionBar) {
             validPlayers.forEach(message::sendActionBar);
@@ -371,7 +379,7 @@ public class FishUtils {
 
     public static boolean isHoldingMaterial(@NotNull Player player, @NotNull Material material) {
         return player.getInventory().getItemInMainHand().getType().equals(material)
-            || player.getInventory().getItemInOffHand().getType().equals(material);
+                || player.getInventory().getItemInOffHand().getType().equals(material);
     }
 
     private static boolean isWithinRange(Player player1, Player player2, int rangeSquared) {
@@ -395,7 +403,8 @@ public class FishUtils {
 
     /**
      * Gets the first Character from a given String
-     * @param string The String to use.
+     *
+     * @param string      The String to use.
      * @param defaultChar The default character to use if an exception is thrown.
      * @return The first Character from the String
      */
@@ -429,25 +438,39 @@ public class FishUtils {
         return biome;
     }
 
-    // TODO cleanup
+    /**
+     * Calculates the total weight of a list of fish, applying a boost to specific fish if applicable.
+     *
+     * @param fishList    The list of fish to process.
+     * @param boostRate   The boost multiplier for certain fish. If set to -1, only boosted fish are considered.
+     * @param boostedFish The list of fish that should receive the boost. Can be null if no boost is applied.
+     * @return The total calculated weight.
+     */
     public static double getTotalWeight(List<Fish> fishList, double boostRate, List<Fish> boostedFish) {
         double totalWeight = 0;
+        boolean applyBoost = boostRate != -1 && boostedFish != null;
 
         for (Fish fish : fishList) {
-            // when boostRate is -1, we need to guarantee a fish, so the fishList has already been moderated to only contain
-            // boosted fish. The other 2 check that the plugin wants the bait calculations too.
-            if (boostRate != -1 && boostedFish != null && boostedFish.contains(fish)) {
+            // When boostRate is -1, we need to guarantee a fish, so fishList has already been filtered
+            // to only contain boosted fish. Otherwise, check if the fish should receive a boost.
+            boolean isBoosted = applyBoost && boostedFish.contains(fish);
 
-                if (fish.getWeight() == 0.0d) totalWeight += (1 * boostRate);
-                else
-                    totalWeight += fish.getWeight() * boostRate;
+            // If the fish has no weight, assign a default weight of 1.
+            double weight = fish.getWeight();
+            double baseWeight = (weight == 0.0d) ? 1 : weight;
+
+            // Apply the boost if applicable.
+            if (isBoosted) {
+                totalWeight += baseWeight * boostRate;
             } else {
-                if (fish.getWeight() == 0.0d) totalWeight += 1;
-                else totalWeight += fish.getWeight();
+                totalWeight += baseWeight;
             }
         }
+
         return totalWeight;
     }
+
+
 
     public static @Nullable DayOfWeek getDay(@NotNull String day) {
         try {
@@ -475,19 +498,19 @@ public class FishUtils {
     }
 
     // #editMeta methods. These can be safely replaced with Paper's API once we drop Spigot.
-
     public static boolean editMeta(@NotNull ItemStack item, @NotNull Consumer<ItemMeta> consumer) {
         return editMeta(item, ItemMeta.class, consumer);
     }
 
     public static <M extends ItemMeta> boolean editMeta(@NotNull ItemStack item, @NotNull Class<M> metaClass, @NotNull Consumer<M> consumer) {
         ItemMeta meta = item.getItemMeta();
-        if (metaClass.isInstance(meta)) {
-            M checked = metaClass.cast(meta);
-            consumer.accept(checked);
-            item.setItemMeta(checked);
-            return true;
+        if (!metaClass.isInstance(meta)) {
+            return false;
         }
-        return false;
+
+        M checked = metaClass.cast(meta);
+        consumer.accept(checked);
+        item.setItemMeta(checked);
+        return true;
     }
 }
