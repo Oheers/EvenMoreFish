@@ -30,16 +30,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -145,16 +144,25 @@ public class FishUtils {
     }
 
     public static void giveItems(List<ItemStack> items, Player player) {
-        if (items.isEmpty()) {
-            return;
+        if (items == null || items.isEmpty()) {
+            return; // Early return if the list is null or empty
         }
-        // Remove null items
-        items = items.stream().filter(Objects::nonNull).toList();
+
+        // Remove null items and avoid modifying the original list
+        List<ItemStack> filteredItems = items.stream()
+                .filter(Objects::nonNull)
+                .toList();
+
+        // Play item pickup sound
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.5f);
-        player.getInventory().addItem(items.toArray(new ItemStack[0]))
-                .values()
-                .forEach(item -> player.getWorld().dropItem(player.getLocation(), item));
+
+        // Add items to the player's inventory
+        Map<Integer, ItemStack> leftoverItems = player.getInventory().addItem(filteredItems.toArray(new ItemStack[0]));
+
+        // Drop any leftover items in the world
+        leftoverItems.values().forEach(item -> player.getWorld().dropItem(player.getLocation(), item));
     }
+
 
     public static void giveItems(ItemStack[] items, Player player) {
         giveItems(Arrays.asList(items), player);
@@ -164,61 +172,78 @@ public class FishUtils {
         giveItems(List.of(item), player);
     }
 
-    public static boolean checkRegion(Location l, List<String> whitelistedRegions) {
-        // if the user has defined a region whitelist
+    public static boolean checkRegion(Location location, List<String> whitelistedRegions) {
+        // If no whitelist is defined, allow all regions
         if (whitelistedRegions.isEmpty()) {
             return true;
         }
 
+        // Check WorldGuard
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
-            // Creates a query for whether the player is stood in a protected region defined by the user
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionQuery query = container.createQuery();
-            ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(l));
+            ApplicableRegionSet regions = query.getApplicableRegions(BukkitAdapter.adapt(location));
 
-            // runs the query
-            for (ProtectedRegion pr : set) {
-                if (whitelistedRegions.contains(pr.getId())) {
-                    return true;
+            for (ProtectedRegion region : regions) {
+                if (whitelistedRegions.contains(region.getId())) {
+                    return true; // Return true if a region matches the whitelist
                 }
             }
-            return false;
-        } else if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) {
-            Region r = RedProtect.get().getAPI().getRegion(l);
-            // if the hook is in any RedProtect region
-            if (r != null) {
-                // if the hook is in a whitelisted region
-                return whitelistedRegions.contains(r.getName());
-            }
-            return false;
-        } else {
-            // the user has defined a region whitelist but doesn't have a region plugin.
-            EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to use allowed-regions.");
-            return true;
+
+            return false; // No match found in WorldGuard regions
         }
+
+        // Check RedProtect
+        if (Bukkit.getPluginManager().isPluginEnabled("RedProtect")) {
+            Region region = RedProtect.get().getAPI().getRegion(location);
+            if (region != null) {
+                return whitelistedRegions.contains(region.getName()); // Check if the region is whitelisted
+            }
+            return false; // No region found in RedProtect
+        }
+
+        // If no supported region plugins are found
+        EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to use allowed-regions.");
+        return true; // Allow by default if no region plugin is present
     }
+
 
     public static @Nullable String getRegionName(Location location) {
-        if (MainConfig.getInstance().isRegionBoostsEnabled()) {
-            Plugin worldGuard = EvenMoreFish.getInstance().getServer().getPluginManager().getPlugin("WorldGuard");
-            if (worldGuard != null && worldGuard.isEnabled()) {
-                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                RegionQuery query = container.createQuery();
-                ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(location));
-                for (ProtectedRegion region : set) {
-                    return region.getId(); // Return the first region found
-                }
-            } else if (EvenMoreFish.getInstance().getServer().getPluginManager().isPluginEnabled("RedProtect")) {
-                Region region = RedProtect.get().getAPI().getRegion(location);
-                if (region != null) {
-                    return region.getName();
-                }
-            } else {
-                EvenMoreFish.getInstance().getLogger().warning("Please install WorldGuard or RedProtect to use region-boosts.");
-            }
+        if (!MainConfig.getInstance().isRegionBoostsEnabled()) {
+            EvenMoreFish.debug("Region boosts are disabled.");
+            return null;
         }
-        return null; // Return null if no region is found or no region plugin is enabled
+
+        EvenMoreFish plugin = EvenMoreFish.getInstance();
+        PluginManager pluginManager = plugin.getServer().getPluginManager();
+
+        Plugin worldGuard = pluginManager.getPlugin("WorldGuard");
+        if (worldGuard != null && worldGuard.isEnabled()) {
+            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            ApplicableRegionSet set = container.createQuery().getApplicableRegions(BukkitAdapter.adapt(location));
+
+            if (set.getRegions().isEmpty()) {
+                EvenMoreFish.debug("Could not find any regions with WorldGuard");
+                return null;
+            }
+
+            return set.iterator().next().getId(); // Return the first region found
+        }
+
+        if (pluginManager.isPluginEnabled("RedProtect")) {
+            Region region = RedProtect.get().getAPI().getRegion(location);
+            if (region == null) {
+                EvenMoreFish.debug("Could not find any regions with RedProtect");
+                return null;
+            }
+
+            return region.getName();
+        }
+
+        plugin.getLogger().warning("Please install WorldGuard or RedProtect to use region-boosts.");
+        return null;
     }
+
 
     public static boolean checkWorld(Location l) {
         // if the user has defined a world whitelist
@@ -469,7 +494,6 @@ public class FishUtils {
 
         return totalWeight;
     }
-
 
 
     public static @Nullable DayOfWeek getDay(@NotNull String day) {
