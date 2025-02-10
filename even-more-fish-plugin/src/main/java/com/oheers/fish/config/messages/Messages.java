@@ -26,6 +26,10 @@ public class Messages extends ConfigBase {
         return message.getLegacyMessage();
     }
 
+    public int getLeaderboardCount() {
+        return getConfig().getInt("leaderboard-count", 5);
+    }
+
     @Override
     public UpdaterSettings getUpdaterSettings() {
         UpdaterSettings.Builder builder = UpdaterSettings.builder(super.getUpdaterSettings());

@@ -314,13 +314,15 @@ public class Competition {
             entries = List.of();
         }
 
+        int maxCount = Messages.getInstance().getLeaderboardCount();
+
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
         for (CompetitionEntry entry : entries) {
             pos++;
-            // If we're out of colours, break the loop
-            if (pos > competitionColours.size()) {
+            // If we're out of colours or the max count is reached, break the loop
+            if (pos > competitionColours.size() || pos > maxCount) {
                 break;
             }
             AbstractMessage message = ConfigMessage.LEADERBOARD_LARGEST_FISH.getMessage();
