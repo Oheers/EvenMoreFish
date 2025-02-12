@@ -8,15 +8,13 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.GUIUtils;
 import com.oheers.fish.gui.guis.EMFGUI;
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.inventorygui.*;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Level;
 
@@ -26,10 +24,13 @@ public class FishJournalGui implements EMFGUI {
     private final HumanEntity viewer;
     private final Rarity rarity;
 
-    public FishJournalGui(@NotNull HumanEntity viewer, @NotNull Rarity rarity) {
+    public FishJournalGui(@NotNull HumanEntity viewer, @Nullable Rarity rarity) {
         this.viewer = viewer;
         this.rarity = rarity;
-        Section section = GUIConfig.getInstance().getConfig().getSection("journal-rarity");
+
+        String configPath = (rarity == null ? "journal-menu" : "journal-rarity");
+
+        Section section = GUIConfig.getInstance().getConfig().getSection(configPath);
         this.gui = GUIUtils.createGUI(section);
         if (section == null) {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not find the config for the Fish Journal GUI!");
@@ -38,7 +39,11 @@ public class FishJournalGui implements EMFGUI {
         this.gui.setFiller(GUIUtils.getFillerItem(section.getString("filler"), Material.BLACK_STAINED_GLASS_PANE));
         this.gui.addElements(GUIUtils.getElements(section, this, null));
         this.gui.addElements(GUIFillerConfig.getInstance().getDefaultFillerElements());
-        this.gui.addElement(getFishGroup(section));
+        this.gui.addElement(getGroup(section));
+    }
+
+    private DynamicGuiElement getGroup(Section section) {
+        return (this.rarity == null ? getRarityGroup(section) : getFishGroup(section));
     }
 
     private DynamicGuiElement getFishGroup(Section section) {
@@ -56,6 +61,14 @@ public class FishJournalGui implements EMFGUI {
     private ItemStack getFishItem(Fish fish) {
         // TODO respect configs
         return fish.give(-1);
+    }
+
+    private DynamicGuiElement getRarityGroup(Section section) {
+        // TODO return actual rarities
+        return new DynamicGuiElement(
+            '#',
+            who -> new StaticGuiElement('#', new ItemStack(Material.COBBLESTONE))
+        );
     }
 
     @Override
