@@ -282,6 +282,93 @@ apply-baits-menu:
     character: "x"
     click-action: "full-exit"
 
+# FISH JOURNAL
+
+# The main menu for selecting the rarity you'd like to view
+journal-menu:
+  title: '&1Fish Journal'
+  layout:
+    - '         '
+    - ' rrrrrrr '
+    - ' rrrrrrr '
+    - ' rrrrrrr '
+    - ' rrrrrrr '
+    - '    x    '
+  filler: gray_stained_glass_pane
+  rarity-character: r # Character to represent a rarity
+
+  rarity-item:
+    material: IRON_BARS # TODO allow rarities to have configurable icons?
+    displayname: '{rarity}' # Uses the rarity's display name
+    lore:
+      - ''
+      - '&#00bfff→ Click to view caught fish'
+
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
+    lore:
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "open-main-menu"
+
+# The menu for the chosen rarity
+journal-rarity:
+  title: '&1Fish Journal: {rarity}' # Uses the rarity's display name
+  layout:
+    - '    a    '
+    - ' fffffff '
+    - ' fffffff '
+    - ' fffffff '
+    - ' fffffff '
+    - '    x    '
+  filler: gray_stained_glass_pane
+  fish-character: f # Character to represent a fish in the layout
+
+  undiscovered-fish:
+    material: IRON_BARS
+    displayname: '&8Undiscovered Fish'
+    lore:
+      - "&7"
+      - "&fCatch this fish with a rod"
+      - "&fto unlock it here."
+
+  fish-item:
+    material: IRON_BARS
+    displayname: '&f{fishname}'
+    lore:
+      - '&f '
+      - '&fCaught: {raritycolor}{timescaught}x'
+      - '&fLargest size: {raritycolor}{largestsize}cm'
+      - '&fSmallest size: {raritycolor}{shortestsize}cm'
+      - '&fFound on: {raritycolor}{discoverdate}'
+      - '&f '
+      - '&fDiscovered by: {raritycolor}{discoverer}'
+      - '&fServer longest: {raritycolor}{serverbestsize}cm &e{best-player}'
+      - '&fServer shortest: {raritycolor}{servershortestsize}cm &e{shortest-player}'
+      - '&fServer caught: {raritycolor}{servercaught}x &e{most-caught-player}'
+
+  info:
+    item:
+      material: BOOK
+      displayname: "&cINFO"
+    lore:
+      - '&eHere you can see all the fish you have caught.'
+      - '&eFrom the {rarity} rarity.'
+    character: a
+
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
+    lore:
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "open-main-menu"
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
 config-version: 5
