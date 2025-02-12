@@ -4,6 +4,8 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
+import com.oheers.fish.gui.GUIUtils;
+import com.oheers.fish.gui.guis.EMFGUI;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
@@ -22,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class FishCodexGUI implements Listener {
+public class FishCodexGUI implements Listener, EMFGUI {
 
     private final DatabaseManager dbManager;
     private final EmfCodex plugin;
@@ -32,7 +34,7 @@ public class FishCodexGUI implements Listener {
     private final String rarity;
     private final String dateFormat;
 
-    public FishCodexGUI(DatabaseManager dbManager, EmfCodex plugin, Player viewer, String rarity) throws IOException {
+    public FishCodexGUI(DatabaseManager dbManager, EmfCodex plugin, Player viewer, String rarity) {
         this.dbManager = dbManager;
         this.plugin = plugin;
         this.viewer = viewer;
@@ -40,6 +42,11 @@ public class FishCodexGUI implements Listener {
         this.dateFormat = plugin.getConfig().getString("date-format", "MMM dd, yyyy");
         this.guiConfig = GUIConfig.getInstance().getConfig();
         Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+
+    @Override
+    public InventoryGui getGui() {
+        return gui;
     }
 
     public void open() {
@@ -61,6 +68,9 @@ public class FishCodexGUI implements Listener {
             });
         });
     }
+
+    @Override
+    public void doRescue() {}
 
     private void buildGUI(Map<String, FishData> caughtFishMap) {
         Section section = guiConfig.getSection("fish-codex-menu");
