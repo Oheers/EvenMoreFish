@@ -20,13 +20,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Level;
 
-public class FishCodexGUI implements EMFGUI {
+public class FishJournalGui implements EMFGUI {
 
     private final InventoryGui gui;
     private final HumanEntity viewer;
     private final Rarity rarity;
 
-    public FishCodexGUI(@NotNull HumanEntity viewer, @NotNull Rarity rarity) {
+    public FishJournalGui(@NotNull HumanEntity viewer, @NotNull Rarity rarity) {
         this.viewer = viewer;
         this.rarity = rarity;
         Section section = GUIConfig.getInstance().getConfig().getSection("journal-rarity");

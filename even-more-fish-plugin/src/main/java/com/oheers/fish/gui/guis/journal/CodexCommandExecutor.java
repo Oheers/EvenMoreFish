@@ -8,12 +8,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class CodexCommandExecutor implements CommandExecutor, TabCompleter {
     private final DatabaseManager dbManager;
@@ -56,7 +54,7 @@ public class CodexCommandExecutor implements CommandExecutor, TabCompleter {
                     return false;
                 }
 
-                new FishCodexGUI(targetPlayer, rarityObj).open();
+                new FishJournalGui(targetPlayer, rarityObj).open();
                 return true;
             } else {
                 //String usageMessage = FishUtils.translateColorCodes(config.getString("messages.usage", "&cUsage: /{label} <rarity> [player]").replace("{label}", label));
