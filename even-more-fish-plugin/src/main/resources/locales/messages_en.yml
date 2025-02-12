@@ -129,6 +129,7 @@ help-general:
   sellall: "[noPrefix]Sell all the fish in your inventory."
   next: "[noPrefix]Show how much time is until the next competition."
   applybaits: "[noPrefix]Apply baits to your fishing rod."
+  journal: "[noPrefix]View a journal of caught fish and their stats."
 
 help-list:
   fish: "[noPrefix]Display all fish in a specific rarity."
