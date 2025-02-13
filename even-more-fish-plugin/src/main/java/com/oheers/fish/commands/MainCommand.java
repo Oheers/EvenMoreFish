@@ -40,12 +40,14 @@ public class MainCommand {
                         getShop(),
                         getSellAll(),
                         getApplyBaits(),
-                        getJournal(),
                         new AdminCommand("admin").getCommand()
                 )
                 .executes(info -> {
                     sendHelpMessage(info.sender());
                 });
+        if (MainConfig.getInstance().isDatabaseOnline()) {
+            this.command.withSubcommand(getJournal());
+        }
     }
 
     public CommandAPICommand getCommand() {

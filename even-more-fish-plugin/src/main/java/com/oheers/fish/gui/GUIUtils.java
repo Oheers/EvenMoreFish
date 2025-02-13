@@ -3,10 +3,12 @@ package com.oheers.fish.gui;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GUIConfig;
+import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.gui.guis.BaitsGUI;
 import com.oheers.fish.gui.guis.EMFGUI;
 import com.oheers.fish.gui.guis.MainMenuGUI;
 import com.oheers.fish.gui.guis.SellGUI;
+import com.oheers.fish.gui.guis.journal.FishJournalGui;
 import com.oheers.fish.selling.SellHelper;
 import com.oheers.fish.utils.ItemBuilder;
 import com.oheers.fish.utils.ItemFactory;
@@ -224,6 +226,7 @@ public class GUIUtils {
             if (gui != null) {
                 gui.doRescue();
             }
+            click.getGui().close();
             new MainMenuGUI(click.getWhoClicked()).open();
             return true;
         });
@@ -247,6 +250,7 @@ public class GUIUtils {
             if (!(humanEntity instanceof Player player)) {
                 return true;
             }
+            click.getGui().close();
             new SellGUI(player, SellGUI.SellState.NORMAL, null).open();
             return true;
         });
@@ -298,7 +302,19 @@ public class GUIUtils {
             if (gui != null) {
                 gui.doRescue();
             }
+            click.getGui().close();
             new BaitsGUI(click.getWhoClicked()).open();
+            return true;
+        });
+        newActionMap.put("open-journal-menu", click -> {
+            if (!MainConfig.getInstance().isDatabaseOnline()) {
+                return false;
+            }
+            if (gui != null) {
+                gui.doRescue();
+            }
+            click.getGui().close();
+            new FishJournalGui(click.getWhoClicked(), null).open();
             return true;
         });
         // Add page actions so third party plugins cannot register their own.

@@ -109,13 +109,16 @@ main-menu:
     character: "b"
     click-action: "open-baits-menu"
 
-  coming-soon-journal:
+  open-journal:
     item:
-      material: barrier
-      displayname: "&cComing Soon!"
+      material: writable_book
+      displayname: "&6»           Fish Journal"
     lore:
-      - "&7This menu is still being worked on!"
+      - "&f&m                                 "
+      - "&7Shows a journal of caught fish"
+      - "&f&m                                 "
     character: "j"
+    click-action: "open-journal-menu"
 
   exit:
     item:
@@ -298,8 +301,9 @@ journal-menu:
   rarity-character: r # Character to represent a rarity
 
   rarity-item:
-    material: IRON_BARS # TODO allow rarities to have configurable icons?
-    displayname: '{rarity}' # Uses the rarity's display name
+    item:
+      material: IRON_BARS # TODO allow rarities to have configurable icons?
+      displayname: '{rarity}' # Uses the rarity's display name
     lore:
       - ''
       - '&#00bfff→ Click to view caught fish'
@@ -328,27 +332,26 @@ journal-rarity:
   fish-character: f # Character to represent a fish in the layout
 
   undiscovered-fish:
-    material: IRON_BARS
-    displayname: '&8Undiscovered Fish'
+    item:
+      material: IRON_BARS
+      displayname: '&8Undiscovered Fish'
     lore:
       - "&7"
       - "&fCatch this fish with a rod"
       - "&fto unlock it here."
 
   fish-item:
-    material: IRON_BARS
-    displayname: '&f{fishname}'
+    item:
+      displayname: '&f{fishname}'
     lore:
       - '&f '
-      - '&fCaught: {raritycolor}{timescaught}x'
-      - '&fLargest size: {raritycolor}{largestsize}cm'
-      - '&fSmallest size: {raritycolor}{shortestsize}cm'
-      - '&fFound on: {raritycolor}{discoverdate}'
+      - '&fCaught: {times-caught}x'
+      - '&fLargest size: {largest-size}cm'
+      - '&fFound on: {discover-date}'
       - '&f '
-      - '&fDiscovered by: {raritycolor}{discoverer}'
-      - '&fServer longest: {raritycolor}{serverbestsize}cm &e{best-player}'
-      - '&fServer shortest: {raritycolor}{servershortestsize}cm &e{shortest-player}'
-      - '&fServer caught: {raritycolor}{servercaught}x &e{most-caught-player}'
+      - '&fDiscovered by: {discoverer}'
+      - '&fServer longest: {server-largest}cm'
+      - '&fServer caught: {server-caught}x'
 
   info:
     item:
@@ -371,4 +374,4 @@ journal-rarity:
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 5
+config-version: 6
