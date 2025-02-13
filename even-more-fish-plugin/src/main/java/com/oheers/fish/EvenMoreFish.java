@@ -27,7 +27,7 @@ import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.GUIFillerConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.config.messages.MessageConfig;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.economy.GriefPreventionEconomyType;
@@ -161,7 +161,7 @@ public class EvenMoreFish extends EMFPlugin {
         usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
 
         new MainConfig();
-        new Messages();
+        new MessageConfig();
 
         saveAdditionalDefaultAddons();
         this.addonManager = new AddonManager(this);
@@ -442,7 +442,7 @@ public class EvenMoreFish extends EMFPlugin {
         saveDefaultConfig();
 
         MainConfig.getInstance().reload();
-        Messages.getInstance().reload();
+        MessageConfig.getInstance().reload();
         GUIConfig.getInstance().reload();
         GUIFillerConfig.getInstance().reload();
         BaitFile.getInstance().reload();

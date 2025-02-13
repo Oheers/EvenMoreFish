@@ -16,7 +16,7 @@ import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.config.messages.MessageConfig;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -342,7 +342,7 @@ public class AdminCommand {
                     {prefix} Database Engine: {engine}\s
                     {prefix} Database Type: {type}\s
                     """
-                        .replace("{prefix}", Messages.getInstance().getSTDPrefix())
+                        .replace("{prefix}", MessageConfig.getInstance().getSTDPrefix())
                         .replace("{version}", EvenMoreFish.getInstance().getDescription().getVersion())
                         .replace("{branch}", getFeatureBranchName())
                         .replace("{build-date}", getFeatureBranchBuildOrDate())

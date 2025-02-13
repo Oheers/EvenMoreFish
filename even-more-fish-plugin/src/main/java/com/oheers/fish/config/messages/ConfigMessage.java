@@ -293,7 +293,7 @@ public enum ConfigMessage {
     }
 
     public boolean isListForm() {
-        return !Messages.getInstance().getConfig().getStringList(getId()).isEmpty();
+        return !MessageConfig.getInstance().getConfig().getStringList(getId()).isEmpty();
     }
 
     public PrefixType getPrefixType() {
@@ -337,7 +337,7 @@ public enum ConfigMessage {
      * @return The string from config that matches the value of id.
      */
     private String getString(String normal, String id) {
-        Messages messageConfig = Messages.getInstance();
+        MessageConfig messageConfig = MessageConfig.getInstance();
         String string = messageConfig.getConfig().getString(id, null);
         if (string == null) {
             EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");
@@ -357,7 +357,7 @@ public enum ConfigMessage {
      * @return The string list from config that matches the value of id.
      */
     private List<String> getStringList(List<String> normal, String id) {
-        Messages messageConfig = Messages.getInstance();
+        MessageConfig messageConfig = MessageConfig.getInstance();
         List<String> list = messageConfig.getConfig().getStringList(id);
         if (list.isEmpty()) {
             EvenMoreFish.getInstance().getLogger().warning("No valid value in messages.yml for: " + id + ". Attempting to insert the default value.");

@@ -11,7 +11,7 @@ import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.config.messages.MessageConfig;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.fishing.items.Fish;
@@ -236,8 +236,8 @@ public class Competition {
      * @return A boolean, true = do it in actionbar.
      */
     public boolean isDoingFirstPlaceActionBar() {
-        boolean doActionBarMessage = Messages.getInstance().getConfig().getBoolean("action-bar-message");
-        boolean isSupportedActionBarType = Messages.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || Messages.getInstance()
+        boolean doActionBarMessage = MessageConfig.getInstance().getConfig().getBoolean("action-bar-message");
+        boolean isSupportedActionBarType = MessageConfig.getInstance().getConfig().getStringList("action-bar-types").isEmpty() || MessageConfig.getInstance()
                 .getConfig()
                 .getStringList("action-bar-types")
                 .contains(getCompetitionType().toString());
@@ -314,13 +314,15 @@ public class Competition {
             entries = List.of();
         }
 
+        int maxCount = MessageConfig.getInstance().getLeaderboardCount();
+
         StringBuilder builder = new StringBuilder();
         int pos = 0;
 
         for (CompetitionEntry entry : entries) {
             pos++;
-            // If we're out of colours, break the loop
-            if (pos > competitionColours.size()) {
+            // If we're out of colours or the max count is reached, break the loop
+            if (pos > competitionColours.size() || pos > maxCount) {
                 break;
             }
             AbstractMessage message = ConfigMessage.LEADERBOARD_LARGEST_FISH.getMessage();

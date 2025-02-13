@@ -6,16 +6,16 @@ import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 
-public class Messages extends ConfigBase {
+public class MessageConfig extends ConfigBase {
 
-    private static Messages instance = null;
+    private static MessageConfig instance = null;
 
-    public Messages() {
+    public MessageConfig() {
         super("messages.yml", "locales/" + "messages_" + MainConfig.getInstance().getLocale() + ".yml", EvenMoreFish.getInstance(), true);
         instance = this;
     }
 
-    public static Messages getInstance() {
+    public static MessageConfig getInstance() {
         return instance;
     }
 
@@ -24,6 +24,10 @@ public class Messages extends ConfigBase {
         message.prependMessage(PrefixType.DEFAULT.getPrefix());
         message.appendString("&r");
         return message.getLegacyMessage();
+    }
+
+    public int getLeaderboardCount() {
+        return getConfig().getInt("leaderboard-count", 5);
     }
 
     @Override
