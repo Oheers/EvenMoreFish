@@ -588,6 +588,9 @@ public class Database implements DatabaseAPI {
     }
 
     public String getType() {
+        if (!MainConfig.getInstance().databaseEnabled())
+            return "Disabled";
+
         return connectionFactory.getType();
     }
 }

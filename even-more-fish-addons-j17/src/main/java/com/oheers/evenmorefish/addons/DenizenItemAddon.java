@@ -23,6 +23,11 @@ public class DenizenItemAddon extends ItemAddon {
     }
 
     @Override
+    public String getVersion() {
+        return "1.0.0";
+    }
+
+    @Override
     public ItemStack getItemStack(String id) {
         final ItemTag itemTag = ItemTag.valueOf(id, false);
         if (itemTag == null) {

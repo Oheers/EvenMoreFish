@@ -79,7 +79,7 @@ require-nbt-rod: false
 # and baits in fish & baits .yml files.
 nbt-rod-item:
   item:
-    # This needs to be FISHING_ROD
+    # This needs to be FISHING_ROD, can be an addon string, but the base material has to be FISHING_ROD
     material: FISHING_ROD
     displayname: "&eEvenMoreFish Fishing Rod"
   glowing: true

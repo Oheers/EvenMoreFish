@@ -30,6 +30,11 @@ public class NexoItemAddon extends ItemAddon implements Listener {
     }
 
     @Override
+    public String getVersion() {
+        return "1.0.0";
+    }
+
+    @Override
     public ItemStack getItemStack(String id) {
         if (!nexoLoaded) {
             return null;
