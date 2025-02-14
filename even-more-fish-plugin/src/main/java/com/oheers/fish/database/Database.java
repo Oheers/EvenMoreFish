@@ -154,7 +154,7 @@ public class Database implements DatabaseAPI {
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
                         .from(Tables.FISH_LOG)
-                        .where(Tables.FISH_LOG.ID.eq(userId))
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId))
                         .fetch()
                         .isNotEmpty();
             }
@@ -194,8 +194,7 @@ public class Database implements DatabaseAPI {
                 return dslContext.select()
                         .from(Tables.USERS)
                         .where(Tables.USERS.UUID.eq(uuid.toString()))
-                        .fetchOne(Tables.USERS.ID)
-                        ;
+                        .fetchOne(Tables.USERS.ID);
             }
 
             @Override
@@ -469,7 +468,7 @@ public class Database implements DatabaseAPI {
             protected List<FishReport> onRunQuery(DSLContext dslContext) throws Exception {
                 Result<Record> result = dslContext.select()
                         .from(Tables.FISH_LOG)
-                        .where(Tables.FISH_LOG.ID.eq(userId))
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId))
                         .fetch();
 
                 if (result.isEmpty()) {
@@ -505,7 +504,7 @@ public class Database implements DatabaseAPI {
             protected List<FishReport> onRunQuery(DSLContext dslContext) throws Exception {
                 Result<Record> result = dslContext.select()
                         .from(Tables.FISH_LOG)
-                        .where(Tables.FISH_LOG.ID.eq(userId)
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId)
                                 .and(Tables.FISH_LOG.FISH.eq(fish.getName()))
                                 .and(Tables.FISH_LOG.RARITY.eq(fish.getRarity().getId())))
                         .fetch();
@@ -586,13 +585,13 @@ public class Database implements DatabaseAPI {
     }
 
     @Override
-    public boolean userHasFish(@NotNull String rarity, @NotNull String fish, int id) {
+    public boolean userHasFish(@NotNull String rarity, @NotNull String fish, int userId) {
         return new ExecuteQuery<Boolean>(connectionFactory, settings) {
             @Override
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
                         .from(Tables.FISH_LOG)
-                        .where(Tables.FISH_LOG.ID.eq(id)
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId)
                                 .and(Tables.FISH_LOG.RARITY.eq(rarity)
                                         .and(Tables.FISH_LOG.FISH.eq(fish))))
                         .fetch()
