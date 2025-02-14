@@ -93,7 +93,9 @@ public class FishJournalGui implements EMFGUI {
             return factory.createItem(null, -1);
         }
 
-        ItemStack item = fish.give(-1);
+        ItemFactory factory = new ItemFactory("fish-item", section);
+        factory.enableAllChecks();
+        ItemStack item = factory.createItem(null, -1);
 
         FishUtils.editMeta(item, meta -> {
             // Display Name
@@ -120,7 +122,8 @@ public class FishJournalGui implements EMFGUI {
             meta.setLore(lore.getLegacyListMessage());
         });
 
-        // TODO respect configs
+        ItemUtils.changeMaterial(item, fish.getFactory().getMaterial());
+
         return item;
     }
 
