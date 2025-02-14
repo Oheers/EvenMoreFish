@@ -2,6 +2,7 @@ id: Legendary
 disabled: false
 weight: 1
 colour: '&6'
+material: yellow_concrete_powder
 worth-multiplier: 0.2
 broadcast: true
 size:

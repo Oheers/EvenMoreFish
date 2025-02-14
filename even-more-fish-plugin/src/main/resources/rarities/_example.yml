@@ -11,6 +11,9 @@ disabled: false
 # What colour should the fish's name be?
 colour: "&d"
 
+# The material to represent this rarity in GUIs. Defaults to iron_bars if missing.
+material: magenta_concrete_powder
+
 # How likely is the rarity to be chosen? Having a greater weight means the rarity is more likely to be chosen (the total weights don't have to add to 100)
 weight: 5
 

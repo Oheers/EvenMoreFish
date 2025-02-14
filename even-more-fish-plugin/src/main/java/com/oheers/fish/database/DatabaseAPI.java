@@ -66,6 +66,8 @@ public interface DatabaseAPI {
 
     void writeFishReports(@NotNull UUID uuid, @NotNull List<FishReport> reports);
 
+    boolean userHasFish(@NotNull Fish fish, @NotNull HumanEntity user);
+
     boolean userHasFish(@NotNull String rarity, @NotNull String fish, int id);
 
     // Competition-related methods

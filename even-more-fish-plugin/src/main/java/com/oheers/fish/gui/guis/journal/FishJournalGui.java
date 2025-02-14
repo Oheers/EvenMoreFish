@@ -9,6 +9,7 @@ import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.GUIUtils;
 import com.oheers.fish.gui.guis.EMFGUI;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jooq.impl.QOM;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -73,10 +75,17 @@ public class FishJournalGui implements EMFGUI {
     }
 
     private ItemStack getFishItem(Fish fish, Section section) {
+        Database database = EvenMoreFish.getInstance().getDatabase();
+
+        boolean hideUndiscovered = section.getBoolean("hide-undiscovered-fish", true);
+        // If undiscovered fish should be hidden
+        if (hideUndiscovered && !database.userHasFish(fish, viewer)) {
+            ItemFactory factory = new ItemFactory("undiscovered-fish", section);
+            factory.enableAllChecks();
+            return factory.createItem(null, -1);
+        }
 
         ItemStack item = fish.give(-1);
-
-        Database database = EvenMoreFish.getInstance().getDatabase();
 
         FishUtils.editMeta(item, meta -> {
             // Display Name
@@ -88,13 +97,15 @@ public class FishJournalGui implements EMFGUI {
             }
 
             // Lore
+            LocalDateTime discover = database.getFirstCatchDateForPlayer(fish, viewer);
+            String discoverStr = discover == null ? null : discover.format(DateTimeFormatter.ISO_DATE);
+
             AbstractMessage lore = EvenMoreFish.getAdapter().createMessage(
                 section.getStringList("fish-item.lore")
             );
-            lore.setVariable("{times-caught}", Integer.toString(database.getAmountFishCaught(fish)), "Unknown");
-            lore.setVariable("{times-caught}", database.getAmountFishCaughtForPlayer(fish, viewer), "Unknown");
+            lore.setVariable("{times-caught}", Integer.toString(database.getAmountFishCaughtForPlayer(fish, viewer)), "Unknown");
             lore.setVariable("{largest-size}", database.getLargestFishSizeForPlayer(fish, viewer), "Unknown");
-            lore.setVariable("{discover-date}", database.getFirstCatchDateForPlayer(fish, viewer).format(DateTimeFormatter.ISO_DATE), "Unknown"); // TODO configurable formatter
+            lore.setVariable("{discover-date}", discoverStr, "Unknown"); // TODO configurable formatter
             lore.setVariable("{discoverer}", FishUtils.getPlayerName(database.getDiscoverer(fish)), "Unknown");
             lore.setVariable("{server-largest}", database.getLargestFishSize(fish), "Unknown");
             lore.setVariable("{server-caught}", database.getAmountFishCaught(fish), "Unknown");
@@ -106,11 +117,31 @@ public class FishJournalGui implements EMFGUI {
     }
 
     private DynamicGuiElement getRarityGroup(Section section) {
-        // TODO return actual rarities
-        return new DynamicGuiElement(
-            '#',
-            who -> new StaticGuiElement('#', new ItemStack(Material.COBBLESTONE))
-        );
+        char character = FishUtils.getCharFromString(section.getString("rarity-character", "r"), 'r');
+
+        return new DynamicGuiElement(character, who -> {
+            GuiElementGroup group = new GuiElementGroup(character);
+            FishManager.getInstance().getRarityMap().values().forEach(rarity -> {
+                ItemFactory factory = new ItemFactory("rarity-item", section);
+                factory.enableAllChecks();
+                ItemStack item = factory.createItem(null, -1);
+                item = ItemUtils.changeMaterial(item, rarity.getMaterial());
+
+                FishUtils.editMeta(item, meta -> {
+                    String displayStr = meta.getDisplayName();
+                    AbstractMessage display = EvenMoreFish.getAdapter().createMessage(displayStr);
+                    display.setVariable("{rarity}", rarity.getDisplayName());
+                    meta.setDisplayName(display.getLegacyMessage());
+                });
+
+                group.addElement(new StaticGuiElement(character, item, click -> {
+                    click.getGui().close();
+                    new FishJournalGui(viewer, rarity).open();
+                    return true;
+                }));
+            });
+            return group;
+        });
     }
 
     @Override

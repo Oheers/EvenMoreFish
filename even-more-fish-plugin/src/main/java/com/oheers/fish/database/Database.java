@@ -354,10 +354,10 @@ public class Database implements DatabaseAPI {
     @Override
     public LocalDateTime getFirstCatchDateForPlayer(@NotNull Fish fish, @NotNull HumanEntity player) {
         List<FishReport> reports = getReportsForFish(player.getUniqueId(), fish); // Need to use this here, as no method exists in UserReport
-        LocalDateTime earliest = LocalDateTime.now();
+        LocalDateTime earliest = null;
         for (FishReport report : reports) {
             LocalDateTime catchTime = report.getLocalDateTime();
-            if (catchTime.isBefore(earliest)) {
+            if (earliest == null || catchTime.isBefore(earliest)) {
                 earliest = catchTime;
             }
         }
@@ -418,12 +418,8 @@ public class Database implements DatabaseAPI {
 
     @Override
     public int getAmountFishCaughtForPlayer(@NotNull Fish fish, @NotNull HumanEntity player) {
-        UUID uuid = player.getUniqueId();
-        if (!hasUser(uuid)) {
-            createUser(uuid);
-        }
-        UserReport report = readUserReport(uuid);
-        return report.getNumFishCaught();
+        List<FishReport> reports = getReportsForFish(player.getUniqueId(), fish);
+        return reports.stream().mapToInt(FishReport::getNumCaught).sum();
     }
 
     @Override
@@ -582,6 +578,11 @@ public class Database implements DatabaseAPI {
                 addUserFish(report, userID);
             }
         }
+    }
+
+    @Override
+    public boolean userHasFish(@NotNull Fish fish, @NotNull HumanEntity user) {
+        return userHasFish(fish.getRarity().getId(), fish.getName(), getUserId(user.getUniqueId()));
     }
 
     @Override

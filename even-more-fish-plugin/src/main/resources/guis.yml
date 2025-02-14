@@ -331,13 +331,15 @@ journal-rarity:
   filler: gray_stained_glass_pane
   fish-character: f # Character to represent a fish in the layout
 
+  # Whether to show the undiscovered-fish config below when a fish has not been caught by the player.
+  hide-undiscovered-fish: true
   undiscovered-fish:
     item:
       material: IRON_BARS
       displayname: '&8Undiscovered Fish'
     lore:
       - "&7"
-      - "&fCatch this fish with a rod"
+      - "&fCatch this fish"
       - "&fto unlock it here."
 
   fish-item:
@@ -346,12 +348,12 @@ journal-rarity:
     lore:
       - '&f '
       - '&fCaught: {times-caught}x'
-      - '&fLargest size: {largest-size}cm'
-      - '&fFound on: {discover-date}'
+      - '&fLargest Size: {largest-size}cm'
+      - '&fFound: {discover-date}'
       - '&f '
       - '&fDiscovered by: {discoverer}'
-      - '&fServer longest: {server-largest}cm'
-      - '&fServer caught: {server-caught}x'
+      - '&fServer Largest: {server-largest}cm'
+      - '&fServer Caught: {server-caught}x'
 
   info:
     item:

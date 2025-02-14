@@ -44,7 +44,6 @@ database:
 # Prevents verbose output when the plugin interacts with the database.
 disable-db-verbose: true
 
-
 # When dropping tool items (e.g. fishing rod) should they be dropped with a random durability
 # instead of always full durability?
 random-durability: true
