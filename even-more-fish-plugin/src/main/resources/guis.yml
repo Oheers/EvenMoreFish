@@ -364,7 +364,7 @@ journal-rarity:
       displayname: "&cINFO"
     lore:
       - '&eHere you can see all the fish you have caught.'
-      - '&eFrom the {rarity} rarity.'
+      - '&eFrom this rarity.'
     character: a
 
   exit:
