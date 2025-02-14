@@ -27,7 +27,7 @@ import com.oheers.fish.config.GUIConfig;
 import com.oheers.fish.config.GUIFillerConfig;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.config.messages.MessageConfig;
 import com.oheers.fish.database.DataManager;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.economy.GriefPreventionEconomyType;
@@ -84,9 +84,9 @@ public class EvenMoreFish extends EMFPlugin {
     private CompetitionQueue competitionQueue;
     private Logger logger;
     private PluginManager pluginManager;
-    private int metric_fishCaught = 0;
-    private int metric_baitsUsed = 0;
-    private int metric_baitsApplied = 0;
+    private int metricFishCaught = 0;
+    private int metricBaitsUsed = 0;
+    private int metricBaitsApplied = 0;
     private boolean firstLoad = false;
 
     // this is for pre-deciding a rarity and running particles if it will be chosen
@@ -161,7 +161,7 @@ public class EvenMoreFish extends EMFPlugin {
         usingPlayerPoints = Bukkit.getPluginManager().isPluginEnabled("PlayerPoints");
 
         new MainConfig();
-        new Messages();
+        new MessageConfig();
 
         saveAdditionalDefaultAddons();
         this.addonManager = new AddonManager(this);
@@ -345,20 +345,20 @@ public class EvenMoreFish extends EMFPlugin {
         Metrics metrics = new Metrics(this, 11054);
 
         metrics.addCustomChart(new SingleLineChart("fish_caught", () -> {
-            int returning = metric_fishCaught;
-            metric_fishCaught = 0;
+            int returning = metricFishCaught;
+            metricFishCaught = 0;
             return returning;
         }));
 
         metrics.addCustomChart(new SingleLineChart("baits_applied", () -> {
-            int returning = metric_baitsApplied;
-            metric_baitsApplied = 0;
+            int returning = metricBaitsApplied;
+            metricBaitsApplied = 0;
             return returning;
         }));
 
         metrics.addCustomChart(new SingleLineChart("baits_used", () -> {
-            int returning = metric_baitsUsed;
-            metric_baitsUsed = 0;
+            int returning = metricBaitsUsed;
+            metricBaitsUsed = 0;
             return returning;
         }));
 
@@ -443,7 +443,7 @@ public class EvenMoreFish extends EMFPlugin {
         saveDefaultConfig();
 
         MainConfig.getInstance().reload();
-        Messages.getInstance().reload();
+        MessageConfig.getInstance().reload();
         GUIConfig.getInstance().reload();
         GUIFillerConfig.getInstance().reload();
         BaitFile.getInstance().reload();
@@ -540,27 +540,27 @@ public class EvenMoreFish extends EMFPlugin {
     }
 
     public int getMetricFishCaught() {
-        return metric_fishCaught;
+        return metricFishCaught;
     }
 
     public void incrementMetricFishCaught(int value) {
-        this.metric_fishCaught = (metric_fishCaught + value);
+        this.metricFishCaught = (metricFishCaught + value);
     }
 
     public int getMetricBaitsUsed() {
-        return metric_baitsUsed;
+        return metricBaitsUsed;
     }
 
     public void incrementMetricBaitsUsed(int value) {
-        this.metric_baitsUsed = (metric_baitsUsed + value);
+        this.metricBaitsUsed = (metricBaitsUsed + value);
     }
 
     public int getMetricBaitsApplied() {
-        return metric_baitsApplied;
+        return metricBaitsApplied;
     }
 
     public void incrementMetricBaitsApplied(int value) {
-        this.metric_baitsApplied = (metric_baitsApplied + value);
+        this.metricBaitsApplied = (metricBaitsApplied + value);
     }
 
     public Map<UUID, Rarity> getDecidedRarities() {

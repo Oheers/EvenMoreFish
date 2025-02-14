@@ -6,12 +6,10 @@ plugins {
 repositories {
     maven("https://repo.auxilor.io/repository/maven-public/")
     maven("https://maven.citizensnpcs.co/repo")
-    maven("https://repo.oraxen.com/releases")
 }
 
 dependencies {
     compileOnly(libs.spigot.api)
-    compileOnly(libs.oraxen)
     compileOnly(libs.ecoitems.api)
     compileOnly(libs.ecoitems.libreforge)
     compileOnly(libs.ecoitems.eco)

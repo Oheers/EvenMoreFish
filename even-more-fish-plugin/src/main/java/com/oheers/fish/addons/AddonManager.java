@@ -44,6 +44,7 @@ public class AddonManager {
 
     @Nullable
     public ItemStack getItemStack(final String prefix, final String id) throws NoPrefixException {
+        // somehow, oraxen isn't registered as loaded
         if (!addonMap.containsKey(prefix)) {
             if (!loadingMap.getOrDefault(prefix, true)) {
                 throw new NoPrefixException(prefix);
@@ -59,25 +60,50 @@ public class AddonManager {
     }
 
 
-    public boolean registerAddon(final @NotNull Addon addon) {
-        final String prefix = addon.getPrefix().toLowerCase(Locale.ROOT);
-        try {
-            if (!addon.canRegister()) {
-                this.loadingMap.put(prefix, true);
-                return false;
-            }
-        } catch (JavaVersionException | RequiredPluginException e) {
-            EvenMoreFish.debug("Addon " + e.getMessage());
-            this.loadingMap.put(prefix, true);
+    public boolean registerAddon(final Addon addon) {
+        if (addon == null) {
+            EvenMoreFish.debug("Attempted to register a null addon.");
             return false;
         }
 
-        this.loadingMap.put(prefix, false);
+        final String prefix = addon.getPrefix().toLowerCase(Locale.ROOT);
+
+        // Check if the addon can be registered
+        if (!canRegisterAddon(addon, prefix)) {
+            return false;
+        }
+
+        // Register the addon
+        registerAddonInternal(addon, prefix);
+        return true;
+    }
+
+    private boolean canRegisterAddon(final @NotNull Addon addon, final String prefix) {
+        try {
+            if (!addon.canRegister()) {
+                setAddonLoadingStatus(prefix, true);
+                return false;
+            }
+        } catch (JavaVersionException | RequiredPluginException e) {
+            EvenMoreFish.debug("Addon registration failed for prefix: " + prefix + ". Reason: " + e.getMessage());
+            setAddonLoadingStatus(prefix, true);
+            return false;
+        }
+        return true;
+    }
+
+    private void registerAddonInternal(final @NotNull Addon addon, final String prefix) {
+        setAddonLoadingStatus(prefix, false);
         this.addonMap.put(prefix, addon);
+
+        // Register as a listener if applicable
         if (addon instanceof Listener listener) {
             Bukkit.getPluginManager().registerEvents(listener, plugin);
         }
-        return true;
+    }
+
+    private void setAddonLoadingStatus(final String prefix, final boolean isLoading) {
+        this.loadingMap.put(prefix, isLoading);
     }
 
     public Optional<Addon> registerAddon(final @NotNull Class<? extends Addon> addon) {
@@ -121,8 +147,8 @@ public class AddonManager {
         try {
             return clazz.getDeclaredConstructor().newInstance();
         } catch (final Exception ex) {
-            if (ex.getCause() instanceof LinkageError) {
-                throw (LinkageError) ex.getCause();
+            if (ex.getCause() instanceof LinkageError linkageError) {
+                throw linkageError;
             }
             plugin.getLogger().warning("There was an issue with loading an addon.");
             return null;

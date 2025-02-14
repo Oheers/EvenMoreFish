@@ -16,7 +16,7 @@ import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.config.ConfigBase;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
-import com.oheers.fish.config.messages.Messages;
+import com.oheers.fish.config.messages.MessageConfig;
 import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
@@ -29,6 +29,7 @@ import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -307,14 +308,14 @@ public class AdminCommand {
                 .withFullDescription(ConfigMessage.HELP_ADMIN_ADDONS.getMessage().getPlainTextMessage())
                 .executes(info -> {
                     final AddonManager addonManager = EvenMoreFish.getInstance().getAddonManager();
-                    final String messageFormat = "Addon: %s, Loading: %b";
+                    final String messageFormat = "Addon: %s, Loading: %b, Version: %s";
                     final List<String> messageList = new ArrayList<>();
                     for (final Map.Entry<String, Addon> entry : addonManager.getAddonMap().entrySet()) {
                         final String prefix = entry.getKey();
-                        messageList.add(String.format(messageFormat, prefix, addonManager.isLoading(prefix)));
+                        messageList.add(String.format(messageFormat, prefix, addonManager.isLoading(prefix), entry.getValue().getVersion()));
                     }
 
-                    EvenMoreFish.getAdapter().createMessage(messageList).send(info.sender());
+                    EvenMoreFish.getAdapter().createMessage(StringUtils.join(messageList, "\n")).send(info.sender());
                 });
     }
 
@@ -341,7 +342,7 @@ public class AdminCommand {
                     {prefix} Database Engine: {engine}\s
                     {prefix} Database Type: {type}\s
                     """
-                        .replace("{prefix}", Messages.getInstance().getSTDPrefix())
+                        .replace("{prefix}", MessageConfig.getInstance().getSTDPrefix())
                         .replace("{version}", EvenMoreFish.getInstance().getDescription().getVersion())
                         .replace("{branch}", getFeatureBranchName())
                         .replace("{build-date}", getFeatureBranchBuildOrDate())
