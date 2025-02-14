@@ -52,6 +52,14 @@ public class FishJournalGui implements EMFGUI {
             EvenMoreFish.getInstance().getLogger().log(Level.SEVERE, "Could not find the config for the Fish Journal GUI!");
             return;
         }
+
+        if (rarity != null) {
+            AbstractMessage title = EvenMoreFish.getAdapter().createMessage(this.gui.getTitle());
+            title.setRarity(rarity.getDisplayName());
+            title.setRarityColour(rarity.getColour());
+            this.gui.setTitle(title.getLegacyMessage());
+        }
+
         this.gui.setFiller(GUIUtils.getFillerItem(section.getString("filler"), Material.BLACK_STAINED_GLASS_PANE));
         this.gui.addElements(GUIUtils.getElements(section, this, null));
         this.gui.addElements(GUIFillerConfig.getInstance().getDefaultFillerElements());
@@ -105,7 +113,7 @@ public class FishJournalGui implements EMFGUI {
             );
             lore.setVariable("{times-caught}", Integer.toString(database.getAmountFishCaughtForPlayer(fish, viewer)), "Unknown");
             lore.setVariable("{largest-size}", database.getLargestFishSizeForPlayer(fish, viewer), "Unknown");
-            lore.setVariable("{discover-date}", discoverStr, "Unknown"); // TODO configurable formatter
+            lore.setVariable("{discover-date}", discoverStr, "Unknown");
             lore.setVariable("{discoverer}", FishUtils.getPlayerName(database.getDiscoverer(fish)), "Unknown");
             lore.setVariable("{server-largest}", database.getLargestFishSize(fish), "Unknown");
             lore.setVariable("{server-caught}", database.getAmountFishCaught(fish), "Unknown");
@@ -130,7 +138,8 @@ public class FishJournalGui implements EMFGUI {
                 FishUtils.editMeta(item, meta -> {
                     String displayStr = meta.getDisplayName();
                     AbstractMessage display = EvenMoreFish.getAdapter().createMessage(displayStr);
-                    display.setVariable("{rarity}", rarity.getDisplayName());
+                    display.setRarity(rarity.getDisplayName());
+                    display.setRarityColour(rarity.getColour());
                     meta.setDisplayName(display.getLegacyMessage());
                 });
 

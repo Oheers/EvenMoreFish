@@ -302,8 +302,8 @@ journal-menu:
 
   rarity-item:
     item:
-      material: IRON_BARS # TODO allow rarities to have configurable icons?
-      displayname: '{rarity}' # Uses the rarity's display name
+      material: IRON_BARS
+      displayname: '{rarity_colour}{rarity}'
     lore:
       - ''
       - '&#00bfff→ Click to view caught fish'
@@ -320,7 +320,7 @@ journal-menu:
 
 # The menu for the chosen rarity
 journal-rarity:
-  title: '&1Fish Journal: {rarity}' # Uses the rarity's display name
+  title: '&1Fish Journal: {rarity_colour}{rarity}' # Uses the rarity's display name
   layout:
     - '    a    '
     - ' fffffff '
@@ -333,6 +333,8 @@ journal-rarity:
 
   # Whether to show the undiscovered-fish config below when a fish has not been caught by the player.
   hide-undiscovered-fish: true
+
+  # How undiscovered fish should look
   undiscovered-fish:
     item:
       material: IRON_BARS
@@ -342,6 +344,7 @@ journal-rarity:
       - "&fCatch this fish"
       - "&fto unlock it here."
 
+  # How caught fish should look. Changing the material will not work, as it always uses the fish item as a base
   fish-item:
     item:
       displayname: '&f{fishname}'
@@ -372,7 +375,7 @@ journal-rarity:
       - "&eExit to the Menu"
     glowing: true
     character: "x"
-    click-action: "open-main-menu"
+    click-action: "open-journal-menu"
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
