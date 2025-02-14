@@ -5,9 +5,8 @@ This is a feature-rich plugin providing a new experience to fishing on Minecraft
 ## Pages
 
 * [Competition Types](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Types)
-* [Competitions.yml](https://github.com/Oheers/EvenMoreFish/wiki/competitions.yml)
-* [Fish.yml](https://github.com/Oheers/EvenMoreFish/wiki/Fish.yml)
-* [Rarities](https://github.com/Oheers/EvenMoreFish/wiki/Rarities.yml)
+* [Competitions](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Configs)
+* [Rarities and Fish](https://github.com/Oheers/EvenMoreFish/wiki/Rarities)
 * [Messages.yml](https://github.com/Oheers/EvenMoreFish/wiki/Messages.yml)
 * [Requirements](https://github.com/Oheers/EvenMoreFish/wiki/Requirements)
 * [Developers](https://github.com/Oheers/EvenMoreFish/wiki/Developers)

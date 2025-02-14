@@ -4,7 +4,7 @@ Requirements set a list of rules for a fish to appear and can be applied to any 
 A few settings from pre-1.6 have been moved into requirements, so it's advised to check through this before upgrading.
 
 ### Rarity requirements
-As of 1.6.10 it's possible to add in requirements to rarities. These are applied exactly the same as they are to fish in the fish.yml file and all requirements available to fish are available to rarities - if a user doesn't meet the criteria for a rarity they won't be able to catch any fish in that rarity at all.
+As of 1.6.10 it's possible to add in requirements to rarities. These are applied exactly the same as they are to fish and all requirements available to fish are available to rarities - if a user doesn't meet the criteria for a rarity they won't be able to catch any fish in that rarity at all.
 
 An example of using requirements for a rarity:
 ```yaml
@@ -87,7 +87,7 @@ A config example of using the ingame-time requirement:
 ```
 
 #### IRL Time
-This restricts your users to only catching fish during certain times of the real-world day, this is inputted similar to times for [times in the competitions.yml wiki](https://github.com/Oheers/EvenMoreFish/wiki/competitions.yml#timing) where they are formatted by 00:00 in 24-hour format. Like ingame-time, you need to specify the minimum and maximum time.
+This restricts your users to only catching fish during certain times of the real-world day, this is inputted similar to times for [Competition Configs](https://github.com/Oheers/EvenMoreFish/wiki/Competition-Configs#option-1-times) where they are formatted by 00:00 in 24-hour format. Like ingame-time, you need to specify the minimum and maximum time.
 
 A config example of using the irl-time requirement:
 ```yaml

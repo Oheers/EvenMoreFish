@@ -36,12 +36,11 @@ Becomes
 Blahaj: 
 ```
 This is exactly the same for rarities - also make sure to also change the name of the fish & rarities in the baits.yml file.
-- Note: If you're changing the name of the rarities in rarities.yml you'll also need to change their references in fish.yml. These can be seen on column 3 and are shown where they are in the screenshot in [this section](https://github.com/Oheers/EvenMoreFish/wiki/Fish.yml#creating-fish) of fish.yml
 - Note: You should always use english characters for the config keys. To name things in your language, you should use the display name config instead.
 
 ## How do I change how much fish sell for in /emf shop?
 
-As explained in the rarities.yml above the setting, each fish's rarity will have a `worth-multiplier` setting, this is then multiplied by the length of the fish to create the value seen in the `/emf shop`. By increasing or decreasing the worth-multiplier, you'll increase/decrease their worth in the shop.
+As explained in the rarity example above the setting, each fish's rarity will have a `worth-multiplier` setting, this is then multiplied by the length of the fish to create the value seen in the `/emf shop`. By increasing or decreasing the worth-multiplier, you'll increase/decrease their worth in the shop.
 
 ## How do weights work?
 

@@ -656,7 +656,7 @@ public class ItemFactory {
 
         String[] split = potionSettings.split(":");
         if (split.length != 3) {
-            EvenMoreFish.getInstance().getLogger().severe(configLocation + "item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\".");
+            EvenMoreFish.getInstance().getLogger().severe(configLocation + "item.potion: is formatted incorrectly in the fish config. Use \"potion:duration:amplifier\".");
         }
 
         try {
@@ -670,7 +670,7 @@ public class ItemFactory {
         } catch (NumberFormatException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()
-                    .severe(configLocation + "item.potion: is formatted incorrectly in the fish.yml file. Use \"potion:duration:amplifier\", where duration & amplifier are integer values.");
+                    .severe(configLocation + "item.potion: is formatted incorrectly in the fish config. Use \"potion:duration:amplifier\", where duration & amplifier are integer values.");
         } catch (NullPointerException exception) {
             EvenMoreFish.getInstance()
                     .getLogger()

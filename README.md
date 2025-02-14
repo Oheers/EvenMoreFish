@@ -27,7 +27,7 @@ this plugin highly customizable for use in your own server.
 
 * ### Rarities
 
-There's 4 rarities in the default config, but it's possible to add your own in the `rarities.yml` file, with its own
+There's 4 rarities in the default config, but it's possible to add your own in the `rarities` folder, with its own
 colour, drop frequency, standard fish length. It's also possible to set per-fish lengths.
 
 * ### Baits
