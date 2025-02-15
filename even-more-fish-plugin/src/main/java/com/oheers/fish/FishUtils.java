@@ -526,6 +526,26 @@ public class FishUtils {
         }
     }
 
+    public static String getPlayerName(@Nullable UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        return player.getName();
+    }
+
+    public static String getPlayerName(@Nullable String uuidString) {
+        if (uuidString == null) {
+            return null;
+        }
+        try {
+            UUID uuid = UUID.fromString(uuidString);
+            return getPlayerName(uuid);
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
+    }
+
     // #editMeta methods. These can be safely replaced with Paper's API once we drop Spigot.
     public static boolean editMeta(@NotNull ItemStack item, @NotNull Consumer<ItemMeta> consumer) {
         return editMeta(item, ItemMeta.class, consumer);

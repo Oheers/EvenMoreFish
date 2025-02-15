@@ -2,6 +2,7 @@ id: Common
 disabled: false
 weight: 100
 colour: '&7'
+material: light_gray_concrete_powder
 worth-multiplier: 0.1
 broadcast: false
 size:

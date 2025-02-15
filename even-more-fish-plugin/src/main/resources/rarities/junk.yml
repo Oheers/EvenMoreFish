@@ -2,6 +2,7 @@ id: Junk
 disabled: false
 weight: 5
 colour: '&#888888'
+material: white_concrete_powder
 worth-multiplier: 0.2
 broadcast: false
 size:

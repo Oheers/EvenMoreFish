@@ -4,10 +4,13 @@ import com.oheers.fish.competition.Competition;
 import com.oheers.fish.database.model.FishReport;
 import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.fishing.items.Fish;
+import org.bukkit.entity.HumanEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -36,7 +39,19 @@ public interface DatabaseAPI {
 
     void incrementFish(@NotNull Fish fish);
 
+    String getDiscoverer(@NotNull Fish fish);
+
+    LocalDateTime getFirstCatchDateForPlayer(@NotNull Fish fish, @NotNull HumanEntity player);
+
+    LocalDateTime getFirstCatchDate(@NotNull Fish fish);
+
+    float getLargestFishSizeForPlayer(@NotNull Fish fish, @NotNull HumanEntity player);
+
     float getLargestFishSize(@NotNull Fish fish);
+
+    int getAmountFishCaughtForPlayer(@NotNull Fish fish, @NotNull HumanEntity player);
+
+    int getAmountFishCaught(@NotNull Fish fish);
 
     void updateLargestFish(@NotNull Fish fish, @NotNull UUID uuid);
 
@@ -50,6 +65,8 @@ public interface DatabaseAPI {
     void updateUserFish(@NotNull FishReport report, int userId);
 
     void writeFishReports(@NotNull UUID uuid, @NotNull List<FishReport> reports);
+
+    boolean userHasFish(@NotNull Fish fish, @NotNull HumanEntity user);
 
     boolean userHasFish(@NotNull String rarity, @NotNull String fish, int id);
 

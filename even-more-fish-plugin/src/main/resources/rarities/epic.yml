@@ -2,6 +2,7 @@ id: Epic
 disabled: false
 weight: 3
 colour: '&d'
+material: magenta_concrete_powder
 worth-multiplier: 0.15
 broadcast: true
 size:

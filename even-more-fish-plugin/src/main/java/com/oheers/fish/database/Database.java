@@ -16,6 +16,7 @@ import com.oheers.fish.database.model.UserReport;
 import com.oheers.fish.database.strategies.DatabaseStrategyFactory;
 import com.oheers.fish.fishing.items.Fish;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.entity.HumanEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.*;
 import org.jooq.Record;
@@ -153,7 +154,7 @@ public class Database implements DatabaseAPI {
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
                         .from(Tables.FISH_LOG)
-                        .where(Tables.FISH_LOG.ID.eq(userId))
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId))
                         .fetch()
                         .isNotEmpty();
             }
@@ -189,12 +190,11 @@ public class Database implements DatabaseAPI {
     public int getUserId(@NotNull UUID uuid) {
         return new ExecuteQuery<Integer>(connectionFactory, settings) {
             @Override
-            protected Integer onRunQuery(DSLContext dslContext) throws Exception {
+            protected Integer onRunQuery(DSLContext dslContext) {
                 return dslContext.select()
                         .from(Tables.USERS)
                         .where(Tables.USERS.UUID.eq(uuid.toString()))
-                        .fetchOne(Tables.USERS.ID)
-                        ;
+                        .fetchOne(Tables.USERS.ID);
             }
 
             @Override
@@ -332,20 +332,114 @@ public class Database implements DatabaseAPI {
     }
 
     @Override
+    public String getDiscoverer(@NotNull Fish fish) {
+        return new ExecuteQuery<String>(connectionFactory, settings) {
+            @Override
+            protected String onRunQuery(DSLContext dslContext) {
+                return dslContext.select()
+                    .from(Tables.FISH)
+                    .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getId())
+                        .and(Tables.FISH.FISH_NAME.eq(fish.getName())))
+                    .fetchOne(Tables.FISH.FIRST_FISHER);
+            }
+
+            @Override
+            protected String empty() {
+                return "Unknown";
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public LocalDateTime getFirstCatchDateForPlayer(@NotNull Fish fish, @NotNull HumanEntity player) {
+        List<FishReport> reports = getReportsForFish(player.getUniqueId(), fish); // Need to use this here, as no method exists in UserReport
+        LocalDateTime earliest = null;
+        for (FishReport report : reports) {
+            LocalDateTime catchTime = report.getLocalDateTime();
+            if (earliest == null || catchTime.isBefore(earliest)) {
+                earliest = catchTime;
+            }
+        }
+        return earliest;
+    }
+
+    @Override
+    public LocalDateTime getFirstCatchDate(@NotNull Fish fish) {
+        return new ExecuteQuery<LocalDateTime>(connectionFactory, settings) {
+            @Override
+            protected LocalDateTime onRunQuery(DSLContext dslContext) {
+                return dslContext.select()
+                    .from(Tables.FISH)
+                    .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getId())
+                        .and(Tables.FISH.FISH_NAME.eq(fish.getName())))
+                    .fetchOne(Tables.FISH.FIRST_CATCH_TIME);
+            }
+
+            @Override
+            protected LocalDateTime empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public float getLargestFishSizeForPlayer(@NotNull Fish fish, @NotNull HumanEntity player) {
+        UUID uuid = player.getUniqueId();
+        if (!hasUser(uuid)) {
+            createUser(uuid);
+        }
+        UserReport report = readUserReport(player.getUniqueId());
+        return report.getLargestLength();
+    }
+
+    @Override
     public float getLargestFishSize(@NotNull Fish fish) {
         return new ExecuteQuery<Float>(connectionFactory, settings) {
             @Override
-            protected Float onRunQuery(DSLContext dslContext) throws Exception {
-                return dslContext.select()
+            protected Float onRunQuery(DSLContext dslContext) {
+                Float value = dslContext.select()
                         .from(Tables.FISH)
                         .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getId())
                                 .and(Tables.FISH.FISH_NAME.eq(fish.getName())))
                         .fetchOne(Tables.FISH.LARGEST_FISH);
+                if (value == null) {
+                    value = 0F;
+                }
+                return value;
             }
 
             @Override
             protected Float empty() {
                 return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public int getAmountFishCaughtForPlayer(@NotNull Fish fish, @NotNull HumanEntity player) {
+        List<FishReport> reports = getReportsForFish(player.getUniqueId(), fish);
+        return reports.stream().mapToInt(FishReport::getNumCaught).sum();
+    }
+
+    @Override
+    public int getAmountFishCaught(@NotNull Fish fish) {
+        return new ExecuteQuery<Integer>(connectionFactory, settings) {
+            @Override
+            protected Integer onRunQuery(DSLContext dslContext) {
+                Integer integer = dslContext.select()
+                    .from(Tables.FISH)
+                    .where(Tables.FISH.FISH_RARITY.eq(fish.getRarity().getId())
+                        .and(Tables.FISH.FISH_NAME.eq(fish.getName())))
+                    .fetchOne(Tables.FISH.TOTAL_CAUGHT);
+                if (integer == null) {
+                    integer = 0;
+                }
+                return integer;
+            }
+
+            @Override
+            protected Integer empty() {
+                return 0;
             }
         }.prepareAndRunQuery();
     }
@@ -374,7 +468,7 @@ public class Database implements DatabaseAPI {
             protected List<FishReport> onRunQuery(DSLContext dslContext) throws Exception {
                 Result<Record> result = dslContext.select()
                         .from(Tables.FISH_LOG)
-                        .where(Tables.FISH_LOG.ID.eq(userId))
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId))
                         .fetch();
 
                 if (result.isEmpty()) {
@@ -410,7 +504,7 @@ public class Database implements DatabaseAPI {
             protected List<FishReport> onRunQuery(DSLContext dslContext) throws Exception {
                 Result<Record> result = dslContext.select()
                         .from(Tables.FISH_LOG)
-                        .where(Tables.FISH_LOG.ID.eq(userId)
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId)
                                 .and(Tables.FISH_LOG.FISH.eq(fish.getName()))
                                 .and(Tables.FISH_LOG.RARITY.eq(fish.getRarity().getId())))
                         .fetch();
@@ -486,13 +580,18 @@ public class Database implements DatabaseAPI {
     }
 
     @Override
-    public boolean userHasFish(@NotNull String rarity, @NotNull String fish, int id) {
+    public boolean userHasFish(@NotNull Fish fish, @NotNull HumanEntity user) {
+        return userHasFish(fish.getRarity().getId(), fish.getName(), getUserId(user.getUniqueId()));
+    }
+
+    @Override
+    public boolean userHasFish(@NotNull String rarity, @NotNull String fish, int userId) {
         return new ExecuteQuery<Boolean>(connectionFactory, settings) {
             @Override
             protected Boolean onRunQuery(DSLContext dslContext) throws Exception {
                 return dslContext.select()
                         .from(Tables.FISH_LOG)
-                        .where(Tables.FISH_LOG.ID.eq(id)
+                        .where(Tables.FISH_LOG.USER_ID.eq(userId)
                                 .and(Tables.FISH_LOG.RARITY.eq(rarity)
                                         .and(Tables.FISH_LOG.FISH.eq(fish))))
                         .fetch()

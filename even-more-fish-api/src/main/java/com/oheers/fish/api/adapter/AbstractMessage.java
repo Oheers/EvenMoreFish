@@ -267,9 +267,22 @@ public abstract class AbstractMessage {
      * Adds a variable to be formatted when {@link #formatVariables()} is called.
      * @param variable The variable.
      * @param replacement The replacement for the variable.
+     * @param fallbackReplacement The fallback replacement if replacement is null.
      */
-    public void setVariable(@NotNull final String variable, @NotNull final String replacement) {
-        this.liveVariables.put(variable, replacement);
+    public void setVariable(@NotNull final String variable, @Nullable final Object replacement, @NotNull final Object fallbackReplacement) {
+        this.liveVariables.put(variable, Objects.requireNonNullElse(replacement, fallbackReplacement).toString());
+    }
+
+    /**
+     * Adds a variable to be formatted when {@link #formatVariables()} is called.
+     * @param variable The variable.
+     * @param replacement The replacement for the variable.
+     */
+    public void setVariable(@NotNull final String variable, @Nullable final Object replacement) {
+        if (replacement == null) {
+            return;
+        }
+        this.liveVariables.put(variable, replacement.toString());
     }
 
     /**

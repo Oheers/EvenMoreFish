@@ -15,5 +15,6 @@ public class UserPerms {
     public static final String NEXT = "emf.next";
     public static final String HELP = "emf.help";
     public static final String APPLYBAITS = "emf.applybaits";
+    public static final String JOURNAL = "emf.journal";
 
 }

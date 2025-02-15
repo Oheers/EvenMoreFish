@@ -47,4 +47,16 @@ public class ItemUtils {
         FishUtils.editMeta(item, meta -> meta.addItemFlags(ItemFlag.HIDE_ENCHANTS));
     }
 
+    /**
+     * Creates a new ItemStack with the provided material and applies the old item's meta to it
+     * @param item The old item
+     * @param material The material to change to
+     * @return The provided ItemStack with a different material
+     */
+    public static ItemStack changeMaterial(@NotNull ItemStack item, @NotNull Material material) {
+        ItemStack newItem = new ItemStack(material);
+        newItem.setItemMeta(item.getItemMeta());
+        return newItem;
+    }
+
 }

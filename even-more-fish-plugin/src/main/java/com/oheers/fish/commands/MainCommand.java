@@ -4,13 +4,16 @@ import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.api.adapter.AbstractMessage;
 import com.oheers.fish.api.economy.Economy;
 import com.oheers.fish.commands.arguments.ArgumentHelper;
+import com.oheers.fish.commands.arguments.RarityArgument;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.config.MainConfig;
 import com.oheers.fish.config.messages.ConfigMessage;
 import com.oheers.fish.config.messages.PrefixType;
+import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.guis.ApplyBaitsGUI;
 import com.oheers.fish.gui.guis.MainMenuGUI;
 import com.oheers.fish.gui.guis.SellGUI;
+import com.oheers.fish.gui.guis.journal.FishJournalGui;
 import com.oheers.fish.permissions.AdminPerms;
 import com.oheers.fish.permissions.UserPerms;
 import com.oheers.fish.selling.SellHelper;
@@ -42,6 +45,9 @@ public class MainCommand {
                 .executes(info -> {
                     sendHelpMessage(info.sender());
                 });
+        if (MainConfig.getInstance().isDatabaseOnline()) {
+            this.command.withSubcommand(getJournal());
+        }
     }
 
     public CommandAPICommand getCommand() {
@@ -185,6 +191,22 @@ public class MainCommand {
                 .executesPlayer(info -> {
                     new ApplyBaitsGUI(info.sender(), null).open();
                 });
+    }
+
+    private CommandAPICommand getJournal() {
+        helpMessageBuilder.addUsage(
+            "journal",
+            ConfigMessage.HELP_GENERAL_JOURNAL::getMessage
+        );
+        return new CommandAPICommand("journal")
+            .withPermission(UserPerms.JOURNAL)
+            .withArguments(
+                RarityArgument.create().setOptional(true)
+            )
+            .executesPlayer((player, args) -> {
+                Rarity rarity = args.getUnchecked("rarity"); // This is allowed to be null.
+                new FishJournalGui(player, rarity).open();
+            });
     }
 
     private void sendHelpMessage(@NotNull CommandSender sender) {

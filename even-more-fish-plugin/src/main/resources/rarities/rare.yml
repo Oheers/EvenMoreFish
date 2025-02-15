@@ -2,6 +2,7 @@ id: Rare
 disabled: false
 weight: 10
 colour: '&b'
+material: light_blue_concrete_powder
 worth-multiplier: 0.2
 broadcast: false
 size:

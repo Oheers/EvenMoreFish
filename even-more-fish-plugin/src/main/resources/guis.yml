@@ -109,13 +109,16 @@ main-menu:
     character: "b"
     click-action: "open-baits-menu"
 
-  coming-soon-journal:
+  open-journal:
     item:
-      material: barrier
-      displayname: "&cComing Soon!"
+      material: writable_book
+      displayname: "&6»           Fish Journal"
     lore:
-      - "&7This menu is still being worked on!"
+      - "&f&m                                 "
+      - "&7Shows a journal of caught fish"
+      - "&f&m                                 "
     character: "j"
+    click-action: "open-journal-menu"
 
   exit:
     item:
@@ -282,6 +285,98 @@ apply-baits-menu:
     character: "x"
     click-action: "full-exit"
 
+# FISH JOURNAL
+
+# The main menu for selecting the rarity you'd like to view
+journal-menu:
+  title: '&1Fish Journal'
+  layout:
+    - '         '
+    - ' rrrrrrr '
+    - ' rrrrrrr '
+    - ' rrrrrrr '
+    - ' rrrrrrr '
+    - '    x    '
+  filler: gray_stained_glass_pane
+  rarity-character: r # Character to represent a rarity
+
+  rarity-item:
+    item:
+      material: IRON_BARS
+      displayname: '{rarity_colour}{rarity}'
+    lore:
+      - ''
+      - '&#00bfff→ Click to view caught fish'
+
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
+    lore:
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "open-main-menu"
+
+# The menu for the chosen rarity
+journal-rarity:
+  title: '&1Fish Journal: {rarity_colour}{rarity}' # Uses the rarity's display name
+  layout:
+    - '    a    '
+    - ' fffffff '
+    - ' fffffff '
+    - ' fffffff '
+    - ' fffffff '
+    - '    x    '
+  filler: gray_stained_glass_pane
+  fish-character: f # Character to represent a fish in the layout
+
+  # Whether to show the undiscovered-fish config below when a fish has not been caught by the player.
+  hide-undiscovered-fish: true
+
+  # How undiscovered fish should look
+  undiscovered-fish:
+    item:
+      material: IRON_BARS
+      displayname: '&8Undiscovered Fish'
+    lore:
+      - "&7"
+      - "&fCatch this fish"
+      - "&fto unlock it here."
+
+  # How caught fish should look. Changing the material will not work, as it always uses the fish item as a base
+  fish-item:
+    item:
+      displayname: '&f{fishname}'
+    lore:
+      - '&f '
+      - '&fCaught: {times-caught}x'
+      - '&fLargest Size: {largest-size}cm'
+      - '&fFound: {discover-date}'
+      - '&f '
+      - '&fDiscovered by: {discoverer}'
+      - '&fServer Largest: {server-largest}cm'
+      - '&fServer Caught: {server-caught}x'
+
+  info:
+    item:
+      material: BOOK
+      displayname: "&cINFO"
+    lore:
+      - '&eHere you can see all the fish you have caught.'
+      - '&eFrom this rarity.'
+    character: a
+
+  exit:
+    item:
+      material: pufferfish
+      displayname: "&cExit"
+    lore:
+      - "&eExit to the Menu"
+    glowing: true
+    character: "x"
+    click-action: "open-journal-menu"
+
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE OR THINGS WILL BREAK!!!
-config-version: 5
+config-version: 6
