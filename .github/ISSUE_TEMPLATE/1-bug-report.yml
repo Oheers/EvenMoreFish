@@ -54,8 +54,6 @@ body:
     attributes:
       label: "Java Version"
       options:
-        - "1.8"
-        - "11"
         - "17"
         - "21"
     validations:
