@@ -36,36 +36,44 @@ public class MessageConfig extends ConfigBase {
 
         // Bossbar config relocations - config version 2
         builder.addCustomLogic("18", yamlDocument -> {
-            String hourColor = yamlDocument.getString("bossbar.hour-color", "&f");
-            String hour = yamlDocument.getString("bossbar.hour", "h");
-            yamlDocument.set("bossbar.hour", hourColor + "{hour}" + hour);
-            yamlDocument.remove("bossbar.hour-color");
+            if (yamlDocument.contains("bossbar.hour-color")) {
+                String hourColor = yamlDocument.getString("bossbar.hour-color", "&f");
+                String hour = yamlDocument.getString("bossbar.hour", "h");
+                yamlDocument.set("bossbar.hour", hourColor + "{hour}" + hour);
+                yamlDocument.remove("bossbar.hour-color");
+            }
 
-            String minuteColor = yamlDocument.getString("bossbar.minute-color", "&f");
-            String minute = yamlDocument.getString("bossbar.minute", "m");
-            yamlDocument.set("bossbar.minute", minuteColor + "{minute}" + minute);
-            yamlDocument.remove("bossbar.minute-color");
+            if (yamlDocument.contains("bossbar.minute-color")) {
+                String minuteColor = yamlDocument.getString("bossbar.minute-color", "&f");
+                String minute = yamlDocument.getString("bossbar.minute", "m");
+                yamlDocument.set("bossbar.minute", minuteColor + "{minute}" + minute);
+                yamlDocument.remove("bossbar.minute-color");
+            }
 
-            String secondColor = yamlDocument.getString("bossbar.second-color", "&f");
-            String second = yamlDocument.getString("bossbar.second", "s");
-            yamlDocument.set("bossbar.second", secondColor + "{second}" + second);
-            yamlDocument.remove("bossbar.second-color");
+            if (yamlDocument.contains("bossbar.second-color")) {
+                String secondColor = yamlDocument.getString("bossbar.second-color", "&f");
+                String second = yamlDocument.getString("bossbar.second", "s");
+                yamlDocument.set("bossbar.second", secondColor + "{second}" + second);
+                yamlDocument.remove("bossbar.second-color");
+            }
         });
 
         // Prefix config relocations - config version 3
         builder.addCustomLogic("19", yamlDocument -> {
-            String prefix = yamlDocument.getString("prefix");
+            if (yamlDocument.contains("prefix")) {
+                String prefix = yamlDocument.getString("prefix");
 
-            String oldRegular = yamlDocument.getString("prefix-regular");
-            yamlDocument.set("prefix-regular", oldRegular + prefix);
+                String oldRegular = yamlDocument.getString("prefix-regular");
+                yamlDocument.set("prefix-regular", oldRegular + prefix);
 
-            String oldAdmin = yamlDocument.getString("prefix-admin");
-            yamlDocument.set("prefix-admin", oldAdmin + prefix);
+                String oldAdmin = yamlDocument.getString("prefix-admin");
+                yamlDocument.set("prefix-admin", oldAdmin + prefix);
 
-            String oldError = yamlDocument.getString("prefix-error");
-            yamlDocument.set("prefix-error", oldError + prefix);
+                String oldError = yamlDocument.getString("prefix-error");
+                yamlDocument.set("prefix-error", oldError + prefix);
 
-            yamlDocument.remove("prefix");
+                yamlDocument.remove("prefix");
+            }
         });
 
         return builder.build();
