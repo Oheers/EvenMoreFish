@@ -35,7 +35,7 @@ public class MessageConfig extends ConfigBase {
         UpdaterSettings.Builder builder = UpdaterSettings.builder(super.getUpdaterSettings());
 
         // Bossbar config relocations - config version 2
-        builder.addCustomLogic("2", yamlDocument -> {
+        builder.addCustomLogic("18", yamlDocument -> {
             String hourColor = yamlDocument.getString("bossbar.hour-color", "&f");
             String hour = yamlDocument.getString("bossbar.hour", "h");
             yamlDocument.set("bossbar.hour", hourColor + "{hour}" + hour);
@@ -53,7 +53,7 @@ public class MessageConfig extends ConfigBase {
         });
 
         // Prefix config relocations - config version 3
-        builder.addCustomLogic("3", yamlDocument -> {
+        builder.addCustomLogic("19", yamlDocument -> {
             String prefix = yamlDocument.getString("prefix");
 
             String oldRegular = yamlDocument.getString("prefix-regular");
